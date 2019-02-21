@@ -1,4 +1,5 @@
-﻿using Guppy.Configurations;
+﻿using Guppy.Collections;
+using Guppy.Configurations;
 using Guppy.Extensions;
 using Guppy.Loggers;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ namespace Guppy
         protected ILogger Logger { get; private set; }
         protected ServiceCollection services { get; private set; }
         protected ServiceProvider provider { get; private set; }
+        protected SceneCollection Scenes { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -63,6 +65,7 @@ namespace Guppy
             // Add core services to the collection...
             this.services.AddSingleton<Game>(this);
             this.services.AddSingleton<ILogger>(this.Logger);
+            this.services.AddSingleton<SceneCollection>();
             this.services.AddScoped<GameScopeConfiguration>();
             this.services.AddScene<Scene>();
         }
@@ -71,6 +74,9 @@ namespace Guppy
         {
             // Build a new service provider...
             this.provider = this.services.BuildServiceProvider();
+
+            // Load any required services
+            this.Scenes = this.provider.GetRequiredService<SceneCollection>();
         }
 
         protected virtual void PostInitialize()

@@ -6,7 +6,7 @@ namespace Guppy.Demo
     {
         static void Main(string[] args)
         {
-            Game game = new Game();
+            Game game = new DemoGame();
 
             game.Start();
 

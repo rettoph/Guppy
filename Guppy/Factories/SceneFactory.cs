@@ -49,10 +49,10 @@ namespace Guppy.Factories
             }
         }
 
-        public static SceneFactory<TSceneType> BuildFactory<TSceneType>()
-            where TSceneType : Scene
+        public static SceneFactory<T> BuildFactory<T>()
+            where T : Scene
         {
-            return new SceneFactory<TSceneType>();
+            return new SceneFactory<T>();
         }
     }
 }
