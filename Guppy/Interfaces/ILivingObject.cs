@@ -5,10 +5,8 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    public interface ILivingObject : IDrawable, IUpdateable, IInitializable, IDisposable
+    public interface ILivingObject : IDrawable, IUpdateable, IInitializable
     {
-        event EventHandler<ILivingObject> Disposing;
-
         void SetEnabled(Boolean enabled);
         void SetVisible(Boolean visible);
 

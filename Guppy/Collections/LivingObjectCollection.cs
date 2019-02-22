@@ -8,26 +8,19 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Collections
 {
-    public class LivingObjectCollection<TLivingObject>
+    public class LivingObjectCollection<TLivingObject> : TrackedDisposableCollection<TLivingObject>
         where TLivingObject : class, ILivingObject
     {
         #region Private Fields
-        private List<TLivingObject> _list;
         private IOrderedEnumerable<TLivingObject> _drawables;
         private IOrderedEnumerable<TLivingObject> _updatables;
         private Boolean _dirtyUpdatables;
         private Boolean _dirtyDrawables;
         #endregion
 
-        #region Public Attributes
-        public Int32 Count { get { return _list.Count; } }
-        public TLivingObject this[int index] { get { return _list[index]; } set { _list[index] = value; } }
-        #endregion
-
         #region Constructors
         public LivingObjectCollection()
         {
-            _list = new List<TLivingObject>();
         }
         #endregion
 
@@ -36,7 +29,7 @@ namespace Guppy.Collections
         {
             if(_dirtyDrawables)
             { // Update the drawables array
-                _drawables = _list.Where(lo => lo.Visible)
+                _drawables = this.list.Where(lo => lo.Visible)
                     .OrderBy(lo => lo.DrawOrder);
 
                 _dirtyDrawables = false;
@@ -51,7 +44,7 @@ namespace Guppy.Collections
         {
             if (_dirtyUpdatables)
             { // Update the updatables array
-                _updatables = _list.Where(lo => lo.Enabled)
+                _updatables = this.list.Where(lo => lo.Enabled)
                     .OrderBy(lo => lo.UpdateOrder);
 
                 _dirtyUpdatables = false;
@@ -64,43 +57,31 @@ namespace Guppy.Collections
         #endregion
 
         #region Collection Methods
-        public virtual void Add(TLivingObject item)
+        public override void Add(TLivingObject item)
         {
-            _list.Add(item);
+            base.Add(item);
 
             item.UpdateOrderChanged += this.HandleUpdateOrderChanged;
             item.EnabledChanged     += this.HandleEnabledChanged;
 
             item.DrawOrderChanged += this.HandleDrawOrderChanged;
             item.VisibleChanged   += this.HandleVisibleChanged;
-
-            item.Disposing += this.HandleDisposing;
         }
 
-        public virtual Boolean Remove(TLivingObject item)
+        public override Boolean Remove(TLivingObject item)
         {
-            _list.Remove(item);
+            if(base.Remove(item))
+            {
+                item.UpdateOrderChanged -= this.HandleUpdateOrderChanged;
+                item.EnabledChanged -= this.HandleEnabledChanged;
 
-            item.UpdateOrderChanged -= this.HandleUpdateOrderChanged;
-            item.EnabledChanged     -= this.HandleEnabledChanged;
+                item.DrawOrderChanged -= this.HandleDrawOrderChanged;
+                item.VisibleChanged -= this.HandleVisibleChanged;
 
-            item.DrawOrderChanged -= this.HandleDrawOrderChanged;
-            item.VisibleChanged   -= this.HandleVisibleChanged;
+                return true;
+            }
 
-            item.Disposing -= this.HandleDisposing;
-
-            return true;
-        }
-
-        public virtual void Clear()
-        {
-            while (_list.Count > 0)
-                this.Remove(_list[0]);
-        }
-
-        public virtual Boolean Contains(TLivingObject item)
-        {
-            return _list.Contains(item);
+            return false;
         }
         #endregion
 
@@ -123,11 +104,6 @@ namespace Guppy.Collections
         private void HandleUpdateOrderChanged(object sender, EventArgs e)
         {
             _dirtyUpdatables = true;
-        }
-
-        private void HandleDisposing(object sender, ILivingObject item)
-        {
-            this.Remove(item as TLivingObject);
         }
         #endregion
     }

@@ -35,7 +35,7 @@ namespace Guppy.Implementations
         public event EventHandler<EventArgs> VisibleChanged;
         public event EventHandler<EventArgs> EnabledChanged;
         public event EventHandler<EventArgs> UpdateOrderChanged;
-        public event EventHandler<ILivingObject> Disposing;
+        
 
         public LivingObject(ILogger logger) : base(logger)
         {
@@ -66,11 +66,6 @@ namespace Guppy.Implementations
         {
             _drawOrder = drawOrder;
             this.DrawOrderChanged?.Invoke(this, null);
-        }
-
-        public void Dispose()
-        {
-            this.Disposing?.Invoke(this, this);
         }
     }
 }
