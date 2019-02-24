@@ -13,6 +13,7 @@ namespace Guppy.Demo
             base.PreInitialize();
 
             this.services.AddScene<DemoScene>();
+            this.services.AddLayer<DemoLayer>();
         }
         protected override void PostInitialize()
         {
@@ -20,7 +21,7 @@ namespace Guppy.Demo
 
             this.Logger.LogInformation($"PostInitiazlizing DemoGame...");
 
-            this.Scenes.Create<DemoScene>();
+            this.scenes.Create<DemoScene>();
         }
     }
 }

@@ -7,8 +7,15 @@ namespace Guppy.Demo
 {
     public class DemoScene : Scene
     {
-        public DemoScene(Game game, ILogger logger) : base(game, logger)
+        public DemoScene(IServiceProvider provider) : base(provider)
         {
+        }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            this.layers.Create<DemoLayer>();
         }
     }
 }

@@ -6,9 +6,9 @@ namespace Guppy.Demo
     {
         static void Main(string[] args)
         {
-            Game game = new DemoGame();
+            var game = new Game1();
 
-            game.Start();
+            game.Run();
 
             Console.ReadLine();
         }

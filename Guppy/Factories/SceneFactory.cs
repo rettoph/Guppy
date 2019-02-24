@@ -6,40 +6,27 @@ using System.Text;
 
 namespace Guppy.Factories
 {
-    public class SceneFactory<TScene>
+    public class SceneFactory<TScene> : Factory<TScene>
         where TScene : Scene
     {
-        private Type _sceneType;
-
-        private SceneFactory()
-        {
-            _sceneType = typeof(TScene);
-        }
-
         /// <summary>
         /// Create a new instance of the requested scene
         /// (if the scope does not alreadyy have a scene)
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public TScene Create(IServiceProvider provider)
+        public override TScene Create(IServiceProvider provider)
         {
             var scopeConfiguration = provider.GetService(typeof(GameScopeConfiguration)) as GameScopeConfiguration;
 
-            if(scopeConfiguration.Scene == null && !_sceneType.IsAbstract)
+            if(scopeConfiguration.Scene == null && !this.targetType.IsAbstract)
             { // Create a new scene...
-                scopeConfiguration.Scene = ActivatorUtilities.CreateInstance(provider, _sceneType) as Scene;
-
-                // Start up the new scene instance...
-                scopeConfiguration.Scene.TryBoot();
-                scopeConfiguration.Scene.TryPreInitialize();
-                scopeConfiguration.Scene.TryInitialize();
-                scopeConfiguration.Scene.TryPostInitialize();
+                scopeConfiguration.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType) as Scene;
 
                 // Return our new scene
                 return scopeConfiguration.Scene as TScene;
             }
-            else if(_sceneType == scopeConfiguration.Scene.GetType() || _sceneType.IsAssignableFrom(scopeConfiguration.Scene.GetType()))
+            else if(this.targetType == scopeConfiguration.Scene.GetType() || this.targetType.IsAssignableFrom(scopeConfiguration.Scene.GetType()))
             { // Return the pre-existing scene of this type...
                 return scopeConfiguration.Scene as TScene;
             }

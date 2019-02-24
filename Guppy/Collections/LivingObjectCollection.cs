@@ -21,6 +21,8 @@ namespace Guppy.Collections
         #region Constructors
         public LivingObjectCollection()
         {
+            _dirtyDrawables = true;
+            _dirtyUpdatables = true;
         }
         #endregion
 

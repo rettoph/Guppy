@@ -4,6 +4,7 @@ using Guppy.Extensions;
 using Guppy.Loggers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Guppy
         protected ILogger Logger { get; private set; }
         protected ServiceCollection services { get; private set; }
         protected ServiceProvider provider { get; private set; }
-        protected SceneCollection Scenes { get; private set; }
+        protected SceneCollection scenes { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -40,11 +41,12 @@ namespace Guppy
         #region Methods
         public void Start()
         {
-            if(this.Started)
+            if (this.Started)
             {
                 this.Logger.LogError($"Unable to start Game. Already started.");
             }
-            else {
+            else
+            {
                 this.Boot();
                 this.PreInitialize();
                 this.Initialize();
@@ -67,6 +69,7 @@ namespace Guppy
             this.services.AddSingleton<ILogger>(this.Logger);
             this.services.AddSingleton<SceneCollection>();
             this.services.AddScoped<GameScopeConfiguration>();
+            this.services.AddScoped<LayerCollection>();
             this.services.AddScene<Scene>();
         }
 
@@ -76,11 +79,23 @@ namespace Guppy
             this.provider = this.services.BuildServiceProvider();
 
             // Load any required services
-            this.Scenes = this.provider.GetRequiredService<SceneCollection>();
+            this.scenes = this.provider.GetRequiredService<SceneCollection>();
         }
 
         protected virtual void PostInitialize()
         {
+        }
+        #endregion
+
+        #region Frame Methods
+        public void Draw(GameTime gameTime)
+        {
+            this.scenes.Draw(gameTime);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            this.scenes.Update(gameTime);
         }
         #endregion
     }

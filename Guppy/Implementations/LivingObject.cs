@@ -39,6 +39,11 @@ namespace Guppy.Implementations
 
         public LivingObject(ILogger logger) : base(logger)
         {
+            this.SetDrawOrder(0);
+            this.SetUpdateOrder(0);
+
+            this.SetVisible(true);
+            this.SetEnabled(true);
         }
 
         public abstract void Draw(GameTime gameTime);
