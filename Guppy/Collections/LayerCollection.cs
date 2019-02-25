@@ -61,9 +61,6 @@ namespace Guppy.Collections
             // Create the new layer
             var layer = _provider.GetLayer<TLayer>(configuration);
 
-            // Add the new layer to the collection
-            this.Add(layer);
-
             // return the new layer
             return layer;
         }

@@ -27,14 +27,17 @@ namespace Guppy
 
         #region Public Attributes
         public Boolean Started { get; private set; }
+
+        public Int32 Seed { get; private set; }
         #endregion
 
         #region Constructors
-        public Game()
+        public Game(Int32 seed = 1337)
         {
             this.services = new ServiceCollection();
 
             this.Logger = new ConsoleLogger();
+            this.Seed = seed;
         }
         #endregion
 
@@ -68,6 +71,7 @@ namespace Guppy
             this.services.AddSingleton<Game>(this);
             this.services.AddSingleton<ILogger>(this.Logger);
             this.services.AddSingleton<SceneCollection>();
+            this.services.AddSingleton<Random>(new Random(this.Seed));
             this.services.AddScoped<GameScopeConfiguration>();
             this.services.AddScoped<LayerCollection>();
             this.services.AddScene<Scene>();

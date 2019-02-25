@@ -33,9 +33,6 @@ namespace Guppy.Collections
             // Create the new scene
             var scene = _provider.CreateScope().ServiceProvider.GetScene<TScene>();
 
-            // Add the new scene to the collection
-            this.Add(scene);
-
             // return the new scene
             return scene;
         }

@@ -1,4 +1,5 @@
-﻿using Guppy.Configurations;
+﻿using Guppy.Collections;
+using Guppy.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,10 @@ namespace Guppy.Factories
             if(scopeConfiguration.Scene == null && !this.targetType.IsAbstract)
             { // Create a new scene...
                 scopeConfiguration.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType) as Scene;
+
+                // Auto add the new scene to the scene collection
+                var scenes = provider.GetRequiredService<SceneCollection>();
+                scenes.Add(scopeConfiguration.Scene);
 
                 // Return our new scene
                 return scopeConfiguration.Scene as TScene;

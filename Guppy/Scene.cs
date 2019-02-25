@@ -11,6 +11,10 @@ namespace Guppy
 {
     public class Scene : LivingObject
     {
+        #region Public Attributes
+        public UInt16 DefaultLayerDepth { get; protected set; }
+        #endregion
+
         #region Protected Attributes
         protected IServiceProvider provider { get; private set; }
 
@@ -23,6 +27,9 @@ namespace Guppy
         public Scene(IServiceProvider provider) : base(provider.GetService<ILogger>())
         {
             this.provider = provider;
+
+            // Set the default layer depth
+            this.DefaultLayerDepth = 0;
         }
         #endregion
 

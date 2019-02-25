@@ -20,6 +20,10 @@ namespace Guppy.Factories
             // Create a new layer instance
             TLayer layer = ActivatorUtilities.CreateInstance(provider, this.targetType, configuration) as TLayer;
 
+            // Auto add the layer to the scope's layer collection
+            var layers = provider.GetRequiredService<LayerCollection>();
+            layers.Add(layer);
+
             // Return the new layer
             return layer;
         }
