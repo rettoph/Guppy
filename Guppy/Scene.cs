@@ -21,6 +21,8 @@ namespace Guppy
         protected Game game { get; private set; }
 
         protected LayerCollection layers { get; private set; }
+
+        protected EntityCollection entities { get; private set; }
         #endregion
 
         #region Constructors
@@ -41,6 +43,7 @@ namespace Guppy
             // Load some required attributes from the service provider
             this.game = provider.GetService<Game>();
             this.layers = provider.GetService<LayerCollection>();
+            this.entities = provider.GetService<EntityCollection>();
         }
         #endregion
 

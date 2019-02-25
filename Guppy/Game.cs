@@ -1,6 +1,8 @@
 ﻿using Guppy.Collections;
 using Guppy.Configurations;
 using Guppy.Extensions;
+using Guppy.Interfaces;
+using Guppy.Loaders;
 using Guppy.Loggers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -63,10 +65,6 @@ namespace Guppy
         #region Initialization Methods
         protected virtual void Boot()
         {
-        }
-
-        protected virtual void PreInitialize()
-        {
             // Add core services to the collection...
             this.services.AddSingleton<Game>(this);
             this.services.AddSingleton<ILogger>(this.Logger);
@@ -74,20 +72,32 @@ namespace Guppy
             this.services.AddSingleton<Random>(new Random(this.Seed));
             this.services.AddScoped<GameScopeConfiguration>();
             this.services.AddScoped<LayerCollection>();
+            this.services.AddScoped<EntityCollection>();
             this.services.AddScene<Scene>();
+
+            // Add any default loaders
+            this.services.AddLoader<StringLoader>();
+        }
+
+        protected virtual void PreInitialize()
+        {
+            // Build a new service provider...
+            this.provider = this.services.BuildServiceProvider();
         }
 
         protected virtual void Initialize()
         {
-            // Build a new service provider...
-            this.provider = this.services.BuildServiceProvider();
-
             // Load any required services
             this.scenes = this.provider.GetRequiredService<SceneCollection>();
+
+            // Ensure all loaders get loaded
+            foreach (ILoader loader in this.provider.GetLoaders())
+                loader.Load();
         }
 
         protected virtual void PostInitialize()
         {
+
         }
         #endregion
 

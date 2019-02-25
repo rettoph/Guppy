@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions;
+using Guppy.Loaders;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,19 @@ namespace Guppy.Demo
 {
     public class DemoGame : Game
     {
-        protected override void PreInitialize()
+        protected override void Boot()
         {
-            base.PreInitialize();
+            base.Boot();
 
             this.services.AddScene<DemoScene>();
             this.services.AddLayer<DemoLayer>();
         }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+        }
+
         protected override void PostInitialize()
         {
             base.PostInitialize();

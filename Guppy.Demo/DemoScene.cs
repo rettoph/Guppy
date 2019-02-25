@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions;
+using Guppy.Loaders;
 using Microsoft.Extensions.Logging;
 
 namespace Guppy.Demo
@@ -11,6 +13,13 @@ namespace Guppy.Demo
         {
         }
 
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            var stringLoader = this.provider.GetLoader<StringLoader>();
+            stringLoader.Register("test", "Hello World");
+        }
         protected override void PostInitialize()
         {
             base.PostInitialize();

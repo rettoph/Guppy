@@ -1,5 +1,6 @@
 ﻿using Guppy.Configurations;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Demo
 {
@@ -10,6 +11,16 @@ namespace Guppy.Demo
         public DemoLayer(ILogger logger, Scene scene, LayerConfiguration configuration) : base(scene, configuration)
         {
             logger.LogInformation($"Creating new layer...");
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            this.entities.Draw(gameTime);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            this.entities.Update(gameTime);
         }
     }
 }

@@ -14,14 +14,13 @@ namespace Guppy.Collections
         #region Private Fields
         private IServiceProvider _provider;
 
-        private List<Layer> _list;
         private IOrderedEnumerable<Layer> _drawables;
         private IOrderedEnumerable<Layer> _updatables;
         #endregion
 
         #region Public Attributes
-        public Int32 Count { get { return _list.Count; } }
-        public Layer this[int index] { get { return _list[index]; } set { _list[index] = value; } }
+        public Int32 Count { get { return this.list.Count; } }
+        public Layer this[int index] { get { return this.list[index]; } set { this.list[index] = value; } }
         #endregion
 
         #region Constructors

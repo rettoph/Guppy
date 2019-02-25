@@ -12,10 +12,16 @@ namespace Guppy.Collections
         protected List<TTrackedDisposable> list { get; private set; }
         #endregion
 
+        #region Public Attributes
+        public Boolean DisposeOnRemove { get; set; }
+        #endregion
+
         #region Constructors
-        public TrackedDisposableCollection()
+        public TrackedDisposableCollection(Boolean disposeOnRemove = true)
         {
             this.list = new List<TTrackedDisposable>();
+
+            this.DisposeOnRemove = disposeOnRemove;
         }
         #endregion
 
@@ -32,6 +38,9 @@ namespace Guppy.Collections
             if(this.list.Remove(item))
             {
                 item.Disposing -= this.HandleDisposing;
+
+                if (this.DisposeOnRemove)
+                    item.Dispose(); // Auto dispose the item if told to do so
 
                 return true;
             }

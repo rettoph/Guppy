@@ -1,4 +1,5 @@
-﻿using Guppy.Configurations;
+﻿using Guppy.Collections;
+using Guppy.Configurations;
 using Guppy.Implementations;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,9 +18,10 @@ namespace Guppy
     /// Note, the configuration values are readonly and cannot
     /// be changed once defined.
     /// </summary>
-    public class Layer : TrackedDisposable
+    public abstract class Layer : TrackedDisposable
     {
-        #region Protected Attributes
+        #region Protected Internal Attributes
+        protected internal LivingObjectCollection<Entity> entities { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -30,19 +32,15 @@ namespace Guppy
         public Layer(Scene scene, LayerConfiguration configuration)
         {
             this.Configuration = configuration;
+
+            this.entities = new LivingObjectCollection<Entity>();
+            this.entities.DisposeOnRemove = false;
         }
         #endregion
 
         #region Frame Methods
-        public virtual void Draw(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public virtual void Update(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
+        public abstract void Draw(GameTime gameTime);
+        public abstract void Update(GameTime gameTime);
         #endregion
     }
 }

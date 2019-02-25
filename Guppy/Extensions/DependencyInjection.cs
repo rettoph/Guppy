@@ -1,9 +1,12 @@
 ﻿using Guppy.Configurations;
 using Guppy.Factories;
+using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using Guppy.Interfaces;
 
 namespace Guppy.Extensions
 {
@@ -26,6 +29,13 @@ namespace Guppy.Extensions
             var factory = LayerFactory<TLayer>.BuildFactory<TLayer>();
             collection.AddSingleton<LayerFactory<TLayer>>(factory); // Add the new factory (for future custom creation reference)
             collection.AddScoped<TLayer>(factory.Create); // Add the factory's create method as the default constructor
+        }
+
+        public static void AddLoader<TLoader>(this ServiceCollection collection)
+            where TLoader : class, ILoader
+        {
+            // Add the loader as a singleton
+            collection.AddSingleton<ILoader, TLoader>();
         }
         #endregion
 
@@ -57,6 +67,22 @@ namespace Guppy.Extensions
             where TLayer : Layer
         {
             return provider.GetLayer<TLayer>(new LayerConfiguration(minDepth, maxDepth, updateOrder, drawOrder));
+        }
+        #endregion
+
+        #region GetLoader Methods
+        public static IEnumerable<ILoader> GetLoaders(this IServiceProvider provider)
+        {
+            return provider.GetServices<ILoader>();
+        }
+
+        public static TLoader GetLoader<TLoader>(this IServiceProvider provider)
+            where TLoader : class, ILoader
+        {
+            var loaderType = typeof(TLoader);
+
+            return provider.GetLoaders()
+                .First(l => l.GetType() == loaderType) as TLoader;
         }
         #endregion
         #endregion
