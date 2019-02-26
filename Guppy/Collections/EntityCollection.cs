@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Factories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,14 +12,62 @@ namespace Guppy.Collections
     {
         #region Private Fields
         private LayerCollection _layers;
+        private EntityFactory _entityFactory;
         private Dictionary<Entity, Layer> _entityLayerTable;
+        private Dictionary<Guid, Entity> _entityIdTable;
         #endregion
 
+        public Entity this[Guid id]
+        {
+            get { return this.GetById(id); }
+        }
+
         #region Constructors
-        public EntityCollection(LayerCollection layers)
+        public EntityCollection(EntityFactory entityFactory, LayerCollection layers)
         {
             _layers = layers;
+            _entityFactory = entityFactory;
             _entityLayerTable = new Dictionary<Entity, Layer>();
+            _entityIdTable = new Dictionary<Guid, Entity>();
+        }
+        #endregion
+
+        #region Create Methods
+        /// <summary>
+        /// Create a new instance of an entity and adds it to
+        /// the current collection's scene 
+        /// </summary>
+        /// <param name="entityHandle"></param>
+        /// <returns></returns>
+        public Entity Create(String entityHandle, params Object[] args)
+        {
+            // Create the new entity
+            var entity = _entityFactory.Create(entityHandle, args);
+            // Add the new entity to the current collection
+            this.Add(entity);
+
+            // return the new entity
+            return entity;
+        }
+
+        /// <summary>
+        /// Create a new instance of an entity and adds it to
+        /// the current collection's scene.
+        /// 
+        /// This entity required a custom degined guid
+        /// </summary>
+        /// <param name="entityHandle"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Entity Create(String entityHandle, Guid id, params Object[] args)
+        {
+            // Create the new entity
+            var entity = _entityFactory.Create(entityHandle, id, args);
+            // Add the new entity to the current collection
+            this.Add(entity);
+
+            // return the new entity
+            return entity;
         }
         #endregion
 
@@ -29,7 +78,14 @@ namespace Guppy.Collections
 
             // Create a new entry in the entity layer table for the new item
             _entityLayerTable.Add(item, null);
+            _entityIdTable.Add(item.Id, item);
             item.OnLayerDepthChanged += this.HandleLayerDepthChanged;
+
+            // When a new entity gets added, we must initialize it
+            item.TryBoot();
+            item.TryPreInitialize();
+            item.TryInitialize();
+            item.TryPostInitialize();
 
             // Update the entities initial layer
             this.UpdateEntityLayer(item);
@@ -41,6 +97,7 @@ namespace Guppy.Collections
             {
                 // Remove the item from the entity layer table
                 _entityLayerTable.Remove(item);
+                _entityIdTable.Remove(item.Id);
                 item.OnLayerDepthChanged -= this.HandleLayerDepthChanged;
 
                 // Remove the entity from its old layer (if one exists)
@@ -70,6 +127,11 @@ namespace Guppy.Collections
 
             // Update the stored layer value
             _entityLayerTable[item] = layer;
+        }
+
+        public Entity GetById(Guid id)
+        {
+            return _entityIdTable[id];
         }
         #endregion
 

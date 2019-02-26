@@ -36,6 +36,8 @@ namespace Guppy.Extensions
         {
             // Add the loader as a singleton
             collection.AddSingleton<ILoader, TLoader>();
+            // Create a factory method for direct reference in dependency injection
+            collection.AddSingleton<TLoader>(LoaderFactory<TLoader>.BuildFactory<TLoader>().Create);
         }
         #endregion
 

@@ -7,11 +7,11 @@ using Guppy.Interfaces;
 
 namespace Guppy.Loaders
 {
-    public class Loader<TKey, TValueIn, TValueOut> : ILoader
+    public class Loader<THandle, TValueIn, TValueOut> : ILoader
     {
         #region Structs
         protected struct RegisteredValues {
-            public TKey Key;
+            public THandle Handle;
             public TValueIn Value;
             public UInt16 Priority;
         }
@@ -20,7 +20,7 @@ namespace Guppy.Loaders
 
         #region Private Fields
         private Boolean _loaded;
-        private Dictionary<TKey, TValueOut> _valuesTable;
+        private Dictionary<THandle, TValueOut> _valuesTable;
         #endregion
 
         #region Protected Attributes
@@ -28,9 +28,9 @@ namespace Guppy.Loaders
         protected List<RegisteredValues> registeredValuesList { get; private set; }
         #endregion
 
-        public TValueOut this[TKey key]
+        public TValueOut this[THandle handle]
         {
-            get { return this.GetValue(key); }
+            get { return this.GetValue(handle); }
         }
 
         #region Constructors
@@ -47,17 +47,17 @@ namespace Guppy.Loaders
         /// <summary>
         /// Register a new asset to be loaded by the loader
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="handle"></param>
         /// <param name="value"></param>
         /// <param name="priority"></param>
-        public virtual void Register(TKey key, TValueIn value, UInt16 priority = 0)
+        public virtual void Register(THandle handle, TValueIn value, UInt16 priority = 0)
         {
             if (_loaded)
-                throw new Exception($"Unable to register new value<{typeof(TValueIn).Name}> to key<{typeof(TKey).Name}>! Loader already loaded.");
+                throw new Exception($"Unable to register new value<{typeof(TValueIn).Name}> to key<{typeof(THandle).Name}>! Loader already loaded.");
 
 
             this.registeredValuesList.Add(new RegisteredValues() {
-                Key = key,
+                Handle = handle,
                 Value = value,
                 Priority = priority
             });
@@ -83,20 +83,23 @@ namespace Guppy.Loaders
         /// object.
         /// </summary>
         /// <returns></returns>
-        protected virtual Dictionary<TKey, TValueOut> BuildValuesTable()
+        protected virtual Dictionary<THandle, TValueOut> BuildValuesTable()
         {
             return this.registeredValuesList
-                .GroupBy(rv => rv.Key)
+                .GroupBy(rv => rv.Handle)
                 .Select(g => g.OrderByDescending(rv => rv.Priority)
                     .FirstOrDefault())
                 .ToDictionary(
-                    keySelector: rv => rv.Key,
+                    keySelector: rv => rv.Handle,
                     elementSelector: rv => (TValueOut)Convert.ChangeType(rv.Value, typeof(TValueOut)));
         }
 
-        public virtual TValueOut GetValue(TKey key)
+        public virtual TValueOut GetValue(THandle handle)
         {
-            return _valuesTable[key];
+            if(_valuesTable.ContainsKey(handle))
+                return _valuesTable[handle];
+
+            return default(TValueOut);
         }
         #endregion
     }

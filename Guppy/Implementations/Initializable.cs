@@ -10,7 +10,7 @@ namespace Guppy.Implementations
     public abstract class Initializable : TrackedDisposable, IInitializable
     {
         #region Proteced Attributes
-        protected ILogger Logger { get; private set; }
+        protected ILogger logger { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -22,7 +22,7 @@ namespace Guppy.Implementations
         {
             this.InitializationStatus = InitializationStatus.NotReady;
 
-            this.Logger = logger;
+            this.logger = logger;
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace Guppy.Implementations
         {
             if(this.InitializationStatus != InitializationStatus.NotReady)
             { // Invalid Initialization Status... Log this error.
-                this.Logger.LogError($"Initialization Error! Unable to boot, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.NotReady is expected.");
+                this.logger.LogError($"Initialization Error! Unable to boot, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.NotReady is expected.");
             }
             else
             { // Valid Initialization Status. Call Boot.
@@ -65,7 +65,7 @@ namespace Guppy.Implementations
         {
             if (this.InitializationStatus != InitializationStatus.Booting)
             { // Invalid Initialization Status... Log this error.
-                this.Logger.LogError($"Initialization Error! Unable to pre-initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.Booting is expected.");
+                this.logger.LogError($"Initialization Error! Unable to pre-initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.Booting is expected.");
             }
             else
             { // Valid Initialization Status. Call PreInitialize.
@@ -77,7 +77,7 @@ namespace Guppy.Implementations
         {
             if (this.InitializationStatus != InitializationStatus.PreInitializing)
             { // Invalid Initialization Status... Log this error.
-                this.Logger.LogError($"Initialization Error! Unable to initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.PreInitializing is expected.");
+                this.logger.LogError($"Initialization Error! Unable to initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.PreInitializing is expected.");
             }
             else
             { // Valid Initialization Status. Call Initialize.
@@ -89,7 +89,7 @@ namespace Guppy.Implementations
         {
             if (this.InitializationStatus != InitializationStatus.Initializing)
             { // Invalid Initialization Status... Log this error.
-                this.Logger.LogError($"Initialization Error! Unable to post-initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.Initializing is expected.");
+                this.logger.LogError($"Initialization Error! Unable to post-initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.Initializing is expected.");
             }
             else
             { // Valid Initialization Status. Call PostInitialize.

@@ -8,8 +8,6 @@ namespace Guppy.Loaders
 {
     public class ColorLoader : Loader<String, Color, Color>
     {
-        Color? test;
-
         public ColorLoader(ILogger logger) : base(logger)
         {
         }

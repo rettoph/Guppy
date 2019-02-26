@@ -1,4 +1,5 @@
-﻿using Guppy.Implementations;
+﻿using Guppy.Configurations;
+using Guppy.Implementations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -7,13 +8,15 @@ using System.Text;
 
 namespace Guppy
 {
-    public class Entity : LivingObject
+    public abstract class Entity : LivingObject
     {
         #region Protected Attributes
         protected Scene scene { get; private set; }
         #endregion
 
         #region Public Attributes
+        public readonly Guid Id;
+        public readonly EntityConfiguration Configuration;
         public UInt16 LayerDepth { get; private set; }
         #endregion
 
@@ -22,22 +25,21 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Entity(Scene scene, ILogger logger) : base(logger)
+        public Entity(EntityConfiguration configuration, Scene scene, ILogger logger) : base(logger)
         {
+            this.Id = Guid.NewGuid();
+            this.Configuration = configuration;
+
             this.scene = scene; // Save the entities scene
             this.SetLayerDepth(this.scene.DefaultLayerDepth); // Set the initial layer depth to the default layer depth
         }
-        #endregion
-
-        #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        public Entity(Guid id, EntityConfiguration configuration, Scene scene, ILogger logger) : base(logger)
         {
-            throw new NotImplementedException();
-        }
+            this.Id = id;
+            this.Configuration = configuration;
 
-        public override void Update(GameTime gameTime)
-        {
-            throw new NotImplementedException();
+            this.scene = scene; // Save the entities scene
+            this.SetLayerDepth(this.scene.DefaultLayerDepth); // Set the initial layer depth to the default layer depth
         }
         #endregion
 

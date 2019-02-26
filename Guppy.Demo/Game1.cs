@@ -16,7 +16,11 @@ namespace Guppy.Demo
             this.graphics = new GraphicsDeviceManager(this);
             this.IsMouseVisible = true;
 
-            this.demoGame = new DemoGame();
+            this.Window.AllowUserResizing = true;
+
+            this.Content.RootDirectory = "Content";
+
+            this.demoGame = new DemoGame(this.Window, this.Content, this.graphics);
         }
 
         protected override void Initialize()

@@ -1,6 +1,7 @@
 ﻿using Guppy.Collections;
 using Guppy.Configurations;
 using Guppy.Extensions;
+using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.Loggers;
@@ -73,11 +74,14 @@ namespace Guppy
             this.services.AddScoped<GameScopeConfiguration>();
             this.services.AddScoped<LayerCollection>();
             this.services.AddScoped<EntityCollection>();
+            this.services.AddScoped<EntityFactory>();
             this.services.AddScene<Scene>();
 
             // Add any default loaders
             this.services.AddLoader<StringLoader>();
             this.services.AddLoader<ColorLoader>();
+            this.services.AddLoader<ContentLoader>();
+            this.services.AddLoader<EntityLoader>();
         }
 
         protected virtual void PreInitialize()
