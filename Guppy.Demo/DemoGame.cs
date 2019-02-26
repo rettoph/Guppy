@@ -26,7 +26,7 @@ namespace Guppy.Demo
         {
             base.PostInitialize();
 
-            this.Logger.LogInformation($"PostInitiazlizing DemoGame...");
+            this.logger.LogInformation($"PostInitiazlizing DemoGame...");
 
             this.scenes.Create<DemoScene>();
         }

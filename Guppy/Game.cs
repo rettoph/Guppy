@@ -21,7 +21,7 @@ namespace Guppy
     public class Game
     {
         #region Proteced Attributes
-        protected ILogger Logger { get; private set; }
+        protected ILogger logger { get; private set; }
         protected ServiceCollection services { get; private set; }
         protected ServiceProvider provider { get; private set; }
         protected SceneCollection scenes { get; private set; }
@@ -38,7 +38,7 @@ namespace Guppy
         {
             this.services = new ServiceCollection();
 
-            this.Logger = new ConsoleLogger();
+            this.logger = new ConsoleLogger();
             this.Seed = seed;
         }
         #endregion
@@ -48,7 +48,7 @@ namespace Guppy
         {
             if (this.Started)
             {
-                this.Logger.LogError($"Unable to start Game. Already started.");
+                this.logger.LogError($"Unable to start Game. Already started.");
             }
             else
             {
@@ -67,7 +67,7 @@ namespace Guppy
         {
             // Add core services to the collection...
             this.services.AddSingleton<Game>(this);
-            this.services.AddSingleton<ILogger>(this.Logger);
+            this.services.AddSingleton<ILogger>(this.logger);
             this.services.AddSingleton<SceneCollection>();
             this.services.AddSingleton<Random>(new Random(this.Seed));
             this.services.AddScoped<GameScopeConfiguration>();
@@ -77,6 +77,7 @@ namespace Guppy
 
             // Add any default loaders
             this.services.AddLoader<StringLoader>();
+            this.services.AddLoader<ColorLoader>();
         }
 
         protected virtual void PreInitialize()

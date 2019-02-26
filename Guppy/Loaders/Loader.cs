@@ -8,7 +8,6 @@ using Guppy.Interfaces;
 namespace Guppy.Loaders
 {
     public class Loader<TKey, TValueIn, TValueOut> : ILoader
-        where TValueOut : class
     {
         #region Structs
         protected struct RegisteredValues {
@@ -92,7 +91,7 @@ namespace Guppy.Loaders
                     .FirstOrDefault())
                 .ToDictionary(
                     keySelector: rv => rv.Key,
-                    elementSelector: rv => rv.Value as TValueOut);
+                    elementSelector: rv => (TValueOut)Convert.ChangeType(rv.Value, typeof(TValueOut)));
         }
 
         public virtual TValueOut GetValue(TKey key)
