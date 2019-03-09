@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Collections\**" />
-    <EmbeddedResource Remove="Collections\**" />
-    <None Remove="Collections\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Lidgren.Network.Core2" Version="1.0.0" />
   </ItemGroup>
 

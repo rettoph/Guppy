@@ -107,12 +107,12 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        public void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             this.scenes.Draw(gameTime);
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             this.scenes.Update(gameTime);
         }

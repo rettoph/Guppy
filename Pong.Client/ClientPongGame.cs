@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Peers;
+using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -36,9 +37,17 @@ namespace Pong.Client
             this.services.AddSingleton<SpriteBatch>(new SpriteBatch(_graphics.GraphicsDevice));
         }
 
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            var client = this.provider.GetService<ClientPeer>();
+            client.Connect("localhost", 1337, new User());
+        }
+
         protected override Peer PeerFactory(IServiceProvider arg)
         {
-            return new Guppy.Network.Peers.Client(new NetPeerConfiguration("pong"), this.logger);
+            return new ClientPeer(this.config, this.logger);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Security.Principal;
@@ -23,11 +24,11 @@ namespace Guppy.Network
             base.Boot();
 
             this.services.AddSingleton<Peer>(this.PeerFactory);
-            this.services.AddSingleton<Client>(this.GetPeer<Client>);
-            this.services.AddSingleton<Server>(this.GetPeer<Server>);
+            this.services.AddSingleton<ClientPeer>(this.GetPeer<ClientPeer>);
+            this.services.AddSingleton<ServerPeer>(this.GetPeer<ServerPeer>);
         }
 
-        private Server GetPeer<TPeer>()
+        private ServerPeer GetPeer<TPeer>()
         {
             throw new NotImplementedException();
         }
@@ -39,6 +40,16 @@ namespace Guppy.Network
             // Start the game's peer
             _peer = this.provider.GetService<Peer>();
             _peer.Start();
+        }
+        #endregion
+
+        #region Frame Methods
+        public override void Update(GameTime gameTime)
+        {
+            // Update the peer every frame
+            _peer.Update();
+
+            base.Update(gameTime);
         }
         #endregion
 

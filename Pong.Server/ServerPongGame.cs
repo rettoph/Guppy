@@ -13,9 +13,16 @@ namespace Pong.Server
         {
         }
 
+        protected override void Boot()
+        {
+            base.Boot();
+
+            this.config.Port = 1337;
+        }
+
         protected override Peer PeerFactory(IServiceProvider arg)
         {
-            return new Guppy.Network.Peers.Server(new NetPeerConfiguration("pong"), this.logger);
+            return new ServerPeer(this.config, this.logger);
         }
     }
 }

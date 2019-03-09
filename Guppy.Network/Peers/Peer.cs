@@ -10,16 +10,13 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private Boolean _started;
+        private NetIncomingMessage _im;
         #endregion
 
         #region Protected Attributes
         protected NetPeer peer;
         protected NetPeerConfiguration config;
         protected ILogger logger;
-        #endregion
-
-        #region Public Attributes
-        public NetPeerConfiguration Configuration { get; private set; }
         #endregion
 
         #region Constructors
@@ -44,6 +41,139 @@ namespace Guppy.Network.Peers
             this.peer.Start();
 
             _started = true;
+        }
+        #endregion
+
+        #region Methods
+        public void Update()
+        {
+            while((_im = this.peer.ReadMessage()) != null)
+            { // Read any and all incoming messages...
+                switch (_im.MessageType)
+                {
+                    case NetIncomingMessageType.Data:
+                        this.Data(_im);
+                        break;
+                    case NetIncomingMessageType.ConnectionLatencyUpdated:
+                        this.ConnectionLatencyUpdated(_im);
+                        break;
+                    case NetIncomingMessageType.ConnectionApproval:
+                        this.ConnectionApproval(_im);
+                        break;
+                    case NetIncomingMessageType.UnconnectedData:
+                        this.UnconnectedData(_im);
+                        break;
+                    case NetIncomingMessageType.StatusChanged:
+                        this.StatusChanged(_im);
+                        break;
+                    case NetIncomingMessageType.Error:
+                        this.Error(_im);
+                        break;
+                    case NetIncomingMessageType.Receipt:
+                        this.Receipt(_im);
+                        break;
+                    case NetIncomingMessageType.DiscoveryRequest:
+                        this.DiscoveryRequest(_im);
+                        break;
+                    case NetIncomingMessageType.DiscoveryResponse:
+                        this.DiscoveryResponse(_im);
+                        break;
+                    case NetIncomingMessageType.VerboseDebugMessage:
+                        this.VerboseDebugMessage(_im);
+                        break;
+                    case NetIncomingMessageType.DebugMessage:
+                        this.DebugMessage(_im);
+                        break;
+                    case NetIncomingMessageType.WarningMessage:
+                        this.WarningMessage(_im);
+                        break;
+                    case NetIncomingMessageType.ErrorMessage:
+                        this.ErrorMessage(_im);
+                        break;
+                    case NetIncomingMessageType.NatIntroductionSuccess:
+                        this.NatIntroductionSuccess(_im);
+                        break;
+                }
+            }
+        }
+        #endregion
+
+        #region MessageType Handlers
+        protected virtual void Error(NetIncomingMessage im)
+        {
+            this.logger.LogError($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void StatusChanged(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.SenderConnection.Status}");
+        }
+
+        protected virtual void UnconnectedData(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void ConnectionApproval(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType}...");
+        }
+
+        protected virtual void Data(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void Receipt(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void DiscoveryRequest(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void DiscoveryResponse(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void VerboseDebugMessage(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void DebugMessage(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void WarningMessage(NetIncomingMessage im)
+        {
+            this.logger.LogWarning(im.ReadString());
+        }
+
+        protected virtual void ErrorMessage(NetIncomingMessage im)
+        {
+            this.logger.LogError($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void NatIntroductionSuccess(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+
+        protected virtual void ConnectionLatencyUpdated(NetIncomingMessage im)
+        {
+            this.logger.LogDebug($"{im.MessageType} - {im.ReadString()}");
+        }
+        #endregion
+
+        #region CreateMessage Methods
+        protected internal NetOutgoingMessage CreateMessage()
+        {
+            return this.peer.CreateMessage();
         }
         #endregion
     }
