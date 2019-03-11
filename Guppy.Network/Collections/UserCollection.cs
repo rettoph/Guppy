@@ -4,6 +4,7 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Guppy.Network.Collections
 {
@@ -22,6 +23,11 @@ namespace Guppy.Network.Collections
             user.Read(im);
 
             return user;
+        }
+
+        public User GetByClaim(String key, String value)
+        {
+            return this.list.FirstOrDefault(u => u.Get(key) == value);
         }
     }
 }

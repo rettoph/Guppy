@@ -6,6 +6,7 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Extensions;
 
 namespace Guppy.Network.Groups
 {
@@ -74,7 +75,12 @@ namespace Guppy.Network.Groups
 
         private void HandleUserRemoved(object sender, User user)
         {
-            throw new NotImplementedException();
+            // Remove the user's connection from the NetConnection list
+            _connections.Remove(_server.GetNetConnectionByUser(user));
+            // Send an update message to all remaining users
+            var userUpdate = this.CreateMessage("user:left", MessageType.Internal);
+            userUpdate.Write(user.Id);
+            this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
         }
         #endregion
     }

@@ -105,11 +105,15 @@ namespace Guppy.Network.Peers
             {
                 case NetConnectionStatus.Connected:
                     // Load the user linked to the current connection
-                    var user = _approvedUsers[im.SenderConnection];
+                    var newUser = _approvedUsers[im.SenderConnection];
                     // Add the user to the users collection
-                    this.Users.Add(user);
+                    this.Users.Add(newUser);
                     // Remove the user from the approved table
                     _approvedUsers.Remove(im.SenderConnection);
+                    break;
+                case NetConnectionStatus.Disconnected:
+                    var oldUser = this.Users.GetByClaim("connection", im.SenderConnection.RemoteUniqueIdentifier.ToString());
+                    this.Users.Remove(oldUser);
                     break;
             }
         }

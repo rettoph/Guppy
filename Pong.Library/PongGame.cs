@@ -19,7 +19,7 @@ namespace Pong.Library
 
             this.config = new NetPeerConfiguration("pong");
             this.config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-            this.config.ConnectionTimeout = 1000;
+            this.config.ConnectionTimeout = 10;
             this.config.AutoFlushSendQueue = false;
         }
 
