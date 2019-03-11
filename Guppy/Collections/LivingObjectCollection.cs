@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Collections
 {
-    public class LivingObjectCollection<TLivingObject> : TrackedDisposableCollection<TLivingObject>
+    public class LivingObjectCollection<TLivingObject> : UniqueObjectCollection<TLivingObject>
         where TLivingObject : class, ILivingObject
     {
         #region Private Fields

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    public interface IInitializable : ITrackedDisposable
+    public interface IInitializable : IUniqueObject
     {
         InitializationStatus InitializationStatus { get; }
 

@@ -14,13 +14,7 @@ namespace Guppy.Collections
         private LayerCollection _layers;
         private EntityFactory _entityFactory;
         private Dictionary<Entity, Layer> _entityLayerTable;
-        private Dictionary<Guid, Entity> _entityIdTable;
         #endregion
-
-        public Entity this[Guid id]
-        {
-            get { return this.GetById(id); }
-        }
 
         #region Constructors
         public EntityCollection(EntityFactory entityFactory, LayerCollection layers)
@@ -28,7 +22,6 @@ namespace Guppy.Collections
             _layers = layers;
             _entityFactory = entityFactory;
             _entityLayerTable = new Dictionary<Entity, Layer>();
-            _entityIdTable = new Dictionary<Guid, Entity>();
         }
         #endregion
 
@@ -78,7 +71,6 @@ namespace Guppy.Collections
 
             // Create a new entry in the entity layer table for the new item
             _entityLayerTable.Add(item, null);
-            _entityIdTable.Add(item.Id, item);
             item.OnLayerDepthChanged += this.HandleLayerDepthChanged;
 
             // When a new entity gets added, we must initialize it
@@ -97,7 +89,6 @@ namespace Guppy.Collections
             {
                 // Remove the item from the entity layer table
                 _entityLayerTable.Remove(item);
-                _entityIdTable.Remove(item.Id);
                 item.OnLayerDepthChanged -= this.HandleLayerDepthChanged;
 
                 // Remove the entity from its old layer (if one exists)
@@ -127,11 +118,6 @@ namespace Guppy.Collections
 
             // Update the stored layer value
             _entityLayerTable[item] = layer;
-        }
-
-        public Entity GetById(Guid id)
-        {
-            return _entityIdTable[id];
         }
         #endregion
 

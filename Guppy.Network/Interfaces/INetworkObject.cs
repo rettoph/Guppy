@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.Network.Interfaces
 {
-    public interface INetworkObject : ITrackedDisposable
+    public interface INetworkObject : IUniqueObject
     {
         Guid Id { get; }
         Boolean Dirty { get; set; }

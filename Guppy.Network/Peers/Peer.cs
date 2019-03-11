@@ -1,4 +1,6 @@
-﻿using Lidgren.Network;
+﻿using Guppy.Network.Collections;
+using Guppy.Network.Enums;
+using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,12 +21,22 @@ namespace Guppy.Network.Peers
         protected ILogger logger;
         #endregion
 
+        #region Public Fields
+        /// <summary>
+        /// A shared collection of users within all of the
+        /// current peer's groups.
+        /// </summary>
+        public UserCollection Users { get; private set; }
+        #endregion
+
         #region Constructors
         public Peer(NetPeerConfiguration config, ILogger logger)
         {
             _started = false;
             this.config = config;
             this.logger = logger;
+
+            this.Users = new UserCollection();
         }
         #endregion
 
@@ -42,9 +54,7 @@ namespace Guppy.Network.Peers
 
             _started = true;
         }
-        #endregion
 
-        #region Methods
         public void Update()
         {
             while((_im = this.peer.ReadMessage()) != null)
@@ -95,6 +105,17 @@ namespace Guppy.Network.Peers
                         break;
                 }
             }
+        }
+        #endregion
+
+        #region Send Message Methos
+        public void SendMessage(NetOutgoingMessage om, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
+        {
+            this.peer.SendMessage(om, recipient, method, sequenceChannel);
+        }
+        public void SendMessage(NetOutgoingMessage om, List<NetConnection> recipients, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
+        {
+            this.peer.SendMessage(om, recipients, method, sequenceChannel);
         }
         #endregion
 
@@ -174,6 +195,13 @@ namespace Guppy.Network.Peers
         protected internal NetOutgoingMessage CreateMessage()
         {
             return this.peer.CreateMessage();
+        }
+        protected internal NetOutgoingMessage CreateMessage(MessageTarget target)
+        {
+            var om = this.CreateMessage();
+            om.Write((Byte)target);
+
+            return om;
         }
         #endregion
     }

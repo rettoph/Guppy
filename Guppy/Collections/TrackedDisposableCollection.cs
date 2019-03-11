@@ -16,6 +16,11 @@ namespace Guppy.Collections
         public Boolean DisposeOnRemove { get; set; }
         #endregion
 
+        #region Events
+        public event EventHandler<TTrackedDisposable> Added;
+        public event EventHandler<TTrackedDisposable> Removed;
+        #endregion
+
         #region Constructors
         public TrackedDisposableCollection(Boolean disposeOnRemove = true)
         {
@@ -31,6 +36,9 @@ namespace Guppy.Collections
             this.list.Add(item);
 
             item.Disposing += this.HandleDisposing;
+
+            // Trigger the added event
+            this.Added?.Invoke(this, item);
         }
 
         public virtual Boolean Remove(TTrackedDisposable item)
@@ -41,6 +49,9 @@ namespace Guppy.Collections
 
                 if (this.DisposeOnRemove)
                     item.Dispose(); // Auto dispose the item if told to do so
+
+                // Trigger the removed event
+                this.Removed?.Invoke(this, item);
 
                 return true;
             }

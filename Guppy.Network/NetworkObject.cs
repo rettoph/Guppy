@@ -9,11 +9,10 @@ using Guppy.Implementations;
 
 namespace Guppy.Network
 {
-    public class NetworkObject : TrackedDisposable, INetworkObject
+    public class NetworkObject : UniqueObject, INetworkObject
     {
-        public Guid Id { get; private set; }
-
         private Boolean _dirty;
+
         public Boolean Dirty
         {
             get { return _dirty; }
@@ -30,13 +29,11 @@ namespace Guppy.Network
         public event EventHandler<INetworkObject> OnDirtyChanged;
 
         #region Constructors
-        public NetworkObject(Guid id)
-        {
-            this.Id = id;
-        }
         public NetworkObject()
         {
-            this.Id = Guid.NewGuid();
+        }
+        public NetworkObject(Guid id) : base(id)
+        {
         }
         #endregion
 

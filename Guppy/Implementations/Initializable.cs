@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.Implementations
 {
-    public abstract class Initializable : TrackedDisposable, IInitializable
+    public abstract class Initializable : UniqueObject, IInitializable
     {
         #region Proteced Attributes
         protected ILogger logger { get; private set; }

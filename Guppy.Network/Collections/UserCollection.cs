@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.Network.Collections
 {
-    public class UserCollection : TrackedDisposableCollection<User>
+    public class UserCollection : UniqueObjectCollection<User>
     {
     }
 }
