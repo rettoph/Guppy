@@ -15,7 +15,6 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public readonly Guid Id;
         public readonly EntityConfiguration Configuration;
         public UInt16 LayerDepth { get; private set; }
         #endregion
@@ -27,15 +26,13 @@ namespace Guppy
         #region Constructors
         public Entity(EntityConfiguration configuration, Scene scene, ILogger logger) : base(logger)
         {
-            this.Id = Guid.NewGuid();
             this.Configuration = configuration;
 
             this.scene = scene; // Save the entities scene
             this.SetLayerDepth(this.scene.DefaultLayerDepth); // Set the initial layer depth to the default layer depth
         }
-        public Entity(Guid id, EntityConfiguration configuration, Scene scene, ILogger logger) : base(logger)
+        public Entity(Guid id, EntityConfiguration configuration, Scene scene, ILogger logger) : base(id, logger)
         {
-            this.Id = id;
             this.Configuration = configuration;
 
             this.scene = scene; // Save the entities scene

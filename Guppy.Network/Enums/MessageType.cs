@@ -7,7 +7,6 @@ namespace Guppy.Network.Enums
     public enum MessageType : Byte
     {
         Data,
-        UserJoined,
-        UserLeft
+        Internal
     }
 }

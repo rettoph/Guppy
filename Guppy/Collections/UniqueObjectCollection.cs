@@ -15,7 +15,7 @@ namespace Guppy.Collections
             get { return this.GetById(id); }
         }
 
-        public UniqueObjectCollection()
+        public UniqueObjectCollection(bool disposeOnRemove = true) : base(disposeOnRemove)
         {
             _table = new Dictionary<Guid, TUniqueObject>();
         }
@@ -41,7 +41,10 @@ namespace Guppy.Collections
 
         public TUniqueObject GetById(Guid id)
         {
-            return _table[id];
+            if (_table.ContainsKey(id))
+                return _table[id];
+            else
+                return default(TUniqueObject);
         }
     }
 }

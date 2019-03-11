@@ -53,7 +53,12 @@ namespace Guppy.Network.Security
             // Read any incoming claims
             Int32 claimsCount = im.ReadInt32();
             for (Int32 i = 0; i < claimsCount; i++)
-                this.Set(im.ReadString(), (ClaimType)im.ReadByte(), im.ReadString());
+            {
+                ClaimType claimType = (ClaimType)im.ReadByte();
+                if (claimType == ClaimType.Private)
+                    throw new Exception("Private claim sent from peer!");
+                this.Set(im.ReadString(), claimType, im.ReadString());
+            }
         }
 
         public override void Write(NetOutgoingMessage om)

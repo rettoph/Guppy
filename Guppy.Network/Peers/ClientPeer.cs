@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Extensions;
+using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Enums;
 using Lidgren.Network;
@@ -31,8 +32,15 @@ namespace Guppy.Network.Peers
         }
         #endregion
 
+        #region Methods
+        protected internal override Group CreateGroup(Guid id)
+        {
+            return new ClientGroup(id, this);
+        }
+        #endregion
+
         #region MessageType Handlers
-        protected override void StatusChanged(NetIncomingMessage im)
+        protected override void HandleStatusChanged(NetIncomingMessage im)
         {
             this.logger.LogDebug($"{im.MessageType} - {im.SenderConnection.Status}");
 
@@ -62,6 +70,13 @@ namespace Guppy.Network.Peers
                 case NetConnectionStatus.Disconnected:
                     break;
             }
+        }
+        #endregion
+
+        #region Send Message Methods
+        public void SendMessage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
+        {
+            this.client.SendMessage(om, method, sequenceChannel);
         }
         #endregion
     }

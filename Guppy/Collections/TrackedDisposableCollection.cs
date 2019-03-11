@@ -1,11 +1,12 @@
 ﻿using Guppy.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.Collections
 {
-    public class TrackedDisposableCollection<TTrackedDisposable>
+    public class TrackedDisposableCollection<TTrackedDisposable> : IEnumerable
         where TTrackedDisposable : class, ITrackedDisposable
     {
         #region Protected Attributes
@@ -69,6 +70,11 @@ namespace Guppy.Collections
         {
             return this.list.Contains(item);
         }
+
+        public Int32 Count()
+        {
+            return this.list.Count;
+        }
         #endregion
 
         #region Event Handlers
@@ -78,5 +84,10 @@ namespace Guppy.Collections
             this.Remove(e as TTrackedDisposable);
         }
         #endregion
+
+        public IEnumerator GetEnumerator()
+        {
+            return this.list.GetEnumerator();
+        }
     }
 }

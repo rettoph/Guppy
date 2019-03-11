@@ -19,7 +19,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Constructors
-        public LivingObjectCollection()
+        public LivingObjectCollection(bool disposeOnRemove = true) : base(disposeOnRemove)
         {
             _dirtyDrawables = true;
             _dirtyUpdatables = true;

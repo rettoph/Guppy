@@ -24,6 +24,12 @@ namespace Guppy.Implementations
 
             this.logger = logger;
         }
+        public Initializable(Guid id, ILogger logger) : base(id)
+        {
+            this.InitializationStatus = InitializationStatus.NotReady;
+
+            this.logger = logger;
+        }
         #endregion
 
         #region Internal Initialization Methods

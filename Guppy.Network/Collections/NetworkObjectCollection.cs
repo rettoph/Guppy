@@ -6,12 +6,12 @@ using System.Text;
 
 namespace Guppy.Network.Collections
 {
-    public class NetworkObjectCollection<TNetworkObject> : TrackedDisposableCollection<TNetworkObject>
+    public class NetworkObjectCollection<TNetworkObject> : UniqueObjectCollection<TNetworkObject>
         where TNetworkObject : class, INetworkObject
     {
         private Queue<TNetworkObject> _dirtyQueue;
 
-        public NetworkObjectCollection()
+        public NetworkObjectCollection(Boolean disposeOnRemove = true) : base(disposeOnRemove)
         {
             _dirtyQueue = new Queue<TNetworkObject>();
         }

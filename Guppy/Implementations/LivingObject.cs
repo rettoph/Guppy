@@ -45,6 +45,14 @@ namespace Guppy.Implementations
             this.SetVisible(true);
             this.SetEnabled(true);
         }
+        public LivingObject(Guid id, ILogger logger) : base(id, logger)
+        {
+            this.SetDrawOrder(0);
+            this.SetUpdateOrder(0);
+
+            this.SetVisible(true);
+            this.SetEnabled(true);
+        }
 
         public abstract void Draw(GameTime gameTime);
         public abstract void Update(GameTime gameTime);
