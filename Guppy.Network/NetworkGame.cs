@@ -28,11 +28,6 @@ namespace Guppy.Network
             this.services.AddSingleton<ServerPeer>(this.GetPeer<ServerPeer>);
         }
 
-        private ServerPeer GetPeer<TPeer>()
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void PostInitialize()
         {
             base.PostInitialize();

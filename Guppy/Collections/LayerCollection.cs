@@ -27,6 +27,9 @@ namespace Guppy.Collections
         public LayerCollection(IServiceProvider provider)
         {
             _provider = provider;
+
+            _updatables = Array.Empty<Layer>().OrderBy(l => l.Configuration.UpdateOrder);
+            _drawables = Array.Empty<Layer>().OrderBy(l => l.Configuration.DrawOrder);
         }
         #endregion
 

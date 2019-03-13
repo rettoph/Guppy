@@ -9,11 +9,11 @@ namespace Guppy.Network.Collections
     public class NetworkObjectCollection<TNetworkObject> : UniqueObjectCollection<TNetworkObject>
         where TNetworkObject : class, INetworkObject
     {
-        private Queue<TNetworkObject> _dirtyQueue;
+        public Queue<TNetworkObject> DirtyQueue;
 
         public NetworkObjectCollection(Boolean disposeOnRemove = true) : base(disposeOnRemove)
         {
-            _dirtyQueue = new Queue<TNetworkObject>();
+            this.DirtyQueue = new Queue<TNetworkObject>();
         }
 
         public override void Add(TNetworkObject item)
@@ -40,7 +40,7 @@ namespace Guppy.Network.Collections
         {
             if(e.Dirty)
             { // Add the network object to the dirty queue
-                _dirtyQueue.Enqueue(e as TNetworkObject);
+                this.DirtyQueue.Enqueue(e as TNetworkObject);
             }
         }
         #endregion

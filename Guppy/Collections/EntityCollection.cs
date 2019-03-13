@@ -16,6 +16,10 @@ namespace Guppy.Collections
         private Dictionary<Entity, Layer> _entityLayerTable;
         #endregion
 
+        #region Events
+        public event EventHandler<Entity> Created;
+        #endregion
+
         #region Constructors
         public EntityCollection(EntityFactory entityFactory, LayerCollection layers)
         {
@@ -38,6 +42,9 @@ namespace Guppy.Collections
             var entity = _entityFactory.Create(entityHandle, args);
             // Add the new entity to the current collection
             this.Add(entity);
+
+            // Trigger the created event
+            this.Created?.Invoke(this, entity);
 
             // return the new entity
             return entity;

@@ -74,6 +74,8 @@ namespace Guppy.Loaders
 
             _valuesTable = this.BuildValuesTable();
 
+            _loaded = true;
+
             this.logger.LogDebug($"Done. {_valuesTable.Count} values loaded.");
         }
 
@@ -100,6 +102,19 @@ namespace Guppy.Loaders
                 return _valuesTable[handle];
 
             return default(TValueOut);
+        }
+
+        /// <summary>
+        /// Manually set a loader value.
+        /// This is only accessible after the loader
+        /// is loaded.
+        /// (This should be used as little as possible)
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="value"></param>
+        public void SetValue(THandle handle, TValueOut value)
+        {
+            _valuesTable[handle] = value;
         }
         #endregion
     }

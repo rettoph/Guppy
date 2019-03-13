@@ -11,6 +11,8 @@ namespace Pong.Client
 
         public Game1()
         {
+            this.Content.RootDirectory = "Content";
+
             _pongGame = new ClientPongGame(new GraphicsDeviceManager(this), this.Window, this.Content);
         }
 

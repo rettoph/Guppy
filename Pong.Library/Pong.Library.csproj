@@ -8,4 +8,8 @@
     <ProjectReference Include="..\Guppy.Network\Guppy.Network.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
 </Project>

@@ -1,10 +1,13 @@
-﻿using Guppy.Network.Peers;
+﻿using Guppy.Extensions;
+using Guppy.Loaders;
+using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Client.Scenes;
 using Pong.Library;
 using System;
 using System.Collections.Generic;
@@ -35,6 +38,19 @@ namespace Pong.Client
             this.services.AddSingleton<GameWindow>(_window);
             this.services.AddSingleton<ContentManager>(_content);
             this.services.AddSingleton<SpriteBatch>(new SpriteBatch(_graphics.GraphicsDevice));
+
+            this.services.AddScene<ClientLobbyScene>();
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            var contentLoader = this.provider.GetLoader<ContentLoader>();
+
+            contentLoader.Register("paddle-left", "Sprites/paddle-left");
+            contentLoader.Register("paddle-center", "Sprites/paddle-center");
+            contentLoader.Register("paddle-right", "Sprites/paddle-right");
         }
 
         protected override void PostInitialize()
@@ -43,6 +59,9 @@ namespace Pong.Client
 
             var client = this.provider.GetService<ClientPeer>();
             client.Connect("localhost", 1337, new User());
+
+            // Create a new lobby scene
+            this.scenes.Create<ClientLobbyScene>();
         }
 
         protected override Peer PeerFactory(IServiceProvider arg)
