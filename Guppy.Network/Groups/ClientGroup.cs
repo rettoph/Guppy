@@ -5,6 +5,7 @@ using Guppy.Network.Extensions;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Network.Groups
 {
@@ -12,7 +13,7 @@ namespace Guppy.Network.Groups
     {
         private ClientPeer _client;
 
-        public ClientGroup(Guid id, ClientPeer client) : base(id, client)
+        public ClientGroup(Guid id, ClientPeer client, ILogger log) : base(id, client, log)
         {
             _client = client;
 

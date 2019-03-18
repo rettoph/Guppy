@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Network.Groups
 {
@@ -15,7 +16,7 @@ namespace Guppy.Network.Groups
         private ServerPeer _server;
         private List<NetConnection> _connections;
 
-        public ServerGroup(Guid id, ServerPeer server) : base(id, server)
+        public ServerGroup(Guid id, ServerPeer server, ILogger log) : base(id, server, log)
         {
             _server = server;
             _connections = new List<NetConnection>();

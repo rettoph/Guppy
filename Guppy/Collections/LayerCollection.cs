@@ -19,7 +19,6 @@ namespace Guppy.Collections
         #endregion
 
         #region Public Attributes
-        public Int32 Count { get { return this.list.Count; } }
         public Layer this[int index] { get { return this.list[index]; } set { this.list[index] = value; } }
         #endregion
 

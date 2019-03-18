@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Network.Groups
 {
@@ -22,10 +23,12 @@ namespace Guppy.Network.Groups
         private Queue<NetIncomingMessage> _messageBuffer;
         private NetIncomingMessage _im;
         private Boolean _ignoreData;
+        private String _messageType;
         #endregion
 
         #region Protected Attributes
         protected MessageHandler internalMessageHandler;
+        protected ILogger log;
         #endregion
 
         #region Public Attributes
@@ -60,7 +63,7 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Constructor
-        public Group(Guid id, Peer peer) : base(id)
+        public Group(Guid id, Peer peer, ILogger log) : base(id)
         {
             _peer = peer;
             _ignoredMessageBuffer = new Queue<NetIncomingMessage>();
@@ -70,6 +73,8 @@ namespace Guppy.Network.Groups
 
             this.Users = new NetworkObjectCollection<User>(disposeOnRemove: false);
             this.MessageHandler = new MessageHandler();
+
+            this.log = log;
 
             // By default, groups should ignore data
             this.IgnoreData = false;
@@ -84,12 +89,18 @@ namespace Guppy.Network.Groups
             {
                 // Call the message handler based on the message data
                 _im = _messageBuffer.Dequeue();
-                this.MessageHandler[_im.ReadString()](_im);
+
+                _messageType = _im.ReadString();
+
+                if (this.MessageHandler.ContainsKey(_messageType))
+                    this.MessageHandler[_messageType](_im);
+                else
+                    this.log.LogWarning($"Unhandled message recieved: '{_messageType}'");
             }
         }
         #endregion
 
-        #region Create Message Methods
+       #region Create Message Methods
         protected internal NetOutgoingMessage CreateMessage(MessageType type)
         {
             var om = _peer.CreateMessage(MessageTarget.Group);
@@ -131,7 +142,12 @@ namespace Guppy.Network.Groups
                     _messageBuffer.Enqueue(im);
                     break;
                 case MessageType.Internal:
-                    this.internalMessageHandler[im.ReadString()](im);
+                    _messageType = im.ReadString();
+
+                    if (this.internalMessageHandler.ContainsKey(_messageType))
+                        this.internalMessageHandler[_messageType](im);
+                    else
+                        this.log.LogWarning($"Unhandled internal message recieved: '{_messageType}'");
                     break;
             }
         }

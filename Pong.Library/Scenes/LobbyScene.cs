@@ -11,7 +11,6 @@ namespace Pong.Library.Scenes
     {
         public LobbyScene(Peer peer, IServiceProvider provider) : base(provider)
         {
-            this.group = peer.Groups.GetOrCreateById(Guid.Empty);
         }
     }
 }

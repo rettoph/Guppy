@@ -35,7 +35,7 @@ namespace Guppy.Network.Peers
         #region Methods
         protected internal override Group CreateGroup(Guid id)
         {
-            return new ClientGroup(id, this);
+            return new ClientGroup(id, this, this.logger);
         }
         #endregion
 

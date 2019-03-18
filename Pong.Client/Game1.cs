@@ -36,5 +36,12 @@ namespace Pong.Client
 
             _pongGame.Update(gameTime);
         }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            base.OnExiting(sender, args);
+
+            Environment.Exit(0);
+        }
     }
 }

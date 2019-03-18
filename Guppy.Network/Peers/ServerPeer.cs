@@ -52,7 +52,7 @@ namespace Guppy.Network.Peers
 
         protected internal override Group CreateGroup(Guid id)
         {
-            return new ServerGroup(id, this);
+            return new ServerGroup(id, this, this.logger);
         }
         #endregion
 
