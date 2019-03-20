@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\Guppy.UI\Guppy.UI.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\Pong.Library\Pong.Library.csproj" />
   </ItemGroup>
 

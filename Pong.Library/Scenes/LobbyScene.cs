@@ -9,8 +9,11 @@ namespace Pong.Library.Scenes
 {
     public class LobbyScene : NetworkScene
     {
+        protected Group group;
+
         public LobbyScene(Peer peer, IServiceProvider provider) : base(provider)
         {
+            group = peer.Groups.GetOrCreateById(Guid.Empty);
         }
     }
 }

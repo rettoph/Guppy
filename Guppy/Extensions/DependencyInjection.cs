@@ -17,13 +17,13 @@ namespace Guppy.Extensions
     public static class DependencyInjection
     {
         #region Add Methods
-        public static void AddScene<TScene>(this ServiceCollection collection)
+        public static void AddScene<TScene>(this IServiceCollection collection)
             where TScene : Scene
         {
             collection.AddScoped<TScene>(SceneFactory<TScene>.BuildFactory<TScene>().Create);
         }
 
-        public static void AddLayer<TLayer>(this ServiceCollection collection)
+        public static void AddLayer<TLayer>(this IServiceCollection collection)
             where TLayer : Layer
         {
             var factory = LayerFactory<TLayer>.BuildFactory<TLayer>();
@@ -31,7 +31,7 @@ namespace Guppy.Extensions
             collection.AddScoped<TLayer>(factory.Create); // Add the factory's create method as the default constructor
         }
 
-        public static void AddLoader<TLoader>(this ServiceCollection collection)
+        public static void AddLoader<TLoader>(this IServiceCollection collection)
             where TLoader : class, ILoader
         {
             // Add the loader as a singleton

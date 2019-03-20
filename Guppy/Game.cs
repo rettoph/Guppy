@@ -10,7 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using System.Linq;
 
 namespace Guppy
 {
@@ -21,6 +23,10 @@ namespace Guppy
     /// </summary>
     public class Game
     {
+        #region Private Fields
+        private IServiceLoader[] _serviceLoaders;
+        #endregion
+
         #region Proteced Attributes
         protected ILogger logger { get; private set; }
         protected ServiceCollection services { get; private set; }
@@ -66,6 +72,14 @@ namespace Guppy
         #region Initialization Methods
         protected virtual void Boot()
         {
+            // Generate instances of all bound service loaders
+            _serviceLoaders = Assembly.GetEntryAssembly()
+                .GetReferencedAssemblies()
+                .SelectMany(an => Assembly.Load(an).GetTypes())
+                .Where(t => t.IsClass && !t.IsAbstract && typeof(IServiceLoader).IsAssignableFrom(t))
+                .Select(t => Activator.CreateInstance(t) as IServiceLoader)
+                .ToArray();
+
             // Add core services to the collection...
             this.services.AddSingleton<Game>(this);
             this.services.AddSingleton<ILogger>(this.logger);
@@ -82,12 +96,20 @@ namespace Guppy
             this.services.AddLoader<ColorLoader>();
             this.services.AddLoader<ContentLoader>();
             this.services.AddLoader<EntityLoader>();
+
+            // Boot all service loaders
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+                serviceLoader.Boot(this.services);
         }
 
         protected virtual void PreInitialize()
         {
             // Build a new service provider...
             this.provider = this.services.BuildServiceProvider();
+
+            // PreInitialize all service loaders
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+                serviceLoader.PreInitialize(this.provider);
         }
 
         protected virtual void Initialize()
@@ -98,11 +120,17 @@ namespace Guppy
             // Ensure all loaders get loaded
             foreach (ILoader loader in this.provider.GetLoaders())
                 loader.Load();
+
+            // Initialize all service loaders
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+                serviceLoader.Initialize(this.provider);
         }
 
         protected virtual void PostInitialize()
         {
-
+            // PostInitialize all service loaders
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+                serviceLoader.PostInitialize(this.provider);
         }
         #endregion
 
