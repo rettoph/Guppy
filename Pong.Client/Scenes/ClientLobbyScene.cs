@@ -27,7 +27,10 @@ namespace Pong.Client.Scenes
 
             this.layers.Create<UILayer>();
 
-            var test = this.entities.Create("ui:element", new Rectangle(100, 100, 100, 50)) as Element;
+            var test = this.entities.Create("ui:button:lobby", "Create", new Rectangle(100, 100, 150, 45));
+            this.entities.Create("ui:button:lobby", "Create", new Rectangle(100, 300, 150, 45));
+            this.entities.Create("ui:button:lobby", "Create", new Rectangle(500, 300, 150, 45));
+            this.entities.Create("ui:button:lobby", "Create", new Rectangle(500, 100, 150, 45));
         }
 
         public override void Draw(GameTime gameTime)

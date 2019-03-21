@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Factories;
+using Guppy.Interfaces;
 using Guppy.Loaders;
 
 namespace Guppy.Configurations
@@ -12,7 +13,7 @@ namespace Guppy.Configurations
         public readonly String Name;
         public readonly String Description;
         public readonly Type Type;
-        public readonly Object Data;
+        public readonly IEntityData Data;
 
 
         public EntityConfiguration(String handle, RegisteredEntityConfiguration configuration, StringLoader stringLoader)

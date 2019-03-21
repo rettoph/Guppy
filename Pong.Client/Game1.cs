@@ -13,6 +13,8 @@ namespace Pong.Client
         {
             this.Content.RootDirectory = "Content";
 
+            this.IsMouseVisible = true;
+
             _pongGame = new ClientPongGame(new GraphicsDeviceManager(this), this.Window, this.Content);
         }
 

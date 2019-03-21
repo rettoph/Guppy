@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -29,9 +30,9 @@ namespace Guppy.Configurations
         public Type Type { get; set; }
 
         /// <summary>
-        /// The Entity's custom data
+        /// The Entity's custom configuration
         /// null by default
         /// </summary>
-        public Object Data { get; set; }
+        public IEntityData Data { get; set; }
     }
 }

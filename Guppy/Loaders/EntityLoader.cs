@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Guppy.Interfaces;
 
 namespace Guppy.Loaders
 {
@@ -18,7 +19,7 @@ namespace Guppy.Loaders
 
         }
 
-        public void Register<TEntity>(String handle, String nameHandle, String descriptionHandle, Object data = null, UInt16 priority = 0)
+        public void Register<TEntity>(String handle, String nameHandle, String descriptionHandle, IEntityData data = null, UInt16 priority = 0)
             where TEntity : Entity
         {
             this.Register(
@@ -31,6 +32,15 @@ namespace Guppy.Loaders
                     Type = typeof(TEntity)
                 },
                 priority: 1);
+        }
+
+        public override void Load()
+        {
+            base.Load();
+
+            // Initialize all the custom entity configurations
+            foreach (EntityConfiguration config in this.valuesTable.Select(kvp => kvp.Value))
+                config.Data?.Initialize(_provider);
         }
 
         protected override Dictionary<String, EntityConfiguration> BuildValuesTable()

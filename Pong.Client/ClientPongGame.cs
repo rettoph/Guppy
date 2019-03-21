@@ -2,6 +2,9 @@
 using Guppy.Loaders;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
+using Guppy.UI.Configurations;
+using Guppy.UI.Entities;
+using Guppy.UI.Extensions.DependencyInjection;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -51,9 +54,23 @@ namespace Pong.Client
 
             var contentLoader = this.provider.GetLoader<ContentLoader>();
 
+            contentLoader.Register("texture:ui:button:lobby", "Sprites/UI/button-lobby");
+            contentLoader.Register("texture:ui:button:lobby:hover", "Sprites/UI/button-lobby-hover");
+            contentLoader.Register("texture:ui:button:lobby:active", "Sprites/UI/button-lobby-active");
+
             contentLoader.Register("paddle-left", "Sprites/paddle-left");
             contentLoader.Register("paddle-center", "Sprites/paddle-center");
             contentLoader.Register("paddle-right", "Sprites/paddle-right");
+
+            var entityLoader = this.provider.GetLoader<EntityLoader>();
+            entityLoader.AddButton<Button>(
+                handle: "ui:button:lobby", 
+                nameHandle: "ui_name:button:lobby",
+                descriptionHandle: "ui_description:button:lobby",
+                configuration: new ButtonConfiguration(
+                    textureHandle: "texture:ui:button:lobby", 
+                    hoverTextureHandle: "texture:ui:button:lobby:hover", 
+                    activeTextureHandle: "texture:ui:button:lobby:active"));
         }
 
         protected override void PostInitialize()

@@ -20,11 +20,12 @@ namespace Guppy.Loaders
 
         #region Private Fields
         private Boolean _loaded;
-        private Dictionary<THandle, TValueOut> _valuesTable;
+        
         #endregion
 
         #region Protected Attributes
         protected ILogger logger { get; private set; }
+        protected Dictionary<THandle, TValueOut> valuesTable { get; private set; }
         protected List<RegisteredValues> registeredValuesList { get; private set; }
         #endregion
 
@@ -72,11 +73,11 @@ namespace Guppy.Loaders
         {
             this.logger.LogDebug($"Loading Loader<{this.GetType().Name}>...");
 
-            _valuesTable = this.BuildValuesTable();
+            this.valuesTable = this.BuildValuesTable();
 
             _loaded = true;
 
-            this.logger.LogDebug($"Done. {_valuesTable.Count} values loaded.");
+            this.logger.LogDebug($"Done. {this.valuesTable.Count} values loaded.");
         }
 
         /// <summary>
@@ -98,8 +99,8 @@ namespace Guppy.Loaders
 
         public virtual TValueOut GetValue(THandle handle)
         {
-            if(_valuesTable.ContainsKey(handle))
-                return _valuesTable[handle];
+            if(this.valuesTable.ContainsKey(handle))
+                return this.valuesTable[handle];
 
             return default(TValueOut);
         }
@@ -114,7 +115,7 @@ namespace Guppy.Loaders
         /// <param name="value"></param>
         public void SetValue(THandle handle, TValueOut value)
         {
-            _valuesTable[handle] = value;
+            this.valuesTable[handle] = value;
         }
         #endregion
     }

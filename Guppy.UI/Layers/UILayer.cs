@@ -24,7 +24,11 @@ namespace Guppy.UI.Layers
         private VertexBuffer _vertexBuffer;
         private Int32 _primitives;
 
-        public UILayer(GraphicsDevice graphics, GameWindow window, Scene scene, LayerConfiguration configuration) : base(scene, configuration)
+        private SpriteBatch _spriteBatch;
+
+        public Boolean Debug;
+
+        public UILayer(GraphicsDevice graphics, GameWindow window, SpriteBatch spriteBatch, Scene scene, LayerConfiguration configuration) : base(scene, configuration)
         {
             _graphics = graphics;
             _window = window;
@@ -37,43 +41,55 @@ namespace Guppy.UI.Layers
 
             _elements = new List<Element>();
 
+            _spriteBatch = spriteBatch;
+
+            this.Debug = false;
+
             this.entities.Added += this.HandleEntityAdded;
             this.entities.Removed += this.HandleEntityRemoved;
         }
 
         public override void Draw(GameTime gameTime)
         {
-            
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
+            this.entities.Draw(gameTime);
+            _spriteBatch.End();
 
-            
-
-            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            if (this.Debug)
             {
-                pass.Apply();
-                _graphics.DrawPrimitives(PrimitiveType.LineList, 0, _primitives);
+                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    _graphics.DrawPrimitives(PrimitiveType.LineList, 0, _primitives);
+                }
             }
         }
 
         public override void Update(GameTime gameTime)
         {
-            _projection = Matrix.CreateOrthographicOffCenter(0, _window.ClientBounds.Width, _window.ClientBounds.Height, 0, 0, 1);
-            _effect.Projection = _projection;
+            this.entities.Update(gameTime);
+
+            if (this.Debug)
+            {
+                _projection = Matrix.CreateOrthographicOffCenter(0, _window.ClientBounds.Width, _window.ClientBounds.Height, 0, 0, 1);
+                _effect.Projection = _projection;
 
 
-            // Load in the vertex data from all contained elements
-            List<VertexPositionColor> _allVertices = new List<VertexPositionColor>();
+                // Load in the vertex data from all contained elements
+                List<VertexPositionColor> _allVertices = new List<VertexPositionColor>();
 
-            foreach (Element el in _elements)
-                _allVertices.AddRange(el.vertices);
+                foreach (Element el in _elements)
+                    _allVertices.AddRange(el.vertices);
 
-            _vertexBuffer?.Dispose();
+                _vertexBuffer?.Dispose();
 
-            _vertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _allVertices.Count, BufferUsage.WriteOnly);
-            _vertexBuffer.SetData<VertexPositionColor>(_allVertices.ToArray());
+                _vertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _allVertices.Count, BufferUsage.WriteOnly);
+                _vertexBuffer.SetData<VertexPositionColor>(_allVertices.ToArray());
 
-            _primitives = _allVertices.Count / 2;
+                _primitives = _allVertices.Count / 2;
 
-            _graphics.SetVertexBuffer(_vertexBuffer);
+                _graphics.SetVertexBuffer(_vertexBuffer);
+            }
         }
 
         #region Event Handlers
