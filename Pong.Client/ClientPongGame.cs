@@ -54,6 +54,7 @@ namespace Pong.Client
 
             var contentLoader = this.provider.GetLoader<ContentLoader>();
 
+            contentLoader.Register("font:ui:button:lobby", "Sprites/UI/font");
             contentLoader.Register("texture:ui:button:lobby", "Sprites/UI/button-lobby");
             contentLoader.Register("texture:ui:button:lobby:hover", "Sprites/UI/button-lobby-hover");
             contentLoader.Register("texture:ui:button:lobby:active", "Sprites/UI/button-lobby-active");
@@ -70,7 +71,17 @@ namespace Pong.Client
                 configuration: new ButtonConfiguration(
                     textureHandle: "texture:ui:button:lobby", 
                     hoverTextureHandle: "texture:ui:button:lobby:hover", 
-                    activeTextureHandle: "texture:ui:button:lobby:active"));
+                    activeTextureHandle: "texture:ui:button:lobby:active",
+                    fontHandle: "font:ui:button:lobby"));
+            entityLoader.AddButton<Button>(
+                handle: "ui:button:lobby:2",
+                nameHandle: "ui_name:button:lobby",
+                descriptionHandle: "ui_description:button:lobby",
+                configuration: new ButtonConfiguration(
+                    textureHandle: "texture:ui:button:lobby",
+                    hoverTextureHandle: "texture:ui:button:lobby:active",
+                    activeTextureHandle: "texture:ui:button:lobby:hover",
+                    fontHandle: "font:ui:button:lobby"));
         }
 
         protected override void PostInitialize()

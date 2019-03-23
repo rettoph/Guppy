@@ -85,3 +85,10 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/UI/button-lobby.png
 
+#begin Sprites/UI/font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Sprites/UI/font.spritefont
+

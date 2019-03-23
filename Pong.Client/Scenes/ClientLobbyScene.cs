@@ -28,14 +28,14 @@ namespace Pong.Client.Scenes
             this.layers.Create<UILayer>();
 
             var test = this.entities.Create("ui:button:lobby", "Create", new Rectangle(100, 100, 150, 45));
-            this.entities.Create("ui:button:lobby", "Create", new Rectangle(100, 300, 150, 45));
+            this.entities.Create("ui:button:lobby:2", "Create", new Rectangle(100, 300, 150, 45));
             this.entities.Create("ui:button:lobby", "Create", new Rectangle(500, 300, 150, 45));
-            this.entities.Create("ui:button:lobby", "Create", new Rectangle(500, 100, 150, 45));
+            this.entities.Create("ui:button:lobby", "Create", new Rectangle(200, 100, 550, 45));
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _graphics.Clear(Color.CornflowerBlue);
+            _graphics.Clear(Color.Black);
 
             base.Draw(gameTime);
         }
