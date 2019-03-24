@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace Guppy.UI.Utilities.Units
 {
     public class PercentUnit : Unit
     {
-        private Single _value;
+        private Single _amount;
 
-        public PercentUnit(Single value)
+        public PercentUnit(Single amount)
         {
-            _value = value;
+            _amount = amount;
         }
 
-        public override void Update(Single bound)
+        public override void UpdateValue(int bound)
         {
-            this.value = (Int32)(bound * _value);
+            this.Value = (Int32)(_amount * bound);
         }
     }
 }

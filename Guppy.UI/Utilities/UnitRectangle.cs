@@ -6,22 +6,21 @@ using System.Text;
 
 namespace Guppy.UI.Utilities
 {
-    /// <summary>
-    /// Rectangle class that utilizes the custom Unit UI class
-    /// </summary>
-    public class UnitRectangle
+    public class UnitRectangle : IEquatable<UnitRectangle>
     {
+        #region Private Fields
+        private Rectangle _output;
+        #endregion
+
+        #region Public Attributes
         public Unit X { get; set; }
         public Unit Y { get; set; }
         public Unit Width { get; set; }
         public Unit Height { get; set; }
 
-        public Int32 Top { get; private set; }
-        public Int32 Right { get; private set; }
-        public Int32 Bottom { get; private set; }
-        public Int32 Left { get; private set; }
+        public Rectangle Output { get { return _output; } }
+        #endregion
 
-        public Rectangle Output;
 
         public UnitRectangle(Unit x, Unit y, Unit width, Unit height)
         {
@@ -30,37 +29,33 @@ namespace Guppy.UI.Utilities
             this.Width = width;
             this.Height = height;
 
-            Output = new Rectangle(x, y, width, height);
+            _output = new Rectangle(
+                this.X.Value, 
+                this.Y.Value, 
+                this.Width.Value, 
+                this.Height.Value);
         }
 
-        public void Update(Rectangle bounds)
+        public void UpdateOutput(Rectangle bounds)
         {
-            this.X.Update(bounds.Width);
-            this.Y.Update(bounds.Height);
-            this.Width.Update(bounds.Width);
-            this.Height.Update(bounds.Height);
+            this.X.UpdateValue(bounds.Width);
+            this.Y.UpdateValue(bounds.Height);
+            this.Width.UpdateValue(bounds.Width);
+            this.Height.UpdateValue(bounds.Height);
 
-            this.Top = this.Y;
-            this.Right = this.X + this.Width;
-            this.Bottom = this.Y + this.Height;
-            this.Left = this.X;
-
-            this.Output.X = this.X;
-            this.Output.Y = this.Y;
-            this.Output.Width = this.Width;
-            this.Output.Height = this.Height;
+            _output.X = this.X.Value;
+            _output.Y = this.Y.Value;
+            _output.Width = this.Width.Value;
+            _output.Height = this.Height.Value;
         }
-
-        public Boolean Contains(Vector2 value)
+        public void UpdateOutput(UnitRectangle bounds)
         {
-            return Output.Contains(value);
+            this.UpdateOutput(bounds.Output);
         }
 
-        #region Operators
-        public static implicit operator UnitRectangle(Rectangle rect)
+        public bool Equals(UnitRectangle other)
         {
-            return new UnitRectangle(rect.X, rect.Y, rect.Width, rect.Height);
+            return _output.Equals(other.Output);
         }
-        #endregion
     }
 }

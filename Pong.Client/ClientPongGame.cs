@@ -63,24 +63,6 @@ namespace Pong.Client
             contentLoader.Register("paddle-left", "Sprites/paddle-left");
             contentLoader.Register("paddle-center", "Sprites/paddle-center");
             contentLoader.Register("paddle-right", "Sprites/paddle-right");
-
-            var entityLoader = this.provider.GetLoader<EntityLoader>();
-            entityLoader.AddElement<Element>(
-                handle: "ui:button:lobby",
-                nameHandle: "ui_name:button:lobby",
-                descriptionHandle: "ui_description:button:lobby",
-                configuration: new ElementConfiguration()
-                {
-                });
-
-            entityLoader.AddElement<StaticElement>(
-                handle: "ui:button:lobby:2",
-                nameHandle: "ui_name:button:lobby",
-                descriptionHandle: "ui_description:button:lobby",
-                configuration: new ElementConfiguration()
-                {
-                });
-
         }
 
         protected override void PostInitialize()

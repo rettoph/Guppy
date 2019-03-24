@@ -13,14 +13,14 @@ namespace Guppy.UI.Utilities.Units
             _units = units;
         }
 
-        public override void Update(float bound)
+        public override void UpdateValue(int bound)
         {
-            this.value = 0;
+            this.Value = 0;
 
-            foreach (Unit unit in _units)
+            foreach(Unit unit in _units)
             {
-                unit.Update(bound);
-                this.value += unit;
+                unit.UpdateValue(bound);
+                this.Value += unit.Value;
             }
         }
     }
