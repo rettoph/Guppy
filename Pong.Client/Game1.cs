@@ -14,6 +14,7 @@ namespace Pong.Client
             this.Content.RootDirectory = "Content";
 
             this.IsMouseVisible = true;
+            this.Window.AllowUserResizing = true;
 
             _pongGame = new ClientPongGame(new GraphicsDeviceManager(this), this.Window, this.Content);
         }

@@ -2,6 +2,7 @@
 using Guppy.Network.Peers;
 using Guppy.UI.Entities;
 using Guppy.UI.Layers;
+using Guppy.UI.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Pong.Client.Layers;
@@ -9,6 +10,7 @@ using Pong.Library.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Utilities.Units;
 
 namespace Pong.Client.Scenes
 {
@@ -27,10 +29,8 @@ namespace Pong.Client.Scenes
 
             this.layers.Create<UILayer>();
 
-            var test = this.entities.Create("ui:button:lobby", "Create", new Rectangle(100, 100, 150, 45));
-            this.entities.Create("ui:button:lobby:2", "Create", new Rectangle(100, 300, 150, 45));
-            this.entities.Create("ui:button:lobby", "Create", new Rectangle(500, 300, 150, 45));
-            this.entities.Create("ui:button:lobby", "Create", new Rectangle(200, 100, 550, 45));
+            this.entities.Create("ui:image", new UnitRectangle(0, 0, 250, 1f), "texture:ui:lobby:sidebar");
+            this.entities.Create("ui:image", new UnitRectangle(250, 0, new Unit[] { 1f, -250 }, 50), "texture:ui:lobby:header");
         }
 
         public override void Draw(GameTime gameTime)

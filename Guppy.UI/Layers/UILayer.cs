@@ -55,7 +55,7 @@ namespace Guppy.UI.Layers
             this.entities.Draw(gameTime);
             _spriteBatch.End();
 
-            if (this.Debug)
+            if (this.Debug && _vertexBuffer != null)
             {
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
@@ -79,16 +79,23 @@ namespace Guppy.UI.Layers
                 List<VertexPositionColor> _allVertices = new List<VertexPositionColor>();
 
                 foreach (Element el in _elements)
-                    _allVertices.AddRange(el.vertices);
+                    _allVertices.AddRange(el.GetDebugVertices());
 
                 _vertexBuffer?.Dispose();
 
-                _vertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _allVertices.Count, BufferUsage.WriteOnly);
-                _vertexBuffer.SetData<VertexPositionColor>(_allVertices.ToArray());
+                if (_allVertices.Count > 0)
+                {
+                    _vertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _allVertices.Count, BufferUsage.WriteOnly);
+                    _vertexBuffer.SetData<VertexPositionColor>(_allVertices.ToArray());
 
-                _primitives = _allVertices.Count / 2;
+                    _primitives = _allVertices.Count / 2;
 
-                _graphics.SetVertexBuffer(_vertexBuffer);
+                    _graphics.SetVertexBuffer(_vertexBuffer);
+                }
+                else
+                {
+                    _vertexBuffer = null;
+                }
             }
         }
 

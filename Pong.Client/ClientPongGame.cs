@@ -4,6 +4,7 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Guppy.UI.Configurations;
 using Guppy.UI.Entities;
+using Guppy.UI.Enums;
 using Guppy.UI.Extensions.DependencyInjection;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,35 +54,33 @@ namespace Pong.Client
             base.PreInitialize();
 
             var contentLoader = this.provider.GetLoader<ContentLoader>();
-
-            contentLoader.Register("font:ui:button:lobby", "Sprites/UI/font");
             contentLoader.Register("texture:ui:button:lobby", "Sprites/UI/button-lobby");
-            contentLoader.Register("texture:ui:button:lobby:hover", "Sprites/UI/button-lobby-hover");
+            contentLoader.Register("texture:ui:button:lobby:hovered", "Sprites/UI/button-lobby-hover");
             contentLoader.Register("texture:ui:button:lobby:active", "Sprites/UI/button-lobby-active");
+            contentLoader.Register("texture:ui:lobby:sidebar", "Sprites/UI/lobby-sidebar");
+            contentLoader.Register("texture:ui:lobby:header", "Sprites/UI/lobby-header");
 
             contentLoader.Register("paddle-left", "Sprites/paddle-left");
             contentLoader.Register("paddle-center", "Sprites/paddle-center");
             contentLoader.Register("paddle-right", "Sprites/paddle-right");
 
             var entityLoader = this.provider.GetLoader<EntityLoader>();
-            entityLoader.AddButton<Button>(
-                handle: "ui:button:lobby", 
+            entityLoader.AddElement<Element>(
+                handle: "ui:button:lobby",
                 nameHandle: "ui_name:button:lobby",
                 descriptionHandle: "ui_description:button:lobby",
-                configuration: new ButtonConfiguration(
-                    textureHandle: "texture:ui:button:lobby", 
-                    hoverTextureHandle: "texture:ui:button:lobby:hover", 
-                    activeTextureHandle: "texture:ui:button:lobby:active",
-                    fontHandle: "font:ui:button:lobby"));
-            entityLoader.AddButton<Button>(
+                configuration: new ElementConfiguration()
+                {
+                });
+
+            entityLoader.AddElement<StaticElement>(
                 handle: "ui:button:lobby:2",
                 nameHandle: "ui_name:button:lobby",
                 descriptionHandle: "ui_description:button:lobby",
-                configuration: new ButtonConfiguration(
-                    textureHandle: "texture:ui:button:lobby",
-                    hoverTextureHandle: "texture:ui:button:lobby:active",
-                    activeTextureHandle: "texture:ui:button:lobby:hover",
-                    fontHandle: "font:ui:button:lobby"));
+                configuration: new ElementConfiguration()
+                {
+                });
+
         }
 
         protected override void PostInitialize()

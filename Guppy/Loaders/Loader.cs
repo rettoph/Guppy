@@ -99,6 +99,8 @@ namespace Guppy.Loaders
 
         public virtual TValueOut GetValue(THandle handle)
         {
+            if (handle == null)
+                return default(TValueOut);
             if(this.valuesTable.ContainsKey(handle))
                 return this.valuesTable[handle];
 
