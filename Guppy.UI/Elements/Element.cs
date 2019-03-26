@@ -37,6 +37,7 @@ namespace Guppy.UI.Elements
         public Container Parent { get; protected internal set; }
         public ElementState State { get; protected set; }
         public ElementStyleSheet StyleSheet { get; private set; }
+        public Boolean Dirty { get; set; }
         #endregion
 
         #region Events
@@ -50,7 +51,8 @@ namespace Guppy.UI.Elements
         public Element(Unit x, Unit y, Unit width, Unit height, StyleSheet rootStyleSheet = null) : base(x, y, width, height)
         {
             this.State = ElementState.Normal;
-            this.StyleSheet = new ElementStyleSheet(rootStyleSheet);
+            this.StyleSheet = new ElementStyleSheet(rootStyleSheet, this);
+            this.Dirty = false;
 
             _textures = new Dictionary<ElementState, Texture2D>(Element.States.Length);
             _debugVertices = new Dictionary<ElementState, VertexPositionColor[]>();
@@ -96,6 +98,9 @@ namespace Guppy.UI.Elements
             { // If mouse up (when it was down on hover)
                 _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
             }
+
+            if (this.Dirty)
+                this.UpdateCache();
         }
 
         protected internal virtual void UpdateCache()
@@ -127,6 +132,9 @@ namespace Guppy.UI.Elements
             // After all the new state targets have generated...
             // reset the render targets
             this.graphicsDevice.SetRenderTargets(initialRenderTargets);
+
+            // Clean the current element
+            this.Dirty = false;
         }
 
         protected internal virtual void RegisterDebugVertices(ref List<VertexPositionColor> vertices)
@@ -152,18 +160,18 @@ namespace Guppy.UI.Elements
         /// <returns></returns>
         protected virtual VertexPositionColor[] generateDebugVertices(ElementState state)
         {
-            var color = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugColor);
+            var wireframeColor = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugColor);
 
             return new VertexPositionColor[]
             {
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Top, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Right - 1, this.Bounds.Top, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Right - 1, this.Bounds.Top, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Right - 1, this.Bounds.Bottom - 1, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Right - 1, this.Bounds.Bottom - 1, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Bottom - 1, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Bottom - 1, 0), color),
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Top, 0), color)
+                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Top, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Top, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Top, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Bottom, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Bottom, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Bottom, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Bottom, 0), wireframeColor),
+                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Top, 0), wireframeColor)
             };
         }
     }

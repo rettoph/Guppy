@@ -27,6 +27,9 @@ namespace Guppy.UI
 
         public void PreInitialize(IServiceProvider provider)
         {
+            var contentLoader = provider.GetLoader<ContentLoader>();
+            contentLoader.Register("ui:font", "UI/font");
+
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<InputManager>("ui:input_manager", "ui:name:input_manager", "ui:description:input_manager");
             entityLoader.Register<Stage>("ui:stage", "ui:name:stage", "ui:description:stage");

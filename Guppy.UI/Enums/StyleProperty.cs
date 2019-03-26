@@ -7,10 +7,19 @@ namespace Guppy.UI.Enums
     public enum StyleProperty
     {
         /*
-         * Font Properties
+         * Font & Text Properties
          */
         FontColor,
         Font,
+        TextAlignment,
+
+        /* 
+         * Padding Properties
+         */
+        PaddingTop,
+        PaddingRight,
+        PaddingBottom,
+        PaddingLeft,
 
         /*
          * Background Properties
