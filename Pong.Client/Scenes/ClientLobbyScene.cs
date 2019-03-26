@@ -1,7 +1,6 @@
 ﻿using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.UI.Entities;
-using Guppy.UI.Layers;
 using Guppy.UI.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.UI.Utilities.Units;
+using Guppy.UI.Elements;
 
 namespace Pong.Client.Scenes
 {
@@ -27,10 +27,21 @@ namespace Pong.Client.Scenes
         {
             base.Initialize();
 
-            this.layers.Create<UILayer>();
+            this.layers.Create<SimpleLayer>();
+            var stage = this.entities.Create("ui:stage") as Stage;
+            var sidebar = stage.Content.Add(new Container(0, 0, 200, 1f)) as Container;
+            var content = stage.Content.Add(new Container(200, 0, new Unit[] { 1f, -200 }, 1f)) as Container;
 
-            this.entities.Create("ui:image", new UnitRectangle(0, 0, 250, 1f), "texture:ui:lobby:sidebar");
-            this.entities.Create("ui:image", new UnitRectangle(250, 0, new Unit[] { 1f, -250 }, 50), "texture:ui:lobby:header");
+            content.Add(new Button(0.25f, 0.25f, 0.5f, 0.5f));
+            content.Add(new Button(0.1f, 0.1f, 0.1f, 0.1f));
+            content.Add(new Button(0.8f, 0.1f, 0.1f, 0.1f));
+            content.Add(new Button(0.8f, 0.8f, 0.1f, 0.1f));
+            content.Add(new Button(0.1f, 0.8f, 0.1f, 0.1f));
+
+            sidebar.Add(new Button(25, 25, 150, 25));
+            sidebar.Add(new Button(25, 75, 150, 25));
+            sidebar.Add(new Button(25, 125, 150, 25));
+            sidebar.Add(new Button(25, 175, 150, 25));
         }
 
         public override void Draw(GameTime gameTime)

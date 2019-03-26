@@ -18,7 +18,7 @@ namespace Guppy.UI.Utilities
         public Unit Width { get; set; }
         public Unit Height { get; set; }
 
-        public Rectangle Output { get { return _output; } }
+        public Rectangle Bounds { get { return _output; } }
         #endregion
 
 
@@ -36,26 +36,26 @@ namespace Guppy.UI.Utilities
                 this.Height.Value);
         }
 
-        public void UpdateOutput(Rectangle bounds)
+        public void UpdateBounds(Rectangle container)
         {
-            this.X.UpdateValue(bounds.Width);
-            this.Y.UpdateValue(bounds.Height);
-            this.Width.UpdateValue(bounds.Width);
-            this.Height.UpdateValue(bounds.Height);
+            this.X.UpdateValue(container.Width);
+            this.Y.UpdateValue(container.Height);
+            this.Width.UpdateValue(container.Width);
+            this.Height.UpdateValue(container.Height);
 
-            _output.X = this.X.Value;
-            _output.Y = this.Y.Value;
+            _output.X = container.X + this.X.Value;
+            _output.Y = container.Y + this.Y.Value;
             _output.Width = this.Width.Value;
             _output.Height = this.Height.Value;
         }
-        public void UpdateOutput(UnitRectangle bounds)
+        public void UpdateBounds(UnitRectangle container)
         {
-            this.UpdateOutput(bounds.Output);
+            this.UpdateBounds(container.Bounds);
         }
 
         public bool Equals(UnitRectangle other)
         {
-            return _output.Equals(other.Output);
+            return _output.Equals(other.Bounds);
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using Guppy.Interfaces;
+﻿using Guppy.Collections;
+using Guppy.Extensions;
+using Guppy.Interfaces;
+using Guppy.Loaders;
+using Guppy.UI.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,22 +18,28 @@ namespace Guppy.UI
     {
         public void Boot(IServiceCollection services)
         {
-            throw new NotImplementedException();
+            services.AddScoped<InputManager>(p =>
+            {
+                var entities = p.GetService<EntityCollection>();
+                return entities.Create("ui:input_manager") as InputManager;
+            });
         }
 
         public void PreInitialize(IServiceProvider provider)
         {
-            throw new NotImplementedException();
+            var entityLoader = provider.GetLoader<EntityLoader>();
+            entityLoader.Register<InputManager>("ui:input_manager", "ui:name:input_manager", "ui:description:input_manager");
+            entityLoader.Register<Stage>("ui:stage", "ui:name:stage", "ui:description:stage");
         }
 
         public void Initialize(IServiceProvider provider)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         public void PostInitialize(IServiceProvider provider)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 }

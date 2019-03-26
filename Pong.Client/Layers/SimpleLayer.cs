@@ -19,7 +19,7 @@ namespace Pong.Client.Layers
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(blendState: BlendState.AlphaBlend);
             this.entities.Draw(gameTime);
             _spriteBatch.End();
         }
