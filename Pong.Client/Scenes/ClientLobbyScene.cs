@@ -35,12 +35,13 @@ namespace Pong.Client.Scenes
 
             this.layers.Create<SimpleLayer>();
             var styleSheet = new StyleSheet();
-            styleSheet.SetProperty(StyleProperty.Font, _font);
-            styleSheet.SetProperty(StyleProperty.FontColor, Color.White);
+            styleSheet.SetProperty<SpriteFont>(StyleProperty.Font, _font);
+            styleSheet.SetProperty<Color>(StyleProperty.FontColor, Color.White);
 
             var stage = this.entities.Create("ui:stage") as Stage;
-            var sidebar = stage.Content.Add(new Container(0, 0, 200, 1f)) as Container;
-            var content = stage.Content.Add(new Container(200, 0, new Unit[] { 1f, -200 }, 1f)) as Container;
+            var sidebar = stage.Content.Add(new Container(0, 50, 200, new Unit[] { 1f, -50 })) as Container;
+            var content = stage.Content.Add(new Container(200, 50, new Unit[] { 1f, -200 }, new Unit[] { 1f, -50 })) as Container;
+            var header = stage.Content.Add(new Container(0, 0, 1f, 50)) as Container;
 
             content.Add(new TextElement(0.25f, 0.25f, 0.5f, 0.5f, "Hello World", styleSheet));
             content.Add(new TextElement(0.1f, 0.1f, 0.1f, 0.1f, "A", styleSheet));
@@ -52,6 +53,8 @@ namespace Pong.Client.Scenes
             sidebar.Add(new TextElement(25, 75, 150, 25, "2", styleSheet));
             sidebar.Add(new TextElement(25, 125, 150, 25, "3", styleSheet));
             sidebar.Add(new TextElement(25, 175, 150, 25, "4", styleSheet));
+
+            header.Add(new TextElement(10, 10, new Unit[] { 1f, -20 }, new Unit[] { 1f, -20 }, "Welcome", styleSheet));
         }
 
         public override void Draw(GameTime gameTime)

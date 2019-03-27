@@ -96,13 +96,13 @@ namespace Guppy.UI.Entities
         {
             base.Initialize();
 
-            this.StyleSheet.SetProperty(StyleProperty.Font, _content.Get<SpriteFont>("ui:font"));
-            this.StyleSheet.SetProperty(StyleProperty.FontColor, Color.Black);
-            this.StyleSheet.SetProperty(StyleProperty.TextAlignment, Alignment.CenterCenter);
-            this.StyleSheet.SetProperty(StyleProperty.PaddingTop, (Unit)5);
-            this.StyleSheet.SetProperty(StyleProperty.PaddingRight, (Unit)5);
-            this.StyleSheet.SetProperty(StyleProperty.PaddingBottom, (Unit)5);
-            this.StyleSheet.SetProperty(StyleProperty.PaddingLeft, (Unit)5);
+            this.StyleSheet.SetProperty<SpriteFont>(StyleProperty.Font, _content.Get<SpriteFont>("ui:font"));
+            this.StyleSheet.SetProperty<Color>(StyleProperty.FontColor, Color.Black);
+            this.StyleSheet.SetProperty<Alignment>(StyleProperty.TextAlignment, Alignment.CenterCenter);
+            this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingTop, 5);
+            this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingRight, 5);
+            this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingBottom, 5);
+            this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingLeft, 5);
         }
 
         public override void Draw(GameTime gameTime)

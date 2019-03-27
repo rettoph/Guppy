@@ -160,7 +160,7 @@ namespace Guppy.UI.Elements
         /// <returns></returns>
         protected virtual VertexPositionColor[] generateDebugVertices(ElementState state)
         {
-            var wireframeColor = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugColor);
+            var wireframeColor = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugWireframeColor);
 
             return new VertexPositionColor[]
             {

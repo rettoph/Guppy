@@ -102,7 +102,7 @@ namespace Guppy.UI.Elements
         /// <returns></returns>
         protected override VertexPositionColor[] generateDebugVertices(ElementState state)
         {
-            var wireframeColor = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugColor);
+            var wireframeColor = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugWireframeColor);
             var paddingColor = Color.Gray;
 
             // Load padding values...
