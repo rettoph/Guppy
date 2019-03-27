@@ -22,11 +22,11 @@ namespace Guppy.UI.Elements
         #region Private Fields
         private Dictionary<ElementState, Texture2D> _textures;
         private Dictionary<ElementState, VertexPositionColor[]> _debugVertices;
-        private Boolean _mouseOver;
         private Boolean _hasLeftButtonBeenUp;
         #endregion
 
         #region Protected Attributes
+        protected Boolean mouseOver { get; private set; }
         protected SpriteBatch internalSpriteBatch { get { return this.Stage.internalSpriteBatch; } }
         protected GraphicsDevice graphicsDevice { get { return this.Stage.graphicsDevice; } }
         protected InputManager inputManager { get { return this.Stage.inputManager; } }
@@ -70,31 +70,31 @@ namespace Guppy.UI.Elements
 
         public virtual void Update(GameTime gameTime)
         {
-            _mouseOver = this.Bounds.Contains(inputManager.Mouse.Position);
+            this.mouseOver = this.Bounds.Contains(inputManager.Mouse.Position);
 
-            if (_mouseOver && this.State == ElementState.Normal)
+            if (this.mouseOver && this.State == ElementState.Normal)
             { // If mouse enter...
                 this.State = ElementState.Hovered;
                 this.OnMouseEnter?.Invoke(this, this);
 
                 _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
             }
-            else if (!_mouseOver && this.State != ElementState.Normal)
+            else if (!this.mouseOver && this.State != ElementState.Normal)
             { // If mouse exit...
                 this.State = ElementState.Normal;
                 this.OnMouseExit?.Invoke(this, this);
             }
-            else if (_mouseOver && this.State == ElementState.Hovered && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp)
+            else if (this.mouseOver && this.State == ElementState.Hovered && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp)
             { // If mouse down...
                 this.State = ElementState.Active;
                 this.OnMouseDown?.Invoke(this, this);
             }
-            else if (_mouseOver && this.State == ElementState.Active && inputManager.Mouse.LeftButton == ButtonState.Released)
+            else if (this.mouseOver && this.State == ElementState.Active && inputManager.Mouse.LeftButton == ButtonState.Released)
             { // If mouse up...
                 this.State = ElementState.Hovered;
                 this.OnMouseUp?.Invoke(this, this);
             }
-            else if (_mouseOver && !_hasLeftButtonBeenUp && inputManager.Mouse.LeftButton == ButtonState.Released)
+            else if (this.mouseOver && !_hasLeftButtonBeenUp && inputManager.Mouse.LeftButton == ButtonState.Released)
             { // If mouse up (when it was down on hover)
                 _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
             }

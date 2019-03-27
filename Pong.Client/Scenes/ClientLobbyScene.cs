@@ -49,7 +49,7 @@ namespace Pong.Client.Scenes
             content.Add(new TextElement(0.8f, 0.8f, 0.1f, 0.1f, "C", styleSheet));
             content.Add(new TextElement(0.1f, 0.8f, 0.1f, 0.1f, "D", styleSheet));
 
-            sidebar.Add(new TextElement(25, 25, 150, 25, "1", styleSheet));
+            sidebar.Add(new Input(25, 25, 150, 25, "1", styleSheet));
             sidebar.Add(new TextElement(25, 75, 150, 25, "2", styleSheet));
             sidebar.Add(new TextElement(25, 125, 150, 25, "3", styleSheet));
             sidebar.Add(new TextElement(25, 175, 150, 25, "4", styleSheet));

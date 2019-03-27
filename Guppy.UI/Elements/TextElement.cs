@@ -27,6 +27,8 @@ namespace Guppy.UI.Elements
             }
         }
 
+        protected Vector2 textBounds { get; private set; }
+
         public TextElement(Unit x, Unit y, Unit width, Unit height, String text = "", StyleSheet rootStyleSheet = null) : base(x, y, width, height, rootStyleSheet)
         {
             this.Text = text;
@@ -43,7 +45,7 @@ namespace Guppy.UI.Elements
 
             if (font != null && this.Text != String.Empty)
             {
-                var textBounds = font.MeasureString(this.Text);
+                this.textBounds = font.MeasureString(this.Text);
                 Vector2 textPosition = new Vector2(0, 0);
 
                 // Load padding values...
@@ -66,11 +68,11 @@ namespace Guppy.UI.Elements
                 }
                 else if ((alignment & Alignment.HorizontalCenter) != 0)
                 {
-                    textPosition.X = (target.Width - textBounds.X) / 2;
+                    textPosition.X = (target.Width - this.textBounds.X) / 2;
                 }
                 else if ((alignment & Alignment.Right) != 0)
                 {
-                    textPosition.X = target.Width - textBounds.X - padRight;
+                    textPosition.X = target.Width - this.textBounds.X - padRight;
                 }
 
                 /*
@@ -82,11 +84,11 @@ namespace Guppy.UI.Elements
                 }
                 else if ((alignment & Alignment.VerticalCenter) != 0)
                 {
-                    textPosition.Y = (target.Height - textBounds.Y) / 2;
+                    textPosition.Y = (target.Height - this.textBounds.Y) / 2;
                 }
                 else if ((alignment & Alignment.Bottom) != 0)
                 {
-                    textPosition.Y = target.Height - textBounds.Y - padBottom;
+                    textPosition.Y = target.Height - this.textBounds.Y - padBottom;
                 }
 
                 this.internalSpriteBatch.Begin(samplerState: SamplerState.PointClamp);
