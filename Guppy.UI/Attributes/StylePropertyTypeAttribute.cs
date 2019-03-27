@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Guppy.UI.Attributes
 {
+    [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public class StylePropertyTypeAttribute : Attribute
     {
         private Type _type;
