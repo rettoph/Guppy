@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Guppy;
 using Guppy.Configurations;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Guppy.Client.Layers
+namespace Pong.Library.Layers
 {
-    public class DebugLayer : Layer
+    public class SimpleLayer : Layer
     {
         private SpriteBatch _spriteBatch;
 
-        public DebugLayer(SpriteBatch spriteBatch, Scene scene, LayerConfiguration configuration) : base(scene, configuration)
+        public SimpleLayer(Scene scene, LayerConfiguration configuration, SpriteBatch spriteBatch = null, GameWindow window = null, GraphicsDevice graphicsDevice = null) : base(scene, configuration, window, graphicsDevice)
         {
             _spriteBatch = spriteBatch;
-
-            this.entities.Added += this.HandleEntityAdded;
-        }
-
-        private void HandleEntityAdded(object sender, Entity e)
-        {
-            throw new NotImplementedException();
         }
 
         public override void Draw(GameTime gameTime)
@@ -32,7 +26,7 @@ namespace Guppy.Client.Layers
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            this.entities.Update(gameTime);
         }
     }
 }

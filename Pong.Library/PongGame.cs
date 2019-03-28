@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Peers;
+using Pong.Library.Layers;
+using Guppy.Extensions;
 
 namespace Pong.Library
 {
@@ -21,6 +23,8 @@ namespace Pong.Library
             this.config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
             this.config.ConnectionTimeout = 10;
             this.config.AutoFlushSendQueue = false;
+
+            this.services.AddLayer<SimpleLayer>();
         }
 
         protected override void PostInitialize()

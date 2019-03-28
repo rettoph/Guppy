@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Configurations;
 using Microsoft.Extensions.Logging;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Client.Entities
+namespace Guppy
 {
     /// <summary>
-    /// Debuggable entities
+    /// Special entity that have debuggable attributes
+    /// such as vertice drawing
     /// </summary>
     public abstract class DebuggableEntity : Entity
     {
@@ -21,6 +21,6 @@ namespace Guppy.Client.Entities
         {
         }
 
-        public abstract void AddVertices(ref List<VertexPositionColor> vertices);
+        public abstract void AddDebugVertices(ref List<VertexPositionColor> vertices);
     }
 }

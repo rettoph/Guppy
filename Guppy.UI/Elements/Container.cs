@@ -79,12 +79,12 @@ namespace Guppy.UI.Elements
                 child.UpdateCache();
         }
 
-        protected internal override void RegisterDebugVertices(ref List<VertexPositionColor> vertices)
+        protected internal override void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
-            base.RegisterDebugVertices(ref vertices);
+            base.AddDebugVertices(ref vertices);
 
             foreach (Element child in _children)
-                child.RegisterDebugVertices(ref vertices);
+                child.AddDebugVertices(ref vertices);
         }
         #endregion
     }

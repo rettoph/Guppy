@@ -4,7 +4,6 @@ using Guppy.UI.Entities;
 using Guppy.UI.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Pong.Client.Layers;
 using Pong.Library.Scenes;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,6 @@ namespace Pong.Client.Scenes
         {
             base.Initialize();
 
-            this.layers.Create<SimpleLayer>();
             var styleSheet = new StyleSheet();
             styleSheet.SetProperty<SpriteFont>(StyleProperty.Font, _font);
             styleSheet.SetProperty<Color>(StyleProperty.FontColor, Color.White);

@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Pong.Client.Layers;
 using Pong.Client.Scenes;
 using Pong.Library;
 using System;
@@ -43,8 +42,6 @@ namespace Pong.Client
             this.services.AddSingleton<SpriteBatch>(new SpriteBatch(_graphics.GraphicsDevice));
 
             this.services.AddScene<ClientLobbyScene>();
-
-            this.services.AddLayer<SimpleLayer>();
         }
 
         protected override void PreInitialize()

@@ -137,7 +137,7 @@ namespace Guppy.UI.Elements
             this.Dirty = false;
         }
 
-        protected internal virtual void RegisterDebugVertices(ref List<VertexPositionColor> vertices)
+        protected internal virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
             vertices.AddRange(_debugVertices[this.State]);
         }

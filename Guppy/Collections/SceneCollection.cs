@@ -33,6 +33,9 @@ namespace Guppy.Collections
             // Create the new scene
             var scene = _provider.CreateScope().ServiceProvider.GetScene<TScene>();
 
+            if (scene == null)
+                throw new Exception($"Error creating Scene<{typeof(TScene).Name}> ");
+
             // return the new scene
             return scene;
         }

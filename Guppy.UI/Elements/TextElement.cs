@@ -63,7 +63,6 @@ namespace Guppy.UI.Elements
 
                 // Begin work on text snipper rendering...
                 this.graphicsDevice.SetRenderTarget(textTarget);
-                this.graphicsDevice.Clear(Color.DarkGray);
 
 
                 /*
@@ -100,13 +99,13 @@ namespace Guppy.UI.Elements
 
                 
                 // Draw the text onto the text target...
-                this.internalSpriteBatch.Begin(blendState: BlendState.Additive, samplerState: SamplerState.PointClamp);
+                this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
                 this.internalSpriteBatch.DrawString(font, this.Text, textPosition, color);
                 this.internalSpriteBatch.End();
 
                 // Draw the text target onto the element target...
                 this.graphicsDevice.SetRenderTarget(target);
-                this.internalSpriteBatch.Begin(blendState: BlendState.Additive, samplerState: SamplerState.PointClamp);
+                this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
                 this.internalSpriteBatch.Draw(textTarget, new Vector2(padLeft, padTop), Color.White);
                 this.internalSpriteBatch.End();
 

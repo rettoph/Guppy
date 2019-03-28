@@ -7,13 +7,14 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Security;
 using Guppy.Network.Groups;
+using Pong.Server.Scenes;
+using Guppy.Extensions;
 
 namespace Pong.Server
 {
     public class ServerPongGame : PongGame
     {
         private ServerPeer _server;
-        private ServerGroup _serverGroup;
 
         public ServerPongGame()
         {
@@ -24,6 +25,8 @@ namespace Pong.Server
             base.Boot();
 
             this.config.Port = 1337;
+
+            this.services.AddScene<ServerLobbyScene>();
         }
 
         protected override void PostInitialize()
@@ -32,6 +35,9 @@ namespace Pong.Server
 
             _server = this.provider.GetService<ServerPeer>();
             _server.Users.Added += this.HandleUserJoinedServer;
+
+            // Create a new lobby scene
+            this.scenes.Create<ServerLobbyScene>();
         }
 
         protected override Peer PeerFactory(IServiceProvider arg)

@@ -79,6 +79,9 @@ namespace Guppy.Collections
             // Update all the drawables
             foreach (Layer livingObject in _drawables)
                 livingObject.Draw(gameTime);
+            // Draw all debug enabled layers
+            foreach (Layer livingObject in _drawables)
+                livingObject.DebugDraw(gameTime);
         }
 
         public void Update(GameTime gameTime)
