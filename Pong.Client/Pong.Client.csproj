@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Layers\**" />
+    <EmbeddedResource Remove="Layers\**" />
+    <None Remove="Layers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.7.0.7" />
   </ItemGroup>
@@ -19,9 +25,5 @@
 
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Layers\" />
   </ItemGroup>
 </Project>

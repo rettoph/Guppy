@@ -28,10 +28,14 @@ namespace Guppy.UI.Elements
         }
 
         protected Vector2 textBounds { get; private set; }
+        private Vector2 _textPosition;
+        protected Vector2 textPosition { get { return _textPosition; } }
 
         public TextElement(Unit x, Unit y, Unit width, Unit height, String text = "", StyleSheet rootStyleSheet = null) : base(x, y, width, height, rootStyleSheet)
         {
             this.Text = text;
+
+            _textPosition = new Vector2(0, 0);
         }
 
         protected override void generateTexture(ElementState state, ref RenderTarget2D target)
@@ -43,7 +47,7 @@ namespace Guppy.UI.Elements
             var alignment = this.StyleSheet.GetProperty<Alignment>(state, StyleProperty.TextAlignment);
 
 
-            if (font != null && this.Text != String.Empty)
+            if (font != null)
             {
                 // Load padding values...
                 var padTop = this.StyleSheet.GetProperty<Unit>(state, StyleProperty.PaddingTop);
@@ -58,59 +62,62 @@ namespace Guppy.UI.Elements
 
                 // Load required assets for text loading
                 this.textBounds = font.MeasureString(this.Text);
-                Vector2 textPosition = new Vector2(0, 0);
-                var textTarget = new RenderTarget2D(this.graphicsDevice, target.Width - padLeft - padRight, target.Height - padTop - padBottom);
 
-                // Begin work on text snipper rendering...
-                this.graphicsDevice.SetRenderTarget(textTarget);
+                if (target.Width - padLeft - padRight > 0 && target.Height - padTop - padBottom > 0)
+                { // Only draw the text if the text target is greater than 0
+                    var textTarget = new RenderTarget2D(this.graphicsDevice, target.Width - padLeft - padRight, target.Height - padTop - padBottom);
+
+                    // Begin work on text snipper rendering...
+                    this.graphicsDevice.SetRenderTarget(textTarget);
 
 
-                /*
-                 * Horizontal Alignment Logic
-                 */
-                if ((alignment & Alignment.Left) != 0)
-                {
-                    textPosition.X = 0;
+                    /*
+                     * Horizontal Alignment Logic
+                     */
+                    if ((alignment & Alignment.Left) != 0 && this.textBounds.X < textTarget.Width)
+                    {
+                        _textPosition.X = 0;
+                    }
+                    else if ((alignment & Alignment.HorizontalCenter) != 0 && this.textBounds.X < textTarget.Width)
+                    {
+                        _textPosition.X = (Int32)((textTarget.Width - this.textBounds.X) / 2);
+                    }
+                    else if ((alignment & Alignment.Right) != 0 || this.textBounds.X > textTarget.Width)
+                    {
+                        _textPosition.X = textTarget.Width - this.textBounds.X;
+                    }
+
+                    /*
+                     * Vertical Alignment Logic
+                     */
+                    if ((alignment & Alignment.Top) != 0)
+                    {
+                        _textPosition.Y = 0;
+                    }
+                    else if ((alignment & Alignment.VerticalCenter) != 0)
+                    {
+                        _textPosition.Y = (Int32)((textTarget.Height - font.LineSpacing) / 2);
+                    }
+                    else if ((alignment & Alignment.Bottom) != 0)
+                    {
+                        _textPosition.Y = textTarget.Height - font.LineSpacing;
+                    }
+
+
+                    // Draw the text onto the text target...
+                    this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend);
+                    this.internalSpriteBatch.DrawString(font, this.Text, this.textPosition, color);
+                    this.internalSpriteBatch.End();
+
+                    // Draw the text target onto the element target...
+                    this.graphicsDevice.SetRenderTarget(target);
+                    this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend);
+                    this.internalSpriteBatch.Draw(textTarget, new Vector2(padLeft.Value, padTop.Value), Color.White);
+                    this.internalSpriteBatch.End();
+
+                    // Dispose of the text target
+                    textTarget?.Dispose();
                 }
-                else if ((alignment & Alignment.HorizontalCenter) != 0)
-                {
-                    textPosition.X = (textTarget.Width - this.textBounds.X) / 2;
-                }
-                else if ((alignment & Alignment.Right) != 0)
-                {
-                    textPosition.X = textTarget.Width - this.textBounds.X;
-                }
-
-                /*
-                 * Vertical Alignment Logic
-                 */
-                if ((alignment & Alignment.Top) != 0)
-                {
-                    textPosition.Y = 0;
-                }
-                else if ((alignment & Alignment.VerticalCenter) != 0)
-                {
-                    textPosition.Y = (textTarget.Height - this.textBounds.Y) / 2;
-                }
-                else if ((alignment & Alignment.Bottom) != 0)
-                {
-                    textPosition.Y = textTarget.Height - this.textBounds.Y;
-                }
-
-                
-                // Draw the text onto the text target...
-                this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-                this.internalSpriteBatch.DrawString(font, this.Text, textPosition, color);
-                this.internalSpriteBatch.End();
-
-                // Draw the text target onto the element target...
-                this.graphicsDevice.SetRenderTarget(target);
-                this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp);
-                this.internalSpriteBatch.Draw(textTarget, new Vector2(padLeft, padTop), Color.White);
-                this.internalSpriteBatch.End();
-
-                // Dispose of the text target
-                textTarget?.Dispose();
             }
         }
 

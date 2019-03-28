@@ -23,7 +23,6 @@ namespace Guppy.UI.Entities
     {
         #region Private Fields
         private SpriteBatch _spriteBatch;
-        private GameWindow _window;
         private Rectangle _innerBounds;
 
         private Boolean _dirtyBounds;
@@ -32,6 +31,7 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Protected Fields
+        protected internal GameWindow window;
         protected internal SpriteBatch internalSpriteBatch;
         protected internal GraphicsDevice graphicsDevice;
         protected internal InputManager inputManager;
@@ -56,9 +56,9 @@ namespace Guppy.UI.Entities
         public Stage(IServiceProvider provider, InputManager inputManager, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, GameWindow window, EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
         {
             _spriteBatch = spriteBatch;
-            _window = window;
+            this.window = window;
             _dirtyBounds = true;
-            _innerBounds = new Rectangle(0, 0, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _innerBounds = new Rectangle(0, 0, this.window.ClientBounds.Width, this.window.ClientBounds.Height);
             _content = provider.GetLoader<ContentLoader>();
 
             this.graphicsDevice = graphicsDevice;
@@ -69,7 +69,7 @@ namespace Guppy.UI.Entities
             this.Content = new StageContainer(this, 0, 0, 1f, 1f);
             this.Content.UpdateBounds(_innerBounds);
 
-            _window.ClientSizeChanged += this.HandleClientSizeChanged;
+            this.window.ClientSizeChanged += this.HandleClientSizeChanged;
 
             this.SetEnabled(true);
             this.SetVisible(true);
@@ -102,8 +102,8 @@ namespace Guppy.UI.Entities
 
             if(_dirtyBounds)
             { // Update the content if the elements bounds are dirty
-                _innerBounds.Width = _window.ClientBounds.Width - 1;
-                _innerBounds.Height = _window.ClientBounds.Height - 1;
+                _innerBounds.Width = this.window.ClientBounds.Width - 1;
+                _innerBounds.Height = this.window.ClientBounds.Height - 1;
 
                 this.Content.UpdateBounds(_innerBounds);
                 this.Content.UpdateCache();

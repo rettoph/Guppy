@@ -15,6 +15,8 @@ namespace Pong.Library.Layers
         public SimpleLayer(Scene scene, LayerConfiguration configuration, SpriteBatch spriteBatch = null, GameWindow window = null, GraphicsDevice graphicsDevice = null) : base(scene, configuration, window, graphicsDevice)
         {
             _spriteBatch = spriteBatch;
+
+            this.Debug = true;
         }
 
         public override void Draw(GameTime gameTime)

@@ -30,6 +30,7 @@ namespace Guppy.UI.Elements
         protected SpriteBatch internalSpriteBatch { get { return this.Stage.internalSpriteBatch; } }
         protected GraphicsDevice graphicsDevice { get { return this.Stage.graphicsDevice; } }
         protected InputManager inputManager { get { return this.Stage.inputManager; } }
+        protected GameWindow window { get { return this.Stage.window; } }
         #endregion
 
         #region Public Attributes
@@ -118,12 +119,15 @@ namespace Guppy.UI.Elements
                     _textures[state]?.Dispose();
 
                 // Create a new render target and set the graphics device target to it...
-                var renderTarget = new RenderTarget2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
-                this.graphicsDevice.SetRenderTarget(renderTarget);
-                this.graphicsDevice.Clear(Color.Transparent);
-                // Generate a new texture for this state...
-                this.generateTexture(state, ref renderTarget);
-                _textures[state] = renderTarget;
+                if (this.Bounds.Width > 0 && this.Bounds.Height > 0)
+                {
+                    var renderTarget = new RenderTarget2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
+                    this.graphicsDevice.SetRenderTarget(renderTarget);
+                    this.graphicsDevice.Clear(Color.Transparent);
+                    // Generate a new texture for this state...
+                    this.generateTexture(state, ref renderTarget);
+                    _textures[state] = renderTarget;
+                }
 
                 // Generate new debug vertices for the element..
                 _debugVertices[state] = this.generateDebugVertices(state);

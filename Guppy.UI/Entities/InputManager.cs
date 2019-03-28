@@ -5,6 +5,8 @@ using Guppy.Configurations;
 using Guppy.UI.Structs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System.Linq;
 
 namespace Guppy.UI.Entities
 {
@@ -12,7 +14,7 @@ namespace Guppy.UI.Entities
     {
         public MouseData Mouse;
 
-        public InputManager(EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
+        public InputManager(GameWindow window, EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
         {
             this.SetVisible(false);
 
@@ -28,6 +30,7 @@ namespace Guppy.UI.Entities
 
         public override void Update(GameTime gameTime)
         {
+            // Cache the mouse state...
             var mState = Microsoft.Xna.Framework.Input.Mouse.GetState();
 
             this.Mouse.Position = mState.Position.ToVector2();

@@ -14,7 +14,7 @@ namespace Guppy.UI.StyleSheets
     {
         private Element _parent;
 
-        public BaseStyleSheet Root { get; set; }
+        public StyleSheet Root { get; set; }
 
         public ElementStyleSheet(StyleSheet root, Element parent)
         {
