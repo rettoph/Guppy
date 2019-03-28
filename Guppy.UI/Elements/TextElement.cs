@@ -45,9 +45,6 @@ namespace Guppy.UI.Elements
 
             if (font != null && this.Text != String.Empty)
             {
-                this.textBounds = font.MeasureString(this.Text);
-                Vector2 textPosition = new Vector2(0, 0);
-
                 // Load padding values...
                 var padTop = this.StyleSheet.GetProperty<Unit>(state, StyleProperty.PaddingTop);
                 var padRight = this.StyleSheet.GetProperty<Unit>(state, StyleProperty.PaddingRight);
@@ -59,20 +56,30 @@ namespace Guppy.UI.Elements
                 padBottom.UpdateValue(this.Bounds.Height);
                 padLeft.UpdateValue(this.Bounds.Width);
 
+                // Load required assets for text loading
+                this.textBounds = font.MeasureString(this.Text);
+                Vector2 textPosition = new Vector2(0, 0);
+                var textTarget = new RenderTarget2D(this.graphicsDevice, target.Width - padLeft - padRight, target.Height - padTop - padBottom);
+
+                // Begin work on text snipper rendering...
+                this.graphicsDevice.SetRenderTarget(textTarget);
+                this.graphicsDevice.Clear(Color.DarkGray);
+
+
                 /*
                  * Horizontal Alignment Logic
                  */
                 if ((alignment & Alignment.Left) != 0)
                 {
-                    textPosition.X = padLeft;
+                    textPosition.X = 0;
                 }
                 else if ((alignment & Alignment.HorizontalCenter) != 0)
                 {
-                    textPosition.X = (target.Width - this.textBounds.X) / 2;
+                    textPosition.X = (textTarget.Width - this.textBounds.X) / 2;
                 }
                 else if ((alignment & Alignment.Right) != 0)
                 {
-                    textPosition.X = target.Width - this.textBounds.X - padRight;
+                    textPosition.X = textTarget.Width - this.textBounds.X;
                 }
 
                 /*
@@ -80,20 +87,31 @@ namespace Guppy.UI.Elements
                  */
                 if ((alignment & Alignment.Top) != 0)
                 {
-                    textPosition.Y = padTop;
+                    textPosition.Y = 0;
                 }
                 else if ((alignment & Alignment.VerticalCenter) != 0)
                 {
-                    textPosition.Y = (target.Height - this.textBounds.Y) / 2;
+                    textPosition.Y = (textTarget.Height - this.textBounds.Y) / 2;
                 }
                 else if ((alignment & Alignment.Bottom) != 0)
                 {
-                    textPosition.Y = target.Height - this.textBounds.Y - padBottom;
+                    textPosition.Y = textTarget.Height - this.textBounds.Y;
                 }
 
-                this.internalSpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                
+                // Draw the text onto the text target...
+                this.internalSpriteBatch.Begin(blendState: BlendState.Additive, samplerState: SamplerState.PointClamp);
                 this.internalSpriteBatch.DrawString(font, this.Text, textPosition, color);
                 this.internalSpriteBatch.End();
+
+                // Draw the text target onto the element target...
+                this.graphicsDevice.SetRenderTarget(target);
+                this.internalSpriteBatch.Begin(blendState: BlendState.Additive, samplerState: SamplerState.PointClamp);
+                this.internalSpriteBatch.Draw(textTarget, new Vector2(padLeft, padTop), Color.White);
+                this.internalSpriteBatch.End();
+
+                // Dispose of the text target
+                textTarget?.Dispose();
             }
         }
 

@@ -50,7 +50,7 @@ namespace Guppy.UI.Elements
         {
             base.Draw(gameTime, spriteBatch);
 
-            this.Caret.Draw(gameTime, spriteBatch);
+            // this.Caret.Draw(gameTime, spriteBatch);
         }
         #endregion
 
