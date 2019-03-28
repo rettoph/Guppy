@@ -42,6 +42,7 @@ namespace Pong.Client
             this.services.AddSingleton<SpriteBatch>(new SpriteBatch(_graphics.GraphicsDevice));
 
             this.services.AddScene<ClientLobbyScene>();
+            this.services.AddScene<ClientLoginScene>();
         }
 
         protected override void PreInitialize()
@@ -49,15 +50,11 @@ namespace Pong.Client
             base.PreInitialize();
 
             var contentLoader = this.provider.GetLoader<ContentLoader>();
-            contentLoader.Register("texture:ui:button:lobby", "Sprites/UI/button-lobby");
-            contentLoader.Register("texture:ui:button:lobby:hovered", "Sprites/UI/button-lobby-hover");
-            contentLoader.Register("texture:ui:button:lobby:active", "Sprites/UI/button-lobby-active");
-            contentLoader.Register("texture:ui:lobby:sidebar", "Sprites/UI/lobby-sidebar");
-            contentLoader.Register("texture:ui:lobby:header", "Sprites/UI/lobby-header");
-
-            contentLoader.Register("paddle-left", "Sprites/paddle-left");
-            contentLoader.Register("paddle-center", "Sprites/paddle-center");
-            contentLoader.Register("paddle-right", "Sprites/paddle-right");
+            contentLoader.Register("texture:ui:login:form", "Sprites/UI/login-form");
+            contentLoader.Register("texture:ui:login:input", "Sprites/UI/login-input");
+            contentLoader.Register("texture:ui:login:input:active", "Sprites/UI/login-input-active");
+            contentLoader.Register("texture:ui:login:button", "Sprites/UI/login-button");
+            contentLoader.Register("texture:ui:login:button:pressed", "Sprites/UI/login-button-pressed");
         }
 
         protected override void PostInitialize()
@@ -65,10 +62,9 @@ namespace Pong.Client
             base.PostInitialize();
 
             var client = this.provider.GetService<ClientPeer>();
-            client.Connect("localhost", 1337, new User());
 
             // Create a new lobby scene
-            this.scenes.Create<ClientLobbyScene>();
+            this.scenes.Create<ClientLoginScene>();
         }
 
         protected override Peer PeerFactory(IServiceProvider arg)

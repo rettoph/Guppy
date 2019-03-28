@@ -16,7 +16,6 @@ namespace Guppy.UI.Elements
         private Boolean _caretVisible;
         private DateTime _lastCaretVisibleChange;
 
-        public Boolean Selected { get; protected set; }
         public Caret Caret { get; private set; }
 
         public Input(
@@ -31,10 +30,10 @@ namespace Guppy.UI.Elements
             _caretVisible = false;
             _lastCaretVisibleChange = DateTime.Now;
 
-            this.Selected = false;
             this.Caret = new Caret(0, 0, caretWidth ?? 1, 1f, this.StyleSheet.Root);
 
-            this.OnMouseUp += this.HandleMouseUp;
+            this.OnActivated += this.HandleActivated;
+            this.OnDeactivated += this.HandleDeactivated;
         }
 
         #region Frame Methods
@@ -42,7 +41,7 @@ namespace Guppy.UI.Elements
         {
             base.Update(gameTime);
 
-            if (this.Selected)
+            if (this.State == ElementState.Active)
             {
                 // Update the text as needed...
 
@@ -58,13 +57,6 @@ namespace Guppy.UI.Elements
                 {
                     _lastCaretVisibleChange = DateTime.Now;
                     _caretVisible = !_caretVisible;
-                }
-
-                if (!this.mouseOver && this.inputManager.Mouse.LeftButton == ButtonState.Pressed)
-                { // Mark the current element as inactive
-                    this.Selected = false;
-                    _caretVisible = false;
-                    this.window.TextInput -= this.HandleTextInput;
                 }
             }
         }
@@ -100,13 +92,14 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Event Handlers
-        private void HandleMouseUp(object sender, Element e)
+        private void HandleActivated(object sender, Element e)
         {
-            if(!this.Selected)
-            {
-                this.Selected = true;
-                this.window.TextInput += this.HandleTextInput;
-            }
+            this.window.TextInput += this.HandleTextInput;
+        }
+        private void HandleDeactivated(object sender, Element e)
+        {
+            this.window.TextInput -= this.HandleTextInput;
+            _caretVisible = false;
         }
 
         private void HandleTextInput(object sender, TextInputEventArgs e)

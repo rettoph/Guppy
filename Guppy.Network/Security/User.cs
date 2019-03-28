@@ -76,8 +76,8 @@ namespace Guppy.Network.Security
             om.Write(outboundClaims.Count());
             foreach (KeyValuePair<String, Claim> claim in outboundClaims)
             {
-                om.Write(claim.Key);
                 om.Write((Byte)claim.Value.Type);
+                om.Write(claim.Key);
                 om.Write(claim.Value.Value);
             }
         }

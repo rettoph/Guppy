@@ -46,6 +46,8 @@ namespace Guppy.UI.Elements
         public event EventHandler<Element> OnMouseExit;
         public event EventHandler<Element> OnMouseDown;
         public event EventHandler<Element> OnMouseUp;
+        public event EventHandler<Element> OnActivated;
+        public event EventHandler<Element> OnDeactivated;
         #endregion
 
         #region Constructors
@@ -80,24 +82,32 @@ namespace Guppy.UI.Elements
 
                 _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
             }
-            else if (!this.mouseOver && this.State != ElementState.Normal)
+            else if (!this.mouseOver && (this.State != ElementState.Normal && this.State != ElementState.Active))
             { // If mouse exit...
-                this.State = ElementState.Normal;
+                if(this.State != ElementState.Active)
+                    this.State = ElementState.Normal;
+
                 this.OnMouseExit?.Invoke(this, this);
             }
-            else if (this.mouseOver && this.State == ElementState.Hovered && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp)
+            else if (this.mouseOver && (this.State == ElementState.Hovered || this.State == ElementState.Active) && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp)
             { // If mouse down...
-                this.State = ElementState.Active;
+                this.State = ElementState.Pressed;
                 this.OnMouseDown?.Invoke(this, this);
             }
-            else if (this.mouseOver && this.State == ElementState.Active && inputManager.Mouse.LeftButton == ButtonState.Released)
+            else if (this.mouseOver && this.State == ElementState.Pressed && inputManager.Mouse.LeftButton == ButtonState.Released)
             { // If mouse up...
-                this.State = ElementState.Hovered;
+                this.State = ElementState.Active;
+                this.OnActivated?.Invoke(this, this);
                 this.OnMouseUp?.Invoke(this, this);
             }
             else if (this.mouseOver && !_hasLeftButtonBeenUp && inputManager.Mouse.LeftButton == ButtonState.Released)
             { // If mouse up (when it was down on hover)
                 _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
+            }
+            else if(!this.mouseOver && this.State == ElementState.Active && inputManager.Mouse.LeftButton == ButtonState.Pressed)
+            { // If mouse inactive
+                this.State = ElementState.Normal;
+                this.OnDeactivated?.Invoke(this, this);
             }
 
             if (this.Dirty)
@@ -152,9 +162,16 @@ namespace Guppy.UI.Elements
         /// <param name="state"></param>
         protected virtual void generateTexture(ElementState state, ref RenderTarget2D target)
         {
-            this.internalSpriteBatch.Begin();
+            this.graphicsDevice.Clear(Color.Transparent);
 
-            this.internalSpriteBatch.End();
+            var background = this.StyleSheet.GetProperty<Texture2D>(state, StyleProperty.BackgroundImage);
+
+            if (background != null)
+            {
+                this.internalSpriteBatch.Begin();
+                this.internalSpriteBatch.Draw(background, target.Bounds, Color.White);
+                this.internalSpriteBatch.End();
+            }
         }
 
         /// <summary>

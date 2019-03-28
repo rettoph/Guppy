@@ -57,7 +57,7 @@ namespace Pong.Client.Scenes
 
         public override void Draw(GameTime gameTime)
         {
-            _graphics.Clear(Color.Black);
+            _graphics.Clear(Color.Gray);
 
             base.Draw(gameTime);
         }

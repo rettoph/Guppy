@@ -54,7 +54,7 @@ namespace Guppy
             _debuggables = new List<DebuggableEntity>();
 
             this.Configuration = configuration;
-            this.Debug = true;
+            this.Debug = false;
 
             this.entities = new LivingObjectCollection<Entity>();
             this.entities.DisposeOnRemove = false;

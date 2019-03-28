@@ -11,12 +11,14 @@ namespace Pong.Library.Layers
     public class SimpleLayer : Layer
     {
         private SpriteBatch _spriteBatch;
+        private GraphicsDevice _graphicsDevice;
 
         public SimpleLayer(Scene scene, LayerConfiguration configuration, SpriteBatch spriteBatch = null, GameWindow window = null, GraphicsDevice graphicsDevice = null) : base(scene, configuration, window, graphicsDevice)
         {
             _spriteBatch = spriteBatch;
+            _graphicsDevice = graphicsDevice;
 
-            this.Debug = true;
+            this.Debug = false;
         }
 
         public override void Draw(GameTime gameTime)

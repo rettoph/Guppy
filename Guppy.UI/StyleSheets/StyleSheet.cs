@@ -13,7 +13,7 @@ namespace Guppy.UI.StyleSheets
             // Set the default debug overlay colors
             this.SetProperty(ElementState.Normal, StyleProperty.DebugWireframeColor, Color.Red);
             this.SetProperty(ElementState.Hovered, StyleProperty.DebugWireframeColor, Color.Blue);
-            this.SetProperty(ElementState.Active, StyleProperty.DebugWireframeColor, Color.Green);
+            this.SetProperty(ElementState.Pressed, StyleProperty.DebugWireframeColor, Color.Green);
         }
     }
 }

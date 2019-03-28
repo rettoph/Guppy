@@ -40,8 +40,6 @@ namespace Guppy.UI.Elements
 
         protected override void generateTexture(ElementState state, ref RenderTarget2D target)
         {
-            base.generateTexture(state, ref target);
-
             var font = this.StyleSheet.GetProperty<SpriteFont>(state, StyleProperty.Font);
             var color = this.StyleSheet.GetProperty<Color>(state, StyleProperty.FontColor);
             var alignment = this.StyleSheet.GetProperty<Alignment>(state, StyleProperty.TextAlignment);
@@ -69,7 +67,7 @@ namespace Guppy.UI.Elements
 
                     // Begin work on text snipper rendering...
                     this.graphicsDevice.SetRenderTarget(textTarget);
-
+                    this.graphicsDevice.Clear(Color.Transparent);
 
                     /*
                      * Horizontal Alignment Logic
@@ -111,7 +109,9 @@ namespace Guppy.UI.Elements
 
                     // Draw the text target onto the element target...
                     this.graphicsDevice.SetRenderTarget(target);
-                    this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend);
+                    base.generateTexture(state, ref target);
+
+                    this.internalSpriteBatch.Begin();
                     this.internalSpriteBatch.Draw(textTarget, new Vector2(padLeft.Value, padTop.Value), Color.White);
                     this.internalSpriteBatch.End();
 

@@ -8,6 +8,7 @@ namespace Guppy.UI.Enums
     {
         Normal,
         Hovered,
+        Pressed,
         Active
     }
 }
