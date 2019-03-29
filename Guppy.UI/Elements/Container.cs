@@ -21,7 +21,8 @@ namespace Guppy.UI.Elements
         }
 
         #region Adders & Removers
-        public Element Add(Element child)
+        public TELement Add<TELement>(TELement child)
+            where TELement : Element
         {
             if (child.Parent != null)
                 throw new Exception("Unable to add element to container. Element already has a parent!");

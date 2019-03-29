@@ -13,7 +13,7 @@ namespace Guppy.Network.Security
 
         public AuthenticateResult Authenticate(User user)
         {
-            return AuthenticateResult.Success("Welcome");
+            return AuthenticateResult.Success("Welcome!");
         }
     }
 }

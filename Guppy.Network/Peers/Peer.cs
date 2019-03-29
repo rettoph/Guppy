@@ -50,6 +50,10 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Methods
+        public event EventHandler<NetIncomingMessage> OnStatusChanged;
+        #endregion
+
+        #region Methods
         /// <summary>
         /// Start the internal NetPeer object
         /// </summary>
@@ -115,8 +119,16 @@ namespace Guppy.Network.Peers
                     case NetIncomingMessageType.NatIntroductionSuccess:
                         this.HandleNatIntroductionSuccess(_im);
                         break;
+                    default:
+                        this.logger.LogWarning($"Unhandled incoming message type => {_im.MessageType}");
+                        break;
                 }
             }
+        }
+
+        public NetPeer GetNetPeer()
+        {
+            return this.peer;
         }
 
         protected internal abstract Group CreateGroup(Guid id);
@@ -160,6 +172,7 @@ namespace Guppy.Network.Peers
         protected virtual void HandleStatusChanged(NetIncomingMessage im)
         {
             this.logger.LogDebug($"{im.MessageType} - {im.SenderConnection.Status}");
+            this.OnStatusChanged?.Invoke(this, im);
         }
 
         protected virtual void HandleUnconnectedData(NetIncomingMessage im)

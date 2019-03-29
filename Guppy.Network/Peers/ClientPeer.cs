@@ -37,12 +37,16 @@ namespace Guppy.Network.Peers
         {
             return new ClientGroup(id, this, this.logger);
         }
+        public NetClient GetNetClient()
+        {
+            return this.client;
+        }
         #endregion
 
         #region MessageType Handlers
         protected override void HandleStatusChanged(NetIncomingMessage im)
         {
-            this.logger.LogDebug($"{im.MessageType} - {im.SenderConnection.Status}");
+            base.HandleStatusChanged(im);
 
             switch (im.SenderConnection.Status)
             {

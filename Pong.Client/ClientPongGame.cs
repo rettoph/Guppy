@@ -41,6 +41,7 @@ namespace Pong.Client
             this.services.AddSingleton<ContentManager>(_content);
             this.services.AddSingleton<SpriteBatch>(new SpriteBatch(_graphics.GraphicsDevice));
 
+            this.services.AddScene<TransitionScene>();
             this.services.AddScene<ClientLobbyScene>();
             this.services.AddScene<ClientLoginScene>();
         }

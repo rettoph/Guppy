@@ -37,9 +37,9 @@ namespace Pong.Client.Scenes
             styleSheet.SetProperty<Color>(StyleProperty.FontColor, Color.White);
 
             var stage = this.entities.Create("ui:stage") as Stage;
-            var sidebar = stage.Content.Add(new Container(0, 50, 200, new Unit[] { 1f, -50 })) as Container;
-            var content = stage.Content.Add(new Container(200, 50, new Unit[] { 1f, -200 }, new Unit[] { 1f, -50 })) as Container;
-            var header = stage.Content.Add(new Container(0, 0, 1f, 50)) as Container;
+            var sidebar = stage.Content.Add(new Container(0, 50, 200, new Unit[] { 1f, -50 }));
+            var content = stage.Content.Add(new Container(200, 50, new Unit[] { 1f, -200 }, new Unit[] { 1f, -50 }));
+            var header = stage.Content.Add(new Container(0, 0, 1f, 50));
 
             content.Add(new TextElement(0.25f, 0.25f, 0.5f, 0.5f, "Hello World", styleSheet));
             content.Add(new TextElement(0.1f, 0.1f, 0.1f, 0.1f, "A", styleSheet));

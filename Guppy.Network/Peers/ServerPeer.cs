@@ -49,10 +49,14 @@ namespace Guppy.Network.Peers
         {
             return this.GetNetConnectionById(Int64.Parse(user.Get("connection")));
         }
-
         protected internal override Group CreateGroup(Guid id)
         {
             return new ServerGroup(id, this, this.logger);
+        }
+
+        public NetServer GetNetServer()
+        {
+            return this.server;
         }
         #endregion
 
