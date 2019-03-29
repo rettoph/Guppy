@@ -36,7 +36,7 @@ namespace Guppy.UI.Utilities
                 this.Height.Value);
         }
 
-        public void UpdateBounds(Rectangle container)
+        public virtual void UpdateBounds(Rectangle container)
         {
             this.X.UpdateValue(container.Width);
             this.Y.UpdateValue(container.Height);

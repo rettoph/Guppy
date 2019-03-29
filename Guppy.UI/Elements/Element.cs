@@ -34,8 +34,8 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Public Attributes
-        public Stage Stage { get; protected internal set; }
-        public Container Parent { get; protected internal set; }
+        public abstract Stage Stage { get; }
+        public Element Parent { get; protected internal set; }
         public ElementState State { get; protected set; }
         public ElementStyleSheet StyleSheet { get; private set; }
         public Boolean Dirty { get; set; }

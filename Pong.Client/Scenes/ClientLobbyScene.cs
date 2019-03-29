@@ -37,9 +37,9 @@ namespace Pong.Client.Scenes
             styleSheet.SetProperty<Color>(StyleProperty.FontColor, Color.White);
 
             var stage = this.entities.Create("ui:stage") as Stage;
-            var sidebar = stage.Content.Add(new Container(0, 50, 200, new Unit[] { 1f, -50 }));
-            var content = stage.Content.Add(new Container(200, 50, new Unit[] { 1f, -200 }, new Unit[] { 1f, -50 }));
-            var header = stage.Content.Add(new Container(0, 0, 1f, 50));
+            var sidebar = stage.Content.Add(new SimpleContainer(0, 50, 200, new Unit[] { 1f, -50 }));
+            var content = stage.Content.Add(new SimpleContainer(200, 50, new Unit[] { 1f, -200 }, new Unit[] { 1f, -50 }));
+            var header = stage.Content.Add(new SimpleContainer(0, 0, 1f, 50));
 
             content.Add(new TextElement(0.25f, 0.25f, 0.5f, 0.5f, "Hello World", styleSheet));
             content.Add(new TextElement(0.1f, 0.1f, 0.1f, 0.1f, "A", styleSheet));
@@ -47,7 +47,7 @@ namespace Pong.Client.Scenes
             content.Add(new TextElement(0.8f, 0.8f, 0.1f, 0.1f, "C", styleSheet));
             content.Add(new TextElement(0.1f, 0.8f, 0.1f, 0.1f, "D", styleSheet));
 
-            sidebar.Add(new Input(25, 25, 150, 30, "1", styleSheet));
+            sidebar.Add(new TextInput(25, 25, 150, 30, "1", styleSheet));
             sidebar.Add(new TextElement(25, 75, 150, 30, "2", styleSheet));
             sidebar.Add(new TextElement(25, 125, 150, 30, "3", styleSheet));
             sidebar.Add(new TextElement(25, 175, 150, 30, "4", styleSheet));

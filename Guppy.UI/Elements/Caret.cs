@@ -9,10 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.UI.Elements
 {
-    public class Caret : Element
+    public class Caret : SimpleElement
     {
-        protected internal Caret(Unit x, Unit y, Unit width, Unit height, StyleSheet rootStyleSheet = null) : base(x, y, width, height, rootStyleSheet)
+        protected internal Caret(TextInput parent, Unit x, Unit y, Unit width, Unit height, StyleSheet rootStyleSheet = null) : base(x, y, width, height, rootStyleSheet)
         {
+            this.Parent = parent;
         }
 
         protected override void generateTexture(ElementState state, ref RenderTarget2D target)

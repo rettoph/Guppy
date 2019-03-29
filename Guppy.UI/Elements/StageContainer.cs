@@ -8,6 +8,8 @@ namespace Guppy.UI.Elements
 {
     public class StageContainer : Container
     {
+        public override Stage Stage { get; }
+
         public StageContainer(Stage stage, Unit x, Unit y, Unit width, Unit height) : base(x, y, width, height)
         {
             this.Stage = stage;

@@ -70,16 +70,16 @@ namespace Pong.Client.Scenes
             buttonStyles.SetProperty<Texture2D>(ElementState.Pressed, StyleProperty.BackgroundImage, _content.Get<Texture2D>("texture:ui:login:button:pressed"));
 
             // Build login form
-            var form = stage.Content.Add(new Container(new Unit[] { 0.5f, -200 }, new Unit[] { 0.45f, -100 }, 400, 200)) as Container;
+            var form = stage.Content.Add(new SimpleContainer(new Unit[] { 0.5f, -200 }, new Unit[] { 0.45f, -100 }, 400, 200)) as SimpleContainer;
             form.StyleSheet.SetProperty<Texture2D>(StyleProperty.BackgroundImage, _content.Get<Texture2D>("texture:ui:login:form"));
 
             form.Add(new TextElement(0.03f, 0.06f + (0.21f * 0), 150, 0.15f, "Name:", labelStyles));
             form.Add(new TextElement(0.03f, 0.06f + (0.21f * 1), 150, 0.15f, "Server Address:", labelStyles));
             form.Add(new TextElement(0.03f, 0.06f + (0.21f * 2), 150, 0.15f, "Server Port:", labelStyles));
 
-            _name = form.Add(new Input(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 0), new Unit[] { 0.94f, -150 }, 0.15f, "Tony", inputStyles));
-            _address = form.Add(new Input(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 1), new Unit[] { 0.94f, -150 }, 0.15f, "localhost", inputStyles));
-            _port = form.Add(new Input(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 2), new Unit[] { 0.94f, -150 }, 0.15f, "1337", inputStyles));
+            _name = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 0), new Unit[] { 0.94f, -150 }, 0.15f, "Tony", inputStyles));
+            _address = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 1), new Unit[] { 0.94f, -150 }, 0.15f, "localhost", inputStyles));
+            _port = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 2), new Unit[] { 0.94f, -150 }, 0.15f, "1337", inputStyles));
 
             var login = form.Add(new TextElement(0.03f, 0.69f, 0.94f, 0.25f, "Login", buttonStyles));
             login.OnMouseUp += this.HandleLoginClick;

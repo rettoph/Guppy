@@ -14,7 +14,7 @@ namespace Guppy.UI.Elements
     /// that contains a text value (and will utilize
     /// Text and Font relaated styles within the stylesheet)
     /// </summary>
-    public class TextElement : Element
+    public class TextElement : SimpleElement
     {
         private String _text;
         public String Text

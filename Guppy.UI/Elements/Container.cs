@@ -1,35 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.StyleSheets;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.UI.Elements
 {
-    /// <summary>
-    /// Containers are specific elements that can contain
-    /// other elements.
-    /// </summary>
-    public class Container : Element
+    public abstract class Container : Element
     {
-        private List<Element> _children;
+        protected List<Element> children;
 
         public Container(Unit x, Unit y, Unit width, Unit height) : base(x, y, width, height)
         {
-            _children = new List<Element>();
+            this.children = new List<Element>();
         }
 
         #region Adders & Removers
-        public TELement Add<TELement>(TELement child)
+        public virtual TELement Add<TELement>(TELement child)
             where TELement : Element
         {
+            this.Dirty = true;
+
             if (child.Parent != null)
                 throw new Exception("Unable to add element to container. Element already has a parent!");
 
-            _children.Add(child);
+            this.children.Add(child);
             child.Parent = this;
-            child.Stage = this.Stage;
 
             // Update the childs cache
             child.UpdateCache();
@@ -37,14 +35,15 @@ namespace Guppy.UI.Elements
             return child;
         }
 
-        public Element Remove(Element child)
+        public virtual Element Remove(Element child)
         {
-            if (!_children.Contains(child))
+            this.Dirty = true;
+
+            if (!this.children.Contains(child))
                 throw new Exception("Unable to remove element from container. Element is not a child of current container!");
 
-            _children.Remove(child);
+            children.Remove(child);
             child.Parent = null;
-            child.Stage = null;
 
             // Update the childs cache
             child.UpdateCache();
@@ -58,7 +57,7 @@ namespace Guppy.UI.Elements
         {
             base.Update(gameTime);
 
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.Update(gameTime);
         }
 
@@ -66,7 +65,7 @@ namespace Guppy.UI.Elements
         {
             base.Draw(gameTime, spriteBatch);
 
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.Draw(gameTime, spriteBatch);
         }
         #endregion
@@ -76,7 +75,7 @@ namespace Guppy.UI.Elements
         {
             base.UpdateCache();
 
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.UpdateCache();
         }
 
@@ -84,7 +83,7 @@ namespace Guppy.UI.Elements
         {
             base.AddDebugVertices(ref vertices);
 
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.AddDebugVertices(ref vertices);
         }
         #endregion

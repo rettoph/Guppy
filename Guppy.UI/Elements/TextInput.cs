@@ -11,14 +11,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.UI.Elements
 {
-    public class Input : TextElement
+    public class TextInput : TextElement
     {
         private Boolean _caretVisible;
         private DateTime _lastCaretVisibleChange;
 
         public Caret Caret { get; private set; }
 
-        public Input(
+        public TextInput(
             Unit x,
             Unit y,
             Unit width,
@@ -30,7 +30,7 @@ namespace Guppy.UI.Elements
             _caretVisible = false;
             _lastCaretVisibleChange = DateTime.Now;
 
-            this.Caret = new Caret(0, 0, caretWidth ?? 1, 1f, this.StyleSheet.Root);
+            this.Caret = new Caret(this, 0, 0, caretWidth ?? 1, 1f, this.StyleSheet.Root);
 
             this.OnActivated += this.HandleActivated;
             this.OnDeactivated += this.HandleDeactivated;
@@ -43,17 +43,7 @@ namespace Guppy.UI.Elements
 
             if (this.State == ElementState.Active)
             {
-                // Update the text as needed...
-
-                // Update the caret position as needed...
-                var padLeft = this.StyleSheet.GetProperty<Unit>(this.State, StyleProperty.PaddingLeft);
-                var padTop = this.StyleSheet.GetProperty<Unit>(this.State, StyleProperty.PaddingTop);
-
-                this.Caret.X = (Int32)(padLeft + this.textPosition.X + this.textBounds.X);
-                this.Caret.Y = (Int32)(padTop + this.textPosition.Y);
-                this.Caret.UpdateBounds(this.Bounds);
-
-                if(DateTime.Now.Subtract(_lastCaretVisibleChange).TotalMilliseconds > 750)
+                if (DateTime.Now.Subtract(_lastCaretVisibleChange).TotalMilliseconds > 750)
                 {
                     _lastCaretVisibleChange = DateTime.Now;
                     _caretVisible = !_caretVisible;
@@ -75,9 +65,22 @@ namespace Guppy.UI.Elements
         {
             base.UpdateCache();
 
-            this.Caret.Stage = this.Stage;
+            var padLeft = this.StyleSheet.GetProperty<Unit>(this.State, StyleProperty.PaddingLeft);
+            var padTop = this.StyleSheet.GetProperty<Unit>(this.State, StyleProperty.PaddingTop);
+
+            this.Caret.X = (Int32)(padLeft + this.textPosition.X + this.textBounds.X);
+            this.Caret.Y = (Int32)(padTop + this.textPosition.Y);
+            this.Caret.UpdateBounds(this.Bounds);
+
             this.Caret.UpdateBounds(this.Bounds);
             this.Caret.UpdateCache();
+        }
+        protected internal override void AddDebugVertices(ref List<VertexPositionColor> vertices)
+        {
+            base.AddDebugVertices(ref vertices);
+
+            if(_caretVisible)
+                this.Caret.AddDebugVertices(ref vertices);
         }
         #endregion
 
@@ -114,6 +117,7 @@ namespace Guppy.UI.Elements
             }
             else if (e.Character != default(Char))
             {
+                _lastCaretVisibleChange = DateTime.Now;
                 this.Text += e.Character;
                 this.Dirty = true;
             }
