@@ -94,5 +94,12 @@ namespace Guppy.UI.Elements
 
             this.Handle.UpdateBounds();
         }
+
+        protected override void generateTexture(ElementState state, ref RenderTarget2D target)
+        {
+            this.graphicsDevice.Clear(this.StyleSheet.GetProperty<Color>(state, StyleProperty.ScrollBarColor));
+
+            base.generateTexture(state, ref target);
+        }
     }
 }

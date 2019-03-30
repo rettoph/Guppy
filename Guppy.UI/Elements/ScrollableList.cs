@@ -57,7 +57,7 @@ namespace Guppy.UI.Elements
                 var deltaPercent = this.inputManager.Mouse.Delta.Y / (this.ScrollBarContainer.Height - this.ScrollBarContainer.Handle.Height);
                 this.ScrollBarContainer.Scroll(deltaPercent);
             }
-            if(this.State == ElementState.Hovered && this.inputManager.Mouse.ScrollDelta != 0)
+            if(this.mouseOver && this.inputManager.Mouse.ScrollDelta != 0)
             {
                 var deltaPercent = ((Single)this.inputManager.Mouse.ScrollDelta / -12) / (this.ScrollBarContainer.Height - this.ScrollBarContainer.Handle.Height);
                 this.ScrollBarContainer.Scroll(deltaPercent);

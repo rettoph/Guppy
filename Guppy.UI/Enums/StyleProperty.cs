@@ -44,6 +44,10 @@ namespace Guppy.UI.Enums
 
         [StylePropertyType(typeof(Unit))]
         ListItemSpacing,
+        [StylePropertyType(typeof(Color))]
+        ScrollBarColor,
+        [StylePropertyType(typeof(Color))]
+        ScrollBarHandleColor,
 
         /*
          * Debug Properties

@@ -88,6 +88,9 @@ namespace Guppy.UI.Entities
             this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingBottom, 5);
             this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingLeft, 5);
             this.StyleSheet.SetProperty<Unit>(StyleProperty.ListItemSpacing, 5);
+            this.StyleSheet.SetProperty<Color>(StyleProperty.ScrollBarColor, new Color(240, 240, 240));
+            this.StyleSheet.SetProperty<Color>(StyleProperty.ScrollBarHandleColor, new Color(205, 205, 205));
+            this.StyleSheet.SetProperty<Color>(ElementState.Pressed, StyleProperty.ScrollBarHandleColor, new Color(166, 166, 166));
         }
 
         public override void Draw(GameTime gameTime)

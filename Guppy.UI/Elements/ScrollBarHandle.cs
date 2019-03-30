@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Enums;
 using Guppy.UI.StyleSheets;
 using Guppy.UI.Utilities.Units;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.UI.Elements
 {
@@ -14,6 +17,13 @@ namespace Guppy.UI.Elements
         {
             _parent = parent;
             this.Parent = parent;
+        }
+
+        protected override void generateTexture(ElementState state, ref RenderTarget2D target)
+        {
+            this.graphicsDevice.Clear(this.StyleSheet.GetProperty<Color>(state, StyleProperty.ScrollBarHandleColor));
+
+            base.generateTexture(state, ref target);
         }
     }
 }

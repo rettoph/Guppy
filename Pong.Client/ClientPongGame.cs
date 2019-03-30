@@ -55,6 +55,7 @@ namespace Pong.Client
             contentLoader.Register("texture:ui:login:input", "Sprites/UI/login-input");
             contentLoader.Register("texture:ui:login:input:active", "Sprites/UI/login-input-active");
             contentLoader.Register("texture:ui:login:button", "Sprites/UI/login-button");
+            contentLoader.Register("texture:ui:login:button:hovered", "Sprites/UI/login-button-hovered");
             contentLoader.Register("texture:ui:login:button:pressed", "Sprites/UI/login-button-pressed");
         }
 

@@ -109,9 +109,10 @@ namespace Guppy.UI.Elements
 
                     // Draw the text target onto the element target...
                     this.graphicsDevice.SetRenderTarget(target);
+                    this.graphicsDevice.Clear(Color.Transparent);
                     base.generateTexture(state, ref target);
 
-                    this.internalSpriteBatch.Begin();
+                    this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend);
                     this.internalSpriteBatch.Draw(textTarget, new Vector2(padLeft.Value, padTop.Value), Color.White);
                     this.internalSpriteBatch.End();
 

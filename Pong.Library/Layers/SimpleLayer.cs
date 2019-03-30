@@ -18,7 +18,7 @@ namespace Pong.Library.Layers
             _spriteBatch = spriteBatch;
             _graphicsDevice = graphicsDevice;
 
-            this.Debug = true;
+            this.Debug = false;
         }
 
         public override void Draw(GameTime gameTime)

@@ -30,6 +30,7 @@ namespace Guppy.UI.Elements
             _caretVisible = false;
             _lastCaretVisibleChange = DateTime.Now;
 
+            this.Activatable = true;
             this.Caret = new Caret(this, 0, 0, caretWidth ?? 1, 1f, this.StyleSheet.Root);
 
             this.OnActivated += this.HandleActivated;
@@ -91,6 +92,12 @@ namespace Guppy.UI.Elements
 
             var caretHeight = (Int32)this.StyleSheet.GetProperty<SpriteFont>(ElementState.Normal, StyleProperty.Font).MeasureString("Lorem Ipsum").Y;
             this.Caret.Height = caretHeight;
+        }
+        protected internal override void UpdateBounds()
+        {
+            base.UpdateBounds();
+
+            this.Caret.UpdateBounds();
         }
         #endregion
 
