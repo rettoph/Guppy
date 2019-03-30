@@ -91,7 +91,6 @@ namespace Pong.Client.Scenes
             {
                 list.Items.Add(new TextInput(0, 0, 1f, 30, i.ToString(), inputStyles));
             }
-            
         }
 
         private void HandleLoginClick(object sender, Element e)

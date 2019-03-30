@@ -155,33 +155,49 @@ namespace Guppy.UI.Elements
             if (this.Parent != null)
                 this.UpdateBounds();
 
-            // Store a list of the graphic device's original render targets...
-            var initialRenderTargets = this.graphicsDevice.GetRenderTargets();
-
-            foreach (ElementState state in Element.States)
+            if (this.Bounds.Width > 0 && this.Bounds.Height > 0)
             {
-                // First dispose of the old texture for this state...
-                if (_textures.ContainsKey(state))
-                    _textures[state]?.Dispose();
+                // Store a list of the graphic device's original render targets...
+                var initialRenderTargets = this.graphicsDevice.GetRenderTargets();
+                // Create a temp render target...
+                var renderTarget = new RenderTarget2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
+                var colorData = new Color[this.Bounds.Width * this.Bounds.Height];
 
-                // Create a new render target and set the graphics device target to it...
-                if (this.Bounds.Width > 0 && this.Bounds.Height > 0)
+                foreach (ElementState state in Element.States)
                 {
-                    var renderTarget = new RenderTarget2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
+                    // Create a new render target and set the graphics device target to it...
                     this.graphicsDevice.SetRenderTarget(renderTarget);
                     this.graphicsDevice.Clear(Color.Transparent);
+
                     // Generate a new texture for this state...
                     this.generateTexture(state, ref renderTarget);
-                    _textures[state] = renderTarget;
+                    // First dispose of the old texture for this state...
+                    if (_textures.ContainsKey(state))
+                    {
+                        if (_textures[state].Width != renderTarget.Width || _textures[state].Height != renderTarget.Height)
+                        {
+                            _textures[state]?.Dispose();
+                            _textures[state] = new Texture2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
+                        }
+                    }
+                    else
+                    {
+                        _textures[state] = new Texture2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
+                    }
+
+                    // Load the state color data
+                    renderTarget.GetData<Color>(colorData);
+                    _textures[state].SetData<Color>(colorData);
+
+                    // Generate new debug vertices for the element..
+                    _debugVertices[state] = this.generateDebugVertices(state);
                 }
 
-                // Generate new debug vertices for the element..
-                _debugVertices[state] = this.generateDebugVertices(state);
+                // After all the new state targets have generated...
+                // reset the render targets
+                this.graphicsDevice.SetRenderTargets(initialRenderTargets);
+                renderTarget?.Dispose();
             }
-
-            // After all the new state targets have generated...
-            // reset the render targets
-            this.graphicsDevice.SetRenderTargets(initialRenderTargets);
 
             // Clean the current element
             this.Dirty = false;

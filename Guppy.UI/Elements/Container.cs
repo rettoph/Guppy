@@ -30,9 +30,6 @@ namespace Guppy.UI.Elements
             this.children.Add(child);
             child.Parent = this;
 
-            // Update the childs cache
-            child.UpdateCache();
-
             return child;
         }
 
@@ -45,9 +42,6 @@ namespace Guppy.UI.Elements
 
             children.Remove(child);
             child.Parent = null;
-
-            // Update the childs cache
-            child.UpdateCache();
 
             return child;
         }

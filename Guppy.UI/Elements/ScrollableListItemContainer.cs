@@ -44,5 +44,21 @@ namespace Guppy.UI.Elements
 
             base.UpdateCache();
         }
+
+        #region Adders & Removers
+        public override TELement Add<TELement>(TELement child)
+        {
+            this.DirtyBounds = true;
+
+            return base.Add(child);
+        }
+
+        public override Element Remove(Element child)
+        {
+            this.DirtyBounds = true;
+
+            return base.Remove(child);
+        }
+        #endregion
     }
 }
