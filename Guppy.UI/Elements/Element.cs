@@ -122,6 +122,10 @@ namespace Guppy.UI.Elements
                         this.State = ElementState.Active;
                         this.OnActivated?.Invoke(this, this);
                     }
+                    else
+                    {
+                        this.State = ElementState.Hovered;
+                    }
 
                     this.OnMouseUp?.Invoke(this, this);
                 }
