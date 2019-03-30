@@ -27,6 +27,7 @@ namespace Guppy.UI.Elements
 
         #region Protected Attributes
         protected Boolean mouseOver { get; private set; }
+        protected Boolean mouseOverHierarchy { get; private set; }
         protected SpriteBatch internalSpriteBatch { get { return this.Stage.internalSpriteBatch; } }
         protected GraphicsDevice graphicsDevice { get { return this.Stage.graphicsDevice; } }
         protected InputManager inputManager { get { return this.Stage.inputManager; } }
@@ -39,6 +40,7 @@ namespace Guppy.UI.Elements
         public ElementState State { get; protected set; }
         public ElementStyleSheet StyleSheet { get; private set; }
         public Boolean Dirty { get; set; }
+        public Boolean DirtyBounds { get; set; }
         #endregion
 
         #region Events
@@ -68,33 +70,48 @@ namespace Guppy.UI.Elements
 
         public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_textures[this.State], this.Bounds, _textures[this.State].Bounds, Color.White);;
+            if(_textures.ContainsKey(this.State))
+                spriteBatch.Draw(_textures[this.State], this.Bounds, _textures[this.State].Bounds, Color.White);;
         }
 
         public virtual void Update(GameTime gameTime)
         {
             this.mouseOver = this.Bounds.Contains(inputManager.Mouse.Position);
+            this.mouseOverHierarchy = this.Parent == null ? true : this.Parent.mouseOver && this.Parent.mouseOverHierarchy;
+            //Boolean mouseOverParents = true;
+            //Element currentParent = this.Parent;
+            //
+            //while(currentParent != null)
+            //{
+            //    if(!currentParent.mouseOver)
+            //    {
+            //        mouseOverParents = false;
+            //        break;
+            //    }
+            //
+            //    currentParent = currentParent.Parent;
+            //}
 
-            if (this.mouseOver && this.State == ElementState.Normal)
+            if (this.mouseOver && this.State == ElementState.Normal && this.mouseOverHierarchy)
             { // If mouse enter...
                 this.State = ElementState.Hovered;
                 this.OnMouseEnter?.Invoke(this, this);
 
                 _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
             }
-            else if (!this.mouseOver && (this.State != ElementState.Normal && this.State != ElementState.Active))
+            else if (!(this.mouseOver && this.mouseOverHierarchy) && (this.State != ElementState.Normal && this.State != ElementState.Active))
             { // If mouse exit...
                 if(this.State != ElementState.Active)
                     this.State = ElementState.Normal;
 
                 this.OnMouseExit?.Invoke(this, this);
             }
-            else if (this.mouseOver && (this.State == ElementState.Hovered || this.State == ElementState.Active) && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp)
+            else if (this.mouseOver && (this.State == ElementState.Hovered || this.State == ElementState.Active) && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp && this.mouseOverHierarchy)
             { // If mouse down...
                 this.State = ElementState.Pressed;
                 this.OnMouseDown?.Invoke(this, this);
             }
-            else if (this.mouseOver && this.State == ElementState.Pressed && inputManager.Mouse.LeftButton == ButtonState.Released)
+            else if (this.mouseOver && this.State == ElementState.Pressed && inputManager.Mouse.LeftButton == ButtonState.Released && this.mouseOverHierarchy)
             { // If mouse up...
                 this.State = ElementState.Active;
                 this.OnActivated?.Invoke(this, this);
@@ -110,6 +127,8 @@ namespace Guppy.UI.Elements
                 this.OnDeactivated?.Invoke(this, this);
             }
 
+            if (this.DirtyBounds)
+                this.UpdateBounds();
             if (this.Dirty)
                 this.UpdateCache();
         }
@@ -117,7 +136,7 @@ namespace Guppy.UI.Elements
         protected internal virtual void UpdateCache()
         {
             if (this.Parent != null)
-                this.UpdateBounds(this.Parent);
+                this.UpdateBounds();
 
             // Store a list of the graphic device's original render targets...
             var initialRenderTargets = this.graphicsDevice.GetRenderTargets();
@@ -154,6 +173,22 @@ namespace Guppy.UI.Elements
         protected internal virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
             vertices.AddRange(_debugVertices[this.State]);
+        }
+
+        protected internal virtual void UpdateBounds()
+        {
+            if (this.Parent != null)
+            {
+                this.UpdateBounds(this.Parent);
+
+                foreach (ElementState state in Element.States)
+                {
+                    // Generate new debug vertices for the element..
+                    _debugVertices[state] = this.generateDebugVertices(state);
+                }
+            }
+
+            this.DirtyBounds = false;
         }
 
         /// <summary>

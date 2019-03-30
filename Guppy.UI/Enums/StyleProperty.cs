@@ -39,6 +39,13 @@ namespace Guppy.UI.Enums
         BackgroundImage,
 
         /*
+         * Scrollable Properties
+         */
+
+        [StylePropertyType(typeof(Unit))]
+        ListItemSpacing,
+
+        /*
          * Debug Properties
          */
         [StylePropertyType(typeof(Color))]

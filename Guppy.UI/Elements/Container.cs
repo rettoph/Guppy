@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Enums;
 using Guppy.UI.StyleSheets;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
@@ -85,6 +86,14 @@ namespace Guppy.UI.Elements
 
             foreach (Element child in this.children)
                 child.AddDebugVertices(ref vertices);
+        }
+
+        protected internal override void UpdateBounds()
+        {
+            base.UpdateBounds();
+
+            foreach (Element child in this.children)
+                child.UpdateBounds();
         }
         #endregion
     }

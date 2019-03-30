@@ -87,6 +87,7 @@ namespace Guppy.UI.Entities
             this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingRight, 5);
             this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingBottom, 5);
             this.StyleSheet.SetProperty<Unit>(StyleProperty.PaddingLeft, 5);
+            this.StyleSheet.SetProperty<Unit>(StyleProperty.ListItemSpacing, 5);
         }
 
         public override void Draw(GameTime gameTime)

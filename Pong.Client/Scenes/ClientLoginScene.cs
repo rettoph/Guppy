@@ -51,7 +51,7 @@ namespace Pong.Client.Scenes
 
             var stage = this.entities.Create("ui:stage") as Stage;
 
-            _loginMessage = stage.Content.Add(new TextElement(0, new Unit[] { 0.45f, 100 }, 1f, 30, "")) as TextElement;
+            _loginMessage = stage.Content.Add(new TextElement(0.25f, new Unit[] { 0.45f, 100 }, 0.5f, 30, "")) as TextElement;
 
             var labelStyles = new StyleSheet();
             labelStyles.SetProperty<Alignment>(StyleProperty.TextAlignment, Alignment.CenterRight);
@@ -83,6 +83,28 @@ namespace Pong.Client.Scenes
 
             var login = form.Add(new TextElement(0.03f, 0.69f, 0.94f, 0.25f, "Login", buttonStyles));
             login.OnMouseUp += this.HandleLoginClick;
+
+            var list = stage.Content.Add<ScrollableList>(new ScrollableList(10, 0.1f, 175, 0.8f));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "1", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "2", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "3", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "4", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "5", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "6", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "7", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "8", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "9", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "10", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "11", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "12", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "13", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "14", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "15", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "16", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "17", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "18", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "19", inputStyles));
+            list.Items.Add(new TextInput(0, 0, 1f, 30, "20", inputStyles));
         }
 
         private void HandleLoginClick(object sender, Element e)

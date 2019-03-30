@@ -14,6 +14,7 @@ namespace Guppy.UI.StyleSheets
             this.SetProperty(ElementState.Normal, StyleProperty.DebugWireframeColor, Color.Red);
             this.SetProperty(ElementState.Hovered, StyleProperty.DebugWireframeColor, Color.Blue);
             this.SetProperty(ElementState.Pressed, StyleProperty.DebugWireframeColor, Color.Green);
+            this.SetProperty(ElementState.Active, StyleProperty.DebugWireframeColor, Color.Orange);
         }
     }
 }

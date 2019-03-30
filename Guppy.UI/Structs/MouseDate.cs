@@ -8,7 +8,9 @@ namespace Guppy.UI.Structs
 {
     public struct MouseData
     {
+        public Vector2 Delta;
         public Vector2 Position;
         public ButtonState LeftButton;
+        public Int32 ScrollDelta;
     }
 }
