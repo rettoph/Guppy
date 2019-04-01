@@ -205,7 +205,8 @@ namespace Guppy.UI.Elements
 
         protected internal virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
-            vertices.AddRange(_debugVertices[this.State]);
+            if(_debugVertices.ContainsKey(this.State))
+                vertices.AddRange(_debugVertices[this.State]);
         }
 
         protected internal virtual void UpdateBounds()

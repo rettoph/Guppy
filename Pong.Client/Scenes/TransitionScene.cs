@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,19 +19,21 @@ namespace Pong.Client.Scenes
         private GraphicsDevice _graphicsDevice;
         private SpriteBatch _spriteBatch;
         private GameWindow _window;
+        private SceneCollection _scenes;
 
         private Single _alpha;
         private Boolean _return;
 
         private Texture2D _overlay;
 
-        public TransitionScene(GameWindow window, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, IServiceProvider provider) : base(provider)
+        public TransitionScene(SceneCollection scenes, GameWindow window, SpriteBatch spriteBatch, GraphicsDevice graphicsDevice, IServiceProvider provider) : base(provider)
         {
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
             _window = window;
             _overlay = new Texture2D(_graphicsDevice, 1, 1);
             _overlay.SetData<Color>(new Color[] { Color.White });
+            _scenes = scenes;
         }
 
         public void Set(Scene scene1, Scene scene2)
@@ -91,6 +94,9 @@ namespace Pong.Client.Scenes
 
                     _scene2.SetEnabled(true);
                     _scene2.SetVisible(true);
+
+                    _scenes.Remove(_scene1);
+                    _scenes.Remove(this);
                 }
             }
             else

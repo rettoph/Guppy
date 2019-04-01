@@ -89,7 +89,6 @@ namespace Guppy.UI.Elements
             {
                 this.Handle.Height = 1f;
                 this.Handle.Y = 0;
-                this.Value = 0;
             }
 
             this.Handle.UpdateBounds();

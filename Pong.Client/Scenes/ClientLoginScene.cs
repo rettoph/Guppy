@@ -78,19 +78,25 @@ namespace Pong.Client.Scenes
             form.Add(new TextElement(0.03f, 0.06f + (0.21f * 1), 150, 0.15f, "Server Address:", labelStyles));
             form.Add(new TextElement(0.03f, 0.06f + (0.21f * 2), 150, 0.15f, "Server Port:", labelStyles));
 
-            _name = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 0), new Unit[] { 0.94f, -150 }, 0.15f, "Tony", inputStyles));
-            _address = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 1), new Unit[] { 0.94f, -150 }, 0.15f, "localhost", inputStyles));
+            _name = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 0), new Unit[] { 0.94f, -150 }, 0.15f, "", inputStyles));
+            _address = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 1), new Unit[] { 0.94f, -150 }, 0.15f, "", inputStyles));
             _port = form.Add(new TextInput(new Unit[] { 0.03f, 150 }, 0.06f + (0.21f * 2), new Unit[] { 0.94f, -150 }, 0.15f, "1337", inputStyles));
 
             var login = form.Add(new TextElement(0.03f, 0.69f, 0.94f, 0.25f, "Login", buttonStyles));
             login.OnMouseUp += this.HandleLoginClick;
 
-            var list = stage.Content.Add<ScrollableList>(new ScrollableList(10, 0.1f, 175, 0.8f));
+            var frame = stage.Content.Add(new ScrollableList(10, 0.1f, 200, 0.8f));
 
             for(Int32 i=0; i<100; i++)
             {
-                list.Items.Add(new TextInput(0, 0, 1f, 30, i.ToString(), inputStyles));
+                frame.Items.Add(new TextInput(0, 0, 1f, 30, i.ToString(), inputStyles));
             }
+
+#if DEBUG
+            _name.Text = "Tony";
+            _address.Text = "localhost";
+            // this.HandleLoginClick(this, null);
+#endif
         }
 
         private void HandleLoginClick(object sender, Element e)

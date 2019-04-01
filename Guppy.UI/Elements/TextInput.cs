@@ -13,10 +13,13 @@ namespace Guppy.UI.Elements
 {
     public class TextInput : TextElement
     {
+        private Boolean _textEventActive;
         private Boolean _caretVisible;
         private DateTime _lastCaretVisibleChange;
 
         public Caret Caret { get; private set; }
+
+        public event EventHandler<TextInput> OnEnter;
 
         public TextInput(
             Unit x,
@@ -104,12 +107,17 @@ namespace Guppy.UI.Elements
         #region Event Handlers
         private void HandleActivated(object sender, Element e)
         {
-            this.window.TextInput += this.HandleTextInput;
+            if (!_textEventActive)
+            {
+                this.window.TextInput += this.HandleTextInput;
+                _textEventActive = true;
+            }
         }
         private void HandleDeactivated(object sender, Element e)
         {
             this.window.TextInput -= this.HandleTextInput;
             _caretVisible = false;
+            _textEventActive = false;
         }
 
         private void HandleTextInput(object sender, TextInputEventArgs e)
@@ -121,6 +129,10 @@ namespace Guppy.UI.Elements
                     this.Text = this.Text.Substring(0, (this.Text.Length - 1));
                     this.Dirty = true;
                 }
+            }
+            else if(e.Key == Keys.Enter)
+            {
+                OnEnter?.Invoke(this, this);
             }
             else if (e.Character != default(Char))
             {

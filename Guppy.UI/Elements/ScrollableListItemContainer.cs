@@ -22,7 +22,7 @@ namespace Guppy.UI.Elements
         protected internal override void UpdateCache()
         {
             // Ensure that the container width is compensating for the width of the scrolbar
-            this.Width = new Unit[] { 1f, -_parent.ScrollBarContainer.Width };
+            this.Width = new Unit[] { 1f, -_parent.ScrollBar.Width };
 
             // Reposition all the children and update the container height
             if (this.children.Count == 0)
@@ -48,14 +48,14 @@ namespace Guppy.UI.Elements
         #region Adders & Removers
         public override TELement Add<TELement>(TELement child)
         {
-            this.DirtyBounds = true;
+            _parent.DirtyBounds = true;
 
             return base.Add(child);
         }
 
         public override Element Remove(Element child)
         {
-            this.DirtyBounds = true;
+            _parent.DirtyBounds = true;
 
             return base.Remove(child);
         }

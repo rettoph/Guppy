@@ -15,7 +15,7 @@ namespace Guppy.UI.Elements
     public class ScrollableList : SimpleElement
     {
         public ScrollableListItemContainer Items { get; private set; }
-        public ScrollBar ScrollBarContainer { get; private set; }
+        public ScrollBar ScrollBar { get; private set; }
 
         private RenderTargetBinding[] _cachedRenderTargets;
         private RenderTarget2D _contentRenderTarget;
@@ -23,7 +23,7 @@ namespace Guppy.UI.Elements
         public ScrollableList(Unit x, Unit y, Unit width, Unit height, StyleSheet rootStyleSheet = null) : base(x, y, width, height, rootStyleSheet)
         {
             this.Items = new ScrollableListItemContainer(this);
-            this.ScrollBarContainer = new ScrollBar(this, rootStyleSheet);
+            this.ScrollBar = new ScrollBar(this, rootStyleSheet);
         }
 
         #region Frame Methods
@@ -32,7 +32,7 @@ namespace Guppy.UI.Elements
             base.Draw(gameTime, spriteBatch);
 
             // First draw the scrollbar
-            this.ScrollBarContainer.Draw(gameTime, spriteBatch);
+            this.ScrollBar.Draw(gameTime, spriteBatch);
 
             // Next draw the content on an isolated render target
             _cachedRenderTargets = this.graphicsDevice.GetRenderTargets();
@@ -52,20 +52,20 @@ namespace Guppy.UI.Elements
         }
         public override void Update(GameTime gameTime)
         {
-            if (this.ScrollBarContainer.Handle.State == ElementState.Pressed && this.inputManager.Mouse.Delta.Y != 0)
+            if (this.ScrollBar.Handle.State == ElementState.Pressed && this.inputManager.Mouse.Delta.Y != 0)
             {
-                var deltaPercent = this.inputManager.Mouse.Delta.Y / (this.ScrollBarContainer.Height - this.ScrollBarContainer.Handle.Height);
-                this.ScrollBarContainer.Scroll(deltaPercent);
+                var deltaPercent = this.inputManager.Mouse.Delta.Y / (this.ScrollBar.Height - this.ScrollBar.Handle.Height);
+                this.ScrollBar.Scroll(deltaPercent);
             }
             if(this.mouseOver && this.inputManager.Mouse.ScrollDelta != 0)
             {
-                var deltaPercent = ((Single)this.inputManager.Mouse.ScrollDelta / -12) / (this.ScrollBarContainer.Height - this.ScrollBarContainer.Handle.Height);
-                this.ScrollBarContainer.Scroll(deltaPercent);
+                var deltaPercent = ((Single)this.inputManager.Mouse.ScrollDelta / -12) / (this.ScrollBar.Height - this.ScrollBar.Handle.Height);
+                this.ScrollBar.Scroll(deltaPercent);
             }
 
             base.Update(gameTime);
 
-            this.ScrollBarContainer.Update(gameTime);
+            this.ScrollBar.Update(gameTime);
             this.Items.Update(gameTime);
         }
         #endregion
@@ -74,7 +74,7 @@ namespace Guppy.UI.Elements
         {
             base.AddDebugVertices(ref vertices);
 
-            this.ScrollBarContainer.AddDebugVertices(ref vertices);
+            this.ScrollBar.AddDebugVertices(ref vertices);
             this.Items.AddDebugVertices(ref vertices);
         }
         protected internal override void UpdateCache()
@@ -85,20 +85,20 @@ namespace Guppy.UI.Elements
             _contentRenderTarget = new RenderTarget2D(this.graphicsDevice, this.window.ClientBounds.Width, this.window.ClientBounds.Height);
 
             this.Items.UpdateCache();
-            this.ScrollBarContainer.UpdateCache();
+            this.ScrollBar.UpdateCache();
         }
         protected internal override void UpdateBounds()
         {
             base.UpdateBounds();
 
             if (this.Items.Height > this.Height)
-                this.Items.Y = (Int32)((this.Height - this.Items.Height) * this.ScrollBarContainer.Value);
+                this.Items.Y = (Int32)((this.Height - this.Items.Height) * this.ScrollBar.Value);
             else
                 this.Items.Y = 0;
 
             this.Items.UpdateBounds();
 
-            this.ScrollBarContainer.UpdateBounds();
+            this.ScrollBar.UpdateBounds();
         }
     }
 }

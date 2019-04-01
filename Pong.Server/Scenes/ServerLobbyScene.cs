@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Peers;
+﻿using Guppy.Network.Groups;
+using Guppy.Network.Peers;
 using Pong.Library.Scenes;
 using System;
 using System.Collections.Generic;
@@ -8,13 +9,19 @@ namespace Pong.Server.Scenes
 {
     public class ServerLobbyScene : LobbyScene
     {
-        public ServerLobbyScene(Peer peer, IServiceProvider provider) : base(peer, provider)
+        private ServerPeer _server;
+        private ServerGroup _group;
+
+        public ServerLobbyScene(ServerPeer server, IServiceProvider provider) : base(server, provider)
         {
+            _server = server;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
+
+            _group = _server.Groups.GetById(Guid.Empty) as ServerGroup;
         }
     }
 }
