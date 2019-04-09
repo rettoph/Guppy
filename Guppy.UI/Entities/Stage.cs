@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Configurations;
+using Guppy.Extensions;
+using Guppy.Loaders;
 using Guppy.UI.Elements;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
@@ -16,7 +18,8 @@ namespace Guppy.UI.Entities
     public class Stage : DebuggableEntity
     {
         private GameWindow _window;
-        private Style _stageStyle;
+        private RenderTargetBinding[] _cachedRenderTargets;
+        private Boolean _startedInternalGraphics;
 
         public StageContainer Content { get; private set; }
 
@@ -36,6 +39,7 @@ namespace Guppy.UI.Entities
             GraphicsDevice graphicsDevice,
             EntityConfiguration configuration,
             Scene scene,
+            IServiceProvider provider,
             ILogger logger) : base(configuration, scene, logger)
         {
             _window = window;
@@ -50,8 +54,15 @@ namespace Guppy.UI.Entities
             this.internalSpriteBatch = new SpriteBatch(this.graphicsDevice);
 
             var style = new Style();
-            var test = new SimpleContainer(0.25f, 0.25f, 0.5f, 0.5f, style);
-            this.Content.Add(test);
+            style.Set<Texture2D>(ElementState.Normal, StyleProperty.BackgroundImage, provider.GetLoader<ContentLoader>().Get<Texture2D>("button"));
+            style.Set<DrawType>(ElementState.Normal, StyleProperty.BackgroundType, DrawType.Tile);
+
+            for (Int32 i = 0; i < 10; i++)
+            {
+                var test = new SimpleContainer(100, i * 35, 200, 30, style);
+                this.Content.Add(test);
+            }
+
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
         }
@@ -66,12 +77,36 @@ namespace Guppy.UI.Entities
         public override void Update(GameTime gameTime)
         {
             this.Content.Update(gameTime);
+
+            // If this is called, then we must reset the render target
+            if(_startedInternalGraphics)
+            {
+                this.graphicsDevice.SetRenderTargets(_cachedRenderTargets);
+                _cachedRenderTargets = null;
+                _startedInternalGraphics = false;
+            }
         }
         public override void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
             this.clientBounds.Update();
 
             this.Content.AddDebugVertices(ref vertices);
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        protected internal void startInternalGraphics()
+        {
+            if (!_startedInternalGraphics) {
+                _cachedRenderTargets = this.graphicsDevice.GetRenderTargets();
+
+                this.graphicsDevice.SetRenderTarget(this.internalRenderTarget);
+
+                _startedInternalGraphics = true;
+            }
         }
         #endregion
 

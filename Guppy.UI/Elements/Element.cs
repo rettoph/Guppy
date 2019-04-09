@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Entities;
+﻿using Guppy.UI.Elements.ElementSegments;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
@@ -24,7 +25,7 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Protected Fields
-        protected Stage stage;
+        protected internal Stage stage;
         #endregion
 
 
@@ -37,12 +38,12 @@ namespace Guppy.UI.Elements
         /// Manages the inner bounds/textures of the current
         /// element
         /// </summary>
-        public ElementSegment Inner { get; private set; }
+        public InnerElementSegment Inner { get; private set; }
         /// <summary>
         /// Manages the inner bounds/textures of the
         /// current element
         /// </summary>
-        public ElementSegment Outer { get; private set; }
+        public OuterElementSegment Outer { get; private set; }
 
         /// <summary>
         /// Mark the elements meta data as dirty.
@@ -99,8 +100,8 @@ namespace Guppy.UI.Elements
         {
             this.Style = new Style(style);
             // Create the internal element segments
-            this.Outer = new ElementSegment(this, StyleProperty.OuterDebugBoundaryColor);
-            this.Inner = new ElementSegment(this, StyleProperty.InnerDebugBoudaryColor);
+            this.Outer = new OuterElementSegment(this);
+            this.Inner = new InnerElementSegment(this);
             this.Inner.setParent(this.Outer);
 
             // Update Inner Bounds
@@ -117,8 +118,8 @@ namespace Guppy.UI.Elements
             this.Style = new Style(style);
 
             // Create the internal element segments
-            this.Outer = new ElementSegment(this, StyleProperty.OuterDebugBoundaryColor);
-            this.Inner = new ElementSegment(this, StyleProperty.InnerDebugBoudaryColor);
+            this.Outer = new OuterElementSegment(this);
+            this.Inner = new InnerElementSegment(this);
             this.Inner.setParent(this.Outer);
 
             // Update Outer Bounds

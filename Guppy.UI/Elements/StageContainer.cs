@@ -21,9 +21,6 @@ namespace Guppy.UI.Elements
             this.Inner.Y.SetValue(0);
             this.Inner.Width.SetValue(1f);
             this.Inner.Height.SetValue(1f);
-
-            // By default blacklist all states but normal...
-            this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }
     }
 }

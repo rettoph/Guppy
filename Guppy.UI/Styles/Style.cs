@@ -64,16 +64,16 @@ namespace Guppy.UI.Styles
         #endregion
 
         #region State Properties
-        public virtual TProperty Get<TProperty>(ElementState state, StyleProperty property)
+        public virtual TProperty Get<TProperty>(ElementState state, StyleProperty property, TProperty fallback = default(TProperty))
         {
             if (this.styleProperties[state].ContainsKey(property))
                 return (TProperty)this.styleProperties[state][property];
             else if (Style.StylePropertyAttributes[property].Inherit && this.root != null)
-                return this.root.Get<TProperty>(state, property);
+                return this.root.Get<TProperty>(state, property, fallback);
             else if (this.styleProperties[ElementState.Normal].ContainsKey(property))
-                return this.Get<TProperty>(ElementState.Normal, property);
+                return this.Get<TProperty>(ElementState.Normal, property, fallback);
             else
-                throw new Exception($"Unable to load style property! ElementState => {state}, StyleProperty => {property}");
+                return fallback;
         }
 
         public void Set<TProperty>(ElementState state, StyleProperty property, TProperty value)
