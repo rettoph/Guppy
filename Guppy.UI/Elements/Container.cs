@@ -1,94 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
-using Guppy.UI.Enums;
-using Guppy.UI.StyleSheets;
 using Guppy.UI.Utilities.Units;
+using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Linq;
+using Guppy.UI.Styles;
 
 namespace Guppy.UI.Elements
 {
+    /// <summary>
+    /// Represents a generic element that can
+    /// can contain several smaller elements.
+    /// </summary>
     public abstract class Container : Element
     {
-        protected List<Element> children;
+        private List<Element> _children;
+        public ReadOnlyCollection<Element> Children { get; private set; }
 
-        public Container(Unit x, Unit y, Unit width, Unit height) : base(x, y, width, height)
+        protected Container(Style style = null) : base(style)
         {
-            this.children = new List<Element>();
+            _children = new List<Element>();
+        }
+        public Container(UnitValue x, UnitValue y, UnitValue width, UnitValue height, Style style = null) : base(x, y, width, height, style)
+        {
+            _children = new List<Element>();
         }
 
-        #region Adders & Removers
-        public virtual TELement Add<TELement>(TELement child)
-            where TELement : Element
-        {
-            this.Dirty = true;
-
-            if (child.Parent != null)
-                throw new Exception("Unable to add element to container. Element already has a parent!");
-
-            this.children.Add(child);
-            child.Parent = this;
-
-            return child;
-        }
-
-        public virtual Element Remove(Element child)
-        {
-            this.Dirty = true;
-
-            if (!this.children.Contains(child))
-                throw new Exception("Unable to remove element from container. Element is not a child of current container!");
-
-            children.Remove(child);
-            child.Parent = null;
-
-            return child;
-        }
-        #endregion
-
-        #region Frame Methods
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            foreach (Element child in this.children)
+            foreach (Element child in _children)
                 child.Update(gameTime);
         }
-
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(gameTime, spriteBatch);
+            base.Draw(spriteBatch);
 
-            foreach (Element child in this.children)
-                child.Draw(gameTime, spriteBatch);
-        }
-        #endregion
-
-        #region Methods
-        protected internal override void UpdateCache()
-        {
-            base.UpdateCache();
-
-            foreach (Element child in this.children)
-                child.UpdateCache();
+            foreach (Element child in _children)
+                child.Draw(spriteBatch);
         }
 
-        protected internal override void AddDebugVertices(ref List<VertexPositionColor> vertices)
+        protected void add(Element child)
+        {
+            if (child.Container != null)
+                throw new Exception("Child already belongs to another container!");
+
+            _children.Add(child);
+            child.setContainer(this);
+            this.DirtyMeta = true;
+        }
+        protected void remove(Element child)
+        {
+            _children.Remove(child);
+            child.setContainer(null);
+            this.DirtyMeta = true;
+        }
+
+        protected override void CleanMeta()
+        {
+            base.CleanMeta();
+
+            this.Children = _children.AsReadOnly();
+        }
+        public override void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
             base.AddDebugVertices(ref vertices);
 
-            foreach (Element child in this.children)
+            foreach (Element child in _children.OrderBy(e => e.State))
                 child.AddDebugVertices(ref vertices);
         }
-
-        protected internal override void UpdateBounds()
-        {
-            base.UpdateBounds();
-
-            foreach (Element child in this.children)
-                child.UpdateBounds();
-        }
-        #endregion
     }
 }

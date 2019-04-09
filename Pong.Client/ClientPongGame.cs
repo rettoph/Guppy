@@ -2,8 +2,6 @@
 using Guppy.Loaders;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
-using Guppy.UI.Entities;
-using Guppy.UI.Enums;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;

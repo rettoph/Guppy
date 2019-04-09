@@ -1,266 +1,304 @@
 ﻿using Guppy.UI.Entities;
 using Guppy.UI.Enums;
-using Guppy.UI.StyleSheets;
+using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
+using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Guppy.UI.Elements
 {
-    public abstract class Element : UnitRectangle
+    /// <summary>
+    /// Element is the base type that all
+    /// UI elements derive from.
+    /// </summary>
+    public abstract class Element
     {
-        #region Static Fields
-        private static ElementState[] States;
-
+        #region Private Attributes
+        private Boolean _mouseWasRaised;
         #endregion
 
-        #region Private Fields
-        private Dictionary<ElementState, Texture2D> _textures;
-        private Dictionary<ElementState, VertexPositionColor[]> _debugVertices;
-        private Boolean _hasLeftButtonBeenUp;
+        #region Protected Fields
+        protected Stage stage;
         #endregion
 
-        #region Protected Attributes
-        protected Boolean mouseOver { get; private set; }
-        protected Boolean mouseOverHierarchy { get; private set; }
-        protected SpriteBatch internalSpriteBatch { get { return this.Stage.internalSpriteBatch; } }
-        protected GraphicsDevice graphicsDevice { get { return this.Stage.graphicsDevice; } }
-        protected InputManager inputManager { get { return this.Stage.inputManager; } }
-        protected GameWindow window { get { return this.Stage.window; } }
+
+        #region Public Fields
+        public readonly Style Style;
         #endregion
 
         #region Public Attributes
-        public abstract Stage Stage { get; }
-        public Element Parent { get; protected internal set; }
-        public ElementState State { get; protected set; }
-        public ElementStyleSheet StyleSheet { get; private set; }
-        public Boolean Dirty { get; set; }
-        public Boolean DirtyBounds { get; set; }
-        public Boolean Activatable { get; set; }
+        /// <summary>
+        /// Manages the inner bounds/textures of the current
+        /// element
+        /// </summary>
+        public ElementSegment Inner { get; private set; }
+        /// <summary>
+        /// Manages the inner bounds/textures of the
+        /// current element
+        /// </summary>
+        public ElementSegment Outer { get; private set; }
+
+        /// <summary>
+        /// Mark the elements meta data as dirty.
+        /// This will mark self container meta data
+        /// such as older & younger sibling as dirty
+        /// and ensure it is reloaded next update call
+        /// </summary>
+        public Boolean DirtyMeta { get; set; }
+
+        /// <summary>
+        /// Mark the elements texture as dirty.
+        /// This will trigger an async texture regeneration
+        /// next update.
+        /// </summary>
+        public Boolean DirtyTextures { get; set; }
+
+        /// <summary>
+        /// The current non blacklisted element state
+        /// </summary>
+        public ElementState State { get; private set; }
+
+        /// <summary>
+        /// Specific element states can be blacklisted here.
+        /// The element state will never be set to any values
+        /// within the blacklist
+        /// </summary>
+        public ElementState StateBlacklist { get; set; }
+
+        /// <summary>
+        /// Indicates if the mouse was over the current element on 
+        /// the last frame update
+        /// </summary>
+        public Boolean MouseOver { get; private set; }
+
+        /// <summary>
+        /// Indicates if the mouse is over all elements
+        /// in the current elements upward heierarchy
+        /// </summary>
+        public Boolean MouseOverHierarchy { get; private set; }
+
+        public Container Container { get; private set; }
+
+        public Element PrevSibling { get; private set; }
+        public Element NextSibling { get; private set; }
         #endregion
 
         #region Events
-        public event EventHandler<Element> OnMouseEnter;
-        public event EventHandler<Element> OnMouseExit;
-        public event EventHandler<Element> OnMouseDown;
-        public event EventHandler<Element> OnMouseUp;
-        public event EventHandler<Element> OnActivated;
-        public event EventHandler<Element> OnDeactivated;
+        public event EventHandler<Element> OnStateChanged;
         #endregion
+
 
         #region Constructors
-        public Element(Unit x, Unit y, Unit width, Unit height, StyleSheet rootStyleSheet = null) : base(x, y, width, height)
+        public Element(Style style = null)
         {
-            this.State = ElementState.Normal;
-            this.StyleSheet = new ElementStyleSheet(rootStyleSheet, this);
-            this.Dirty = false;
-            this.Activatable = false;
+            this.Style = new Style(style);
+            // Create the internal element segments
+            this.Outer = new ElementSegment(this, StyleProperty.OuterDebugBoundaryColor);
+            this.Inner = new ElementSegment(this, StyleProperty.InnerDebugBoudaryColor);
+            this.Inner.setParent(this.Outer);
 
-            _textures = new Dictionary<ElementState, Texture2D>(Element.States.Length);
-            _debugVertices = new Dictionary<ElementState, VertexPositionColor[]>();
+            // Update Inner Bounds
+            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft));
+            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop));
+            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingRight).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft).Flip() });
+            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingBottom).Flip() });
+
+            this.State = ElementState.Normal;
+            this.DirtyTextures = true;
         }
-        static Element()
+        public Element(UnitValue x, UnitValue y, UnitValue width, UnitValue height, Style style = null)
         {
-            Element.States = (ElementState[])Enum.GetValues(typeof(ElementState));
+            this.Style = new Style(style);
+
+            // Create the internal element segments
+            this.Outer = new ElementSegment(this, StyleProperty.OuterDebugBoundaryColor);
+            this.Inner = new ElementSegment(this, StyleProperty.InnerDebugBoudaryColor);
+            this.Inner.setParent(this.Outer);
+
+            // Update Outer Bounds
+            this.Outer.X.SetValue(x);
+            this.Outer.Y.SetValue(y);
+            this.Outer.Width.SetValue(width);
+            this.Outer.Height.SetValue(height);
+
+            // Update Inner Bounds
+            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft));
+            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop));
+            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingRight).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft).Flip() });
+            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingBottom).Flip() });
+
+            this.State = ElementState.Normal;
+            this.DirtyTextures = true;
         }
         #endregion
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        #region Frame Methods
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if(_textures.ContainsKey(this.State))
-                spriteBatch.Draw(_textures[this.State], this.Bounds, _textures[this.State].Bounds, Color.White);;
+            this.Outer.Draw(spriteBatch);
+            this.Inner.Draw(spriteBatch);
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            this.mouseOver = this.Bounds.Contains(inputManager.Mouse.Position);
-            this.mouseOverHierarchy = this.Parent == null ? true : this.Parent.mouseOver && this.Parent.mouseOverHierarchy;
-            //Boolean mouseOverParents = true;
-            //Element currentParent = this.Parent;
-            //
-            //while(currentParent != null)
-            //{
-            //    if(!currentParent.mouseOver)
-            //    {
-            //        mouseOverParents = false;
-            //        break;
-            //    }
-            //
-            //    currentParent = currentParent.Parent;
-            //}
+            // Ensure the inner and outer bounds are updated
+            this.Outer.Update();
+            this.Inner.Update();
 
-            if (this.mouseOver && this.State == ElementState.Normal && this.mouseOverHierarchy)
-            { // If mouse enter...
-                this.State = ElementState.Hovered;
-                this.OnMouseEnter?.Invoke(this, this);
+            // Update the current mouse over positions
+            this.MouseOver = this.Outer.Bounds.Contains(this.stage.inputManager.Position);
+            this.MouseOverHierarchy = this.Container == null ? true : this.MouseOver && this.Container.MouseOverHierarchy;
 
-                _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
-            }
-            else if (!(this.mouseOver && this.mouseOverHierarchy) && (this.State != ElementState.Normal && this.State != ElementState.Pressed && this.State != ElementState.Active))
-            { // If mouse exit...
-                if(this.State != ElementState.Active && this.State != ElementState.Pressed)
-                    this.State = ElementState.Normal;
-
-                this.OnMouseExit?.Invoke(this, this);
-            }
-            else if (this.mouseOver && (this.State == ElementState.Hovered || this.State == ElementState.Active) && inputManager.Mouse.LeftButton == ButtonState.Pressed && _hasLeftButtonBeenUp && this.mouseOverHierarchy)
-            { // If mouse down...
-                this.State = ElementState.Pressed;
-                this.OnMouseDown?.Invoke(this, this);
-            }
-            else if (this.State == ElementState.Pressed && inputManager.Mouse.LeftButton == ButtonState.Released)
-            { // If mouse up...
-                if (this.mouseOver)
-                {
-                    if (this.Activatable)
+            if(this.MouseOverHierarchy)
+            { // Mouse is over element...
+                if(this.stage.inputManager.Down)
+                { // If mouse is down
+                    switch (this.State)
                     {
-                        this.State = ElementState.Active;
-                        this.OnActivated?.Invoke(this, this);
+                        case ElementState.Normal:
+                            _mouseWasRaised = false;
+                            this.setState(ElementState.Hovered, ElementState.Normal);
+                            break;
+                        case ElementState.Hovered:
+                            if (_mouseWasRaised)
+                                this.setState(ElementState.Pressed, ElementState.Hovered);
+                            break;
+                        case ElementState.Active:
+                            break;
+                        case ElementState.Pressed:
+                            break;
                     }
-                    else
-                    {
-                        this.State = ElementState.Hovered;
-                    }
-
-                    this.OnMouseUp?.Invoke(this, this);
                 }
                 else
-                {
-                    this.State = ElementState.Normal;
-                }
-            }
-            else if (this.mouseOver && !_hasLeftButtonBeenUp && inputManager.Mouse.LeftButton == ButtonState.Released)
-            { // If mouse up (when it was down on hover)
-                _hasLeftButtonBeenUp = inputManager.Mouse.LeftButton == ButtonState.Released;
-            }
-            else if(!this.mouseOver && this.State == ElementState.Active && inputManager.Mouse.LeftButton == ButtonState.Pressed)
-            { // If mouse inactive
-                this.State = ElementState.Normal;
-                this.OnDeactivated?.Invoke(this, this);
-            }
-
-            if (this.DirtyBounds)
-                this.UpdateBounds();
-            if (this.Dirty)
-                this.UpdateCache();
-        }
-
-        protected internal virtual void UpdateCache()
-        {
-            if (this.Parent != null)
-                this.UpdateBounds();
-
-            if (this.Bounds.Width > 0 && this.Bounds.Height > 0)
-            {
-                // Store a list of the graphic device's original render targets...
-                var initialRenderTargets = this.graphicsDevice.GetRenderTargets();
-                // Create a temp render target...
-                var renderTarget = new RenderTarget2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
-                var colorData = new Color[this.Bounds.Width * this.Bounds.Height];
-
-                foreach (ElementState state in Element.States)
-                {
-                    // Create a new render target and set the graphics device target to it...
-                    this.graphicsDevice.SetRenderTarget(renderTarget);
-                    this.graphicsDevice.Clear(Color.Transparent);
-
-                    // Generate a new texture for this state...
-                    this.generateTexture(state, ref renderTarget);
-                    // First dispose of the old texture for this state...
-                    if (_textures.ContainsKey(state))
+                { // If mouse is up...
+                    switch (this.State)
                     {
-                        if (_textures[state].Width != renderTarget.Width || _textures[state].Height != renderTarget.Height)
-                        {
-                            _textures[state]?.Dispose();
-                            _textures[state] = new Texture2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
-                        }
+                        case ElementState.Normal:
+                            _mouseWasRaised = true;
+                            this.setState(ElementState.Hovered, ElementState.Normal);
+                            break;
+                        case ElementState.Hovered:
+                            break;
+                        case ElementState.Active:
+                            break;
+                        case ElementState.Pressed:
+                            this.setState(ElementState.Active, ElementState.Hovered, ElementState.Normal);
+                            break;
                     }
-                    else
+                }
+            }
+            else
+            { // Mouse is not over element...
+                if(this.stage.inputManager.Down)
+                { // If mouse is down
+                    switch (this.State)
                     {
-                        _textures[state] = new Texture2D(this.graphicsDevice, this.Bounds.Width, this.Bounds.Height);
+                        case ElementState.Normal:
+                            break;
+                        case ElementState.Hovered:
+                            this.setState(ElementState.Normal);
+                            break;
+                        case ElementState.Active:
+                            this.setState(ElementState.Normal);
+                            break;
+                        case ElementState.Pressed:
+                            this.setState(ElementState.Normal);
+                            break;
                     }
-
-                    // Load the state color data
-                    renderTarget.GetData<Color>(colorData);
-                    _textures[state].SetData<Color>(colorData);
-
-                    // Generate new debug vertices for the element..
-                    _debugVertices[state] = this.generateDebugVertices(state);
                 }
-
-                // After all the new state targets have generated...
-                // reset the render targets
-                this.graphicsDevice.SetRenderTargets(initialRenderTargets);
-                renderTarget?.Dispose();
-            }
-
-            // Clean the current element
-            this.Dirty = false;
-        }
-
-        protected internal virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
-        {
-            if(_debugVertices.ContainsKey(this.State))
-                vertices.AddRange(_debugVertices[this.State]);
-        }
-
-        protected internal virtual void UpdateBounds()
-        {
-            if (this.Parent != null)
-            {
-                this.UpdateBounds(this.Parent);
-
-                foreach (ElementState state in Element.States)
-                {
-                    // Generate new debug vertices for the element..
-                    _debugVertices[state] = this.generateDebugVertices(state);
+                else
+                { // If mouse is up...
+                    switch (this.State)
+                    {
+                        case ElementState.Normal:
+                            break;
+                        case ElementState.Hovered:
+                            this.setState(ElementState.Normal);
+                            break;
+                        case ElementState.Active:
+                            break;
+                        case ElementState.Pressed:
+                            this.setState(ElementState.Normal);
+                            break;
+                    }
                 }
             }
-
-            this.DirtyBounds = false;
         }
+        #endregion
 
-        /// <summary>
-        /// Generate the texture for a given element state...
-        /// </summary>
-        /// <param name="state"></param>
-        protected virtual void generateTexture(ElementState state, ref RenderTarget2D target)
+        #region Cleaning Methods
+        protected virtual void CleanMeta()
         {
-            var background = this.StyleSheet.GetProperty<Texture2D>(state, StyleProperty.BackgroundImage);
-
-            if (background != null)
+            if(this.Container == null)
             {
-                this.internalSpriteBatch.Begin(blendState: BlendState.AlphaBlend);
-                this.internalSpriteBatch.Draw(background, target.Bounds, Color.White);
-                this.internalSpriteBatch.End();
+                this.PrevSibling = null;
+                this.NextSibling = null;
+            }
+            else
+            {
+                var index = this.Container.Children.IndexOf(this);
+                this.PrevSibling = index > 0 ? this.Container.Children[index - 1] : null;
+                this.NextSibling = this.Container.Children.Count > index + 1 ? this.Container.Children[index + 1] : null;
             }
         }
+        #endregion
 
-        /// <summary>
-        /// Generate a list of vertices for the stage debug view
-        /// </summary>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        protected virtual VertexPositionColor[] generateDebugVertices(ElementState state)
+        #region Set Methods
+        protected internal void setContainer(Container container)
         {
-            var wireframeColor = this.StyleSheet.GetProperty<Color>(state, StyleProperty.DebugWireframeColor);
+            // Save the new parent
+            this.Container = container;
+            this.stage = container.stage;
 
-            return new VertexPositionColor[]
-            {
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Top, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Top, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Top, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Bottom, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Right, this.Bounds.Bottom, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Bottom, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Bottom, 0), wireframeColor),
-                new VertexPositionColor(new Vector3(this.Bounds.Left, this.Bounds.Top, 0), wireframeColor)
-            };
+            this.Outer.setParent(this.Container.Inner);
+
+            // Mark the element as dirty
+            this.DirtyMeta = true;
         }
+
+        protected void setState(params ElementState[] states)
+        {
+            foreach(ElementState newState in states)
+            {
+                if (newState != this.State && !this.StateBlacklisted(newState))
+                { // If the new state is not the current public state and is not blacklisted...
+                    // Set the new state
+                    this.State = newState;
+
+                    // Trigger the on update event
+                    this.OnStateChanged?.Invoke(this, this);
+
+                    break;
+                }
+            }
+
+        }
+        #endregion
+
+        #region Generation Methods
+        protected virtual void generateTexture(ElementState state, SpriteBatch spriteBatch, RenderTarget2D renderTarget, GraphicsDevice graphicsDevice)
+        {
+
+        }
+        #endregion
+
+        public virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
+        {
+            this.Outer.AddDebugVertices(ref vertices);
+            this.Inner.AddDebugVertices(ref vertices);
+        }
+
+        #region Helper Methods
+        protected internal Boolean StateBlacklisted(ElementState state)
+        {
+            return (state & this.StateBlacklist) != 0;
+        }
+        #endregion
     }
 }

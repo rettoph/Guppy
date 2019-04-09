@@ -1,24 +1,29 @@
-﻿using System;
+﻿using Guppy.UI.Entities;
+using Guppy.UI.Styles;
+using Guppy.UI.Utilities;
+using Guppy.UI.Utilities.Units.UnitValues;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.UI.Entities;
-using Guppy.UI.Utilities.Units;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.UI.Elements
 {
-    /// <summary>
-    /// Containers are specific elements that can contain
-    /// other elements.
-    /// </summary>
     public class SimpleContainer : Container
     {
-        public override Stage Stage { get { return this.Parent.Stage; } }
-
-        public SimpleContainer(Unit x, Unit y, Unit width, Unit height) : base(x, y, width, height)
+        public SimpleContainer(Style style = null) : base(style)
         {
-            this.children = new List<Element>();
+        }
+        public SimpleContainer(UnitValue x, UnitValue y, UnitValue width, UnitValue height, Style style = null) : base(x, y, width, height, style)
+        {
+        }
+
+        public void Add(Element child)
+        {
+            this.add(child);
+        }
+        public void Remove(Element child)
+        {
+            this.remove(child);
         }
     }
 }

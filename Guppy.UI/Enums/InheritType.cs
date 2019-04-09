@@ -4,11 +4,10 @@ using System.Text;
 
 namespace Guppy.UI.Enums
 {
-    public enum ElementState
+    public enum InheritType
     {
-        Normal  = 1,
-        Hovered = 2,
-        Pressed = 4,
-        Active = 8,
+        None,
+        Parent,
+        Stage
     }
 }

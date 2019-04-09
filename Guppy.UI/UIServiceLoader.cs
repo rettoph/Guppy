@@ -10,29 +10,21 @@ using System.Text;
 
 namespace Guppy.UI
 {
-    /// <summary>
-    /// Service loader to interface UI 
-    /// functionality with core guppy
-    /// </summary>
     public class UIServiceLoader : IServiceLoader
     {
         public void Boot(IServiceCollection services)
         {
             services.AddScoped<InputManager>(p =>
             {
-                var entities = p.GetService<EntityCollection>();
-                return entities.Create("ui:input_manager") as InputManager;
+                return p.GetService<EntityCollection>().Create("ui:input_manager") as InputManager;
             });
         }
 
         public void PreInitialize(IServiceProvider provider)
         {
-            var contentLoader = provider.GetLoader<ContentLoader>();
-            contentLoader.Register("ui:font", "UI/font");
-
             var entityLoader = provider.GetLoader<EntityLoader>();
-            entityLoader.Register<InputManager>("ui:input_manager", "ui:name:input_manager", "ui:description:input_manager");
-            entityLoader.Register<Stage>("ui:stage", "ui:name:stage", "ui:description:stage");
+            entityLoader.Register<Stage>("ui:stage", "ui_name:stage", "ui_description:stage");
+            entityLoader.Register<InputManager>("ui:input_manager", "ui_name:input_manager", "ui_description:input_manager");
         }
 
         public void Initialize(IServiceProvider provider)

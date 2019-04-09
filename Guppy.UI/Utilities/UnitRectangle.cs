@@ -6,56 +6,113 @@ using System.Text;
 
 namespace Guppy.UI.Utilities
 {
-    public class UnitRectangle : IEquatable<UnitRectangle>
+    public class UnitRectangle
     {
         #region Private Fields
-        private Rectangle _output;
+
         #endregion
 
         #region Public Attributes
-        public Unit X { get; set; }
-        public Unit Y { get; set; }
-        public Unit Width { get; set; }
-        public Unit Height { get; set; }
+        public Boolean DirtyBounds { get; set; }
 
-        public Rectangle Bounds { get { return _output; } }
+        public Unit X { get; }
+        public Unit Y { get; }
+        public Unit Width { get; }
+        public Unit Height { get; }
+
+        public UnitRectangle Parent { get; private set; }
+        #endregion
+
+        #region Public Fields
+        public Rectangle Bounds;
+        #endregion
+
+        #region Events
+        public event EventHandler<Rectangle> OnBoundsCleaned;
         #endregion
 
 
-        public UnitRectangle(Unit x, Unit y, Unit width, Unit height)
+        #region Constructors
+        public UnitRectangle(Unit x, Unit y, Unit width, Unit height, UnitRectangle parent = null)
         {
+            // Save the rectange bounds
             this.X = x;
             this.Y = y;
             this.Width = width;
             this.Height = height;
 
-            _output = new Rectangle(
-                this.X.Value, 
-                this.Y.Value, 
-                this.Width.Value, 
-                this.Height.Value);
+            this.setParent(parent);
+
+            // Create a new output rectange to represent the calculated values
+            this.Bounds = new Rectangle(this.X, this.Y, this.Width, this.Height);
+
+            // Bind to events
+            this.X.OnUpdated += this.HandleValueUpdated;
+            this.Y.OnUpdated += this.HandleValueUpdated;
+            this.Width.OnUpdated += this.HandleValueUpdated;
+            this.Height.OnUpdated += this.HandleValueUpdated;
+        }
+        #endregion
+
+        #region Methods
+        public virtual void Update()
+        {
+            if (this.DirtyBounds)
+            {
+                this.CleanBounds();
+
+                this.DirtyBounds = false;
+                this.OnBoundsCleaned?.Invoke(this, this.Bounds);
+            }
         }
 
-        public virtual void UpdateBounds(Rectangle container)
+        public virtual void setParent(UnitRectangle parent)
         {
-            this.X.UpdateValue(container.Width);
-            this.Y.UpdateValue(container.Height);
-            this.Width.UpdateValue(container.Width);
-            this.Height.UpdateValue(container.Height);
+            if (parent != this.Parent)
+            {
+                this.Parent = parent;
 
-            _output.X = container.X + this.X.Value;
-            _output.Y = container.Y + this.Y.Value;
-            _output.Width = this.Width.Value;
-            _output.Height = this.Height.Value;
-        }
-        public void UpdateBounds(UnitRectangle container)
-        {
-            this.UpdateBounds(container.Bounds);
-        }
+                this.X.SetParent(this.Parent.Width);
+                this.Y.SetParent(this.Parent.Height);
+                this.Width.SetParent(this.Parent.Width);
+                this.Height.SetParent(this.Parent.Height);
 
-        public bool Equals(UnitRectangle other)
-        {
-            return _output.Equals(other.Bounds);
+                this.DirtyBounds = true;
+            }
         }
+        #endregion
+
+        #region Cleaning Methods
+        protected virtual void CleanBounds()
+        {
+            if(this.Parent == null)
+            {
+                this.Bounds.X = this.X.Value;
+                this.Bounds.Y = this.Y.Value;
+            }
+            else
+            {
+                this.Bounds.X = this.Parent.Bounds.X + this.X.Value;
+                this.Bounds.Y = this.Parent.Bounds.Y + this.Y.Value;
+            }
+            
+            this.Bounds.Width = this.Width.Value;
+            this.Bounds.Height = this.Height.Value;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleValueUpdated(object sender, Unit e)
+        {
+            this.DirtyBounds = true;
+        }
+        #endregion
+
+        #region Operators
+        public static implicit operator Rectangle(UnitRectangle rect)
+        {
+            return rect.Bounds;
+        }
+        #endregion
     }
 }
