@@ -1,6 +1,4 @@
-﻿using Guppy.UI.Elements.ElementSegments;
-using Guppy.UI.Entities;
-using Guppy.UI.Enums;
+﻿using Guppy.UI.Enums;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
@@ -10,296 +8,239 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 
 namespace Guppy.UI.Elements
 {
     /// <summary>
-    /// Element is the base type that all
-    /// UI elements derive from.
+    /// Elements are the basic-most UI element.
+    /// They contain nothing but inner bounds,
+    /// outer bounds, state, and interfacing for
+    /// more advanced custom UI elements.
     /// </summary>
-    public abstract class Element
+    public class Element
     {
-        #region Private Attributes
-        private Boolean _mouseWasRaised;
+        #region Private Fields
+        private List<Element> _children;
+
+        private List<VertexPositionColor> _vertices;
         #endregion
 
         #region Protected Fields
-        protected internal Stage stage;
-        #endregion
-
-
-        #region Public Fields
-        public readonly Style Style;
+        /// <summary>
+        /// Contains layers to be drawn within the current element.
+        /// Custom layers can be added at anytime, and next time the
+        /// texture is cleaned, the layer will be ran then appended
+        /// to the input texture.
+        /// </summary>
+        protected List<Func<SpriteBatch, Rectangle>> layers;
         #endregion
 
         #region Public Attributes
         /// <summary>
-        /// Manages the inner bounds/textures of the current
-        /// element
+        /// The current element's immediate parent, if any.
         /// </summary>
-        public InnerElementSegment Inner { get; private set; }
-        /// <summary>
-        /// Manages the inner bounds/textures of the
-        /// current element
-        /// </summary>
-        public OuterElementSegment Outer { get; private set; }
+        public Element Parent { get; protected set; }
 
         /// <summary>
-        /// Mark the elements meta data as dirty.
-        /// This will mark self container meta data
-        /// such as older & younger sibling as dirty
-        /// and ensure it is reloaded next update call
+        /// The outer bounds of the current element
         /// </summary>
-        public Boolean DirtyMeta { get; set; }
+        public UnitRectangle Outer { get; private set; }
 
         /// <summary>
-        /// Mark the elements texture as dirty.
-        /// This will trigger an async texture regeneration
-        /// next update.
+        /// The inner bounds of the current element
         /// </summary>
-        public Boolean DirtyTextures { get; set; }
+        public UnitRectangle Inner { get; private set; }
 
         /// <summary>
-        /// The current non blacklisted element state
+        /// The element's current state.
         /// </summary>
         public ElementState State { get; private set; }
 
         /// <summary>
-        /// Specific element states can be blacklisted here.
-        /// The element state will never be set to any values
-        /// within the blacklist
+        /// Represents a blacklist of all states unavailable to
+        /// the current element.
         /// </summary>
         public ElementState StateBlacklist { get; set; }
 
         /// <summary>
-        /// Indicates if the mouse was over the current element on 
-        /// the last frame update
+        /// True if the mouse is directly over the current
+        /// elememt.
         /// </summary>
         public Boolean MouseOver { get; private set; }
 
         /// <summary>
-        /// Indicates if the mouse is over all elements
-        /// in the current elements upward heierarchy
+        /// True if the mosue is over every single element contained
+        /// within the current elements upward hierarchy
         /// </summary>
         public Boolean MouseOverHierarchy { get; private set; }
 
-        public Container Container { get; private set; }
+        public Boolean Dirty { get; set; }
 
-        public Element PrevSibling { get; private set; }
-        public Element NextSibling { get; private set; }
+        /// <summary>
+        /// The current elements styleing
+        /// </summary>
+        public IStyle Style { get; private set; }
         #endregion
-
-        #region Events
-        public event EventHandler<Element> OnStateChanged;
-        #endregion
-
 
         #region Constructors
-        public Element(Style style = null)
+        public Element(Unit x, Unit y, Unit width, Unit height, Style style = null)
         {
-            this.Style = new Style(style);
-            // Create the internal element segments
-            this.Outer = new OuterElementSegment(this);
-            this.Inner = new InnerElementSegment(this);
-            this.Inner.setParent(this.Outer);
-
-            // Update Inner Bounds
-            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft));
-            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop));
-            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingRight).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft).Flip() });
-            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingBottom).Flip() });
+            _children = new List<Element>();
+            _vertices = new List<VertexPositionColor>();
 
             this.State = ElementState.Normal;
-            this.DirtyTextures = true;
-        }
-        public Element(UnitValue x, UnitValue y, UnitValue width, UnitValue height, Style style = null)
-        {
-            this.Style = new Style(style);
+            this.Style = new ElementStyle(this, style);
+            this.Outer = new UnitRectangle(x, y, width, height);
+            this.Inner = new UnitRectangle(
+                x: this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 5), 
+                y: this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 5), 
+                width: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 5).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 5).Flip() }, 
+                height: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 5).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 5).Flip() }, 
+                parent: this.Outer);
+            
 
-            // Create the internal element segments
-            this.Outer = new OuterElementSegment(this);
-            this.Inner = new InnerElementSegment(this);
-            this.Inner.setParent(this.Outer);
+            this.Dirty = true;
 
-            // Update Outer Bounds
-            this.Outer.X.SetValue(x);
-            this.Outer.Y.SetValue(y);
-            this.Outer.Width.SetValue(width);
-            this.Outer.Height.SetValue(height);
-
-            // Update Inner Bounds
-            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft));
-            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop));
-            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingRight).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingLeft).Flip() });
-            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingTop).Flip(), this.Style.Get<UnitValue>(GlobalStyleProperty.PaddingBottom).Flip() });
-
-            this.State = ElementState.Normal;
-            this.DirtyTextures = true;
+            this.Outer.OnBoundsCleaned += this.handleBoundsChanged;
         }
         #endregion
 
         #region Frame Methods
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public virtual void Update()
         {
-            this.Outer.Draw(spriteBatch);
-            this.Inner.Draw(spriteBatch);
-        }
-
-        public virtual void Update(GameTime gameTime)
-        {
-            // Ensure the inner and outer bounds are updated
+            // Update the current element's bounds...
             this.Outer.Update();
             this.Inner.Update();
 
-            // Update the current mouse over positions
-            this.MouseOver = this.Outer.Bounds.Contains(this.stage.inputManager.Position);
-            this.MouseOverHierarchy = this.Container == null ? true : this.MouseOver && this.Container.MouseOverHierarchy;
-
-            if(this.MouseOverHierarchy)
-            { // Mouse is over element...
-                if(this.stage.inputManager.Down)
-                { // If mouse is down
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            _mouseWasRaised = false;
-                            this.setState(ElementState.Hovered, ElementState.Normal);
-                            break;
-                        case ElementState.Hovered:
-                            if (_mouseWasRaised)
-                                this.setState(ElementState.Pressed, ElementState.Hovered);
-                            break;
-                        case ElementState.Active:
-                            break;
-                        case ElementState.Pressed:
-                            break;
-                    }
-                }
-                else
-                { // If mouse is up...
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            _mouseWasRaised = true;
-                            this.setState(ElementState.Hovered, ElementState.Normal);
-                            break;
-                        case ElementState.Hovered:
-                            break;
-                        case ElementState.Active:
-                            break;
-                        case ElementState.Pressed:
-                            this.setState(ElementState.Active, ElementState.Hovered, ElementState.Normal);
-                            break;
-                    }
-                }
-            }
-            else
-            { // Mouse is not over element...
-                if(this.stage.inputManager.Down)
-                { // If mouse is down
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            break;
-                        case ElementState.Hovered:
-                            this.setState(ElementState.Normal);
-                            break;
-                        case ElementState.Active:
-                            this.setState(ElementState.Normal);
-                            break;
-                        case ElementState.Pressed:
-                            this.setState(ElementState.Normal);
-                            break;
-                    }
-                }
-                else
-                { // If mouse is up...
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            break;
-                        case ElementState.Hovered:
-                            this.setState(ElementState.Normal);
-                            break;
-                        case ElementState.Active:
-                            break;
-                        case ElementState.Pressed:
-                            this.setState(ElementState.Normal);
-                            break;
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region Cleaning Methods
-        protected virtual void CleanMeta()
-        {
-            if(this.Container == null)
+            // Clean dirty segments of the element
+            if (this.Dirty)
             {
-                this.PrevSibling = null;
-                this.NextSibling = null;
+                this.generateDebugVertices();
+                this.cleanTexture();
+
+                this.Dirty = false;
             }
-            else
-            {
-                var index = this.Container.Children.IndexOf(this);
-                this.PrevSibling = index > 0 ? this.Container.Children[index - 1] : null;
-                this.NextSibling = this.Container.Children.Count > index + 1 ? this.Container.Children[index + 1] : null;
-            }
+                
+
+            // Ensure that every self contained child element gets updated too...
+            foreach (Element child in _children)
+                child.Update();
         }
-        #endregion
-
-        #region Set Methods
-        protected internal void setContainer(Container container)
-        {
-            // Save the new parent
-            this.Container = container;
-            this.stage = container.stage;
-
-            this.Outer.setParent(this.Container.Inner);
-
-            // Mark the element as dirty
-            this.DirtyMeta = true;
-        }
-
-        protected void setState(params ElementState[] states)
-        {
-            foreach(ElementState newState in states)
-            {
-                if (newState != this.State && !this.StateBlacklisted(newState))
-                { // If the new state is not the current public state and is not blacklisted...
-                    // Set the new state
-                    this.State = newState;
-
-                    // Trigger the on update event
-                    this.OnStateChanged?.Invoke(this, this);
-
-                    break;
-                }
-            }
-
-        }
-        #endregion
-
-        #region Generation Methods
-        protected virtual void generateTexture(ElementState state, SpriteBatch spriteBatch, RenderTarget2D renderTarget, GraphicsDevice graphicsDevice)
-        {
-
-        }
-        #endregion
 
         public virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
-            this.Outer.AddDebugVertices(ref vertices);
-            this.Inner.AddDebugVertices(ref vertices);
+            vertices.AddRange(_vertices);
+
+            // Ensure every child element's debug vertices are added
+            foreach (Element child in _children)
+                child.AddDebugVertices(ref vertices);
         }
 
-        #region Helper Methods
-        protected internal Boolean StateBlacklisted(ElementState state)
+        #endregion
+
+        #region Children Methods
+        /// <summary>
+        /// Add a new child element to the current element
+        /// </summary>
+        /// <param name="child"></param>
+        protected void add(Element child)
         {
-            return (state & this.StateBlacklist) != 0;
+            if (child.Parent != null)
+            { // If the child already has a parent...
+                throw new Exception($"Unable to add child to element, target already has a parent.");
+            }
+            else
+            { // If the child doesnt already have a parent...
+                _children.Add(child);
+                child.Parent = this;
+                child.Outer.setParent(this.Inner);
+            }
+        }
+
+        /// <summary>
+        /// Remove an element from the current parent.
+        /// </summary>
+        /// <param name="child"></param>
+        protected void remove(Element child)
+        {
+            if(!_children.Contains(child))
+            { // If the current element doesnt contain the target...
+                throw new Exception($"Unable to remove child from element, target doesn't belong to parent.");
+            }
+            else
+            { // If the current element does contain the target...
+                _children.Remove(child);
+                child.Parent = null;
+                child.Outer.setParent(null);
+            }
         }
         #endregion
+
+        #region Utility Methods
+        protected Boolean blacklisted(ElementState state)
+        {
+            return (this.StateBlacklist & state) != 0;
+        }
+
+        /// <summary>
+        /// Attempt to set the current element state to
+        /// the inputed value. If the input is contained
+        /// within the blacklist, then no change will 
+        /// happen.
+        /// </summary>
+        /// <param name="state"></param>
+        private void setState(ElementState state)
+        {
+            if(this.State != state && !this.blacklisted(state))
+            {
+                this.Dirty = true;
+            }
+        }
+        #endregion
+
+        #region Clean Methods
+        protected virtual void cleanTexture()
+        {
+        }
+        #endregion
+
+        private void generateDebugVertices()
+        {
+            _vertices.Clear();
+
+            var colorOuter = this.Style.Get<Color>(this.State, StateProperty.OuterDebugColor, Color.Red);
+            var colorInner = this.Style.Get<Color>(this.State, StateProperty.InnerDebugColor, Color.Gray);
+
+            // Build inner rectangle
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Top, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Top, 0), colorInner));
+
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Top, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Top, 0), colorInner));
+
+            // Build outer rectangle
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Top, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Top, 0), colorOuter));
+
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Top, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Top, 0), colorOuter));
+        }
+
+        private void handleBoundsChanged(object sender, Rectangle e)
+        {
+            this.Dirty = true;
+        }
     }
 }

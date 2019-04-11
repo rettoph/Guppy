@@ -17,23 +17,31 @@ namespace Guppy.UI.Entities
 {
     public class Stage : DebuggableEntity
     {
+        #region Private Fields
         private GameWindow _window;
-        private RenderTargetBinding[] _cachedRenderTargets;
-        private Boolean _startedInternalGraphics;
+        #endregion
 
-        public StageContainer Content { get; private set; }
+        #region Protected Internal Fields
+        /// <summary>
+        /// Any elements containing dirty textures will
+        /// be added to this queue. The stage will then
+        /// manage the cleaning of all dirty textures post
+        /// update.
+        /// </summary>
+        protected internal Queue<Element> dirtyTextureQueue;
 
+        /// <summary>
+        /// The bounds of the current client window
+        /// </summary>
         protected internal UnitRectangle clientBounds { get; private set; }
-        protected internal InputManager inputManager;
-        protected internal RenderTarget2D internalRenderTarget { get; private set; }
-        protected internal GraphicsDevice graphicsDevice { get; private set; }
-        protected internal SpriteBatch internalSpriteBatch { get; private set; }
+        #endregion
 
-        private SpriteBatch _spriteBatch;
+        #region Public Attributes
+        public Container Content { get; private set; }
+        #endregion
 
         #region Constructors
         public Stage(
-            InputManager inputManager,
             SpriteBatch spriteBatch,
             GameWindow window,
             GraphicsDevice graphicsDevice,
@@ -43,71 +51,41 @@ namespace Guppy.UI.Entities
             ILogger logger) : base(configuration, scene, logger)
         {
             _window = window;
-            _spriteBatch = spriteBatch;
-            this.inputManager = inputManager;
 
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
-            this.Content = new StageContainer(this);
-
-            this.graphicsDevice = graphicsDevice;
-            this.internalRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            this.internalSpriteBatch = new SpriteBatch(this.graphicsDevice);
+            this.dirtyTextureQueue = new Queue<Element>();
 
             var style = new Style();
-            style.Set<Texture2D>(ElementState.Normal, StyleProperty.BackgroundImage, provider.GetLoader<ContentLoader>().Get<Texture2D>("button"));
-            style.Set<DrawType>(ElementState.Normal, StyleProperty.BackgroundType, DrawType.Tile);
+            style.Set<UnitValue>(GlobalProperty.PaddingTop, 15);
+            style.Set<UnitValue>(GlobalProperty.PaddingRight, 15);
+            style.Set<UnitValue>(GlobalProperty.PaddingBottom, 15);
+            style.Set<UnitValue>(GlobalProperty.PaddingLeft, 15);
 
-            for (Int32 i = 0; i < 10; i++)
-            {
-                var test = new SimpleContainer(100, i * 35, 200, 30, style);
-                this.Content.Add(test);
-            }
-
+            this.Content = new Container(0, 0, 1f, 1f, style);
+            this.Content.Outer.setParent(this.clientBounds);
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
+
+            this.Content.Add(new Element(10, 10, 100, 100));
         }
         #endregion
 
         #region Frame Methods
         public override void Draw(GameTime gameTime)
         {
-            this.Content.Draw(_spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
         {
-            this.Content.Update(gameTime);
-
-            // If this is called, then we must reset the render target
-            if(_startedInternalGraphics)
-            {
-                this.graphicsDevice.SetRenderTargets(_cachedRenderTargets);
-                _cachedRenderTargets = null;
-                _startedInternalGraphics = false;
-            }
+            this.Content.Update();
         }
         public override void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
-            this.clientBounds.Update();
-
             this.Content.AddDebugVertices(ref vertices);
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// 
-        /// </summary>
-        protected internal void startInternalGraphics()
-        {
-            if (!_startedInternalGraphics) {
-                _cachedRenderTargets = this.graphicsDevice.GetRenderTargets();
-
-                this.graphicsDevice.SetRenderTarget(this.internalRenderTarget);
-
-                _startedInternalGraphics = true;
-            }
-        }
         #endregion
 
         #region Event Handlers
@@ -116,8 +94,7 @@ namespace Guppy.UI.Entities
             this.clientBounds.Width.SetValue(_window.ClientBounds.Width - 1);
             this.clientBounds.Height.SetValue(_window.ClientBounds.Height - 1);
 
-            this.internalRenderTarget?.Dispose();
-            this.internalRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            this.clientBounds.Update();
         }
         #endregion
     }

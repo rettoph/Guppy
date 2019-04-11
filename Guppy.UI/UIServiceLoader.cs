@@ -14,10 +14,7 @@ namespace Guppy.UI
     {
         public void Boot(IServiceCollection services)
         {
-            services.AddScoped<InputManager>(p =>
-            {
-                return p.GetService<EntityCollection>().Create("ui:input_manager") as InputManager;
-            });
+            // throw new NotImplementedException();
         }
 
         public void PreInitialize(IServiceProvider provider)
@@ -27,7 +24,6 @@ namespace Guppy.UI
 
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Stage>("ui:stage", "ui_name:stage", "ui_description:stage");
-            entityLoader.Register<InputManager>("ui:input_manager", "ui_name:input_manager", "ui_description:input_manager");
         }
 
         public void Initialize(IServiceProvider provider)

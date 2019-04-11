@@ -9,7 +9,9 @@ namespace Guppy.UI.Utilities
     public class UnitRectangle
     {
         #region Private Fields
-
+        public Rectangle _globalBounds;
+        public Rectangle _relativeBounds;
+        public Rectangle _localBounds;
         #endregion
 
         #region Public Attributes
@@ -24,7 +26,18 @@ namespace Guppy.UI.Utilities
         #endregion
 
         #region Public Fields
-        public Rectangle Bounds;
+        /// <summary>
+        /// The current rectangle's bounds relative to the global scope
+        /// </summary>
+        public Rectangle GlobalBounds { get { return _globalBounds; } }
+        /// <summary>
+        /// The current ractangle's bounds relative to its immediate parent
+        /// </summary>
+        public Rectangle RelativeBounds { get { return _relativeBounds; } }
+        /// <summary>
+        /// The current rectangle's bounds relative to itself
+        /// </summary>
+        public Rectangle LocalBounds { get { return _localBounds; } }
         #endregion
 
         #region Events
@@ -44,7 +57,9 @@ namespace Guppy.UI.Utilities
             this.setParent(parent);
 
             // Create a new output rectange to represent the calculated values
-            this.Bounds = new Rectangle(this.X, this.Y, this.Width, this.Height);
+            _globalBounds = new Rectangle(0, 0, 0, 0);
+            _relativeBounds = new Rectangle(0, 0, 0, 0);
+            _localBounds = new Rectangle(0, 0, 0, 0);
 
             // Bind to events
             this.X.OnUpdated += this.HandleValueUpdated;
@@ -62,7 +77,7 @@ namespace Guppy.UI.Utilities
                 this.CleanBounds();
 
                 this.DirtyBounds = false;
-                this.OnBoundsCleaned?.Invoke(this, this.Bounds);
+                this.OnBoundsCleaned?.Invoke(this, this.GlobalBounds);
             }
         }
 
@@ -85,19 +100,30 @@ namespace Guppy.UI.Utilities
         #region Cleaning Methods
         protected virtual void CleanBounds()
         {
+            // Update global bounds
             if(this.Parent == null)
             {
-                this.Bounds.X = this.X.Value;
-                this.Bounds.Y = this.Y.Value;
+                _globalBounds.X = this.X.Value;
+                _globalBounds.Y = this.Y.Value;
             }
             else
             {
-                this.Bounds.X = this.Parent.Bounds.X + this.X.Value;
-                this.Bounds.Y = this.Parent.Bounds.Y + this.Y.Value;
+                _globalBounds.X = this.Parent.GlobalBounds.X + this.X.Value;
+                _globalBounds.Y = this.Parent.GlobalBounds.Y + this.Y.Value;
             }
             
-            this.Bounds.Width = this.Width.Value;
-            this.Bounds.Height = this.Height.Value;
+            _globalBounds.Width = this.Width.Value;
+            _globalBounds.Height = this.Height.Value;
+
+            // Update relative bounds
+            _relativeBounds.X = this.X.Value;
+            _relativeBounds.Y = this.Y.Value;
+            _relativeBounds.Width = this.Width.Value;
+            _relativeBounds.Height = this.Height.Value;
+
+            // Update local bounds
+            _localBounds.Width = this.Width.Value;
+            _localBounds.Height = this.Height.Value;
         }
         #endregion
 
@@ -111,7 +137,7 @@ namespace Guppy.UI.Utilities
         #region Operators
         public static implicit operator Rectangle(UnitRectangle rect)
         {
-            return rect.Bounds;
+            return rect.GlobalBounds;
         }
         #endregion
     }

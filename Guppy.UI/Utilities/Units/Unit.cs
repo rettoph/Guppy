@@ -110,6 +110,10 @@ namespace Guppy.UI.Utilities.Units
         {
             return new Unit(values);
         }
+        public static implicit operator Unit(UnitValue value)
+        {
+            return new Unit(value);
+        }
         #endregion
     }
 }

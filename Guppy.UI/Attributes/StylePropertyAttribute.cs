@@ -1,11 +1,9 @@
-﻿using Guppy.UI.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.UI.Attributes
 {
-    [AttributeUsage(AttributeTargets.Field)]
     public class StylePropertyAttribute : Attribute
     {
         public readonly Type Type;
@@ -17,10 +15,10 @@ namespace Guppy.UI.Attributes
             this.Inherit = inherit;
         }
 
-        internal void Assert(Object value)
+        public void Assert(Type type)
         {
-            if (!this.Type.IsAssignableFrom(value.GetType()))
-                throw new Exception($"Invalid StyleProperty Type given. Recieved {value.GetType().Name} but expected {this.Type.Name} => '{value.ToString()}'");
+            if (!this.Type.IsAssignableFrom(type))
+                throw new Exception($"Unable to update style property! {this.Type.Name} expected, but {type.Name} recieved!");
         }
     }
 }
