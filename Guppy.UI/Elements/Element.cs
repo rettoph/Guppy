@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Enums;
+﻿using Guppy.UI.Entities;
+using Guppy.UI.Enums;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
@@ -23,6 +24,8 @@ namespace Guppy.UI.Elements
         private List<Element> _children;
 
         private List<VertexPositionColor> _vertices;
+
+        private Texture2D _texture;
         #endregion
 
         #region Protected Fields
@@ -36,6 +39,8 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Public Attributes
+        public Stage Stage { get; protected internal set; }
+
         /// <summary>
         /// The current element's immediate parent, if any.
         /// </summary>
@@ -74,6 +79,9 @@ namespace Guppy.UI.Elements
         /// </summary>
         public Boolean MouseOverHierarchy { get; private set; }
 
+        /// <summary>
+        /// Mark the current element as dirty
+        /// </summary>
         public Boolean Dirty { get; set; }
 
         /// <summary>
@@ -87,6 +95,9 @@ namespace Guppy.UI.Elements
         {
             _children = new List<Element>();
             _vertices = new List<VertexPositionColor>();
+
+            this.layers = new List<Func<SpriteBatch, Rectangle>>();
+            this.layers.Add(this.drawBackgroundLayer);
 
             this.State = ElementState.Normal;
             this.Style = new ElementStyle(this, style);
@@ -106,6 +117,16 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Frame Methods
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            if (_texture != null) // Draw the texture, if there is one
+                spriteBatch.Draw(_texture, this.Outer.GlobalBounds, Color.White);
+
+            // Ensure that every self contained child element gets drawn too...
+            foreach (Element child in _children)
+                child.Draw(spriteBatch);
+        }
+
         public virtual void Update()
         {
             // Update the current element's bounds...
@@ -115,8 +136,8 @@ namespace Guppy.UI.Elements
             // Clean dirty segments of the element
             if (this.Dirty)
             {
-                this.generateDebugVertices();
-                this.cleanTexture();
+                // Add the current element to the dirty texture queue
+                this.Stage.dirtyElementQueue.Enqueue(this);
 
                 this.Dirty = false;
             }
@@ -153,6 +174,7 @@ namespace Guppy.UI.Elements
             { // If the child doesnt already have a parent...
                 _children.Add(child);
                 child.Parent = this;
+                child.Stage = this.Stage;
                 child.Outer.setParent(this.Inner);
             }
         }
@@ -199,8 +221,93 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Clean Methods
-        protected virtual void cleanTexture()
+        public void Clean(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
         {
+            this.generateDebugVertices();
+            this.cleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
+        }
+
+        protected virtual void cleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
+        {
+            if(this.layers.Count > 0)
+            {
+                // Clear the output, and prep for layer rendering
+                graphicsDevice.SetRenderTarget(outputRenderTarget);
+                graphicsDevice.Clear(Color.Transparent);
+
+                Rectangle layerPos;
+
+                foreach (Func<SpriteBatch, Rectangle> layer in this.layers)
+                { // Iterate through all internal layers
+                    graphicsDevice.SetRenderTarget(layerRenderTarget);
+                    graphicsDevice.Clear(Color.Transparent);
+
+                    // Generate the specified layer
+                    layerPos = layer.Invoke(spriteBatch);
+
+                    // Switch to the output target...
+                    graphicsDevice.SetRenderTarget(outputRenderTarget);
+
+                    // Draw the layer target to the output target...
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(layerRenderTarget, layerPos, layerPos, Color.White);
+                    spriteBatch.End();
+                }
+
+                
+                // Ensure that the current texture is ready for data implantation
+                if (_texture == null)
+                {
+                    _texture = new Texture2D(graphicsDevice, this.Outer.LocalBounds.Width, this.Outer.LocalBounds.Height);
+                }
+                else if (_texture.Width != this.Outer.LocalBounds.Width || _texture.Height != this.Outer.LocalBounds.Height)
+                {
+                    _texture?.Dispose();
+                    _texture = new Texture2D(graphicsDevice, this.Outer.LocalBounds.Width, this.Outer.LocalBounds.Height);
+                }
+
+                // Once the layers are done drawing, convert the output target to a texture
+                Color[] textureData = new Color[this.Outer.LocalBounds.Width * this.Outer.LocalBounds.Height];
+                outputRenderTarget.GetData<Color>(0, this.Outer.LocalBounds, textureData, 0, textureData.Length);
+                _texture.SetData<Color>(textureData);
+            }
+            else
+            {
+                // Nothing to draw...
+                _texture?.Dispose();
+            }
+        }
+        #endregion
+
+        #region Texture Layer Methods
+        private Rectangle drawBackgroundLayer(SpriteBatch spriteBatch)
+        {
+            var background = this.Style.Get<Texture2D>(this.State, StateProperty.Background);
+            
+            if(background != null)
+            {
+                switch (this.Style.Get<DrawType>(this.State, StateProperty.BackgroundType, DrawType.Tile))
+                {
+                    case DrawType.Normal:
+                        spriteBatch.Begin();
+                        spriteBatch.Draw(background, this.Outer.LocalBounds.Center.ToVector2() - background.Bounds.Center.ToVector2(), background.Bounds, Color.White);
+                        spriteBatch.End();
+                        break;
+                    case DrawType.Stretch:
+                        spriteBatch.Begin();
+                        spriteBatch.Draw(background, this.Outer.LocalBounds, Color.White);
+                        spriteBatch.End();
+                        break;
+                    case DrawType.Tile:
+                        spriteBatch.Begin(samplerState: SamplerState.LinearWrap);
+                        spriteBatch.Draw(background, this.Outer.LocalBounds, this.Outer.LocalBounds, Color.White);
+                        spriteBatch.End();
+                        break;
+                }
+            }
+
+            // throw new NotImplementedException();
+            return this.Outer.LocalBounds;
         }
         #endregion
 

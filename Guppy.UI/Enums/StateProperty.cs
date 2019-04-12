@@ -14,6 +14,8 @@ namespace Guppy.UI.Enums
          */
         [StyleProperty(typeof(Texture2D), false)]
         Background,
+        [StyleProperty(typeof(DrawType), false)]
+        BackgroundType,
 
         /*
          * Debug Properties

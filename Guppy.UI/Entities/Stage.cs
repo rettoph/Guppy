@@ -19,6 +19,11 @@ namespace Guppy.UI.Entities
     {
         #region Private Fields
         private GameWindow _window;
+        private GraphicsDevice _graphicsDevice;
+        private RenderTarget2D _layerRenderTarget;
+        private RenderTarget2D _outputRenderTarget;
+        private SpriteBatch _internalSpriteBatch;
+        private SpriteBatch _spriteBatch;
         #endregion
 
         #region Protected Internal Fields
@@ -28,7 +33,7 @@ namespace Guppy.UI.Entities
         /// manage the cleaning of all dirty textures post
         /// update.
         /// </summary>
-        protected internal Queue<Element> dirtyTextureQueue;
+        protected internal Queue<Element> dirtyElementQueue;
 
         /// <summary>
         /// The bounds of the current client window
@@ -51,9 +56,14 @@ namespace Guppy.UI.Entities
             ILogger logger) : base(configuration, scene, logger)
         {
             _window = window;
+            _graphicsDevice = graphicsDevice;
+            _spriteBatch = spriteBatch;
+            _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _internalSpriteBatch = new SpriteBatch(_graphicsDevice);
 
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
-            this.dirtyTextureQueue = new Queue<Element>();
+            this.dirtyElementQueue = new Queue<Element>();
 
             var style = new Style();
             style.Set<UnitValue>(GlobalProperty.PaddingTop, 15);
@@ -63,21 +73,43 @@ namespace Guppy.UI.Entities
 
             this.Content = new Container(0, 0, 1f, 1f, style);
             this.Content.Outer.setParent(this.clientBounds);
+            this.Content.Stage = this;
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
 
-            this.Content.Add(new Element(10, 10, 100, 100));
+            var bStyle = new Style();
+            bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("button"));
+            this.Content.Add(new Element(10, 10, 450, 100, bStyle));
         }
         #endregion
 
         #region Frame Methods
         public override void Draw(GameTime gameTime)
         {
+            this.Content.Draw(_spriteBatch);
         }
 
         public override void Update(GameTime gameTime)
         {
             this.Content.Update();
+
+            if(this.dirtyElementQueue.Count > 0)
+            { // If there are any dirty elements...
+                // Cache the current render targets...
+                var renderTargetsCache = _graphicsDevice.GetRenderTargets();
+
+                // Clean any self contained dirty textures
+                while (this.dirtyElementQueue.Count > 0)
+                    this.dirtyElementQueue.Dequeue().Clean(
+                        _graphicsDevice, 
+                        _layerRenderTarget, 
+                        _outputRenderTarget, 
+                        _internalSpriteBatch);
+
+                // Reset the graphics device render targets
+                _graphicsDevice.SetRenderTargets(renderTargetsCache);
+            }
+
         }
         public override void AddDebugVertices(ref List<VertexPositionColor> vertices)
         {
@@ -95,6 +127,13 @@ namespace Guppy.UI.Entities
             this.clientBounds.Height.SetValue(_window.ClientBounds.Height - 1);
 
             this.clientBounds.Update();
+
+            // Regenerate the render targets...
+            _layerRenderTarget?.Dispose();
+            _outputRenderTarget?.Dispose();
+
+            _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
         }
         #endregion
     }

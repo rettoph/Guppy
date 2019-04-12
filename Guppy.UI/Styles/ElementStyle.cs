@@ -28,7 +28,7 @@ namespace Guppy.UI.Styles
 
             if (this.globalProperties.ContainsKey(property))
                 return (TValue)this.globalProperties[property];
-            else if(this.Root != null && !(rootVal = this.Root.Get<TValue>(property, fallback)).Equals(fallback))
+            else if(this.Root != null && (rootVal = this.Root.Get<TValue>(property, fallback)) != null && !rootVal.Equals(fallback))
                 return rootVal;
             else if(BaseStyle.GlobalPropertyAttributes[property].Inherit && this.Parent.Parent != null)
                 return this.Parent.Parent.Style.Get<TValue>(property, fallback);
@@ -49,7 +49,7 @@ namespace Guppy.UI.Styles
                 return (TValue)this.stateProperties[state][property];
             else if (this.stateProperties[ElementState.Normal].ContainsKey(property))
                 return (TValue)this.stateProperties[ElementState.Normal][property];
-            else if (this.Root != null && !(rootVal = this.Root.Get<TValue>(state, property, fallback)).Equals(fallback))
+            else if (this.Root != null && (rootVal = this.Root.Get<TValue>(state, property, fallback)) != null && !rootVal.Equals(fallback))
                 return rootVal;
             else if (BaseStyle.StatePropertyAttributes[property].Inherit && this.Parent.Parent != null)
                 return this.Parent.Parent.Style.Get<TValue>(state, property, fallback);
