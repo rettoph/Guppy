@@ -24,6 +24,8 @@ namespace Guppy.UI.Enums
         Font,
         [StyleProperty(typeof(Alignment), true)]
         TextAlignment,
+        [StyleProperty(typeof(Color), true)]
+        TextColor,
 
         /*
          * Debug Properties

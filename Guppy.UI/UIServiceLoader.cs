@@ -21,7 +21,8 @@ namespace Guppy.UI
         {
             var contentLoader = provider.GetLoader<ContentLoader>();
             contentLoader.Register("ui:font", "UI/font");
-            contentLoader.Register("button", "UI/button-demo");
+            contentLoader.Register("demo-button", "UI/demo-button");
+            contentLoader.Register("demo-button-pressed", "UI/demo-button-pressed");
 
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.Register<Stage>("ui:stage", "ui_name:stage", "ui_description:stage");

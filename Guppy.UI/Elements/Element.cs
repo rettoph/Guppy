@@ -43,7 +43,7 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Public Attributes
-        public Stage Stage { get; protected internal set; }
+        public virtual Stage Stage { get { return this.Parent?.Stage; } }
 
         /// <summary>
         /// The current element's immediate parent, if any.
@@ -258,7 +258,6 @@ namespace Guppy.UI.Elements
             { // If the child doesnt already have a parent...
                 _children.Add(child);
                 child.Parent = this;
-                child.Stage = this.Stage;
                 child.Outer.setParent(this.Inner);
             }
         }
@@ -363,21 +362,28 @@ namespace Guppy.UI.Elements
                 {
                     var overlap = outputRenderTarget.Bounds.Overlap(this.Outer.LocalBounds);
 
-                    // Ensure that the current texture is ready for data implantation
-                    if (_texture == null)
+                    if (overlap.X >= 0 && overlap.Y >= 0 && overlap.Width > 0 && overlap.Height > 0)
                     {
-                        _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                        // Ensure that the current texture is ready for data implantation
+                        if (_texture == null)
+                        {
+                            _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                        }
+                        else if (_texture.Width != overlap.Width || _texture.Height != overlap.Height)
+                        {
+                            _texture?.Dispose();
+                            _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                        }
+
+                        // Once the layers are done drawing, convert the output target to a texture
+                        Color[] textureData = new Color[overlap.Width * overlap.Height];
+                        outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, textureData.Length);
+                        _texture.SetData<Color>(textureData);
                     }
-                    else if (_texture.Width != overlap.Width || _texture.Height != overlap.Height)
+                    else
                     {
                         _texture?.Dispose();
-                        _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
                     }
-
-                    // Once the layers are done drawing, convert the output target to a texture
-                    Color[] textureData = new Color[overlap.Width * overlap.Height];
-                    outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, textureData.Length);
-                    _texture.SetData<Color>(textureData);
                 }
             }
             else

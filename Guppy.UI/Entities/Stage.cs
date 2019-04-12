@@ -79,25 +79,28 @@ namespace Guppy.UI.Entities
             style.Set<Color>(ElementState.Pressed, StateProperty.OuterDebugColor, Color.Green);
             style.Set<Color>(ElementState.Active, StateProperty.OuterDebugColor, Color.Orange);
 
-            this.Content = new Container(0, 0, 1f, 1f, style);
+            this.Content = new StageContent(this, 0, 0, 1f, 1f, style);
             this.Content.Outer.setParent(this.clientBounds);
-            this.Content.Stage = this;
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
 
             var bStyle = new Style();
-            bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("button"));
+            bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
+            bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
             bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterCenter);
-            bStyle.Set<Alignment>(ElementState.Hovered, StateProperty.TextAlignment, Alignment.BottomCenter);
+            bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
-            for(Int32 i=0; i< 5; i++)
+            for (Int32 i=0; i< 10; i++)
             {
-                for(Int32 j=0; j<5; j++)
+                for(Int32 j=0; j<10; j++)
                 {
-                    var container = new Container(j * 0.2f, i * 0.2f, 0.2f, 0.2f);
+                    var container = new Container(j * 0.1f, i * 0.1f, 0.1f, 0.1f);
+                    var button = new TextElement("hello", 5, 5, new UnitValue[] { 1f, -10 }, new UnitValue[] { 1f, -10 }, bStyle);
+                    container.Add(button);
+
+                    button.StateBlacklist = ElementState.Active;
+
                     this.Content.Add(container);
-                    container.Add(new TextElement("hello", 5, 5, new UnitValue[] { 1f, -10 }, new UnitValue[] { 1f, -10 } , bStyle));
-                    
                 }
             }
         }

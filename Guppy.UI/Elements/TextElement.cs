@@ -41,6 +41,7 @@ namespace Guppy.UI.Elements
             if(font != null)
             {
                 var alignment = this.Style.Get<Alignment>(this.State, StateProperty.TextAlignment, Alignment.TopLeft);
+                var color = this.Style.Get<Color>(this.State, StateProperty.TextColor, Color.Black);
                 var tBounds = font.MeasureString(this.Text);
                 var tPosition = Vector2.Zero;
 
@@ -65,16 +66,16 @@ namespace Guppy.UI.Elements
                 }
                 else if ((alignment & Alignment.VerticalCenter) != 0)
                 { // Center alignment...
-                    tPosition.Y = this.Inner.RelativeBounds.Center.ToVector2().Y - (tBounds.Y / 2);
+                    tPosition.Y = this.Inner.RelativeBounds.Center.ToVector2().Y - (font.LineSpacing / 2);
                 }
                 else if ((alignment & Alignment.Bottom) != 0)
                 { // Bottom alignment...
-                    tPosition.Y = this.Inner.RelativeBounds.Bottom - tBounds.Y;
+                    tPosition.Y = this.Inner.RelativeBounds.Bottom - font.LineSpacing;
                 }
 
                 // Draw the string...
                 spritebatch.Begin(blendState: BlendState.Additive);
-                spritebatch.DrawString(font, this.Text, tPosition, Color.White);
+                spritebatch.DrawString(font, this.Text, tPosition, color);
                 spritebatch.End();
 
                 // Return the inner element bounds

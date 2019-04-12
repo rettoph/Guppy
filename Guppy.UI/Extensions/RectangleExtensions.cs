@@ -20,6 +20,12 @@ namespace Guppy.UI.Extensions
             overlap.Width = (source.Right < target.Right ? source.Right : target.Width) - target.X;
             overlap.Height = (source.Top < target.Top ? source.Top : target.Height) - target.Y;
 
+            if (overlap.Width < 0)
+                overlap.Width = 0;
+
+            if (overlap.Height < 0)
+                overlap.Height = 0;
+
             return overlap;
         }
     }
