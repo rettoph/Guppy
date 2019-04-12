@@ -326,10 +326,11 @@ namespace Guppy.UI.Elements
             {
                 // Clear the output, and prep for layer rendering
                 graphicsDevice.SetRenderTarget(outputRenderTarget);
-                graphicsDevice.Clear(Color.Transparent);
+                // graphicsDevice.Clear(Color.Transparent);
 
                 Rectangle layerPos;
                 Boolean empty = true;
+                // Color[] layerData;
 
                 foreach (Func<SpriteBatch, Rectangle> layer in this.layers)
                 { // Iterate through all internal layers
@@ -347,7 +348,7 @@ namespace Guppy.UI.Elements
                         graphicsDevice.SetRenderTarget(outputRenderTarget);
 
                         // Draw the layer target to the output target...
-                        spriteBatch.Begin();
+                        spriteBatch.Begin(blendState: BlendState.AlphaBlend);
                         spriteBatch.Draw(layerRenderTarget, layerPos, layerPos, Color.White);
                         spriteBatch.End();
                     }

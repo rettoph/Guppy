@@ -40,6 +40,8 @@ namespace Guppy.UI.Entities
         /// The bounds of the current client window
         /// </summary>
         protected internal UnitRectangle clientBounds { get; private set; }
+
+        protected internal SpriteFont font;
         #endregion
 
         #region Public Attributes
@@ -60,11 +62,12 @@ namespace Guppy.UI.Entities
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
             _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             _internalSpriteBatch = new SpriteBatch(_graphicsDevice);
 
             this.dirtyElementQueue = new Queue<Element>();
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
+            this.font = provider.GetLoader<ContentLoader>().Get<SpriteFont>("ui:font");
 
             var style = new Style();
             style.Set<UnitValue>(GlobalProperty.PaddingTop, 15);
@@ -84,14 +87,18 @@ namespace Guppy.UI.Entities
 
             var bStyle = new Style();
             bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("button"));
+            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterCenter);
+            bStyle.Set<Alignment>(ElementState.Hovered, StateProperty.TextAlignment, Alignment.BottomCenter);
 
-            for(Int32 i=0; i<10; i++)
+            for(Int32 i=0; i< 5; i++)
             {
-                for(Int32 j=0; j<10; j++)
+                for(Int32 j=0; j<5; j++)
                 {
-                    this.Content.Add(new Element((j * 205), (i * 35), 200, 30, bStyle));
+                    var container = new Container(j * 0.2f, i * 0.2f, 0.2f, 0.2f);
+                    this.Content.Add(container);
+                    container.Add(new TextElement("hello", 5, 5, new UnitValue[] { 1f, -10 }, new UnitValue[] { 1f, -10 } , bStyle));
+                    
                 }
-                
             }
         }
         #endregion
@@ -146,7 +153,7 @@ namespace Guppy.UI.Entities
             _outputRenderTarget?.Dispose();
 
             _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
         #endregion
     }

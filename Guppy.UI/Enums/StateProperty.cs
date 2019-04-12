@@ -18,6 +18,14 @@ namespace Guppy.UI.Enums
         BackgroundType,
 
         /*
+        *  Text Properties
+        */
+        [StyleProperty(typeof(SpriteFont), true)]
+        Font,
+        [StyleProperty(typeof(Alignment), true)]
+        TextAlignment,
+
+        /*
          * Debug Properties
          */
         [StyleProperty(typeof(Color), true)]

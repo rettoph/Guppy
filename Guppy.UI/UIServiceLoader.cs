@@ -20,6 +20,7 @@ namespace Guppy.UI
         public void PreInitialize(IServiceProvider provider)
         {
             var contentLoader = provider.GetLoader<ContentLoader>();
+            contentLoader.Register("ui:font", "UI/font");
             contentLoader.Register("button", "UI/button-demo");
 
             var entityLoader = provider.GetLoader<EntityLoader>();
