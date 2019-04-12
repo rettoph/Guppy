@@ -1,11 +1,13 @@
 ﻿using Guppy.UI.Entities;
 using Guppy.UI.Enums;
+using Guppy.UI.Extensions;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,6 +23,8 @@ namespace Guppy.UI.Elements
     public class Element
     {
         #region Private Fields
+        private Boolean _mouseWasRaised;
+
         private List<Element> _children;
 
         private List<VertexPositionColor> _vertices;
@@ -119,7 +123,7 @@ namespace Guppy.UI.Elements
         #region Frame Methods
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (_texture != null) // Draw the texture, if there is one
+            if (_texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds)) // Draw the texture, if there is one
                 spriteBatch.Draw(_texture, this.Outer.GlobalBounds, Color.White);
 
             // Ensure that every self contained child element gets drawn too...
@@ -127,11 +131,91 @@ namespace Guppy.UI.Elements
                 child.Draw(spriteBatch);
         }
 
-        public virtual void Update()
+        public virtual void Update(MouseState mouse)
         {
             // Update the current element's bounds...
             this.Outer.Update();
             this.Inner.Update();
+
+            // Update the mouse over data
+            this.MouseOver = this.Outer.GlobalBounds.Contains(mouse.Position);
+            this.MouseOverHierarchy = this.MouseOver && (this.Parent == null ? true : this.Parent.MouseOverHierarchy);
+
+            if (this.MouseOverHierarchy)
+            { // Mouse is over element...
+                if (mouse.LeftButton == ButtonState.Pressed)
+                { // If mouse is down
+                    switch (this.State)
+                    {
+                        case ElementState.Normal:
+                            _mouseWasRaised = false;
+                            this.setState(ElementState.Hovered, ElementState.Normal);
+                            break;
+                        case ElementState.Hovered:
+                            if (_mouseWasRaised)
+                                this.setState(ElementState.Pressed, ElementState.Hovered);
+                            break;
+                        case ElementState.Active:
+                            break;
+                        case ElementState.Pressed:
+                            break;
+                    }
+                }
+                else
+                { // If mouse is up...
+                    switch (this.State)
+                    {
+                        case ElementState.Normal:
+                            _mouseWasRaised = true;
+                            this.setState(ElementState.Hovered, ElementState.Normal);
+                            break;
+                        case ElementState.Hovered:
+                            break;
+                        case ElementState.Active:
+                            break;
+                        case ElementState.Pressed:
+                            this.setState(ElementState.Active, ElementState.Hovered, ElementState.Normal);
+                            break;
+                    }
+                }
+            }
+            else
+            { // Mouse is not over element...
+                if (mouse.LeftButton == ButtonState.Pressed)
+                { // If mouse is down
+                    switch (this.State)
+                    {
+                        case ElementState.Normal:
+                            break;
+                        case ElementState.Hovered:
+                            this.setState(ElementState.Normal);
+                            break;
+                        case ElementState.Active:
+                            this.setState(ElementState.Normal);
+                            break;
+                        case ElementState.Pressed:
+                            this.setState(ElementState.Normal);
+                            break;
+                    }
+                }
+                else
+                { // If mouse is up...
+                    switch (this.State)
+                    {
+                        case ElementState.Normal:
+                            break;
+                        case ElementState.Hovered:
+                            this.setState(ElementState.Normal);
+                            break;
+                        case ElementState.Active:
+                            break;
+                        case ElementState.Pressed:
+                            this.setState(ElementState.Normal);
+                            break;
+                    }
+                }
+            }
+
 
             // Clean dirty segments of the element
             if (this.Dirty)
@@ -141,11 +225,11 @@ namespace Guppy.UI.Elements
 
                 this.Dirty = false;
             }
-                
+
 
             // Ensure that every self contained child element gets updated too...
             foreach (Element child in _children)
-                child.Update();
+                child.Update(mouse);
         }
 
         public virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
@@ -210,13 +294,22 @@ namespace Guppy.UI.Elements
         /// within the blacklist, then no change will 
         /// happen.
         /// </summary>
-        /// <param name="state"></param>
-        private void setState(ElementState state)
+        /// <param name="states"></param>
+        protected void setState(params ElementState[] states)
         {
-            if(this.State != state && !this.blacklisted(state))
+            foreach (ElementState newState in states)
             {
-                this.Dirty = true;
+                if (newState != this.State && !this.blacklisted(newState))
+                { // If the new state is not the current public state and is not blacklisted...
+                    // Set the new state
+                    this.State = newState;
+
+                    this.Dirty = true;
+
+                    break;
+                }
             }
+
         }
         #endregion
 
@@ -236,6 +329,7 @@ namespace Guppy.UI.Elements
                 graphicsDevice.Clear(Color.Transparent);
 
                 Rectangle layerPos;
+                Boolean empty = true;
 
                 foreach (Func<SpriteBatch, Rectangle> layer in this.layers)
                 { // Iterate through all internal layers
@@ -245,31 +339,45 @@ namespace Guppy.UI.Elements
                     // Generate the specified layer
                     layerPos = layer.Invoke(spriteBatch);
 
-                    // Switch to the output target...
-                    graphicsDevice.SetRenderTarget(outputRenderTarget);
+                    if (!layerPos.Equals(Rectangle.Empty))
+                    { // If the returned rectangle is not empty...
+                        empty = false; // We know for a fact that there is at least one layer with data...
 
-                    // Draw the layer target to the output target...
-                    spriteBatch.Begin();
-                    spriteBatch.Draw(layerRenderTarget, layerPos, layerPos, Color.White);
-                    spriteBatch.End();
+                        // Switch to the output target...
+                        graphicsDevice.SetRenderTarget(outputRenderTarget);
+
+                        // Draw the layer target to the output target...
+                        spriteBatch.Begin();
+                        spriteBatch.Draw(layerRenderTarget, layerPos, layerPos, Color.White);
+                        spriteBatch.End();
+                    }
                 }
 
-                
-                // Ensure that the current texture is ready for data implantation
-                if (_texture == null)
-                {
-                    _texture = new Texture2D(graphicsDevice, this.Outer.LocalBounds.Width, this.Outer.LocalBounds.Height);
-                }
-                else if (_texture.Width != this.Outer.LocalBounds.Width || _texture.Height != this.Outer.LocalBounds.Height)
-                {
+
+                if (empty)
+                { // Empty layers.. nothing to draw...
                     _texture?.Dispose();
-                    _texture = new Texture2D(graphicsDevice, this.Outer.LocalBounds.Width, this.Outer.LocalBounds.Height);
                 }
+                else
+                {
+                    var overlap = outputRenderTarget.Bounds.Overlap(this.Outer.LocalBounds);
 
-                // Once the layers are done drawing, convert the output target to a texture
-                Color[] textureData = new Color[this.Outer.LocalBounds.Width * this.Outer.LocalBounds.Height];
-                outputRenderTarget.GetData<Color>(0, this.Outer.LocalBounds, textureData, 0, textureData.Length);
-                _texture.SetData<Color>(textureData);
+                    // Ensure that the current texture is ready for data implantation
+                    if (_texture == null)
+                    {
+                        _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                    }
+                    else if (_texture.Width != overlap.Width || _texture.Height != overlap.Height)
+                    {
+                        _texture?.Dispose();
+                        _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                    }
+
+                    // Once the layers are done drawing, convert the output target to a texture
+                    Color[] textureData = new Color[overlap.Width * overlap.Height];
+                    outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, textureData.Length);
+                    _texture.SetData<Color>(textureData);
+                }
             }
             else
             {
@@ -280,6 +388,12 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Texture Layer Methods
+        /// <summary>
+        /// Draw the current elements texture layer,
+        /// if any is defined...
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <returns></returns>
         private Rectangle drawBackgroundLayer(SpriteBatch spriteBatch)
         {
             var background = this.Style.Get<Texture2D>(this.State, StateProperty.Background);
@@ -304,10 +418,12 @@ namespace Guppy.UI.Elements
                         spriteBatch.End();
                         break;
                 }
+
+                return this.Outer.LocalBounds;
             }
 
-            // throw new NotImplementedException();
-            return this.Outer.LocalBounds;
+            // No background, so just return empty bounds
+            return Rectangle.Empty;
         }
         #endregion
 

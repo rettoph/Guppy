@@ -12,6 +12,7 @@ using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.UI.Entities
 {
@@ -62,14 +63,18 @@ namespace Guppy.UI.Entities
             _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
             _internalSpriteBatch = new SpriteBatch(_graphicsDevice);
 
-            this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
             this.dirtyElementQueue = new Queue<Element>();
+            this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
 
             var style = new Style();
             style.Set<UnitValue>(GlobalProperty.PaddingTop, 15);
             style.Set<UnitValue>(GlobalProperty.PaddingRight, 15);
             style.Set<UnitValue>(GlobalProperty.PaddingBottom, 15);
             style.Set<UnitValue>(GlobalProperty.PaddingLeft, 15);
+            style.Set<Color>(ElementState.Normal, StateProperty.OuterDebugColor, Color.Red);
+            style.Set<Color>(ElementState.Hovered, StateProperty.OuterDebugColor, Color.Blue);
+            style.Set<Color>(ElementState.Pressed, StateProperty.OuterDebugColor, Color.Green);
+            style.Set<Color>(ElementState.Active, StateProperty.OuterDebugColor, Color.Orange);
 
             this.Content = new Container(0, 0, 1f, 1f, style);
             this.Content.Outer.setParent(this.clientBounds);
@@ -79,7 +84,15 @@ namespace Guppy.UI.Entities
 
             var bStyle = new Style();
             bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("button"));
-            this.Content.Add(new Element(10, 10, 450, 100, bStyle));
+
+            for(Int32 i=0; i<10; i++)
+            {
+                for(Int32 j=0; j<10; j++)
+                {
+                    this.Content.Add(new Element((j * 205), (i * 35), 200, 30, bStyle));
+                }
+                
+            }
         }
         #endregion
 
@@ -91,7 +104,7 @@ namespace Guppy.UI.Entities
 
         public override void Update(GameTime gameTime)
         {
-            this.Content.Update();
+            this.Content.Update(Mouse.GetState());
 
             if(this.dirtyElementQueue.Count > 0)
             { // If there are any dirty elements...

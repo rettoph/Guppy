@@ -66,6 +66,9 @@ namespace Guppy.UI.Utilities
             this.Y.OnUpdated += this.HandleValueUpdated;
             this.Width.OnUpdated += this.HandleValueUpdated;
             this.Height.OnUpdated += this.HandleValueUpdated;
+
+            // Clean at least once
+            this.CleanBounds();
         }
         #endregion
 
