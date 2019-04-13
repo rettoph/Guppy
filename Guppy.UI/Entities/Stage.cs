@@ -85,24 +85,16 @@ namespace Guppy.UI.Entities
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
 
             var bStyle = new Style();
-            bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
-            bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
-            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterCenter);
+            // bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
+            // bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
+            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterLeft);
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
-            for (Int32 i=0; i< 10; i++)
-            {
-                for(Int32 j=0; j<10; j++)
-                {
-                    var container = new Container(j * 0.1f, i * 0.1f, 0.1f, 0.1f);
-                    var button = new TextElement("hello", 5, 5, new UnitValue[] { 1f, -10 }, new UnitValue[] { 1f, -10 }, bStyle);
-                    container.Add(button);
+            var it = new FancyTextElement(0.25f, 30, 0.5f, 30, bStyle);
+            it.Add("Rettoph: ", Color.Red);
+            it.Add("Hi how are you?", Color.White);
 
-                    button.StateBlacklist = ElementState.Active;
-
-                    this.Content.Add(container);
-                }
-            }
+            this.Content.Add(it);
         }
         #endregion
 

@@ -23,6 +23,8 @@ namespace Pong.Library.Layers
 
         public override void Draw(GameTime gameTime)
         {
+            _graphicsDevice.Clear(Color.Black);
+
             _spriteBatch.Begin(blendState: BlendState.AlphaBlend);
             this.entities.Draw(gameTime);
             _spriteBatch.End();

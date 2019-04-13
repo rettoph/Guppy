@@ -25,7 +25,7 @@ namespace Guppy.UI.Elements
         #region Private Fields
         private Boolean _mouseWasRaised;
 
-        private List<Element> _children;
+        
 
         private List<VertexPositionColor> _vertices;
 
@@ -40,6 +40,8 @@ namespace Guppy.UI.Elements
         /// to the input texture.
         /// </summary>
         protected List<Func<SpriteBatch, Rectangle>> layers;
+
+        protected List<Element> children;
         #endregion
 
         #region Public Attributes
@@ -97,7 +99,7 @@ namespace Guppy.UI.Elements
         #region Constructors
         public Element(Unit x, Unit y, Unit width, Unit height, Style style = null)
         {
-            _children = new List<Element>();
+            this.children = new List<Element>();
             _vertices = new List<VertexPositionColor>();
 
             this.layers = new List<Func<SpriteBatch, Rectangle>>();
@@ -127,7 +129,7 @@ namespace Guppy.UI.Elements
                 spriteBatch.Draw(_texture, this.Outer.GlobalBounds, Color.White);
 
             // Ensure that every self contained child element gets drawn too...
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.Draw(spriteBatch);
         }
 
@@ -228,7 +230,7 @@ namespace Guppy.UI.Elements
 
 
             // Ensure that every self contained child element gets updated too...
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.Update(mouse);
         }
 
@@ -237,7 +239,7 @@ namespace Guppy.UI.Elements
             vertices.AddRange(_vertices);
 
             // Ensure every child element's debug vertices are added
-            foreach (Element child in _children)
+            foreach (Element child in this.children)
                 child.AddDebugVertices(ref vertices);
         }
 
@@ -256,7 +258,7 @@ namespace Guppy.UI.Elements
             }
             else
             { // If the child doesnt already have a parent...
-                _children.Add(child);
+                this.children.Add(child);
                 child.Parent = this;
                 child.Outer.setParent(this.Inner);
             }
@@ -268,13 +270,13 @@ namespace Guppy.UI.Elements
         /// <param name="child"></param>
         protected void remove(Element child)
         {
-            if(!_children.Contains(child))
+            if(!this.children.Contains(child))
             { // If the current element doesnt contain the target...
                 throw new Exception($"Unable to remove child from element, target doesn't belong to parent.");
             }
             else
             { // If the current element does contain the target...
-                _children.Remove(child);
+                this.children.Remove(child);
                 child.Parent = null;
                 child.Outer.setParent(null);
             }
@@ -325,7 +327,7 @@ namespace Guppy.UI.Elements
             {
                 // Clear the output, and prep for layer rendering
                 graphicsDevice.SetRenderTarget(outputRenderTarget);
-                // graphicsDevice.Clear(Color.Transparent);
+                graphicsDevice.Clear(Color.Transparent);
 
                 Rectangle layerPos;
                 Boolean empty = true;
@@ -434,6 +436,7 @@ namespace Guppy.UI.Elements
         }
         #endregion
 
+        #region Generate Methods
         private void generateDebugVertices()
         {
             _vertices.Clear();
@@ -467,10 +470,13 @@ namespace Guppy.UI.Elements
             _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
             _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Top, 0), colorOuter));
         }
+        #endregion
 
+        #region Event Handlers
         private void handleBoundsChanged(object sender, Rectangle e)
         {
             this.Dirty = true;
         }
+        #endregion
     }
 }
