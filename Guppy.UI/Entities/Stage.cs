@@ -85,14 +85,13 @@ namespace Guppy.UI.Entities
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
 
             var bStyle = new Style();
-            // bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
-            // bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
+            bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
+            bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
             bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterLeft);
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
-            var it = new FancyTextElement(0.25f, 30, 0.5f, 30, bStyle);
-            it.Add("Rettoph: ", Color.Red);
-            it.Add("Hi how are you?", Color.White);
+            var it = new ScrollContainer(0, 0, 100, 300);
+            it.Add(new TextElement("test", 75, 0, 50, 50, bStyle));
 
             this.Content.Add(it);
         }

@@ -14,11 +14,11 @@ namespace Guppy.UI.Elements
             this.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
         }
 
-        public void Add(Element child)
+        public virtual void Add(Element child)
         {
             this.add(child);
         }
-        public void Remove(Element child)
+        public virtual void Remove(Element child)
         {
             this.remove(child);
         }

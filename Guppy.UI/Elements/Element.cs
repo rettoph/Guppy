@@ -29,10 +29,12 @@ namespace Guppy.UI.Elements
 
         private List<VertexPositionColor> _vertices;
 
-        private Texture2D _texture;
+
         #endregion
 
         #region Protected Fields
+        protected Texture2D texture;
+
         /// <summary>
         /// Contains layers to be drawn within the current element.
         /// Custom layers can be added at anytime, and next time the
@@ -125,8 +127,8 @@ namespace Guppy.UI.Elements
         #region Frame Methods
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (_texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds)) // Draw the texture, if there is one
-                spriteBatch.Draw(_texture, this.Outer.GlobalBounds, Color.White);
+            if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds)) // Draw the texture, if there is one
+                spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
             // Ensure that every self contained child element gets drawn too...
             foreach (Element child in this.children)
@@ -358,7 +360,7 @@ namespace Guppy.UI.Elements
 
                 if (empty)
                 { // Empty layers.. nothing to draw...
-                    _texture?.Dispose();
+                    this.texture?.Dispose();
                 }
                 else
                 {
@@ -367,31 +369,32 @@ namespace Guppy.UI.Elements
                     if (overlap.X >= 0 && overlap.Y >= 0 && overlap.Width > 0 && overlap.Height > 0)
                     {
                         // Ensure that the current texture is ready for data implantation
-                        if (_texture == null)
+                        if (this.texture == null)
                         {
-                            _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                            this.texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
                         }
-                        else if (_texture.Width != overlap.Width || _texture.Height != overlap.Height)
+                        else if (this.texture.Width != overlap.Width || this.texture.Height != overlap.Height)
                         {
-                            _texture?.Dispose();
-                            _texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
+                            this.texture?.Dispose();
+                            this.texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
                         }
 
                         // Once the layers are done drawing, convert the output target to a texture
                         Color[] textureData = new Color[overlap.Width * overlap.Height];
                         outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, textureData.Length);
-                        _texture.SetData<Color>(textureData);
+                        this.texture.SetData<Color>(textureData);
+                        textureData = null;
                     }
                     else
-                    {
-                        _texture?.Dispose();
+                    { // The texture has no overlap bounds...
+                        this.texture?.Dispose();
                     }
                 }
             }
             else
             {
                 // Nothing to draw...
-                _texture?.Dispose();
+                this.texture?.Dispose();
             }
         }
         #endregion
