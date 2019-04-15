@@ -34,7 +34,7 @@ namespace Guppy.UI.Entities
         /// manage the cleaning of all dirty textures post
         /// update.
         /// </summary>
-        protected internal Queue<Element> dirtyElementQueue;
+        protected internal Queue<Element> dirtyTextureElementQueue;
 
         /// <summary>
         /// The bounds of the current client window
@@ -65,7 +65,7 @@ namespace Guppy.UI.Entities
             _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             _internalSpriteBatch = new SpriteBatch(_graphicsDevice);
 
-            this.dirtyElementQueue = new Queue<Element>();
+            this.dirtyTextureElementQueue = new Queue<Element>();
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
             this.font = provider.GetLoader<ContentLoader>().Get<SpriteFont>("ui:font");
 
@@ -87,11 +87,21 @@ namespace Guppy.UI.Entities
             var bStyle = new Style();
             bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
             bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
-            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterLeft);
+            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.Center);
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
-            var it = new ScrollContainer(0, 0, 100, 300);
-            it.Items.Add(new TextElement("test", 0, 0, 50, 50, bStyle));
+            var it = new ScrollContainer(10, 10, 100, 300);
+            var ft = new FancyTextElement(0, 0, 1f, 0.75f, bStyle);
+            it.Items.Add(ft);
+            it.Items.Add(new TextElement("test", 0, 0, 1f, 0.75f, bStyle));
+
+            ft.Add("H", Color.Red);
+            ft.Add("e", Color.Orange);
+            ft.Add("l", Color.Yellow);
+            ft.Add("l", Color.Green);
+            ft.Add("o", Color.Blue);
+            ft.Add("!", Color.Indigo);
+            ft.Add("!", Color.Violet);
 
             this.Content.Add(it);
         }
@@ -107,14 +117,14 @@ namespace Guppy.UI.Entities
         {
             this.Content.Update(Mouse.GetState());
 
-            if(this.dirtyElementQueue.Count > 0)
+            if(this.dirtyTextureElementQueue.Count > 0)
             { // If there are any dirty elements...
                 // Cache the current render targets...
                 var renderTargetsCache = _graphicsDevice.GetRenderTargets();
 
                 // Clean any self contained dirty textures
-                while (this.dirtyElementQueue.Count > 0)
-                    this.dirtyElementQueue.Dequeue().Clean(
+                while (this.dirtyTextureElementQueue.Count > 0)
+                    this.dirtyTextureElementQueue.Dequeue().CleanTexture(
                         _graphicsDevice, 
                         _layerRenderTarget, 
                         _outputRenderTarget, 

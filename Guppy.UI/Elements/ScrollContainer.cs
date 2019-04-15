@@ -34,7 +34,7 @@ namespace Guppy.UI.Elements
             this.Items = this.add(new ScrollItems(this)) as Container;
         }
 
-        protected override void cleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
+        public override void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
         {
             _graphicsDevice = graphicsDevice;
 
@@ -53,7 +53,7 @@ namespace Guppy.UI.Elements
             };
             this.updateProjectionMatrix();
 
-            base.cleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
+            base.CleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

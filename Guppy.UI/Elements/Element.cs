@@ -88,9 +88,14 @@ namespace Guppy.UI.Elements
         public Boolean MouseOverHierarchy { get; private set; }
 
         /// <summary>
-        /// Mark the current element as dirty
+        /// Mark the current element bounds as dirty
         /// </summary>
-        public Boolean Dirty { get; set; }
+        public Boolean DirtyBounds { get; set; }
+
+        /// <summary>
+        /// Mark the current position as dirty
+        /// </summary>
+        public Boolean DirtyPosition { get; set; }
 
         /// <summary>
         /// The current elements styleing
@@ -118,9 +123,10 @@ namespace Guppy.UI.Elements
                 parent: this.Outer);
             
 
-            this.Dirty = true;
+            this.DirtyBounds = true;
 
-            this.Outer.OnBoundsCleaned += this.handleBoundsChanged;
+            this.Outer.OnBoundsChanged += this.handleBoundsChanged;
+            this.Outer.OnPositionChanged += this.handlePositionChanged;
         }
         #endregion
 
@@ -143,7 +149,7 @@ namespace Guppy.UI.Elements
 
             // Update the mouse over data
             this.MouseOver = this.Outer.GlobalBounds.Contains(mouse.Position);
-            this.MouseOverHierarchy = this.Inner.GlobalBounds.Contains(mouse.Position) && (this.Parent == null ? true : this.Parent.MouseOverHierarchy);
+            this.MouseOverHierarchy = this.MouseOver && (this.Parent == null ? true : this.Parent.MouseOverHierarchy && this.Parent.Inner.GlobalBounds.Contains(mouse.Position));
 
             if (this.MouseOverHierarchy)
             { // Mouse is over element...
@@ -222,12 +228,22 @@ namespace Guppy.UI.Elements
 
 
             // Clean dirty segments of the element
-            if (this.Dirty)
+            if (this.DirtyBounds || this.DirtyPosition)
             {
-                // Add the current element to the dirty texture queue
-                this.Stage.dirtyElementQueue.Enqueue(this);
+                this.Clean();
 
-                this.Dirty = false;
+                if (this.DirtyBounds)
+                {
+                    // Add the current element to the dirty texture queue
+                    this.Stage.dirtyTextureElementQueue.Enqueue(this);
+
+                    this.DirtyBounds = false;
+                }
+
+                if(this.DirtyPosition)
+                {
+                    this.DirtyPosition = false;
+                }
             }
 
 
@@ -309,7 +325,7 @@ namespace Guppy.UI.Elements
                     // Set the new state
                     this.State = newState;
 
-                    this.Dirty = true;
+                    this.DirtyBounds = true;
 
                     break;
                 }
@@ -319,13 +335,12 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Clean Methods
-        public void Clean(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
+        public virtual void Clean()
         {
             this.generateDebugVertices();
-            this.cleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
         }
 
-        protected virtual void cleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
+        public virtual void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
         {
             if(this.layers.Count > 0)
             {
@@ -480,7 +495,12 @@ namespace Guppy.UI.Elements
         #region Event Handlers
         private void handleBoundsChanged(object sender, Rectangle e)
         {
-            this.Dirty = true;
+            this.DirtyBounds = true;
+        }
+
+        private void handlePositionChanged(object sender, Rectangle e)
+        {
+            this.DirtyPosition = true;
         }
         #endregion
     }

@@ -15,7 +15,9 @@ namespace Guppy.UI.Utilities
         #endregion
 
         #region Public Attributes
+        public Boolean Dirty { get { return this.DirtyBounds || this.DirtyPosition; } }
         public Boolean DirtyBounds { get; set; }
+        public Boolean DirtyPosition { get; set; }
 
         public Unit X { get; }
         public Unit Y { get; }
@@ -41,7 +43,8 @@ namespace Guppy.UI.Utilities
         #endregion
 
         #region Events
-        public event EventHandler<Rectangle> OnBoundsCleaned;
+        public event EventHandler<Rectangle> OnBoundsChanged;
+        public event EventHandler<Rectangle> OnPositionChanged;
         #endregion
 
 
@@ -62,8 +65,8 @@ namespace Guppy.UI.Utilities
             _localBounds = new Rectangle(0, 0, 0, 0);
 
             // Bind to events
-            this.X.OnUpdated += this.HandleValueUpdated;
-            this.Y.OnUpdated += this.HandleValueUpdated;
+            this.X.OnUpdated += this.HandlePositionValueUpdated;
+            this.Y.OnUpdated += this.HandlePositionValueUpdated;
             this.Width.OnUpdated += this.HandleValueUpdated;
             this.Height.OnUpdated += this.HandleValueUpdated;
 
@@ -75,12 +78,23 @@ namespace Guppy.UI.Utilities
         #region Methods
         public virtual void Update()
         {
-            if (this.DirtyBounds)
+            if (this.Dirty)
             {
-                this.CleanBounds();
+                if (this.DirtyBounds)
+                {
+                    this.CleanBounds();
+                    this.DirtyBounds = false;
 
-                this.DirtyBounds = false;
-                this.OnBoundsCleaned?.Invoke(this, this.GlobalBounds);
+                    this.OnBoundsChanged?.Invoke(this, this.GlobalBounds);
+                }
+
+                if (this.DirtyPosition)
+                {
+                    this.CleanPosition();
+                    this.DirtyPosition = false;
+
+                    this.OnPositionChanged?.Invoke(this, this.GlobalBounds);
+                }
             }
         }
 
@@ -88,6 +102,9 @@ namespace Guppy.UI.Utilities
         {
             if (parent != this.Parent)
             {
+                if(this.Parent != null)
+                    this.Parent.OnPositionChanged -= HandleParentPositionChanged;
+
                 this.Parent = parent;
 
                 this.X.SetParent(this.Parent.Width);
@@ -95,7 +112,10 @@ namespace Guppy.UI.Utilities
                 this.Width.SetParent(this.Parent.Width);
                 this.Height.SetParent(this.Parent.Height);
 
+                this.Parent.OnPositionChanged += HandleParentPositionChanged;
+
                 this.DirtyBounds = true;
+                this.DirtyPosition = true;
             }
         }
         #endregion
@@ -104,7 +124,22 @@ namespace Guppy.UI.Utilities
         protected virtual void CleanBounds()
         {
             // Update global bounds
-            if(this.Parent == null)
+            _globalBounds.Width = this.Width.Value;
+            _globalBounds.Height = this.Height.Value;
+
+            // Update relative bounds
+            _relativeBounds.Width = this.Width.Value;
+            _relativeBounds.Height = this.Height.Value;
+
+            // Update local bounds
+            _localBounds.Width = this.Width.Value;
+            _localBounds.Height = this.Height.Value;
+        }
+
+        protected virtual void CleanPosition()
+        {
+            // Update global positions
+            if (this.Parent == null)
             {
                 _globalBounds.X = this.X.Value;
                 _globalBounds.Y = this.Y.Value;
@@ -114,19 +149,10 @@ namespace Guppy.UI.Utilities
                 _globalBounds.X = this.Parent.GlobalBounds.X + this.X.Value;
                 _globalBounds.Y = this.Parent.GlobalBounds.Y + this.Y.Value;
             }
-            
-            _globalBounds.Width = this.Width.Value;
-            _globalBounds.Height = this.Height.Value;
 
-            // Update relative bounds
+            // Update relative positions
             _relativeBounds.X = this.X.Value;
             _relativeBounds.Y = this.Y.Value;
-            _relativeBounds.Width = this.Width.Value;
-            _relativeBounds.Height = this.Height.Value;
-
-            // Update local bounds
-            _localBounds.Width = this.Width.Value;
-            _localBounds.Height = this.Height.Value;
         }
         #endregion
 
@@ -134,6 +160,16 @@ namespace Guppy.UI.Utilities
         private void HandleValueUpdated(object sender, Unit e)
         {
             this.DirtyBounds = true;
+        }
+
+        private void HandlePositionValueUpdated(object sender, Unit e)
+        {
+            this.DirtyPosition = true;
+        }
+
+        private void HandleParentPositionChanged(object sender, Rectangle e)
+        {
+            this.DirtyPosition = true;
         }
         #endregion
 

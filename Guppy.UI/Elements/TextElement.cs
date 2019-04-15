@@ -24,7 +24,7 @@ namespace Guppy.UI.Elements
             set
             {
                 _text = value;
-                this.Dirty = true;
+                this.DirtyBounds = true;
             }
         }
 

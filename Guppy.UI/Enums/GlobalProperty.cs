@@ -18,6 +18,12 @@ namespace Guppy.UI.Enums
         [StyleProperty(typeof(UnitValue), true)]
         PaddingBottom,
         [StyleProperty(typeof(UnitValue), true)]
-        PaddingLeft
+        PaddingLeft,
+
+        /*
+         *  Content Properties
+         */
+        [StyleProperty(typeof(Boolean), true)]
+        InlineContent
     }
 }
