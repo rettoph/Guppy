@@ -91,7 +91,7 @@ namespace Guppy.UI.Entities
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
             var it = new ScrollContainer(0, 0, 100, 300);
-            it.Add(new TextElement("test", 75, 0, 50, 50, bStyle));
+            it.Items.Add(new TextElement("test", 0, 0, 50, 50, bStyle));
 
             this.Content.Add(it);
         }

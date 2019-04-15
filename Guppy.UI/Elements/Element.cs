@@ -127,7 +127,7 @@ namespace Guppy.UI.Elements
         #region Frame Methods
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds)) // Draw the texture, if there is one
+            if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Parent.Inner.GlobalBounds))) // Draw the texture, if there is one
                 spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
             // Ensure that every self contained child element gets drawn too...
@@ -143,7 +143,7 @@ namespace Guppy.UI.Elements
 
             // Update the mouse over data
             this.MouseOver = this.Outer.GlobalBounds.Contains(mouse.Position);
-            this.MouseOverHierarchy = this.MouseOver && (this.Parent == null ? true : this.Parent.MouseOverHierarchy);
+            this.MouseOverHierarchy = this.Inner.GlobalBounds.Contains(mouse.Position) && (this.Parent == null ? true : this.Parent.MouseOverHierarchy);
 
             if (this.MouseOverHierarchy)
             { // Mouse is over element...
@@ -252,7 +252,7 @@ namespace Guppy.UI.Elements
         /// Add a new child element to the current element
         /// </summary>
         /// <param name="child"></param>
-        protected void add(Element child)
+        protected Element add(Element child)
         {
             if (child.Parent != null)
             { // If the child already has a parent...
@@ -264,6 +264,8 @@ namespace Guppy.UI.Elements
                 child.Parent = this;
                 child.Outer.setParent(this.Inner);
             }
+
+            return child;
         }
 
         /// <summary>
