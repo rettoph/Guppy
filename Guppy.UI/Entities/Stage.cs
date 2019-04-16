@@ -61,8 +61,6 @@ namespace Guppy.UI.Entities
             _window = window;
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
-            _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             _internalSpriteBatch = new SpriteBatch(_graphicsDevice);
 
             this.dirtyTextureElementQueue = new Queue<Element>();
@@ -122,6 +120,9 @@ namespace Guppy.UI.Entities
                 // Cache the current render targets...
                 var renderTargetsCache = _graphicsDevice.GetRenderTargets();
 
+                _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+                _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
                 // Clean any self contained dirty textures
                 while (this.dirtyTextureElementQueue.Count > 0)
                     this.dirtyTextureElementQueue.Dequeue().CleanTexture(
@@ -129,6 +130,9 @@ namespace Guppy.UI.Entities
                         _layerRenderTarget, 
                         _outputRenderTarget, 
                         _internalSpriteBatch);
+
+                _layerRenderTarget?.Dispose();
+                _outputRenderTarget?.Dispose();
 
                 // Reset the graphics device render targets
                 _graphicsDevice.SetRenderTargets(renderTargetsCache);
@@ -151,13 +155,6 @@ namespace Guppy.UI.Entities
             this.clientBounds.Height.SetValue(_window.ClientBounds.Height - 1);
 
             this.clientBounds.Update();
-
-            // Regenerate the render targets...
-            _layerRenderTarget?.Dispose();
-            _outputRenderTarget?.Dispose();
-
-            _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
         #endregion
     }

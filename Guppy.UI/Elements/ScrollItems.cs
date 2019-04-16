@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using Guppy.UI.Enums;
 using Microsoft.Xna.Framework.Graphics;
+using Guppy.UI.Utilities.Units.UnitValues;
 
 namespace Guppy.UI.Elements
 {
@@ -14,13 +15,11 @@ namespace Guppy.UI.Elements
     {
         private ScrollContainer _container;
 
-        public ScrollItems(ScrollContainer container) : base(0, 0, 1f, 1f)
+        public ScrollItems(ScrollContainer container) : base(0, 0, new UnitValue[] { 1f, -15 }, 1f)
         {
             _container = container;
-            this.Inner.X.SetValue(0);
-            this.Inner.Y.SetValue(0);
-            this.Inner.Width.SetValue(1f);
-            this.Inner.Height.SetValue(1f);
+
+            this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }
 
         public override void Clean()

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.UI.Elements
@@ -116,10 +117,10 @@ namespace Guppy.UI.Elements
             this.Style = new ElementStyle(this, style);
             this.Outer = new UnitRectangle(x, y, width, height);
             this.Inner = new UnitRectangle(
-                x: this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 5), 
-                y: this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 5), 
-                width: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 5).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 5).Flip() }, 
-                height: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 5).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 5).Flip() }, 
+                x: this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0), 
+                y: this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0), 
+                width: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() }, 
+                height: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() }, 
                 parent: this.Outer);
             
 
@@ -257,7 +258,7 @@ namespace Guppy.UI.Elements
             vertices.AddRange(_vertices);
 
             // Ensure every child element's debug vertices are added
-            foreach (Element child in this.children)
+            foreach (Element child in this.children.OrderBy(e => e.State))
                 child.AddDebugVertices(ref vertices);
         }
 

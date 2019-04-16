@@ -6,6 +6,7 @@ using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
+using Guppy.UI.Enums;
 
 namespace Guppy.UI.Elements
 {
@@ -21,6 +22,7 @@ namespace Guppy.UI.Elements
         #region
         public Single Scroll { get; private set; }
         public Container Items { get; private set; }
+        public Scrollbar ScrollBar { get; private set; }
         #endregion
 
         public ScrollContainer(
@@ -32,6 +34,9 @@ namespace Guppy.UI.Elements
         {
             this.Scroll = 0.5f;
             this.Items = this.add(new ScrollItems(this)) as Container;
+            this.ScrollBar = this.add(new Scrollbar()) as Scrollbar;
+
+            this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }
 
         public override void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
