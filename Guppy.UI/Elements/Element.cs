@@ -238,6 +238,7 @@ namespace Guppy.UI.Elements
                 {
                     // Add the current element to the dirty texture queue
                     this.Stage.dirtyTextureElementQueue.Enqueue(this);
+                    this.CleanBounds();
 
                     this.DirtyBounds = false;
                 }
@@ -346,6 +347,11 @@ namespace Guppy.UI.Elements
             this.generateDebugVertices();
         }
 
+        public virtual void CleanBounds()
+        {
+            // 
+        }
+
         public virtual void CleanPosition()
         {
             // 
@@ -412,15 +418,6 @@ namespace Guppy.UI.Elements
                         outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, overlap.Width * overlap.Height);
                         try
                         {
-                            Console.WriteLine(textureData.Length);
-                            Console.WriteLine(textureData.Where(c => c != default(Color)));
-
-
-                            Console.WriteLine(textureData.Where(c => c != default(Color)).Count());
-                            Console.WriteLine(textureData.Length);
-                            Console.WriteLine(textureData.Length);
-                            Console.WriteLine(textureData.Length);
-                            Console.WriteLine(textureData.Length);
                             this.texture.SetData<Color>(textureData);
                         }
                         catch(Exception e)

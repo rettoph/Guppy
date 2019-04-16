@@ -27,7 +27,26 @@ namespace Guppy.UI.Elements
 
         public override void Clean()
         {
+            base.Clean();
+
             this.align();
+        }
+
+        public override void CleanBounds()
+        {
+            base.CleanBounds();
+
+            var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
+
+            if (inline)
+            { // If the current element is marked for inline content... re-order inner element automatically
+                var y = 0;
+                foreach (Element child in this.children)
+                {
+                    child.Outer.Y.SetValue(y);
+                    y += child.Outer.Height.Value;
+                }
+            }
         }
 
         public override void Add(Element child)
@@ -38,38 +57,15 @@ namespace Guppy.UI.Elements
             child.Outer.Height.SetParent(_container.Inner.Height);
 
             var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
-
-            if (inline)
-            { // If the current element is marked for inline content... re-order inner element automatically
-                var y = 0;
-                foreach (Element sChild in this.children)
-                {
-                    sChild.Outer.Y.SetValue(y);
-                    y += sChild.Outer.Height.Value;
-                }
-            }
-
             
-            this.DirtyBounds = true;
+            this.DirtyPosition = true;
         }
 
         public override void Remove(Element child)
         {
             base.Add(child);
 
-            var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
-
-            if (inline)
-            { // If the current element is marked for inline content... re-order inner element automatically
-                var y = 0;
-                foreach (Element schild in this.children)
-                {
-                    schild.Outer.Y.SetValue(y);
-                    y += schild.Outer.Height.Value;
-                }
-            }
-
-            this.DirtyBounds = true;
+            this.DirtyPosition = true;
         }
 
         protected internal void align()

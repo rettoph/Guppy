@@ -97,7 +97,7 @@ namespace Guppy.UI.Entities
 
             for(Int32 i=0; i<30; i++)
             {
-                text = new TextElement($"{(i + 1).ToString().PadLeft(2, '0')}. test", 0, 0, 1f, 30, bStyle);
+                text = new TextElement($"{(i + 1).ToString().PadLeft(2, '0')}. test", 0, 0, 1f, 0.1f, bStyle);
                 text.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
                 it.Items.Add(text);
             }
