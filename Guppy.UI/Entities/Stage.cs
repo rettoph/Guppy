@@ -88,14 +88,30 @@ namespace Guppy.UI.Entities
             bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.Center);
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
-            var it = new ScrollContainer(10, 10, 300, 600);
+            var it = new ScrollContainer(0, 0, 300, 1f);
+            it.Style.Set<Color>(ElementState.Pressed, StateProperty.ScrollBarThumbColor, new Color(165, 165, 165));
 
-            for(Int32 i=0; i<300; i++)
+            TextElement text;
+
+            for(Int32 i=0; i<30; i++)
             {
-                it.Items.Add(new TextElement($"{i}. test", 0, 0, 1f, 30, bStyle));
+                text = new TextElement($"{(i + 1).ToString().PadLeft(2, '0')}. test", 0, 0, 1f, 30, bStyle);
+                text.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
+                it.Items.Add(text);
             }
 
             this.Content.Add(it);
+
+            var ft = new FancyTextElement(400, 10, 200, 50);
+            this.Content.Add(ft);
+
+            ft.Add("H", Color.Red);
+            ft.Add("E", Color.Orange);
+            ft.Add("L", Color.Yellow);
+            ft.Add("L", Color.Green);
+            ft.Add("O", Color.Blue);
+            ft.Add("!", Color.Indigo);
+            ft.Add("!", Color.Violet);
         }
         #endregion
 

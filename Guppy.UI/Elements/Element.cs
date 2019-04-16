@@ -410,7 +410,16 @@ namespace Guppy.UI.Elements
                         // Once the layers are done drawing, convert the output target to a texture
                         Color[] textureData = new Color[overlap.Width * overlap.Height];
                         outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, textureData.Length);
-                        this.texture.SetData<Color>(textureData);
+                        try
+                        {
+                            
+                            if (this.texture != null & textureData != null)
+                                this.texture.SetData<Color>(textureData);
+                        }
+                        catch(Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
                         textureData = null;
                     }
                     else

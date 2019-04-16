@@ -95,6 +95,7 @@ namespace Guppy.UI.Elements
                 this.Thumb.Outer.Height.SetValue(0);
 
             this.DirtyPosition = true;
+            this.Thumb.DirtyBounds = true;
         }
 
         private void HandleThumbStateChanged(object sender, Element e)

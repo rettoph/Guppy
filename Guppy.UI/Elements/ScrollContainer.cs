@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Guppy.UI.Enums;
+using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.UI.Elements
 {
@@ -17,6 +18,8 @@ namespace Guppy.UI.Elements
         private RenderTarget2D _scrollContainer;
         private BasicEffect _internalEffect;
         private GraphicsDevice _graphicsDevice;
+        private Int32 _oldScrollValue;
+        private Int32 _scrollDelta;
         #endregion
 
         #region Public Fields
@@ -75,9 +78,7 @@ namespace Guppy.UI.Elements
 
                 // Draw onto the spritebatch...
                 _spriteBatch.Begin(effect: _internalEffect);
-                // Ensure that every self contained child element gets drawn too...
-                foreach (Element child in this.children)
-                    child.Draw(_spriteBatch);
+                this.Items.Draw(_spriteBatch);
                 _spriteBatch.End();
 
                 // Reset the original render targets...
@@ -88,12 +89,13 @@ namespace Guppy.UI.Elements
                     spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
                 spriteBatch.Draw(_scrollContainer, this.Inner.GlobalBounds.Location.ToVector2(), Color.White);
+                this.ScrollBar.Draw(spriteBatch);
             }
         }
 
         private void updateProjectionMatrix()
         {
-            _internalEffect.Projection = Matrix.CreateTranslation(0.5f, 0.5f, 0) *
+            _internalEffect.Projection = Matrix.CreateTranslation(0.5f, -0.5f, 0) *
                     Matrix.CreateOrthographicOffCenter(
                         this.Inner.GlobalBounds.Left,
                         this.Inner.GlobalBounds.Right,
@@ -116,6 +118,41 @@ namespace Guppy.UI.Elements
             this.ScrollBar.DirtyPosition = true;
 
             this.OnScrolled?.Invoke(this, this);
+        }
+
+        public void ScrollTo(Single value)
+        {
+            this.Scroll = value;
+
+            if (this.Scroll < 0)
+                this.Scroll = 0;
+            else if (this.Scroll > 1)
+                this.Scroll = 1;
+
+            this.Items.DirtyPosition = true;
+            this.ScrollBar.DirtyPosition = true;
+
+            this.OnScrolled?.Invoke(this, this);
+        }
+
+        public override void Update(MouseState mouse)
+        {
+            base.Update(mouse);
+
+            if(this.MouseOver)
+            {
+                _scrollDelta = mouse.ScrollWheelValue - _oldScrollValue;
+
+                if (_scrollDelta > 120)
+                    _scrollDelta = 120;
+                else if (_scrollDelta < -120)
+                    _scrollDelta = -120;
+
+                _oldScrollValue = mouse.ScrollWheelValue;
+
+                if(_scrollDelta != 0)
+                    this.ScrollBy((Single)_scrollDelta / (this.Inner.Height.Value - this.Items.Outer.Height.Value));
+            }
         }
     }
 }
