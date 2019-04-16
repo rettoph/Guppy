@@ -11,7 +11,7 @@ namespace Guppy.UI.Elements
 {
     public class ScrollThumb : Element
     {
-        private Texture2D _texture;
+        private Texture2D _thumbTexture;
 
         private Scrollbar _container;
 
@@ -26,18 +26,18 @@ namespace Guppy.UI.Elements
 
         public override void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
         {
-            if (_texture == null)
-                _texture = new Texture2D(graphicsDevice, 1, 1);
+            if (_thumbTexture == null)
+                _thumbTexture = new Texture2D(graphicsDevice, 1, 1);
 
             base.CleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
         }
 
         private Rectangle fillColor(SpriteBatch spriteBatch)
         {
-            _texture.SetData<Color>(new Color[] { _container.Style.Get<Color>(this.State, StateProperty.ScrollBarThumbColor, new Color(205, 205, 205)) });
+            _thumbTexture.SetData<Color>(new Color[] { _container.Style.Get<Color>(this.State, StateProperty.ScrollBarThumbColor, new Color(205, 205, 205)) });
 
             spriteBatch.Begin();
-            spriteBatch.Draw(_texture, this.Outer.LocalBounds, Color.White);
+            spriteBatch.Draw(_thumbTexture, this.Outer.LocalBounds, Color.White);
             spriteBatch.End();
 
             return this.Outer.LocalBounds;

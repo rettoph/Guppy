@@ -401,7 +401,7 @@ namespace Guppy.UI.Elements
                         {
                             this.texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
                         }
-                        else if (this.texture.Width != overlap.Width || this.texture.Height != overlap.Height)
+                        else if (this.texture.Width != overlap.Width || this.texture.Height != overlap.Height || this.texture.GraphicsDevice == null)
                         {
                             this.texture?.Dispose();
                             this.texture = new Texture2D(graphicsDevice, overlap.Width, overlap.Height);
@@ -409,12 +409,19 @@ namespace Guppy.UI.Elements
 
                         // Once the layers are done drawing, convert the output target to a texture
                         Color[] textureData = new Color[overlap.Width * overlap.Height];
-                        outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, textureData.Length);
+                        outputRenderTarget.GetData<Color>(0, overlap, textureData, 0, overlap.Width * overlap.Height);
                         try
                         {
-                            
-                            if (this.texture != null & textureData != null)
-                                this.texture.SetData<Color>(textureData);
+                            Console.WriteLine(textureData.Length);
+                            Console.WriteLine(textureData.Where(c => c != default(Color)));
+
+
+                            Console.WriteLine(textureData.Where(c => c != default(Color)).Count());
+                            Console.WriteLine(textureData.Length);
+                            Console.WriteLine(textureData.Length);
+                            Console.WriteLine(textureData.Length);
+                            Console.WriteLine(textureData.Length);
+                            this.texture.SetData<Color>(textureData);
                         }
                         catch(Exception e)
                         {
