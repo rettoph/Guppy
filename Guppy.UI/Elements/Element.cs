@@ -29,8 +29,6 @@ namespace Guppy.UI.Elements
         
 
         private List<VertexPositionColor> _vertices;
-
-
         #endregion
 
         #region Protected Fields
@@ -102,6 +100,10 @@ namespace Guppy.UI.Elements
         /// The current elements styleing
         /// </summary>
         public IStyle Style { get; private set; }
+        #endregion
+
+        #region Event Hanlders
+        public event EventHandler<Element> OnStateChanged;
         #endregion
 
         #region Constructors
@@ -205,7 +207,6 @@ namespace Guppy.UI.Elements
                             this.setState(ElementState.Normal);
                             break;
                         case ElementState.Pressed:
-                            this.setState(ElementState.Normal);
                             break;
                     }
                 }
@@ -243,6 +244,8 @@ namespace Guppy.UI.Elements
 
                 if(this.DirtyPosition)
                 {
+                    this.CleanPosition();
+
                     this.DirtyPosition = false;
                 }
             }
@@ -328,6 +331,8 @@ namespace Guppy.UI.Elements
 
                     this.DirtyBounds = true;
 
+                    this.OnStateChanged?.Invoke(this, this);
+
                     break;
                 }
             }
@@ -339,6 +344,11 @@ namespace Guppy.UI.Elements
         public virtual void Clean()
         {
             this.generateDebugVertices();
+        }
+
+        public virtual void CleanPosition()
+        {
+            // 
         }
 
         public virtual void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)

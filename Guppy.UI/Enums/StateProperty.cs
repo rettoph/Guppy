@@ -28,6 +28,14 @@ namespace Guppy.UI.Enums
         TextColor,
 
         /*
+         * Scroll Container Properties
+         */
+        [StyleProperty(typeof(Color), true)]
+        ScrollBarColor,
+        [StyleProperty(typeof(Color), true)]
+        ScrollBarThumbColor,
+
+        /*
          * Debug Properties
          */
         [StyleProperty(typeof(Color), true)]

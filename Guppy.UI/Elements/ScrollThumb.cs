@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Guppy.UI.Enums;
+using Guppy.UI.Styles;
+using Guppy.UI.Utilities.Units;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Guppy.UI.Elements
+{
+    public class ScrollThumb : Element
+    {
+        private Texture2D _texture;
+
+        private Scrollbar _container;
+
+        public ScrollThumb(Scrollbar container) : base(0, 0, 1f, 10)
+        {
+            _container = container;
+
+            this.StateBlacklist = ElementState.Active;
+
+            this.layers.Add(this.fillColor);
+        }
+
+        public override void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
+        {
+            if (_texture == null)
+                _texture = new Texture2D(graphicsDevice, 1, 1);
+
+            base.CleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
+        }
+
+        private Rectangle fillColor(SpriteBatch spriteBatch)
+        {
+            _texture.SetData<Color>(new Color[] { _container.Style.Get<Color>(this.State, StateProperty.ScrollBarThumbColor, new Color(205, 205, 205)) });
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(_texture, this.Outer.LocalBounds, Color.White);
+            spriteBatch.End();
+
+            return this.Outer.LocalBounds;
+        }
+    }
+}

@@ -37,7 +37,7 @@ namespace Pong.Client.Scenes
             base.Initialize();
 
             var test = this.layers.Create<SimpleLayer>();
-            test.Debug = true;
+            test.Debug = false;
 
             var stage = this.entities.Create("ui:stage") as Stage;
         }

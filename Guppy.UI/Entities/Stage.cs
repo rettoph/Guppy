@@ -88,18 +88,12 @@ namespace Guppy.UI.Entities
             bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.Center);
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
 
-            var it = new ScrollContainer(10, 10, 100, 300);
-            var ft = new FancyTextElement(0, 0, 1f, 0.75f, bStyle);
-            it.Items.Add(ft);
-            it.Items.Add(new TextElement("test", 0, 0, 1f, 0.75f, bStyle));
+            var it = new ScrollContainer(10, 10, 300, 600);
 
-            ft.Add("H", Color.Red);
-            ft.Add("e", Color.Orange);
-            ft.Add("l", Color.Yellow);
-            ft.Add("l", Color.Green);
-            ft.Add("o", Color.Blue);
-            ft.Add("!", Color.Indigo);
-            ft.Add("!", Color.Violet);
+            for(Int32 i=0; i<300; i++)
+            {
+                it.Items.Add(new TextElement($"{i}. test", 0, 0, 1f, 30, bStyle));
+            }
 
             this.Content.Add(it);
         }

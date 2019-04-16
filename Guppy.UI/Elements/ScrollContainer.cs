@@ -19,10 +19,14 @@ namespace Guppy.UI.Elements
         private GraphicsDevice _graphicsDevice;
         #endregion
 
-        #region
+        #region Public Fields
         public Single Scroll { get; private set; }
         public Container Items { get; private set; }
         public Scrollbar ScrollBar { get; private set; }
+        #endregion
+
+        #region Events
+        public event EventHandler<ScrollContainer> OnScrolled;
         #endregion
 
         public ScrollContainer(
@@ -32,9 +36,8 @@ namespace Guppy.UI.Elements
             Unit height,
             Style style = null) : base(x, y, width, height, style)
         {
-            this.Scroll = 0.5f;
             this.Items = this.add(new ScrollItems(this)) as Container;
-            this.ScrollBar = this.add(new Scrollbar()) as Scrollbar;
+            this.ScrollBar = this.add(new Scrollbar(this)) as Scrollbar;
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }
@@ -98,6 +101,21 @@ namespace Guppy.UI.Elements
                         this.Inner.GlobalBounds.Top,
                         0f,
                         1f);
+        }
+
+        public void ScrollBy(Single amount)
+        {
+            this.Scroll += amount;
+
+            if (this.Scroll < 0)
+                this.Scroll = 0;
+            else if (this.Scroll > 1)
+                this.Scroll = 1;
+
+            this.Items.DirtyPosition = true;
+            this.ScrollBar.DirtyPosition = true;
+
+            this.OnScrolled?.Invoke(this, this);
         }
     }
 }
