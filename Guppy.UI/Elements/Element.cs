@@ -282,7 +282,7 @@ namespace Guppy.UI.Elements
             else
             { // If the child doesnt already have a parent...
                 this.children.Add(child);
-                child.Parent = this;
+                child.setParent(this);
                 child.Outer.setParent(this.Inner);
             }
 
@@ -302,9 +302,14 @@ namespace Guppy.UI.Elements
             else
             { // If the current element does contain the target...
                 this.children.Remove(child);
-                child.Parent = null;
+                child.setParent(null);
                 child.Outer.setParent(null);
             }
+        }
+
+        protected virtual void setParent(Element parent)
+        {
+            this.Parent = parent;
         }
         #endregion
 

@@ -33,17 +33,18 @@ namespace Guppy.UI.Extensions
         public static Vector2 Align(this Rectangle bounds, Vector2 size, Alignment alignment = Alignment.Center)
         {
             Vector2 position = Vector2.Zero;
+            Boolean forcedRight = bounds.Width < size.X;
 
             // Horizontal alignment of text here...
-            if ((alignment & Alignment.Left) != 0)
+            if ((alignment & Alignment.Left) != 0 && !forcedRight)
             { // Left alignment...
                 position.X = bounds.Left;
             }
-            else if ((alignment & Alignment.HorizontalCenter) != 0)
+            else if ((alignment & Alignment.HorizontalCenter) != 0 && !forcedRight)
             { // Center alignment...
                 position.X = bounds.Center.ToVector2().X - (size.X / 2);
             }
-            else if ((alignment & Alignment.Right) != 0)
+            else if ((alignment & Alignment.Right) != 0 || forcedRight)
             { // Right alignment...
                 position.X = bounds.Right - size.X;
             }

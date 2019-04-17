@@ -18,6 +18,9 @@ namespace Guppy.UI.Elements
     {
         private String _text;
 
+        protected internal Vector2 textBounds;
+        protected internal Vector2 textPosition;
+
         public String Text
         {
             get { return _text; }
@@ -43,13 +46,13 @@ namespace Guppy.UI.Elements
             {
                 var alignment = this.Style.Get<Alignment>(this.State, StateProperty.TextAlignment, Alignment.TopLeft);
                 var color = this.Style.Get<Color>(this.State, StateProperty.TextColor, Color.Black);
-                var tBounds = font.MeasureString(this.Text);
-                tBounds.Y = font.LineSpacing;
-                var tPosition = this.Inner.RelativeBounds.Align(tBounds, alignment);
+                this.textBounds = font.MeasureString(this.Text);
+                this.textBounds.Y = font.LineSpacing;
+                this.textPosition = this.Inner.RelativeBounds.Align(this.textBounds, alignment);
 
                 // Draw the string...
                 spritebatch.Begin();
-                spritebatch.DrawString(font, this.Text, tPosition, color);
+                spritebatch.DrawString(font, this.Text, this.textPosition, color);
                 spritebatch.End();
 
                 // Return the inner element bounds

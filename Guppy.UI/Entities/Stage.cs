@@ -20,7 +20,7 @@ namespace Guppy.UI.Entities
     {
         #region Private Fields
         private GameWindow _window;
-        private GraphicsDevice _graphicsDevice;
+        
         private RenderTarget2D _layerRenderTarget;
         private RenderTarget2D _outputRenderTarget;
         private SpriteBatch _internalSpriteBatch;
@@ -28,6 +28,8 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Protected Internal Fields
+        protected internal GraphicsDevice graphicsDevice;
+
         /// <summary>
         /// Any elements containing dirty textures will
         /// be added to this queue. The stage will then
@@ -48,6 +50,13 @@ namespace Guppy.UI.Entities
         public Container Content { get; private set; }
         #endregion
 
+        #region Events
+        public event EventHandler<TextInputEventArgs> TextInput {
+            add { _window.TextInput += value; }
+            remove { _window.TextInput -= value; }
+        }
+        #endregion
+
         #region Constructors
         public Stage(
             SpriteBatch spriteBatch,
@@ -59,11 +68,11 @@ namespace Guppy.UI.Entities
             ILogger logger) : base(configuration, scene, logger)
         {
             _window = window;
-            _graphicsDevice = graphicsDevice;
+            this.graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
-            _internalSpriteBatch = new SpriteBatch(_graphicsDevice);
-            _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            _internalSpriteBatch = new SpriteBatch(this.graphicsDevice);
+            _layerRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _outputRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             this.dirtyTextureElementQueue = new Queue<Element>();
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
@@ -86,34 +95,16 @@ namespace Guppy.UI.Entities
 
             var bStyle = new Style();
             bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
-            bStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
-            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.Center);
+            bStyle.Set<Texture2D>(ElementState.Active, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
+            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterLeft);
             bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
+            bStyle.Set<UnitValue>(GlobalProperty.PaddingTop, 5);
+            bStyle.Set<UnitValue>(GlobalProperty.PaddingRight, 5);
+            bStyle.Set<UnitValue>(GlobalProperty.PaddingBottom, 5);
+            bStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 5);
 
-            var it = new ScrollContainer(0, 0, 300, 1f);
-            it.Style.Set<Color>(ElementState.Pressed, StateProperty.ScrollBarThumbColor, new Color(165, 165, 165));
-
-            TextElement text;
-
-            for(Int32 i=0; i<30; i++)
-            {
-                text = new TextElement($"{(i + 1).ToString().PadLeft(2, '0')}. test", 0, 0, 1f, 0.1f, bStyle);
-                text.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
-                it.Items.Add(text);
-            }
-
-            this.Content.Add(it);
-
-            var ft = new FancyTextElement(400, 10, 200, 50);
+            var ft = new TextInput("test", 400, 10, 200, 50, bStyle);
             this.Content.Add(ft);
-
-            ft.Add("H", Color.Red);
-            ft.Add("E", Color.Orange);
-            ft.Add("L", Color.Yellow);
-            ft.Add("L", Color.Green);
-            ft.Add("O", Color.Blue);
-            ft.Add("!", Color.Indigo);
-            ft.Add("!", Color.Violet);
         }
         #endregion
 
@@ -130,12 +121,12 @@ namespace Guppy.UI.Entities
             if(this.dirtyTextureElementQueue.Count > 0)
             { // If there are any dirty elements...
                 // Cache the current render targets...
-                var renderTargetsCache = _graphicsDevice.GetRenderTargets();
+                var renderTargetsCache = this.graphicsDevice.GetRenderTargets();
 
                 // Clean any self contained dirty textures
                 while (this.dirtyTextureElementQueue.Count > 0)
                     this.dirtyTextureElementQueue.Dequeue().CleanTexture(
-                        _graphicsDevice, 
+                        this.graphicsDevice, 
                         _layerRenderTarget, 
                         _outputRenderTarget, 
                         _internalSpriteBatch);
@@ -143,7 +134,7 @@ namespace Guppy.UI.Entities
 
 
                 // Reset the graphics device render targets
-                _graphicsDevice.SetRenderTargets(renderTargetsCache);
+                this.graphicsDevice.SetRenderTargets(renderTargetsCache);
             }
 
         }
@@ -167,8 +158,8 @@ namespace Guppy.UI.Entities
             _layerRenderTarget?.Dispose();
             _outputRenderTarget?.Dispose();
 
-            _layerRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
-            _outputRenderTarget = new RenderTarget2D(_graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            _layerRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
+            _outputRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
         #endregion
     }
