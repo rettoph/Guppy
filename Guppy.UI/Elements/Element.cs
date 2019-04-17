@@ -345,6 +345,24 @@ namespace Guppy.UI.Elements
             }
 
         }
+
+        public void SetPadding(UnitValue top, UnitValue right, UnitValue bottom, UnitValue left)
+        {
+            if (this.Parent == null)
+                throw new Exception("Unable to update element styles until element contains a parent.");
+
+            // Update the padding values
+            this.Style.Set<UnitValue>(GlobalProperty.PaddingTop, top);
+            this.Style.Set<UnitValue>(GlobalProperty.PaddingRight, right);
+            this.Style.Set<UnitValue>(GlobalProperty.PaddingBottom, bottom);
+            this.Style.Set<UnitValue>(GlobalProperty.PaddingLeft, top);
+
+            // Update the inner bounds
+            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0));
+            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0));
+            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() });
+            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() });
+        }
         #endregion
 
         #region Clean Methods
