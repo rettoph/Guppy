@@ -26,9 +26,9 @@ namespace Guppy.UI.Elements
         #region Private Fields
         private Boolean _mouseWasRaised;
 
-        
-
         private List<VertexPositionColor> _vertices;
+
+        private Style _rootStyle;
         #endregion
 
         #region Protected Fields
@@ -109,22 +109,16 @@ namespace Guppy.UI.Elements
         #region Constructors
         public Element(Unit x, Unit y, Unit width, Unit height, Style style = null)
         {
-            this.children = new List<Element>();
             _vertices = new List<VertexPositionColor>();
+            _rootStyle = style;
 
+            this.children = new List<Element>();
             this.layers = new List<Func<SpriteBatch, Rectangle>>();
             this.layers.Add(this.drawBackgroundLayer);
 
             this.State = ElementState.Normal;
-            this.Style = new ElementStyle(this, style);
             this.Outer = new UnitRectangle(x, y, width, height);
-            this.Inner = new UnitRectangle(
-                x: this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0), 
-                y: this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0), 
-                width: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() }, 
-                height: new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() }, 
-                parent: this.Outer);
-            
+            this.Inner = new UnitRectangle(0, 0, 1f, 1f, this.Outer);
 
             this.DirtyBounds = true;
 
@@ -310,6 +304,13 @@ namespace Guppy.UI.Elements
         protected virtual void setParent(Element parent)
         {
             this.Parent = parent;
+
+            this.Style = new ElementStyle(this, _rootStyle == null ? this.Stage?.styleLoader.GetValue(this.GetType()) : _rootStyle);
+
+            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0));
+            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0));
+            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() });
+            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() });
         }
         #endregion
 

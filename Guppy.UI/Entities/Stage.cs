@@ -6,6 +6,7 @@ using Guppy.Extensions;
 using Guppy.Loaders;
 using Guppy.UI.Elements;
 using Guppy.UI.Enums;
+using Guppy.UI.Loaders;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units.UnitValues;
@@ -28,6 +29,8 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Protected Internal Fields
+        protected internal StyleLoader styleLoader;
+
         protected internal GraphicsDevice graphicsDevice;
 
         /// <summary>
@@ -77,12 +80,9 @@ namespace Guppy.UI.Entities
             this.dirtyTextureElementQueue = new Queue<Element>();
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
             this.font = provider.GetLoader<ContentLoader>().Get<SpriteFont>("ui:font");
+            this.styleLoader = provider.GetLoader<StyleLoader>();
 
             var style = new Style();
-            style.Set<UnitValue>(GlobalProperty.PaddingTop, 15);
-            style.Set<UnitValue>(GlobalProperty.PaddingRight, 15);
-            style.Set<UnitValue>(GlobalProperty.PaddingBottom, 15);
-            style.Set<UnitValue>(GlobalProperty.PaddingLeft, 15);
             style.Set<Color>(ElementState.Normal, StateProperty.OuterDebugColor, Color.Red);
             style.Set<Color>(ElementState.Hovered, StateProperty.OuterDebugColor, Color.Blue);
             style.Set<Color>(ElementState.Pressed, StateProperty.OuterDebugColor, Color.Green);
@@ -92,19 +92,6 @@ namespace Guppy.UI.Entities
             this.Content.Outer.setParent(this.clientBounds);
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
-
-            var bStyle = new Style();
-            bStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button"));
-            bStyle.Set<Texture2D>(ElementState.Active, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("demo-button-pressed"));
-            bStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterLeft);
-            bStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
-            bStyle.Set<UnitValue>(GlobalProperty.PaddingTop, 5);
-            bStyle.Set<UnitValue>(GlobalProperty.PaddingRight, 5);
-            bStyle.Set<UnitValue>(GlobalProperty.PaddingBottom, 5);
-            bStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 5);
-
-            var ft = new TextInput("test", 400, 10, 200, 50, bStyle);
-            this.Content.Add(ft);
         }
         #endregion
 
