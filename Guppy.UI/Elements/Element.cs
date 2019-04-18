@@ -259,7 +259,6 @@ namespace Guppy.UI.Elements
             foreach (Element child in this.children.OrderBy(e => e.State))
                 child.AddDebugVertices(ref vertices);
         }
-
         #endregion
 
         #region Children Methods
@@ -327,7 +326,7 @@ namespace Guppy.UI.Elements
         /// happen.
         /// </summary>
         /// <param name="states"></param>
-        protected void setState(params ElementState[] states)
+        protected internal void setState(params ElementState[] states)
         {
             foreach (ElementState newState in states)
             {
@@ -362,6 +361,17 @@ namespace Guppy.UI.Elements
             this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0));
             this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() });
             this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() });
+        }
+
+        public void GetChildren(List<Element> output, Boolean recursive = true)
+        {
+            foreach(Element child in this.children)
+            {
+                output.Add(child);
+
+                if (recursive)
+                    child.GetChildren(output);
+            }
         }
         #endregion
 

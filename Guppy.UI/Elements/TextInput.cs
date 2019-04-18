@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities.Units;
@@ -15,6 +16,8 @@ namespace Guppy.UI.Elements
     /// </summary>
     public class TextInput : TextElement
     {
+        public static Regex DefaultWhitelist = new Regex(@"[^\t]");
+
         private Boolean _readingText;
         private Texture2D _caret;
         private Rectangle _caretBounds;
@@ -22,8 +25,12 @@ namespace Guppy.UI.Elements
 
         private DateTime _caretToggle;
 
+        public Regex CharWhitelist { get; set; }
+
         public TextInput(string text, Unit x, Unit y, Unit width, Unit height, Style style = null) : base(text, x, y, width, height, style)
         {
+            this.CharWhitelist = TextInput.DefaultWhitelist;
+
             this.OnStateChanged += this.HandleStateChanged;
 
             _caretBounds = new Rectangle(0, 0, 1, 0);
@@ -93,11 +100,7 @@ namespace Guppy.UI.Elements
                 if(this.Text.Length > 0)
                     this.Text = this.Text.Remove(this.Text.Length - 1);
             }
-            else if(e.Key == Keys.Enter)
-            {
-
-            }
-            else
+            else if(e.Character != default(Char) && this.CharWhitelist.IsMatch(e.Character.ToString()))
             {
                 this.Text += e.Character;
             }

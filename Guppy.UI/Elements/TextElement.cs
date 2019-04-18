@@ -41,8 +41,9 @@ namespace Guppy.UI.Elements
         private Rectangle drawText(SpriteBatch spritebatch)
         {
             var font = this.Style.Get<SpriteFont>(this.State, StateProperty.Font, this.Stage.font);
+            font.DefaultCharacter = '?';
 
-            if(font != null)
+            if (font != null)
             {
                 var alignment = this.Style.Get<Alignment>(this.State, StateProperty.TextAlignment, Alignment.TopLeft);
                 var color = this.Style.Get<Color>(this.State, StateProperty.TextColor, Color.Black);

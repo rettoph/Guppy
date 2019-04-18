@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Guppy.UI.Styles;
+using Guppy.UI.Utilities.Units;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using System.Linq;
+using Guppy.UI.Enums;
+
+namespace Guppy.UI.Elements
+{
+    /// <summary>
+    /// Forms are special containers designed
+    /// to hold inputs. When an active input gets
+    /// tabbed, the form will automatically mark
+    /// the next input as active.
+    /// </summary>
+    public class Form : Container
+    {
+        public Form(Unit x, Unit y, Unit width, Unit height, Style style = null) : base(x, y, width, height, style)
+        {
+        }
+
+        protected override void setParent(Element parent)
+        {
+            if (this.Parent != null)
+                this.Stage.TextInput -= this.HandleTextInput;
+
+            base.setParent(parent);
+
+            this.Stage.TextInput += this.HandleTextInput;
+        }
+
+        private List<TextInput> getInputs()
+        {
+            List<Element> elements = new List<Element>();
+            this.GetChildren(elements);
+
+            // Return a list of all text input objects
+            return elements.Where(e => e is TextInput).Select(e => e as TextInput).ToList();
+        }
+
+        private void HandleTextInput(object sender, TextInputEventArgs e)
+        {
+            if(e.Key == Keys.Tab)
+            {
+                var inputs = this.getInputs();
+                TextInput oldActive;
+
+                if((oldActive = inputs.First(i => i.State == ElementState.Active)) != default(TextInput))
+                { // If there is currently an active input...
+                    oldActive.setState(ElementState.Normal);
+                    if (inputs.IndexOf(oldActive) + 1 < inputs.Count())
+                        inputs[inputs.IndexOf(oldActive) + 1]?.setState(ElementState.Active, ElementState.Normal);
+                    else
+                        inputs[0]?.setState(ElementState.Active, ElementState.Normal);
+                }
+
+                inputs.Clear();
+                inputs = null;
+            }
+        }
+    }
+}

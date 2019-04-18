@@ -45,7 +45,7 @@ namespace Pong.Client.Scenes
 
             var stage = this.entities.Create("ui:stage") as Stage;
 
-            var form = new Container(new UnitValue[] { 0.5f, -(426/2) }, new UnitValue[] { 0.5f, -(300/2) }, 426, 300);
+            var form = new Form(new UnitValue[] { 0.5f, -(426/2) }, new UnitValue[] { 0.5f, -(300/2) }, 426, 300);
             stage.Content.Add(form);
             form.SetPadding(50, 50, 50, 50);
             form.Style.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("texture:ui:login:form"));
