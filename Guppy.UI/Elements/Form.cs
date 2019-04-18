@@ -48,7 +48,7 @@ namespace Guppy.UI.Elements
                 var inputs = this.getInputs();
                 TextInput oldActive;
 
-                if((oldActive = inputs.First(i => i.State == ElementState.Active)) != default(TextInput))
+                if((oldActive = inputs.FirstOrDefault(i => i.State == ElementState.Active)) != default(TextInput))
                 { // If there is currently an active input...
                     oldActive.setState(ElementState.Normal);
                     if (inputs.IndexOf(oldActive) + 1 < inputs.Count())
