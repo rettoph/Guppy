@@ -17,6 +17,7 @@ using Pong.Library.Layers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Pong.Client.Scenes
@@ -27,6 +28,12 @@ namespace Pong.Client.Scenes
         private ContentLoader _content;
         private GraphicsDevice _graphicsDevice;
         private SceneCollection _scenes;
+
+        private TextInput _name;
+        private TextInput _address;
+        private TextInput _port;
+        private TextButton _submit;
+        private TextElement _message;
 
         public ClientLoginScene(SceneCollection scenes, GraphicsDevice graphicsDevice, ClientPeer client, IServiceProvider provider) : base(provider)
         {
@@ -59,15 +66,24 @@ namespace Pong.Client.Scenes
             labelStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterRight);
 
             form.Add(new TextElement("Name:", 0, 0, 100, 30, labelStyle));
-            form.Add(new TextInput("", 100, 0, 226, 30));
+            form.Add(_name = new TextInput("Tony", 100, 0, 226, 30));
 
             form.Add(new TextElement("Address:", 0, 40, 100, 30, labelStyle));
-            form.Add(new TextInput("", 100, 40, 226, 30));
+            form.Add(_address = new TextInput("localhost", 100, 40, 226, 30));
 
             form.Add(new TextElement("Port:", 0, 80, 100, 30, labelStyle));
-            form.Add(new TextInput("", 100, 80, 226, 30));
+            form.Add(_port = new TextInput("1337", 100, 80, 226, 30));
 
-            form.Add(new TextButton("Login", 0, 150, 1f, 50));
+            form.Add(_submit = new TextButton("Login", 0, 150, 1f, 50));
+
+            stage.Content.Add(_message = new TextElement("", 0f, new UnitValue[] { 0.5f, -(300 / 2), 300 }, 1f, 30));
+            _message.Style.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.Center);
+
+            // Add post whitelist
+            _port.CharWhitelist = new Regex(@"[0-9]");
+
+            _submit.OnClicked += this.HandleSubmitClick;
+            _client.OnStatusChanged += this.HandleClientStatusChanged;
         }
 
         public override void Draw(GameTime gameTime)
@@ -75,6 +91,60 @@ namespace Pong.Client.Scenes
             _graphicsDevice.Clear(Color.Black);
 
             base.Draw(gameTime);
+        }
+
+        private void logMessage()
+        {
+
+        }
+
+        private void HandleSubmitClick(object sender, TextButton e)
+        {
+            if (_client.GetNetClient().ConnectionStatus == NetConnectionStatus.Disconnected)
+            { // Only even try if we arent already tring to connect
+                if (_name.Text.Trim() == String.Empty)
+                {
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Red);
+                    _message.Text = "Error: Invalid name.";
+                }
+                else if (_address.Text.Trim() == String.Empty)
+                {
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Red);
+                    _message.Text = "Error: Invalid address.";
+                }
+                else if (_port.Text.Trim() == String.Empty)
+                {
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Red);
+                    _message.Text = "Error: Invalid port.";
+                }
+                else
+                {
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Cyan);
+                    _message.Text = "Attempting to login...";
+
+                    var user = new User();
+                    user.Set("name", _name.Text);
+
+                    _client.Connect(_address.Text, Int32.Parse(_port.Text), user);
+                }
+            }
+        }
+
+        private void HandleClientStatusChanged(object sender, NetIncomingMessage im)
+        {
+            switch ((NetConnectionStatus)im.ReadByte())
+            {
+                case NetConnectionStatus.Connected:
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Green);
+                    break;
+                case NetConnectionStatus.Disconnected:
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Red);
+                    break;
+                default:
+                    _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Orange);
+                    break;
+            }
+            _message.Text = im.ReadString();
         }
     }
 }
