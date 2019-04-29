@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;

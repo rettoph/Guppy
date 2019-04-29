@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Extensions;
+﻿using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Enums;

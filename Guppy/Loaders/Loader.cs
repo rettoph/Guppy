@@ -54,7 +54,7 @@ namespace Guppy.Loaders
         public virtual void Register(THandle handle, TValueIn value, UInt16 priority = 0)
         {
             if (_loaded)
-                throw new Exception($"Unable to register new value<{typeof(TValueIn).Name}> to key<{typeof(THandle).Name}>! Loader already loaded.");
+                throw new Exception($"Unable to register new value<{typeof(TValueIn).Name}> to key<{typeof(THandle).Name}>! Loader already loaded. Please register loader assets in a IServiceLoader class.");
 
 
             this.registeredValuesList.Add(new RegisteredValues() {

@@ -1,6 +1,6 @@
 ﻿using Guppy.Network.Collections;
 using Guppy.Network.Enums;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;

@@ -19,12 +19,12 @@ namespace Guppy.UI
 {
     public class UIServiceLoader : IServiceLoader
     {
-        public void Boot(IServiceCollection services)
+        public void ConfigureServiceCollection(IServiceCollection services)
         {
             services.AddLoader<StyleLoader>();
         }
 
-        public void PreInitialize(IServiceProvider provider)
+        public void Boot(IServiceProvider provider)
         {
             var contentLoader = provider.GetLoader<ContentLoader>();
             contentLoader.Register("ui:font", "UI/font");
@@ -43,7 +43,7 @@ namespace Guppy.UI
             styleLoader.Register(typeof(TextButton), new Style());
         }
 
-        public void Initialize(IServiceProvider provider)
+        public void PreInitialize(IServiceProvider provider)
         {
             var styleLoader = provider.GetLoader<StyleLoader>();
             var contentLoader = provider.GetLoader<ContentLoader>();
@@ -72,9 +72,16 @@ namespace Guppy.UI
             buttonStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 15);
         }
 
+        public void Initialize(IServiceProvider provider)
+        {
+            // throw new NotImplementedException();
+        }
+
         public void PostInitialize(IServiceProvider provider)
         {
             // throw new NotImplementedException();
         }
+
+
     }
 }

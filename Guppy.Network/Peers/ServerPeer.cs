@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Security.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Security.Enums;
 using Guppy.Collections;
 using System.Linq;

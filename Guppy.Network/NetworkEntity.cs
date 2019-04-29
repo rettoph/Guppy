@@ -5,7 +5,7 @@ using Guppy.Configurations;
 using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
 using Guppy.Network.Groups;
 

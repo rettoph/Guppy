@@ -6,7 +6,7 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
 
 namespace Guppy.Network.Groups

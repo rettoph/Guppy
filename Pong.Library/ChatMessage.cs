@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace Pong.Library
 {

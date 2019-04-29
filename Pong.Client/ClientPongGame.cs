@@ -17,39 +17,13 @@ namespace Pong.Client
 {
     class ClientPongGame : PongGame
     {
-        private GraphicsDeviceManager _graphics;
-        private GameWindow _window;
-        private ContentManager _content;
-
-        public ClientPongGame(GraphicsDeviceManager graphics, GameWindow window, ContentManager content)
+        public ClientPongGame(IServiceProvider provider) : base(provider)
         {
-            _graphics = graphics;
-            _window = window;
-            _content = content;
-        }
-
-        protected override void Boot()
-        {
-            base.Boot();
-
-            // Add the client services...
-            this.services.AddSingleton<GraphicsDeviceManager>(_graphics);
-            this.services.AddSingleton<GraphicsDevice>(_graphics.GraphicsDevice);
-            this.services.AddSingleton<GameWindow>(_window);
-            this.services.AddSingleton<ContentManager>(_content);
-            this.services.AddSingleton<SpriteBatch>(new SpriteBatch(_graphics.GraphicsDevice));
-
-            this.services.AddScene<TransitionScene>();
-            this.services.AddScene<ClientLobbyScene>();
-            this.services.AddScene<ClientLoginScene>();
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
-
-            var contentLoader = this.provider.GetLoader<ContentLoader>();
-            contentLoader.Register("texture:ui:login:form", "Sprites/UI/login-form");
         }
 
         protected override void PostInitialize()
@@ -57,14 +31,10 @@ namespace Pong.Client
             base.PostInitialize();
 
             var client = this.provider.GetService<ClientPeer>();
+            client.Start();
 
             // Create a new lobby scene
             this.scenes.Create<ClientLoginScene>();
-        }
-
-        protected override Peer PeerFactory(IServiceProvider arg)
-        {
-            return new ClientPeer(this.config, this.logger);
         }
     }
 }

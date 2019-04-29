@@ -3,7 +3,7 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Network.Extensions;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Interfaces;
 using Guppy.Implementations;
 

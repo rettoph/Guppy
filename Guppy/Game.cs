@@ -24,29 +24,27 @@ namespace Guppy
     public class Game
     {
         #region Private Fields
-        private IServiceLoader[] _serviceLoaders;
         #endregion
 
         #region Proteced Attributes
         protected ILogger logger { get; private set; }
-        protected ServiceCollection services { get; private set; }
-        protected ServiceProvider provider { get; private set; }
+        
+        protected IServiceProvider provider { get; private set; }
         protected SceneCollection scenes { get; private set; }
         #endregion
 
         #region Public Attributes
         public Boolean Started { get; private set; }
-
-        public Int32 Seed { get; private set; }
         #endregion
 
         #region Constructors
-        public Game(Int32 seed = 1337)
+        public Game(IServiceProvider provider)
         {
-            this.services = new ServiceCollection();
+            this.provider = provider;
 
-            this.logger = new ConsoleLogger();
-            this.Seed = seed;
+            // Load any required services
+            this.scenes = this.provider.GetRequiredService<SceneCollection>();
+            this.logger = this.provider.GetRequiredService<ILogger>();
         }
         #endregion
 
@@ -72,65 +70,22 @@ namespace Guppy
         #region Initialization Methods
         protected virtual void Boot()
         {
-            // Generate instances of all bound service loaders
-            _serviceLoaders = Assembly.GetEntryAssembly()
-                .GetReferencedAssemblies()
-                .SelectMany(an => Assembly.Load(an).GetTypes())
-                .Where(t => t.IsClass && !t.IsAbstract && typeof(IServiceLoader).IsAssignableFrom(t))
-                .Select(t => Activator.CreateInstance(t) as IServiceLoader)
-                .ToArray();
-
-            // Add core services to the collection...
-            this.services.AddSingleton<Game>(this);
-            this.services.AddSingleton<ILogger>(this.logger);
-            this.services.AddSingleton<SceneCollection>();
-            this.services.AddSingleton<Random>(new Random(this.Seed));
-            this.services.AddScoped<GameScopeConfiguration>();
-            this.services.AddScoped<LayerCollection>();
-            this.services.AddScoped<EntityCollection>();
-            this.services.AddScoped<EntityFactory>();
-            this.services.AddScene<Scene>();
-
-            // Add any default loaders
-            this.services.AddLoader<StringLoader>();
-            this.services.AddLoader<ColorLoader>();
-            this.services.AddLoader<ContentLoader>();
-            this.services.AddLoader<EntityLoader>();
-
-            // Boot all service loaders
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.Boot(this.services);
+            //
         }
 
         protected virtual void PreInitialize()
         {
-            // Build a new service provider...
-            this.provider = this.services.BuildServiceProvider();
-
-            // PreInitialize all service loaders
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.PreInitialize(this.provider);
+            //
         }
 
         protected virtual void Initialize()
         {
-            // Load any required services
-            this.scenes = this.provider.GetRequiredService<SceneCollection>();
-
-            // Ensure all loaders get loaded
-            foreach (ILoader loader in this.provider.GetLoaders())
-                loader.Load();
-
-            // Initialize all service loaders
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.Initialize(this.provider);
+            //   
         }
 
         protected virtual void PostInitialize()
         {
-            // PostInitialize all service loaders
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.PostInitialize(this.provider);
+            //
         }
         #endregion
 

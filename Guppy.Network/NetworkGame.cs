@@ -14,27 +14,17 @@ namespace Guppy.Network
         private Peer _peer;
         #endregion
 
-        public NetworkGame(int seed = 1337) : base(seed)
+        public NetworkGame(IServiceProvider provider) : base(provider)
         {
         }
 
-        #region Initializeation Methods
-        protected override void Boot()
-        {
-            base.Boot();
-
-            this.services.AddSingleton<Peer>(this.PeerFactory);
-            this.services.AddSingleton<ClientPeer>(this.GetPeer<ClientPeer>);
-            this.services.AddSingleton<ServerPeer>(this.GetPeer<ServerPeer>);
-        }
-
+        #region Initialization Methods
         protected override void PostInitialize()
         {
             base.PostInitialize();
 
-            // Start the game's peer
+            // Load the peer
             _peer = this.provider.GetService<Peer>();
-            _peer.Start();
         }
         #endregion
 
@@ -45,18 +35,6 @@ namespace Guppy.Network
             _peer.Update();
 
             base.Update(gameTime);
-        }
-        #endregion
-
-        #region PeerGame Methods
-        protected abstract Peer PeerFactory(IServiceProvider arg);
-        private TPeer GetPeer<TPeer>(IServiceProvider arg)
-            where TPeer : Peer
-        {
-            if (_peer is TPeer)
-                return _peer as TPeer;
-            else
-                throw new Exception($"Unable to cast current Peer instance to {typeof(TPeer).Name}");
         }
         #endregion
     }

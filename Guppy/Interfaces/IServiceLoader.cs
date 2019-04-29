@@ -12,7 +12,8 @@ namespace Guppy.Interfaces
     /// </summary>
     public interface IServiceLoader
     {
-        void Boot(IServiceCollection services);
+        void ConfigureServiceCollection(IServiceCollection services);
+        void Boot(IServiceProvider provider);
         void PreInitialize(IServiceProvider provider);
         void Initialize(IServiceProvider provider);
         void PostInitialize(IServiceProvider provider);

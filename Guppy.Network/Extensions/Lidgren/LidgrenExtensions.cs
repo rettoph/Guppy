@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Network.Extensions
+namespace Guppy.Network.Extensions.Lidgren
 {
     public static class LidgrenExtensions
     {
