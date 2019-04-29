@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Linq;
+using Guppy.Implementations;
 
 namespace Guppy
 {
@@ -21,14 +22,9 @@ namespace Guppy
     /// manages the service provider, and handles all
     /// update/draw logic.
     /// </summary>
-    public class Game
+    public class Game : Initializable
     {
-        #region Private Fields
-        #endregion
-
         #region Proteced Attributes
-        protected ILogger logger { get; private set; }
-        
         protected IServiceProvider provider { get; private set; }
         protected SceneCollection scenes { get; private set; }
         #endregion
@@ -38,55 +34,15 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Game(IServiceProvider provider)
+        public Game(ILogger logger, IServiceProvider provider) : base(logger)
         {
             this.provider = provider;
 
             // Load any required services
             this.scenes = this.provider.GetRequiredService<SceneCollection>();
-            this.logger = this.provider.GetRequiredService<ILogger>();
-        }
-        #endregion
-
-        #region Methods
-        public void Start()
-        {
-            if (this.Started)
-            {
-                this.logger.LogError($"Unable to start Game. Already started.");
-            }
-            else
-            {
-                this.Boot();
-                this.PreInitialize();
-                this.Initialize();
-                this.PostInitialize();
-
-                this.Started = true;
-            }
-        }
-        #endregion
-
-        #region Initialization Methods
-        protected virtual void Boot()
-        {
-            //
         }
 
-        protected virtual void PreInitialize()
-        {
-            //
-        }
-
-        protected virtual void Initialize()
-        {
-            //   
-        }
-
-        protected virtual void PostInitialize()
-        {
-            //
-        }
+        
         #endregion
 
         #region Frame Methods

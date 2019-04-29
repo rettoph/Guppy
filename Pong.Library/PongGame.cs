@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Peers;
 using Pong.Library.Layers;
 using Guppy.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Pong.Library
 {
@@ -15,7 +16,7 @@ namespace Pong.Library
         protected NetPeerConfiguration config;
         protected Group Group;
 
-        public PongGame(IServiceProvider provider) : base(provider)
+        public PongGame(ILogger logger, IServiceProvider provider) : base(logger, provider)
         {
         }
 

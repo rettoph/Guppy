@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Guppy.Network
         private Peer _peer;
         #endregion
 
-        public NetworkGame(IServiceProvider provider) : base(provider)
+        public NetworkGame(ILogger logger, IServiceProvider provider) : base(logger, provider)
         {
         }
 

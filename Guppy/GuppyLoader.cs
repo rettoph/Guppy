@@ -34,7 +34,8 @@ namespace Guppy
         #region Public Attributes
         public IServiceCollection Services;
         public ILogger Logger { get; }
-        public GameFactory GameFactory { get; private set; }
+
+        public GameCollection Games { get; private set; }
         #endregion
 
 
@@ -53,7 +54,8 @@ namespace Guppy
                 .Select(t => Activator.CreateInstance(t) as IServiceLoader)
                 .ToArray();
 
-            // Add the logger to the service collection here...
+            // Add core services here...
+            this.Services.AddSingleton<GuppyLoader>(this);
             this.Services.AddSingleton<ILogger>(this.Logger);
         }
 
@@ -91,8 +93,7 @@ namespace Guppy
                 serviceLoader.PostInitialize(_provider);
             #endregion
 
-            // Load required object from the provider
-            this.GameFactory = _provider.GetRequiredService<GameFactory>();
+            this.Games = _provider.GetRequiredService<GameCollection>();
 
             _initialized = true;
         }

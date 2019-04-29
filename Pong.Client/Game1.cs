@@ -39,8 +39,7 @@ namespace Pong.Client
             _guppy.Initialize();
 
             // Create a new gameinstance...
-            _pongGame = _guppy.GameFactory.Create<ClientPongGame>();
-            _pongGame.Start();
+            _pongGame = _guppy.Games.Create<ClientPongGame>();
         }
 
         private Peer PeerFactory(IServiceProvider arg)

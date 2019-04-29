@@ -17,6 +17,12 @@ namespace Guppy.Extensions
     public static class DependencyInjection
     {
         #region Add Methods
+        public static void AddGame<TGame>(this IServiceCollection collection)
+            where TGame : Game
+        {
+            collection.AddScoped<TGame>(GameFactory<TGame>.BuildFactory<TGame>().Create);
+        }
+
         public static void AddScene<TScene>(this IServiceCollection collection)
             where TScene : Scene
         {
@@ -42,6 +48,14 @@ namespace Guppy.Extensions
         #endregion
 
         #region Get Methods
+        #region GetGame Methods
+        public static TGame GetGame<TGame>(this IServiceProvider provider)
+            where TGame : Game
+        {
+            return provider.GetService<TGame>();
+        }
+        #endregion
+
         #region GetScene Methods
         public static TScene GetScene<TScene>(this IServiceProvider provider)
             where TScene : Scene

@@ -4,6 +4,7 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +18,7 @@ namespace Pong.Client
 {
     class ClientPongGame : PongGame
     {
-        public ClientPongGame(IServiceProvider provider) : base(provider)
+        public ClientPongGame(ILogger logger, IServiceProvider provider) : base(logger, provider)
         {
         }
 

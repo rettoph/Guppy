@@ -20,12 +20,11 @@ namespace Guppy.ServiceLoaders
         public void ConfigureServiceCollection(IServiceCollection services)
         {
             // Add core services to the collection...
-            // services.AddSingleton<ILogger>(GuppyCore.Logger);
             services.AddSingleton<SceneCollection>();
             services.AddScoped<GameScopeConfiguration>();
             services.AddScoped<LayerCollection>();
             services.AddScoped<EntityCollection>();
-            services.AddSingleton<GameFactory>();
+            services.AddScoped<GameCollection>();
             services.AddScoped<EntityFactory>();
             services.AddScene<Scene>();
 
