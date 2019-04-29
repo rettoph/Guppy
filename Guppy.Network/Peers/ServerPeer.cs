@@ -25,7 +25,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Public Attributes
-        public IAuthenticationService AuthenticationService { get; private set; }
+        public IAuthenticationService AuthenticationService { get; set; }
         #endregion
 
         #region Constructors

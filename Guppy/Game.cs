@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 using Guppy.Implementations;
+using Guppy.Enums;
 
 namespace Guppy
 {
@@ -26,20 +27,17 @@ namespace Guppy
     {
         #region Proteced Attributes
         protected IServiceProvider provider { get; private set; }
-        protected SceneCollection scenes { get; private set; }
         #endregion
 
         #region Public Attributes
         public Boolean Started { get; private set; }
+        public Scene Scene { get; private set; }
         #endregion
 
         #region Constructors
         public Game(ILogger logger, IServiceProvider provider) : base(logger)
         {
             this.provider = provider;
-
-            // Load any required services
-            this.scenes = this.provider.GetRequiredService<SceneCollection>();
         }
 
         
@@ -48,12 +46,46 @@ namespace Guppy
         #region Frame Methods
         public virtual void Draw(GameTime gameTime)
         {
-            this.scenes.Draw(gameTime);
+            this.Scene.Draw(gameTime);
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            this.scenes.Update(gameTime);
+            this.Scene.Update(gameTime);
+        }
+        #endregion
+
+        #region Scene Methods
+        public TScene CreateScene<TScene>()
+            where TScene : Scene
+        {
+            var sceneScope = this.provider.CreateScope().ServiceProvider;
+            sceneScope.GetRequiredService<GameScopeConfiguration>().Clone(this.provider.GetRequiredService<GameScopeConfiguration>());
+            var scene = sceneScope.GetRequiredService<TScene>();
+
+            // Initialize the new scene
+            scene.TryBoot();
+            scene.TryPreInitialize();
+            scene.TryInitialize();
+            scene.TryPostInitialize();
+
+            return scene;
+        }
+
+        public Scene SetScene(Scene scene, Boolean disposeOld = true)
+        {
+            this.logger.LogInformation($"{this.Id.ToString()}");
+
+            this.Scene?.setActive(false);
+
+            if (disposeOld) // Dispose of the old scene if necessary
+                this.Scene?.Dispose();
+
+
+            this.Scene = scene;
+            this.Scene.setActive(true);
+
+            return this.Scene;
         }
         #endregion
     }

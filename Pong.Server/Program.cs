@@ -8,6 +8,8 @@ using System;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Pong.Library.Scenes;
+using Pong.Server.Scenes;
 
 namespace Pong.Server
 {
@@ -25,6 +27,7 @@ namespace Pong.Server
             guppy.Initialize();
 
             ServerPongGame game = guppy.Games.Create<ServerPongGame>();
+            game.SetScene(game.CreateScene<ServerLobbyScene>());
 
             while(true)
             {
@@ -45,7 +48,7 @@ namespace Pong.Server
             config.AutoFlushSendQueue = false;
             config.Port = 1337;
 
-            return new ClientPeer(config, arg.GetService<ILogger>());
+            return new ServerPeer(config, arg.GetService<ILogger>());
         }
     }
 }

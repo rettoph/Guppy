@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy
 {
-    public class Scene : LivingObject
+    public class Scene : Initializable
     {
         #region Public Attributes
         public UInt16 DefaultLayerDepth { get; protected set; }
@@ -23,6 +23,17 @@ namespace Guppy
         protected LayerCollection layers { get; private set; }
 
         protected EntityCollection entities { get; private set; }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// Called when the current scene is marked as the active scene.
+        /// </summary>
+        public event EventHandler<Scene> OnActiveSet;
+        /// <summary>
+        /// Called when the current scene is no longer the active scene.
+        /// </summary>
+        public event EventHandler<Scene> OnActiveRemoved;
         #endregion
 
         #region Constructors
@@ -48,14 +59,24 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             this.layers.Draw(gameTime);
         }
 
-        public override void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             this.layers.Update(gameTime);
+        }
+        #endregion
+
+        #region Utility Methods
+        protected internal void setActive(Boolean active)
+        {
+            if (active)
+                this.OnActiveSet?.Invoke(this, this);
+            else
+                this.OnActiveRemoved?.Invoke(this, this);
         }
         #endregion
     }

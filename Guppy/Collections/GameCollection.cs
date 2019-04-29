@@ -26,7 +26,13 @@ namespace Guppy.Collections
             where TGame : Game
         {
             // Create the new game
-            var game = _provider.CreateScope().ServiceProvider.GetGame<TGame>();
+            var game = _provider.CreateScope().ServiceProvider.GetRequiredService<TGame>();
+
+            // Auto Initialize the new game
+            game.TryBoot();
+            game.TryPreInitialize();
+            game.TryInitialize();
+            game.TryPostInitialize();
 
             if (game == null)
                 throw new Exception($"Error creating Game<{typeof(TGame).Name}> ");
@@ -42,12 +48,6 @@ namespace Guppy.Collections
                 throw new Exception($"Unable to add Game too GameCollection! Game has been initialized.");
 
             base.Add(item);
-
-            // When a new game gets added, we must initialize it
-            item.TryBoot();
-            item.TryPreInitialize();
-            item.TryInitialize();
-            item.TryPostInitialize();
         }
 
         public override bool Remove(Game item)

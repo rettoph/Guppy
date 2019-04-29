@@ -6,7 +6,7 @@ namespace Guppy.Configurations
 {
     /// <summary>
     /// There are scoped instances created via factory
-    /// within games (namely the scope's Scene instance)
+    /// within games (namely the scope's Game instance)
     /// 
     /// This acts as a simple structure defining the scopes
     /// current settings, allowing factory methods to create
@@ -14,6 +14,17 @@ namespace Guppy.Configurations
     /// </summary>
     public class GameScopeConfiguration
     {
-        public Scene Scene;
+        public Game Game;
+
+        /// <summary>
+        /// Clone another scope's configuration
+        /// This is primarily used when creating a
+        /// nested scene scope.
+        /// </summary>
+        /// <param name="gameScopeConfiguration"></param>
+        internal void Clone(GameScopeConfiguration gameScopeConfiguration)
+        {
+            this.Game = gameScopeConfiguration.Game;
+        }
     }
 }

@@ -18,22 +18,17 @@ namespace Guppy.Factories
         /// <returns></returns>
         public override TScene Create(IServiceProvider provider)
         {
-            var scopeConfiguration = provider.GetService(typeof(GameScopeConfiguration)) as GameScopeConfiguration;
+            var config = provider.GetRequiredService<SceneScopeConfiguration>();
 
-            if(scopeConfiguration.Scene == null && !this.targetType.IsAbstract)
+            if (config.Scene == null && !this.targetType.IsAbstract)
             { // Create a new scene...
-                scopeConfiguration.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType) as Scene;
+                config.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType) as TScene;
 
-                // Auto add the new scene to the scene collection
-                var scenes = provider.GetRequiredService<SceneCollection>();
-                scenes.Add(scopeConfiguration.Scene);
-
-                // Return our new scene
-                return scopeConfiguration.Scene as TScene;
+                return config.Scene as TScene;
             }
-            else if(this.targetType == scopeConfiguration.Scene.GetType() || this.targetType.IsAssignableFrom(scopeConfiguration.Scene.GetType()))
+            else if (this.targetType == config.Scene.GetType() || this.targetType.IsAssignableFrom(config.Scene.GetType()))
             { // Return the pre-existing scene of this type...
-                return scopeConfiguration.Scene as TScene;
+                return config.Scene as TScene;
             }
             else
             { // Throw an error... the scope already has a scene of a different type...

@@ -14,7 +14,7 @@ namespace Pong.Library.Scenes
 
         public LobbyScene(Peer peer, IServiceProvider provider) : base(provider)
         {
-            group = peer.Groups.GetOrCreateById(Guid.Empty);
+            this.group = peer.Groups.GetOrCreateById(Guid.Empty);
         }
 
         protected override void Initialize()

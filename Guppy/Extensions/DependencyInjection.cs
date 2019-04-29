@@ -34,7 +34,7 @@ namespace Guppy.Extensions
         {
             var factory = LayerFactory<TLayer>.BuildFactory<TLayer>();
             collection.AddSingleton<LayerFactory<TLayer>>(factory); // Add the new factory (for future custom creation reference)
-            collection.AddScoped<TLayer>(factory.Create); // Add the factory's create method as the default constructor
+            collection.AddTransient<TLayer>(factory.Create); // Add the factory's create method as the default constructor
         }
 
         public static void AddLoader<TLoader>(this IServiceCollection collection)
@@ -48,14 +48,6 @@ namespace Guppy.Extensions
         #endregion
 
         #region Get Methods
-        #region GetGame Methods
-        public static TGame GetGame<TGame>(this IServiceProvider provider)
-            where TGame : Game
-        {
-            return provider.GetService<TGame>();
-        }
-        #endregion
-
         #region GetScene Methods
         public static TScene GetScene<TScene>(this IServiceProvider provider)
             where TScene : Scene

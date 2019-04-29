@@ -20,9 +20,8 @@ namespace Pong.Client.ServiceLoaders
         public void ConfigureServiceCollection(IServiceCollection services)
         {
             services.AddGame<ClientPongGame>();
-            services.AddScene<TransitionScene>();
-            services.AddScene<ClientLobbyScene>();
             services.AddScene<ClientLoginScene>();
+            services.AddScene<ClientLobbyScene>();
         }
 
         public void Boot(IServiceProvider provider)

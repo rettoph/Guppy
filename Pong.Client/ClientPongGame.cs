@@ -16,9 +16,9 @@ using System.Text;
 
 namespace Pong.Client
 {
-    class ClientPongGame : PongGame
+    public class ClientPongGame : PongGame
     {
-        public ClientPongGame(ILogger logger, IServiceProvider provider) : base(logger, provider)
+        public ClientPongGame(ClientPeer client, ILogger logger, IServiceProvider provider) : base(logger, provider)
         {
         }
 
@@ -35,7 +35,7 @@ namespace Pong.Client
             client.Start();
 
             // Create a new lobby scene
-            this.scenes.Create<ClientLoginScene>();
+            this.SetScene(this.CreateScene<ClientLoginScene>());
         }
     }
 }

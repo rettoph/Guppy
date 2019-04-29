@@ -24,10 +24,10 @@ namespace Pong.Client.Scenes
 {
     public class ClientLoginScene : Scene
     {
+        private ClientPongGame _game;
         private ClientPeer _client;
         private ContentLoader _content;
         private GraphicsDevice _graphicsDevice;
-        private SceneCollection _scenes;
 
         private TextInput _name;
         private TextInput _address;
@@ -35,9 +35,9 @@ namespace Pong.Client.Scenes
         private TextButton _submit;
         private TextElement _message;
 
-        public ClientLoginScene(SceneCollection scenes, GraphicsDevice graphicsDevice, ClientPeer client, IServiceProvider provider) : base(provider)
+        public ClientLoginScene(ClientPongGame game, GraphicsDevice graphicsDevice, ClientPeer client, IServiceProvider provider) : base(provider)
         {
-            _scenes = scenes;
+            _game = game;
             _client = client;
             _content = provider.GetLoader<ContentLoader>();
             _graphicsDevice = graphicsDevice;
@@ -136,6 +136,8 @@ namespace Pong.Client.Scenes
             {
                 case NetConnectionStatus.Connected:
                     _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Green);
+                    // Switch to a lobby scene instance...
+                    _game.SetScene(_game.CreateScene<ClientLobbyScene>());
                     break;
                 case NetConnectionStatus.Disconnected:
                     _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Red);
