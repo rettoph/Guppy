@@ -27,6 +27,7 @@ namespace Guppy.UI.Elements
             _container = parent;
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
+            this.SetPadding(0, 0, 0, 0);
 
             _container.Inner.OnBoundsChanged += this.HandleParentBoundsChanged;
         }

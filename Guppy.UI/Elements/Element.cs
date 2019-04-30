@@ -99,6 +99,13 @@ namespace Guppy.UI.Elements
         /// The current elements styleing
         /// </summary>
         public IStyle Style { get; private set; }
+
+        /// <summary>
+        /// When true, the current element's state will only
+        /// change from mouse interaction when the mouse is
+        /// over all elements in the entire element heiarchy.
+        /// </summary>
+        public Boolean RequireMouseOverHeiarchy { get; set; }
         #endregion
 
         #region Event Hanlders
@@ -118,6 +125,7 @@ namespace Guppy.UI.Elements
             this.Parent = parent;
             this.Style = new ElementStyle(this, style == null ? this.Stage?.styleLoader.GetValue(this.GetType().FullName) : style);
             this.State = ElementState.Normal;
+            this.RequireMouseOverHeiarchy = true;
             this.Outer = outerBounds;
             this.Outer.setParent(this.Parent?.Inner);
             this.Inner = new UnitRectangle(0, 0, 1f, 1f, this.Outer);
@@ -136,7 +144,7 @@ namespace Guppy.UI.Elements
         #region Frame Methods
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Parent.Inner.GlobalBounds))) // Draw the texture, if there is one
+            if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Outer.Parent.GlobalBounds))) // Draw the texture, if there is one
                 spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
             // Ensure that every self contained child element gets drawn too...
@@ -154,7 +162,7 @@ namespace Guppy.UI.Elements
             this.MouseOver = this.Outer.GlobalBounds.Contains(mouse.Position);
             this.MouseOverHierarchy = this.MouseOver && (this.Parent == null ? true : this.Parent.MouseOverHierarchy && this.Parent.Inner.GlobalBounds.Contains(mouse.Position));
 
-            if (this.MouseOverHierarchy)
+            if (this.MouseOverHierarchy && this.MouseOverHierarchy || !this.MouseOverHierarchy && this.MouseOver)
             { // Mouse is over element...
                 if (mouse.LeftButton == ButtonState.Pressed)
                 { // If mouse is down
@@ -346,7 +354,7 @@ namespace Guppy.UI.Elements
             this.Style.Set<UnitValue>(GlobalProperty.PaddingTop, top);
             this.Style.Set<UnitValue>(GlobalProperty.PaddingRight, right);
             this.Style.Set<UnitValue>(GlobalProperty.PaddingBottom, bottom);
-            this.Style.Set<UnitValue>(GlobalProperty.PaddingLeft, top);
+            this.Style.Set<UnitValue>(GlobalProperty.PaddingLeft, left);
 
             // Update the inner bounds
             this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0));

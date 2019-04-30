@@ -41,8 +41,10 @@ namespace Guppy.UI.Elements
             Stage stage,
             Style style = null) : base(outerBounds, parent, stage, style)
         {
-            this.Items = this.createElement<ScrollItems>(0, 0, new UnitValue[] { 1f, -15 }, 1f);
+            this.Items = this.createElement<ScrollItems>(0, 0, 1f, 1f);
             this.ScrollBar = this.createElement<Scrollbar>(new UnitValue[] { 1f, -15 }, 0, 15, 1f);
+            this.ScrollBar.Outer.setParent(this.Outer);
+            this.SetPadding(0, 15, 0, 0);
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }

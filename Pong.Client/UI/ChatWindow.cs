@@ -36,7 +36,7 @@ namespace Pong.Client.UI
             // Start 100% scrolled
             _messages.ScrollTo(1f);
             _messages.Items.MaxItems = 25;
-            _messages.SetPadding(5, 5, 5, 5);
+            _messages.SetPadding(5, 20, 5, 5);
 
             _input.OnEnter += this.HandleInputEnter;
             _group.MessageHandler.Add("chat", this.HandleChatMessage);
