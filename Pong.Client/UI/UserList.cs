@@ -34,6 +34,9 @@ namespace Pong.Client.UI
 
             _users = this.createElement<ScrollContainer>(0, 25, 1f, new UnitValue[] { 1f, -25 });
 
+            foreach (User user in _group.Users)
+                this.HandleUserAdded(this, user);
+
             _group.Users.Added += this.HandleUserAdded;
             _group.Users.Removed += this.HandleUserRemoved;
         }
