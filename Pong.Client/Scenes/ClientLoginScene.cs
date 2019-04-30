@@ -13,6 +13,7 @@ using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Client.UI;
 using Pong.Library.Layers;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,7 @@ namespace Pong.Client.Scenes
             labelStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterRight);
 
             form.CreateElement<TextElement>(0, 0, 100, 30, "Name:", labelStyle);
-            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "Tony");
+            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "Rettoph");
 
             form.CreateElement<TextElement>(0, 40, 100, 30, "Address:", labelStyle);
             _address = form.CreateElement<TextInput>(100, 40, 226, 30, "localhost");
@@ -83,6 +84,8 @@ namespace Pong.Client.Scenes
 
             _submit.OnClicked += this.HandleSubmitClick;
             _client.OnStatusChanged += this.HandleClientStatusChanged;
+
+            this.HandleSubmitClick(this, null);
         }
 
         public override void Draw(GameTime gameTime)
@@ -123,6 +126,7 @@ namespace Pong.Client.Scenes
 
                     var user = new User();
                     user.Set("name", _name.Text);
+                    user.Set("color", $"{Color.Red.R},{Color.Red.G},{Color.Red.B}");
 
                     _client.Connect(_address.Text, Int32.Parse(_port.Text), user);
                 }
