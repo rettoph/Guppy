@@ -1,5 +1,6 @@
 ﻿using Guppy.Extensions;
 using Guppy.Interfaces;
+using Guppy.Loaders;
 using Guppy.UI.Enums;
 using Guppy.UI.Loaders;
 using Guppy.UI.Styles;
@@ -24,11 +25,13 @@ namespace Pong.Client.ServiceLoaders
         {
             var styleLoader = provider.GetLoader<StyleLoader>();
             styleLoader.Register("chat-input", new Style());
+            styleLoader.Register("user-list", new Style());
         }
 
         public void PreInitialize(IServiceProvider provider)
         {
             var styleLoader = provider.GetLoader<StyleLoader>();
+            var contentLoader = provider.GetLoader<ContentLoader>();
 
             var chatInputBackground = new Texture2D(provider.GetRequiredService<GraphicsDevice>(), 1, 1);
             chatInputBackground.SetData<Color>(new Color[] { new Color(100, 100, 100, 100) });
@@ -39,6 +42,9 @@ namespace Pong.Client.ServiceLoaders
             chatInputStyles.Set<UnitValue>(GlobalProperty.PaddingTop, 1);
             chatInputStyles.Set<UnitValue>(GlobalProperty.PaddingLeft, 7);
             chatInputStyles.Set<UnitValue>(GlobalProperty.PaddingRight, 7);
+
+            var userListStyles = styleLoader.GetValue("user-list");
+            userListStyles.Set<Texture2D>(StateProperty.Background, contentLoader.Get<Texture2D>("texture:ui:accent:1"));
         }
 
         public void Initialize(IServiceProvider provider)

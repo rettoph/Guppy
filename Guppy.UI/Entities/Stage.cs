@@ -82,7 +82,7 @@ namespace Guppy.UI.Entities
             _outputRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             this.dirtyTextureElementQueue = new Queue<Element>();
-            this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
+            this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width, _window.ClientBounds.Height);
             this.font = _provider.GetLoader<ContentLoader>().Get<SpriteFont>("ui:font");
             this.styleLoader = _provider.GetLoader<StyleLoader>();
 
@@ -141,8 +141,8 @@ namespace Guppy.UI.Entities
         #region Event Handlers
         private void HandleClientBoundsChanged(object sender, EventArgs e)
         {
-            this.clientBounds.Width.SetValue(_window.ClientBounds.Width - 1);
-            this.clientBounds.Height.SetValue(_window.ClientBounds.Height - 1);
+            this.clientBounds.Width.SetValue(_window.ClientBounds.Width);
+            this.clientBounds.Height.SetValue(_window.ClientBounds.Height);
 
             this.clientBounds.Update();
 

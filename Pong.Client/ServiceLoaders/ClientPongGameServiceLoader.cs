@@ -28,6 +28,8 @@ namespace Pong.Client.ServiceLoaders
         {
             var contentLoader = provider.GetLoader<ContentLoader>();
             contentLoader.Register("texture:ui:login:form", "Sprites/UI/login-form");
+            contentLoader.Register("texture:ui:accent:1", "Sprites/UI/accent-1");
+            contentLoader.Register("texture:ui:label:1", "Sprites/UI/label-1");
         }
 
         public void PreInitialize(IServiceProvider provider)
