@@ -5,6 +5,7 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Guppy.UI.Elements;
 using Guppy.UI.Entities;
+using Guppy.UI.Enums;
 using Guppy.UI.Loaders;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
@@ -35,6 +36,7 @@ namespace Pong.Client.UI
             // Start 100% scrolled
             _messages.ScrollTo(1f);
             _messages.Items.MaxItems = 25;
+            _messages.SetPadding(5, 5, 5, 5);
 
             _input.OnEnter += this.HandleInputEnter;
             _group.MessageHandler.Add("chat", this.HandleChatMessage);
@@ -42,7 +44,9 @@ namespace Pong.Client.UI
 
         public void Add(User user, String message)
         {
-            _messages.Items.CreateElement<ChatMessage>(0, 0, 1f, 25, user, message);
+            var m = _messages.Items.CreateElement<ChatMessage>(0, 0, 1f, 20, user, message);
+            m.Style.Set<Alignment>(StateProperty.TextAlignment, Alignment.CenterLeft);
+            m.SetPadding(0, 0, 0, 0);
         }
 
         private void HandleInputEnter(object sender, string e)
@@ -63,6 +67,14 @@ namespace Pong.Client.UI
             var content = obj.ReadString();
 
             this.Add(sender, content);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _input.OnEnter -= this.HandleInputEnter;
+            _group.MessageHandler.Remove("chat");
         }
     }
 }

@@ -46,6 +46,8 @@ namespace Pong.Client.UI
             var colorBytes = e.Get("color").Split(",");
             var label = _users.Items.CreateElement<FancyTextElement>(0, 0, 1f, 25);
             label.Add(e.Get("name"), new Color(Byte.Parse(colorBytes[0]), Byte.Parse(colorBytes[1]), Byte.Parse(colorBytes[2])));
+            label.Style.Set<Alignment>(StateProperty.TextAlignment, Alignment.CenterLeft);
+            label.SetPadding(2, 10, 2, 10);
 
             _userLabels.Add(e, label);
         }

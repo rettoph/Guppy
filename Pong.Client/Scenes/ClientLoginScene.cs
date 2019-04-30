@@ -66,7 +66,7 @@ namespace Pong.Client.Scenes
             labelStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterRight);
 
             form.CreateElement<TextElement>(0, 0, 100, 30, "Name:", labelStyle);
-            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "");
+            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "Tony");
 
             form.CreateElement<TextElement>(0, 40, 100, 30, "Address:", labelStyle);
             _address = form.CreateElement<TextInput>(100, 40, 226, 30, "10.0.3.96");
@@ -85,7 +85,7 @@ namespace Pong.Client.Scenes
             _submit.OnClicked += this.HandleSubmitClick;
             _client.OnStatusChanged += this.HandleClientStatusChanged;
 
-            // this.HandleSubmitClick(this, null);
+            this.HandleSubmitClick(this, null);
         }
 
         public override void Draw(GameTime gameTime)
