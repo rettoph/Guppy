@@ -303,11 +303,6 @@ namespace Guppy.UI.Elements
                 child.Dispose();
             }
         }
-
-        protected virtual void setParent(Element parent)
-        {
-            this.Parent = parent;
-        }
         #endregion
 
         #region Utility Methods

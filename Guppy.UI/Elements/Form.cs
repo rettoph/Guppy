@@ -22,15 +22,6 @@ namespace Guppy.UI.Elements
     {
         public Form(UnitRectangle outerBounds, Element parent, Stage stage, Style style = null) : base(outerBounds, parent, stage, style)
         {
-        }
-
-        protected override void setParent(Element parent)
-        {
-            if (this.Parent != null)
-                this.Stage.TextInput -= this.HandleTextInput;
-
-            base.setParent(parent);
-
             this.Stage.TextInput += this.HandleTextInput;
         }
 

@@ -60,17 +60,6 @@ namespace Guppy.UI.Elements
             }
         }
 
-        protected override void setParent(Element parent)
-        {
-            base.setParent(parent);
-
-            if (this.Parent != null)
-            {
-                _caret?.Dispose();
-                _caret = new Texture2D(this.Stage.graphicsDevice, 1, 1);
-            }
-        }
-
         public override void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
         {
             base.CleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
