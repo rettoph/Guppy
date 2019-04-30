@@ -141,7 +141,7 @@ namespace Guppy.UI.Elements
         {
             base.Update(mouse);
 
-            if(this.MouseOver)
+            if(this.MouseOver && this.Items.Outer.LocalBounds.Height > this.Outer.LocalBounds.Height)
             {
                 _scrollDelta = mouse.ScrollWheelValue - _oldScrollValue;
 
