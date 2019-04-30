@@ -20,13 +20,17 @@ namespace Guppy.Extensions
         public static void AddGame<TGame>(this IServiceCollection collection)
             where TGame : Game
         {
-            collection.AddScoped<TGame>(GameFactory<TGame>.BuildFactory<TGame>().Create);
+            var factory = GameFactory<TGame>.BuildFactory<TGame>();
+            collection.AddSingleton(factory);
+            collection.AddScoped<TGame>(factory.Create);
         }
 
         public static void AddScene<TScene>(this IServiceCollection collection)
             where TScene : Scene
         {
-            collection.AddScoped<TScene>(SceneFactory<TScene>.BuildFactory<TScene>().Create);
+            var factory = SceneFactory<TScene>.BuildFactory<TScene>();
+            collection.AddSingleton(factory);
+            collection.AddScoped<TScene>(factory.Create);
         }
 
         public static void AddLayer<TLayer>(this IServiceCollection collection)
@@ -43,7 +47,9 @@ namespace Guppy.Extensions
             // Add the loader as a singleton
             collection.AddSingleton<ILoader, TLoader>();
             // Create a factory method for direct reference in dependency injection
-            collection.AddSingleton<TLoader>(LoaderFactory<TLoader>.BuildFactory<TLoader>().Create);
+            var factory = LoaderFactory<TLoader>.BuildFactory<TLoader>();
+            collection.AddSingleton(factory);
+            collection.AddScoped<TLoader>(factory.Create);
         }
         #endregion
 

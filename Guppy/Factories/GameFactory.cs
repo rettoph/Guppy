@@ -17,11 +17,16 @@ namespace Guppy.Factories
 
         public override TGame Create(IServiceProvider provider)
         {
+            return this.CreateCustom(provider);
+        }
+
+        public override TGame CreateCustom(IServiceProvider provider, params object[] args)
+        {
             var config = provider.GetRequiredService<GameScopeConfiguration>();
 
             if (config.Game == null && !this.targetType.IsAbstract)
             { // Create a new scene...
-                config.Game = ActivatorUtilities.CreateInstance(provider, typeof(TGame)) as TGame;
+                config.Game = ActivatorUtilities.CreateInstance(provider, this.targetType, args) as TGame;
 
                 // Auto add the new scene to the scene collection
                 var games = provider.GetRequiredService<GameCollection>();

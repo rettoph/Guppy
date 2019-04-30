@@ -1,5 +1,6 @@
 ﻿using Guppy.Enums;
 using Guppy.Extensions;
+using Guppy.Factories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,11 @@ namespace Guppy.Collections
         /// </summary>
         /// <typeparam name="TGame"></typeparam>
         /// <returns></returns>
-        public TGame Create<TGame>()
+        public TGame Create<TGame>(params Object[] args)
             where TGame : Game
         {
             // Create the new game
-            var game = _provider.CreateScope().ServiceProvider.GetRequiredService<TGame>();
+            var game = _provider.GetRequiredService<GameFactory<TGame>>().CreateCustom(_provider.CreateScope().ServiceProvider, args);
 
             // Auto Initialize the new game
             game.TryBoot();

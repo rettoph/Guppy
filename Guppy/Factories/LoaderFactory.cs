@@ -1,5 +1,6 @@
 ﻿using Guppy.Extensions;
 using Guppy.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,11 +14,17 @@ namespace Guppy.Factories
         {
             return provider.GetLoader<TLoader>();
         }
+        public override TLoader CreateCustom(IServiceProvider provider, params object[] args)
+        {
+            return ActivatorUtilities.CreateInstance<TLoader>(provider, this.targetType, args);
+        }
 
         public static LoaderFactory<T> BuildFactory<T>()
             where T : class, ILoader
         {
             return new LoaderFactory<T>();
         }
+
+
     }
 }

@@ -18,11 +18,15 @@ namespace Guppy.Factories
         /// <returns></returns>
         public override TScene Create(IServiceProvider provider)
         {
+            return this.CreateCustom(provider);
+        }
+        public override TScene CreateCustom(IServiceProvider provider, params object[] args)
+        {
             var config = provider.GetRequiredService<SceneScopeConfiguration>();
 
             if (config.Scene == null && !this.targetType.IsAbstract)
             { // Create a new scene...
-                config.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType) as TScene;
+                config.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType, args) as TScene;
 
                 return config.Scene as TScene;
             }
@@ -33,7 +37,7 @@ namespace Guppy.Factories
             else
             { // Throw an error... the scope already has a scene of a different type...
                 throw new Exception("Unable to create new Scene instance, scope contains another Scene.");
-            }
+            };
         }
 
         public static SceneFactory<T> BuildFactory<T>()
@@ -41,5 +45,7 @@ namespace Guppy.Factories
         {
             return new SceneFactory<T>();
         }
+
+
     }
 }
