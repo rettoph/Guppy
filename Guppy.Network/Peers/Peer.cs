@@ -28,7 +28,7 @@ namespace Guppy.Network.Peers
         /// A shared collection of users within all of the
         /// current peer's groups.
         /// </summary>
-        public UserCollection Users { get; private set; }
+        public GlobalUserCollection Users { get; private set; }
 
         /// <summary>
         /// A collection of all tracked groups within the
@@ -44,7 +44,7 @@ namespace Guppy.Network.Peers
             this.config = config;
             this.logger = logger;
 
-            this.Users = new UserCollection();
+            this.Users = new GlobalUserCollection();
             this.Groups = new GroupCollection(this.CreateGroup);
         }
         #endregion

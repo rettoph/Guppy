@@ -21,7 +21,6 @@ namespace Pong.Client.UI
     {
         private ScrollContainer _messages;
         private TextInput _input;
-        private User _server;
 
         private Group _group;
 
@@ -31,18 +30,11 @@ namespace Pong.Client.UI
 
             _messages = this.createElement<ScrollContainer>(0, 0, 1f, new UnitValue[] { 1f, -20 });
             _input = this.createElement<TextInput>(0, new UnitValue[] { 1f, -20 }, 1f, 20, styleLoader.GetValue("chat-input"));
-            _server = new User();
             _group = client.Groups.GetOrCreateById(Guid.Empty);
-
-            _server.Set("name", "Server");
-            _server.Set("color", $"{Color.Cyan.R},{Color.Cyan.G},{Color.Cyan.B}");
 
             // Start 100% scrolled
             _messages.ScrollTo(1f);
             _messages.Items.MaxItems = 25;
-
-            // Add a simple welcome message
-            this.Add($"Welcome, {client.CurrentUser.Get("name")}!");
 
             _input.OnEnter += this.HandleInputEnter;
             _group.MessageHandler.Add("chat", this.HandleChatMessage);
@@ -51,10 +43,6 @@ namespace Pong.Client.UI
         public void Add(User user, String message)
         {
             _messages.Items.CreateElement<ChatMessage>(0, 0, 1f, 25, user, message);
-        }
-        public void Add(String message)
-        {
-            _messages.Items.CreateElement<ChatMessage>(0, 0, 1f, 25, _server, message);
         }
 
         private void HandleInputEnter(object sender, string e)

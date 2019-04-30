@@ -66,7 +66,7 @@ namespace Guppy.Network.Peers
                     // When the client is connected, we want to create a new user object based on data passed
                     // from the server
                     var message = im.SenderConnection.RemoteHailMessage.ReadString();
-                    var user = new User(im.SenderConnection.RemoteHailMessage.ReadGuid());
+                    var user = new User(im.SenderConnection.RemoteHailMessage.ReadGuid(), default(Int64));
                     user.Read(im.SenderConnection.RemoteHailMessage);
                     // Add the user to the user collection
                     this.Users.Add(user);

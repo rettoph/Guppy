@@ -52,7 +52,7 @@ namespace Guppy.Network.Peers
         }
         public NetConnection GetNetConnectionByUser(User user)
         {
-            return this.GetNetConnectionById(Int64.Parse(user.Get("connection")));
+            return this.GetNetConnectionById(user.NetId);
         }
         protected internal override Group CreateGroup(Guid id)
         {
@@ -80,9 +80,9 @@ namespace Guppy.Network.Peers
             this.logger.LogInformation("New incoming connection request... Attempting authentication.");
 
             // Create a new user object based on the remote hail message
-            var user = new User(im.SenderConnection.RemoteHailMessage.ReadGuid());
+            im.SenderConnection.RemoteHailMessage.ReadGuid();
+            var user = new User(Guid.NewGuid(), im.SenderConnection.RemoteUniqueIdentifier);
             user.Read(im.SenderConnection.RemoteHailMessage);
-            user.Set("connection", ClaimType.Private, im.SenderConnection.RemoteUniqueIdentifier.ToString());
 
             // Run the requested user through the authenticator...
             var auth = this.AuthenticationService.Authenticate(user);

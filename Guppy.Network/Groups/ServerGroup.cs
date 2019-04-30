@@ -44,7 +44,7 @@ namespace Guppy.Network.Groups
         private void HandleUserAdded(object sender, User user)
         {
             // Load the new users connection...
-            var newConnection = _server.GetNetConnectionById(Int64.Parse(user.Get("connection")));
+            var newConnection = _server.GetNetConnectionById(user.NetId);
 
             NetOutgoingMessage userUpdate;
             if (_connections.Count > 0)

@@ -66,10 +66,10 @@ namespace Pong.Client.Scenes
             labelStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterRight);
 
             form.CreateElement<TextElement>(0, 0, 100, 30, "Name:", labelStyle);
-            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "Rettoph");
+            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "");
 
             form.CreateElement<TextElement>(0, 40, 100, 30, "Address:", labelStyle);
-            _address = form.CreateElement<TextInput>(100, 40, 226, 30, "localhost");
+            _address = form.CreateElement<TextInput>(100, 40, 226, 30, "10.0.3.96");
 
             form.CreateElement<TextElement>(0, 80, 100, 30, "Port:", labelStyle);
             _port = form.CreateElement<TextInput>(100, 80, 226, 30, "1337");
@@ -85,7 +85,7 @@ namespace Pong.Client.Scenes
             _submit.OnClicked += this.HandleSubmitClick;
             _client.OnStatusChanged += this.HandleClientStatusChanged;
 
-            this.HandleSubmitClick(this, null);
+            // this.HandleSubmitClick(this, null);
         }
 
         public override void Draw(GameTime gameTime)
@@ -126,7 +126,10 @@ namespace Pong.Client.Scenes
 
                     var user = new User();
                     user.Set("name", _name.Text);
-                    user.Set("color", $"{Color.Red.R},{Color.Red.G},{Color.Red.B}");
+                    var rand = new Random();
+                    var bytes = new Byte[3];
+                    rand.NextBytes(bytes);
+                    user.Set("color", $"{bytes[0]},{bytes[1]},{bytes[2]}");
 
                     _client.Connect(_address.Text, Int32.Parse(_port.Text), user);
                 }

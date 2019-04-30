@@ -10,19 +10,30 @@ namespace Guppy.Network.Collections
 {
     public class UserCollection : UniqueObjectCollection<User>
     {
-        public User UpdateOrCreate(Guid id, NetIncomingMessage im)
-        {
-            User user;
+        private Dictionary<Int64, User> _netIdTable;
 
-            if((user = this.GetById(id)) == null)
-            { // If the user is not defined...
-                // create a new one
-                user = new User(id);
+        public UserCollection(Boolean disposeOnRemove = false) : base(disposeOnRemove)
+        {
+            _netIdTable = new Dictionary<Int64, User>();
+        }
+
+        public override void Add(User item)
+        {
+            base.Add(item);
+
+            _netIdTable.Add(item.NetId, item);
+        }
+
+        public override bool Remove(User item)
+        {
+            if(base.Remove(item))
+            {
+                _netIdTable.Remove(item.NetId);
+
+                return true;
             }
 
-            user.Read(im);
-
-            return user;
+            return false;
         }
 
         public User GetByClaim(String key, String value)
@@ -31,7 +42,11 @@ namespace Guppy.Network.Collections
         }
         public User GetByNetConnection(NetConnection connection)
         {
-            return this.GetByClaim("connection", connection.RemoteUniqueIdentifier.ToString());
+            return this.GetByNetId(connection.RemoteUniqueIdentifier);
+        }
+        public User GetByNetId(Int64 netId)
+        {
+            return _netIdTable[netId];
         }
     }
 }

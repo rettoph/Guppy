@@ -5,6 +5,7 @@ using System.Text;
 using Guppy.Network.Security.Enums;
 using Lidgren.Network;
 using System.Linq;
+using Guppy.Network.Peers;
 
 namespace Guppy.Network.Security
 {
@@ -17,14 +18,18 @@ namespace Guppy.Network.Security
             get { return this.Get(key); }
         }
 
+        public Int64 NetId { get; private set; }
+
         #region Constructors
         public User()
         {
             _claims = new Dictionary<String, Claim>();
         }
-        public User(Guid id) : base(id)
+        public User(Guid id, Int64 netId) : base(id)
         {
             _claims = new Dictionary<String, Claim>();
+
+            this.NetId = netId;
         }
         #endregion
 
@@ -50,6 +55,13 @@ namespace Guppy.Network.Security
         {
             base.Read(im);
 
+            // Read the users claimed net id
+            var claimedNetId = im.ReadInt64();
+            if(this.NetId == default(Int64))
+            {
+                this.NetId = claimedNetId;
+            }
+
             // Read any incoming claims
             Int32 claimsCount = im.ReadInt32();
             for (Int32 i = 0; i < claimsCount; i++)
@@ -69,6 +81,9 @@ namespace Guppy.Network.Security
         public void Write(NetOutgoingMessage om, ClaimType type)
         {
             base.Write(om);
+
+            // Write the users net id
+            om.Write(this.NetId);
 
             // Write the total number of claims and all claim values
             var outboundClaims = _claims.Where(c => c.Value.Type <= type);
