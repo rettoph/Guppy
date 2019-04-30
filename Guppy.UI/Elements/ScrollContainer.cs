@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using Guppy.UI.Enums;
 using Microsoft.Xna.Framework.Input;
+using Guppy.UI.Entities;
+using Guppy.UI.Utilities;
 
 namespace Guppy.UI.Elements
 {
@@ -33,14 +35,12 @@ namespace Guppy.UI.Elements
         #endregion
 
         public ScrollContainer(
-            Unit x,
-            Unit y,
-            Unit width,
-            Unit height,
-            Style style = null) : base(x, y, width, height, style)
+            UnitRectangle outerBounds,
+            Stage stage,
+            Style style = null) : base(outerBounds, stage, style)
         {
-            this.Items = this.add(new ScrollItems(this)) as Container;
-            this.ScrollBar = this.add(new Scrollbar(this)) as Scrollbar;
+            this.Items = this.add(new ScrollItems(this, this.Stage)) as Container;
+            this.ScrollBar = this.add(new Scrollbar(this, this.Stage)) as Scrollbar;
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }

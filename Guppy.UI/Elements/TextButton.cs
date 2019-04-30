@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
+using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 
 namespace Guppy.UI.Elements
@@ -12,7 +14,7 @@ namespace Guppy.UI.Elements
         private Boolean _mouseDown;
         public event EventHandler<TextButton> OnClicked;
 
-        public TextButton(string text, Unit x, Unit y, Unit width, Unit height, Style style = null) : base(text, x, y, width, height, style)
+        public TextButton(UnitRectangle outerBounds, Stage stage, string text = "", Style style = null) : base(outerBounds, stage, text, style)
         {
             this.StateBlacklist = ElementState.Active;
 

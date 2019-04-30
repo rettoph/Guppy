@@ -9,6 +9,8 @@ using Guppy.UI.Enums;
 using Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
+using Guppy.UI.Entities;
+using Guppy.UI.Utilities;
 
 namespace Guppy.UI.Elements
 {
@@ -16,7 +18,7 @@ namespace Guppy.UI.Elements
     {
         private ScrollContainer _container;
 
-        public ScrollItems(ScrollContainer container) : base(0, 0, new UnitValue[] { 1f, -15 }, 1f)
+        public ScrollItems(ScrollContainer container, Stage stage) : base(new UnitRectangle(0, 0, new UnitValue[] { 1f, -15 }, 1f), stage)
         {
             _container = container;
 

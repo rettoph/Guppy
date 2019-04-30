@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
+using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,7 +29,7 @@ namespace Guppy.UI.Elements
 
         public Regex CharWhitelist { get; set; }
 
-        public TextInput(string text, Unit x, Unit y, Unit width, Unit height, Style style = null) : base(text, x, y, width, height, style)
+        public TextInput(UnitRectangle outerBounds, Stage stage, String text = "", Style style = null) : base(outerBounds, stage, text, style)
         {
             this.CharWhitelist = TextInput.DefaultWhitelist;
 

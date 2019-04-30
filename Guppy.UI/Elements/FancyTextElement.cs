@@ -9,6 +9,8 @@ using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
+using Guppy.UI.Utilities;
+using Guppy.UI.Entities;
 
 namespace Guppy.UI.Elements
 {
@@ -27,7 +29,7 @@ namespace Guppy.UI.Elements
 
         private List<TextColor> _text;
 
-        public FancyTextElement(Unit x, Unit y, Unit width, Unit height, Style style = null) : base(x, y, width, height, style)
+        public FancyTextElement(UnitRectangle outerBounds, Stage stage, Style style = null) : base(outerBounds, stage, style)
         {
             _text = new List<TextColor>();
 

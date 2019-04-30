@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
 using Guppy.UI.Styles;
+using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -31,7 +33,7 @@ namespace Guppy.UI.Elements
             }
         }
 
-        public TextElement(String text, Unit x, Unit y, Unit width, Unit height, Style style = null) : base(x, y, width, height, style)
+        public TextElement(UnitRectangle outerBounds, Stage stage, String text = "", Style style = null) : base(outerBounds, stage, style)
         {
             this.Text = text;
 

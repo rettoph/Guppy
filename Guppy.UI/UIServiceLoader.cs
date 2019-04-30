@@ -39,8 +39,8 @@ namespace Guppy.UI
             entityLoader.Register<Stage>("ui:stage", "ui_name:stage", "ui_description:stage");
 
             var styleLoader = provider.GetLoader<StyleLoader>();
-            styleLoader.Register(typeof(TextInput), new Style());
-            styleLoader.Register(typeof(TextButton), new Style());
+            styleLoader.Register(typeof(TextInput).FullName, new Style());
+            styleLoader.Register(typeof(TextButton).FullName, new Style());
         }
 
         public void PreInitialize(IServiceProvider provider)
@@ -48,7 +48,7 @@ namespace Guppy.UI
             var styleLoader = provider.GetLoader<StyleLoader>();
             var contentLoader = provider.GetLoader<ContentLoader>();
 
-            var textInputStyle = styleLoader.GetValue(typeof(TextInput));
+            var textInputStyle = styleLoader.GetValue(typeof(TextInput).FullName);
             textInputStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, contentLoader.Get<Texture2D>("ui:input"));
             textInputStyle.Set<Texture2D>(ElementState.Active, StateProperty.Background, contentLoader.Get<Texture2D>("ui:input:active"));
             textInputStyle.Set<DrawType>(ElementState.Normal, StateProperty.BackgroundType, DrawType.Stretch);
@@ -59,7 +59,7 @@ namespace Guppy.UI
             textInputStyle.Set<UnitValue>(GlobalProperty.PaddingBottom, 7);
             textInputStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 7);
 
-            var buttonStyle = styleLoader.GetValue(typeof(TextButton));
+            var buttonStyle = styleLoader.GetValue(typeof(TextButton).FullName);
             buttonStyle.Set<Texture2D>(ElementState.Normal, StateProperty.Background, contentLoader.Get<Texture2D>("ui:button"));
             buttonStyle.Set<Texture2D>(ElementState.Hovered, StateProperty.Background, contentLoader.Get<Texture2D>("ui:button:hovered"));
             buttonStyle.Set<Texture2D>(ElementState.Pressed, StateProperty.Background, contentLoader.Get<Texture2D>("ui:button:pressed"));

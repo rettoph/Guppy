@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
+using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
@@ -20,7 +22,7 @@ namespace Guppy.UI.Elements
 
         public ScrollThumb Thumb { get; private set; }
 
-        protected internal Scrollbar(ScrollContainer container) : base(new UnitValue[] { 1f, -15 }, 0, 15, 1f)
+        protected internal Scrollbar(ScrollContainer container, Stage stage) : base(new UnitRectangle(new UnitValue[] { 1f, -15 }, 0, 15, 1f), stage)
         {
             _container = container;
             _oldMousePosition = new Point(0, 0);
@@ -28,7 +30,7 @@ namespace Guppy.UI.Elements
             // Update the blacklist
             this.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
 
-            this.Thumb = this.add(new ScrollThumb(this)) as ScrollThumb;
+            this.Thumb = this.add(new ScrollThumb(this, this.Stage)) as ScrollThumb;
 
             this.layers.Add(this.fillColor);
 

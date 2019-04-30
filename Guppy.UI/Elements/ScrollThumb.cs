@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Styles;
+using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +17,7 @@ namespace Guppy.UI.Elements
 
         private Scrollbar _container;
 
-        public ScrollThumb(Scrollbar container) : base(0, 0, 1f, 10)
+        public ScrollThumb(Scrollbar container, Stage stage) : base(new UnitRectangle(0, 0, 1f, 10), stage)
         {
             _container = container;
 

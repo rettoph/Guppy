@@ -27,8 +27,6 @@ namespace Guppy.UI.Elements
         private Boolean _mouseWasRaised;
 
         private List<VertexPositionColor> _vertices;
-
-        private Style _rootStyle;
         #endregion
 
         #region Protected Fields
@@ -46,7 +44,7 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Public Attributes
-        public virtual Stage Stage { get { return this.Parent?.Stage; } }
+        public virtual Stage Stage { get; private set; }
 
         /// <summary>
         /// The current element's immediate parent, if any.
@@ -107,17 +105,18 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Constructors
-        public Element(Unit x, Unit y, Unit width, Unit height, Style style = null)
+        public Element(UnitRectangle outerBounds, Stage stage, Style style = null)
         {
             _vertices = new List<VertexPositionColor>();
-            _rootStyle = style;
 
             this.children = new List<Element>();
             this.layers = new List<Func<SpriteBatch, Rectangle>>();
             this.layers.Add(this.drawBackgroundLayer);
 
+            this.Stage = stage;
+            this.Style = new ElementStyle(this, style == null ? this.Stage?.styleLoader.GetValue(this.GetType().FullName) : style);
             this.State = ElementState.Normal;
-            this.Outer = new UnitRectangle(x, y, width, height);
+            this.Outer = outerBounds;
             this.Inner = new UnitRectangle(0, 0, 1f, 1f, this.Outer);
 
             this.DirtyBounds = true;
@@ -272,6 +271,10 @@ namespace Guppy.UI.Elements
             { // If the child already has a parent...
                 throw new Exception($"Unable to add child to element, target already has a parent.");
             }
+            else if(this.Stage != child.Stage)
+            {
+                throw new Exception($"Unable to add child to element, target resides within another stage.");
+            }
             else
             { // If the child doesnt already have a parent...
                 this.children.Add(child);
@@ -303,8 +306,6 @@ namespace Guppy.UI.Elements
         protected virtual void setParent(Element parent)
         {
             this.Parent = parent;
-
-            this.Style = new ElementStyle(this, _rootStyle == null ? this.Stage?.styleLoader.GetValue(this.GetType()) : _rootStyle);
 
             this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0));
             this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0));

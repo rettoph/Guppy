@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.UI.Loaders
 {
-    public class StyleLoader : Loader<Type, Style, Style>
+    public class StyleLoader : Loader<String, Style, Style>
     {
         public StyleLoader(ILogger logger) : base(logger)
         {

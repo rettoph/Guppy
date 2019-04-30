@@ -10,6 +10,7 @@ using Guppy.UI.Loaders;
 using Guppy.UI.Styles;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units.UnitValues;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,6 +27,8 @@ namespace Guppy.UI.Entities
         private RenderTarget2D _outputRenderTarget;
         private SpriteBatch _internalSpriteBatch;
         private SpriteBatch _spriteBatch;
+
+        private IServiceProvider _provider;
         #endregion
 
         #region Protected Internal Fields
@@ -71,6 +74,7 @@ namespace Guppy.UI.Entities
             ILogger logger) : base(configuration, scene, logger)
         {
             _window = window;
+            _provider = provider;
             this.graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
             _internalSpriteBatch = new SpriteBatch(this.graphicsDevice);
@@ -79,8 +83,8 @@ namespace Guppy.UI.Entities
 
             this.dirtyTextureElementQueue = new Queue<Element>();
             this.clientBounds = new UnitRectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
-            this.font = provider.GetLoader<ContentLoader>().Get<SpriteFont>("ui:font");
-            this.styleLoader = provider.GetLoader<StyleLoader>();
+            this.font = _provider.GetLoader<ContentLoader>().Get<SpriteFont>("ui:font");
+            this.styleLoader = _provider.GetLoader<StyleLoader>();
 
             var style = new Style();
             style.Set<Color>(ElementState.Normal, StateProperty.OuterDebugColor, Color.Red);
@@ -88,7 +92,7 @@ namespace Guppy.UI.Entities
             style.Set<Color>(ElementState.Pressed, StateProperty.OuterDebugColor, Color.Green);
             style.Set<Color>(ElementState.Active, StateProperty.OuterDebugColor, Color.Orange);
 
-            this.Content = new StageContent(this, 0, 0, 1f, 1f, style);
+            this.Content = this.CreateElement<StageContent>(0, 0, 1f, 1f, style);
             this.Content.Outer.setParent(this.clientBounds);
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
@@ -147,6 +151,19 @@ namespace Guppy.UI.Entities
 
             _layerRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height);
             _outputRenderTarget = new RenderTarget2D(this.graphicsDevice, _window.ClientBounds.Width, _window.ClientBounds.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        }
+        #endregion
+
+        #region Create Methods
+        public TElement CreateElement<TElement>(UnitValue x, UnitValue y, UnitValue width, UnitValue height, params Object[] args)
+            where TElement : Element
+        {
+            List<Object> eArgs = new List<Object>();
+            eArgs.Add(new UnitRectangle(x, y, width, height));
+            eArgs.Add(this);
+            eArgs.AddRange(args);
+
+            return ActivatorUtilities.CreateInstance<TElement>(_provider, eArgs.ToArray());
         }
         #endregion
     }

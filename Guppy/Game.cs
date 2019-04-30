@@ -74,8 +74,6 @@ namespace Guppy
 
         public Scene SetScene(Scene scene, Boolean disposeOld = true)
         {
-            this.logger.LogInformation($"{this.Id.ToString()}");
-
             this.Scene?.setActive(false);
 
             if (disposeOld) // Dispose of the old scene if necessary
