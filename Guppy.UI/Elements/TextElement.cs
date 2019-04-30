@@ -33,7 +33,7 @@ namespace Guppy.UI.Elements
             }
         }
 
-        public TextElement(UnitRectangle outerBounds, Stage stage, String text = "", Style style = null) : base(outerBounds, stage, style)
+        public TextElement(UnitRectangle outerBounds, Element parent, Stage stage, String text = "", Style style = null) : base(outerBounds, parent, stage, style)
         {
             this.Text = text;
 

@@ -17,9 +17,9 @@ namespace Guppy.UI.Elements
 
         private Scrollbar _container;
 
-        public ScrollThumb(Scrollbar container, Stage stage) : base(new UnitRectangle(0, 0, 1f, 10), stage)
+        public ScrollThumb(Scrollbar parent, Stage stage) : base(new UnitRectangle(0, 0, 1f, 10), parent, stage)
         {
-            _container = container;
+            _container = parent;
 
             this.StateBlacklist = ElementState.Active;
 

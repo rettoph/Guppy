@@ -52,8 +52,7 @@ namespace Pong.Client.Scenes
 
             var stage = this.entities.Create("ui:stage") as Stage;
 
-            var form = stage.CreateElement<Form>(new UnitValue[] { 0.5f, -(426/2) }, new UnitValue[] { 0.5f, -(300/2) }, 426, 300);
-            stage.Content.Add(form);
+            var form = stage.Content.CreateElement<Form>(new UnitValue[] { 0.5f, -(426 / 2) }, new UnitValue[] { 0.5f, -(300 / 2) }, 426, 300);
             form.SetPadding(50, 50, 50, 50);
             form.Style.Set<Texture2D>(ElementState.Normal, StateProperty.Background, provider.GetLoader<ContentLoader>().Get<Texture2D>("texture:ui:login:form"));
 
@@ -65,18 +64,18 @@ namespace Pong.Client.Scenes
             labelStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
             labelStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterRight);
 
-            form.Add(stage.CreateElement<TextElement>(0, 0, 100, 30, "Name:", labelStyle));
-            form.Add(_name = stage.CreateElement<TextInput>(100, 0, 226, 30, "Tony"));
+            form.CreateElement<TextElement>(0, 0, 100, 30, "Name:", labelStyle);
+            _name = form.CreateElement<TextInput>(100, 0, 226, 30, "Tony");
 
-            form.Add(stage.CreateElement<TextElement>(0, 40, 100, 30, "Address:", labelStyle));
-            form.Add(_address = stage.CreateElement<TextInput>(100, 40, 226, 30, "localhost"));
+            form.CreateElement<TextElement>(0, 40, 100, 30, "Address:", labelStyle);
+            _address = form.CreateElement<TextInput>(100, 40, 226, 30, "localhost");
 
-            form.Add(stage.CreateElement<TextElement>(0, 80, 100, 30, "Port:", labelStyle));
-            form.Add(_port = stage.CreateElement<TextInput>(100, 80, 226, 30, "1337"));
+            form.CreateElement<TextElement>(0, 80, 100, 30, "Port:", labelStyle);
+            _port = form.CreateElement<TextInput>(100, 80, 226, 30, "1337");
 
-            form.Add(_submit = stage.CreateElement<TextButton>(0, 150, 1f, 50, "Login"));
+            _submit = form.CreateElement<TextButton>(0, 150, 1f, 50, "Login");
 
-            stage.Content.Add(_message = stage.CreateElement<TextElement>(0f, new UnitValue[] { 0.5f, -(300 / 2), 300 }, 1f, 30));
+            _message = stage.Content.CreateElement<TextElement>(0f, new UnitValue[] { 0.5f, -(300 / 2), 300 }, 1f, 30);
             _message.Style.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.Center);
 
             // Add post whitelist

@@ -10,7 +10,7 @@ namespace Guppy.UI.Elements
 {
     public class StageContent : Container
     {
-        public StageContent(UnitRectangle outerBounds, Stage stage, Style style = null) : base(outerBounds, stage, style)
+        public StageContent(UnitRectangle outerBounds, Stage stage, Style style = null) : base(outerBounds, null, stage, style)
         {
             this.setParent(null);
         }

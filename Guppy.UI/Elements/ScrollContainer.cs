@@ -36,11 +36,12 @@ namespace Guppy.UI.Elements
 
         public ScrollContainer(
             UnitRectangle outerBounds,
+            Element parent,
             Stage stage,
-            Style style = null) : base(outerBounds, stage, style)
+            Style style = null) : base(outerBounds, parent, stage, style)
         {
-            this.Items = this.add(new ScrollItems(this, this.Stage)) as Container;
-            this.ScrollBar = this.add(new Scrollbar(this, this.Stage)) as Scrollbar;
+            this.Items = this.createElement<ScrollItems>(0, 0, 0, 0);
+            this.ScrollBar = this.createElement<Scrollbar>(0, 0, 0, 0);
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }

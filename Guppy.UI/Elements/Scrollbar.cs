@@ -22,15 +22,15 @@ namespace Guppy.UI.Elements
 
         public ScrollThumb Thumb { get; private set; }
 
-        protected internal Scrollbar(ScrollContainer container, Stage stage) : base(new UnitRectangle(new UnitValue[] { 1f, -15 }, 0, 15, 1f), stage)
+        protected internal Scrollbar(ScrollContainer parent, Stage stage) : base(new UnitRectangle(new UnitValue[] { 1f, -15 }, 0, 15, 1f), parent, stage)
         {
-            _container = container;
+            _container = parent;
             _oldMousePosition = new Point(0, 0);
 
             // Update the blacklist
             this.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
 
-            this.Thumb = this.add(new ScrollThumb(this, this.Stage)) as ScrollThumb;
+            this.Thumb = this.createElement<ScrollThumb>(0, 0, 0, 0);
 
             this.layers.Add(this.fillColor);
 

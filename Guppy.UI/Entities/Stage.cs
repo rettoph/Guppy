@@ -92,7 +92,7 @@ namespace Guppy.UI.Entities
             style.Set<Color>(ElementState.Pressed, StateProperty.OuterDebugColor, Color.Green);
             style.Set<Color>(ElementState.Active, StateProperty.OuterDebugColor, Color.Orange);
 
-            this.Content = this.CreateElement<StageContent>(0, 0, 1f, 1f, style);
+            this.Content = new StageContent(new UnitRectangle(0, 0, 1f, 1f), this);
             this.Content.Outer.setParent(this.clientBounds);
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
@@ -155,12 +155,13 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Create Methods
-        public TElement CreateElement<TElement>(UnitValue x, UnitValue y, UnitValue width, UnitValue height, params Object[] args)
+        protected internal TElement CreateElement<TElement>(UnitValue x, UnitValue y, UnitValue width, UnitValue height, Element parent, params Object[] args)
             where TElement : Element
         {
             List<Object> eArgs = new List<Object>();
             eArgs.Add(new UnitRectangle(x, y, width, height));
             eArgs.Add(this);
+            eArgs.Add(parent);
             eArgs.AddRange(args);
 
             return ActivatorUtilities.CreateInstance<TElement>(_provider, eArgs.ToArray());

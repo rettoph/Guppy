@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Entities;
+﻿using Guppy.Implementations;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
 using Guppy.UI.Styles;
@@ -21,7 +22,7 @@ namespace Guppy.UI.Elements
     /// outer bounds, state, and interfacing for
     /// more advanced custom UI elements.
     /// </summary>
-    public class Element
+    public class Element : TrackedDisposable
     {
         #region Private Fields
         private Boolean _mouseWasRaised;
@@ -105,7 +106,7 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Constructors
-        public Element(UnitRectangle outerBounds, Stage stage, Style style = null)
+        public Element(UnitRectangle outerBounds, Element parent, Stage stage, Style style = null)
         {
             _vertices = new List<VertexPositionColor>();
 
@@ -114,10 +115,16 @@ namespace Guppy.UI.Elements
             this.layers.Add(this.drawBackgroundLayer);
 
             this.Stage = stage;
+            this.Parent = parent;
             this.Style = new ElementStyle(this, style == null ? this.Stage?.styleLoader.GetValue(this.GetType().FullName) : style);
             this.State = ElementState.Normal;
             this.Outer = outerBounds;
+            this.Outer.setParent(this.Parent?.Inner);
             this.Inner = new UnitRectangle(0, 0, 1f, 1f, this.Outer);
+            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0));
+            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0));
+            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() });
+            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() });
 
             this.DirtyBounds = true;
 
@@ -262,27 +269,23 @@ namespace Guppy.UI.Elements
 
         #region Children Methods
         /// <summary>
-        /// Add a new child element to the current element
+        /// Create a new element and automatically add it as a child
+        /// of the current element.
         /// </summary>
-        /// <param name="child"></param>
-        protected Element add(Element child)
+        /// <typeparam name="TElement"></typeparam>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        protected TElement createElement<TElement>(UnitValue x, UnitValue y, UnitValue width, UnitValue height, params Object[] args)
+            where TElement : Element
         {
-            if (child.Parent != null)
-            { // If the child already has a parent...
-                throw new Exception($"Unable to add child to element, target already has a parent.");
-            }
-            else if(this.Stage != child.Stage)
-            {
-                throw new Exception($"Unable to add child to element, target resides within another stage.");
-            }
-            else
-            { // If the child doesnt already have a parent...
-                this.children.Add(child);
-                child.setParent(this);
-                child.Outer.setParent(this.Inner);
-            }
+            var element = this.Stage.CreateElement<TElement>(x, y, width, height, this, args);
+            this.children.Add(element);
 
-            return child;
+            return element;
         }
 
         /// <summary>
@@ -298,19 +301,13 @@ namespace Guppy.UI.Elements
             else
             { // If the current element does contain the target...
                 this.children.Remove(child);
-                child.setParent(null);
-                child.Outer.setParent(null);
+                child.Dispose();
             }
         }
 
         protected virtual void setParent(Element parent)
         {
             this.Parent = parent;
-
-            this.Inner.X.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0));
-            this.Inner.Y.SetValue(this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0));
-            this.Inner.Width.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingLeft, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingRight, 0).Flip() });
-            this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() });
         }
         #endregion
 

@@ -20,7 +20,7 @@ namespace Guppy.UI.Elements
     /// </summary>
     public class Form : Container
     {
-        public Form(UnitRectangle outerBounds, Stage stage, Style style = null) : base(outerBounds, stage, style)
+        public Form(UnitRectangle outerBounds, Element parent, Stage stage, Style style = null) : base(outerBounds, parent, stage, style)
         {
         }
 

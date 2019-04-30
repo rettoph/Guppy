@@ -18,9 +18,9 @@ namespace Guppy.UI.Elements
     {
         private ScrollContainer _container;
 
-        public ScrollItems(ScrollContainer container, Stage stage) : base(new UnitRectangle(0, 0, new UnitValue[] { 1f, -15 }, 1f), stage)
+        public ScrollItems(ScrollContainer parent, Stage stage) : base(new UnitRectangle(0, 0, new UnitValue[] { 1f, -15 }, 1f), parent, stage)
         {
-            _container = container;
+            _container = parent;
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
 
@@ -51,21 +51,34 @@ namespace Guppy.UI.Elements
             }
         }
 
-        public override void Add(Element child)
+        /// <summary>
+        /// Create a new element and automatically add it as a child
+        /// of the current element.
+        /// </summary>
+        /// <typeparam name="TElement"></typeparam>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public override TElement CreateElement<TElement>(UnitValue x, UnitValue y, UnitValue width, UnitValue height, params Object[] args)
         {
-            base.Add(child);
+            var child = this.createElement<TElement>(x, y, width, height, args);
 
             // Make the childs bounds parent the scroll container
             child.Outer.Height.SetParent(_container.Inner.Height);
 
             var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
-            
+
             this.DirtyPosition = true;
+
+            return child;
         }
 
         public override void Remove(Element child)
         {
-            base.Add(child);
+            base.Remove(child);
 
             this.DirtyPosition = true;
         }

@@ -29,13 +29,14 @@ namespace Guppy.UI.Elements
 
         public Regex CharWhitelist { get; set; }
 
-        public TextInput(UnitRectangle outerBounds, Stage stage, String text = "", Style style = null) : base(outerBounds, stage, text, style)
+        public TextInput(UnitRectangle outerBounds, Element parent, Stage stage, String text = "", Style style = null) : base(outerBounds, parent, stage, text, style)
         {
             this.CharWhitelist = TextInput.DefaultWhitelist;
 
             this.OnStateChanged += this.HandleStateChanged;
 
             _caretBounds = new Rectangle(0, 0, 1, 0);
+            _caret = new Texture2D(this.Stage.graphicsDevice, 1, 1);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

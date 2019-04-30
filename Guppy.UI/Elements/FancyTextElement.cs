@@ -29,7 +29,7 @@ namespace Guppy.UI.Elements
 
         private List<TextColor> _text;
 
-        public FancyTextElement(UnitRectangle outerBounds, Stage stage, Style style = null) : base(outerBounds, stage, style)
+        public FancyTextElement(UnitRectangle outerBounds, Element parent, Stage stage, Style style = null) : base(outerBounds, parent, stage, style)
         {
             _text = new List<TextColor>();
 

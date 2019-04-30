@@ -14,7 +14,7 @@ namespace Guppy.UI.Elements
         private Boolean _mouseDown;
         public event EventHandler<TextButton> OnClicked;
 
-        public TextButton(UnitRectangle outerBounds, Stage stage, string text = "", Style style = null) : base(outerBounds, stage, text, style)
+        public TextButton(UnitRectangle outerBounds, Element parent, Stage stage, string text = "", Style style = null) : base(outerBounds, parent, stage, text, style)
         {
             this.StateBlacklist = ElementState.Active;
 
