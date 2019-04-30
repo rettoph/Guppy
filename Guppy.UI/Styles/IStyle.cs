@@ -8,9 +8,9 @@ namespace Guppy.UI.Styles
     public interface IStyle
     {
         #region Set Methods
-        void Set<TValue>(GlobalProperty property, TValue value);
         void Set<TValue>(StateProperty property, TValue value);
         void Set<TValue>(ElementState state, StateProperty property, TValue value);
+        void Set<TValue>(GlobalProperty property, TValue value);
         #endregion
 
         #region Get Methods

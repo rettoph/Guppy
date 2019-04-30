@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Peers;
 using Guppy.UI.Entities;
+using Guppy.UI.Utilities.Units.UnitValues;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Pong.Client.UI;
@@ -27,7 +28,8 @@ namespace Pong.Client.Scenes
 
             var stage = this.entities.Create("ui:stage") as Stage;
 
-            stage.Content.CreateElement<ChatWindow>(0, 0, 1f, 1f);
+            stage.Content.CreateElement<UserList>(0, 0, 200, 1f);
+            stage.Content.CreateElement<ChatWindow>(200, 0, new UnitValue[] { 1f, -200 }, 1f);
         }
 
         public override void Draw(GameTime gameTime)
