@@ -96,6 +96,8 @@ namespace Guppy.UI.Elements
             else
                 this.Thumb.Outer.Height.SetValue(0);
 
+            this.Thumb.Outer.Y.SetValue((Int32)(_container.Scroll * (this.Inner.Height.Value - this.Thumb.Outer.Height.Value)));
+
             this.DirtyPosition = true;
             this.Thumb.DirtyBounds = true;
         }
