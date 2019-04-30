@@ -35,7 +35,7 @@ namespace Guppy.Network.Groups
         /// <summary>
         /// The known users in the current game
         /// </summary>
-        public NetworkObjectCollection<User> Users { get; private set; }
+        public GroupUserCollection Users { get; private set; }
 
         /// <summary>
         /// When true, any recieved data messages will automatically
@@ -71,7 +71,7 @@ namespace Guppy.Network.Groups
 
             this.internalMessageHandler = new MessageHandler();
 
-            this.Users = new NetworkObjectCollection<User>(disposeOnRemove: false);
+            this.Users = new GroupUserCollection();
             this.MessageHandler = new MessageHandler();
 
             this.log = log;

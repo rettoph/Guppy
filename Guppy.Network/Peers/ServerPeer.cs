@@ -28,6 +28,11 @@ namespace Guppy.Network.Peers
         public IAuthenticationService AuthenticationService { get; set; }
         #endregion
 
+        #region Events
+        public event EventHandler<User> OnUserConnected;
+        public event EventHandler<User> OnUserDisconnected;
+        #endregion
+
         #region Constructors
         public ServerPeer(NetPeerConfiguration config, ILogger logger) : base(config, logger)
         {
@@ -114,10 +119,12 @@ namespace Guppy.Network.Peers
                     this.Users.Add(newUser);
                     // Remove the user from the approved table
                     _approvedUsers.Remove(im.SenderConnection);
+                    this.OnUserConnected?.Invoke(this, newUser);
                     break;
                 case NetConnectionStatus.Disconnected:
-                    var oldUser = this.Users.GetByClaim("connection", im.SenderConnection.RemoteUniqueIdentifier.ToString());
+                    var oldUser = this.Users.GetByNetConnection(im.SenderConnection);
                     this.Users.Remove(oldUser);
+                    this.OnUserDisconnected?.Invoke(this, oldUser);
                     break;
             }
         }

@@ -16,10 +16,14 @@ namespace Guppy.UI.Elements
 {
     public class ScrollItems : Container
     {
+        public Int32 MaxItems { get; set; }
+
         private ScrollContainer _container;
 
-        public ScrollItems(ScrollContainer parent, Stage stage) : base(new UnitRectangle(0, 0, new UnitValue[] { 1f, -15 }, 1f), parent, stage)
+        public ScrollItems(UnitRectangle outerBounds, ScrollContainer parent, Stage stage) : base(outerBounds, parent, stage)
         {
+            this.MaxItems = Int32.MaxValue;
+
             _container = parent;
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
@@ -64,12 +68,18 @@ namespace Guppy.UI.Elements
         /// <returns></returns>
         public override TElement CreateElement<TElement>(UnitValue x, UnitValue y, UnitValue width, UnitValue height, params Object[] args)
         {
+            // Update the y value automatically if inline content is true
+            if (this.children.Count > 0 && this.Style.Get<Boolean>(GlobalProperty.InlineContent, true))
+                y = this.children.Last().Outer.RelativeBounds.Bottom;
+
             var child = this.createElement<TElement>(x, y, width, height, args);
 
             // Make the childs bounds parent the scroll container
             child.Outer.Height.SetParent(_container.Inner.Height);
 
-            var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
+            // Remove any elements as needed
+            if (this.children.Count > this.MaxItems)
+                this.remove(this.children.ElementAt(0));
 
             this.DirtyPosition = true;
 

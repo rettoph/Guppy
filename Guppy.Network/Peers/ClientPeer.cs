@@ -12,8 +12,12 @@ namespace Guppy.Network.Peers
 {
     public class ClientPeer : Peer
     {
-        #region protected Attributes
+        #region Protected Attributes
         protected NetClient client;
+        #endregion
+
+        #region Public Attributes
+        public User CurrentUser { get; private set; }
         #endregion
 
         public ClientPeer(NetPeerConfiguration config, ILogger logger) : base(config, logger)
@@ -46,8 +50,6 @@ namespace Guppy.Network.Peers
         #region MessageType Handlers
         protected override void HandleStatusChanged(NetIncomingMessage im)
         {
-            base.HandleStatusChanged(im);
-
             switch (im.SenderConnection.Status)
             {
                 case NetConnectionStatus.None:
@@ -68,12 +70,17 @@ namespace Guppy.Network.Peers
                     user.Read(im.SenderConnection.RemoteHailMessage);
                     // Add the user to the user collection
                     this.Users.Add(user);
+                    // Set the new user as the current user
+                    this.CurrentUser = user;
                     break;
                 case NetConnectionStatus.Disconnecting:
                     break;
                 case NetConnectionStatus.Disconnected:
                     break;
             }
+
+            // Call base method after, since a post event is called.
+            base.HandleStatusChanged(im);
         }
         #endregion
 

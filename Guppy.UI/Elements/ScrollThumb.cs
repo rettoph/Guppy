@@ -17,7 +17,7 @@ namespace Guppy.UI.Elements
 
         private Scrollbar _container;
 
-        public ScrollThumb(Scrollbar parent, Stage stage) : base(new UnitRectangle(0, 0, 1f, 10), parent, stage)
+        public ScrollThumb(UnitRectangle outerBounds, Scrollbar parent, Stage stage) : base(outerBounds, parent, stage)
         {
             _container = parent;
 

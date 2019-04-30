@@ -23,13 +23,13 @@ namespace Pong.Library
         protected override void Boot()
         {
             base.Boot();
+
+            this.Group = this.provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
         }
 
         protected override void PostInitialize()
         {
             base.PostInitialize();
-
-            this.Group = this.provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
         }
 
         public override void Update(GameTime gameTime)

@@ -228,6 +228,10 @@ namespace Guppy.UI.Elements
                 }
             }
 
+            // Ensure that every self contained child element gets updated too...
+            foreach (Element child in this.children)
+                child.Update(mouse);
+
 
             // Clean dirty segments of the element
             if (this.DirtyBounds || this.DirtyPosition)
@@ -250,11 +254,6 @@ namespace Guppy.UI.Elements
                     this.DirtyPosition = false;
                 }
             }
-
-
-            // Ensure that every self contained child element gets updated too...
-            foreach (Element child in this.children)
-                child.Update(mouse);
         }
 
         public virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)

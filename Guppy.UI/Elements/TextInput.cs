@@ -29,6 +29,8 @@ namespace Guppy.UI.Elements
 
         public Regex CharWhitelist { get; set; }
 
+        public event EventHandler<String> OnEnter;
+
         public TextInput(UnitRectangle outerBounds, Element parent, Stage stage, String text = "", Style style = null) : base(outerBounds, parent, stage, text, style)
         {
             this.CharWhitelist = TextInput.DefaultWhitelist;
@@ -102,6 +104,10 @@ namespace Guppy.UI.Elements
             {
                 if(this.Text.Length > 0)
                     this.Text = this.Text.Remove(this.Text.Length - 1);
+            }
+            else if(e.Key == Keys.Enter)
+            {
+                this.OnEnter?.Invoke(this, this.Text);
             }
             else if(e.Character != default(Char) && this.CharWhitelist.IsMatch(e.Character.ToString()))
             {

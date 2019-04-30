@@ -43,13 +43,6 @@ namespace Guppy.UI.Styles
         }
 
         #region Set Methods
-        public void Set<TValue>(GlobalProperty property, TValue value)
-        {
-            // First ensure that the input type is correct
-            BaseStyle.GlobalPropertyAttributes[property].Assert(typeof(TValue));
-            // Update the stored value
-            this.globalProperties[property] = value;
-        }
         public void Set<TValue>(StateProperty property, TValue value)
         {
             this.Set<TValue>(ElementState.Normal, property, value);
@@ -60,6 +53,13 @@ namespace Guppy.UI.Styles
             BaseStyle.StatePropertyAttributes[property].Assert(typeof(TValue));
             // Update the stored value
             this.stateProperties[state][property] = value;
+        }
+        public void Set<TValue>(GlobalProperty property, TValue value)
+        {
+            // First ensure that the input type is correct
+            BaseStyle.GlobalPropertyAttributes[property].Assert(typeof(TValue));
+            // Update the stored value
+            this.globalProperties[property] = value;
         }
         #endregion
 

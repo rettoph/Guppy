@@ -10,6 +10,7 @@ using Guppy.UI.Enums;
 using Microsoft.Xna.Framework.Input;
 using Guppy.UI.Entities;
 using Guppy.UI.Utilities;
+using Guppy.UI.Utilities.Units.UnitValues;
 
 namespace Guppy.UI.Elements
 {
@@ -26,7 +27,7 @@ namespace Guppy.UI.Elements
 
         #region Public Fields
         public Single Scroll { get; private set; }
-        public Container Items { get; private set; }
+        public ScrollItems Items { get; private set; }
         public Scrollbar ScrollBar { get; private set; }
         #endregion
 
@@ -40,8 +41,8 @@ namespace Guppy.UI.Elements
             Stage stage,
             Style style = null) : base(outerBounds, parent, stage, style)
         {
-            this.Items = this.createElement<ScrollItems>(0, 0, 0, 0);
-            this.ScrollBar = this.createElement<Scrollbar>(0, 0, 0, 0);
+            this.Items = this.createElement<ScrollItems>(0, 0, new UnitValue[] { 1f, -15 }, 1f);
+            this.ScrollBar = this.createElement<Scrollbar>(new UnitValue[] { 1f, -15 }, 0, 15, 1f);
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
         }
