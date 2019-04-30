@@ -43,7 +43,7 @@ namespace Pong.Client.UI
 
             _group = client.Groups.GetOrCreateById(Guid.Empty);
             _users = this.createElement<ScrollContainer>(0, 32, 1f, new UnitValue[] { 1f, -32 });
-            _users.SetPadding(0, 0, 0, 0);
+            _users.Items.SetPadding(5, 0, 5, 0);
             _label = this.createElement<TextElement>(0, 0, 1f, 40, "Users");
             _label.SetPadding(8, 0, 8, 0);
             _label.Style.Set<Color>(StateProperty.TextColor, Color.White);
