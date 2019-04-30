@@ -29,9 +29,21 @@ namespace Pong.Server
         {
             base.Initialize();
 
+            // Start the server
+            _server.Start();
+
+            // Add a virtual user to represent the server
+            var sUser = new User(Guid.NewGuid(), _server.GetNetPeer().UniqueIdentifier);
+            sUser.Set("name", "Server");
+            sUser.Set("color", "255,0,0");
+            _server.Users.Add(sUser);
+
             this.Group.MessageHandler.Add("chat", this.HandleChatMessage);
+            this.Group.Users.Add(_server.Users.GetByNetId(_server.GetNetPeer().UniqueIdentifier));
 
             _server.OnUserConnected += this.HandleUserConnected;
+            this.Group.Users.Added += this.HandleUserJoined;
+            this.Group.Users.Removed += this.HandleUserLeft;
         }
 
         private void HandleChatMessage(NetIncomingMessage obj)
@@ -48,6 +60,28 @@ namespace Pong.Server
         private void HandleUserConnected(object sender, User e)
         {
             _server.Groups.GetOrCreateById(Guid.Empty).Users.Add(e);
+        }
+
+        private void HandleUserLeft(object sender, User e)
+        {
+            var sUser = _server.Users.GetByNetId(_server.GetNetPeer().UniqueIdentifier);
+
+            var om = this.Group.CreateMessage("chat");
+            om.Write(sUser.Id);
+            om.Write($"{e.Get("name")} left the lobby.");
+
+            this.Group.SendMesssage(om, NetDeliveryMethod.ReliableOrdered);
+        }
+
+        private void HandleUserJoined(object sender, User e)
+        {
+            var sUser = _server.Users.GetByNetId(_server.GetNetPeer().UniqueIdentifier);
+
+            var om = this.Group.CreateMessage("chat");
+            om.Write(sUser.Id);
+            om.Write($"{e.Get("name")} joined the lobby!");
+
+            this.Group.SendMesssage(om, NetDeliveryMethod.ReliableOrdered);
         }
     }
 }

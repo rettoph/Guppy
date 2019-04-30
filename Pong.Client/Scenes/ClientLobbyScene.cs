@@ -27,7 +27,7 @@ namespace Pong.Client.Scenes
 
             var stage = this.entities.Create("ui:stage") as Stage;
 
-            stage.Content.CreateElement<ChatWindow>(0, 0, 1f, 300);
+            stage.Content.CreateElement<ChatWindow>(0, 0, 1f, 1f);
         }
 
         public override void Draw(GameTime gameTime)

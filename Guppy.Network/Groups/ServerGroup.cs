@@ -46,32 +46,35 @@ namespace Guppy.Network.Groups
             // Load the new users connection...
             var newConnection = _server.GetNetConnectionById(user.NetId);
 
-            NetOutgoingMessage userUpdate;
-            if (_connections.Count > 0)
-            { // Ensure that users exist before broadcasting an update...
-                // Alert all pre-existing users of the new user
-                userUpdate = this.CreateMessage("user:joined", MessageType.Internal);
-                user.Write(userUpdate);
-                this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
-            }
+            if (newConnection != null)
+            {
+                NetOutgoingMessage userUpdate;
+                if (_connections.Count > 0)
+                { // Ensure that users exist before broadcasting an update...
+                  // Alert all pre-existing users of the new user
+                    userUpdate = this.CreateMessage("user:joined", MessageType.Internal);
+                    user.Write(userUpdate);
+                    this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
+                }
 
-            // Alert the new user that their setup is starting
-            var setupStart = this.CreateMessage("setup:start", MessageType.Internal);
-            this.SendMesssage(setupStart, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                // Alert the new user that their setup is starting
+                var setupStart = this.CreateMessage("setup:start", MessageType.Internal);
+                this.SendMesssage(setupStart, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
 
-            foreach (User knownUser in this.Users)
-            { // Send an update to the new user alerting them of all pre-existing users in the group
-                userUpdate = this.CreateMessage("user:joined", MessageType.Internal);
-                knownUser.Write(userUpdate);
-                this.SendMesssage(userUpdate, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
-            }
+                foreach (User knownUser in this.Users)
+                { // Send an update to the new user alerting them of all pre-existing users in the group
+                    userUpdate = this.CreateMessage("user:joined", MessageType.Internal);
+                    knownUser.Write(userUpdate);
+                    this.SendMesssage(userUpdate, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                }
 
-            // Alert the new user that their setup is ending
-            var setupEnd = this.CreateMessage("setup:end", MessageType.Internal);
-            this.SendMesssage(setupEnd, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                // Alert the new user that their setup is ending
+                var setupEnd = this.CreateMessage("setup:end", MessageType.Internal);
+                this.SendMesssage(setupEnd, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
 
-            // Add the new user connection to the connections list
-            _connections.Add(newConnection);
+                // Add the new user connection to the connections list
+                _connections.Add(newConnection);
+            }   
         }
 
         private void HandleUserRemoved(object sender, User user)

@@ -24,8 +24,6 @@ namespace Pong.Server.Scenes
         protected override void PostInitialize()
         {
             base.PostInitialize();
-
-            _server.Start();
         }
     }
 }
