@@ -32,28 +32,11 @@ namespace Guppy.UI.Elements
             _container.Inner.OnBoundsChanged += this.HandleParentBoundsChanged;
         }
 
-        public override void Clean()
-        {
-            base.Clean();
-
-            this.align();
-        }
-
         public override void CleanBounds()
         {
             base.CleanBounds();
 
-            var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
-
-            if (inline)
-            { // If the current element is marked for inline content... re-order inner element automatically
-                var y = 0;
-                foreach (Element child in this.children)
-                {
-                    child.Outer.Y.SetValue(y);
-                    y += child.Outer.Height.Value;
-                }
-            }
+            this.resize();
         }
 
         /// <summary>
@@ -77,12 +60,14 @@ namespace Guppy.UI.Elements
 
             // Make the childs bounds parent the scroll container
             child.Outer.Height.SetParent(_container.Inner.Height);
+            child.Outer.Update(); // Ensure the child bounds get updated at least once
 
             // Remove any elements as needed
             if (this.children.Count > this.MaxItems)
                 this.remove(this.children.ElementAt(0));
 
-            this.DirtyPosition = true;
+            // Re-align the inner children
+            this.align();
 
             return child;
         }
@@ -91,10 +76,27 @@ namespace Guppy.UI.Elements
         {
             base.Remove(child);
 
-            this.DirtyPosition = true;
+            this.DirtyBounds = true;
         }
 
         protected internal void align()
+        {
+            var inline = this.Style.Get<Boolean>(GlobalProperty.InlineContent, true);
+
+            if (inline)
+            { // If the current element is marked for inline content... re-order inner element automatically
+                var y = 0;
+                foreach (Element child in this.children)
+                {
+                    child.Outer.Y.SetValue(y);
+                    y += child.Outer.Height.Value;
+                }
+            }
+
+            this.resize();
+        }
+
+        protected internal void resize()
         {
             if (this.children.Count > 0)
             {

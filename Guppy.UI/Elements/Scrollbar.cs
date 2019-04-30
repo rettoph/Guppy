@@ -96,6 +96,7 @@ namespace Guppy.UI.Elements
             else
                 this.Thumb.Outer.Height.SetValue(0);
 
+            // Auto set the scrollbar's new position
             this.Thumb.Outer.Y.SetValue((Int32)(_container.Scroll * (this.Inner.Height.Value - this.Thumb.Outer.Height.Value)));
 
             this.DirtyPosition = true;
