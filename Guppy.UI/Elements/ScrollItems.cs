@@ -20,18 +20,29 @@ namespace Guppy.UI.Elements
 
         private ScrollContainer _container;
 
+        private Boolean _dirtyAlignment;
+
         public ScrollItems(UnitRectangle outerBounds, ScrollContainer parent, Stage stage) : base(outerBounds, parent, stage)
         {
             this.MaxItems = Int32.MaxValue;
 
             _container = parent;
+            _dirtyAlignment = false;
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
             this.SetPadding(0, 0, 0, 0);
-
-            _container.Inner.OnBoundsChanged += this.HandleParentBoundsChanged;
         }
 
+        public override void Update(MouseState mouse)
+        {
+            base.Update(mouse);
+
+            if(_dirtyAlignment)
+            {
+                this.align();
+                _dirtyAlignment = false;
+            }
+        }
         public override void Clean()
         {
             this.resize();
@@ -65,7 +76,10 @@ namespace Guppy.UI.Elements
                 this.remove(this.children.ElementAt(0));
 
             // Re-align the inner children
-            this.align();
+            _dirtyAlignment = true;
+
+            // Add event handler for when children are independantly re-aligned
+            child.Outer.Height.OnUpdated += this.HandleItemHeightUpdated;
 
             return child;
         }
@@ -103,9 +117,17 @@ namespace Guppy.UI.Elements
             }
         }
 
-        private void HandleParentBoundsChanged(object sender, Rectangle e)
+        private void HandleItemHeightUpdated(object sender, Unit e)
         {
-            this.DirtyBounds = true;
+            _dirtyAlignment = true;
+        }
+
+        public override void Dispose()
+        {
+            foreach (Element child in this.children)
+                child.Outer.Height.OnUpdated -= this.HandleItemHeightUpdated;
+
+            base.Dispose();
         }
     }
 }

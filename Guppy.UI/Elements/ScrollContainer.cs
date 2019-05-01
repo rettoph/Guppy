@@ -58,15 +58,18 @@ namespace Guppy.UI.Elements
             _spriteBatch?.Dispose();
             _internalEffect?.Dispose();
 
-            // Create a new scrollcontainer and spritebatch
-            _scrollContainer = new RenderTarget2D(graphicsDevice, this.Inner.LocalBounds.Width, this.Inner.LocalBounds.Height);
-            _spriteBatch = new SpriteBatch(graphicsDevice);
-            _internalEffect = new BasicEffect(graphicsDevice)
+            if (this.Inner.LocalBounds.Width > 0 && this.Inner.LocalBounds.Height > 0)
             {
-                TextureEnabled = true,
-                View = Matrix.Identity
-            };
-            this.updateProjectionMatrix();
+                // Create a new scrollcontainer and spritebatch
+                _scrollContainer = new RenderTarget2D(graphicsDevice, this.Inner.LocalBounds.Width, this.Inner.LocalBounds.Height);
+                _spriteBatch = new SpriteBatch(graphicsDevice);
+                _internalEffect = new BasicEffect(graphicsDevice)
+                {
+                    TextureEnabled = true,
+                    View = Matrix.Identity
+                };
+                this.updateProjectionMatrix();
+            }
 
             base.CleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
         }

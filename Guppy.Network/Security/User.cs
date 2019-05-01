@@ -40,7 +40,8 @@ namespace Guppy.Network.Security
 
         public void Set(String key, Claim value)
         {
-            _claims[key] = value;
+            if(key != null) // Only bother if a valid key is recieved
+                _claims[key] = value;
         }
         public void Set(String key, ClaimType type, String value)
         {
