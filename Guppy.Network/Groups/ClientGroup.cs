@@ -31,7 +31,7 @@ namespace Guppy.Network.Groups
         #region Internal Message Handlers
         private void HandleSetupStartMessage(NetIncomingMessage obj)
         {
-            this.IgnoreData = true;
+            this.updateMessages = this.update_ignoreMessages;
         }
 
         private void HandleUserJoinedMessage(NetIncomingMessage obj)
@@ -51,7 +51,7 @@ namespace Guppy.Network.Groups
 
         private void HandleSetupEndMessage(NetIncomingMessage obj)
         {
-            this.IgnoreData = false;
+            this.updateMessages = this.update_readMessages;
         }
         #endregion
     }

@@ -19,16 +19,15 @@ namespace Guppy.Network.Groups
     {
         #region Private Methods
         private Peer _peer;
-        private Queue<NetIncomingMessage> _ignoredMessageBuffer;
         private Queue<NetIncomingMessage> _messageBuffer;
         private NetIncomingMessage _im;
-        private Boolean _ignoreData;
         private String _messageType;
         #endregion
 
         #region Protected Attributes
         protected MessageHandler internalMessageHandler;
         protected ILogger log;
+        protected Action updateMessages;
         #endregion
 
         #region Public Attributes
@@ -36,28 +35,6 @@ namespace Guppy.Network.Groups
         /// The known users in the current game
         /// </summary>
         public UserCollection Users { get; private set; }
-
-        /// <summary>
-        /// When true, any recieved data messages will automatically
-        /// be ignored until marked false. Then all recieved messages
-        /// will be parsed on the next update.
-        /// </summary>
-        public Boolean IgnoreData
-        {
-            get { return _ignoreData; }
-            set
-            {
-                if(value != _ignoreData)
-                {
-                    _ignoreData = value;
-                    if(!_ignoreData)
-                    {
-                        while (_ignoredMessageBuffer.Count > 0)
-                            _messageBuffer.Enqueue(_ignoredMessageBuffer.Dequeue());
-                    }
-                }
-            }
-        }
         
         public MessageHandler MessageHandler { get; private set; }
         #endregion
@@ -66,7 +43,6 @@ namespace Guppy.Network.Groups
         public Group(Guid id, Peer peer, ILogger log) : base(id)
         {
             _peer = peer;
-            _ignoredMessageBuffer = new Queue<NetIncomingMessage>();
             _messageBuffer = new Queue<NetIncomingMessage>();
 
             this.internalMessageHandler = new MessageHandler();
@@ -76,16 +52,20 @@ namespace Guppy.Network.Groups
 
             this.log = log;
 
-            // By default, groups should ignore data
-            this.IgnoreData = true;
+            this.updateMessages = this.update_readMessages;
         }
         #endregion
 
         #region Methods
         public void Update()
         {
+            this.updateMessages();
+        }
+
+        protected void update_readMessages()
+        {
             // Read any messages in the buffer
-            while(_messageBuffer.Count > 0)
+            while (_messageBuffer.Count > 0)
             {
                 // Call the message handler based on the message data
                 _im = _messageBuffer.Dequeue();
@@ -97,6 +77,10 @@ namespace Guppy.Network.Groups
                 else
                     this.log.LogWarning($"Unhandled message recieved: '{_messageType}'");
             }
+        }
+
+        protected void update_ignoreMessages()
+        {
         }
         #endregion
 
@@ -157,7 +141,6 @@ namespace Guppy.Network.Groups
         {
             base.Dispose();
 
-            _ignoredMessageBuffer.Clear();
             _messageBuffer.Clear();
 
             this.Users.Clear();
