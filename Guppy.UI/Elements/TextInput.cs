@@ -73,6 +73,15 @@ namespace Guppy.UI.Elements
             _caretBounds.Height = (Int32)this.textBounds.Y;
         }
 
+        public override void CleanPosition()
+        {
+            base.CleanPosition();
+
+            _caretBounds.X = this.Outer.GlobalBounds.X + (Int32)this.textPosition.X + (Int32)this.textBounds.X;
+            _caretBounds.Y = this.Outer.GlobalBounds.Y + (Int32)this.textPosition.Y;
+            _caretBounds.Height = (Int32)this.textBounds.Y;
+        }
+
         private void HandleStateChanged(object sender, Element e)
         {
             if (this.State == ElementState.Active && !_readingText) {

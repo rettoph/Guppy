@@ -135,6 +135,7 @@ namespace Guppy.UI.Elements
             this.Inner.Height.SetValue(new UnitValue[] { 1f, this.Style.Get<UnitValue>(GlobalProperty.PaddingTop, 0).Flip(), this.Style.Get<UnitValue>(GlobalProperty.PaddingBottom, 0).Flip() });
 
             this.DirtyBounds = true;
+            this.DirtyPosition = true;
 
             this.Outer.OnBoundsChanged += this.handleBoundsChanged;
             this.Outer.OnPositionChanged += this.handlePositionChanged;

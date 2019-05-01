@@ -58,7 +58,6 @@ namespace Guppy.UI.Elements
             if (font != null)
             {
                 var alignment = this.Style.Get<Alignment>(this.State, StateProperty.TextAlignment, Alignment.TopLeft);
-                var color = this.Style.Get<Color>(this.State, StateProperty.TextColor, Color.Black);
                 var position = Vector2.Zero;
                 var bounds = Vector2.Zero;
                 var charBounds = Vector2.Zero;
@@ -101,14 +100,16 @@ namespace Guppy.UI.Elements
                 spritebatch.Begin();
 
                 foreach (CharColorPosition ccp in output)
-                {
                     spritebatch.DrawString(font, ccp.Char.ToString(), tPosition + ccp.Position, ccp.Color);
-                }
                 
                 spritebatch.End();
 
+                // Update the element height it inline is set to true
                 if(this.Style.Get<Boolean>(GlobalProperty.InlineContent, true))
                     this.Outer.Height.SetValue((Int32)(bounds.Y + (this.Outer.LocalBounds.Height - this.Inner.LocalBounds.Height)));
+
+                // Dispose of resources
+                output.Clear();
 
                 // Return the inner element bounds
                 return this.Inner.RelativeBounds;

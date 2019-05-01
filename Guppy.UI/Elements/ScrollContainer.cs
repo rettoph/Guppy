@@ -76,7 +76,7 @@ namespace Guppy.UI.Elements
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Parent.Inner.GlobalBounds)))
+            if (this.Inner.LocalBounds.Width > 0 && this.Inner.LocalBounds.Height > 0 && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Parent.Inner.GlobalBounds)))
             { // Draw the container if it is within screen bounds
                 // Set the render targets...
                 var rTargets = _graphicsDevice.GetRenderTargets();

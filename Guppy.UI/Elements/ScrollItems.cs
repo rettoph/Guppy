@@ -31,6 +31,8 @@ namespace Guppy.UI.Elements
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
             this.SetPadding(0, 0, 0, 0);
+
+            _container.Inner.OnBoundsChanged += this.HandleParentBoundsChanged;
         }
 
         public override void Update(MouseState mouse)
@@ -115,6 +117,11 @@ namespace Guppy.UI.Elements
                 this.Outer.Height.SetValue(this.children.Max(e => e.Outer.RelativeBounds.Bottom));
                 this.Outer.Y.SetValue((Int32)((this.Outer.LocalBounds.Height - _container.Inner.LocalBounds.Height) * -_container.Scroll));
             }
+        }
+
+        private void HandleParentBoundsChanged(object sender, Rectangle e)
+        {
+            _dirtyAlignment = true;
         }
 
         private void HandleItemHeightUpdated(object sender, Unit e)
