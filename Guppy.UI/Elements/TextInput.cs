@@ -28,12 +28,14 @@ namespace Guppy.UI.Elements
         private DateTime _caretToggle;
 
         public Regex CharWhitelist { get; set; }
+        public UInt32 MaxLength { get; set; }
 
         public event EventHandler<String> OnEnter;
 
         public TextInput(UnitRectangle outerBounds, Element parent, Stage stage, String text = "", Style style = null) : base(outerBounds, parent, stage, text, style)
         {
             this.CharWhitelist = TextInput.DefaultWhitelist;
+            this.MaxLength = UInt32.MaxValue;
 
             this.OnStateChanged += this.HandleStateChanged;
 
@@ -98,7 +100,7 @@ namespace Guppy.UI.Elements
             {
                 this.OnEnter?.Invoke(this, this.Text);
             }
-            else if(e.Character != default(Char) && this.CharWhitelist.IsMatch(e.Character.ToString()))
+            else if(this.Text.Length < this.MaxLength && e.Character != default(Char) && this.CharWhitelist.IsMatch(e.Character.ToString()))
             {
                 this.Text += e.Character;
             }

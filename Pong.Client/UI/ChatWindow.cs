@@ -31,6 +31,7 @@ namespace Pong.Client.UI
 
             _messages = this.createElement<ScrollContainer>(0, 0, 1f, new UnitValue[] { 1f, -20 });
             _input = this.createElement<TextInput>(0, new UnitValue[] { 1f, -20 }, 1f, 20, styleLoader.GetValue("chat-input"));
+            _input.MaxLength = 150;
             _group = client.Groups.GetOrCreateById(Guid.Empty);
 
             // Start 100% scrolled
