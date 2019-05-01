@@ -36,6 +36,8 @@ namespace Guppy
         public ILogger Logger { get; }
 
         public GameCollection Games { get; private set; }
+
+        public IServiceProvider Provider { get { return _provider; } }
         #endregion
 
 

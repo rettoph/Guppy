@@ -11,11 +11,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Pong.Library
 {
-    public abstract class PongGame : NetworkGame
+    public abstract class PongGame : Guppy.Game
     {
-        protected NetPeerConfiguration config;
-        protected Group Group;
-
         public PongGame(ILogger logger, IServiceProvider provider) : base(logger, provider)
         {
         }
@@ -23,8 +20,6 @@ namespace Pong.Library
         protected override void Boot()
         {
             base.Boot();
-
-            this.Group = this.provider.GetService<Peer>().Groups.GetOrCreateById(Guid.Empty);
         }
 
         protected override void PostInitialize()
@@ -34,8 +29,6 @@ namespace Pong.Library
 
         public override void Update(GameTime gameTime)
         {
-            this.Group.Update();
-
             base.Update(gameTime);
         }
     }

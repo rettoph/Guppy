@@ -16,6 +16,8 @@ namespace Guppy.Network.Groups
         private ServerPeer _server;
         private List<NetConnection> _connections;
 
+        public IReadOnlyCollection<NetConnection> Connections { get { return _connections; } }
+
         public ServerGroup(Guid id, ServerPeer server, ILogger log) : base(id, server, log)
         {
             _server = server;
@@ -81,10 +83,14 @@ namespace Guppy.Network.Groups
         {
             // Remove the user's connection from the NetConnection list
             _connections.Remove(_server.GetNetConnectionByUser(user));
-            // Send an update message to all remaining users
-            var userUpdate = this.CreateMessage("user:left", MessageType.Internal);
-            userUpdate.Write(user.Id);
-            this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
+
+            if (_connections.Count > 0)
+            {
+                // Send an update message to all remaining users
+                var userUpdate = this.CreateMessage("user:left", MessageType.Internal);
+                userUpdate.Write(user.Id);
+                this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
+            }
         }
         #endregion
     }

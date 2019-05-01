@@ -40,13 +40,21 @@ namespace Guppy.Network.Collections
         {
             return this.list.FirstOrDefault(u => u.Get(key) == value);
         }
-        public User GetByNetConnection(NetConnection connection)
+        public User GetByNetConnection(NetConnection connection, Boolean disconnectOnFail = true)
         {
-            return this.GetByNetId(connection.RemoteUniqueIdentifier);
+            if (_netIdTable.ContainsKey(connection.RemoteUniqueIdentifier))
+                return _netIdTable[connection.RemoteUniqueIdentifier];
+            else if (disconnectOnFail)
+                connection.Disconnect("NetId not found within UserCollection");
+
+            return default(User);
         }
         public User GetByNetId(Int64 netId)
         {
-            return _netIdTable[netId];
+            if (_netIdTable.ContainsKey(netId))
+                return _netIdTable[netId];
+            else
+                return default(User);
         }
     }
 }

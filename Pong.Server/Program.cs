@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Pong.Library.Scenes;
 using Pong.Server.Scenes;
+using Guppy.Network.Security;
 
 namespace Pong.Server
 {
@@ -26,13 +27,18 @@ namespace Pong.Server
             guppy.ConfigureNetwork(Program.PeerFactory);
             guppy.Initialize();
 
+            Peer peer = guppy.Provider.GetRequiredService<Peer>();
+
+            // Create the game
             ServerPongGame game = guppy.Games.Create<ServerPongGame>();
             game.SetScene(game.CreateScene<ServerLobbyScene>());
 
-            while(true)
+            while (true)
             {
                 currentFrame = DateTime.Now;
                 deltaGameTime = new GameTime(currentFrame.Subtract(start), currentFrame.Subtract(lastFrame));
+
+                peer.Update();
                 game.Update(deltaGameTime);
 
                 Thread.Sleep(16);

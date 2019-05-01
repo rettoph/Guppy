@@ -77,7 +77,7 @@ namespace Guppy.Network.Groups
             this.log = log;
 
             // By default, groups should ignore data
-            this.IgnoreData = false;
+            this.IgnoreData = true;
         }
         #endregion
 
@@ -100,7 +100,7 @@ namespace Guppy.Network.Groups
         }
         #endregion
 
-       #region Create Message Methods
+        #region Create Message Methods
         protected internal NetOutgoingMessage CreateMessage(MessageType type)
         {
             var om = _peer.CreateMessage(MessageTarget.Group);
@@ -152,5 +152,16 @@ namespace Guppy.Network.Groups
             }
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _ignoredMessageBuffer.Clear();
+            _messageBuffer.Clear();
+
+            this.Users.Clear();
+            this.MessageHandler.Clear();
+        }
     }
 }

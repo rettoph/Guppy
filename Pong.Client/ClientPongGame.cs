@@ -18,7 +18,9 @@ namespace Pong.Client
 {
     public class ClientPongGame : PongGame
     {
-        public ClientPongGame(ClientPeer client, ILogger logger, IServiceProvider provider) : base(logger, provider)
+        private ClientPeer _client;
+
+        public ClientPongGame(ILogger logger, IServiceProvider provider) : base(logger, provider)
         {
         }
 
@@ -31,11 +33,18 @@ namespace Pong.Client
         {
             base.PostInitialize();
 
-            var client = this.provider.GetService<ClientPeer>();
-            client.Start();
+            // Save the games client peer
+            _client = this.provider.GetService<ClientPeer>();
 
             // Create a new lobby scene
             this.SetScene(this.CreateScene<ClientLoginScene>());
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            _client.Update();
+
+            base.Update(gameTime);
         }
     }
 }

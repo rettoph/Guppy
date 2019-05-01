@@ -66,10 +66,10 @@ namespace Guppy.UI
             buttonStyle.Set<DrawType>(ElementState.Normal, StateProperty.BackgroundType, DrawType.Tile);
             buttonStyle.Set<Alignment>(ElementState.Normal, StateProperty.TextAlignment, Alignment.CenterCenter);
             buttonStyle.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.White);
-            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingTop, 15);
-            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingRight, 15);
-            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingBottom, 15);
-            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 15);
+            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingTop, 5);
+            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingRight, 5);
+            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingBottom, 5);
+            buttonStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 5);
         }
 
         public void Initialize(IServiceProvider provider)

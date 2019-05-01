@@ -143,7 +143,7 @@ namespace Pong.Client.Scenes
                 case NetConnectionStatus.Connected:
                     _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Green);
                     // Switch to a lobby scene instance...
-                    _game.SetScene(_game.CreateScene<ClientLobbyScene>());
+                    _game.SetScene(_game.CreateScene<ClientLobbyScene>(_client.Groups.GetOrCreateById(Guid.Empty)));
                     break;
                 case NetConnectionStatus.Disconnected:
                     _message.Style.Set<Color>(ElementState.Normal, StateProperty.TextColor, Color.Red);

@@ -40,7 +40,6 @@ namespace Pong.Client.UI
             _messages.SetPadding(5, 20, 5, 5);
 
             _input.OnEnter += this.HandleInputEnter;
-            _group.MessageHandler.Add("chat", this.HandleChatMessage);
         }
 
         public void Add(User user, String message)
@@ -62,20 +61,19 @@ namespace Pong.Client.UI
             }
         }
 
-        private void HandleChatMessage(NetIncomingMessage obj)
-        {
-            var sender = _group.Users.GetById(obj.ReadGuid());
-            var content = obj.ReadString();
-
-            this.Add(sender, content);
-        }
-
         public override void Dispose()
         {
             base.Dispose();
 
             _input.OnEnter -= this.HandleInputEnter;
             _group.MessageHandler.Remove("chat");
+        }
+
+        internal void Add(string message)
+        {
+            var m = _messages.Items.CreateElement<LocalMessage>(0, 0, 1f, 20, message);
+            m.Style.Set<Alignment>(StateProperty.TextAlignment, Alignment.CenterLeft);
+            m.SetPadding(2, 2, 2, 2);
         }
     }
 }
