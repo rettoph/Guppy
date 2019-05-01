@@ -524,28 +524,28 @@ namespace Guppy.UI.Elements
 
             // Build inner rectangle
             _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Top, 0), colorInner));
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Top, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right - 1, this.Inner.GlobalBounds.Top, 0), colorInner));
 
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Top, 0), colorInner));
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right - 1, this.Inner.GlobalBounds.Top, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right - 1, this.Inner.GlobalBounds.Bottom - 1, 0), colorInner));
 
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right, this.Inner.GlobalBounds.Bottom, 0), colorInner));
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Right - 1, this.Inner.GlobalBounds.Bottom - 1, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Bottom - 1, 0), colorInner));
 
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Bottom, 0), colorInner));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Bottom - 1, 0), colorInner));
             _vertices.Add(new VertexPositionColor(new Vector3(this.Inner.GlobalBounds.Left, this.Inner.GlobalBounds.Top, 0), colorInner));
 
             // Build outer rectangle
             _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Top, 0), colorOuter));
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Top, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right - 1, this.Outer.GlobalBounds.Top, 0), colorOuter));
 
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Top, 0), colorOuter));
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right - 1, this.Outer.GlobalBounds.Top, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right - 1, this.Outer.GlobalBounds.Bottom - 1, 0), colorOuter));
 
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Right - 1, this.Outer.GlobalBounds.Bottom - 1, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom - 1, 0), colorOuter));
 
-            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom, 0), colorOuter));
+            _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Bottom - 1, 0), colorOuter));
             _vertices.Add(new VertexPositionColor(new Vector3(this.Outer.GlobalBounds.Left, this.Outer.GlobalBounds.Top, 0), colorOuter));
         }
         #endregion
