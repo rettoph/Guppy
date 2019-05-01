@@ -32,10 +32,8 @@ namespace Guppy.UI.Elements
             _container.Inner.OnBoundsChanged += this.HandleParentBoundsChanged;
         }
 
-        public override void CleanBounds()
+        public override void Clean()
         {
-            base.CleanBounds();
-
             this.resize();
         }
 

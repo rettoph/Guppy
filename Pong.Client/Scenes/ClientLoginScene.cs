@@ -69,7 +69,7 @@ namespace Pong.Client.Scenes
             _name = form.CreateElement<TextInput>(100, 0, 226, 30, "Tony");
 
             form.CreateElement<TextElement>(0, 40, 100, 30, "Address:", labelStyle);
-            _address = form.CreateElement<TextInput>(100, 40, 226, 30, "10.0.3.96");
+            _address = form.CreateElement<TextInput>(100, 40, 226, 30, "localhost");
 
             form.CreateElement<TextElement>(0, 80, 100, 30, "Port:", labelStyle);
             _port = form.CreateElement<TextInput>(100, 80, 226, 30, "1337");
