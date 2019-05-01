@@ -47,7 +47,7 @@ namespace Pong.Client.UI
         {
             var m = _messages.Items.CreateElement<ChatMessage>(0, 0, 1f, 20, user, message);
             m.Style.Set<Alignment>(StateProperty.TextAlignment, Alignment.CenterLeft);
-            m.SetPadding(0, 0, 0, 0);
+            m.SetPadding(2, 2, 2, 2);
         }
 
         private void HandleInputEnter(object sender, string e)

@@ -26,6 +26,12 @@ namespace Guppy.UI.Elements
             public String Text;
             public Color Color;
         }
+        private struct CharColorPosition
+        {
+            public Char Char;
+            public Color Color;
+            public Vector2 Position;
+        }
 
         private List<TextColor> _text;
 
@@ -53,21 +59,56 @@ namespace Guppy.UI.Elements
             {
                 var alignment = this.Style.Get<Alignment>(this.State, StateProperty.TextAlignment, Alignment.TopLeft);
                 var color = this.Style.Get<Color>(this.State, StateProperty.TextColor, Color.Black);
-                var tBounds = font.MeasureString(String.Join("", _text.Select(tc => tc.Text)));
-                tBounds.Y = font.LineSpacing;
-                var tPosition = this.Inner.RelativeBounds.Align(tBounds, alignment);
+                var position = Vector2.Zero;
+                var bounds = Vector2.Zero;
+                var charBounds = Vector2.Zero;
+                var output = new List<CharColorPosition>();
+
+                foreach (TextColor tc in _text) {
+                    foreach (Char tChar in tc.Text.ToCharArray())
+                    {
+                        // Grab the current char size
+                        charBounds = font.MeasureString(tChar.ToString());
+                        // If the char overlaps the inner bounds of the element...
+                        if(position.X + charBounds.X > this.Inner.LocalBounds.Width)
+                        {
+                            position.X = 0;
+                            position.Y += font.LineSpacing;
+                        }
+
+                        // Store the position to the specified char
+                        output.Add(new CharColorPosition()
+                        {
+                            Char = tChar,
+                            Color = tc.Color,
+                            Position = new Vector2(position.X, position.Y)
+                        });
+
+                        // Shift to the next char position
+                        position.X += charBounds.X;
+
+                        // If this is the max length position, then update the bounds
+                        if (position.X > bounds.X)
+                            bounds.X = position.X;
+                    }
+                }
+
+                bounds.Y = position.Y + font.LineSpacing;
+                var tPosition = this.Inner.RelativeBounds.Align(bounds, alignment);
 
 
                 // Draw the string...
                 spritebatch.Begin();
 
-                foreach (TextColor tc in _text)
+                foreach (CharColorPosition ccp in output)
                 {
-                    spritebatch.DrawString(font, tc.Text, tPosition, tc.Color);
-                    tPosition.X += font.MeasureString(tc.Text).X;
+                    spritebatch.DrawString(font, ccp.Char.ToString(), tPosition + ccp.Position, ccp.Color);
                 }
                 
                 spritebatch.End();
+
+                if(this.Style.Get<Boolean>(GlobalProperty.InlineContent, true))
+                    this.Outer.Height.SetValue((Int32)(bounds.Y + (this.Outer.LocalBounds.Height - this.Inner.LocalBounds.Height)));
 
                 // Return the inner element bounds
                 return this.Inner.RelativeBounds;
