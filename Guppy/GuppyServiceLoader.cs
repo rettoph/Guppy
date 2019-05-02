@@ -27,6 +27,7 @@ namespace Guppy
             services.AddScoped<GameCollection>();
             services.AddScoped<EntityFactory>();
             services.AddScene<Scene>();
+            services.AddGame<Game>();
 
             services.AddLoader<StringLoader>();
             services.AddLoader<ColorLoader>();

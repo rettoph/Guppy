@@ -11,6 +11,10 @@ namespace Guppy
 {
     public class Scene : Initializable
     {
+        #region Private Fields
+        private IServiceScope _scope;
+        #endregion
+
         #region Public Attributes
         public UInt16 DefaultLayerDepth { get; protected set; }
         #endregion
@@ -78,6 +82,26 @@ namespace Guppy
             else
                 this.OnActiveRemoved?.Invoke(this, this);
         }
+
+        protected internal void setScope(IServiceScope scope)
+        {
+            _scope = scope;
+        }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            Entity e;
+            while(this.entities.Count() > 0)
+            {
+                e = this.entities.ElementAt(0);
+                this.entities.Remove(e);
+                e.Dispose();
+            }
+
+            _scope.Dispose();
+        }
     }
 }

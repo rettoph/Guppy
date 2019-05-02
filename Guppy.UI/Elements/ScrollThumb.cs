@@ -44,5 +44,14 @@ namespace Guppy.UI.Elements
 
             return this.Outer.LocalBounds;
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _container = null;
+
+            _thumbTexture.Dispose();
+        }
     }
 }

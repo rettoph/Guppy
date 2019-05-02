@@ -94,12 +94,12 @@ namespace Guppy.Collections
         {
             if(base.Remove(item))
             {
+                // Remove the entity from its old layer (if one exists)
+                _entityLayerTable[item]?.entities.Remove(item);
+
                 // Remove the item from the entity layer table
                 _entityLayerTable.Remove(item);
                 item.OnLayerDepthChanged -= this.HandleLayerDepthChanged;
-
-                // Remove the entity from its old layer (if one exists)
-                _entityLayerTable[item]?.entities.Remove(item);
 
                 return true;
             }

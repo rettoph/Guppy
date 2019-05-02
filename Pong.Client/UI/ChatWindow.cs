@@ -31,7 +31,7 @@ namespace Pong.Client.UI
 
             _messages = this.createElement<ScrollContainer>(0, 0, 1f, new UnitValue[] { 1f, -20 });
             _input = this.createElement<TextInput>(0, new UnitValue[] { 1f, -20 }, 1f, 20, styleLoader.GetValue("chat-input"));
-            _input.MaxLength = 150;
+            //_input.MaxLength = 150;
             _group = client.Groups.GetOrCreateById(Guid.Empty);
 
             // Start 100% scrolled
@@ -61,19 +61,22 @@ namespace Pong.Client.UI
             }
         }
 
+        internal void Add(string message)
+        {
+            var m = _messages.Items.CreateElement<LocalMessage>(0, 0, 1f, 20, message);
+            m.Style.Set<Alignment>(StateProperty.TextAlignment, Alignment.CenterLeft);
+            m.SetPadding(2, 2, 2, 2);
+        }
+
         public override void Dispose()
         {
             base.Dispose();
 
             _input.OnEnter -= this.HandleInputEnter;
             _group.MessageHandler.Remove("chat");
-        }
 
-        internal void Add(string message)
-        {
-            var m = _messages.Items.CreateElement<LocalMessage>(0, 0, 1f, 20, message);
-            m.Style.Set<Alignment>(StateProperty.TextAlignment, Alignment.CenterLeft);
-            m.SetPadding(2, 2, 2, 2);
+            _input = null;
+            _messages = null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Utilities.Units.UnitValues;
+﻿using Guppy.Implementations;
+using Guppy.UI.Utilities.Units.UnitValues;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Guppy.UI.Utilities.Units
     /// Units can be used for defining element 
     /// boundries.
     /// </summary>
-    public class Unit
+    public class Unit : TrackedDisposable
     {
         #region Private Fields
         private Int32 _newValue;
@@ -93,6 +94,14 @@ namespace Guppy.UI.Utilities.Units
         }
         #endregion
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (this.Parent != null)
+                this.Parent.OnUpdated -= this.HandleParentUpdated;
+        }
+
         #region Operators
         public static implicit operator Int32(Unit unit)
         {
@@ -115,5 +124,7 @@ namespace Guppy.UI.Utilities.Units
             return new Unit(value);
         }
         #endregion
+
+
     }
 }

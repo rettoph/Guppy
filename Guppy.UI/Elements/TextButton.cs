@@ -35,5 +35,12 @@ namespace Guppy.UI.Elements
                 _mouseDown = false;
             }
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnStateChanged -= this.HandleStateChanged;
+        }
     }
 }

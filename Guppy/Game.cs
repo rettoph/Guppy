@@ -59,11 +59,18 @@ namespace Guppy
         public TScene CreateScene<TScene>(params Object[] args)
             where TScene : Scene
         {
-            var sceneScope = this.provider.CreateScope().ServiceProvider;
-            sceneScope.GetRequiredService<GameScopeConfiguration>().Clone(this.provider.GetRequiredService<GameScopeConfiguration>());
-            var scene = sceneScope.GetRequiredService<SceneFactory<TScene>>().CreateCustom(sceneScope, args);
+            var sceneScope = this.provider.CreateScope();
+            var sceneProvider = sceneScope.ServiceProvider;
+            sceneProvider.GetRequiredService<GameScopeConfiguration>().Clone(this.provider.GetRequiredService<GameScopeConfiguration>());
+            var sceneFactory = sceneProvider.GetService<SceneFactory<TScene>>();
+
+            if (sceneFactory == null)
+                throw new Exception($"Unknown Scene<{typeof(TScene).Name}>. Please ensure the scene is registered via service provider.");
+
+            var scene = sceneFactory.CreateCustom(sceneProvider, args);
 
             // Initialize the new scene
+            scene.setScope(sceneScope);
             scene.TryBoot();
             scene.TryPreInitialize();
             scene.TryInitialize();

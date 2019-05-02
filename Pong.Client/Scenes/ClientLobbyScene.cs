@@ -16,6 +16,7 @@ using Pong.Library.Scenes;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Pong.Client.Scenes
 {
@@ -38,6 +39,11 @@ namespace Pong.Client.Scenes
             _graphicsDevice = graphicsDevice;
             _contentLoader = provider.GetLoader<ContentLoader>();
             _activeCreateRequest = false;
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
         }
 
         protected override void Initialize()
@@ -73,8 +79,7 @@ namespace Pong.Client.Scenes
         private void HandleJoinGameMessage(NetIncomingMessage obj)
         {
             var gameGroup = _client.Groups.GetOrCreateById(obj.ReadGuid());
-            this.game.SetScene(this.game.CreateScene<ClientGameScene>(group));
-            this.Dispose();
+            this.game.SetScene(this.game.CreateScene<ClientGameScene>(gameGroup));
         }
 
         private void HandleCreateClicked(object sender, TextButton e)
@@ -97,7 +102,6 @@ namespace Pong.Client.Scenes
         {
             base.Dispose();
 
-            _stage.Dispose();
             this.group.Dispose();
         }
     }

@@ -54,5 +54,12 @@ namespace Guppy.UI.Elements
                 inputs = null;
             }
         }
+
+        public override void Dispose()
+        {
+            this.Stage.TextInput -= this.HandleTextInput;
+
+            base.Dispose();
+        }
     }
 }

@@ -161,5 +161,13 @@ namespace Guppy.UI.Elements
                     this.ScrollBy((Single)_scrollDelta / (this.Inner.Height.Value - this.Items.Outer.Height.Value));
             }
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Items = null;
+            this.ScrollBar = null;
+        }
     }
 }

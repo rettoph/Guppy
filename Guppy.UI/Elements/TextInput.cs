@@ -114,5 +114,15 @@ namespace Guppy.UI.Elements
                 this.Text += e.Character;
             }
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (_readingText)
+                this.Stage.TextInput -= this.HandleTextInput;
+
+            _caret?.Dispose();
+        }
     }
 }

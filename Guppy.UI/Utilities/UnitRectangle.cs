@@ -1,4 +1,6 @@
-﻿using Guppy.UI.Utilities.Units;
+﻿using Guppy.Implementations;
+using Guppy.Interfaces;
+using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -6,7 +8,7 @@ using System.Text;
 
 namespace Guppy.UI.Utilities
 {
-    public class UnitRectangle
+    public class UnitRectangle : TrackedDisposable
     {
         #region Private Fields
         public Rectangle _globalBounds;
@@ -103,7 +105,7 @@ namespace Guppy.UI.Utilities
             if (parent != this.Parent)
             {
                 if(this.Parent != null)
-                    this.Parent.OnPositionChanged -= HandleParentPositionChanged;
+                    this.Parent.OnPositionChanged -= this.HandleParentPositionChanged;
 
                 this.Parent = parent;
 
@@ -112,7 +114,7 @@ namespace Guppy.UI.Utilities
                 this.Width.SetParent(this.Parent.Width);
                 this.Height.SetParent(this.Parent.Height);
 
-                this.Parent.OnPositionChanged += HandleParentPositionChanged;
+                this.Parent.OnPositionChanged += this.HandleParentPositionChanged;
 
                 this.DirtyBounds = true;
                 this.DirtyPosition = true;
@@ -172,6 +174,24 @@ namespace Guppy.UI.Utilities
             this.DirtyPosition = true;
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            if (this.Parent != null)
+                this.Parent.OnPositionChanged -= this.HandleParentPositionChanged;
+
+            this.X.OnUpdated -= this.HandlePositionValueUpdated;
+            this.Y.OnUpdated -= this.HandlePositionValueUpdated;
+            this.Width.OnUpdated -= this.HandleValueUpdated;
+            this.Height.OnUpdated -= this.HandleValueUpdated;
+
+            this.X.Dispose();
+            this.Y.Dispose();
+            this.Width.Dispose();
+            this.Height.Dispose();
+        }
 
         #region Operators
         public static implicit operator Rectangle(UnitRectangle rect)

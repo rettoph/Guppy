@@ -167,5 +167,12 @@ namespace Guppy.UI.Entities
             return ActivatorUtilities.CreateInstance<TElement>(_provider, eArgs.ToArray());
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Content.Dispose();
+        }
     }
 }

@@ -111,5 +111,19 @@ namespace Guppy.UI.Elements
             }
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _container.Items.Outer.Height.OnUpdated -= this.HandleHeightUpdated;
+            _container.Inner.Height.OnUpdated -= this.HandleHeightUpdated;
+
+            this.Thumb.OnStateChanged -= this.HandleThumbStateChanged;
+
+            _container = null;
+
+            this.Thumb = null;
+        }
     }
 }

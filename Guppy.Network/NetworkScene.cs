@@ -2,6 +2,7 @@
 using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

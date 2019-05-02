@@ -245,6 +245,9 @@ namespace Guppy.UI.Elements
             // Clean dirty segments of the element
             if (this.DirtyBounds || this.DirtyPosition)
             {
+                if (this.Disposed)
+                    throw new Exception("Unable to clean disposed element!");
+
                 this.Clean();
 
                 if (this.DirtyBounds)
@@ -562,5 +565,25 @@ namespace Guppy.UI.Elements
             this.DirtyPosition = true;
         }
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            while(this.children.Count() > 0)
+                this.remove(this.children[0]);
+
+            this.Outer.OnBoundsChanged -= this.handleBoundsChanged;
+            this.Outer.OnPositionChanged -= this.handlePositionChanged;
+            this.Outer.Dispose();
+            this.Inner.Dispose();
+
+            _vertices.Clear();
+
+            this.texture?.Dispose();
+
+            this.Parent = null;
+            this.Stage = null;
+        }
     }
 }

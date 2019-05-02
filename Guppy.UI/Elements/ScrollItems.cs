@@ -135,6 +135,10 @@ namespace Guppy.UI.Elements
                 child.Outer.Height.OnUpdated -= this.HandleItemHeightUpdated;
 
             base.Dispose();
+
+            _container.Inner.OnBoundsChanged -= this.HandleParentBoundsChanged;
+
+            _container = null;
         }
     }
 }

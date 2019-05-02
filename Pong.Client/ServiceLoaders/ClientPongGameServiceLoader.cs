@@ -22,6 +22,7 @@ namespace Pong.Client.ServiceLoaders
             services.AddGame<ClientPongGame>();
             services.AddScene<ClientLoginScene>();
             services.AddScene<ClientLobbyScene>();
+            services.AddScene<ClientGameScene>();
         }
 
         public void Boot(IServiceProvider provider)

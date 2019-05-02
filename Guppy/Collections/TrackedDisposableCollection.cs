@@ -32,6 +32,11 @@ namespace Guppy.Collections
         #endregion
 
         #region Collection Methods
+        public TTrackedDisposable ElementAt(Int32 index)
+        {
+            return this.list[index];
+        }
+
         public virtual void Add(TTrackedDisposable item)
         {
             this.list.Add(item);

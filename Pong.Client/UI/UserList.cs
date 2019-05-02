@@ -73,5 +73,17 @@ namespace Pong.Client.UI
         {
             _users.Items.Remove(_userLabels[e]);
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _group.Users.Added -= this.HandleUserAdded;
+            _group.Users.Removed -= this.HandleUserRemoved;
+
+            _users = null;
+            _label = null;
+            _userLabels.Clear();
+        }
     }
 }
