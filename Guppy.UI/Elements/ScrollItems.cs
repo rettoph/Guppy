@@ -90,7 +90,7 @@ namespace Guppy.UI.Elements
         {
             base.Remove(child);
 
-            this.DirtyBounds = true;
+            _dirtyAlignment = true;
         }
 
         protected internal void align()
