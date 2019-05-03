@@ -76,9 +76,9 @@ namespace Pong.Client.Scenes
                 im.ReadString());
         }
 
-        private void HandleJoinGameMessage(NetIncomingMessage obj)
+        private void HandleJoinGameMessage(NetIncomingMessage im)
         {
-            var gameGroup = _client.Groups.GetOrCreateById(obj.ReadGuid());
+            var gameGroup = _client.Groups.GetOrCreateById(im.ReadGuid());
             this.game.SetScene(this.game.CreateScene<ClientGameScene>(gameGroup));
         }
 
