@@ -166,6 +166,9 @@ namespace Guppy.UI.Elements
         {
             base.Dispose();
 
+            _internalEffect.Dispose();
+            _scrollContainer.Dispose();
+
             this.Items = null;
             this.ScrollBar = null;
         }

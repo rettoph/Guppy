@@ -172,6 +172,16 @@ namespace Guppy.UI.Entities
         {
             base.Dispose();
 
+            _window.ClientSizeChanged -= this.HandleClientBoundsChanged;
+
+            _internalSpriteBatch.Dispose();
+            _layerRenderTarget.Dispose();
+            _outputRenderTarget.Dispose();
+
+            this.clientBounds.Dispose();
+
+            this.dirtyTextureElementQueue.Clear();
+
             this.Content.Dispose();
         }
     }
