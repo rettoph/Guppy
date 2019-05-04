@@ -12,21 +12,32 @@ namespace Guppy.Network
 {
     public abstract class NetworkScene : Scene
     {
-        private Queue<NetworkEntity> _createdEntities;
-        protected NetworkEntityCollection networkEntities;
+        protected NetworkEntityCollection networkEntities { get; private set; }
+        protected Group group { get; private set; }
+        protected NetworkSceneDriver driver { get; set; }
 
-        public NetworkScene(IServiceProvider provider) : base(provider)
+        public NetworkScene(Group group, IServiceProvider provider) : base(provider)
         {
+            this.group = group;
+            this.driver = provider.GetRequiredService<NetworkSceneDriver>();
         }
 
         #region Initialization Methods
-        protected override void PreInitialize()
+        protected override void Boot()
         {
-            base.PreInitialize();
+            base.Boot();
 
-            _createdEntities = new Queue<NetworkEntity>();
             this.networkEntities = new NetworkEntityCollection(this.entities);
+
+            this.driver.Setup(this);
         }
         #endregion
+
+        public override void Update(GameTime gameTime)
+        {
+            this.driver.Update(this, this.group, this.networkEntities);
+
+            base.Update(gameTime);
+        }
     }
 }

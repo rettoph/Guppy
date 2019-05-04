@@ -51,9 +51,9 @@ namespace Guppy
         #endregion
 
         #region Initialization Methods
-        protected override void PreInitialize()
+        protected override void  Boot()
         {
-            base.PreInitialize();
+            base.Boot();
 
             // Load some required attributes from the service provider
             this.game = provider.GetService<Game>();

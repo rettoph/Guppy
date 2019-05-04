@@ -8,11 +8,12 @@ namespace Guppy.Network.Extensions.Guppy
 {
     public static class GuppyExtensions
     {
-        public static void ConfigureNetwork(this GuppyLoader guppy, Func<IServiceProvider, Peer> peerFactory)
+        public static void ConfigureNetwork(this GuppyLoader guppy, Func<IServiceProvider, Peer> peerFactory, NetworkSceneDriver networkSceneDriver)
         {
             guppy.Services.AddSingleton(peerFactory);
             guppy.Services.AddSingleton(GuppyExtensions.GetPeerAs<ClientPeer>);
             guppy.Services.AddSingleton(GuppyExtensions.GetPeerAs<ServerPeer>);
+            guppy.Services.AddSingleton<NetworkSceneDriver>(networkSceneDriver);
         }
 
         private static TPeer GetPeerAs<TPeer>(IServiceProvider provider)
