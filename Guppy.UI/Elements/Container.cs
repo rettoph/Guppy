@@ -17,6 +17,11 @@ namespace Guppy.UI.Elements
             this.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
         }
 
+        public void CreateElement<T>()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Create a new element and automatically add it as a child
         /// of the current element.

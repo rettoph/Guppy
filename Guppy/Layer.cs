@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Guppy.Utilities.Cameras;
 
 namespace Guppy
 {
@@ -22,21 +24,13 @@ namespace Guppy
     public abstract class Layer : TrackedDisposable
     {
         #region Private Fields
-        private GameWindow _window;
         private GraphicsDevice _graphicsDevice;
         private List<DebuggableEntity> _debuggables;
-
-        private Matrix _projection;
-        private Matrix _world;
-        private Matrix _view;
-
-        private BasicEffect _effect;
 
         private List<VertexPositionColor> _allVertices;
         private VertexBuffer _vertexBuffer;
         private Int32 _primitives;
-
-        private Boolean _dirtyBounds;
+        private BasicEffect _bassicEffect;
         #endregion
 
         #region Protected Internal Attributes
@@ -46,12 +40,17 @@ namespace Guppy
         #region Public Attributes
         public readonly LayerConfiguration Configuration;
         public Boolean Debug { get; set; }
+        public Camera Camera { get; set; }
         #endregion
 
         #region Constructors
-        public Layer(Scene scene, LayerConfiguration configuration, GameWindow window = null, GraphicsDevice graphicsDevice = null)
+        public Layer(LayerConfiguration configuration, IServiceProvider provider, Camera camera = null)
         {
             _debuggables = new List<DebuggableEntity>();
+            _graphicsDevice = provider.GetService<GraphicsDevice>();
+            _allVertices = new List<VertexPositionColor>();
+            _bassicEffect = provider.GetService<BasicEffect>();
+            _bassicEffect.VertexColorEnabled = true;
 
             this.Configuration = configuration;
             this.Debug = false;
@@ -61,24 +60,8 @@ namespace Guppy
 
             this.entities.Added += this.HandleEntityAdded;
             this.entities.Removed += this.HandleEntityRemoved;
-
             
-            if(window != null && graphicsDevice != null) {
-                _window = window;
-                _graphicsDevice = graphicsDevice;
-
-                // Setup debug view values...
-                _view = Matrix.Identity;
-                _world = Matrix.CreateTranslation(0, 0, 0);
-                _allVertices = new List<VertexPositionColor>();
-
-                _effect = new BasicEffect(_graphicsDevice);
-                _effect.VertexColorEnabled = true;
-
-                _dirtyBounds = true;
-
-                _window.ClientSizeChanged += this.HandleClientSizeChanged;
-            }
+            this.Camera = camera == null ? provider.GetRequiredService<Camera2D>() : camera;
         }
         #endregion
 
@@ -87,13 +70,6 @@ namespace Guppy
         public abstract void Update(GameTime gameTime);
         public void DebugDraw(GameTime gameTime)
         {
-            if(_dirtyBounds)
-            {
-                // Update debug projection settings...
-                _projection = Matrix.CreateOrthographicOffCenter(0, _window.ClientBounds.Width, _window.ClientBounds.Height, 0, 0, 1);
-                _effect.Projection = _projection;
-            }
-
             if (this.Debug)
             { // Draw the debug overlay...
                 _allVertices.Clear();
@@ -110,8 +86,10 @@ namespace Guppy
                     _vertexBuffer = new VertexBuffer(_graphicsDevice, typeof(VertexPositionColor), _allVertices.Count, BufferUsage.WriteOnly);
                     _vertexBuffer.SetData<VertexPositionColor>(_allVertices.ToArray());
                     _graphicsDevice.SetVertexBuffer(_vertexBuffer);
+                    _bassicEffect.Projection = this.Camera.Projection;
+                    _bassicEffect.World = this.Camera.World;
 
-                    foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+                    foreach (EffectPass pass in _bassicEffect.CurrentTechnique.Passes)
                     {
                         pass.Apply();
                         _graphicsDevice.DrawPrimitives(PrimitiveType.LineList, 0, _primitives);
@@ -132,11 +110,6 @@ namespace Guppy
         {
             if (e is DebuggableEntity)
                 _debuggables.Add(e as DebuggableEntity);
-        }
-
-        private void HandleClientSizeChanged(object sender, EventArgs e)
-        {
-            _dirtyBounds = true;
         }
         #endregion
     }

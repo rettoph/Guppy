@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Collections;
 using Guppy.Configurations;
 using Guppy.Extensions;
 using Guppy.Loaders;
@@ -27,6 +28,7 @@ namespace Guppy.UI.Entities
         private RenderTarget2D _outputRenderTarget;
         private SpriteBatch _internalSpriteBatch;
         private SpriteBatch _spriteBatch;
+        private LayerCollection _layers;
 
         private IServiceProvider _provider;
         #endregion
@@ -70,9 +72,11 @@ namespace Guppy.UI.Entities
             GraphicsDevice graphicsDevice,
             EntityConfiguration configuration,
             Scene scene,
+            LayerCollection layers,
             IServiceProvider provider,
             ILogger logger) : base(configuration, scene, logger)
         {
+            _layers = layers;
             _window = window;
             _provider = provider;
             this.graphicsDevice = graphicsDevice;
@@ -107,7 +111,19 @@ namespace Guppy.UI.Entities
 
         public override void Update(GameTime gameTime)
         {
-            this.Content.Update(Mouse.GetState());
+            var camera = _layers.GetLayer(this.LayerDepth).Camera;
+            var mState = Mouse.GetState();
+            var mPos = Vector2.Transform(mState.Position.ToVector2(), Matrix.Invert(camera.World));
+            this.Content.Update(new MouseState(
+                x: (Int32)mPos.X,
+                y: (Int32)mPos.Y,
+                scrollWheel: mState.ScrollWheelValue,
+                leftButton: mState.LeftButton,
+                middleButton: mState.MiddleButton,
+                rightButton: mState.RightButton,
+                xButton1: mState.XButton1,
+                xButton2: mState.XButton2,
+                horizontalScrollWheel: mState.HorizontalScrollWheelValue));
 
             if(this.dirtyTextureElementQueue.Count > 0)
             { // If there are any dirty elements...

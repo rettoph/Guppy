@@ -41,6 +41,7 @@ namespace Guppy.UI
             var styleLoader = provider.GetLoader<StyleLoader>();
             styleLoader.Register(typeof(TextInput).FullName, new Style());
             styleLoader.Register(typeof(TextButton).FullName, new Style());
+            styleLoader.Register(typeof(StageContent).FullName, new Style());
         }
 
         public void PreInitialize(IServiceProvider provider)
@@ -70,6 +71,12 @@ namespace Guppy.UI
             buttonStyle.Set<UnitValue>(GlobalProperty.PaddingRight, 5);
             buttonStyle.Set<UnitValue>(GlobalProperty.PaddingBottom, 5);
             buttonStyle.Set<UnitValue>(GlobalProperty.PaddingLeft, 5);
+
+            var stageContentStyle = styleLoader.GetValue(typeof(StageContent).FullName);
+            stageContentStyle.Set<Color>(ElementState.Normal, StateProperty.OuterDebugColor, Color.Red);
+            stageContentStyle.Set<Color>(ElementState.Hovered, StateProperty.OuterDebugColor, Color.Blue);
+            stageContentStyle.Set<Color>(ElementState.Pressed, StateProperty.OuterDebugColor, Color.Green);
+            stageContentStyle.Set<Color>(ElementState.Active, StateProperty.OuterDebugColor, Color.Orange);
         }
 
         public void Initialize(IServiceProvider provider)
