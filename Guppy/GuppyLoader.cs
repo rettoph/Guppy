@@ -5,6 +5,7 @@ using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.Loggers;
+using Guppy.Utilities.Cameras;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
@@ -113,6 +114,9 @@ namespace Guppy
             this.Services.AddSingleton(content);
             this.Services.AddSingleton(graphics.GraphicsDevice);
             this.Services.AddSingleton(new SpriteBatch(graphics.GraphicsDevice));
+
+            this.Services.AddTransient<Camera2D>();
+            this.Services.AddTransient<BasicEffect>();
         }
     }
 }

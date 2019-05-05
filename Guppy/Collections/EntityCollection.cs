@@ -49,6 +49,11 @@ namespace Guppy.Collections
             // return the new entity
             return entity;
         }
+        public TEntity Create<TEntity>(String entityHandle, params Object[] args)
+            where TEntity : Entity
+        {
+            return this.Create(entityHandle, args) as TEntity;
+        }
 
         /// <summary>
         /// Create a new instance of an entity and adds it to
@@ -121,7 +126,7 @@ namespace Guppy.Collections
 
             // Add the entity to its new layer
             var layer = _layers.GetLayer(item.LayerDepth);
-            layer.entities.Add(item);
+            layer?.entities.Add(item);
 
             // Update the stored layer value
             _entityLayerTable[item] = layer;
