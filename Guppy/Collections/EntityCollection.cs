@@ -54,6 +54,19 @@ namespace Guppy.Collections
         {
             return this.Create(entityHandle, args) as TEntity;
         }
+        public Entity Create(String entityHandle, UInt16 layerDepth, params Object[] args)
+        {
+            // Create the new entity
+            var entity = this.Create(entityHandle, args);
+            entity.SetLayerDepth(layerDepth);
+
+            return entity;
+        }
+        public TEntity Create<TEntity>(String entityHandle, UInt16 layerDepth, params Object[] args)
+            where TEntity : Entity
+        {
+            return this.Create(entityHandle, layerDepth, args) as TEntity;
+        }
 
         /// <summary>
         /// Create a new instance of an entity and adds it to

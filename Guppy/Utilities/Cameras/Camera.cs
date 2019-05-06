@@ -14,16 +14,19 @@ namespace Guppy.Utilities.Cameras
     /// </summary>
     public abstract class Camera : TrackedDisposable
     {
+        private Viewport _viewport;
+
         public Matrix World      { get; protected set; }
         public Matrix View       { get; protected set; }
         public Matrix Projection { get; protected set; }
 
-        protected Boolean dirty { get; set; }
-        
+        protected Boolean dirtyMatrices { get; set; }
 
-        public Camera()
+
+        public Camera(GraphicsDevice graphics)
         {
-            this.dirty = true;
+            _viewport = graphics.Viewport;
+            this.dirtyMatrices = true;
 
             this.Projection = Matrix.Identity;
             this.View       = Matrix.Identity;
@@ -32,13 +35,29 @@ namespace Guppy.Utilities.Cameras
 
         public virtual void Update(GameTime gameTime)
         {
-            if(this.dirty)
+            if(this.dirtyMatrices)
             {
-                this.clean();
-                this.dirty = false;
+                this.World = this.buildWorld();
+                this.Projection = this.buildProjection();
+                this.View = this.buildView();
+
+                this.dirtyMatrices = false;
             }
         }
 
-        protected abstract void clean();
+        protected abstract Matrix buildWorld();
+        protected abstract Matrix buildProjection();
+        protected abstract Matrix buildView();
+
+        #region Utility Methods
+        public Vector3 Project(Vector3 source)
+        {
+            return _viewport.Project(source, this.Projection, this.View, this.World);
+        }
+        public Vector3 Unproject(Vector3 source)
+        {
+            return _viewport.Unproject(source, this.Projection, this.View, this.World);
+        }
+        #endregion
     }
 }

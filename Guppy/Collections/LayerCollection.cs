@@ -1,5 +1,6 @@
 ﻿using Guppy.Configurations;
 using Guppy.Extensions;
+using Guppy.Factories;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
@@ -50,26 +51,26 @@ namespace Guppy.Collections
         /// </summary>
         /// <typeparam name="TLayer"></typeparam>
         /// <returns></returns>
-        public TLayer Create<TLayer>()
+        public TLayer Create<TLayer>(params Object[] args)
             where TLayer : Layer
         {
-            return this.Create<TLayer>(new LayerConfiguration());
+            return this.Create<TLayer>(new LayerConfiguration(), args);
         }
 
-        public TLayer Create<TLayer>(LayerConfiguration configuration)
+        public TLayer Create<TLayer>(LayerConfiguration configuration, params Object[] args)
             where TLayer : Layer
         {
             // Create the new layer
-            var layer = _provider.GetLayer<TLayer>(configuration);
+            var layer = _provider.GetRequiredService<LayerFactory<TLayer>>().CreateCustom(_provider, configuration, args);
 
             // return the new layer
             return layer;
         }
 
-        public TLayer Create<TLayer>(UInt16 minDepth = 0, UInt16 maxDepth = 0, UInt16 updateOrder = 0, UInt16 drawOrder = 0)
+        public TLayer Create<TLayer>(UInt16 minDepth = 0, UInt16 maxDepth = 0, UInt16 updateOrder = 0, UInt16 drawOrder = 0, params Object[] args)
             where TLayer : Layer
         {
-            return this.Create<TLayer>(new LayerConfiguration(minDepth, maxDepth, updateOrder, drawOrder));
+            return this.Create<TLayer>(new LayerConfiguration(minDepth, maxDepth, updateOrder, drawOrder), args);
         }
         #endregion
 
