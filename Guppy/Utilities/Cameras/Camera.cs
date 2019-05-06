@@ -12,15 +12,19 @@ namespace Guppy.Utilities.Cameras
     /// for simple debug rendering. They may also be 
     /// utilized within custom cames for perspective management. 
     /// </summary>
-    public abstract class Camera
+    public abstract class Camera : TrackedDisposable
     {
-
         public Matrix World      { get; protected set; }
         public Matrix View       { get; protected set; }
         public Matrix Projection { get; protected set; }
 
+        protected Boolean dirty { get; set; }
+        
+
         public Camera()
         {
+            this.dirty = true;
+
             this.Projection = Matrix.Identity;
             this.View       = Matrix.Identity;
             this.World      = Matrix.Identity;
@@ -28,9 +32,13 @@ namespace Guppy.Utilities.Cameras
 
         public virtual void Update(GameTime gameTime)
         {
-            this.UpdateMatrices();
+            if(this.dirty)
+            {
+                this.clean();
+                this.dirty = false;
+            }
         }
 
-        protected abstract void UpdateMatrices();
+        protected abstract void clean();
     }
 }

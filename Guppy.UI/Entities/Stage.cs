@@ -114,6 +114,7 @@ namespace Guppy.UI.Entities
             var camera = _layers.GetLayer(this.LayerDepth).Camera;
             var mState = Mouse.GetState();
             var mPos = Vector2.Transform(mState.Position.ToVector2(), Matrix.Invert(camera.World));
+
             this.Content.Update(new MouseState(
                 x: (Int32)mPos.X,
                 y: (Int32)mPos.Y,
