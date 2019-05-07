@@ -134,7 +134,7 @@ namespace Guppy.Utilities.Cameras
         #region Event Handlers
         private void HandleClientBoundsChanged(object sender, EventArgs e)
         {
-            this.dirtyMatrices = true;
+            this.dirtyViewport = true;
         }
         #endregion
 
