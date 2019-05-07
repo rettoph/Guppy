@@ -14,7 +14,7 @@ namespace Guppy.Utilities.Cameras
     /// </summary>
     public abstract class Camera : TrackedDisposable
     {
-        private Viewport _viewport;
+        private GraphicsDevice _graphics;
 
         public Matrix World      { get; protected set; }
         public Matrix View       { get; protected set; }
@@ -25,7 +25,7 @@ namespace Guppy.Utilities.Cameras
 
         public Camera(GraphicsDevice graphics)
         {
-            _viewport = graphics.Viewport;
+            _graphics = graphics;
             this.dirtyMatrices = true;
 
             this.Projection = Matrix.Identity;
@@ -52,11 +52,11 @@ namespace Guppy.Utilities.Cameras
         #region Utility Methods
         public Vector3 Project(Vector3 source)
         {
-            return _viewport.Project(source, this.Projection, this.View, this.World);
+            return _graphics.Viewport.Project(source, this.Projection, this.View, this.World);
         }
         public Vector3 Unproject(Vector3 source)
         {
-            return _viewport.Unproject(source, this.Projection, this.View, this.World);
+            return _graphics.Viewport.Unproject(source, this.Projection, this.View, this.World);
         }
         #endregion
     }

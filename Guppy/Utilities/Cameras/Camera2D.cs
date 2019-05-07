@@ -14,7 +14,7 @@ namespace Guppy.Utilities.Cameras
     public class Camera2D : Camera
     {
         private GameWindow _window;
-        private Viewport _viewport;
+        private GraphicsDevice _graphics;
         private Vector2 _position;
         public RectangleF ViewportBounds { get; private set; }
 
@@ -30,7 +30,7 @@ namespace Guppy.Utilities.Cameras
         public Camera2D(GraphicsDevice graphics, GameWindow window) : base(graphics)
         {
             _window = window;
-            _viewport = graphics.Viewport;
+            _graphics = graphics;
 
             this.dirtyViewport = true;
 
@@ -77,7 +77,7 @@ namespace Guppy.Utilities.Cameras
 
         protected virtual RectangleF buildViewportBounds()
         {
-            return new RectangleF(0, 0, _viewport.Width, _viewport.Height);
+            return new RectangleF(0, 0, _graphics.Viewport.Width, _graphics.Viewport.Height);
         }
         #endregion
 
