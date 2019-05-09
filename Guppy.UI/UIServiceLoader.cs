@@ -53,7 +53,5 @@ namespace Guppy.UI
         {
             // throw new NotImplementedException();
         }
-
-
     }
 }
