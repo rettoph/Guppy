@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Guppy.Extensions.Linq;
 
 namespace Guppy
 {
@@ -27,7 +28,7 @@ namespace Guppy
     {
         #region Private Fields
         private IServiceProvider _provider;
-        private IServiceLoader[] _serviceLoader;
+        private IServiceLoader[] _serviceLoaders;
 
         private Boolean _initialized;
         #endregion
@@ -48,11 +49,8 @@ namespace Guppy
 
             _initialized = false;
             this.Services = services == null ? new ServiceCollection() : services;
-            _serviceLoader = Assembly.GetEntryAssembly()
-                .GetReferencedAssemblies()
-                .ToList()
-                .Append(Assembly.GetEntryAssembly().GetName())
-                .SelectMany(an => Assembly.Load(an).GetTypes())
+            _serviceLoaders = this.getUniqueNestedReferencedAssemblies(new List<Assembly>(), Assembly.GetEntryAssembly())
+                .SelectMany(a => a.GetTypes())
                 .Where(t => t.IsClass && !t.IsAbstract && typeof(IServiceLoader).IsAssignableFrom(t))
                 .Select(t => Activator.CreateInstance(t) as IServiceLoader)
                 .ToArray();
@@ -68,7 +66,7 @@ namespace Guppy
                 throw new Exception("Guppy instance already initialized!");
 
             // First, configure the services
-            foreach (IServiceLoader serviceLoader in _serviceLoader)
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.ConfigureServiceCollection(this.Services);
 
             // Create a new service provider instance...
@@ -78,7 +76,7 @@ namespace Guppy
             // Now initialize the provider
 
             // Boot
-            foreach (IServiceLoader serviceLoader in _serviceLoader)
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.Boot(_provider);
 
             // Ensure all loaders get loaded
@@ -86,13 +84,13 @@ namespace Guppy
                 loader.Load();
 
             // Pre-Initialize
-            foreach (IServiceLoader serviceLoader in _serviceLoader)
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.PreInitialize(_provider);
             // Initialize
-            foreach (IServiceLoader serviceLoader in _serviceLoader)
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.Initialize(_provider);
             // Post-Initialize
-            foreach (IServiceLoader serviceLoader in _serviceLoader)
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.PostInitialize(_provider);
             #endregion
 
@@ -117,6 +115,19 @@ namespace Guppy
 
             this.Services.AddTransient<Camera2D>();
             this.Services.AddTransient<BasicEffect>();
+        }
+
+        private List<Assembly> getUniqueNestedReferencedAssemblies(List<Assembly> list, Assembly entry)
+        {
+            if(!list.Contains(entry))
+            {
+                list.Add(entry);
+
+                foreach (Assembly child in entry.GetReferencedAssemblies().Select(an => Assembly.Load(an)))
+                    this.getUniqueNestedReferencedAssemblies(list, child);
+            }
+
+            return list;
         }
     }
 }
