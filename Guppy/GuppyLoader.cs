@@ -49,7 +49,7 @@ namespace Guppy
 
             _initialized = false;
             this.Services = services == null ? new ServiceCollection() : services;
-            _serviceLoaders = this.getUniqueNestedReferencedAssemblies(new List<Assembly>(), Assembly.GetEntryAssembly())
+            _serviceLoaders = this.getUniqueNestedReferencedAssemblies(Assembly.GetEntryAssembly())
                 .SelectMany(a => a.GetTypes())
                 .Where(t => t.IsClass && !t.IsAbstract && typeof(IServiceLoader).IsAssignableFrom(t))
                 .Select(t => Activator.CreateInstance(t) as IServiceLoader)
@@ -117,14 +117,17 @@ namespace Guppy
             this.Services.AddTransient<BasicEffect>();
         }
 
-        private List<Assembly> getUniqueNestedReferencedAssemblies(List<Assembly> list, Assembly entry)
+        private List<Assembly> getUniqueNestedReferencedAssemblies(Assembly entry, List<Assembly> list = null)
         {
+            if (list == null)
+                list = new List<Assembly>();
+
             if(!list.Contains(entry))
             {
                 list.Add(entry);
 
                 foreach (Assembly child in entry.GetReferencedAssemblies().Select(an => Assembly.Load(an)))
-                    this.getUniqueNestedReferencedAssemblies(list, child);
+                    this.getUniqueNestedReferencedAssemblies(child, list);
             }
 
             return list;
