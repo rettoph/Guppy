@@ -12,10 +12,10 @@ namespace Guppy.Network
         public static NetworkSceneDriver DefaultClient { get; private set; }
         public static NetworkSceneDriver DefaultServer { get; private set; }
 
-        public Action<NetworkScene, Group, NetworkEntityCollection> Update;
-        public Action<NetworkScene> Setup;
+        public Action<Scene, Group, NetworkEntityCollection> Update;
+        public Action<Scene> Setup;
 
-        private NetworkSceneDriver(Action<NetworkScene> setup, Action<NetworkScene, Group, NetworkEntityCollection> update)
+        private NetworkSceneDriver(Action<Scene> setup, Action<Scene, Group, NetworkEntityCollection> update)
         {
             this.Setup = setup;
             this.Update = update;

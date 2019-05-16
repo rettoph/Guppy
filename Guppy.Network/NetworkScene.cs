@@ -10,13 +10,14 @@ using System.Text;
 
 namespace Guppy.Network
 {
-    public abstract class NetworkScene : Scene
+    public abstract class NetworkScene<TGroup> : Scene
+        where TGroup : Group
     {
         protected NetworkEntityCollection networkEntities { get; private set; }
-        protected Group group { get; private set; }
+        protected TGroup group { get; private set; }
         protected NetworkSceneDriver driver { get; set; }
 
-        public NetworkScene(Group group, IServiceProvider provider) : base(provider)
+        public NetworkScene(TGroup group, IServiceProvider provider) : base(provider)
         {
             this.group = group;
             this.driver = provider.GetRequiredService<NetworkSceneDriver>();
