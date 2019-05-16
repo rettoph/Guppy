@@ -15,6 +15,7 @@ using System.Text;
 using System.Linq;
 using Guppy.Implementations;
 using Guppy.Enums;
+using System.Threading;
 
 namespace Guppy
 {
@@ -25,12 +26,17 @@ namespace Guppy
     /// </summary>
     public class Game : Initializable
     {
+        #region Private Fields
+        private Thread _thread;
+        private Boolean _running;
+        private Boolean _draw;
+        #endregion
+
         #region Proteced Attributes
         protected IServiceProvider provider { get; private set; }
         #endregion
 
         #region Public Attributes
-        public Boolean Started { get; private set; }
         public Scene Scene { get; private set; }
         #endregion
 
@@ -91,6 +97,48 @@ namespace Guppy
             this.Scene.setActive(true);
 
             return this.Scene;
+        }
+
+        /// <summary>
+        /// Start a new thread loop for this game 
+        /// that is independent from all other games. 
+        /// </summary>
+        public void StartAsyc(Boolean draw = false)
+        {
+            this.logger.LogInformation("Starting async game loop.");
+
+            _draw = draw;
+            _running = true;
+            _thread = new Thread(new ThreadStart(this.loop));
+            _thread.Start();
+        }
+
+        private void loop()
+        {
+            
+            DateTime start = DateTime.Now;
+            DateTime last = DateTime.Now;
+            GameTime time;
+
+            while (_running)
+            {
+                Thread.Sleep(16);
+
+                time = new GameTime(DateTime.Now.Subtract(start), DateTime.Now.Subtract(last));
+                this.Update(time);
+
+                if (_draw)
+                    this.Draw(time);
+
+                last = DateTime.Now;
+            }
+
+            this.logger.LogInformation("Stopping async game loop.");
+        }
+
+        public void Stop()
+        {
+            _running = false;
         }
         #endregion
     }
