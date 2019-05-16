@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Guppy.Collections
 {
@@ -79,6 +80,11 @@ namespace Guppy.Collections
         public Int32 Count()
         {
             return this.list.Count;
+        }
+
+        public TTrackedDisposable[] ToArray()
+        {
+            return this.list.ToArray();
         }
         #endregion
 

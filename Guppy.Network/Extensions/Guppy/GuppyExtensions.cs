@@ -1,4 +1,6 @@
-﻿using Guppy.Network.Peers;
+﻿using Guppy.Extensions;
+using Guppy.Network.Groups;
+using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -8,23 +10,28 @@ namespace Guppy.Network.Extensions.Guppy
 {
     public static class GuppyExtensions
     {
-        public static void ConfigureNetwork(this GuppyLoader guppy, Func<IServiceProvider, Peer> peerFactory, NetworkSceneDriver networkSceneDriver)
+        public static void ConfigureNetwork<TPeer, TGroup>(this GuppyLoader guppy, Func<IServiceProvider, TPeer> peerFactory, NetworkSceneDriver networkSceneDriver)
+            where TPeer : Peer
+            where TGroup : Group
         {
-            guppy.Services.AddSingleton(peerFactory);
-            guppy.Services.AddSingleton(GuppyExtensions.GetPeerAs<ClientPeer>);
-            guppy.Services.AddSingleton(GuppyExtensions.GetPeerAs<ServerPeer>);
+            guppy.Services.AddScene<NetworkScene>();
+            guppy.Services.AddSingleton<TPeer>(peerFactory);
+            guppy.Services.AddSingleton<Peer>(GuppyExtensions.GetPeer<TPeer>);
+            guppy.Services.AddScoped<TGroup>(GuppyExtensions.GetGroup<TGroup>);
+            guppy.Services.AddScoped<Group>(GuppyExtensions.GetGroup<Group>);
             guppy.Services.AddSingleton<NetworkSceneDriver>(networkSceneDriver);
         }
 
-        private static TPeer GetPeerAs<TPeer>(IServiceProvider provider)
+        private static Peer GetPeer<TPeer>(IServiceProvider provider)
             where TPeer : Peer
         {
-            var peer = provider.GetRequiredService<Peer>();
+            return provider.GetRequiredService<TPeer>();
+        }
 
-            if (peer is TPeer)
-                return peer as TPeer;
-            else
-                throw new Exception($"Peer instance is {peer.GetType().Name}, but {typeof(TPeer).Name} requested.");
+        private static TGroup GetGroup<TGroup>(IServiceProvider provider)
+            where TGroup : Group
+        {
+            return provider.GetRequiredService<NetworkScene>().group as TGroup;
         }
     }
 }

@@ -12,10 +12,10 @@ namespace Guppy.Network
         public static NetworkSceneDriver DefaultClient { get; private set; }
         public static NetworkSceneDriver DefaultServer { get; private set; }
 
-        public Action<Scene, Group, NetworkEntityCollection> Update;
-        public Action<Scene> Setup;
+        public Action<NetworkScene, Group, NetworkEntityCollection> Update;
+        public Action<NetworkScene> Setup;
 
-        private NetworkSceneDriver(Action<Scene> setup, Action<Scene, Group, NetworkEntityCollection> update)
+        private NetworkSceneDriver(Action<NetworkScene> setup, Action<NetworkScene, Group, NetworkEntityCollection> update)
         {
             this.Setup = setup;
             this.Update = update;
@@ -29,9 +29,7 @@ namespace Guppy.Network
             },
             (s, g, ne) =>
             {
-                while (ne.CreatedQueue.Count > 0)
-                    g.SendMesssage(ne.CreatedQueue.Dequeue().BuildCreateMessage(g), NetDeliveryMethod.ReliableSequenced, 1);
-
+                g.Update();
                 while (ne.DirtyQueue.Count > 0)
                     g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(g), NetDeliveryMethod.ReliableSequenced, 1);
             });
@@ -42,8 +40,21 @@ namespace Guppy.Network
             },
             (s, g, ne) =>
             {
-                while (ne.DirtyQueue.Count > 0)
-                    g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(g), NetDeliveryMethod.UnreliableSequenced, 1);
+                g.Update();
+
+                if (g.Users.Count() > 0)
+                {
+                    while (ne.CreatedQueue.Count > 0)
+                        g.SendMesssage(ne.CreatedQueue.Dequeue().BuildCreateMessage(g), NetDeliveryMethod.ReliableSequenced, 1);
+
+                    while (ne.DirtyQueue.Count > 0)
+                        g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(g), NetDeliveryMethod.UnreliableSequenced, 1);
+                }
+                else
+                {
+                    ne.CreatedQueue.Clear();
+                    ne.DirtyQueue.Clear();
+                }
             });
         }
     }

@@ -49,7 +49,7 @@ namespace Guppy.Network
             om.Write(this.Id);
         }
 
-        protected internal NetOutgoingMessage BuildCreateMessage(Group group)
+        public NetOutgoingMessage BuildCreateMessage(Group group)
         {
             var om = group.CreateMessage("create");
             om.Write(this.Configuration.Handle);
@@ -58,7 +58,7 @@ namespace Guppy.Network
             return om;
         }
 
-        protected internal NetOutgoingMessage BuildUpdateMessage(Group group)
+        public NetOutgoingMessage BuildUpdateMessage(Group group)
         {
             var om = group.CreateMessage("update");
             this.Write(om);
