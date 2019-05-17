@@ -29,5 +29,22 @@ namespace Guppy.Network.Extensions.Lidgren
             return new Color(im.ReadUInt32());
         }
         #endregion
+
+        #region Vector2 Methods
+        public static void Write(this NetOutgoingMessage om, Vector2 vector2)
+        {
+            om.Write(vector2.X);
+            om.Write(vector2.Y);
+        }
+        public static void ReadVector2(this NetIncomingMessage im, ref Vector2 vector2)
+        {
+            vector2.X = im.ReadSingle();
+            vector2.Y = im.ReadSingle();
+        }
+        public static Vector2 ReadVector2(this NetIncomingMessage im)
+        {
+            return new Vector2(im.ReadSingle(), im.ReadSingle());
+        }
+        #endregion
     }
 }

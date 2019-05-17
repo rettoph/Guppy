@@ -12,18 +12,33 @@ namespace Guppy.Network
         public static NetworkSceneDriver DefaultClient { get; private set; }
         public static NetworkSceneDriver DefaultServer { get; private set; }
 
-        public Action<NetworkScene, Group, NetworkEntityCollection> Update;
-        public Action<NetworkScene> Setup;
+        public Action<NetworkScene, Group, NetworkEntityCollection> update;
+        public Action<NetworkScene, Group, NetworkEntityCollection> setup;
 
-        private NetworkSceneDriver(Action<NetworkScene> setup, Action<NetworkScene, Group, NetworkEntityCollection> update)
+        public NetworkSceneDriver(
+            Action<NetworkScene, Group, NetworkEntityCollection> setup, 
+            Action<NetworkScene, Group, NetworkEntityCollection> update)
         {
-            this.Setup = setup;
-            this.Update = update;
+            this.setup = setup;
+            this.update = update;
+        }
+
+        public void Update(NetworkScene s, Group g, NetworkEntityCollection ne)
+        {
+            this.update(s, g, ne);
+
+            // All drivers should auto-push any recieved actions
+            while (s.actionQueue.Count > 0)
+                g.SendMesssage(s.actionQueue.Dequeue(), NetDeliveryMethod.UnreliableSequenced);
+        }
+        public void Setup(NetworkScene s, Group g, NetworkEntityCollection ne)
+        {
+            this.setup(s, g, ne);
         }
 
         static NetworkSceneDriver()
         {
-            NetworkSceneDriver.DefaultClient = new NetworkSceneDriver(s =>
+            NetworkSceneDriver.DefaultClient = new NetworkSceneDriver((s, g, ne) =>
             {
                 // 
             },
@@ -31,31 +46,42 @@ namespace Guppy.Network
             {
                 g.Update();
                 while (ne.DirtyQueue.Count > 0)
-                    g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(g), NetDeliveryMethod.ReliableSequenced, 1);
+                    g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
             });
 
-            NetworkSceneDriver.DefaultServer = new NetworkSceneDriver(s =>
-            {
-                // 
-            },
-            (s, g, ne) =>
-            {
-                g.Update();
+            var serverDriver = new ServerNetworkSceneDriver();
+            NetworkSceneDriver.DefaultServer = new NetworkSceneDriver(serverDriver.Setup, serverDriver.Update);
+        }
+    }
 
-                if (g.Users.Count() > 0)
-                {
-                    while (ne.CreatedQueue.Count > 0)
-                        g.SendMesssage(ne.CreatedQueue.Dequeue().BuildCreateMessage(g), NetDeliveryMethod.ReliableSequenced, 1);
+    class ServerNetworkSceneDriver
+    {
+        private Queue<NetOutgoingMessage> _createdMessageQueue;
 
-                    while (ne.DirtyQueue.Count > 0)
-                        g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(g), NetDeliveryMethod.UnreliableSequenced, 1);
-                }
-                else
-                {
-                    ne.CreatedQueue.Clear();
-                    ne.DirtyQueue.Clear();
-                }
-            });
+        public ServerNetworkSceneDriver()
+        {
+            _createdMessageQueue = new Queue<NetOutgoingMessage>();
+        }
+
+        public void Setup(NetworkScene s, Group g, NetworkEntityCollection ne)
+        {
+            ne.Created += this.HandleNetworkEntityCreated;
+        }
+
+        public void Update(NetworkScene s, Group g, NetworkEntityCollection ne)
+        {
+            g.Update();
+
+            while (_createdMessageQueue.Count > 0)
+                g.SendMesssage(_createdMessageQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered);
+
+            while (ne.DirtyQueue.Count > 0)
+                g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
+        }
+
+        private void HandleNetworkEntityCreated(object sender, NetworkEntity e)
+        {
+            _createdMessageQueue.Enqueue(e.BuildCreateMessage());
         }
     }
 }

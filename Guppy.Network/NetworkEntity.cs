@@ -14,6 +14,8 @@ namespace Guppy.Network
     public abstract class NetworkEntity : Entity, INetworkObject
     {
         private Boolean _dirty;
+        private NetworkScene _networkScene;
+        public Dictionary<String, Action<NetIncomingMessage>> ActionHandlers { get; private set; }
 
         public Boolean Dirty
         {
@@ -38,6 +40,14 @@ namespace Guppy.Network
         {
         }
 
+        protected override void Boot()
+        {
+            base.Boot();
+
+            _networkScene = this.scene as NetworkScene;
+            this.ActionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
+        }
+
         public virtual void Read(NetIncomingMessage im)
         {
             //
@@ -49,18 +59,40 @@ namespace Guppy.Network
             om.Write(this.Id);
         }
 
-        public NetOutgoingMessage BuildCreateMessage(Group group)
+        public void HandleAction(String type, NetIncomingMessage im)
         {
-            var om = group.CreateMessage("create");
+            if(this.ActionHandlers.ContainsKey(type))
+            {
+                this.ActionHandlers[type].Invoke(im);
+            }
+            else
+            {
+                this.logger.LogWarning($"Unhandled network action => Type: {this.GetType().Name}, Action: {type}, Entity: {this.Id}");
+            }
+        }
+
+        public NetOutgoingMessage CreateActionMessage(String type)
+        {
+            var om = _networkScene.group.CreateMessage("action");
+            om.Write(this.Id);
+            om.Write(type);
+            _networkScene.actionQueue.Enqueue(om);
+
+            return om;
+        }
+
+        public NetOutgoingMessage BuildCreateMessage()
+        {
+            var om = _networkScene.group.CreateMessage("create");
             om.Write(this.Configuration.Handle);
             this.Write(om);
 
             return om;
         }
 
-        public NetOutgoingMessage BuildUpdateMessage(Group group)
+        public NetOutgoingMessage BuildUpdateMessage()
         {
-            var om = group.CreateMessage("update");
+            var om = _networkScene.group.CreateMessage("update");
             this.Write(om);
 
             return om;

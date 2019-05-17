@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Collections;
+using Lidgren.Network;
 
 namespace Guppy.Network.Collections
 {
     public class NetworkEntityCollection : NetworkObjectCollection<NetworkEntity>
     {
-        public Queue<NetworkEntity> CreatedQueue;
+        public event EventHandler<NetworkEntity> Created;
 
         public NetworkEntityCollection(EntityCollection entities)
         {
             entities.Created += this.HandleEntityCreated;
             entities.Added += this.HandleEntityAdded;
             entities.Removed += this.HandleEntityRemoved;
-
-            this.CreatedQueue = new Queue<NetworkEntity>();
         }
 
         #region Event Handlers
@@ -23,8 +22,7 @@ namespace Guppy.Network.Collections
         {
             if (e is NetworkEntity)
             { // If the new entity is a network entity...
-                // Add it to the network entities collection
-                this.CreatedQueue.Enqueue(e as NetworkEntity);
+                this.Created?.Invoke(this, e as NetworkEntity);
             }
         }
 
