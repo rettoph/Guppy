@@ -7,7 +7,7 @@ using System.Text;
 namespace Guppy.Network.Collections
 {
     public class NetworkObjectCollection<TNetworkObject> : UniqueObjectCollection<TNetworkObject>
-        where TNetworkObject : class, INetworkObject
+        where TNetworkObject : class, ITrackedNetworkObject
     {
         public Queue<TNetworkObject> DirtyQueue;
 
@@ -36,7 +36,7 @@ namespace Guppy.Network.Collections
         }
 
         #region Event Handlers
-        private void HandleDirtyChanged(object sender, INetworkObject e)
+        private void HandleDirtyChanged(object sender, ITrackedNetworkObject e)
         {
             if(e.Dirty)
             { // Add the network object to the dirty queue

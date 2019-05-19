@@ -11,7 +11,7 @@ using Guppy.Network.Groups;
 
 namespace Guppy.Network
 {
-    public abstract class NetworkEntity : Entity, INetworkObject
+    public abstract class NetworkEntity : Entity, ITrackedNetworkObject
     {
         private Boolean _dirty;
         private NetworkScene _networkScene;
@@ -30,7 +30,7 @@ namespace Guppy.Network
             }
         }
 
-        public event EventHandler<INetworkObject> OnDirtyChanged;
+        public event EventHandler<ITrackedNetworkObject> OnDirtyChanged;
 
         public NetworkEntity(EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
         {

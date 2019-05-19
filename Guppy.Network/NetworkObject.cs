@@ -9,7 +9,7 @@ using Guppy.Implementations;
 
 namespace Guppy.Network
 {
-    public class NetworkObject : UniqueObject, INetworkObject
+    public class NetworkObject : UniqueObject, ITrackedNetworkObject
     {
         private Boolean _dirty;
 
@@ -26,7 +26,7 @@ namespace Guppy.Network
             }
         }
 
-        public event EventHandler<INetworkObject> OnDirtyChanged;
+        public event EventHandler<ITrackedNetworkObject> OnDirtyChanged;
 
         #region Constructors
         public NetworkObject()
