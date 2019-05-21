@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame.DebugView", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj", "{9D6530F3-C6CE-4116-BFF9-7F4944015C60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Network.Farseer", "Guppy.Network.Farseer\Guppy.Network.Farseer.csproj", "{5C7AC51E-65D1-4FB9-9486-B703BA51F71D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C7AC51E-65D1-4FB9-9486-B703BA51F71D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C7AC51E-65D1-4FB9-9486-B703BA51F71D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C7AC51E-65D1-4FB9-9486-B703BA51F71D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C7AC51E-65D1-4FB9-9486-B703BA51F71D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
