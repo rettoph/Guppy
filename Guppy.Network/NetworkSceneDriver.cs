@@ -27,9 +27,16 @@ namespace Guppy.Network
         {
             this.update(s, g, ne);
 
-            // All drivers should auto-push any recieved actions
-            while (s.actionQueue.Count > 0)
-                g.SendMesssage(s.actionQueue.Dequeue(), NetDeliveryMethod.UnreliableSequenced);
+            if (g.Users.Count() > 0)
+            {
+                // All drivers should auto-push any recieved actions
+                while (s.actionQueue.Count > 0)
+                    g.SendMesssage(s.actionQueue.Dequeue(), NetDeliveryMethod.UnreliableSequenced);
+            }
+            else
+            {
+                s.actionQueue.Clear();
+            }
         }
         public void Setup(NetworkScene s, Group g, NetworkEntityCollection ne)
         {
@@ -72,11 +79,19 @@ namespace Guppy.Network
         {
             g.Update();
 
-            while (_createdMessageQueue.Count > 0)
-                g.SendMesssage(_createdMessageQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered);
+            if (g.Users.Count() > 0)
+            {
+                while (_createdMessageQueue.Count > 0)
+                    g.SendMesssage(_createdMessageQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered);
 
-            while (ne.DirtyQueue.Count > 0)
-                g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
+                while (ne.DirtyQueue.Count > 0)
+                    g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
+            }
+            else
+            {
+                _createdMessageQueue.Clear();
+                ne.DirtyQueue.Clear();
+            }
         }
 
         private void HandleNetworkEntityCreated(object sender, NetworkEntity e)
