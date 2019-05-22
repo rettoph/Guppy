@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy
 {
-    public abstract class Entity : LivingObject
+    public abstract class Entity : Driven
     {
         #region Protected Attributes
         protected Scene scene { get; private set; }
@@ -25,14 +25,14 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Entity(EntityConfiguration configuration, Scene scene, ILogger logger) : base(logger)
+        public Entity(EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(provider, logger)
         {
             this.Configuration = configuration;
 
             this.scene = scene; // Save the entities scene
             this.SetLayerDepth(this.scene.DefaultLayerDepth); // Set the initial layer depth to the default layer depth
         }
-        public Entity(Guid id, EntityConfiguration configuration, Scene scene, ILogger logger) : base(id, logger)
+        public Entity(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, provider, logger)
         {
             this.Configuration = configuration;
 

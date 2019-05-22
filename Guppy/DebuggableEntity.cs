@@ -13,11 +13,11 @@ namespace Guppy
     /// </summary>
     public abstract class DebuggableEntity : Entity
     {
-        public DebuggableEntity(EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
+        public DebuggableEntity(EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
         {
         }
 
-        public DebuggableEntity(Guid id, EntityConfiguration configuration, Scene scene, ILogger logger) : base(id, configuration, scene, logger)
+        public DebuggableEntity(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, configuration, scene, provider, logger)
         {
         }
 

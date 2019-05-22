@@ -32,11 +32,11 @@ namespace Guppy.Network
 
         public event EventHandler<ITrackedNetworkObject> OnDirtyChanged;
 
-        public NetworkEntity(EntityConfiguration configuration, Scene scene, ILogger logger) : base(configuration, scene, logger)
+        public NetworkEntity(EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(configuration, scene, provider, logger)
         {
         }
 
-        public NetworkEntity(Guid id, EntityConfiguration configuration, Scene scene, ILogger logger) : base(id, configuration, scene, logger)
+        public NetworkEntity(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, configuration, scene, provider, logger)
         {
         }
 

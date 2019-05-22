@@ -33,6 +33,7 @@ namespace Guppy
             services.AddLoader<ColorLoader>();
             services.AddLoader<ContentLoader>();
             services.AddLoader<EntityLoader>();
+            services.AddLoader<DriverLoader>();
         }
 
         public void Boot(IServiceProvider provider)

@@ -74,7 +74,7 @@ namespace Guppy.UI.Entities
             Scene scene,
             LayerCollection layers,
             IServiceProvider provider,
-            ILogger logger) : base(configuration, scene, logger)
+            ILogger logger) : base(configuration, scene, provider, logger)
         {
             _layers = layers;
             _window = window;
