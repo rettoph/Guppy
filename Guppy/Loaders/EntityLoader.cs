@@ -1,5 +1,5 @@
 ﻿using Guppy.Configurations;
-using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

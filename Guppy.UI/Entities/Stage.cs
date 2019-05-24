@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Collections;
 using Guppy.Configurations;
-using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Loaders;
 using Guppy.UI.Elements;
 using Guppy.UI.Enums;

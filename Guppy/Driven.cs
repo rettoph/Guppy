@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions;
+﻿using Guppy.Extensions.DependencyInjection;
 using Guppy.Implementations;
 using Guppy.Interfaces;
 using Guppy.Loaders;
@@ -20,12 +20,12 @@ namespace Guppy
 
         public Driven(IServiceProvider provider, ILogger logger) : base(logger)
         {
-            _drivers = provider.GetLoader<DriverLoader>().BuildDrivers(this);
+            _drivers = provider.GetDrivers(this);
         }
 
         public Driven(Guid id, IServiceProvider provider, ILogger logger) : base(id, logger)
         {
-            _drivers = provider.GetLoader<DriverLoader>().BuildDrivers(this);
+            _drivers = provider.GetDrivers(this);
         }
 
         #region Initialization Methods

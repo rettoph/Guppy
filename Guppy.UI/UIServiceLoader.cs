@@ -1,5 +1,5 @@
 ﻿using Guppy.Collections;
-using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.UI.Elements;

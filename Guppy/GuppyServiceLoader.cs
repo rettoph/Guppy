@@ -1,6 +1,6 @@
 ﻿using Guppy.Collections;
 using Guppy.Configurations;
-using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
@@ -33,7 +33,6 @@ namespace Guppy
             services.AddLoader<ColorLoader>();
             services.AddLoader<ContentLoader>();
             services.AddLoader<EntityLoader>();
-            services.AddLoader<DriverLoader>();
         }
 
         public void Boot(IServiceProvider provider)

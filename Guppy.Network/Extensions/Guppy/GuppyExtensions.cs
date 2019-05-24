@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions;
+﻿using Guppy.Extensions.DependencyInjection;
 using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;

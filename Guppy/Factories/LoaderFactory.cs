@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions;
+﻿using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
