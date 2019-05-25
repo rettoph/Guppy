@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Collections;
 using Guppy.Network.Groups;
+using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Guppy.Network
 
         public void Update(NetworkScene s, Group g, NetworkEntityCollection ne)
         {
+            g.Update();
+
             this.update(s, g, ne);
 
             if (g.Users.Count() > 0)
@@ -51,9 +54,7 @@ namespace Guppy.Network
             },
             (s, g, ne) =>
             {
-                g.Update();
-                while (ne.DirtyQueue.Count > 0)
-                    g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
+                // 
             });
 
             var serverDriver = new ServerNetworkSceneDriver();
@@ -63,40 +64,54 @@ namespace Guppy.Network
 
     class ServerNetworkSceneDriver
     {
+        private Queue<NetworkEntity> _dirtyEntityQueue;
         private Queue<NetOutgoingMessage> _createdMessageQueue;
 
         public ServerNetworkSceneDriver()
         {
+            _dirtyEntityQueue = new Queue<NetworkEntity>();
             _createdMessageQueue = new Queue<NetOutgoingMessage>();
         }
 
         public void Setup(NetworkScene s, Group g, NetworkEntityCollection ne)
         {
             ne.Created += this.HandleNetworkEntityCreated;
+            ne.Removed += this.HandleNetworkEntityRemoved;
         }
 
         public void Update(NetworkScene s, Group g, NetworkEntityCollection ne)
         {
-            g.Update();
-
             if (g.Users.Count() > 0)
             {
                 while (_createdMessageQueue.Count > 0)
                     g.SendMesssage(_createdMessageQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered);
 
-                while (ne.DirtyQueue.Count > 0)
-                    g.SendMesssage(ne.DirtyQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
+                while (_dirtyEntityQueue.Count > 0)
+                    g.SendMesssage(_dirtyEntityQueue.Dequeue().BuildUpdateMessage(), NetDeliveryMethod.ReliableSequenced);
             }
             else
             {
                 _createdMessageQueue.Clear();
-                ne.DirtyQueue.Clear();
+                _dirtyEntityQueue.Clear();
             }
         }
 
         private void HandleNetworkEntityCreated(object sender, NetworkEntity e)
         {
             _createdMessageQueue.Enqueue(e.BuildCreateMessage());
+
+            e.OnDirtyChanged += this.HandleNetworkEntityDirtyChanged;
+        }
+
+        private void HandleNetworkEntityRemoved(object sender, NetworkEntity e)
+        {
+            e.OnDirtyChanged -= this.HandleNetworkEntityDirtyChanged;
+        }
+
+        private void HandleNetworkEntityDirtyChanged(object sender, ITrackedNetworkObject e)
+        {
+            if (e.Dirty)
+                _dirtyEntityQueue.Enqueue(e as NetworkEntity);
         }
     }
 }
