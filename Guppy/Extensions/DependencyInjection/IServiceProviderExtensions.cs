@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Configurations;
 using Guppy.Factories;
 using Guppy.Interfaces;
+using Guppy.Implementations;
 
 namespace Guppy.Extensions.DependencyInjection
 {
@@ -61,7 +62,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static Driver[] GetDrivers(this IServiceProvider provider, Driven driven)
         {
             return provider.GetServices<DriverConfiguration>()
-                .Where(dc => dc.DrivenType == driven.GetType())
+                .Where(dc => dc.DrivenType.IsAssignableFrom(driven.GetType()))
                 .Select(dc => (Driver)ActivatorUtilities.CreateInstance(provider, dc.DriverType, driven))
                 .ToArray();
         }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.Implementations
 {
-    public abstract class LivingObject : Initializable, ILivingObject
+    public abstract class ZFrameable : Driven, IZFrameable
     {
         private Boolean _visible;
         private Boolean _enabled;
@@ -37,7 +37,7 @@ namespace Guppy.Implementations
         public event EventHandler<EventArgs> UpdateOrderChanged;
         
 
-        public LivingObject(ILogger logger) : base(logger)
+        public ZFrameable(IServiceProvider provider, ILogger logger) : base(provider, logger)
         {
             this.SetDrawOrder(0);
             this.SetUpdateOrder(0);
@@ -45,7 +45,7 @@ namespace Guppy.Implementations
             this.SetVisible(true);
             this.SetEnabled(true);
         }
-        public LivingObject(Guid id, ILogger logger) : base(id, logger)
+        public ZFrameable(Guid id, IServiceProvider provider, ILogger logger) : base(id, provider, logger)
         {
             this.SetDrawOrder(0);
             this.SetUpdateOrder(0);
@@ -53,9 +53,6 @@ namespace Guppy.Implementations
             this.SetVisible(true);
             this.SetEnabled(true);
         }
-
-        public abstract void Draw(GameTime gameTime);
-        public abstract void Update(GameTime gameTime);
 
         public void SetEnabled(Boolean enabled)
         {

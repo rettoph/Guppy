@@ -8,8 +8,8 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Collections
 {
-    public class LivingObjectCollection<TLivingObject> : UniqueObjectCollection<TLivingObject>
-        where TLivingObject : class, ILivingObject
+    public class ZFrameableCollection<TLivingObject> : UniqueObjectCollection<TLivingObject>
+        where TLivingObject : class, IZFrameable
     {
         #region Private Fields
         private IOrderedEnumerable<TLivingObject> _drawables;
@@ -21,7 +21,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Constructors
-        public LivingObjectCollection(bool disposeOnRemove = true, bool initializeOnAdd = false) : base(disposeOnRemove)
+        public ZFrameableCollection(bool disposeOnRemove = true, bool initializeOnAdd = false) : base(disposeOnRemove)
         {
             _dirtyDrawables = true;
             _dirtyUpdatables = true;
@@ -41,7 +41,7 @@ namespace Guppy.Collections
             }
 
             // Update all the drawables
-            foreach (ILivingObject livingObject in _drawables)
+            foreach (IZFrameable livingObject in _drawables)
                 livingObject.Draw(gameTime);
         }
 
@@ -56,7 +56,7 @@ namespace Guppy.Collections
             }
 
             // Update all the updatables
-            foreach (ILivingObject livingObject in _updatables)
+            foreach (IZFrameable livingObject in _updatables)
                 livingObject.Update(gameTime);
         }
         #endregion

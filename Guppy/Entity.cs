@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy
 {
-    public abstract class Entity : Driven
+    public abstract class Entity : ZFrameable
     {
         #region Protected Attributes
         protected Scene scene { get; private set; }

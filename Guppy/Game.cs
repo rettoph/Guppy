@@ -24,7 +24,7 @@ namespace Guppy
     /// manages the service provider, and handles all
     /// update/draw logic.
     /// </summary>
-    public class Game : Initializable
+    public class Game : Driven
     {
         #region Private Fields
         private Thread _thread;
@@ -41,21 +41,19 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Game(ILogger logger, IServiceProvider provider) : base(logger)
+        public Game(IServiceProvider provider, ILogger logger) : base(provider, logger)
         {
             this.provider = provider;
         }
-
-        
         #endregion
 
         #region Frame Methods
-        public virtual void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             this.Scene.Draw(gameTime);
         }
 
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             this.Scene.Update(gameTime);
         }

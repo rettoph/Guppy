@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities.Cameras;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy
 {
@@ -21,7 +22,7 @@ namespace Guppy
     /// Note, the configuration values are readonly and cannot
     /// be changed once defined.
     /// </summary>
-    public abstract class Layer : TrackedDisposable
+    public abstract class Layer : ZFrameable
     {
         #region Private Fields
         private GraphicsDevice _graphicsDevice;
@@ -34,7 +35,7 @@ namespace Guppy
         #endregion
 
         #region Protected Internal Attributes
-        protected internal LivingObjectCollection<Entity> entities { get; private set; }
+        protected internal ZFrameableCollection<Entity> entities { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -44,7 +45,8 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Layer(LayerConfiguration configuration, IServiceProvider provider, Camera camera = null)
+        public Layer(LayerConfiguration configuration, IServiceProvider provider, ILogger logger, Camera camera = null)
+            : base(provider, logger)
         {
             _debuggables = new List<DebuggableEntity>();
             _graphicsDevice = provider.GetService<GraphicsDevice>();
@@ -55,7 +57,7 @@ namespace Guppy
             this.Configuration = configuration;
             this.Debug = false;
 
-            this.entities = new LivingObjectCollection<Entity>();
+            this.entities = new ZFrameableCollection<Entity>();
             this.entities.DisposeOnRemove = false;
 
             this.entities.Added += this.HandleEntityAdded;
@@ -66,11 +68,11 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        public virtual void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
 
         }
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
 
         }

@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy
+namespace Guppy.Implementations
 {
     /// <summary>
     /// Driven classes contain drivers defined within
     /// the DriverLoader.
     /// </summary>
-    public class Driven : LivingObject
+    public class Driven : Frameable, IDriven
     {
         private Driver[] _drivers;
 

@@ -8,7 +8,7 @@ namespace Guppy.Collections
     /// <summary>
     /// Stores a collection of all entities within a scene.
     /// </summary>
-    public class EntityCollection : LivingObjectCollection<Entity>
+    public class EntityCollection : ZFrameableCollection<Entity>
     {
         #region Private Fields
         private LayerCollection _layers;

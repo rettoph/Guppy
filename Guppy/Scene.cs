@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy
 {
-    public class Scene : Initializable
+    public class Scene : Driven
     {
         #region Private Fields
         private IServiceScope _scope;
@@ -41,7 +41,7 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Scene(IServiceProvider provider) : base(provider.GetService<ILogger>())
+        public Scene(IServiceProvider provider) : base(provider, provider.GetService<ILogger>())
         {
             this.provider = provider;
 
