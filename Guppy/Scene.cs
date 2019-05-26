@@ -63,12 +63,12 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        public virtual void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             this.layers.Draw(gameTime);
         }
 
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             this.layers.Update(gameTime);
         }
