@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Guppy.Implementations
 {
@@ -75,6 +76,20 @@ namespace Guppy.Implementations
                 driver.Update(gameTime);
         }
         #endregion
+
+        /// <summary>
+        /// Return all internal drivers that are assignable from
+        /// a given type
+        /// </summary>
+        /// <typeparam name="TDriver"></typeparam>
+        /// <returns></returns>
+        protected IEnumerable<TDriver> GetDrivers<TDriver>()
+            where TDriver : Driver
+        {
+            return _drivers
+                .Where(d => typeof(TDriver).IsAssignableFrom(d.GetType()))
+                .Select(d => d as TDriver);
+        }
 
         public override void Dispose()
         {
