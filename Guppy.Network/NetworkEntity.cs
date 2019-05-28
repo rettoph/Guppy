@@ -17,6 +17,9 @@ namespace Guppy.Network
         private NetworkScene _networkScene;
         public Dictionary<String, Action<NetIncomingMessage>> ActionHandlers { get; private set; }
 
+        public event EventHandler<NetworkEntity> OnRead;
+        public event EventHandler<NetworkEntity> OnWrite;
+
         public Boolean Dirty
         {
             get { return _dirty; }
@@ -49,15 +52,21 @@ namespace Guppy.Network
             this.ActionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
         }
 
-        public virtual void Read(NetIncomingMessage im)
+        public void Read(NetIncomingMessage im)
         {
-            //
-        }
+            this.read(im);
 
-        public virtual void Write(NetOutgoingMessage om)
-        {
-            //
+            this.OnRead?.Invoke(this, this);
         }
+        protected abstract void read(NetIncomingMessage im);
+
+        public void Write(NetOutgoingMessage om)
+        {
+            this.write(om);
+
+            this.OnWrite?.Invoke(this, this);
+        }
+        protected abstract void write(NetOutgoingMessage im);
 
         public void HandleAction(String type, NetIncomingMessage im)
         {

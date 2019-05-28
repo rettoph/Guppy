@@ -26,23 +26,31 @@ namespace Guppy.Network.Drivers
         {
             base.Boot();
 
-            this.scene.Group.MessageHandler.Add("setup:begin", this.HandleSetupStartMessage);
-            this.scene.Group.MessageHandler.Add("setup:end", this.HandleSetupEndMessage);
+            _updateMessageQueue = new Queue<NetIncomingMessage>();
+            _actionMessageQueue = new Queue<NetIncomingMessage>();
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.scene.Group.MessageHandler["setup:begin"] = this.HandleSetupStartMessage;
+            this.scene.Group.MessageHandler["setup:end"] = this.HandleSetupEndMessage;
+            this.scene.Group.MessageHandler["action"] = this.EnqueueActionMessage;
+            this.scene.Group.MessageHandler["update"] = this.EnqueueUpdateMessage;
+            this.scene.Group.MessageHandler["create"] = this.HandleCreateMessage;
         }
 
         #region NetMessage Handlers
         private void HandleSetupStartMessage(NetIncomingMessage obj)
         {
-            _updateMessageQueue = new Queue<NetIncomingMessage>();
-            _actionMessageQueue = new Queue<NetIncomingMessage>();
-
-            this.scene.Group.MessageHandler["action"] = this.EnqueueActionMessage;
-            this.scene.Group.MessageHandler["update"] = this.EnqueueUpdateMessage;
-            this.scene.Group.MessageHandler["create"] = this.HandleCreateMessage;
-
+            this.logger.LogInformation("Starting NetworkScene Setup...");
         }
+
         private void HandleSetupEndMessage(NetIncomingMessage obj)
         {
+            this.logger.LogInformation("Ending NetworkScene Setup...");
+
             this.scene.Group.MessageHandler["action"] = this.scene.HandleActionMessage;
             this.scene.Group.MessageHandler["update"] = this.HandleUpdateMessage;
 
@@ -55,6 +63,8 @@ namespace Guppy.Network.Drivers
             // Empty the message queue
             _updateMessageQueue.Clear();
             _actionMessageQueue.Clear();
+
+            this.logger.LogInformation("Ended NetworkScene Setup.");
         }
 
         private void HandleCreateMessage(NetIncomingMessage obj)
@@ -63,7 +73,15 @@ namespace Guppy.Network.Drivers
         }
         private void HandleUpdateMessage(NetIncomingMessage obj)
         {
-            var ne = _networkEntities.GetById(obj.ReadGuid());
+            var id = obj.ReadGuid();
+            var ne = _networkEntities.GetById(id);
+
+            if(ne == null)
+            {
+                this.logger.LogError($"Unable to run update message. Unknown NetworkEntity({id})");
+                return;
+            }
+
             ne.Read(obj);
 
             // Mark the entity as clean now
@@ -77,7 +95,6 @@ namespace Guppy.Network.Drivers
         /// <param name="obj"></param>
         private void EnqueueUpdateMessage(NetIncomingMessage obj)
         {
-            this.logger.LogInformation("New update message recieved!");
             _updateMessageQueue.Enqueue(obj);
         }
         private void EnqueueActionMessage(NetIncomingMessage obj)

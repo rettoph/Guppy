@@ -50,7 +50,7 @@ namespace Guppy.Network.Drivers
 
                 // Push all update messages to the client
                 while (_dirtyEntityQueue.Count > 0)
-                    this.scene.Group.SendMesssage(this.BuildUpdateMessage(_dirtyEntityQueue.Dequeue()), NetDeliveryMethod.ReliableSequenced);
+                    this.scene.Group.SendMesssage(this.BuildUpdateMessage(_dirtyEntityQueue.Dequeue()), NetDeliveryMethod.ReliableOrdered);
             }
             else
             {

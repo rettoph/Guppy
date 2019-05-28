@@ -4,6 +4,7 @@ using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace Guppy.Network
 
             this.actionQueue = new Queue<NetOutgoingMessage>();
 
-            this.Group.MessageHandler.Add("action", this.HandleActionMessage);
+            this.Group.MessageHandler["action"] = this.HandleActionMessage;
         }
         #endregion
 
@@ -60,7 +61,18 @@ namespace Guppy.Network
         #region NetMessage Handlers
         protected internal void HandleActionMessage(NetIncomingMessage obj)
         {
-            this.networkEntities.GetById(obj.ReadGuid()).HandleAction(obj.ReadString(), obj);
+            var id = obj.ReadGuid();
+            var type = obj.ReadString();
+
+            var ne = this.networkEntities.GetById(id);
+            
+            if(ne == null)
+            {
+                this.logger.LogError($"Unable to run action message. Unknown NetworkEntity({id}) => Type: '{type}'");
+                return;
+            }
+
+            ne.HandleAction(type, obj);
         }
         #endregion
     }
