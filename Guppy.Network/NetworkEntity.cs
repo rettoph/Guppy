@@ -80,23 +80,5 @@ namespace Guppy.Network
 
             return om;
         }
-
-        public NetOutgoingMessage BuildCreateMessage()
-        {
-            var om = _networkScene.Group.CreateMessage("create");
-            om.Write(this.Configuration.Handle);
-            om.Write(this.Id);
-
-            return om;
-        }
-
-        public NetOutgoingMessage BuildUpdateMessage()
-        {
-            var om = _networkScene.Group.CreateMessage("update");
-            om.Write(this.Id);
-            this.Write(om);
-
-            return om;
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Collections;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Lidgren.Network;
@@ -32,6 +33,8 @@ namespace Guppy.Network
             base.Boot();
 
             this.actionQueue = new Queue<NetOutgoingMessage>();
+
+            this.Group.MessageHandler.Add("action", this.HandleActionMessage);
         }
         #endregion
 
@@ -53,5 +56,12 @@ namespace Guppy.Network
                 this.actionQueue.Clear();
             }
         }
+
+        #region NetMessage Handlers
+        protected internal void HandleActionMessage(NetIncomingMessage obj)
+        {
+            this.networkEntities.GetById(obj.ReadGuid()).HandleAction(obj.ReadString(), obj);
+        }
+        #endregion
     }
 }
