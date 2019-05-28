@@ -100,6 +100,9 @@ namespace Guppy.Network
         {
             _createdMessageQueue.Enqueue(e.BuildCreateMessage());
 
+            e.Dirty = true;
+            _dirtyEntityQueue.Enqueue(e);
+
             e.OnDirtyChanged += this.HandleNetworkEntityDirtyChanged;
         }
 

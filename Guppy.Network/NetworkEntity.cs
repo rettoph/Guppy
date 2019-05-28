@@ -44,6 +44,7 @@ namespace Guppy.Network
         {
             base.Boot();
 
+            _dirty = false;
             _networkScene = this.scene as NetworkScene;
             this.ActionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
         }
@@ -55,8 +56,7 @@ namespace Guppy.Network
 
         public virtual void Write(NetOutgoingMessage om)
         {
-            // Write the entities id
-            om.Write(this.Id);
+            //
         }
 
         public void HandleAction(String type, NetIncomingMessage im)
@@ -85,7 +85,7 @@ namespace Guppy.Network
         {
             var om = _networkScene.group.CreateMessage("create");
             om.Write(this.Configuration.Handle);
-            this.Write(om);
+            om.Write(this.Id);
 
             return om;
         }
@@ -93,6 +93,7 @@ namespace Guppy.Network
         public NetOutgoingMessage BuildUpdateMessage()
         {
             var om = _networkScene.group.CreateMessage("update");
+            om.Write(this.Id);
             this.Write(om);
 
             return om;
