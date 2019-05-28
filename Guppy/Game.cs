@@ -50,11 +50,15 @@ namespace Guppy
         #region Frame Methods
         public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+
             this.Scene.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             this.Scene.Update(gameTime);
         }
         #endregion
