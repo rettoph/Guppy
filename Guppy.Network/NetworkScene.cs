@@ -13,8 +13,7 @@ namespace Guppy.Network
     public abstract class NetworkScene : Scene
     {
         protected NetworkEntityCollection networkEntities { get; private set; }
-        protected internal Group group { get; private set; }
-        protected NetworkSceneDriver driver { get; set; }
+        public Group Group { get; private set; }
 
         /// <summary>
         /// Queue containing actions preformed since the last flush
@@ -23,8 +22,8 @@ namespace Guppy.Network
 
         public NetworkScene(Group group, IServiceProvider provider) : base(provider)
         {
-            this.group = group;
-            this.driver = provider.GetRequiredService<NetworkSceneDriver>();
+            this.Group = group;
+            this.networkEntities = provider.GetRequiredService<NetworkEntityCollection>();
         }
 
         #region Initialization Methods
@@ -33,27 +32,26 @@ namespace Guppy.Network
             base.Boot();
 
             this.actionQueue = new Queue<NetOutgoingMessage>();
-            this.networkEntities = new NetworkEntityCollection(this.entities);
-
-            this.driver.Setup(this, this.group, networkEntities);
         }
         #endregion
 
         public override void Update(GameTime gameTime)
         {
-            this.driver.Update(this, this.group, this.networkEntities);
+            this.Group.Update();
 
             base.Update(gameTime);
-        }
 
-        /// <summary>
-        /// Public function automatically called whenever a user joins the server. Special note,
-        /// this function is called withene a network scene driver.
-        /// </summary>
-        /// <param name="user"></param>
-        public virtual void UserAdded(User user)
-        {
-
+            // Push all action messages to the connected peer...
+            if (this.Group.Users.Count() > 0)
+            {
+                // All drivers should auto-push any recieved actions
+                while (this.actionQueue.Count > 0)
+                    this.Group.SendMesssage(this.actionQueue.Dequeue(), NetDeliveryMethod.UnreliableSequenced);
+            }
+            else
+            {
+                this.actionQueue.Clear();
+            }
         }
     }
 }

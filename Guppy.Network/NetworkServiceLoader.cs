@@ -1,4 +1,6 @@
-﻿using Guppy.Interfaces;
+﻿using Guppy.Collections;
+using Guppy.Interfaces;
+using Guppy.Network.Collections;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,7 +13,10 @@ namespace Guppy.Network
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
-            // throw new NotImplementedException();
+            services.AddScoped<NetworkEntityCollection>(p =>
+            {
+                return new NetworkEntityCollection(p.GetService<EntityCollection>());
+            });
         }
 
         public void Boot(IServiceProvider provider)

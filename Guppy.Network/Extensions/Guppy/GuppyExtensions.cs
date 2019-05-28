@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions.DependencyInjection;
+using Guppy.Network.Drivers;
 using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,13 +11,14 @@ namespace Guppy.Network.Extensions.Guppy
 {
     public static class GuppyExtensions
     {
-        public static void ConfigureNetwork<TPeer>(this GuppyLoader guppy, Func<IServiceProvider, TPeer> peerFactory, NetworkSceneDriver networkSceneDriver)
+        public static void ConfigureNetwork<TPeer, TNetworkSceneDriver>(this GuppyLoader guppy, Func<IServiceProvider, TPeer> peerFactory)
             where TPeer : Peer
+            where TNetworkSceneDriver : NetworkSceneDriver
         {
             guppy.Services.AddScene<NetworkScene>();
             guppy.Services.AddSingleton<TPeer>(peerFactory);
             guppy.Services.AddSingleton<Peer>(GuppyExtensions.GetPeer<TPeer>);
-            guppy.Services.AddSingleton<NetworkSceneDriver>(networkSceneDriver);
+            guppy.Services.AddDriver<NetworkScene, TNetworkSceneDriver>();
         }
 
         private static Peer GetPeer<TPeer>(IServiceProvider provider)

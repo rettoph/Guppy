@@ -73,7 +73,7 @@ namespace Guppy.Network
 
         public NetOutgoingMessage CreateActionMessage(String type)
         {
-            var om = _networkScene.group.CreateMessage("action");
+            var om = _networkScene.Group.CreateMessage("action");
             om.Write(this.Id);
             om.Write(type);
             _networkScene.actionQueue.Enqueue(om);
@@ -83,7 +83,7 @@ namespace Guppy.Network
 
         public NetOutgoingMessage BuildCreateMessage()
         {
-            var om = _networkScene.group.CreateMessage("create");
+            var om = _networkScene.Group.CreateMessage("create");
             om.Write(this.Configuration.Handle);
             om.Write(this.Id);
 
@@ -92,7 +92,7 @@ namespace Guppy.Network
 
         public NetOutgoingMessage BuildUpdateMessage()
         {
-            var om = _networkScene.group.CreateMessage("update");
+            var om = _networkScene.Group.CreateMessage("update");
             om.Write(this.Id);
             this.Write(om);
 
