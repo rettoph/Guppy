@@ -49,5 +49,12 @@ namespace Guppy
             this.OnLayerDepthChanged?.Invoke(this, this);
         }
         #endregion
+
+        public override void Dispose()
+        {
+            this.logger.LogDebug($"Destroying Entity<{this.GetType().Name}>({this.Id})");
+
+            base.Dispose();
+        }
     }
 }

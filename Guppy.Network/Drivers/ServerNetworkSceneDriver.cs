@@ -136,6 +136,9 @@ namespace Guppy.Network.Drivers
             om.Write(ne.Id);
             ne.Write(om);
 
+            // Mark the entity as cleaned at this time
+            ne.Dirty = false;
+
             return om;
         }
         #endregion

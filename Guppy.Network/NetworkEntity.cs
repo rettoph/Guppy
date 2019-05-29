@@ -66,7 +66,7 @@ namespace Guppy.Network
 
             this.OnWrite?.Invoke(this, this);
         }
-        protected abstract void write(NetOutgoingMessage im);
+        protected abstract void write(NetOutgoingMessage om);
 
         public void HandleAction(String type, NetIncomingMessage im)
         {

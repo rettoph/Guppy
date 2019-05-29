@@ -54,7 +54,7 @@ namespace Guppy.Collections
             {
                 item.Disposing -= this.HandleDisposing;
 
-                if (this.DisposeOnRemove)
+                if (this.DisposeOnRemove && !item.Disposed)
                     item.Dispose(); // Auto dispose the item if told to do so
 
                 // Trigger the removed event
