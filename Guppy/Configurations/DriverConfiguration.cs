@@ -9,8 +9,9 @@ namespace Guppy.Configurations
     {
         public Type DrivenType { get; private set; }
         public Type DriverType { get; private set; }
+        public UInt16 Priority { get; private set; }
 
-        public DriverConfiguration(Type drivenType, Type driverType)
+        public DriverConfiguration(Type drivenType, Type driverType, UInt16 priority)
         {
             if (!typeof(Driven).IsAssignableFrom(drivenType))
                 throw new Exception("Unable to create driven configuration, invalid driven type!");
@@ -19,6 +20,7 @@ namespace Guppy.Configurations
 
             this.DrivenType = drivenType;
             this.DriverType = driverType;
+            this.Priority = priority;
         }
     }
 }

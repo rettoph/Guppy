@@ -46,12 +46,12 @@ namespace Guppy.Extensions.DependencyInjection
             collection.AddScoped<TLoader>(factory.Create);
         }
 
-        public static void AddDriver<TDriven, TDriver>(this IServiceCollection collection)
+        public static void AddDriver<TDriven, TDriver>(this IServiceCollection collection, UInt16 priority = 100)
             where TDriven : Driven
             where TDriver : Driver
         {
             collection.AddSingleton(
-                new DriverConfiguration(typeof(TDriven), typeof(TDriver)));
+                new DriverConfiguration(typeof(TDriven), typeof(TDriver), priority));
         }
     }
 }

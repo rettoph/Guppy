@@ -63,6 +63,7 @@ namespace Guppy.Extensions.DependencyInjection
         {
             return provider.GetServices<DriverConfiguration>()
                 .Where(dc => dc.DrivenType.IsAssignableFrom(driven.GetType()))
+                .OrderBy(dc => dc.Priority)
                 .Select(dc => (Driver)ActivatorUtilities.CreateInstance(provider, dc.DriverType, driven))
                 .ToArray();
         }

@@ -18,7 +18,7 @@ namespace Guppy.Network.Extensions.Guppy
             guppy.Services.AddScene<NetworkScene>();
             guppy.Services.AddSingleton<TPeer>(peerFactory);
             guppy.Services.AddSingleton<Peer>(GuppyExtensions.GetPeer<TPeer>);
-            guppy.Services.AddDriver<NetworkScene, TNetworkSceneDriver>();
+            guppy.Services.AddDriver<NetworkScene, TNetworkSceneDriver>(90);
         }
 
         private static Peer GetPeer<TPeer>(IServiceProvider provider)

@@ -52,7 +52,11 @@ namespace Guppy
             _graphicsDevice = provider.GetService<GraphicsDevice>();
             _allVertices = new List<VertexPositionColor>();
             _bassicEffect = provider.GetService<BasicEffect>();
-            _bassicEffect.VertexColorEnabled = true;
+
+            if (_bassicEffect != null)
+            {
+                _bassicEffect.VertexColorEnabled = true;
+            }
 
             this.Configuration = configuration;
             this.Debug = false;
@@ -63,7 +67,7 @@ namespace Guppy
             this.entities.Added += this.HandleEntityAdded;
             this.entities.Removed += this.HandleEntityRemoved;
             
-            this.Camera = camera == null ? provider.GetRequiredService<Camera2D>() : camera;
+            this.Camera = camera == null ? provider.GetService<Camera2D>() : camera;
         }
         #endregion
 
