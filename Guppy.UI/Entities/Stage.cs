@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.UI.Entities
 {
-    public class Stage : DebuggableEntity
+    public class Stage : Entity
     {
         #region Private Fields
         private GameWindow _window;
@@ -145,10 +145,6 @@ namespace Guppy.UI.Entities
                 this.graphicsDevice.SetRenderTargets(renderTargetsCache);
             }
 
-        }
-        public override void AddDebugVertices(ref List<VertexPositionColor> vertices)
-        {
-            this.Content.AddDebugVertices(ref vertices);
         }
         #endregion
 

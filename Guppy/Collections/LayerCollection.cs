@@ -10,13 +10,10 @@ using System.Text;
 
 namespace Guppy.Collections
 {
-    public class LayerCollection : TrackedDisposableCollection<Layer>
+    public class LayerCollection : ZFrameableCollection<Layer>
     {
         #region Private Fields
         private IServiceProvider _provider;
-
-        private IOrderedEnumerable<Layer> _drawables;
-        private IOrderedEnumerable<Layer> _updatables;
         #endregion
 
         #region Public Attributes
@@ -27,9 +24,6 @@ namespace Guppy.Collections
         public LayerCollection(IServiceProvider provider)
         {
             _provider = provider;
-
-            _updatables = Array.Empty<Layer>().OrderBy(l => l.Configuration.UpdateOrder);
-            _drawables = Array.Empty<Layer>().OrderBy(l => l.Configuration.DrawOrder);
         }
         #endregion
 
@@ -74,25 +68,6 @@ namespace Guppy.Collections
         }
         #endregion
 
-        #region Frame Methods
-        public void Draw(GameTime gameTime)
-        {
-            // Update all the drawables
-            foreach (Layer livingObject in _drawables)
-                livingObject.Draw(gameTime);
-            // Draw all debug enabled layers
-            foreach (Layer livingObject in _drawables)
-                livingObject.DebugDraw(gameTime);
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            // Update all the updatables
-            foreach (Layer livingObject in _updatables)
-                livingObject.Update(gameTime);
-        }
-        #endregion
-
         #region Collection Methods
         public override void Add(Layer item)
         {
@@ -102,26 +77,7 @@ namespace Guppy.Collections
                 throw new Exception($"Unable to add Layer! MaxDepth overlap!");
 
             // If there is no depth range overlap of the new item... add it to the collection
-
             base.Add(item);
-
-            // When a new item is added we must update the drawables and updatables
-            _drawables = this.list.OrderBy(l => l.Configuration.DrawOrder);
-            _updatables = this.list.OrderBy(l => l.Configuration.UpdateOrder);
-        }
-
-        public override bool Remove(Layer item)
-        {
-            if(base.Remove(item))
-            {
-                // When an item is removed we must update the drawables and updatables
-                _drawables = this.list.OrderBy(l => l.Configuration.DrawOrder);
-                _updatables = this.list.OrderBy(l => l.Configuration.UpdateOrder);
-
-                return true;
-            }
-
-            return false;
         }
         #endregion
     }
