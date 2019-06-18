@@ -16,7 +16,7 @@ namespace Guppy.Network.Drivers
         private Queue<NetIncomingMessage> _updateMessageQueue;
         private Queue<NetIncomingMessage> _actionMessageQueue;
 
-        public ClientNetworkSceneDriver(NetworkScene scene, NetworkEntityCollection networkEntities, EntityCollection entities, IServiceProvider provider, ILogger logger) : base(scene, provider, logger)
+        public ClientNetworkSceneDriver(NetworkScene scene, NetworkEntityCollection networkEntities, EntityCollection entities, IServiceProvider provider) : base(scene, provider)
         {
             _networkEntities = networkEntities;
             _entities = entities;

@@ -12,7 +12,7 @@ namespace Guppy.Network.Drivers
     {
         protected NetworkScene scene { get; private set; }
 
-        public NetworkSceneDriver(NetworkScene scene, IServiceProvider provider, ILogger logger) : base(scene, provider, logger)
+        public NetworkSceneDriver(NetworkScene scene, IServiceProvider provider) : base(scene, provider)
         {
             this.scene = scene;
         }

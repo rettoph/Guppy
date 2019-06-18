@@ -20,8 +20,6 @@ namespace Guppy
         #endregion
 
         #region Protected Attributes
-        protected IServiceProvider provider { get; private set; }
-
         protected Game game { get; private set; }
 
         protected LayerCollection layers { get; private set; }
@@ -41,10 +39,8 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Scene(IServiceProvider provider) : base(provider, provider.GetService<ILogger>())
+        public Scene(IServiceProvider provider) : base(provider)
         {
-            this.provider = provider;
-
             // Set the default layer depth
             this.DefaultLayerDepth = 0;
         }

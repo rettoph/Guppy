@@ -9,11 +9,11 @@ namespace Guppy.Implementations
 {
     public abstract class Frameable : Initializable, IFrameable
     {
-        public Frameable(ILogger logger) : base(logger)
+        public Frameable(IServiceProvider provider) : base(provider)
         {
         }
 
-        public Frameable(Guid id, ILogger logger) : base(id, logger)
+        public Frameable(Guid id, IServiceProvider provider) : base(id, provider)
         {
         }
 

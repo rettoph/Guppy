@@ -71,10 +71,8 @@ namespace Guppy.UI.Entities
             GameWindow window,
             GraphicsDevice graphicsDevice,
             EntityConfiguration configuration,
-            Scene scene,
             LayerCollection layers,
-            IServiceProvider provider,
-            ILogger logger) : base(configuration, scene, provider, logger)
+            IServiceProvider provider) : base(configuration, provider)
         {
             _layers = layers;
             _window = window;

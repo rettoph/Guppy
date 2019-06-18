@@ -19,12 +19,12 @@ namespace Guppy.Implementations
     {
         private Driver[] _drivers;
 
-        public Driven(IServiceProvider provider, ILogger logger) : base(logger)
+        public Driven(IServiceProvider provider) : base(provider)
         {
             _drivers = provider.GetDrivers(this);
         }
 
-        public Driven(Guid id, IServiceProvider provider, ILogger logger) : base(id, logger)
+        public Driven(Guid id, IServiceProvider provider) : base(id, provider)
         {
             _drivers = provider.GetDrivers(this);
         }

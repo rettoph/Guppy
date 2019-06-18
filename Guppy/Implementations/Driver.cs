@@ -10,7 +10,7 @@ namespace Guppy.Implementations
 {
     public abstract class Driver : ZFrameable, IDriver
     {
-        public Driver(Driven parent, IServiceProvider provider, ILogger logger) : base(provider, logger)
+        public Driver(Driven parent, IServiceProvider provider) : base(provider)
         {
         }
     }

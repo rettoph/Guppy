@@ -24,15 +24,6 @@ namespace Guppy
     /// </summary>
     public abstract class Layer : ZFrameable
     {
-        #region Private Fields
-        private GraphicsDevice _graphicsDevice;
-
-        private List<VertexPositionColor> _allVertices;
-        private VertexBuffer _vertexBuffer;
-        private Int32 _primitives;
-        private BasicEffect _bassicEffect;
-        #endregion
-
         #region Protected Internal Attributes
         protected internal ZFrameableCollection<Entity> entities { get; private set; }
         #endregion
@@ -43,18 +34,9 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Layer(LayerConfiguration configuration, IServiceProvider provider, ILogger logger, Camera camera = null)
-            : base(provider, logger)
+        public Layer(LayerConfiguration configuration, IServiceProvider provider, Camera camera = null)
+            : base(provider)
         {
-            _graphicsDevice = provider.GetService<GraphicsDevice>();
-            _allVertices = new List<VertexPositionColor>();
-            _bassicEffect = provider.GetService<BasicEffect>();
-
-            if (_bassicEffect != null)
-            {
-                _bassicEffect.VertexColorEnabled = true;
-            }
-
             this.Configuration = configuration;
 
             this.entities = new ZFrameableCollection<Entity>();

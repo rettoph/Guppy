@@ -1,5 +1,7 @@
-﻿using Guppy.Configurations;
+﻿using Guppy.Collections;
+using Guppy.Configurations;
 using Guppy.Implementations;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +15,7 @@ namespace Guppy
     {
         #region Protected Attributes
         protected Scene scene { get; private set; }
+        protected EntityCollection entities { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -25,18 +28,25 @@ namespace Guppy
         #endregion
 
         #region Constructors
-        public Entity(EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(provider, logger)
+        public Entity(EntityConfiguration configuration, IServiceProvider provider) : base(provider)
         {
             this.Configuration = configuration;
-
-            this.scene = scene; // Save the entities scene
-            this.SetLayerDepth(this.scene.DefaultLayerDepth); // Set the initial layer depth to the default layer depth
         }
-        public Entity(Guid id, EntityConfiguration configuration, Scene scene, IServiceProvider provider, ILogger logger) : base(id, provider, logger)
+        public Entity(Guid id, EntityConfiguration configuration, IServiceProvider provider) : base(id, provider)
         {
             this.Configuration = configuration;
+        }
+        #endregion
 
-            this.scene = scene; // Save the entities scene
+        #region Initialization Methods
+        protected override void Boot()
+        {
+            base.Boot();
+
+            // Grab global entity objects...
+            this.scene = this.provider.GetRequiredService<Scene>();
+            this.entities = this.provider.GetRequiredService<EntityCollection>();
+
             this.SetLayerDepth(this.scene.DefaultLayerDepth); // Set the initial layer depth to the default layer depth
         }
         #endregion

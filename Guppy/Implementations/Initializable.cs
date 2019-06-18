@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Implementations
 {
@@ -11,6 +12,7 @@ namespace Guppy.Implementations
     {
         #region Proteced Attributes
         protected ILogger logger { get; private set; }
+        protected IServiceProvider provider { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -18,23 +20,24 @@ namespace Guppy.Implementations
         #endregion
 
         #region Constructors
-        public Initializable(ILogger logger)
+        public Initializable(IServiceProvider provider)
         {
             this.InitializationStatus = InitializationStatus.NotReady;
 
-            this.logger = logger;
+            this.provider = provider;
         }
-        public Initializable(Guid id, ILogger logger) : base(id)
+        public Initializable(Guid id, IServiceProvider provider) : base(id)
         {
             this.InitializationStatus = InitializationStatus.NotReady;
 
-            this.logger = logger;
+            this.provider = provider;
         }
         #endregion
 
         #region Internal Initialization Methods
         protected virtual void Boot()
         {
+            this.logger = this.provider.GetRequiredService<ILogger>();
             this.InitializationStatus = InitializationStatus.Booting;
         }
 

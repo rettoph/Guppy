@@ -20,7 +20,7 @@ namespace Guppy.Network.Drivers
         private Queue<NetOutgoingMessage> _createdMessageQueue;
         private ServerGroup _group;
 
-        public ServerNetworkSceneDriver(NetworkEntityCollection networkEntities, NetworkScene scene, IServiceProvider provider, ILogger logger) : base(scene, provider, logger)
+        public ServerNetworkSceneDriver(NetworkEntityCollection networkEntities, NetworkScene scene, IServiceProvider provider) : base(scene, provider)
         {
             _networkEntities = networkEntities;
         }

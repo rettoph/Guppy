@@ -37,7 +37,7 @@ namespace Guppy.Implementations
         public event EventHandler<EventArgs> UpdateOrderChanged;
         
 
-        public ZFrameable(IServiceProvider provider, ILogger logger) : base(provider, logger)
+        public ZFrameable(IServiceProvider provider) : base(provider)
         {
             this.SetDrawOrder(0);
             this.SetUpdateOrder(0);
@@ -45,7 +45,7 @@ namespace Guppy.Implementations
             this.SetVisible(true);
             this.SetEnabled(true);
         }
-        public ZFrameable(Guid id, IServiceProvider provider, ILogger logger) : base(id, provider, logger)
+        public ZFrameable(Guid id, IServiceProvider provider) : base(id, provider)
         {
             this.SetDrawOrder(0);
             this.SetUpdateOrder(0);

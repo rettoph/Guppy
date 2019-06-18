@@ -32,18 +32,13 @@ namespace Guppy
         private Boolean _draw;
         #endregion
 
-        #region Proteced Attributes
-        protected IServiceProvider provider { get; private set; }
-        #endregion
-
         #region Public Attributes
         public Scene Scene { get; private set; }
         #endregion
 
         #region Constructors
-        public Game(IServiceProvider provider, ILogger logger) : base(provider, logger)
+        public Game(IServiceProvider provider) : base(provider)
         {
-            this.provider = provider;
         }
         #endregion
 
