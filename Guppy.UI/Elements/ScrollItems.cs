@@ -116,6 +116,7 @@ namespace Guppy.UI.Elements
             {
                 this.Outer.Height.SetValue(this.children.Max(e => e.Outer.RelativeBounds.Bottom));
                 this.Outer.Y.SetValue((Int32)((this.Outer.LocalBounds.Height - _container.Inner.LocalBounds.Height) * -_container.Scroll));
+                Console.WriteLine(this.Outer.Y.Value);
             }
         }
 

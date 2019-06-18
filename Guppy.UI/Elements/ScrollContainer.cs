@@ -47,6 +47,15 @@ namespace Guppy.UI.Elements
             this.SetPadding(0, 15, 0, 0);
 
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
+
+        }
+
+        public override void Clean()
+        {
+            base.Clean();
+
+            if(_internalEffect != null)
+                this.updateProjectionMatrix();
         }
 
         public override void CleanTexture(GraphicsDevice graphicsDevice, RenderTarget2D layerRenderTarget, RenderTarget2D outputRenderTarget, SpriteBatch spriteBatch)
@@ -56,7 +65,6 @@ namespace Guppy.UI.Elements
             // Clear the old targets, batches, and effects
             _scrollContainer?.Dispose();
             _spriteBatch?.Dispose();
-            _internalEffect?.Dispose();
 
             if (this.Inner.LocalBounds.Width > 0 && this.Inner.LocalBounds.Height > 0)
             {
@@ -67,12 +75,17 @@ namespace Guppy.UI.Elements
                     this.Inner.LocalBounds.Height);
 
                 _spriteBatch = new SpriteBatch(graphicsDevice);
-                _internalEffect = new BasicEffect(graphicsDevice)
+
+                if (_internalEffect == null)
                 {
-                    TextureEnabled = true,
-                    View = Matrix.Identity
-                };
-                this.updateProjectionMatrix();
+                    _internalEffect = new BasicEffect(graphicsDevice)
+                    {
+                        TextureEnabled = true,
+                        View = Matrix.Identity
+                    };
+
+                    this.updateProjectionMatrix();
+                }
             }
 
             base.CleanTexture(graphicsDevice, layerRenderTarget, outputRenderTarget, spriteBatch);
