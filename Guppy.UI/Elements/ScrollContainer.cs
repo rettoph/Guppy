@@ -61,7 +61,11 @@ namespace Guppy.UI.Elements
             if (this.Inner.LocalBounds.Width > 0 && this.Inner.LocalBounds.Height > 0)
             {
                 // Create a new scrollcontainer and spritebatch
-                _scrollContainer = new RenderTarget2D(graphicsDevice, this.Inner.LocalBounds.Width, this.Inner.LocalBounds.Height);
+                _scrollContainer = new RenderTarget2D(
+                    _graphicsDevice, 
+                    this.Inner.LocalBounds.Width, 
+                    this.Inner.LocalBounds.Height);
+
                 _spriteBatch = new SpriteBatch(graphicsDevice);
                 _internalEffect = new BasicEffect(graphicsDevice)
                 {
@@ -92,7 +96,7 @@ namespace Guppy.UI.Elements
                 _graphicsDevice.SetRenderTargets(rTargets);
 
                 // Draw the container...
-                if (texture != null) // Draw the texture, if there is one
+                if (this.texture != null) // Draw the texture, if there is one
                     spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
                 spriteBatch.Draw(_scrollContainer, this.Inner.GlobalBounds.Location.ToVector2(), Color.White);
