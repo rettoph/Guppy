@@ -78,6 +78,12 @@ namespace Guppy.Collections
 
             // If there is no depth range overlap of the new item... add it to the collection
             base.Add(item);
+
+            // Initialize the layer
+            item.TryBoot();
+            item.TryPreInitialize();
+            item.TryInitialize();
+            item.TryPostInitialize();
         }
         #endregion
     }

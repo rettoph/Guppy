@@ -46,6 +46,16 @@ namespace Guppy
         }
         #endregion
 
+        #region Initialization Methods
+        protected override void Boot()
+        {
+            base.Boot();
+
+            this.SetUpdateOrder(this.Configuration.UpdateOrder);
+            this.SetDrawOrder(this.Configuration.DrawOrder);
+        }
+        #endregion
+
         #region Frame Methods
         public override void Draw(GameTime gameTime)
         {
