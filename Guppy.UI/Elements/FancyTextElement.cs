@@ -97,7 +97,7 @@ namespace Guppy.UI.Elements
 
 
                 // Draw the string...
-                spritebatch.Begin();
+                spritebatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
                 foreach (CharColorPosition ccp in output)
                     spritebatch.DrawString(font, ccp.Char.ToString(), tPosition + ccp.Position, ccp.Color);

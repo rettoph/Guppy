@@ -46,6 +46,8 @@ namespace Guppy.UI.Elements
             this.ScrollBar.Outer.setParent(this.Outer);
             this.SetPadding(0, 15, 0, 0);
 
+            this.ScrollBar.Outer.OnBoundsChanged += this.HandleScrollBarBoundsChanged;
+
             this.StateBlacklist = ElementState.Active | ElementState.Pressed | ElementState.Hovered;
 
         }
@@ -93,27 +95,30 @@ namespace Guppy.UI.Elements
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (this.Inner.LocalBounds.Width > 0 && this.Inner.LocalBounds.Height > 0 && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Parent.Inner.GlobalBounds)))
-            { // Draw the container if it is within screen bounds
-                // Set the render targets...
-                var rTargets = _graphicsDevice.GetRenderTargets();
-                _graphicsDevice.SetRenderTarget(_scrollContainer);
-                _graphicsDevice.Clear(Color.Transparent);
+            if (!this.Hidden)
+            {
+                if (this.Inner.LocalBounds.Width > 0 && this.Inner.LocalBounds.Height > 0 && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Parent.Inner.GlobalBounds)))
+                { // Draw the container if it is within screen bounds
+                  // Set the render targets...
+                    var rTargets = _graphicsDevice.GetRenderTargets();
+                    _graphicsDevice.SetRenderTarget(_scrollContainer);
+                    _graphicsDevice.Clear(Color.Transparent);
 
-                // Draw onto the spritebatch...
-                _spriteBatch.Begin(effect: _internalEffect);
-                this.Items.Draw(_spriteBatch);
-                _spriteBatch.End();
+                    // Draw onto the spritebatch...
+                    _spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, effect: _internalEffect);
+                    this.Items.Draw(_spriteBatch);
+                    _spriteBatch.End();
 
-                // Reset the original render targets...
-                _graphicsDevice.SetRenderTargets(rTargets);
+                    // Reset the original render targets...
+                    _graphicsDevice.SetRenderTargets(rTargets);
 
-                // Draw the container...
-                if (this.texture != null) // Draw the texture, if there is one
-                    spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
+                    // Draw the container...
+                    if (this.texture != null) // Draw the texture, if there is one
+                        spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
-                spriteBatch.Draw(_scrollContainer, this.Inner.GlobalBounds.Location.ToVector2(), Color.White);
-                this.ScrollBar.Draw(spriteBatch);
+                    spriteBatch.Draw(_scrollContainer, this.Inner.GlobalBounds.Location.ToVector2(), Color.White);
+                    this.ScrollBar.Draw(spriteBatch);
+                }
             }
         }
 
@@ -188,6 +193,12 @@ namespace Guppy.UI.Elements
 
             this.Items = null;
             this.ScrollBar = null;
+        }
+
+        private void HandleScrollBarBoundsChanged(object sender, Rectangle e)
+        {
+            this.ScrollBar.Outer.X.SetValue(new UnitValue[] { 1f, -this.ScrollBar.Outer.Width.Value });
+            this.SetPadding(0, this.ScrollBar.Outer.Width.Value, 0, 0);
         }
     }
 }

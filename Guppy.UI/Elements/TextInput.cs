@@ -124,5 +124,15 @@ namespace Guppy.UI.Elements
 
             _caret?.Dispose();
         }
+
+        public void Select()
+        {
+            this.setState(ElementState.Active);
+        }
+
+        public void Deselect()
+        {
+            this.setState(ElementState.Normal);
+        }
     }
 }

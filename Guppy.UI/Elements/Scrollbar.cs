@@ -30,7 +30,7 @@ namespace Guppy.UI.Elements
             // Update the blacklist
             this.StateBlacklist = ElementState.Active | ElementState.Hovered | ElementState.Pressed;
 
-            this.Thumb = this.createElement<ScrollThumb>(0, 0, 1f, 10);
+            this.Thumb = this.createElement<ScrollThumb>(0, 0, 1f, 0);
 
             this.layers.Add(this.fillColor);
 
@@ -88,10 +88,10 @@ namespace Guppy.UI.Elements
             return this.Outer.LocalBounds;
         }
 
-        #region events
+        #region Events
         private void HandleHeightUpdated(object sender, Unit e)
         {
-            if (_container.Inner.Height.Value < _container.Items.Outer.Height.Value)
+            if (_container.Inner.Height.Value < _container.Items.Outer.Height.Value || _container.Items.Outer.Height.Value == 0)
                 this.Thumb.Outer.Height.SetValue((Int32)(_container.Outer.Height.Value * ((Single)_container.Inner.Height.Value / (Single)_container.Items.Outer.Height.Value)));
             else
                 this.Thumb.Outer.Height.SetValue(0);

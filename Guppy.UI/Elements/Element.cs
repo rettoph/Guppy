@@ -1,4 +1,5 @@
 ﻿using Guppy.Implementations;
+using Guppy.Interfaces;
 using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
@@ -27,7 +28,7 @@ namespace Guppy.UI.Elements
         #region Private Fields
         private Boolean _mouseWasRaised;
 
-        private List<VertexPositionColor> _vertices;
+        private Queue<Element> _disposedChildren;
         #endregion
 
         #region Protected Fields
@@ -45,6 +46,11 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Public Attributes
+        /// <summary>
+        /// When hidden, elements will no longer be updated or drawn
+        /// </summary>
+        public Boolean Hidden { get; set; }
+
         public virtual Stage Stage { get; private set; }
 
         /// <summary>
@@ -115,7 +121,7 @@ namespace Guppy.UI.Elements
         #region Constructors
         public Element(UnitRectangle outerBounds, Element parent, Stage stage, Style style = null)
         {
-            _vertices = new List<VertexPositionColor>();
+            _disposedChildren = new Queue<Element>();
 
             this.children = new List<Element>();
             this.layers = new List<Func<SpriteBatch, Rectangle>>();
@@ -145,136 +151,136 @@ namespace Guppy.UI.Elements
         #region Frame Methods
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Outer.Parent.GlobalBounds))) // Draw the texture, if there is one
-                spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
+            if (!this.Hidden)
+            {
+                if (texture != null && this.Outer.GlobalBounds.Intersects(this.Stage.clientBounds.GlobalBounds) && (this.Parent == null || this.Outer.GlobalBounds.Intersects(this.Outer.Parent.GlobalBounds))) // Draw the texture, if there is one
+                    spriteBatch.Draw(texture, this.Outer.GlobalBounds, Color.White);
 
-            // Ensure that every self contained child element gets drawn too...
-            foreach (Element child in this.children)
-                child.Draw(spriteBatch);
+                // Ensure that every self contained child element gets drawn too...
+                foreach (Element child in this.children)
+                    child.Draw(spriteBatch);
+            }
         }
 
         public virtual void Update(MouseState mouse)
         {
-            // Update the current element's bounds...
-            this.Outer.Update();
-            this.Inner.Update();
-
-            // Update the mouse over data
-            this.MouseOver = this.Outer.GlobalBounds.Contains(mouse.Position);
-            this.MouseOverHierarchy = this.MouseOver && (this.Parent == null ? true : this.Parent.MouseOverHierarchy && this.Parent.Inner.GlobalBounds.Contains(mouse.Position));
-
-            if (this.MouseOverHierarchy && this.MouseOverHierarchy || !this.MouseOverHierarchy && this.MouseOver)
-            { // Mouse is over element...
-                if (mouse.LeftButton == ButtonState.Pressed)
-                { // If mouse is down
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            _mouseWasRaised = false;
-                            this.setState(ElementState.Hovered, ElementState.Normal);
-                            break;
-                        case ElementState.Hovered:
-                            if (_mouseWasRaised)
-                                this.setState(ElementState.Pressed, ElementState.Hovered);
-                            break;
-                        case ElementState.Active:
-                            break;
-                        case ElementState.Pressed:
-                            break;
-                    }
-                }
-                else
-                { // If mouse is up...
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            _mouseWasRaised = true;
-                            this.setState(ElementState.Hovered, ElementState.Normal);
-                            break;
-                        case ElementState.Hovered:
-                            break;
-                        case ElementState.Active:
-                            break;
-                        case ElementState.Pressed:
-                            this.setState(ElementState.Active, ElementState.Hovered, ElementState.Normal);
-                            break;
-                    }
-                }
-            }
-            else
-            { // Mouse is not over element...
-                if (mouse.LeftButton == ButtonState.Pressed)
-                { // If mouse is down
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            break;
-                        case ElementState.Hovered:
-                            this.setState(ElementState.Normal);
-                            break;
-                        case ElementState.Active:
-                            this.setState(ElementState.Normal);
-                            break;
-                        case ElementState.Pressed:
-                            break;
-                    }
-                }
-                else
-                { // If mouse is up...
-                    switch (this.State)
-                    {
-                        case ElementState.Normal:
-                            break;
-                        case ElementState.Hovered:
-                            this.setState(ElementState.Normal);
-                            break;
-                        case ElementState.Active:
-                            break;
-                        case ElementState.Pressed:
-                            this.setState(ElementState.Normal);
-                            break;
-                    }
-                }
-            }
-
-            // Ensure that every self contained child element gets updated too...
-            foreach (Element child in this.children)
-                child.Update(mouse);
-
-
-            // Clean dirty segments of the element
-            if (this.DirtyBounds || this.DirtyPosition)
+            if (!this.Hidden)
             {
-                if (this.Disposed)
-                    throw new Exception("Unable to clean disposed element!");
+                // Update the current element's bounds...
+                this.Outer.Update();
+                this.Inner.Update();
 
-                this.Clean();
+                // Update the mouse over data
+                this.MouseOver = this.Outer.GlobalBounds.Contains(mouse.Position);
+                this.MouseOverHierarchy = this.MouseOver && (this.Parent == null ? true : this.Parent.MouseOverHierarchy && this.Parent.Inner.GlobalBounds.Contains(mouse.Position));
 
-                if (this.DirtyBounds)
-                {
-                    // Add the current element to the dirty texture queue
-                    this.Stage.dirtyTextureElementQueue.Enqueue(this);
-                    this.CleanBounds();
-
-                    this.DirtyBounds = false;
+                if (this.MouseOverHierarchy && this.MouseOverHierarchy || !this.MouseOverHierarchy && this.MouseOver)
+                { // Mouse is over element...
+                    if (mouse.LeftButton == ButtonState.Pressed)
+                    { // If mouse is down
+                        switch (this.State)
+                        {
+                            case ElementState.Normal:
+                                _mouseWasRaised = false;
+                                this.setState(ElementState.Hovered, ElementState.Normal);
+                                break;
+                            case ElementState.Hovered:
+                                if (_mouseWasRaised)
+                                    this.setState(ElementState.Pressed, ElementState.Hovered);
+                                break;
+                            case ElementState.Active:
+                                break;
+                            case ElementState.Pressed:
+                                break;
+                        }
+                    }
+                    else
+                    { // If mouse is up...
+                        switch (this.State)
+                        {
+                            case ElementState.Normal:
+                                _mouseWasRaised = true;
+                                this.setState(ElementState.Hovered, ElementState.Normal);
+                                break;
+                            case ElementState.Hovered:
+                                break;
+                            case ElementState.Active:
+                                break;
+                            case ElementState.Pressed:
+                                this.setState(ElementState.Active, ElementState.Hovered, ElementState.Normal);
+                                break;
+                        }
+                    }
+                }
+                else
+                { // Mouse is not over element...
+                    if (mouse.LeftButton == ButtonState.Pressed)
+                    { // If mouse is down
+                        switch (this.State)
+                        {
+                            case ElementState.Normal:
+                                break;
+                            case ElementState.Hovered:
+                                this.setState(ElementState.Normal);
+                                break;
+                            case ElementState.Active:
+                                this.setState(ElementState.Normal);
+                                break;
+                            case ElementState.Pressed:
+                                break;
+                        }
+                    }
+                    else
+                    { // If mouse is up...
+                        switch (this.State)
+                        {
+                            case ElementState.Normal:
+                                break;
+                            case ElementState.Hovered:
+                                this.setState(ElementState.Normal);
+                                break;
+                            case ElementState.Active:
+                                break;
+                            case ElementState.Pressed:
+                                this.setState(ElementState.Normal);
+                                break;
+                        }
+                    }
                 }
 
-                if(this.DirtyPosition)
-                {
-                    this.CleanPosition();
+                // Ensure that every self contained child element gets updated too...
+                foreach (Element child in this.children)
+                    child.Update(mouse);
 
-                    this.DirtyPosition = false;
+                while (_disposedChildren.Count > 0)
+                    this.children.Remove(_disposedChildren.Dequeue());
+
+
+                // Clean dirty segments of the element
+                if (this.DirtyBounds || this.DirtyPosition)
+                {
+                    if (this.Disposed)
+                        throw new Exception("Unable to clean disposed element!");
+
+                    this.Clean();
+
+                    if (this.DirtyBounds)
+                    {
+                        // Add the current element to the dirty texture queue
+                        this.Stage.dirtyTextureElementQueue.Enqueue(this);
+                        this.CleanBounds();
+
+                        this.DirtyBounds = false;
+                    }
+
+                    if (this.DirtyPosition)
+                    {
+                        this.CleanPosition();
+
+                        this.DirtyPosition = false;
+                    }
                 }
             }
-        }
-
-        public virtual void AddDebugVertices(ref List<VertexPositionColor> vertices)
-        {
-            vertices.AddRange(_vertices);
-
-            // Ensure every child element's debug vertices are added
-            foreach (Element child in this.children.OrderBy(e => e.State))
-                child.AddDebugVertices(ref vertices);
         }
         #endregion
 
@@ -295,6 +301,7 @@ namespace Guppy.UI.Elements
         {
             var element = this.Stage.CreateElement<TElement>(x, y, width, height, this, args);
             this.children.Add(element);
+            element.Disposing += this.HandleChildDisposing;
 
             return element;
         }
@@ -527,6 +534,12 @@ namespace Guppy.UI.Elements
         {
             this.DirtyPosition = true;
         }
+
+        private void HandleChildDisposing(object sender, ITrackedDisposable e)
+        {
+            if (this.children.Contains(e as Element))
+                _disposedChildren.Enqueue(e as Element);
+        }
         #endregion
 
         public override void Dispose()
@@ -540,8 +553,6 @@ namespace Guppy.UI.Elements
             this.Outer.OnPositionChanged -= this.handlePositionChanged;
             this.Outer.Dispose();
             this.Inner.Dispose();
-
-            _vertices.Clear();
 
             this.texture?.Dispose();
 
