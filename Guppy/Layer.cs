@@ -57,11 +57,11 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
 
         }
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
 
         }

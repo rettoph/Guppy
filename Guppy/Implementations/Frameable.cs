@@ -17,7 +17,23 @@ namespace Guppy.Implementations
         {
         }
 
-        public abstract void Draw(GameTime gameTime);
-        public abstract void Update(GameTime gameTime);
+        public void Draw(GameTime gameTime)
+        {
+            this.draw(gameTime);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            this.update(gameTime);
+        }
+
+        protected virtual void draw(GameTime gameTime)
+        {
+            //
+        }
+        protected virtual void update(GameTime gameTime)
+        {
+            //
+        }
     }
 }

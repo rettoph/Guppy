@@ -39,11 +39,11 @@ namespace Guppy.Network
         }
         #endregion
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             this.Group.Update();
 
-            base.Update(gameTime);
+            base.update(gameTime);
 
             // Push all action messages to the connected peer...
             if (this.Group.Users.Count() > 0)

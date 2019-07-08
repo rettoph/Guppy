@@ -38,9 +38,9 @@ namespace Guppy.Network.Drivers
             this.scene.Group.Users.Added += this.HandleUserAdded;
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            base.update(gameTime);
 
             if (this.scene.Group.Users.Count() > 0)
             {

@@ -43,17 +43,13 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
-
             this.Scene.Draw(gameTime);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             this.Scene.Update(gameTime);
         }
         #endregion
@@ -122,10 +118,10 @@ namespace Guppy
                 Thread.Sleep(16);
 
                 time = new GameTime(DateTime.Now.Subtract(start), DateTime.Now.Subtract(last));
-                this.Update(time);
+                this.update(time);
 
                 if (_draw)
-                    this.Draw(time);
+                    this.draw(time);
 
                 last = DateTime.Now;
             }

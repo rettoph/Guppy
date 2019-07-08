@@ -15,7 +15,7 @@ namespace Guppy.Implementations
     /// Driven classes contain drivers defined within
     /// the DriverLoader.
     /// </summary>
-    public class Driven : Frameable, IDriven
+    public abstract class Driven : Frameable, IDriven
     {
         private Driver[] _drivers;
 
@@ -64,16 +64,20 @@ namespace Guppy.Implementations
         #endregion
 
         #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        public new void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
+
             foreach (Driver driver in _drivers)
-                driver.Draw(gameTime);
+                driver.draw(gameTime);
         }
 
-        public override void Update(GameTime gameTime)
+        public new void Update(GameTime gameTime)
         {
             foreach (Driver driver in _drivers)
-                driver.Update(gameTime);
+                driver.update(gameTime);
+
+            base.Update(gameTime);
         }
         #endregion
 

@@ -102,12 +102,12 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Frame Methods
-        public override void Draw(GameTime gameTime)
+        protected override void draw(GameTime gameTime)
         {
             this.Content.Draw(_spriteBatch);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void update(GameTime gameTime)
         {
             var camera = _layers.GetLayer(this.LayerDepth).Camera;
             var mState = Mouse.GetState();
