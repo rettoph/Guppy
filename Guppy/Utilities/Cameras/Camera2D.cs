@@ -84,50 +84,71 @@ namespace Guppy.Utilities.Cameras
         #region Utility Methods
         public void MoveTo(Single x, Single y)
         {
-            _position.X = x;
-            _position.Y = y;
+            if (x != _position.X || y != _position.Y)
+            {
+                _position.X = x;
+                _position.Y = y;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
         public void MoveTo(Vector2 pos)
         {
-            _position.X = pos.X;
-            _position.Y = pos.Y;
+            if (pos.X != _position.X || pos.Y != _position.Y)
+            {
+                _position.X = pos.X;
+                _position.Y = pos.Y;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
         public void MoveTo(ref Vector2 pos)
         {
-            _position = pos;
+            if (pos != _position)
+            {
+                _position = pos;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
 
         public void MoveBy(Single x, Single y)
         {
-            _position.X += x;
-            _position.Y += y;
+            if (x != 0 || y != 0)
+            {
+                _position.X += x;
+                _position.Y += y;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
         public void MoveBy(Vector2 pos)
         {
-            _position += pos;
+            if (pos != Vector2.Zero)
+            {
+                _position += pos;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
 
         public void ZoomBy(Single multiplier)
         {
-            this.Zoom *= multiplier;
+            if (multiplier != 1)
+            {
+                this.Zoom *= multiplier;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
         public void ZoomTo(Single value)
         {
-            this.Zoom = value;
+            if (value != this.Zoom)
+            {
+                this.Zoom = value;
 
-            this.dirtyMatrices = true;
+                this.dirtyMatrices = true;
+            }
         }
         #endregion
 
