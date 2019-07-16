@@ -46,11 +46,11 @@ namespace Guppy.Network.Drivers
             {
                 // Push all create messages to the client
                 while (_createdMessageQueue.Count > 0)
-                    this.scene.Group.SendMesssage(_createdMessageQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered);
+                    this.scene.Group.SendMesssage(_createdMessageQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered, 0);
 
                 // Push all update messages to the client
                 while (_dirtyEntityQueue.Count > 0)
-                    this.scene.Group.SendMesssage(this.BuildUpdateMessage(_dirtyEntityQueue.Dequeue()), NetDeliveryMethod.ReliableOrdered);
+                    this.scene.Group.SendMesssage(this.BuildUpdateMessage(_dirtyEntityQueue.Dequeue()), NetDeliveryMethod.ReliableOrdered, 0);
             }
             else
             {

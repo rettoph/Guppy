@@ -46,5 +46,14 @@ namespace Guppy.Collections
             else
                 return default(TUniqueObject);
         }
+
+        public TCastedType GetById<TCastedType>(Guid id)
+            where TCastedType : class, TUniqueObject
+        {
+            if (_table.ContainsKey(id))
+                return _table[id] as TCastedType;
+            else
+                return default(TCastedType);
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace Guppy.Network
         /// Queue containing actions preformed since the last flush
         /// </summary>
         protected internal Queue<NetOutgoingMessage> actionQueue;
+        protected internal Queue<NetOutgoingMessage> priorityActionQueue;
 
         public NetworkScene(Group group, IServiceProvider provider) : base(provider)
         {
@@ -34,6 +35,7 @@ namespace Guppy.Network
             base.Boot();
 
             this.actionQueue = new Queue<NetOutgoingMessage>();
+            this.priorityActionQueue = new Queue<NetOutgoingMessage>();
 
             this.Group.MessageHandler["action"] = this.HandleActionMessage;
         }
@@ -41,19 +43,20 @@ namespace Guppy.Network
 
         protected override void update(GameTime gameTime)
         {
-            this.Group.Update();
-
             base.update(gameTime);
 
             // Push all action messages to the connected peer...
             if (this.Group.Users.Count() > 0)
             {
-                // All drivers should auto-push any recieved actions
+                // Auto handle any recieved actions
+                while (this.priorityActionQueue.Count > 0)
+                    this.Group.SendMesssage(this.priorityActionQueue.Dequeue(), NetDeliveryMethod.ReliableOrdered, 0);
                 while (this.actionQueue.Count > 0)
-                    this.Group.SendMesssage(this.actionQueue.Dequeue(), NetDeliveryMethod.UnreliableSequenced);
+                    this.Group.SendMesssage(this.actionQueue.Dequeue(), NetDeliveryMethod.UnreliableSequenced, 0);
             }
             else
             {
+                this.priorityActionQueue.Clear();
                 this.actionQueue.Clear();
             }
         }

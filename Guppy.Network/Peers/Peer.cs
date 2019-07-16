@@ -49,7 +49,7 @@ namespace Guppy.Network.Peers
         }
         #endregion
 
-        #region Methods
+        #region Events
         public event EventHandler<NetIncomingMessage> OnStatusChanged;
         #endregion
 

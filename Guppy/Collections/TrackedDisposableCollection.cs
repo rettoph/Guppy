@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Guppy.Collections
 {
-    public class TrackedDisposableCollection<TTrackedDisposable> : IEnumerable
+    public class TrackedDisposableCollection<TTrackedDisposable> : IEnumerable, IDisposable
         where TTrackedDisposable : class, ITrackedDisposable
     {
         #region Protected Attributes
@@ -99,6 +99,11 @@ namespace Guppy.Collections
         public IEnumerator GetEnumerator()
         {
             return this.list.GetEnumerator();
+        }
+
+        public virtual void Dispose()
+        {
+            this.Clear();
         }
     }
 }

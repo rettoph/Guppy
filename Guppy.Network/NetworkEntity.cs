@@ -80,12 +80,16 @@ namespace Guppy.Network
             }
         }
 
-        public NetOutgoingMessage CreateActionMessage(String type)
+        public NetOutgoingMessage CreateActionMessage(String type, Boolean priority = false)
         {
             var om = _networkScene.Group.CreateMessage("action");
             om.Write(this.Id);
             om.Write(type);
-            _networkScene.actionQueue.Enqueue(om);
+
+            if (priority)
+                _networkScene.priorityActionQueue.Enqueue(om);
+            else
+                _networkScene.actionQueue.Enqueue(om);
 
             return om;
         }

@@ -16,5 +16,13 @@ namespace Guppy.Network.Drivers
         {
             this.scene = scene;
         }
+
+        protected override void update(GameTime gameTime)
+        {
+            base.update(gameTime);
+
+            // Ensure that the scene's group is updated first
+            this.scene.Group.Update();
+        }
     }
 }
