@@ -13,12 +13,13 @@ namespace Guppy.Network
 {
     public abstract class NetworkEntity : Entity, ITrackedNetworkObject
     {
+        #region Private Fields
         private Boolean _dirty;
         private NetworkScene _networkScene;
-        public Dictionary<String, Action<NetIncomingMessage>> ActionHandlers { get; private set; }
+        #endregion
 
-        public event EventHandler<NetworkEntity> OnRead;
-        public event EventHandler<NetworkEntity> OnWrite;
+        #region Public Attributes
+        public Dictionary<String, Action<NetIncomingMessage>> ActionHandlers { get; private set; }
 
         public Boolean Dirty
         {
@@ -32,9 +33,17 @@ namespace Guppy.Network
                 }
             }
         }
+        #endregion
+
+
+        #region Events
+        public event EventHandler<NetworkEntity> OnRead;
+        public event EventHandler<NetworkEntity> OnWrite;
 
         public event EventHandler<ITrackedNetworkObject> OnDirtyChanged;
+        #endregion
 
+        #region Constructors
         public NetworkEntity(EntityConfiguration configuration, IServiceProvider provider) : base(configuration, provider)
         {
         }
@@ -42,7 +51,9 @@ namespace Guppy.Network
         public NetworkEntity(Guid id, EntityConfiguration configuration, IServiceProvider provider) : base(id, configuration, provider)
         {
         }
+        #endregion
 
+        #region Initialization Methods
         protected override void Boot()
         {
             base.Boot();
@@ -51,7 +62,9 @@ namespace Guppy.Network
             _networkScene = this.scene as NetworkScene;
             this.ActionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
         }
+        #endregion
 
+        #region Network Methods
         public void Read(NetIncomingMessage im)
         {
             this.read(im);
@@ -67,7 +80,15 @@ namespace Guppy.Network
             this.OnWrite?.Invoke(this, this);
         }
         protected abstract void write(NetOutgoingMessage om);
+        #endregion
 
+        #region Utility Methods
+        /// <summary>
+        /// Given a specific message type, run the action handler
+        /// assigned.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="im"></param>
         public void HandleAction(String type, NetIncomingMessage im)
         {
             if(this.ActionHandlers.ContainsKey(type))
@@ -79,7 +100,21 @@ namespace Guppy.Network
                 this.logger.LogWarning($"Unhandled network action => Type: {this.GetType().Name}, Action: {type}, Entity: {this.Id}");
             }
         }
+        #endregion
 
+        #region Helper methods
+        /// <summary>
+        /// Create an action method directly bound to the current entity.
+        /// 
+        /// By default, actions are sent unreliably and unsequenced, but the
+        /// priority flag can be set to ensure ordered delivery.
+        /// 
+        /// Actions are automatically added to the outgoing message buffer on
+        /// creation.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="priority"></param>
+        /// <returns></returns>
         public NetOutgoingMessage CreateActionMessage(String type, Boolean priority = false)
         {
             var om = _networkScene.Group.CreateMessage("action");
@@ -93,5 +128,6 @@ namespace Guppy.Network
 
             return om;
         }
+        #endregion
     }
 }
