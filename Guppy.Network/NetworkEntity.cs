@@ -16,11 +16,11 @@ namespace Guppy.Network
         #region Private Fields
         private Boolean _dirty;
         private NetworkScene _networkScene;
+
+        private Dictionary<String, Action<NetIncomingMessage>> _actionHandlers;
         #endregion
 
         #region Public Attributes
-        public Dictionary<String, Action<NetIncomingMessage>> ActionHandlers { get; private set; }
-
         public Boolean Dirty
         {
             get { return _dirty; }
@@ -59,13 +59,15 @@ namespace Guppy.Network
 
             _dirty = false;
             _networkScene = this.scene as NetworkScene;
-            this.ActionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
+            _actionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
         }
         #endregion
 
         #region Network Methods
         public void Read(NetIncomingMessage im)
         {
+            this.logger.LogDebug($"Reading data to NetworkEntity<{this.GetType()}>({this.Id})");
+
             this.read(im);
 
             this.OnRead?.Invoke(this, this);
@@ -90,14 +92,19 @@ namespace Guppy.Network
         /// <param name="im"></param>
         public void HandleAction(String type, NetIncomingMessage im)
         {
-            if(this.ActionHandlers.ContainsKey(type))
+            if(_actionHandlers.ContainsKey(type))
             {
-                this.ActionHandlers[type].Invoke(im);
+                _actionHandlers[type].Invoke(im);
             }
             else
             {
                 this.logger.LogWarning($"Unhandled network action => Type: {this.GetType().Name}, Action: {type}, Entity: {this.Id}");
             }
+        }
+
+        public void AddActionHandler(String action, Action<NetIncomingMessage> handler)
+        {
+            _actionHandlers[action] = handler;
         }
         #endregion
 
