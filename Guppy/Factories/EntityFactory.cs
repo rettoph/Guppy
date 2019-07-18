@@ -45,11 +45,13 @@ namespace Guppy.Factories
             var configuration = _entityLoader[entityHandle];
 
             // Create a new params array
-            Array.Resize(ref args, args.Length + 1);
+            Array.Resize(ref args, args.Length + 2);
             args[args.Length - 1] = configuration;
             args[args.Length - 2] = id;
 
             var entity = ActivatorUtilities.CreateInstance(_provider, configuration.Type, args) as Entity;
+
+            _logger.LogDebug($"Created new Entity<{entity.GetType().Name}>({entity.Id})");
 
             // Return the newly created entity
             return entity;

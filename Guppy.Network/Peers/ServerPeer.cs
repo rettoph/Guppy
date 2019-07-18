@@ -11,6 +11,9 @@ using Guppy.Network.Security.Enums;
 using Guppy.Collections;
 using System.Linq;
 using Guppy.Network.Groups;
+using Guppy.Network.Collections;
+using Guppy.Network.Configurations;
+using Guppy.Network.Enums;
 
 namespace Guppy.Network.Peers
 {
@@ -34,7 +37,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Constructors
-        public ServerPeer(NetPeerConfiguration config, ILogger logger) : base(config, logger)
+        public ServerPeer(NetPeerConfiguration config, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, GlobalUserCollection users, GroupCollection groups, IServiceProvider provider) : base(config, netOutgoingMessageConfigurationPool, users, groups, provider)
         {
             _approvedUsers = new Dictionary<NetConnection, User>();
 
@@ -54,21 +57,10 @@ namespace Guppy.Network.Peers
         {
             return this.GetNetConnectionById(user.NetId);
         }
-        protected internal override Group CreateGroup(Guid id)
-        {
-            return new ServerGroup(id, this, this.logger);
-        }
 
         public NetServer GetNetServer()
         {
             return this.server;
-        }
-        #endregion
-
-        #region Send Message Methods
-        public void SendToAll(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced)
-        {
-            this.server.SendToAll(om, method);
         }
         #endregion
 
@@ -81,7 +73,7 @@ namespace Guppy.Network.Peers
 
             // Create a new user object based on the remote hail message
             im.SenderConnection.RemoteHailMessage.ReadGuid();
-            var user = new User(Guid.NewGuid(), im.SenderConnection.RemoteUniqueIdentifier);
+            var user = ActivatorUtilities.CreateInstance<User>(this.provider, Guid.NewGuid(), im.SenderConnection.RemoteUniqueIdentifier);
             user.Read(im.SenderConnection.RemoteHailMessage);
 
             // Run the requested user through the authenticator...
@@ -93,7 +85,7 @@ namespace Guppy.Network.Peers
             {
                 case AuthenticateResultType.Success:
                     // Send a success hail to the new user
-                    var response = this.CreateMessage();
+                    var response = this.peer.CreateMessage();
                     response.Write(auth.Message);
                     user.Write(response, ClaimType.Protected);
                     im.SenderConnection.Approve(response);
@@ -128,6 +120,33 @@ namespace Guppy.Network.Peers
                     break;
             }
         }
+
+        #endregion
+
+        #region IMessageTarget Implementation
+        public override void Flush()
+        {
+            NetOutgoingMessageConfiguration config;
+            if (this.Users.Count() > 0)
+            {
+                while (this.queuedMessages.Count > 0)
+                {
+                    config = this.queuedMessages.Dequeue();
+
+                    if (config.Target == null)
+                        this.server.SendToAll(config.Message, null, config.Method, config.SequenceChannel);
+                    else
+                        this.server.SendMessage(config.Message, config.Target, config.Method, config.SequenceChannel);
+
+                    this.netOutgoingMessageConfigurationPool.Put(config);
+                }
+            }
+            else
+            {
+                while (this.queuedMessages.Count > 0)
+                    this.netOutgoingMessageConfigurationPool.Put(this.queuedMessages.Dequeue());
+            }
+        }
+        #endregion
     }
-    #endregion
 }

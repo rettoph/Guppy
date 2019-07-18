@@ -21,11 +21,11 @@ namespace Guppy.Network.Security
         public Int64 NetId { get; private set; }
 
         #region Constructors
-        public User()
+        public User(IServiceProvider provider) : base(provider)
         {
             _claims = new Dictionary<String, Claim>();
         }
-        public User(Guid id, Int64 netId) : base(id)
+        public User(Guid id, Int64 netId, IServiceProvider provider) : base(id, provider)
         {
             _claims = new Dictionary<String, Claim>();
 

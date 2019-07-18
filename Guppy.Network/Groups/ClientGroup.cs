@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Configurations;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
 using Guppy.Network.Security;
@@ -12,28 +13,20 @@ namespace Guppy.Network.Groups
     public class ClientGroup : Group
     {
         private ClientPeer _client;
+        private NetClient _netClient;
 
-        public ClientGroup(Guid id, ClientPeer client, ILogger log) : base(id, client, log)
+        #region Constructors
+        public ClientGroup(Guid id, ClientPeer client, NetClient netClient, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, IServiceProvider provider) : base(id, client, netClient, netOutgoingMessageConfigurationPool, provider)
         {
             _client = client;
+            _netClient = netClient;
 
-            this.internalMessageHandler.Add("setup:start", this.HandleSetupStartMessage);
-            this.internalMessageHandler.Add("user:joined", this.HandleUserJoinedMessage);
-            this.internalMessageHandler.Add("user:left", this.HandleUserLeftMessage);
-            this.internalMessageHandler.Add("setup:end", this.HandleSetupEndMessage);
+            this.AddMessageHandler("user:joined", this.HandleUserJoinedMessage);
+            this.AddMessageHandler("user:left", this.HandleUserLeftMessage);
         }
-
-        public override void SendMesssage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
-        {
-            _client.SendMessage(om, method, sequenceChannel);
-        }
+        #endregion
 
         #region Internal Message Handlers
-        private void HandleSetupStartMessage(NetIncomingMessage obj)
-        {
-            this.updateMessages = this.update_ignoreMessages;
-        }
-
         private void HandleUserJoinedMessage(NetIncomingMessage obj)
         {
             // Select the newly joined user...
@@ -48,10 +41,21 @@ namespace Guppy.Network.Groups
             this.Users.Remove(
                 item: this.Users.GetById(obj.ReadGuid()));
         }
+        #endregion
 
-        private void HandleSetupEndMessage(NetIncomingMessage obj)
+        #region IMessageTarget Implementation
+        public override void Flush()
         {
-            this.updateMessages = this.update_readMessages;
+            NetOutgoingMessageConfiguration config;
+
+            while (this.queuedMessages.Count > 0)
+            {
+                config = this.queuedMessages.Dequeue();
+
+                _netClient.SendMessage(config.Message, config.Method, config.SequenceChannel);
+
+                this.netOutgoingMessageConfigurationPool.Put(config);
+            }
         }
         #endregion
     }

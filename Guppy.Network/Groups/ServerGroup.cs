@@ -8,37 +8,34 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
+using Guppy.Network.Configurations;
 
 namespace Guppy.Network.Groups
 {
     public class ServerGroup : Group
     {
         private ServerPeer _server;
+        private NetServer _netServer;
         private List<NetConnection> _connections;
 
         public IReadOnlyCollection<NetConnection> Connections { get { return _connections; } }
 
-        public ServerGroup(Guid id, ServerPeer server, ILogger log) : base(id, server, log)
+        #region Events
+        /// <summary>
+        /// Event called when the setup function is running for a specific user.
+        /// </summary>
+        public event EventHandler<User> OnSetup;
+        #endregion
+
+        #region Constructors
+        public ServerGroup(Guid id, ServerPeer server, NetServer netServer, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, IServiceProvider provider) : base(id, server, netServer, netOutgoingMessageConfigurationPool, provider)
         {
             _server = server;
+            _netServer = netServer;
             _connections = new List<NetConnection>();
 
             this.Users.Added += this.HandleUserAdded;
             this.Users.Removed += this.HandleUserRemoved;
-        }
-
-        #region Send Message Methods
-        public void SendMesssage(NetOutgoingMessage om, User user, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
-        {
-            _server.SendMessage(om, _server.GetNetConnectionByUser(user), method, sequenceChannel);
-        }
-        public override void SendMesssage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChannel = 0)
-        {
-            _server.SendMessage(om, _connections, method, sequenceChannel);
-        }
-        public void SendMesssage(NetOutgoingMessage om, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
-        {
-            _server.SendMessage(om, recipient, method, sequenceChannel);
         }
         #endregion
 
@@ -51,28 +48,21 @@ namespace Guppy.Network.Groups
             if (newConnection != null)
             {
                 NetOutgoingMessage userUpdate;
-                if (_connections.Count > 0)
-                { // Ensure that users exist before broadcasting an update...
-                  // Alert all pre-existing users of the new user
-                    userUpdate = this.CreateMessage("user:joined", MessageType.Internal);
-                    user.Write(userUpdate);
-                    this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
-                }
+                // Broadcast a message of the new users arrival to all users (this will include the new user at flush time)
+                userUpdate = this.CreateMessage("user:joined", NetDeliveryMethod.ReliableOrdered, 0);
+                user.Write(userUpdate);
 
-                // Alert the new user that their setup is starting
-                var setupStart = this.CreateMessage("setup:start", MessageType.Internal);
-                this.SendMesssage(setupStart, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
-
+                
                 foreach (User knownUser in this.Users)
                 { // Send an update to the new user alerting them of all pre-existing users in the group
-                    userUpdate = this.CreateMessage("user:joined", MessageType.Internal);
-                    knownUser.Write(userUpdate);
-                    this.SendMesssage(userUpdate, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                    if (knownUser != user)
+                    { // Ensure that the new user is not re-sent themselves.
+                        userUpdate = this.CreateMessage("user:joined", NetDeliveryMethod.ReliableOrdered, 0, newConnection);
+                        knownUser.Write(userUpdate);
+                    }
                 }
 
-                // Alert the new user that their setup is ending
-                var setupEnd = this.CreateMessage("setup:end", MessageType.Internal);
-                this.SendMesssage(setupEnd, newConnection, NetDeliveryMethod.ReliableOrdered, 0);
+                this.OnSetup?.Invoke(this, user);
 
                 // Add the new user connection to the connections list
                 _connections.Add(newConnection);
@@ -87,9 +77,35 @@ namespace Guppy.Network.Groups
             if (_connections.Count > 0)
             {
                 // Send an update message to all remaining users
-                var userUpdate = this.CreateMessage("user:left", MessageType.Internal);
+                var userUpdate = this.CreateMessage("user:left", NetDeliveryMethod.ReliableOrdered, 0);
                 userUpdate.Write(user.Id);
-                this.SendMesssage(userUpdate, NetDeliveryMethod.ReliableOrdered, 0);
+            }
+        }
+        #endregion
+
+        #region IMessageTarget Implementation
+        public override void Flush()
+        {
+            NetOutgoingMessageConfiguration config;
+
+            if (_connections.Count > 0)
+            {
+                while (this.queuedMessages.Count > 0)
+                {
+                    config = this.queuedMessages.Dequeue();
+
+                    if (config.Target == null)
+                        _netServer.SendMessage(config.Message, _connections, config.Method, config.SequenceChannel);
+                    else
+                        _netServer.SendMessage(config.Message, config.Target, config.Method, config.SequenceChannel);
+
+                    this.netOutgoingMessageConfigurationPool.Put(config);
+                }
+            }
+            else
+            {
+                while (this.queuedMessages.Count > 0)
+                    this.netOutgoingMessageConfigurationPool.Put(this.queuedMessages.Dequeue());
             }
         }
         #endregion

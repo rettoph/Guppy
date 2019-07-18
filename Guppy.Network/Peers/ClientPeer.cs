@@ -1,8 +1,12 @@
-﻿using Guppy.Network.Extensions.Lidgren;
+﻿using Guppy.Network.Collections;
+using Guppy.Network.Configurations;
+using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Enums;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,16 +24,18 @@ namespace Guppy.Network.Peers
         public User CurrentUser { get; private set; }
         #endregion
 
-        public ClientPeer(NetPeerConfiguration config, ILogger logger) : base(config, logger)
+        #region Constructors
+        public ClientPeer(NetPeerConfiguration config, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, GlobalUserCollection users, GroupCollection groups, IServiceProvider provider) : base(config, netOutgoingMessageConfigurationPool, users, groups, provider)
         {
             this.client = new NetClient(config);
             this.peer = this.client;
         }
+        #endregion
 
         #region Connect Methods
         public void Connect(String host, Int32 port, User user)
         {
-            var hail = this.CreateMessage();
+            var hail = this.peer.CreateMessage();
             user.Write(hail, ClaimType.Protected);
 
             this.peer.Connect(host, port, hail);
@@ -37,10 +43,6 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Methods
-        protected internal override Group CreateGroup(Guid id)
-        {
-            return new ClientGroup(id, this, this.logger);
-        }
         public NetClient GetNetClient()
         {
             return this.client;
@@ -66,7 +68,7 @@ namespace Guppy.Network.Peers
                     // When the client is connected, we want to create a new user object based on data passed
                     // from the server
                     var message = im.SenderConnection.RemoteHailMessage.ReadString();
-                    var user = new User(im.SenderConnection.RemoteHailMessage.ReadGuid(), default(Int64));
+                    var user = ActivatorUtilities.CreateInstance<User>(this.provider, im.SenderConnection.RemoteHailMessage.ReadGuid(), default(Int64));
                     user.Read(im.SenderConnection.RemoteHailMessage);
                     // Add the user to the user collection
                     this.Users.Add(user);
@@ -84,10 +86,19 @@ namespace Guppy.Network.Peers
         }
         #endregion
 
-        #region Send Message Methods
-        public void SendMessage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
+        #region IMessageTarget Implementation
+        public override void Flush()
         {
-            this.client.SendMessage(om, method, sequenceChannel);
+            NetOutgoingMessageConfiguration config;
+
+            while(this.queuedMessages.Count > 0)
+            {
+                config = this.queuedMessages.Dequeue();
+
+                this.client.SendMessage(config.Message, config.Method, config.SequenceChannel);
+
+                this.netOutgoingMessageConfigurationPool.Put(config);
+            }
         }
         #endregion
     }

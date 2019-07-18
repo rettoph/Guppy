@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
+using Guppy.Network.Interfaces;
+using Guppy.Network.Configurations;
 
 namespace Guppy.Network.Groups
 {
@@ -15,19 +17,22 @@ namespace Guppy.Network.Groups
     /// Groups represent a collection of users who can privately
     /// send messages to other users within the same group.
     /// </summary>
-    public abstract class Group : NetworkObject
+    public abstract class Group : NetworkObject, IMessageTarget
     {
         #region Private Methods
+        private NetPeer _netPeer;
         private Peer _peer;
-        private Queue<NetIncomingMessage> _messageBuffer;
         private NetIncomingMessage _im;
-        private String _messageType;
+        private String _type;
+        private Queue<NetIncomingMessage> _recievedMessages;
         #endregion
 
         #region Protected Attributes
-        protected MessageHandler internalMessageHandler;
-        protected ILogger log;
         protected Action updateMessages;
+
+        protected Dictionary<String, Action<NetIncomingMessage>> messageHandlers;
+        protected NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool;
+        protected Queue<NetOutgoingMessageConfiguration> queuedMessages;
         #endregion
 
         #region Public Attributes
@@ -35,105 +40,66 @@ namespace Guppy.Network.Groups
         /// The known users in the current game
         /// </summary>
         public UserCollection Users { get; private set; }
-        
-        public MessageHandler MessageHandler { get; private set; }
         #endregion
 
         #region Constructor
-        public Group(Guid id, Peer peer, ILogger log) : base(id)
+        public Group(Guid id, Peer peer, NetPeer netPeer, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, IServiceProvider provider) : base(id, provider)
         {
             _peer = peer;
-            _messageBuffer = new Queue<NetIncomingMessage>();
+            _netPeer = netPeer;
+            _recievedMessages = new Queue<NetIncomingMessage>();
 
-            this.internalMessageHandler = new MessageHandler();
+            this.messageHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
+            this.netOutgoingMessageConfigurationPool = netOutgoingMessageConfigurationPool;
+            this.queuedMessages = new Queue<NetOutgoingMessageConfiguration>();
 
             this.Users = new UserCollection();
-            this.MessageHandler = new MessageHandler();
-
-            this.log = log;
-
-            this.updateMessages = this.update_readMessages;
         }
         #endregion
 
-        #region Methods
-        public void Update()
+        #region Frame Methods
+        public virtual void Update()
         {
-            this.updateMessages();
-        }
+            this.Flush();
 
-        protected void update_readMessages()
-        {
-            // Read any messages in the buffer
-            while (_messageBuffer.Count > 0)
+            while(_recievedMessages.Count > 0)
             {
-                // Call the message handler based on the message data
-                _im = _messageBuffer.Dequeue();
+                _im = _recievedMessages.Dequeue();
+                _type = _im.ReadString();
 
-                _messageType = _im.ReadString();
-
-                if (this.MessageHandler.ContainsKey(_messageType))
-                    this.MessageHandler[_messageType](_im);
+                if (this.messageHandlers.ContainsKey(_type))
+                    this.messageHandlers[_type].Invoke(_im);
                 else
-                    this.log.LogWarning($"Unhandled message recieved: '{_messageType}'");
+                    this.logger.LogWarning($"Unhandled Group<{this.GetType().Name}>({this.Id}) message => '{_type}'");
             }
-        }
-
-        protected void update_ignoreMessages()
-        {
         }
         #endregion
 
-        #region Create Message Methods
-        protected internal NetOutgoingMessage CreateMessage(MessageType type)
+        #region IMessageTarget Implementation
+        public NetOutgoingMessage CreateMessage(string type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0, NetConnection target = null)
         {
-            var om = _peer.CreateMessage(MessageTarget.Group);
+            var om = _netPeer.CreateMessage();
+            om.Write((Byte)MessageTarget.Group);
             om.Write(this.Id);
-            om.Write((Byte)type);
+            om.Write(type);
+
+            // Queue up the message for sending next flush
+            this.queuedMessages.Enqueue(
+                this.netOutgoingMessageConfigurationPool.Pull(om, target, method, sequenceChanel));
 
             return om;
         }
-        protected internal NetOutgoingMessage CreateMessage(String data, MessageType type)
-        {
-            var om = this.CreateMessage(type);
-            om.Write(data);
 
-            return om;
+        public abstract void Flush();
+
+        public void HandleMessage(NetIncomingMessage im)
+        {
+            _recievedMessages.Enqueue(im);
         }
-        protected internal NetOutgoingMessage CreateMessage()
+
+        public void AddMessageHandler(string type, Action<NetIncomingMessage> handler)
         {
-            return this.CreateMessage(MessageType.Data);
-        }
-        public NetOutgoingMessage CreateMessage(String messageType)
-        {
-            var om = this.CreateMessage();
-            om.Write(messageType);
-
-            return om;
-        }
-        #endregion
-
-        #region Send Message Methods
-        public abstract void SendMesssage(NetOutgoingMessage om, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0);
-        #endregion
-
-        #region Message handlers
-        internal void HandleData(NetIncomingMessage im)
-        {
-            switch ((MessageType)im.ReadByte())
-            {
-                case MessageType.Data:
-                    _messageBuffer.Enqueue(im);
-                    break;
-                case MessageType.Internal:
-                    _messageType = im.ReadString();
-
-                    if (this.internalMessageHandler.ContainsKey(_messageType))
-                        this.internalMessageHandler[_messageType](im);
-                    else
-                        this.log.LogWarning($"Unhandled internal message recieved: '{_messageType}'");
-                    break;
-            }
+            this.messageHandlers[type] = handler;
         }
         #endregion
 
@@ -141,10 +107,12 @@ namespace Guppy.Network.Groups
         {
             base.Dispose();
 
-            _messageBuffer.Clear();
+            _recievedMessages.Clear();
 
-            this.Users.Clear();
-            this.MessageHandler.Clear();
+            this.messageHandlers.Clear();
+
+            while (queuedMessages.Count > 0)
+                this.netOutgoingMessageConfigurationPool.Put(queuedMessages.Dequeue());
         }
     }
 }

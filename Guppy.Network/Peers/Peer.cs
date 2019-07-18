@@ -1,7 +1,10 @@
-﻿using Guppy.Network.Collections;
+﻿using Guppy.Implementations;
+using Guppy.Network.Collections;
+using Guppy.Network.Configurations;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
+using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,17 +13,19 @@ using System.Text;
 
 namespace Guppy.Network.Peers
 {
-    public abstract class Peer
+    public abstract class Peer : Initializable, IMessageTarget
     {
         #region Private Fields
-        private Boolean _started;
         private NetIncomingMessage _im;
         #endregion
 
         #region Protected Attributes
         protected NetPeer peer;
         protected NetPeerConfiguration config;
-        protected ILogger logger;
+
+        protected Dictionary<String, Action<NetIncomingMessage>> messageHandlers;
+        protected NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool;
+        protected Queue<NetOutgoingMessageConfiguration> queuedMessages;
         #endregion
 
         #region Public Fields
@@ -38,14 +43,15 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Constructors
-        public Peer(NetPeerConfiguration config, ILogger logger)
+        public Peer(NetPeerConfiguration config, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, GlobalUserCollection users, GroupCollection groups, IServiceProvider provider) : base(provider)
         {
-            _started = false;
+            this.messageHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
+            this.queuedMessages = new Queue<NetOutgoingMessageConfiguration>();
+            this.netOutgoingMessageConfigurationPool = netOutgoingMessageConfigurationPool;
             this.config = config;
-            this.logger = logger;
 
-            this.Users = new GlobalUserCollection();
-            this.Groups = new GroupCollection(this.CreateGroup);
+            this.Users = users;
+            this.Groups = groups;
         }
         #endregion
 
@@ -59,17 +65,19 @@ namespace Guppy.Network.Peers
         /// </summary>
         public virtual void Start()
         {
-            if (_started)
-                throw new Exception("Unable to start peer. Peer already started.");
+            this.TryBoot();
+            this.TryPreInitialize();
+            this.TryInitialize();
+            this.TryPostInitialize();
 
             this.logger.LogDebug($"Starting Peer<{this.GetType().Name}>...");
             this.peer.Start();
-
-            _started = true;
         }
 
         public void Update()
         {
+            this.Flush();
+
             // Flush the message buffer
             this.peer.FlushSendQueue();
 
@@ -130,19 +138,6 @@ namespace Guppy.Network.Peers
         {
             return this.peer;
         }
-
-        protected internal abstract Group CreateGroup(Guid id);
-        #endregion
-
-        #region Send Message Methods
-        public void SendMessage(NetOutgoingMessage om, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
-        {
-            this.peer.SendMessage(om, recipient, method, sequenceChannel);
-        }
-        public void SendMessage(NetOutgoingMessage om, List<NetConnection> recipients, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, Int32 sequenceChannel = 0)
-        {
-            this.peer.SendMessage(om, recipients, method, sequenceChannel);
-        }
         #endregion
 
         #region MessageType Handlers
@@ -155,10 +150,11 @@ namespace Guppy.Network.Peers
             switch ((MessageTarget)im.ReadByte())
             {
                 case MessageTarget.Group:
-                    this.Groups.GetOrCreateById(im.ReadGuid()).HandleData(im);
+                    this.Groups.GetOrCreateById(im.ReadGuid()).HandleMessage(im);
                     break;
                 case MessageTarget.Peer:
-                    throw new Exception("Peer messages are not yet supported.");
+                    this.HandleMessage(im);
+                    break;
                 case MessageTarget.User:
                     throw new Exception("User messages are not yet supported.");
             }
@@ -231,17 +227,35 @@ namespace Guppy.Network.Peers
         }
         #endregion
 
-        #region CreateMessage Methods
-        protected internal NetOutgoingMessage CreateMessage()
+        #region IMessageTarget Implementation
+        public NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0, NetConnection target = null)
         {
-            return this.peer.CreateMessage();
-        }
-        protected internal NetOutgoingMessage CreateMessage(MessageTarget target)
-        {
-            var om = this.CreateMessage();
-            om.Write((Byte)target);
+            var om = this.peer.CreateMessage();
+            om.Write((Byte)MessageTarget.Peer);
+            om.Write(type);
+
+            // Queue up the message for sending next flush
+            this.queuedMessages.Enqueue(
+                this.netOutgoingMessageConfigurationPool.Pull(om, target, method, sequenceChanel));
 
             return om;
+        }
+
+        public abstract void Flush();
+
+        public void HandleMessage(NetIncomingMessage im)
+        {
+            String type = im.ReadString();
+
+            if (messageHandlers.ContainsKey(type))
+                this.messageHandlers[type].Invoke(im);
+            else
+                this.logger.LogError($"Unhandled peer message => {type}");
+        }
+
+        public void AddMessageHandler(String type, Action<NetIncomingMessage> handler)
+        {
+            this.messageHandlers[type] = handler;
         }
         #endregion
     }

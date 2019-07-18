@@ -1,7 +1,10 @@
 ﻿using Guppy.Collections;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Network.Collections;
+using Guppy.Network.Factories;
 using Guppy.Network.Peers;
+using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,10 +16,18 @@ namespace Guppy.Network
     {
         public void ConfigureServiceCollection(IServiceCollection services)
         {
+            services.AddSingleton<NetOutgoingMessageConfigurationPool>();
+            services.AddSingleton<GlobalUserCollection>();
+            services.AddSingleton<GroupCollection>();
+            services.AddSingleton<GroupFactory>();
+            services.AddSingleton<NetPeer>(p => p.GetRequiredService<Peer>().GetNetPeer());
             services.AddScoped<NetworkEntityCollection>(p =>
             {
                 return new NetworkEntityCollection(p.GetService<EntityCollection>());
             });
+
+
+            services.AddScene<NetworkScene>();
         }
 
         public void Boot(IServiceProvider provider)

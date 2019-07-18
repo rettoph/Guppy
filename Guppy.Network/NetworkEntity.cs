@@ -35,7 +35,6 @@ namespace Guppy.Network
         }
         #endregion
 
-
         #region Events
         public event EventHandler<NetworkEntity> OnRead;
         public event EventHandler<NetworkEntity> OnWrite;
@@ -117,14 +116,9 @@ namespace Guppy.Network
         /// <returns></returns>
         public NetOutgoingMessage CreateActionMessage(String type, Boolean priority = false)
         {
-            var om = _networkScene.Group.CreateMessage("action");
+            var om = _networkScene.Group.CreateMessage("action", priority ? NetDeliveryMethod.ReliableOrdered : NetDeliveryMethod.ReliableOrdered, 0);
             om.Write(this.Id);
             om.Write(type);
-
-            if (priority)
-                _networkScene.priorityActionQueue.Enqueue(om);
-            else
-                _networkScene.actionQueue.Enqueue(om);
 
             return om;
         }

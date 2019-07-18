@@ -92,8 +92,6 @@ namespace Guppy.Collections
         #region Collection Methods
         public override void Add(Entity item)
         {
-            base.Add(item);
-
             // Create a new entry in the entity layer table for the new item
             _entityLayerTable.Add(item, null);
             item.OnLayerDepthChanged += this.HandleLayerDepthChanged;
@@ -106,6 +104,9 @@ namespace Guppy.Collections
 
             // Update the entities initial layer
             this.UpdateEntityLayer(item);
+
+            // Add the item to the collection
+            base.Add(item);
         }
 
         public override bool Remove(Entity item)

@@ -9,12 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Network", "Guppy.Netw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.UI", "Guppy.UI\Guppy.UI.csproj", "{ABFD8B18-46DF-4100-AF98-111E1AEBFD8C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{37E92B8D-94E1-435C-A000-D13037E60F6D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame\FarseerPhysics.MonoGame.csproj", "{18549A93-94A7-4FCF-9D53-E718C340E4EB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FarseerPhysics.MonoGame.DebugView", "Submodules\FarseerPhysics\FarseerPhysics.MonoGame.DebugView\FarseerPhysics.MonoGame.DebugView.csproj", "{9D6530F3-C6CE-4116-BFF9-7F4944015C60}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,21 +27,9 @@ Global
 		{ABFD8B18-46DF-4100-AF98-111E1AEBFD8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABFD8B18-46DF-4100-AF98-111E1AEBFD8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABFD8B18-46DF-4100-AF98-111E1AEBFD8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{18549A93-94A7-4FCF-9D53-E718C340E4EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18549A93-94A7-4FCF-9D53-E718C340E4EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18549A93-94A7-4FCF-9D53-E718C340E4EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18549A93-94A7-4FCF-9D53-E718C340E4EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D6530F3-C6CE-4116-BFF9-7F4944015C60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{18549A93-94A7-4FCF-9D53-E718C340E4EB} = {37E92B8D-94E1-435C-A000-D13037E60F6D}
-		{9D6530F3-C6CE-4116-BFF9-7F4944015C60} = {37E92B8D-94E1-435C-A000-D13037E60F6D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}

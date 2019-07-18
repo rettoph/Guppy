@@ -1,6 +1,9 @@
 ﻿using Guppy.Collections;
+using Guppy.Network.Configurations;
+using Guppy.Network.Factories;
 using Guppy.Network.Groups;
 using Guppy.Network.Peers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,11 +12,11 @@ namespace Guppy.Network.Collections
 {
     public class GroupCollection : UniqueObjectCollection<Group>
     {
-        private Func<Guid, Group> _groupFactory;
+        private GroupFactory _factory;
 
-        public GroupCollection(Func<Guid, Group> groupFactory)
+        public GroupCollection(GroupFactory factory)
         {
-            _groupFactory = groupFactory;
+            _factory = factory;
         }
 
         /// <summary>
@@ -25,19 +28,15 @@ namespace Guppy.Network.Collections
         /// <returns></returns>
         public Group GetOrCreateById(Guid id)
         {
-            var getGroup = this.GetById(id);
+            var group = this.GetById(id);
 
-            if(getGroup == null)
+            if(group == null)
             { // If no group was found then create a new one...
-                var newGroup = _groupFactory.Invoke(id);
-                this.Add(newGroup);
+                group = _factory.Create(id);
+                this.Add(group);
+            }
 
-                return newGroup;
-            }
-            else
-            { // Otherwise return the found group...
-                return getGroup;
-            }
+            return group;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Security;
 using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace Guppy.Network.Collections
 {
     public class GlobalUserCollection : UserCollection
     {
-        public GlobalUserCollection() : base(true)
-        {
+        private IServiceProvider _provider;
 
+        public GlobalUserCollection(IServiceProvider provider) : base(true)
+        {
+            _provider = provider;
         }
 
         public User UpdateOrCreate(Guid id, NetIncomingMessage im)
@@ -21,7 +24,7 @@ namespace Guppy.Network.Collections
             if ((user = this.GetById(id)) == null)
             { // If the user is not defined...
                 // create a new one
-                user = new User(id, default(Int64));
+                user = ActivatorUtilities.CreateInstance<User>(_provider, id, default(Int64));
             }
 
             user.Read(im);
