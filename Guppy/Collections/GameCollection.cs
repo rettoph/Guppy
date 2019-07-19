@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Collections
 {
-    public class GameCollection : UniqueObjectCollection<Game>
+    public class GameCollection : InitializableCollection<Game>
     {
         private IServiceProvider _provider;
 
@@ -29,14 +29,11 @@ namespace Guppy.Collections
             // Create the new game
             var game = _provider.GetRequiredService<GameFactory<TGame>>().CreateCustom(_provider.CreateScope().ServiceProvider, args);
 
-            // Auto Initialize the new game
-            game.TryBoot();
-            game.TryPreInitialize();
-            game.TryInitialize();
-            game.TryPostInitialize();
-
             if (game == null)
                 throw new Exception($"Error creating Game<{typeof(TGame).Name}> ");
+
+            // auto add the game to the collection
+            this.Add(game);
 
             // return the new game
             return game;
@@ -45,9 +42,6 @@ namespace Guppy.Collections
         #region Collection Methods
         public override void Add(Game item)
         {
-            if (item.InitializationStatus != InitializationStatus.NotReady)
-                throw new Exception($"Unable to add Game too GameCollection! Game has been initialized.");
-
             base.Add(item);
         }
 

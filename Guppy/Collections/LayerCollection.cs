@@ -57,6 +57,9 @@ namespace Guppy.Collections
             // Create the new layer
             var layer = _provider.GetRequiredService<LayerFactory<TLayer>>().CreateCustom(_provider, configuration, args);
 
+            // Auto add the new layer
+            this.Add(layer);
+
             // return the new layer
             return layer;
         }
@@ -78,12 +81,6 @@ namespace Guppy.Collections
 
             // If there is no depth range overlap of the new item... add it to the collection
             base.Add(item);
-
-            // Initialize the layer
-            item.TryBoot();
-            item.TryPreInitialize();
-            item.TryInitialize();
-            item.TryPostInitialize();
         }
         #endregion
     }

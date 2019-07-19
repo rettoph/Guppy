@@ -40,7 +40,7 @@ namespace Guppy.Network.Drivers
             _dirtyEntities = new Queue<NetworkEntity>();
 
             _group.OnSetup += this.HandleSetup;
-            _networkEntities.Added += this.HandleNetworkEntityCreated;
+            _networkEntities.Created += this.HandleNetworkEntityCreated;
         }
         #endregion
 
@@ -81,9 +81,6 @@ namespace Guppy.Network.Drivers
             // Setup event handlers
             ne.OnDirtyChanged += this.HandleNetworkEntityDirtyChanged;
             ne.Disposing += this.HandleNetworkEntityDisposing;
-
-            // Mark the new entity as dirty by default
-            ne.Dirty = true;
         }
 
         private void HandleNetworkEntityDirtyChanged(object sender, ITrackedNetworkObject e)
@@ -106,6 +103,7 @@ namespace Guppy.Network.Drivers
             var om = _group.CreateMessage("create", NetDeliveryMethod.ReliableOrdered, 0, target);
             om.Write(ne.Configuration.Handle);
             om.Write(ne.Id);
+            ne.Write(om);
         }
 
         public void CreateUpdateMessage(NetworkEntity ne, NetConnection target = null)

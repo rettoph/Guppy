@@ -40,11 +40,11 @@ namespace Guppy.Collections
         {
             // Create the new entity
             var entity = _entityFactory.Create(entityHandle, args);
-            // Add the new entity to the current collection
-            this.Add(entity);
-
             // Trigger the created event
             this.Created?.Invoke(this, entity);
+
+            // Add the new entity to the current collection
+            this.Add(entity);
 
             // return the new entity
             return entity;
@@ -67,26 +67,6 @@ namespace Guppy.Collections
         {
             return this.Create(entityHandle, layerDepth, args) as TEntity;
         }
-
-        /// <summary>
-        /// Create a new instance of an entity and adds it to
-        /// the current collection's scene.
-        /// 
-        /// This entity required a custom degined guid
-        /// </summary>
-        /// <param name="entityHandle"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Entity Create(String entityHandle, Guid id, params Object[] args)
-        {
-            // Create the new entity
-            var entity = _entityFactory.Create(entityHandle, id, args);
-            // Add the new entity to the current collection
-            this.Add(entity);
-
-            // return the new entity
-            return entity;
-        }
         #endregion
 
         #region Collection Methods
@@ -95,12 +75,6 @@ namespace Guppy.Collections
             // Create a new entry in the entity layer table for the new item
             _entityLayerTable.Add(item, null);
             item.OnLayerDepthChanged += this.HandleLayerDepthChanged;
-
-            // When a new entity gets added, we must initialize it
-            item.TryBoot();
-            item.TryPreInitialize();
-            item.TryInitialize();
-            item.TryPostInitialize();
 
             // Update the entities initial layer
             this.UpdateEntityLayer(item);

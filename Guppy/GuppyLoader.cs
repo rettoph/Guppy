@@ -42,7 +42,6 @@ namespace Guppy
         public IServiceProvider Provider { get { return _provider; } }
         #endregion
 
-
         public GuppyLoader(ILogger logger, IServiceCollection services = null)
         {
             this.Logger = logger;

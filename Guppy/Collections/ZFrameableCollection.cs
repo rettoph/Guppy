@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Collections
 {
-    public class ZFrameableCollection<TLivingObject> : UniqueObjectCollection<TLivingObject>
+    public class ZFrameableCollection<TLivingObject> : InitializableCollection<TLivingObject>
         where TLivingObject : class, IZFrameable
     {
         #region Private Fields
@@ -16,16 +16,13 @@ namespace Guppy.Collections
         private IOrderedEnumerable<TLivingObject> _updatables;
         private Boolean _dirtyUpdatables;
         private Boolean _dirtyDrawables;
-
-        private Boolean _initializeOnAdd;
         #endregion
 
         #region Constructors
-        public ZFrameableCollection(bool disposeOnRemove = true, bool initializeOnAdd = false) : base(disposeOnRemove)
+        public ZFrameableCollection(bool disposeOnRemove = true, bool initializeOnAdd = true) : base(disposeOnRemove, initializeOnAdd)
         {
             _dirtyDrawables = true;
             _dirtyUpdatables = true;
-            _initializeOnAdd = initializeOnAdd;
         }
         #endregion
 
@@ -71,14 +68,6 @@ namespace Guppy.Collections
 
             item.DrawOrderChanged += this.HandleDrawOrderChanged;
             item.VisibleChanged   += this.HandleVisibleChanged;
-
-            if(_initializeOnAdd)
-            { // Auto Initialize the item, if required
-                item.TryBoot();
-                item.TryPreInitialize();
-                item.TryInitialize();
-                item.TryPostInitialize();
-            }
         }
 
         public override Boolean Remove(TLivingObject item)

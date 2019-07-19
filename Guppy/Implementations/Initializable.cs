@@ -25,12 +25,14 @@ namespace Guppy.Implementations
             this.InitializationStatus = InitializationStatus.NotReady;
 
             this.provider = provider;
+            this.logger = this.provider.GetRequiredService<ILogger>();
         }
         public Initializable(Guid id, IServiceProvider provider) : base(id)
         {
             this.InitializationStatus = InitializationStatus.NotReady;
 
             this.provider = provider;
+            this.logger = this.provider.GetRequiredService<ILogger>();
         }
         #endregion
 

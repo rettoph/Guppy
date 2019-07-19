@@ -51,13 +51,8 @@ namespace Guppy.Network.Extensions.Lidgren
         #region Entity Methods
         public static void Write(this NetOutgoingMessage om, NetworkEntity entity)
         {
-            if (entity == null)
+            if (om.WriteExists(entity))
             {
-                om.Write(false);
-            }
-            else
-            {
-                om.Write(true);
                 om.Write(entity.Id);
             }
         }
@@ -69,11 +64,31 @@ namespace Guppy.Network.Extensions.Lidgren
         public static TEntity ReadEntity<TEntity>(this NetIncomingMessage im, EntityCollection entities)
             where TEntity : NetworkEntity
         {
-            if (im.ReadBoolean())
+            if (im.ReadExists())
                 return entities.GetById<TEntity>(
                     im.ReadGuid());
 
             return null;
+        }
+        #endregion
+
+        #region IfNull Methods
+        public static Boolean WriteExists(this NetOutgoingMessage om, Object value)
+        {
+            if (value == null)
+            {
+                om.Write(false);
+                return false;
+            }
+            else
+            {
+                om.Write(true);
+                return true;
+            }
+        }
+        public static Boolean ReadExists(this NetIncomingMessage im)
+        {
+            return im.ReadBoolean();
         }
         #endregion
     }

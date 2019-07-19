@@ -1,4 +1,5 @@
 ﻿using Guppy.Collections;
+using Guppy.Factories;
 using Guppy.Network.Extensions.Lidgren;
 using Lidgren.Network;
 using System;
@@ -11,11 +12,13 @@ namespace Guppy.Network.Drivers
     {
         #region Private Fields
         private EntityCollection _entities;
+        private EntityFactory _entityFactory;
         #endregion
 
         #region Constructors
-        public ClientNetworkSceneDriver(EntityCollection entities, NetworkScene scene, IServiceProvider provider) : base(scene, provider)
+        public ClientNetworkSceneDriver(EntityFactory entityFactory, EntityCollection entities, NetworkScene scene, IServiceProvider provider) : base(scene, provider)
         {
+            _entityFactory = entityFactory;
             _entities = entities;
         }
         #endregion
@@ -38,7 +41,9 @@ namespace Guppy.Network.Drivers
         private void HandleCreateMessage(NetIncomingMessage obj)
         {
             // Create a new entity based on the server commands
-            _entities.Create(obj.ReadString(), obj.ReadGuid());
+            var entity = _entityFactory.Create(obj.ReadString(), obj.ReadGuid()) as NetworkEntity;
+            entity.Read(obj);
+            _entities.Add(entity);
         }
         #endregion
     }

@@ -39,7 +39,7 @@ namespace Guppy
         {
             this.Configuration = configuration;
 
-            this.entities = new ZFrameableCollection<Entity>();
+            this.entities = new ZFrameableCollection<Entity>(false, false);
             this.entities.DisposeOnRemove = false;
 
             this.Camera = camera == null ? provider.GetService<Camera2D>() : camera;

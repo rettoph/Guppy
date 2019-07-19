@@ -35,9 +35,9 @@ namespace Guppy.Factories
 
             // Auto add the layer to the scope's layer collection
             var layers = provider.GetRequiredService<LayerCollection>();
-            layers.Add(layer);
 
-            // Return the new layer
+            // Boot & eturn the new layer
+            layer.TryBoot();
             return layer;
         }
 

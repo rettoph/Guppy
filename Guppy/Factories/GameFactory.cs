@@ -28,9 +28,8 @@ namespace Guppy.Factories
             { // Create a new scene...
                 config.Game = ActivatorUtilities.CreateInstance(provider, this.targetType, args) as TGame;
 
-                // Auto add the new scene to the scene collection
-                var games = provider.GetRequiredService<GameCollection>();
-                games.Add(config.Game);
+                // Auto boot the game
+                config.Game.TryBoot();
 
                 return config.Game as TGame;
             }

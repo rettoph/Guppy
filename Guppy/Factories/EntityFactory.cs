@@ -35,7 +35,8 @@ namespace Guppy.Factories
 
             _logger.LogDebug($"Created new Entity<{entity.GetType().Name}>({entity.Id})");
 
-            // Return the newly created entity
+            // Boot & return the newly created entity
+            entity.TryBoot();
             return entity;
         }
 
@@ -53,7 +54,8 @@ namespace Guppy.Factories
 
             _logger.LogDebug($"Created new Entity<{entity.GetType().Name}>({entity.Id})");
 
-            // Return the newly created entity
+            // Boot & eturn the newly created entity
+            entity.TryBoot();
             return entity;
         }
     }

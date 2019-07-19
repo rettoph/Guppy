@@ -24,7 +24,5 @@ namespace Guppy.Factories
         {
             return new LoaderFactory<T>();
         }
-
-
     }
 }
