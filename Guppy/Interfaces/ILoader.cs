@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    public interface ILoader
+    public interface ILoader : IUniqueObject
     {
         void Load();
     }

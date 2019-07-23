@@ -12,19 +12,17 @@ namespace Guppy.Extensions.DependencyInjection
     public static class IServiceCollectionExtensions
     {
         public static void AddGame<TGame>(this IServiceCollection collection)
-    where TGame : Game
+            where TGame : Game
         {
-            var factory = GameFactory<TGame>.BuildFactory<TGame>();
-            collection.AddSingleton(factory);
-            collection.AddScoped<TGame>(factory.Create);
+            collection.AddScoped<TGame>(
+                p => p.GetRequiredService<GameFactory>().Create<TGame>(p));
         }
 
         public static void AddScene<TScene>(this IServiceCollection collection)
             where TScene : Scene
         {
-            var factory = SceneFactory<TScene>.BuildFactory<TScene>();
-            collection.AddSingleton(factory);
-            collection.AddScoped<TScene>(factory.Create);
+            collection.AddScoped<TScene>(
+                p => p.GetRequiredService<SceneFactory>().Create<TScene>(p));
         }
 
         public static void AddLayer<TLayer>(this IServiceCollection collection)
@@ -39,11 +37,12 @@ namespace Guppy.Extensions.DependencyInjection
             where TLoader : class, ILoader
         {
             // Add the loader as a singleton
-            collection.AddSingleton<ILoader, TLoader>();
+            
             // Create a factory method for direct reference in dependency injection
             var factory = LoaderFactory<TLoader>.BuildFactory<TLoader>();
             collection.AddSingleton(factory);
-            collection.AddScoped<TLoader>(factory.Create);
+            collection.AddSingleton<TLoader>(factory.Create);
+            collection.AddSingleton<ILoader, TLoader>(p => p.GetRequiredService<TLoader>());
         }
 
         public static void AddDriver<TDriven, TDriver>(this IServiceCollection collection, UInt16 priority = 100)

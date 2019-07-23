@@ -5,10 +5,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.System;
 
 namespace Guppy.Factories
 {
-    public class EntityFactory
+    public class EntityFactory : InitializableFactory<Entity>
     {
         private EntityLoader _entityLoader;
         private IServiceProvider _provider;
@@ -26,36 +27,13 @@ namespace Guppy.Factories
             // Load the entity configuration
             var configuration = _entityLoader[entityHandle];
 
-            // Create a new params array
-            Array.Resize(ref args, args.Length + 1);
-            args[args.Length - 1] = configuration;
+            // Add the configuration object to the args array...
+            args = args.AddItems(configuration);
 
             // Create a new entity instance
-            var entity = ActivatorUtilities.CreateInstance(_provider, configuration.Type, args) as Entity;
+            var entity = this.Create(_provider, configuration.Type, args) as Entity;
 
-            _logger.LogDebug($"Created new Entity<{entity.GetType().Name}>({entity.Id})");
-
-            // Boot & return the newly created entity
-            entity.TryBoot();
-            return entity;
-        }
-
-        public Entity Create(String entityHandle, Guid id, params object[] args)
-        {
-            // Load the entity configuration
-            var configuration = _entityLoader[entityHandle];
-
-            // Create a new params array
-            Array.Resize(ref args, args.Length + 2);
-            args[args.Length - 1] = configuration;
-            args[args.Length - 2] = id;
-
-            var entity = ActivatorUtilities.CreateInstance(_provider, configuration.Type, args) as Entity;
-
-            _logger.LogDebug($"Created new Entity<{entity.GetType().Name}>({entity.Id})");
-
-            // Boot & eturn the newly created entity
-            entity.TryBoot();
+            // Return the new entity...
             return entity;
         }
     }

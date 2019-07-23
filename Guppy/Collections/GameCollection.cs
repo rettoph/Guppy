@@ -23,11 +23,11 @@ namespace Guppy.Collections
         /// </summary>
         /// <typeparam name="TGame"></typeparam>
         /// <returns></returns>
-        public TGame Create<TGame>(params Object[] args)
+        public TGame Create<TGame>()
             where TGame : Game
         {
             // Create the new game
-            var game = _provider.GetRequiredService<GameFactory<TGame>>().CreateCustom(_provider.CreateScope().ServiceProvider, args);
+            var game = _provider.CreateScope().ServiceProvider.GetService<TGame>();
 
             if (game == null)
                 throw new Exception($"Error creating Game<{typeof(TGame).Name}> ");

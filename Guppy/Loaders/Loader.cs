@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Guppy.Interfaces;
+using Guppy.Implementations;
 
 namespace Guppy.Loaders
 {
-    public class Loader<THandle, TValueIn, TValueOut> : ILoader
+    public class Loader<THandle, TValueIn, TValueOut> : UniqueObject, ILoader
     {
         #region Structs
         protected struct RegisteredValues {

@@ -4,41 +4,30 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.System;
 
 namespace Guppy.Factories
 {
-    public class LayerFactory<TLayer> : Factory<TLayer>
+    public class LayerFactory<TLayer> : InitializableFactory<TLayer>
         where TLayer : Layer
     {
-        public override TLayer Create(IServiceProvider provider)
+        public override TLayer Create(IServiceProvider provider, params Object[] args)
         {
-            return this.CreateCustom(provider);
+            return base.Create(provider, args);
         }
 
         public TLayer Create(IServiceProvider provider, LayerConfiguration configuration)
         {
-            return this.CreateCustom(provider, configuration);
+            return base.Create(provider, configuration);
         }
 
-        public override TLayer CreateCustom(IServiceProvider provider, params object[] args)
+        public TLayer Create(IServiceProvider provider, LayerConfiguration configuration, params Object[] args)
         {
-            return this.CreateCustom(provider, new LayerConfiguration(), args);
-        }
-        public TLayer CreateCustom(IServiceProvider provider, LayerConfiguration configuration, params object[] args)
-        {
-            List<Object> lArgs = new List<Object>();
-            lArgs.Add(configuration);
-            lArgs.AddRange(args);
+            // Add the configuration to the args array
+            args = args.AddItems(configuration);
 
-            // Create a new layer instance
-            TLayer layer = ActivatorUtilities.CreateInstance(provider, this.targetType, lArgs.ToArray()) as TLayer;
-
-            // Auto add the layer to the scope's layer collection
-            var layers = provider.GetRequiredService<LayerCollection>();
-
-            // Boot & eturn the new layer
-            layer.TryBoot();
-            return layer;
+            // Create the layer instance...
+            return base.Create(provider, args);
         }
 
         public static LayerFactory<T> BuildFactory<T>()

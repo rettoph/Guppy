@@ -7,8 +7,7 @@ using System.Text;
 
 namespace Guppy.Factories
 {
-    public class SceneFactory<TScene> : Factory<TScene>
-        where TScene : Scene
+    public class SceneFactory : InitializableFactory<Scene>
     {
         /// <summary>
         /// Create a new instance of the requested scene
@@ -16,17 +15,13 @@ namespace Guppy.Factories
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public override TScene Create(IServiceProvider provider)
-        {
-            return this.CreateCustom(provider);
-        }
-        public override TScene CreateCustom(IServiceProvider provider, params object[] args)
+        public override TScene Create<TScene>(IServiceProvider provider, params Object[] args)
         {
             var config = provider.GetRequiredService<SceneScopeConfiguration>();
 
             if (config.Scene == null && !this.targetType.IsAbstract)
             { // Create a new scene...
-                config.Scene = ActivatorUtilities.CreateInstance(provider, this.targetType, args) as TScene;
+                config.Scene = base.Create<TScene>(provider, args);
 
                 return config.Scene as TScene;
             }
@@ -39,13 +34,5 @@ namespace Guppy.Factories
                 throw new Exception("Unable to create new Scene instance, scope contains another Scene.");
             };
         }
-
-        public static SceneFactory<T> BuildFactory<T>()
-            where T : Scene
-        {
-            return new SceneFactory<T>();
-        }
-
-
     }
 }

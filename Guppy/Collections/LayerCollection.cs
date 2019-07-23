@@ -55,7 +55,7 @@ namespace Guppy.Collections
             where TLayer : Layer
         {
             // Create the new layer
-            var layer = _provider.GetRequiredService<LayerFactory<TLayer>>().CreateCustom(_provider, configuration, args);
+            var layer = _provider.GetRequiredService<LayerFactory<TLayer>>().Create(_provider, configuration, args);
 
             // Auto add the new layer
             this.Add(layer);

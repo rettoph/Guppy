@@ -55,22 +55,16 @@ namespace Guppy
         #endregion
 
         #region Scene Methods
-        public TScene CreateScene<TScene>(params Object[] args)
+        public TScene CreateScene<TScene>()
             where TScene : Scene
         {
             var sceneScope = this.provider.CreateScope();
             var sceneProvider = sceneScope.ServiceProvider;
             sceneProvider.GetRequiredService<GameScopeConfiguration>().Clone(this.provider.GetRequiredService<GameScopeConfiguration>());
-            var sceneFactory = sceneProvider.GetService<SceneFactory<TScene>>();
-
-            if (sceneFactory == null)
-                throw new Exception($"Unknown Scene<{typeof(TScene).Name}>. Please ensure the scene is registered via service provider.");
-
-            var scene = sceneFactory.CreateCustom(sceneProvider, args);
+            var scene = sceneProvider.GetService<TScene>();
 
             // Initialize the new scene
             scene.setScope(sceneScope);
-            scene.TryBoot();
             scene.TryPreInitialize();
             scene.TryInitialize();
             scene.TryPostInitialize();
