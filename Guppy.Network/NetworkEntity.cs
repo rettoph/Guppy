@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
 using Guppy.Network.Groups;
+using Guppy.Network.Security;
 
 namespace Guppy.Network
 {
@@ -124,6 +125,27 @@ namespace Guppy.Network
         public NetOutgoingMessage CreateActionMessage(String type, Boolean priority = false)
         {
             var om = _networkScene.Group.CreateMessage("action", priority ? NetDeliveryMethod.ReliableOrdered : NetDeliveryMethod.ReliableOrdered, 0);
+            om.Write(this.Id);
+            om.Write(type);
+
+            return om;
+        }
+        /// <summary>
+        /// Create an action method directly bound to the current entity,
+        /// specifically targeting a single user
+        /// 
+        /// By default, actions are sent unreliably and unsequenced, but the
+        /// priority flag can be set to ensure ordered delivery.
+        /// 
+        /// Actions are automatically added to the outgoing message buffer on
+        /// creation.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public NetOutgoingMessage CreateActionMessage(String type, NetConnection recipient)
+        {
+            var om = _networkScene.Group.CreateMessage("action", NetDeliveryMethod.ReliableOrdered, 0, recipient);
             om.Write(this.Id);
             om.Write(type);
 
