@@ -68,10 +68,9 @@ namespace Guppy.Network.Drivers
 
             // Send the new user create commands for all existing objects
             foreach(NetworkEntity ne in _networkEntities)
-            {
-                this.CreateCreateMessage(ne, connection);
+                this.CreateCreateMessage(ne, connection, false);
+            foreach (NetworkEntity ne in _networkEntities)
                 this.CreateUpdateMessage(ne, connection);
-            }
         }
 
         private void HandleNetworkEntityCreated(object sender, NetworkEntity ne)
@@ -98,12 +97,14 @@ namespace Guppy.Network.Drivers
         #endregion
 
         #region Utility Methods
-        public void CreateCreateMessage(NetworkEntity ne, NetConnection target = null)
+        public void CreateCreateMessage(NetworkEntity ne, NetConnection target = null, Boolean full = true)
         {
             var om = _group.CreateMessage("create", NetDeliveryMethod.ReliableOrdered, 0, target);
             om.Write(ne.Configuration.Handle);
             om.Write(ne.Id);
-            ne.Write(om);
+
+            if(om.WriteIf(full))
+                ne.Write(om);
         }
 
         public void CreateUpdateMessage(NetworkEntity ne, NetConnection target = null)

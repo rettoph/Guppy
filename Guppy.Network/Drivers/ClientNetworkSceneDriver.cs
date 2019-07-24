@@ -42,7 +42,9 @@ namespace Guppy.Network.Drivers
         {
             // Create a new entity based on the server commands
             var entity = _entityFactory.Create(obj.ReadString(), obj.ReadGuid()) as NetworkEntity;
-            entity.Read(obj);
+            if(obj.ReadBoolean())
+                entity.Read(obj);
+
             _entities.Add(entity);
         }
         #endregion
