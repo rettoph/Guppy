@@ -102,7 +102,8 @@ namespace Guppy
 
         private void loop()
         {
-            
+
+            DateTime now = DateTime.Now;
             DateTime start = DateTime.Now;
             DateTime last = DateTime.Now;
             GameTime time;
@@ -111,13 +112,14 @@ namespace Guppy
             {
                 Thread.Sleep(16);
 
-                time = new GameTime(DateTime.Now.Subtract(start), DateTime.Now.Subtract(last));
-                this.update(time);
+                now = DateTime.Now;
+                time = new GameTime(now.Subtract(start), now.Subtract(last));
+                last = now;
+
+                this.Update(time);
 
                 if (_draw)
-                    this.draw(time);
-
-                last = DateTime.Now;
+                    this.Draw(time);
             }
 
             this.logger.LogInformation("Stopping async game loop.");

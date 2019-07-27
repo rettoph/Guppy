@@ -35,14 +35,22 @@ namespace Guppy.Utilities.Cameras
 
         public virtual void Update(GameTime gameTime)
         {
-            if(this.dirtyMatrices)
+            this.TryCleanMatrices();
+        }
+
+        public Boolean TryCleanMatrices()
+        {
+            if (this.dirtyMatrices)
             {
                 this.World = this.buildWorld();
                 this.Projection = this.buildProjection();
                 this.View = this.buildView();
 
                 this.dirtyMatrices = false;
+                return true;
             }
+
+            return false;
         }
 
         protected abstract Matrix buildWorld();
