@@ -3,7 +3,7 @@ A simple game framework built on top of MonoGame
 
 
 ## Custom Events
-Custom events are events bound by a simple string and can dynamically be invoked at any time. The are implemented by the Driven class.
+Custom events are events bound by a simple string and can dynamically be invoked at any time. They are implemented by the Driven class.
 
 | Project | Class | Event | Arg | Description |
 | ------- | ----- | ----- | --------- | ----------- |
