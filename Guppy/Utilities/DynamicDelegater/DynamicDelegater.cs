@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Utilities.DynamicHandlers
+namespace Guppy.Utilities.DynamicDelegaters
 {
     /// <summary>
     /// Dynamic handlers are basically dictionary extensions
@@ -12,23 +13,27 @@ namespace Guppy.Utilities.DynamicHandlers
     /// custom events, and can be extended for any other 
     /// required event handling
     /// </summary>
-    public abstract class DynamicDelegater<TKey, TParam>
+    public abstract class DynamicDelegater<TKey, TParam> : IDisposable
     {
-        public delegate void LocalDynamicDelegate(TParam arg);
-        public delegate void GlobalDynamicDelegte(TKey key, TParam arg);
-
         private GlobalDynamicDelegte _globalDelegates;
         private Dictionary<TKey, LocalDynamicDelegate> _table;
+
+        protected ILogger logger { get; private set; }
+
+        public delegate void LocalDynamicDelegate(TParam arg);
+        public delegate void GlobalDynamicDelegte(TKey key, TParam arg);
 
         public LocalDynamicDelegate this[TKey key] {
             get { return _table[key]; }
             set { _table[key] = value; }
         }
 
-        public DynamicDelegater()
+        public DynamicDelegater(ILogger logger)
         {
             // Create a new table to contain the delegates...
             _table = new Dictionary<TKey, LocalDynamicDelegate>();
+
+            this.logger = logger;
         }
 
         /// <summary>
@@ -85,6 +90,11 @@ namespace Guppy.Utilities.DynamicHandlers
         public virtual void RemoveHandler(TKey key, LocalDynamicDelegate handler)
         {
             _table[key] -= handler;
+        }
+
+        public virtual void Dispose()
+        {
+            _table.Clear();
         }
     }
 }

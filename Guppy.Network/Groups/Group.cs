@@ -10,6 +10,8 @@ using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Configurations;
+using Guppy.Network.Utilities.DynamicDelegaters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Groups
 {
@@ -30,7 +32,6 @@ namespace Guppy.Network.Groups
         #region Protected Attributes
         protected Action updateMessages;
 
-        protected Dictionary<String, Action<NetIncomingMessage>> messageHandlers;
         protected NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool;
         protected Queue<NetOutgoingMessageConfiguration> queuedMessages;
         #endregion
@@ -40,6 +41,8 @@ namespace Guppy.Network.Groups
         /// The known users in the current game
         /// </summary>
         public UserCollection Users { get; private set; }
+
+        public MessageDelegater Messages { get; private set; }
         #endregion
 
         #region Constructor
@@ -49,11 +52,19 @@ namespace Guppy.Network.Groups
             _netPeer = netPeer;
             _recievedMessages = new Queue<NetIncomingMessage>();
 
-            this.messageHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
             this.netOutgoingMessageConfigurationPool = netOutgoingMessageConfigurationPool;
             this.queuedMessages = new Queue<NetOutgoingMessageConfiguration>();
 
             this.Users = new UserCollection();
+        }
+        #endregion
+
+        #region Initialization Methods
+        protected override void Boot()
+        {
+            base.Boot();
+
+            this.Messages = this.provider.GetService<MessageDelegater>();
         }
         #endregion
 
@@ -62,16 +73,9 @@ namespace Guppy.Network.Groups
         {
             this.Flush();
 
+            // Ensure that the message handler runs for all recieved messages...
             while(_recievedMessages.Count > 0)
-            {
-                _im = _recievedMessages.Dequeue();
-                _type = _im.ReadString();
-
-                if (this.messageHandlers.ContainsKey(_type))
-                    this.messageHandlers[_type].Invoke(_im);
-                else
-                    this.logger.LogWarning($"Unhandled Group<{this.GetType().Name}>({this.Id}) message => '{_type}'");
-            }
+                this.Messages.HandleMessage(_recievedMessages.Dequeue());
         }
         #endregion
 
@@ -91,16 +95,6 @@ namespace Guppy.Network.Groups
         }
 
         public abstract void Flush();
-
-        public void HandleMessage(NetIncomingMessage im)
-        {
-            _recievedMessages.Enqueue(im);
-        }
-
-        public void AddMessageHandler(string type, Action<NetIncomingMessage> handler)
-        {
-            this.messageHandlers[type] = handler;
-        }
         #endregion
 
         public override void Dispose()
@@ -109,7 +103,7 @@ namespace Guppy.Network.Groups
 
             _recievedMessages.Clear();
 
-            this.messageHandlers.Clear();
+            this.Messages.Dispose();
 
             while (queuedMessages.Count > 0)
                 this.netOutgoingMessageConfigurationPool.Put(queuedMessages.Dequeue());

@@ -20,9 +20,16 @@ namespace Guppy.Network.Groups
         {
             _client = client;
             _netClient = netClient;
+        }
+        #endregion
 
-            this.AddMessageHandler("user:joined", this.HandleUserJoinedMessage);
-            this.AddMessageHandler("user:left", this.HandleUserLeftMessage);
+        #region Initialization Methods
+        protected override void Boot()
+        {
+            base.Boot();
+
+            this.Messages.AddHandler("user:joined", this.HandleUserJoinedMessage);
+            this.Messages.AddHandler("user:left", this.HandleUserLeftMessage);
         }
         #endregion
 

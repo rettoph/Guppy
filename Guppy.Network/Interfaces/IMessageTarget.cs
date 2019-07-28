@@ -1,4 +1,5 @@
 ﻿using Guppy.Interfaces;
+using Guppy.Network.Utilities.DynamicDelegaters;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,11 @@ namespace Guppy.Network.Interfaces
     public interface IMessageTarget : IUniqueObject
     {
         /// <summary>
+        /// The default message delegater used to handle incoming messages.
+        /// </summary>
+        MessageDelegater Messages { get; }
+
+        /// <summary>
         /// Create and enqueue a new outbound message.
         /// All messaged created by this method should be
         /// send when this.Flush() is called.
@@ -25,18 +31,5 @@ namespace Guppy.Network.Interfaces
         /// Send all enqueued messages.
         /// </summary>
         void Flush();
-
-        /// <summary>
-        /// Handle a new incoming message recieved.
-        /// </summary>
-        /// <param name="im"></param>
-        void HandleMessage(NetIncomingMessage im);
-
-        /// <summary>
-        /// Add a custom incoming message handler
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="handler"></param>
-        void AddMessageHandler(String type, Action<NetIncomingMessage> handler);
     }
 }

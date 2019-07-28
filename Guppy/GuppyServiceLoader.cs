@@ -4,6 +4,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Loaders;
+using Guppy.Utilities.DynamicDelegaters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,6 +29,7 @@ namespace Guppy
             services.AddScoped<EntityCollection>();
             services.AddScoped<GameCollection>();
             services.AddScoped<EntityFactory>();
+            services.AddTransient<EventDelegater>();
             services.AddScene<Scene>();
             services.AddGame<Game>();
 

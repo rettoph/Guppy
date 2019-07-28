@@ -8,7 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using Guppy.Utilities.DynamicHandlers;
+using Guppy.Utilities.DynamicDelegaters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Implementations
 {
@@ -42,7 +43,7 @@ namespace Guppy.Implementations
         {
             base.Boot();
 
-            this.Events = new EventDelegater();
+            this.Events = this.provider.GetService<EventDelegater>();
 
             foreach (Driver driver in _drivers)
                 driver.TryBoot();

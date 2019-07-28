@@ -9,6 +9,8 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Peers;
 using Guppy.Network.Groups;
 using Guppy.Network.Security;
+using Guppy.Network.Utilities.DynamicDelegaters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network
 {
@@ -17,11 +19,11 @@ namespace Guppy.Network
         #region Private Fields
         private Boolean _dirty;
         private NetworkScene _networkScene;
-
-        private Dictionary<String, Action<NetIncomingMessage>> _actionHandlers;
         #endregion
 
         #region Public Attributes
+        public ActionDelegater Actions { get; private set; }
+
         public Boolean Dirty
         {
             get { return _dirty; }
@@ -53,7 +55,8 @@ namespace Guppy.Network
 
             _dirty = false;
             _networkScene = this.scene as NetworkScene;
-            _actionHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
+
+            this.Actions = ActivatorUtilities.CreateInstance<ActionDelegater>(this.provider, this);
         }
         #endregion
 
@@ -75,31 +78,6 @@ namespace Guppy.Network
             this.Events.TryInvoke("on:write", _dirty);
         }
         protected abstract void write(NetOutgoingMessage om);
-        #endregion
-
-        #region Utility Methods
-        /// <summary>
-        /// Given a specific message type, run the action handler
-        /// assigned.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="im"></param>
-        public void HandleAction(String type, NetIncomingMessage im)
-        {
-            if(_actionHandlers.ContainsKey(type))
-            {
-                _actionHandlers[type].Invoke(im);
-            }
-            else
-            {
-                this.logger.LogWarning($"Unhandled network action => Type: {this.GetType().Name}, Action: {type}, Entity: {this.Id}");
-            }
-        }
-
-        public void AddActionHandler(String action, Action<NetIncomingMessage> handler)
-        {
-            _actionHandlers[action] = handler;
-        }
         #endregion
 
         #region Helper methods

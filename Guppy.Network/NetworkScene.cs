@@ -28,7 +28,7 @@ namespace Guppy.Network
         {
             base.Boot();
 
-            this.Group.AddMessageHandler("action", this.HandleActionMessage);
+            this.Group.Messages.AddHandler("action", this.HandleActionMessage);
         }
         #endregion
 
@@ -41,17 +41,16 @@ namespace Guppy.Network
         protected internal void HandleActionMessage(NetIncomingMessage obj)
         {
             var id = obj.ReadGuid();
-            var type = obj.ReadString();
 
             var ne = this.networkEntities.GetById(id);
             
             if(ne == null)
             {
-                this.logger.LogError($"Unable to run action message. Unknown NetworkEntity({id}) => Type: '{type}'");
+                this.logger.LogError($"Unable to run action message. Unknown NetworkEntity({id}) => Type: '{obj.ReadString()}'");
                 return;
             }
 
-            ne.HandleAction(type, obj);
+            ne.Actions.HandleMessage(obj);
         }
         #endregion
     }

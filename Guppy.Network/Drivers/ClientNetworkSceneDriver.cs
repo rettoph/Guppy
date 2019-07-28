@@ -28,8 +28,8 @@ namespace Guppy.Network.Drivers
         {
             base.Initialize();
 
-            this.scene.Group.AddMessageHandler("create", this.HandleCreateMessage);
-            this.scene.Group.AddMessageHandler("update", this.HandleUpdateMessage);
+            this.scene.Group.Messages.AddHandler("create", this.HandleCreateMessage);
+            this.scene.Group.Messages.AddHandler("update", this.HandleUpdateMessage);
         }
 
         private void HandleUpdateMessage(NetIncomingMessage obj)

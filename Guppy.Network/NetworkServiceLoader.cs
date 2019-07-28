@@ -4,6 +4,7 @@ using Guppy.Interfaces;
 using Guppy.Network.Collections;
 using Guppy.Network.Factories;
 using Guppy.Network.Peers;
+using Guppy.Network.Utilities.DynamicDelegaters;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -25,6 +26,7 @@ namespace Guppy.Network
             {
                 return new NetworkEntityCollection(p.GetService<EntityCollection>());
             });
+            services.AddTransient<MessageDelegater>();
 
 
             services.AddScene<NetworkScene>();

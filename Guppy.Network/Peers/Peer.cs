@@ -5,11 +5,13 @@ using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Guppy.Network.Interfaces;
+using Guppy.Network.Utilities.DynamicDelegaters;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Peers
 {
@@ -23,7 +25,6 @@ namespace Guppy.Network.Peers
         protected NetPeer peer;
         protected NetPeerConfiguration config;
 
-        protected Dictionary<String, Action<NetIncomingMessage>> messageHandlers;
         protected NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool;
         protected Queue<NetOutgoingMessageConfiguration> queuedMessages;
         #endregion
@@ -40,18 +41,20 @@ namespace Guppy.Network.Peers
         /// current peer
         /// </summary>
         public GroupCollection Groups { get; private set; }
+
+        public MessageDelegater Messages { get; private set; }
         #endregion
 
         #region Constructors
         public Peer(NetPeerConfiguration config, NetOutgoingMessageConfigurationPool netOutgoingMessageConfigurationPool, GlobalUserCollection users, GroupCollection groups, IServiceProvider provider) : base(provider)
         {
-            this.messageHandlers = new Dictionary<String, Action<NetIncomingMessage>>();
             this.queuedMessages = new Queue<NetOutgoingMessageConfiguration>();
             this.netOutgoingMessageConfigurationPool = netOutgoingMessageConfigurationPool;
             this.config = config;
 
             this.Users = users;
             this.Groups = groups;
+            this.Messages = this.provider.GetService<MessageDelegater>();
         }
         #endregion
 
@@ -150,10 +153,10 @@ namespace Guppy.Network.Peers
             switch ((MessageTarget)im.ReadByte())
             {
                 case MessageTarget.Group:
-                    this.Groups.GetOrCreateById(im.ReadGuid()).HandleMessage(im);
+                    this.Groups.GetOrCreateById(im.ReadGuid()).Messages.HandleMessage(im);
                     break;
                 case MessageTarget.Peer:
-                    this.HandleMessage(im);
+                    this.Messages.HandleMessage(im);
                     break;
                 case MessageTarget.User:
                     throw new Exception("User messages are not yet supported.");
@@ -242,21 +245,6 @@ namespace Guppy.Network.Peers
         }
 
         public abstract void Flush();
-
-        public void HandleMessage(NetIncomingMessage im)
-        {
-            String type = im.ReadString();
-
-            if (messageHandlers.ContainsKey(type))
-                this.messageHandlers[type].Invoke(im);
-            else
-                this.logger.LogError($"Unhandled peer message => {type}");
-        }
-
-        public void AddMessageHandler(String type, Action<NetIncomingMessage> handler)
-        {
-            this.messageHandlers[type] = handler;
-        }
         #endregion
     }
 }

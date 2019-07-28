@@ -1,4 +1,4 @@
-﻿using Guppy.Utilities.DynamicHandlers;
+﻿using Guppy.Utilities.DynamicDelegaters;
 using System;
 using System.Collections.Generic;
 using System.Text;
