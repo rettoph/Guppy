@@ -98,12 +98,25 @@ namespace Guppy.Implementations
         /// </summary>
         /// <typeparam name="TDriver"></typeparam>
         /// <returns></returns>
-        protected IEnumerable<TDriver> GetDrivers<TDriver>()
+        public IEnumerable<TDriver> GetDrivers<TDriver>()
             where TDriver : Driver
         {
             return _drivers
                 .Where(d => typeof(TDriver).IsAssignableFrom(d.GetType()))
                 .Select(d => d as TDriver);
+        }
+
+        /// <summary>
+        /// Return the first driver that is assignable
+        /// from the given type
+        /// </summary>
+        /// <typeparam name="TDriver"></typeparam>
+        /// <returns></returns>
+        public TDriver GetDriver<TDriver>()
+            where TDriver : Driver
+        {
+            return _drivers
+                .FirstOrDefault(d => typeof(TDriver).IsAssignableFrom(d.GetType())) as TDriver;
         }
 
         public override void Dispose()
