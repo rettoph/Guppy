@@ -12,7 +12,7 @@ using Guppy.Network.Security;
 
 namespace Guppy.Network
 {
-    public abstract class NetworkEntity : Entity, ITrackedNetworkObject
+    public abstract class NetworkEntity : Entity
     {
         #region Private Fields
         private Boolean _dirty;
@@ -30,17 +30,10 @@ namespace Guppy.Network
                 if (_dirty != value)
                 {
                     _dirty = value;
-                    this.OnDirtyChanged?.Invoke(this, this);
+                    this.Events.TryInvoke("changed:dirty", _dirty);
                 }
             }
         }
-        #endregion
-
-        #region Events
-        public event EventHandler<NetworkEntity> OnRead;
-        public event EventHandler<NetworkEntity> OnWrite;
-
-        public event EventHandler<ITrackedNetworkObject> OnDirtyChanged;
         #endregion
 
         #region Constructors
@@ -71,7 +64,7 @@ namespace Guppy.Network
 
             this.read(im);
 
-            this.OnRead?.Invoke(this, this);
+            this.Events.TryInvoke("on:read", _dirty);
         }
         protected abstract void read(NetIncomingMessage im);
 
@@ -79,7 +72,7 @@ namespace Guppy.Network
         {
             this.write(om);
 
-            this.OnWrite?.Invoke(this, this);
+            this.Events.TryInvoke("on:write", _dirty);
         }
         protected abstract void write(NetOutgoingMessage om);
         #endregion

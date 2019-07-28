@@ -9,25 +9,8 @@ using Guppy.Implementations;
 
 namespace Guppy.Network
 {
-    public class NetworkObject : Initializable, ITrackedNetworkObject
+    public class NetworkObject : Initializable
     {
-        private Boolean _dirty;
-
-        public Boolean Dirty
-        {
-            get { return _dirty; }
-            set
-            {
-                if (_dirty != value)
-                {
-                    _dirty = value;
-                    this.OnDirtyChanged?.Invoke(this, this);
-                }
-            }
-        }
-
-        public event EventHandler<ITrackedNetworkObject> OnDirtyChanged;
-
         #region Constructors
         public NetworkObject(IServiceProvider provider) : base(provider)
         {

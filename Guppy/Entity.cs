@@ -23,10 +23,6 @@ namespace Guppy
         public UInt16 LayerDepth { get; private set; }
         #endregion
 
-        #region Events
-        public event EventHandler<Entity> OnLayerDepthChanged;
-        #endregion
-
         #region Constructors
         public Entity(EntityConfiguration configuration, IServiceProvider provider) : base(provider)
         {
@@ -56,7 +52,7 @@ namespace Guppy
         {
             this.LayerDepth = layerDepth;
 
-            this.OnLayerDepthChanged?.Invoke(this, this);
+            this.Events.TryInvoke("changed:layer-depth", this);
         }
         #endregion
 

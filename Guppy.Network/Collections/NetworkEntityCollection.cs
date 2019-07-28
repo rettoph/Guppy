@@ -6,7 +6,7 @@ using Lidgren.Network;
 
 namespace Guppy.Network.Collections
 {
-    public class NetworkEntityCollection : NetworkObjectCollection<NetworkEntity>
+    public class NetworkEntityCollection : UniqueObjectCollection<NetworkEntity>
     {
         public event EventHandler<NetworkEntity> Created;
 

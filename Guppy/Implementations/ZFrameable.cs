@@ -7,6 +7,10 @@ using System.Text;
 
 namespace Guppy.Implementations
 {
+    /// <summary>
+    /// A frameable object that can be enabled or given
+    /// update & draw orders
+    /// </summary>
     public abstract class ZFrameable : Driven, IZFrameable
     {
         private Boolean _visible;
@@ -30,23 +34,18 @@ namespace Guppy.Implementations
         {
             get { return _updateOrder; }
         }
-
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
         
-
         public ZFrameable(IServiceProvider provider) : base(provider)
         {
-            this.SetDrawOrder(0);
-            this.SetUpdateOrder(0);
-
-            this.SetVisible(true);
-            this.SetEnabled(true);
         }
         public ZFrameable(Guid id, IServiceProvider provider) : base(id, provider)
         {
+        }
+
+        protected override void Boot()
+        {
+            base.Boot();
+
             this.SetDrawOrder(0);
             this.SetUpdateOrder(0);
 
@@ -57,25 +56,25 @@ namespace Guppy.Implementations
         public void SetEnabled(Boolean enabled)
         {
             _enabled = enabled;
-            this.EnabledChanged?.Invoke(this, null);
+            this.Events.TryInvoke("set:enabled", _enabled);
         }
 
         public void SetVisible(Boolean visible)
         {
             _visible = visible;
-            this.VisibleChanged?.Invoke(this, null);
+            this.Events.TryInvoke("set:visible", _visible);
         }
 
         public void SetUpdateOrder(Int32 updateOrder)
         {
             _updateOrder = updateOrder;
-            this.UpdateOrderChanged?.Invoke(this, null);
+            this.Events.TryInvoke("set:update-order", _updateOrder);
         }
 
         public void SetDrawOrder(Int32 drawOrder)
         {
             _drawOrder = drawOrder;
-            this.DrawOrderChanged?.Invoke(this, null);
+            this.Events.TryInvoke("set:draw-order", _updateOrder);
         }
     }
 }

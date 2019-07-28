@@ -78,20 +78,20 @@ namespace Guppy.Network.Drivers
             this.CreateCreateMessage(ne);
             
             // Setup event handlers
-            ne.OnDirtyChanged += this.HandleNetworkEntityDirtyChanged;
+            ne.Events.AddHandler("changed:dirty", this.HandleNetworkEntityDirtyChanged);
             ne.Disposing += this.HandleNetworkEntityDisposing;
         }
 
-        private void HandleNetworkEntityDirtyChanged(object sender, ITrackedNetworkObject e)
+        private void HandleNetworkEntityDirtyChanged(Object arg)
         {
-            if (e.Dirty) // Queue the entity for cleaning
-                _dirtyEntities.Enqueue(e as NetworkEntity);
+            if ((arg as NetworkEntity).Dirty) // Queue the entity for cleaning
+                _dirtyEntities.Enqueue(arg as NetworkEntity);
         }
 
         private void HandleNetworkEntityDisposing(object sender, ITrackedDisposable e)
         {
             // Unbind any added event handlers
-            (e as NetworkEntity).OnDirtyChanged -= this.HandleNetworkEntityDirtyChanged;
+            (e as NetworkEntity).Events.RemoveHandler("changed:dirty", this.HandleNetworkEntityDirtyChanged);
             (e as NetworkEntity).Disposing -= this.HandleNetworkEntityDisposing;
         }
         #endregion

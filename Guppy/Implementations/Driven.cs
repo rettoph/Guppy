@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Guppy.Utilities.DynamicHandlers;
 
 namespace Guppy.Implementations
 {
@@ -18,6 +19,13 @@ namespace Guppy.Implementations
     public abstract class Driven : Frameable, IDriven
     {
         private Driver[] _drivers;
+
+        /// <summary>
+        /// Should manage all event ran by the current driven object.
+        /// 
+        /// Custom handlers can be added at any time.
+        /// </summary>
+        public EventDelegater Events { get; private set; }
 
         public Driven(IServiceProvider provider) : base(provider)
         {
@@ -33,6 +41,8 @@ namespace Guppy.Implementations
         protected override void Boot()
         {
             base.Boot();
+
+            this.Events = new EventDelegater();
 
             foreach (Driver driver in _drivers)
                 driver.TryBoot();

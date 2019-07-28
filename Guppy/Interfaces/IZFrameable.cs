@@ -10,14 +10,8 @@ namespace Guppy.Interfaces
         Boolean Enabled { get; }
         Int32 UpdateOrder { get; }
 
-        event EventHandler<EventArgs> EnabledChanged;
-        event EventHandler<EventArgs> UpdateOrderChanged;
-
         Int32 DrawOrder { get; }
         Boolean Visible { get; }
-
-        event EventHandler<EventArgs> DrawOrderChanged;
-        event EventHandler<EventArgs> VisibleChanged;
 
         void SetEnabled(Boolean enabled);
         void SetVisible(Boolean visible);

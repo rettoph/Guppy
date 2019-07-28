@@ -63,22 +63,22 @@ namespace Guppy.Collections
         {
             base.Add(item);
 
-            item.UpdateOrderChanged += this.HandleUpdateOrderChanged;
-            item.EnabledChanged     += this.HandleEnabledChanged;
+            item.Events.AddHandler("set:update-order", this.HandleUpdateOrderChanged);
+            item.Events.AddHandler("set:enabled", this.HandleEnabledChanged);
 
-            item.DrawOrderChanged += this.HandleDrawOrderChanged;
-            item.VisibleChanged   += this.HandleVisibleChanged;
+            item.Events.AddHandler("set:draw-order", this.HandleDrawOrderChanged);
+            item.Events.AddHandler("set:visible", this.HandleVisibleChanged);
         }
 
         public override Boolean Remove(TLivingObject item)
         {
             if(base.Remove(item))
             {
-                item.UpdateOrderChanged -= this.HandleUpdateOrderChanged;
-                item.EnabledChanged -= this.HandleEnabledChanged;
+                item.Events.RemoveHandler("set:update-order", this.HandleUpdateOrderChanged);
+                item.Events.RemoveHandler("set:enabled", this.HandleEnabledChanged);
 
-                item.DrawOrderChanged -= this.HandleDrawOrderChanged;
-                item.VisibleChanged -= this.HandleVisibleChanged;
+                item.Events.RemoveHandler("set:draw-order", this.HandleDrawOrderChanged);
+                item.Events.RemoveHandler("set:visible", this.HandleVisibleChanged);
 
                 return true;
             }
@@ -88,22 +88,22 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleVisibleChanged(object sender, EventArgs e)
+        private void HandleVisibleChanged(Object e)
         {
             _dirtyDrawables = true;
         }
 
-        private void HandleDrawOrderChanged(object sender, EventArgs e)
+        private void HandleDrawOrderChanged(Object e)
         {
             _dirtyDrawables = true;
         }
 
-        private void HandleEnabledChanged(object sender, EventArgs e)
+        private void HandleEnabledChanged(Object e)
         {
             _dirtyUpdatables = true;
         }
 
-        private void HandleUpdateOrderChanged(object sender, EventArgs e)
+        private void HandleUpdateOrderChanged(Object e)
         {
             _dirtyUpdatables = true;
         }

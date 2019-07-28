@@ -74,7 +74,7 @@ namespace Guppy.Collections
         {
             // Create a new entry in the entity layer table for the new item
             _entityLayerTable.Add(item, null);
-            item.OnLayerDepthChanged += this.HandleLayerDepthChanged;
+            item.Events.AddHandler("changed:layer-depth", this.HandleLayerDepthChanged);
 
             // Update the entities initial layer
             this.UpdateEntityLayer(item);
@@ -92,7 +92,7 @@ namespace Guppy.Collections
 
                 // Remove the item from the entity layer table
                 _entityLayerTable.Remove(item);
-                item.OnLayerDepthChanged -= this.HandleLayerDepthChanged;
+                item.Events.RemoveHandler("changed:layer-depth", this.HandleLayerDepthChanged);
 
                 return true;
             }
@@ -122,9 +122,9 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleLayerDepthChanged(object sender, Entity e)
+        private void HandleLayerDepthChanged(Object param)
         {
-            this.UpdateEntityLayer(e);
+            this.UpdateEntityLayer(param as Entity);
         }
         #endregion
     }

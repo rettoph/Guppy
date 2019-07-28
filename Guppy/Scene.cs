@@ -27,17 +27,6 @@ namespace Guppy
         protected EntityCollection entities { get; private set; }
         #endregion
 
-        #region Events
-        /// <summary>
-        /// Called when the current scene is marked as the active scene.
-        /// </summary>
-        public event EventHandler<Scene> OnActiveSet;
-        /// <summary>
-        /// Called when the current scene is no longer the active scene.
-        /// </summary>
-        public event EventHandler<Scene> OnActiveRemoved;
-        #endregion
-
         #region Constructors
         public Scene(IServiceProvider provider) : base(provider)
         {
@@ -73,10 +62,7 @@ namespace Guppy
         #region Utility Methods
         protected internal void setActive(Boolean active)
         {
-            if (active)
-                this.OnActiveSet?.Invoke(this, this);
-            else
-                this.OnActiveRemoved?.Invoke(this, this);
+            this.Events.TryInvoke("set:active", active);
         }
 
         protected internal void setScope(IServiceScope scope)
