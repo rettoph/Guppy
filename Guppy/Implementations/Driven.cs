@@ -43,7 +43,9 @@ namespace Guppy.Implementations
         {
             base.Boot();
 
-            this.Events = this.provider.GetService<EventDelegater>();
+            this.Events = ActivatorUtilities.CreateInstance<EventDelegater>(
+                this.provider, 
+                (Object)this);
 
             foreach (Driver driver in _drivers)
                 driver.TryBoot();

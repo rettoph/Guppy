@@ -88,22 +88,22 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleVisibleChanged(Object e)
+        private void HandleVisibleChanged(Object sender, Object e)
         {
             _dirtyDrawables = true;
         }
 
-        private void HandleDrawOrderChanged(Object e)
+        private void HandleDrawOrderChanged(Object sender, Object e)
         {
             _dirtyDrawables = true;
         }
 
-        private void HandleEnabledChanged(Object e)
+        private void HandleEnabledChanged(Object sender, Object e)
         {
             _dirtyUpdatables = true;
         }
 
-        private void HandleUpdateOrderChanged(Object e)
+        private void HandleUpdateOrderChanged(Object sender, Object e)
         {
             _dirtyUpdatables = true;
         }

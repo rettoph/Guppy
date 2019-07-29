@@ -7,11 +7,11 @@ using Microsoft.Extensions.Logging;
 namespace Guppy.Utilities.DynamicDelegaters
 {
     /// <summary>
-    /// Custom events that are managed by the network library.
+    /// Custom events that are managed by Guppy.
     /// </summary>
     public class EventDelegater : DynamicDelegater<String, Object>
     {
-        public EventDelegater(ILogger logger) : base(logger)
+        public EventDelegater(ILogger logger, Object sender = null) : base(logger, sender)
         {
         }
     }

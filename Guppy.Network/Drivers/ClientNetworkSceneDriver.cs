@@ -32,13 +32,13 @@ namespace Guppy.Network.Drivers
             this.scene.Group.Messages.AddHandler("update", this.HandleUpdateMessage);
         }
 
-        private void HandleUpdateMessage(NetIncomingMessage obj)
+        private void HandleUpdateMessage(Object sender, NetIncomingMessage obj)
         {
             // Load the target entity and read the data from the incoming message to it
             (_entities.GetById(obj.ReadGuid()) as NetworkEntity).Read(obj);
         }
 
-        private void HandleCreateMessage(NetIncomingMessage obj)
+        private void HandleCreateMessage(Object sender, NetIncomingMessage obj)
         {
             // Create a new entity based on the server commands
             var entity = _entityFactory.Create(obj.ReadString(), obj.ReadGuid()) as NetworkEntity;

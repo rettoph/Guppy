@@ -38,7 +38,7 @@ namespace Guppy.Network
         }
 
         #region NetMessage Handlers
-        protected internal void HandleActionMessage(NetIncomingMessage obj)
+        protected internal void HandleActionMessage(Object sender, NetIncomingMessage obj)
         {
             var id = obj.ReadGuid();
 

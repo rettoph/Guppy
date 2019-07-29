@@ -34,7 +34,7 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Internal Message Handlers
-        private void HandleUserJoinedMessage(NetIncomingMessage obj)
+        private void HandleUserJoinedMessage(Object sender, NetIncomingMessage obj)
         {
             // Select the newly joined user...
             var user = _client.Users.UpdateOrCreate(obj.ReadGuid(), obj);
@@ -42,7 +42,7 @@ namespace Guppy.Network.Groups
             this.Users.Add(user);
         }
 
-        private void HandleUserLeftMessage(NetIncomingMessage obj)
+        private void HandleUserLeftMessage(Object sender, NetIncomingMessage obj)
         {
             // Remove the user from the internal user collection...
             this.Users.Remove(

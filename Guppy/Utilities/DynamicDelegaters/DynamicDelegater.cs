@@ -17,21 +17,23 @@ namespace Guppy.Utilities.DynamicDelegaters
     {
         private GlobalDynamicDelegte _globalDelegates;
         private Dictionary<TKey, LocalDynamicDelegate> _table;
+        private Object _sender;
 
         protected ILogger logger { get; private set; }
 
-        public delegate void LocalDynamicDelegate(TParam arg);
-        public delegate void GlobalDynamicDelegte(TKey key, TParam arg);
+        public delegate void LocalDynamicDelegate(Object sender, TParam arg);
+        public delegate void GlobalDynamicDelegte(Object sender, TKey key, TParam arg);
 
         public LocalDynamicDelegate this[TKey key] {
             get { return _table[key]; }
             set { _table[key] = value; }
         }
 
-        public DynamicDelegater(ILogger logger)
+        public DynamicDelegater(ILogger logger, Object sender = null)
         {
             // Create a new table to contain the delegates...
             _table = new Dictionary<TKey, LocalDynamicDelegate>();
+            _sender = sender;
 
             this.logger = logger;
         }
@@ -43,17 +45,21 @@ namespace Guppy.Utilities.DynamicDelegaters
         /// <param name="key"></param>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public virtual Boolean TryInvoke(TKey key, TParam arg)
+        public virtual Boolean TryInvoke(Object sender, TKey key, TParam arg)
         {
             if (_table.ContainsKey(key))
             {
-                _table[key].Invoke(arg);
-                _globalDelegates?.Invoke(key, arg);
+                _table[key].Invoke(sender, arg);
+                _globalDelegates?.Invoke(sender, key, arg);
 
                 return true;
             }
 
             return false;
+        }
+        public virtual Boolean TryInvoke(TKey key, TParam arg)
+        {
+            return this.TryInvoke(_sender, key, arg);
         }
 
         /// <summary>

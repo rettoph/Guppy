@@ -122,9 +122,9 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleLayerDepthChanged(Object param)
+        private void HandleLayerDepthChanged(Object sender, Object arg)
         {
-            this.UpdateEntityLayer(param as Entity);
+            this.UpdateEntityLayer(arg as Entity);
         }
         #endregion
     }
