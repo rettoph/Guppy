@@ -1,61 +1,44 @@
 ﻿using Guppy.Extensions.DependencyInjection;
-using Guppy.Implementations;
 using Guppy.Interfaces;
-using Guppy.Loaders;
-using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Guppy.Utilities.DynamicDelegaters;
-using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 
 namespace Guppy.Implementations
 {
-    /// <summary>
-    /// Driven classes contain drivers defined within
-    /// the DriverLoader.
-    /// </summary>
-    public abstract class Driven : Frameable, IDriven
+    public class Driven : Reusable, IDriven
     {
-        private Driver[] _drivers;
+        #region Private Fields
+        private IDriver[] _drivers;
+        private IDriver[] _drawDrivers;
+        #endregion
 
-        /// <summary>
-        /// Should manage all event ran by the current driven object.
-        /// 
-        /// Custom handlers can be added at any time.
-        /// </summary>
-        public EventDelegater Events { get; private set; }
-
-        public Driven(IServiceProvider provider) : base(provider)
+        #region Lifecycle Methods
+        protected override void PreCreate(IServiceProvider provider)
         {
+            base.PreCreate(provider);
+
+            // Create new driver instances for the current driven
             _drivers = provider.GetDrivers(this);
+            _drawDrivers = _drivers.OrderBy(d => d.DrawOrder).ToArray();
         }
 
-        public Driven(Guid id, IServiceProvider provider) : base(id, provider)
+        protected override void PostCreate(IServiceProvider provider)
         {
-            _drivers = provider.GetDrivers(this);
-        }
+            base.PostCreate(provider);
 
-        #region Initialization Methods
-        protected override void Boot()
-        {
-            base.Boot();
-
-            this.Events = ActivatorUtilities.CreateInstance<EventDelegater>(
-                this.provider, 
-                (Object)this);
-
-            foreach (Driver driver in _drivers)
-                driver.TryBoot();
+            // Call the driver create method
+            foreach (IDriver driver in _drivers)
+                driver.TryCreate(provider);
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
-            foreach (Driver driver in _drivers)
+            foreach (IDriver driver in _drivers)
                 driver.TryPreInitialize();
         }
 
@@ -63,7 +46,7 @@ namespace Guppy.Implementations
         {
             base.Initialize();
 
-            foreach (Driver driver in _drivers)
+            foreach (IDriver driver in _drivers)
                 driver.TryInitialize();
         }
 
@@ -71,62 +54,41 @@ namespace Guppy.Implementations
         {
             base.PostInitialize();
 
-            foreach (Driver driver in _drivers)
+            foreach (IDriver driver in _drivers)
                 driver.TryPostInitialize();
         }
         #endregion
 
         #region Frame Methods
-        public new void Draw(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            foreach (Driver driver in _drivers)
-                driver.draw(gameTime);
+            foreach (IDriver driver in _drawDrivers)
+                driver.TryDraw(gameTime);
         }
 
-        public new void Update(GameTime gameTime)
+        protected override void Update(GameTime gameTime)
         {
-            foreach (Driver driver in _drivers)
-                driver.update(gameTime);
+            foreach (IDriver driver in _drivers)
+                driver.TryUpdate(gameTime);
 
             base.Update(gameTime);
         }
         #endregion
 
-        /// <summary>
-        /// Return all internal drivers that are assignable from
-        /// a given type
-        /// </summary>
-        /// <typeparam name="TDriver"></typeparam>
-        /// <returns></returns>
-        public IEnumerable<TDriver> GetDrivers<TDriver>()
-            where TDriver : Driver
+        #region Helper Methods
+        public TDriver GetFirstDriver<TDriver>() 
+            where TDriver : class, IDriver
         {
-            return _drivers
-                .Where(d => typeof(TDriver).IsAssignableFrom(d.GetType()))
-                .Select(d => d as TDriver);
+            return _drivers.First(d => typeof(TDriver).IsAssignableFrom(d.GetType())) as TDriver;
         }
 
-        /// <summary>
-        /// Return the first driver that is assignable
-        /// from the given type
-        /// </summary>
-        /// <typeparam name="TDriver"></typeparam>
-        /// <returns></returns>
-        public TDriver GetDriver<TDriver>()
-            where TDriver : Driver
+        public IEnumerable<IDriver> GetDrivers<TDriver>() 
+            where TDriver : class, IDriver
         {
-            return _drivers
-                .FirstOrDefault(d => typeof(TDriver).IsAssignableFrom(d.GetType())) as TDriver;
+            return _drivers.Where(d => typeof(TDriver).IsAssignableFrom(d.GetType()));
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            foreach (Driver driver in _drivers)
-                driver.Dispose();
-        }
+        #endregion
     }
 }

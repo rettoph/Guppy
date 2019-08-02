@@ -4,13 +4,13 @@ using System.Text;
 
 namespace Guppy.Enums
 {
-    public enum InitializationStatus : Byte
+    public enum InitializationStatus
     {
-        NotReady,
-        Booting,
+        NotInitialized,
         PreInitializing,
         Initializing,
         PostInitializing,
-        Ready
+        Ready,
+        Disposing
     }
 }

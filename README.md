@@ -7,15 +7,12 @@ Custom events are events bound by a simple string and can dynamically be invoked
 
 | Project | Class | Event | Arg | Description |
 | ------- | ----- | ----- | --------- | ----------- |
-| `Guppy` | `ZFrameable` | `set:enabled` |` Boolean` | Invoked when the enabled value is updated. |
-| `Guppy` | `ZFrameable` | `set:visible` | `Boolean` | Invoked when the visible value is updated. |
-| `Guppy` | `ZFrameable` | `set:update-order` | `Int32` | Invoked when the update order value is changed. |
-| `Guppy` | `ZFrameable` | `set:draw` | `Int32` | Invoked when the draw value is updated. |
+| `Guppy` | `Reusable` | `disposing` |` DateTime` | Invoked when the child is disposed. |
+| `Guppy` | `Reusable` | `changed:enabled` |` Boolean` | Invoked when the enabled value is updated. |
+| `Guppy` | `Reusable` | `changed:visible` | `Boolean` | Invoked when the visible value is updated. |
+| `Guppy` | `Reusable` | `changed:update-order` | `Int32` | Invoked when the update order value is changed. |
+| `Guppy` | `Reusable` | `changed:draw` | `Int32` | Invoked when the draw value is updated. |
 | | | | |
-| `Guppy` | `Scene` | `set:active` | `Boolean` | Invoked when the scene is marked as active or inactive. |
+| `Guppy` | `FrameableCollection<T>` | `added` | `T` | Invoked when an item is added to the collection. |
+| `Guppy` | `FrameableCollection<T>` | `removed` | `T` | Invoked when an item is removed from the collection. |
 | | | | |
-| `Guppy` | `Entity` | `changed:layer-depth` | `Entity` | Invoked when the entity's layer depth is changed. |
-| | | | |
-| `Guppy.Network` | `NetworkEntity` | `on:read` | `NetworkEntity` | Invoked when the `NetworkEntity.Read(NetIncomingMessage)` function is called. |
-| `Guppy.Network` | `NetworkEntity` | `on:write` | `NetworkEntity` | Invoked when the `NetworkEntity.Write(NetIncomingMessage)` function is called. |
-| `Guppy.Network` | `NetworkEntity` | `changed:dirty` | `NetworkEntity` | Invoked when the network entity's dirty value is changed. |

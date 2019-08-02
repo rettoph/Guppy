@@ -1,134 +1,24 @@
-﻿using Guppy.Collections;
-using Guppy.Configurations;
-using Guppy.Extensions;
-using Guppy.Factories;
-using Guppy.Interfaces;
-using Guppy.Loaders;
-using Guppy.Loggers;
+﻿using Guppy.Implementations;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text;
-using System.Linq;
-using Guppy.Implementations;
-using Guppy.Enums;
-using System.Threading;
+using Guppy.Configurations;
 
 namespace Guppy
 {
     /// <summary>
-    /// The main driver of a game. Controls all logic,
-    /// manages the service provider, and handles all
-    /// update/draw logic.
+    /// The main game class for all guppy game instances.
     /// </summary>
-    public class Game : Driven
+    public abstract class Game : Driven
     {
-        #region Private Fields
-        private Thread _thread;
-        private Boolean _running;
-        private Boolean _draw;
-        #endregion
-
-        #region Public Attributes
-        public Scene Scene { get; private set; }
-        #endregion
-
-        #region Constructors
-        public Game(IServiceProvider provider) : base(provider)
+        protected override void PreInitialize()
         {
+            base.PreInitialize();
+
+            // Update the current scope's game value
+            var config = this.provider.GetService<ScopeConfiguration>();
+            config.Set("game", this);
         }
-        #endregion
-
-        #region Frame Methods
-        protected override void draw(GameTime gameTime)
-        {
-            this.Scene.Draw(gameTime);
-        }
-
-        protected override void update(GameTime gameTime)
-        {
-            this.Scene.Update(gameTime);
-        }
-        #endregion
-
-        #region Scene Methods
-        public TScene CreateScene<TScene>()
-            where TScene : Scene
-        {
-            var sceneScope = this.provider.CreateScope();
-            var sceneProvider = sceneScope.ServiceProvider;
-            sceneProvider.GetRequiredService<GameScopeConfiguration>().Clone(this.provider.GetRequiredService<GameScopeConfiguration>());
-            var scene = sceneProvider.GetService<TScene>();
-
-            // Initialize the new scene
-            scene.setScope(sceneScope);
-            scene.TryPreInitialize();
-            scene.TryInitialize();
-            scene.TryPostInitialize();
-
-            return scene;
-        }
-
-        public Scene SetScene(Scene scene, Boolean disposeOld = true)
-        {
-            this.Scene?.setActive(false);
-
-            if (disposeOld) // Dispose of the old scene if necessary
-                this.Scene?.Dispose();
-
-
-            this.Scene = scene;
-            this.Scene.setActive(true);
-
-            return this.Scene;
-        }
-
-        /// <summary>
-        /// Start a new thread loop for this game 
-        /// that is independent from all other games. 
-        /// </summary>
-        public void StartAsyc(Boolean draw = false)
-        {
-            this.logger.LogInformation("Starting async game loop.");
-
-            _draw = draw;
-            _running = true;
-            _thread = new Thread(new ThreadStart(this.loop));
-            _thread.Start();
-        }
-
-        private void loop()
-        {
-
-            DateTime now = DateTime.Now;
-            DateTime start = DateTime.Now;
-            DateTime last = DateTime.Now;
-            GameTime time;
-
-            while (_running)
-            {
-                Thread.Sleep(16);
-
-                now = DateTime.Now;
-                time = new GameTime(now.Subtract(start), now.Subtract(last));
-                last = now;
-
-                this.Update(time);
-
-                if (_draw)
-                    this.Draw(time);
-            }
-
-            this.logger.LogInformation("Stopping async game loop.");
-        }
-
-        public void Stop()
-        {
-            _running = false;
-        }
-        #endregion
     }
 }

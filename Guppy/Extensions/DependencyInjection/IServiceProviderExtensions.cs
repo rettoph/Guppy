@@ -1,70 +1,109 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using Guppy.Configurations;
-using Guppy.Factories;
+﻿using Guppy.Configurations;
 using Guppy.Interfaces;
-using Guppy.Implementations;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Guppy.Utilities.Pools;
 
 namespace Guppy.Extensions.DependencyInjection
 {
     public static class IServiceProviderExtensions
     {
-        #region GetScene Methods
-        public static TScene GetScene<TScene>(this IServiceProvider provider)
-            where TScene : Scene
-        {
-            return provider.GetService<TScene>();
-        }
-        #endregion
-
-        #region GetLayer Methods
-        public static TLayer GetLayer<TLayer>(this IServiceProvider provider)
-            where TLayer : Layer
-        {
-            return provider.GetService<TLayer>();
-        }
-
-        public static TLayer GetLayer<TLayer>(this IServiceProvider provider, LayerConfiguration configuration)
-            where TLayer : Layer
-        {
-            var factory = provider.GetRequiredService<LayerFactory<TLayer>>();
-
-            return factory.Create(provider, configuration);
-        }
-
-        public static TLayer GetLayer<TLayer>(this IServiceProvider provider, UInt16 minDepth = 0, UInt16 maxDepth = 0, UInt16 updateOrder = 0, UInt16 drawOrder = 0)
-            where TLayer : Layer
-        {
-            return provider.GetLayer<TLayer>(new LayerConfiguration(minDepth, maxDepth, updateOrder, drawOrder));
-        }
-        #endregion
-
-        #region GetLoader Methods
-        public static IEnumerable<ILoader> GetLoaders(this IServiceProvider provider)
-        {
-            return provider.GetServices<ILoader>();
-        }
-
+        #region Loader Methods
         public static TLoader GetLoader<TLoader>(this IServiceProvider provider)
             where TLoader : class, ILoader
         {
-            var loaderType = typeof(TLoader);
+            return provider.GetLoader(typeof(TLoader)) as TLoader;
+        }
 
-            return provider.GetLoaders()
-                .First(l => l.GetType() == loaderType) as TLoader;
+        public static ILoader GetLoader(this IServiceProvider provider, Type loader)
+        {
+            if (!typeof(ILoader).IsAssignableFrom(loader))
+                throw new Exception($"Unable to add loader! 'ILoader' is not assignable from '{loader.Name}'");
+
+            return provider.GetService(loader) as ILoader;
         }
         #endregion
 
-        #region GetDrivers Methods
-        public static Driver[] GetDrivers(this IServiceProvider provider, Driven driven)
+        #region Game Methods
+        /// <summary>
+        /// Return the current scope's game instance or create a 
+        /// brand new one. The inputed setup method is used in the event
+        /// of a new game being generated from the game pool.
+        /// </summary>
+        /// <typeparam name="TGame"></typeparam>
+        /// <param name="provider"></param>
+        /// <param name="setup"></param>
+        /// <returns></returns>
+        public static TGame GetGame<TGame>(this IServiceProvider provider, Action<TGame> setup = null)
+            where TGame : Game
+        {
+            var config = provider.GetRequiredService<ScopeConfiguration>();
+            var cached = config.Get<Game>("game");
+
+            if (cached == default(Game))
+            { // Create a new game instance...
+                return provider.GetPooledService<TGame>(setup) as TGame;
+            }
+            else if (cached.GetType().IsAssignableFrom(typeof(TGame)))
+            { // Return the cached game...
+                return cached as TGame;
+            }
+            else
+            {
+                throw new Exception($"Unable to return game, invalid type. Cached game is a Game<{cached.GetType().Name}>");
+            }
+        }
+        #endregion
+
+        #region Scope Methods 
+        /// <summary>
+        /// Create a new scope but cope the parent's
+        /// ScopeConfiguration to thenew scope
+        /// </summary>
+        /// <returns></returns>
+        public static IServiceProvider CreateScopeWithConfiguration(this IServiceProvider provider)
+        {
+            var parentConfig = provider.GetService<ScopeConfiguration>();
+            var childProvider = provider.CreateScope().ServiceProvider;
+            var childConfig = provider.GetService<ScopeConfiguration>();
+
+            // Copt the parent config to the child config...
+            childConfig.Copy(parentConfig);
+
+            return childProvider;
+        }
+        #endregion
+
+        #region Pool Methods
+        public static T GetPooledService<T>(this IServiceProvider provider, Action<T> setup = null)
+        {
+            var pool = provider.GetService<Pool<T>>();
+
+            if (pool == null)
+                throw new Exception($"Unable to find service pool for '{typeof(T).Name}'. Please ensure a pool was registered.");
+
+            return pool.Pull(provider, setup);
+        }
+        #endregion
+
+        #region Driver Methods
+        /// <summary>
+        /// Return new or recycled instances
+        /// of all driver types that are
+        /// registered to the given driven instance
+        /// type.
+        /// </summary>
+        /// <param name="driven"></param>
+        /// <returns></returns>
+        public static IDriver[] GetDrivers(this IServiceProvider provider, IDriven driven)
         {
             return provider.GetServices<DriverConfiguration>()
-                .Where(dc => dc.DrivenType.IsAssignableFrom(driven.GetType()))
-                .OrderBy(dc => dc.Priority)
-                .Select(dc => (Driver)ActivatorUtilities.CreateInstance(provider, dc.DriverType, driven))
+                .Where(c => c.Driven.IsAssignableFrom(driven.GetType()))
+                .Select(c => ActivatorUtilities.CreateInstance(provider, c.Driver, driven) as IDriver)
+                .OrderBy(d => d.UpdateOrder)
                 .ToArray();
         }
         #endregion

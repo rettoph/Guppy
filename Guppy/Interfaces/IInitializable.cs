@@ -5,13 +5,16 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    public interface IInitializable : IUniqueObject
+    public interface IInitializable
     {
+        #region Public Attributes
         InitializationStatus InitializationStatus { get; }
+        #endregion
 
-        void TryBoot();
+        #region Lifecycle Methods
         void TryPreInitialize();
         void TryInitialize();
         void TryPostInitialize();
+        #endregion
     }
 }

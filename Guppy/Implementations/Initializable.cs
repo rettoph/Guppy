@@ -1,114 +1,70 @@
 ﻿using Guppy.Enums;
 using Guppy.Interfaces;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Implementations
 {
-    public abstract class Initializable : UniqueObject, IInitializable
+    public class Initializable : IInitializable, IDisposable
     {
-        #region Proteced Attributes
-        protected ILogger logger { get; private set; }
-        protected IServiceProvider provider { get; private set; }
-        #endregion
-
         #region Public Attributes
         public InitializationStatus InitializationStatus { get; private set; }
         #endregion
 
-        #region Constructors
-        public Initializable(IServiceProvider provider)
-        {
-            this.InitializationStatus = InitializationStatus.NotReady;
-
-            this.provider = provider;
-            this.logger = this.provider.GetRequiredService<ILogger>();
-        }
-        public Initializable(Guid id, IServiceProvider provider) : base(id)
-        {
-            this.InitializationStatus = InitializationStatus.NotReady;
-
-            this.provider = provider;
-            this.logger = this.provider.GetRequiredService<ILogger>();
-        }
-        #endregion
-
-        #region Internal Initialization Methods
-        protected virtual void Boot()
-        {
-            this.logger = this.provider.GetRequiredService<ILogger>();
-            this.InitializationStatus = InitializationStatus.Booting;
-        }
-
-        protected virtual void PreInitialize()
-        {
-            this.InitializationStatus = InitializationStatus.PreInitializing;
-        }
-
-        protected virtual void Initialize()
-        {
-            this.InitializationStatus = InitializationStatus.Initializing;
-        }
-
-        protected virtual void PostInitialize()
-        {
-            this.InitializationStatus = InitializationStatus.PostInitializing;
-        }
-        #endregion
-
         #region Initialization Methods
-        public void TryBoot()
-        {
-            if(this.InitializationStatus != InitializationStatus.NotReady)
-            { // Invalid Initialization Status... Log this error.
-                this.logger.LogError($"Initialization Error! Unable to boot, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.NotReady is expected.");
-            }
-            else
-            { // Valid Initialization Status. Call Boot.
-                this.Boot();
-            }
-        }
-
         public void TryPreInitialize()
         {
-            if (this.InitializationStatus != InitializationStatus.Booting)
-            { // Invalid Initialization Status... Log this error.
-                this.logger.LogError($"Initialization Error! Unable to pre-initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.Booting is expected.");
-            }
-            else
-            { // Valid Initialization Status. Call PreInitialize.
+            if (this.InitializationStatus == InitializationStatus.NotInitialized)
+            {
+                this.InitializationStatus = InitializationStatus.PreInitializing;
                 this.PreInitialize();
             }
+            else
+                throw new Exception($"Unable to pre initialize, InitializationStatus is {this.InitializationStatus} but {InitializationStatus.NotInitialized} is required.");
         }
 
         public void TryInitialize()
         {
-            if (this.InitializationStatus != InitializationStatus.PreInitializing)
-            { // Invalid Initialization Status... Log this error.
-                this.logger.LogError($"Initialization Error! Unable to initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.PreInitializing is expected.");
-            }
-            else
-            { // Valid Initialization Status. Call Initialize.
+            if (this.InitializationStatus == InitializationStatus.PreInitializing)
+            {
+                this.InitializationStatus = InitializationStatus.Initializing;
                 this.Initialize();
             }
+            else
+                throw new Exception($"Unable to initialize, InitializationStatus is {this.InitializationStatus} but {InitializationStatus.PreInitializing} is required.");
         }
 
         public void TryPostInitialize()
         {
-            if (this.InitializationStatus != InitializationStatus.Initializing)
-            { // Invalid Initialization Status... Log this error.
-                this.logger.LogError($"Initialization Error! Unable to post-initialize, current InitializationStatus is {this.InitializationStatus}. InitializationStatus.Initializing is expected.");
-            }
-            else
-            { // Valid Initialization Status. Call PostInitialize.
+            if (this.InitializationStatus == InitializationStatus.Initializing)
+            {
+                this.InitializationStatus = InitializationStatus.PostInitializing;
                 this.PostInitialize();
-
-                // after the system is done post initializing, we can mark the current object as ready
                 this.InitializationStatus = InitializationStatus.Ready;
             }
+            else
+                throw new Exception($"Unable to pre initialize, InitializationStatus is {this.InitializationStatus} but {InitializationStatus.Initializing} is required.");
+        }
+
+        protected virtual void PreInitialize()
+        {
+            // 
+        }
+
+        protected virtual void Initialize()
+        {
+            // 
+        }
+
+        protected virtual void PostInitialize()
+        {
+            // 
+        }
+
+        public virtual void Dispose()
+        {
+            this.InitializationStatus = InitializationStatus.NotInitialized;
         }
         #endregion
     }

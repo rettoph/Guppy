@@ -6,14 +6,15 @@ using System.Text;
 namespace Guppy.Interfaces
 {
     /// <summary>
-    /// Service providers are custom objects used to help setup a game
-    /// object externally. They can register services, interact with loaders,
-    /// and more all within their own self-contained class.
+    /// Service loaders are the heart of Guppy, automatically loaded
+    /// by the GuppyLoader and called on GuppyLoader.Initialize.
+    /// 
+    /// Service loaders should be used to interface any and all
+    /// custom functionality into the Guppy Game Engine.
     /// </summary>
     public interface IServiceLoader
     {
-        void ConfigureServiceCollection(IServiceCollection services);
-        void Boot(IServiceProvider provider);
+        void Boot(IServiceCollection services);
         void PreInitialize(IServiceProvider provider);
         void Initialize(IServiceProvider provider);
         void PostInitialize(IServiceProvider provider);

@@ -1,135 +1,92 @@
-﻿using Guppy.Collections;
-using Guppy.Configurations;
+﻿using Guppy.Attributes;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Factories;
 using Guppy.Interfaces;
-using Guppy.Loaders;
-using Guppy.Loggers;
-using Guppy.Utilities.Cameras;
+using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Guppy.Extensions.Linq;
 
 namespace Guppy
 {
     /// <summary>
-    /// Main Guppy driver, used to initialize all
-    /// guppy games.
+    /// Main Guppy loader. This class is used to 
+    /// initialize all things Guppy related.
     /// </summary>
     public class GuppyLoader
     {
+        #region Static Fields
+        private static IServiceLoader[] ServiceLoaders;
+        #endregion
+
         #region Private Fields
+        private IServiceCollection _services;
         private IServiceProvider _provider;
-        private IServiceLoader[] _serviceLoaders;
-
-        private Boolean _initialized;
         #endregion
 
-        #region Public Attributes
-        public IServiceCollection Services;
-        public ILogger Logger { get; }
-
-        public GameCollection Games { get; private set; }
-
-        public IServiceProvider Provider { get { return _provider; } }
+        #region Public Fields
+        public Boolean Initialized { get; private set; }
         #endregion
 
-        public GuppyLoader(ILogger logger, IServiceCollection services = null)
+        #region Constructor
+        public GuppyLoader()
         {
-            this.Logger = logger;
-
-            _initialized = false;
-            this.Services = services == null ? new ServiceCollection() : services;
-            _serviceLoaders = this.getUniqueNestedReferencedAssemblies(Assembly.GetEntryAssembly())
-                .SelectMany(a => a.GetTypes())
+            _services = new ServiceCollection();
+        }
+        static GuppyLoader()
+        {
+            // Load all service loaders directly from all references assemblies...
+            GuppyLoader.ServiceLoaders = AssemblyHelper.Types.AsParallel()
                 .Where(t => t.IsClass && !t.IsAbstract && typeof(IServiceLoader).IsAssignableFrom(t))
+                .OrderBy(t => {
+                    var attribute = t.GetCustomAttribute(typeof(IsServiceLoaderAttribute)) as IsServiceLoaderAttribute;
+                    return attribute == null ? 100 : attribute.Priority;
+                })
                 .Select(t => Activator.CreateInstance(t) as IServiceLoader)
                 .ToArray();
-
-            // Add core services here...
-            this.Services.AddSingleton<GuppyLoader>(this);
-            this.Services.AddSingleton<ILogger>(this.Logger);
         }
+        #endregion
 
+        #region Methods
         public void Initialize()
         {
-            if (_initialized)
-                throw new Exception("Guppy instance already initialized!");
+            if (this.Initialized)
+                throw new Exception($"Unable to run GuppyLoader.Initialize more than once.");
 
-            // First, configure the services
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.ConfigureServiceCollection(this.Services);
+            // First boot all service loaders...
+            foreach (IServiceLoader serviceLoader in GuppyLoader.ServiceLoaders)
+                serviceLoader.Boot(_services);
 
-            // Create a new service provider instance...
-            _provider = this.Services.BuildServiceProvider();
+            // Create a new service provider...
+            _provider = _services.BuildServiceProvider();
 
-            #region Provider & Loader Initialization
-            // Now initialize the provider
+            // Finish initializing the service loaders
+            foreach (IServiceLoader serviceLoader in GuppyLoader.ServiceLoaders)
+                serviceLoader.PreInitialize(_provider);
 
-            // Boot
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.Boot(_provider);
-
-            // Ensure all loaders get loaded
-            foreach (ILoader loader in _provider.GetLoaders())
+            // At this point, ensure that all loaders get loaded
+            foreach (ILoader loader in _provider.GetServices<ILoader>())
                 loader.Load();
 
-            // Pre-Initialize
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.PreInitialize(_provider);
-            // Initialize
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+            foreach (IServiceLoader serviceLoader in GuppyLoader.ServiceLoaders)
                 serviceLoader.Initialize(_provider);
-            // Post-Initialize
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+
+            foreach (IServiceLoader serviceLoader in GuppyLoader.ServiceLoaders)
                 serviceLoader.PostInitialize(_provider);
-            #endregion
 
-            this.Games = _provider.GetRequiredService<GameCollection>();
-
-            _initialized = true;
+            // Mark the guppy loader as initialized.
+            this.Initialized = true;
         }
+        #endregion
 
-        /// <summary>
-        /// Automatically configure Guppy for a simple MonoGame client.
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="window"></param>
-        /// <param name="content"></param>
-        public void ConfigureMonogame(GraphicsDeviceManager graphics, GameWindow window, ContentManager content)
+        #region Helper Methods
+        public TGame BuildGame<TGame>(Action<TGame> setup = null)
+            where TGame : Game
         {
-            this.Services.AddSingleton(graphics);
-            this.Services.AddSingleton(window);
-            this.Services.AddSingleton(content);
-            this.Services.AddSingleton(graphics.GraphicsDevice);
-            this.Services.AddSingleton(new SpriteBatch(graphics.GraphicsDevice));
-
-            this.Services.AddTransient<Camera2D>();
-            this.Services.AddTransient<BasicEffect>();
+            return _provider.GetGame<TGame>(setup);
         }
-
-        private List<Assembly> getUniqueNestedReferencedAssemblies(Assembly entry, List<Assembly> list = null)
-        {
-            if (list == null)
-                list = new List<Assembly>();
-
-            if(!list.Contains(entry))
-            {
-                list.Add(entry);
-
-                foreach (Assembly child in entry.GetReferencedAssemblies().Select(an => Assembly.Load(an)))
-                    this.getUniqueNestedReferencedAssemblies(child, list);
-            }
-
-            return list;
-        }
+        #endregion
     }
 }

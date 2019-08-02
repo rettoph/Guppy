@@ -1,5 +1,6 @@
-﻿using Guppy.Interfaces;
-using Microsoft.Extensions.Logging;
+﻿using Guppy.Enums;
+using Guppy.Interfaces;
+using Guppy.Utilities.Delegaters;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,33 +8,35 @@ using System.Text;
 
 namespace Guppy.Implementations
 {
-    public abstract class Frameable : Initializable, IFrameable
+    public class Frameable : Initializable, IFrameable
     {
-        public Frameable(IServiceProvider provider) : base(provider)
+        #region Public Attributes
+        public Int32 DrawOrder { get; protected set; }
+        public Int32 UpdateOrder { get; protected set; }
+        public Boolean Visible { get; protected set; }
+        public Boolean Enabled { get; protected set; }
+        #endregion
+
+        #region Frame Methods
+        public void TryDraw(GameTime gameTime)
         {
+            this.Draw(gameTime);
         }
 
-        public Frameable(Guid id, IServiceProvider provider) : base(id, provider)
+        public void TryUpdate(GameTime gameTime)
         {
+            this.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime)
+        protected virtual void Draw(GameTime gameTime)
         {
-            this.draw(gameTime);
+            // 
         }
 
-        public void Update(GameTime gameTime)
+        protected virtual void Update(GameTime gameTime)
         {
-            this.update(gameTime);
+            // 
         }
-
-        protected virtual void draw(GameTime gameTime)
-        {
-            //
-        }
-        protected virtual void update(GameTime gameTime)
-        {
-            //
-        }
+        #endregion
     }
 }

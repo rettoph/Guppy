@@ -1,28 +1,17 @@
-﻿using System;
+﻿using Guppy.Utilities.Pools;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Factories;
-using Guppy.Interfaces;
-using Guppy.Loaders;
 
 namespace Guppy.Configurations
 {
-    public class EntityConfiguration
+    public struct EntityConfiguration
     {
-        public readonly String Handle;
-        public readonly String Name;
-        public readonly String Description;
-        public readonly Type Type;
-        public readonly IEntityData Data;
-
-
-        public EntityConfiguration(String handle, RegisteredEntityConfiguration configuration, StringLoader stringLoader)
-        {
-            this.Handle = handle;
-            this.Name = stringLoader.GetValue(configuration.NameHandle);
-            this.Description = stringLoader.GetValue(configuration.DescriptionHandle);
-            this.Type = configuration.Type;
-            this.Data = configuration.Data;
-        }
+        public String Handle { get; internal set; }
+        public String Name { get; internal set; }
+        public String Description { get; internal set; }
+        public Object Data { get; internal set; }
+        public Type Type { get; internal set; }
+        public Pool<Entity> Pool { get; internal set; }
     }
 }
