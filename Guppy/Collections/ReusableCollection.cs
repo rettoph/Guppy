@@ -2,11 +2,12 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.Collections
 {
-    public class ReusableCollection<TResusable> : FrameableCollection<TResusable>
+    public class ReusableCollection<TResusable> : FrameableCollection<TResusable>, IDisposable
         where TResusable : class, IReusable
     {
         #region Private Fields
@@ -20,6 +21,15 @@ namespace Guppy.Collections
         }
         #endregion
 
+        #region Lifecycle Methods
+        public void Dispose()
+        {
+            // auto dispose children
+            while(this.Count > 0)
+                this.First().Dispose();
+        }
+        #endregion
+
         #region Frame Methods
         public override void TryUpdate(GameTime gameTime)
         {
@@ -28,13 +38,19 @@ namespace Guppy.Collections
                 this.RemapUpdates();
                 _dirtyUpdates = false;
             }
-            if(_dirtyDraws)
+
+            base.TryUpdate(gameTime);
+        }
+
+        public override void TryDraw(GameTime gameTime)
+        {
+            if (_dirtyDraws)
             {
                 this.RemapDraws();
                 _dirtyDraws = false;
             }
 
-            base.TryUpdate(gameTime);
+            base.TryDraw(gameTime);
         }
         #endregion
 
@@ -45,10 +61,14 @@ namespace Guppy.Collections
             {
                 // Bind to any relevant events
                 item.Events.AddDelegate<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
-                item.Events.AddDelegate<Boolean>("changed:enabled", this.HandleItemVisibleChanged);
+                item.Events.AddDelegate<Boolean>("changed:visible", this.HandleItemVisibleChanged);
                 item.Events.AddDelegate<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
                 item.Events.AddDelegate<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
                 item.Events.AddDelegate<DateTime>("disposing", this.HandleItemDisposing);
+
+                // Mark draws and updates as dirty at this time
+                _dirtyDraws = true;
+                _dirtyUpdates = true;
 
                 return true;
             }
@@ -62,10 +82,14 @@ namespace Guppy.Collections
             {
                 // Unbind all related events
                 item.Events.RemoveDelegate<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
-                item.Events.RemoveDelegate<Boolean>("changed:enabled", this.HandleItemVisibleChanged);
+                item.Events.RemoveDelegate<Boolean>("changed:visible", this.HandleItemVisibleChanged);
                 item.Events.RemoveDelegate<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
                 item.Events.RemoveDelegate<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
                 item.Events.RemoveDelegate<DateTime>("disposing", this.HandleItemDisposing);
+
+                // Mark draws and updates as dirty at this time
+                _dirtyDraws = true;
+                _dirtyUpdates = true;
 
                 return true;
             }

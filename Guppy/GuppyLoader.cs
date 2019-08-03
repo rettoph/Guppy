@@ -66,10 +66,6 @@ namespace Guppy
             foreach (IServiceLoader serviceLoader in GuppyLoader.ServiceLoaders)
                 serviceLoader.PreInitialize(_provider);
 
-            // At this point, ensure that all loaders get loaded
-            foreach (ILoader loader in _provider.GetServices<ILoader>())
-                loader.Load();
-
             foreach (IServiceLoader serviceLoader in GuppyLoader.ServiceLoaders)
                 serviceLoader.Initialize(_provider);
 

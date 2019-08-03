@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Collections;
 using Guppy.Configurations;
 using Guppy.Interfaces;
 using Guppy.Utilities.Delegaters;
@@ -11,7 +12,7 @@ using System.Text;
 
 namespace Guppy.ServiceLoaders
 {
-    [IsServiceLoader(110)]
+    [IsServiceLoader(90)]
     public class GuppyServiceLoader : IServiceLoader
     {
         public void Boot(IServiceCollection services)
@@ -19,6 +20,7 @@ namespace Guppy.ServiceLoaders
             services.AddSingleton<ILogger, ConsoleLogger>();
             services.AddScoped<ScopeConfiguration>();
             services.AddTransient<EventDelegater>();
+            services.AddScoped<EntityCollection>();
         }
 
         public void PreInitialize(IServiceProvider provider)
@@ -33,7 +35,9 @@ namespace Guppy.ServiceLoaders
 
         public void PostInitialize(IServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            // At this point, ensure that all loaders get loaded
+            foreach (ILoader loader in provider.GetServices<ILoader>())
+                loader.Load();
         }
     }
 }
