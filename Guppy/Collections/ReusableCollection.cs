@@ -7,6 +7,11 @@ using System.Text;
 
 namespace Guppy.Collections
 {
+    /// <summary>
+    /// Contains a collecion of reusable objects and automatically
+    /// removes the objects when they are disposed.
+    /// </summary>
+    /// <typeparam name="TResusable"></typeparam>
     public class ReusableCollection<TResusable> : FrameableCollection<TResusable>, IDisposable
         where TResusable : class, IReusable
     {

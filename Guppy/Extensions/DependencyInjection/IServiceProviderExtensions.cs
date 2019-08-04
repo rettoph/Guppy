@@ -11,6 +11,14 @@ namespace Guppy.Extensions.DependencyInjection
 {
     public static class IServiceProviderExtensions
     {
+        #region Scene Methods
+        public static TScene GetScene<TScene>(this IServiceProvider provider, Action<TScene> setup = null)
+            where TScene : Scene
+        {
+            return provider.GetPooledService<TScene>(setup);
+        }
+        #endregion
+
         #region Loader Methods
         public static TLoader GetLoader<TLoader>(this IServiceProvider provider)
             where TLoader : class, ILoader

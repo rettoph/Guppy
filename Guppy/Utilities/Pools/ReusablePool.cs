@@ -24,7 +24,7 @@ namespace Guppy.Utilities.Pools
 
         public override T Pull(IServiceProvider provider, Action<T> setup = null)
         {
-            var child =  base.Pull(provider);
+            var child =  base.Pull(provider, setup);
 
             // Auto initialize the child 
             child.TryPreInitialize();

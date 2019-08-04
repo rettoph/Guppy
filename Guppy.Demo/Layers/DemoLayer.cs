@@ -1,20 +1,21 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 
-namespace Guppy.Demo.Entities
+namespace Guppy.Demo.Layers
 {
-    public class DemoEntity : Entity
+    public class DemoLayer : Layer
     {
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            this.logger.LogDebug("Updating Entity!");
+            this.logger.LogDebug($"Layer Updating!");
         }
     }
 }

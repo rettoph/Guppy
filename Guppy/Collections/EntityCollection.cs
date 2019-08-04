@@ -2,6 +2,7 @@
 using Guppy.Utilities.Loaders;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.Collections
@@ -11,13 +12,46 @@ namespace Guppy.Collections
         #region Private Fields
         private IServiceProvider _provider;
         private EntityLoader _entityLoader;
+        private LayerCollection _layers;
         #endregion
 
         #region Constructors
-        public EntityCollection(EntityLoader entityLoader, IServiceProvider provider) : base(provider)
+        public EntityCollection(EntityLoader entityLoader, LayerCollection layers, IServiceProvider provider) : base(provider)
         {
             _entityLoader = entityLoader;
             _provider = provider;
+            _layers = layers;
+        }
+        #endregion
+
+
+        #region Collection Methods
+        public override bool Add(Entity item)
+        {
+            if (base.Add(item))
+            { // When a new entity gets added...
+                item.Events.AddDelegate<UInt16>("changed:layer-depth", this.HandleItemLayerDepthChanged);
+                this.UpdateItemLayer(item);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override bool Remove(Entity item)
+        {
+            if (base.Remove(item))
+            { // When a entity gets removed...
+                item.Events.RemoveDelegate<UInt16>("changed:layer-depth", this.HandleItemLayerDepthChanged);
+
+                // Remove the entity from its old layer
+                this.GetItemLayer(item)?.Entities.Remove(item);
+
+                return true;
+            }
+
+            return false;
         }
         #endregion
 
@@ -47,6 +81,24 @@ namespace Guppy.Collections
 
             // return the new entity
             return entity;
+        }
+
+        private void UpdateItemLayer(Entity entity)
+        {
+            // Add the entity to its new layer...
+            this.GetItemLayer(entity)?.Entities.Add(entity);
+        }
+
+        private Layer GetItemLayer(Entity entity)
+        {
+            return _layers.FirstOrDefault(l => l.Depth == entity.LayerDepth);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleItemLayerDepthChanged(object sender, UInt16 arg)
+        {
+            this.UpdateItemLayer(sender as Entity);
         }
         #endregion
     }

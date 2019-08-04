@@ -35,6 +35,9 @@ namespace Guppy.Collections
 
             this.Events.RegisterDelegate<TFrameable>("added");
             this.Events.RegisterDelegate<TFrameable>("removed");
+
+            this.RemapDraws();
+            this.RemapUpdates();
         }
         #endregion
 

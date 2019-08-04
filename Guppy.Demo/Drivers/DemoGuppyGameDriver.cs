@@ -25,11 +25,6 @@ namespace Guppy.Demo.Drivers
         protected override void Initialize()
         {
             base.Initialize();
-
-            var entity = _entities.Build<DemoEntity>("entity:demo", e =>
-            {
-
-            });
         }
 
         protected override void Update(GameTime gameTime)

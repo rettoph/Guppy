@@ -1,4 +1,6 @@
 ﻿using Guppy.Demo.Entities;
+using Guppy.Demo.Layers;
+using Guppy.Demo.Scenes;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities.Loaders;
@@ -15,7 +17,8 @@ namespace Guppy.Demo.ServiceLoaders
     {
         public void Boot(IServiceCollection services)
         {
-            // throw new NotImplementedException();
+            services.AddScene<DemoScene>();
+            services.AddLayer<DemoLayer>();
         }
 
         public void PreInitialize(IServiceProvider provider)

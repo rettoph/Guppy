@@ -12,6 +12,22 @@ namespace Guppy.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtenions
     {
+        #region Scene Methods
+        public static void AddLayer<TLayer>(this IServiceCollection service)
+            where TLayer : Layer
+        {
+            service.TryAddPool<TLayer, ReusablePool<TLayer>>();
+        }
+        #endregion
+
+        #region Scene Methods
+        public static void AddScene<TScene>(this IServiceCollection service)
+            where TScene : Scene
+        {
+            service.TryAddPool<TScene, ScopedReusablePool<TScene>>();
+        }
+        #endregion
+
         #region Loader Methods
         public static void AddLoader<TLoader>(this IServiceCollection services)
             where TLoader : ILoader
@@ -32,7 +48,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddGame<TGame>(this IServiceCollection services)
             where TGame : Game
         {
-            services.TryAddPool<TGame, ScopedGuppyChildPool<TGame>>();
+            services.TryAddPool<TGame, ScopedReusablePool<TGame>>();
         }
         #endregion
 

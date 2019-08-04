@@ -1,7 +1,10 @@
-﻿using Guppy.Implementations;
+﻿using Guppy.Collections;
+using Guppy.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 
 namespace Guppy
 {
@@ -12,7 +15,39 @@ namespace Guppy
     /// however that functionality can be overwritten
     /// if desired.
     /// </summary>
-    public class Scene : Driven
+    public abstract class Scene : Driven
     {
+        #region Protected Attributes
+        protected LayerCollection layers { get; private set; }
+        protected EntityCollection entities { get; private set; }
+        #endregion
+
+        #region Initialization
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            // Load the layer collection for the scene.
+            this.layers = this.provider.GetService<LayerCollection>();
+            // Load the entity collection for the scene
+            this.entities = this.provider.GetService<EntityCollection>();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.layers.TryUpdate(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            this.layers.TryDraw(gameTime);
+        }
+        #endregion
     }
 }

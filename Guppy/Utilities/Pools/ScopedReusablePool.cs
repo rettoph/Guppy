@@ -7,10 +7,10 @@ using System.Text;
 
 namespace Guppy.Utilities.Pools
 {
-    public class ScopedGuppyChildPool<T> : ReusablePool<T>
+    public class ScopedReusablePool<T> : ReusablePool<T>
         where T : class, IReusable
     {
-        public ScopedGuppyChildPool(Type targetType = null) : base(targetType)
+        public ScopedReusablePool(Type targetType = null) : base(targetType)
         {
         }
 
