@@ -34,22 +34,6 @@ namespace Guppy
         }
         #endregion
 
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.Entities.TryUpdate(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.Entities.TryDraw(gameTime);
-        }
-        #endregion
-
         #region Helper Methods
         public void SetDepth(UInt16 value)
         {

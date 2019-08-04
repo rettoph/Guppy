@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -17,6 +18,9 @@ namespace Guppy.Demo
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            this.IsMouseVisible = true;
+            this.Window.AllowUserResizing = true;
         }
 
         /// <summary>
@@ -29,6 +33,7 @@ namespace Guppy.Demo
         {
             // TODO: Add your initialization logic here
             var guppy = new GuppyLoader();
+            guppy.ConfigureMonoGame(this.graphics, this.Window, this.Content);
             guppy.Initialize();
             game = guppy.BuildGame<DemoGuppyGame>();
 
@@ -78,8 +83,6 @@ namespace Guppy.Demo
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
             // TODO: Add your drawing code here
             game.TryDraw(gameTime);
 

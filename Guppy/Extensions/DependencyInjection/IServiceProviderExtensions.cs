@@ -15,7 +15,20 @@ namespace Guppy.Extensions.DependencyInjection
         public static TScene GetScene<TScene>(this IServiceProvider provider, Action<TScene> setup = null)
             where TScene : Scene
         {
-            return provider.GetPooledService<TScene>(setup);
+            var cached = provider.GetConfigurationValue<Scene>("scene");
+
+            if (cached == default(Scene))
+            { // Create a new scene instance...
+                return provider.GetPooledService<TScene>(setup);
+            }
+            else if (cached.GetType().IsAssignableFrom(typeof(TScene)))
+            { // Return the cached game...
+                return cached as TScene;
+            }
+            else
+            {
+                throw new Exception($"Unable to return scene, invalid type. Cached scene is a Scene<{cached.GetType().Name}>");
+            }
         }
         #endregion
 
@@ -48,8 +61,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static TGame GetGame<TGame>(this IServiceProvider provider, Action<TGame> setup = null)
             where TGame : Game
         {
-            var config = provider.GetRequiredService<ScopeConfiguration>();
-            var cached = config.Get<Game>("game");
+            var cached = provider.GetConfigurationValue<Game>("game");
 
             if (cached == default(Game))
             { // Create a new game instance...
@@ -76,12 +88,24 @@ namespace Guppy.Extensions.DependencyInjection
         {
             var parentConfig = provider.GetService<ScopeConfiguration>();
             var childProvider = provider.CreateScope().ServiceProvider;
-            var childConfig = provider.GetService<ScopeConfiguration>();
+            var childConfig = childProvider.GetService<ScopeConfiguration>();
 
             // Copt the parent config to the child config...
             childConfig.Copy(parentConfig);
 
             return childProvider;
+        }
+
+        public static TBaseType GetConfigurationValue<TBaseType>(this IServiceProvider provider, String key)
+        {
+            var config = provider.GetRequiredService<ScopeConfiguration>();
+            return config.Get<TBaseType>(key);
+        }
+
+        public static void SetConfigurationValue(this IServiceProvider provider, String key, Object value)
+        {
+            var config = provider.GetRequiredService<ScopeConfiguration>();
+            config.Set(key, value);
         }
         #endregion
 

@@ -17,7 +17,7 @@ namespace Guppy.Demo.ServiceLoaders
     {
         public void Boot(IServiceCollection services)
         {
-            // throw new NotImplementedException();
+            services.AddSingleton<Random>(new Random(1337));
         }
 
         public void PreInitialize(IServiceProvider provider)
@@ -27,6 +27,9 @@ namespace Guppy.Demo.ServiceLoaders
 
         public void Initialize(IServiceProvider provider)
         {
+            var contentLoader = provider.GetLoader<ContentLoader>();
+            contentLoader.TryRegister("texture:test", "test");
+
             var entityLoader = provider.GetLoader<EntityLoader>();
             entityLoader.TryRegister<DemoEntity>("entity:demo");
         }

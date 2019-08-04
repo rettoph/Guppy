@@ -28,6 +28,8 @@ namespace Guppy
 
         #region Public Fields
         public Boolean Initialized { get; private set; }
+
+        public IServiceCollection Services { get { return _services; } }
         #endregion
 
         #region Constructor

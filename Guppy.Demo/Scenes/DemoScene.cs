@@ -8,12 +8,19 @@ using Guppy.Demo.Entities;
 using Guppy.Demo.Layers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Demo.Scenes
 {
     [IsScene]
     public class DemoScene : Scene
     {
+        private GraphicsDevice _graphics;
+        public DemoScene(GraphicsDevice graphics)
+        {
+            _graphics = graphics;
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -24,6 +31,13 @@ namespace Guppy.Demo.Scenes
             this.entities.Build<DemoEntity>("entity:demo");
             this.entities.Build<DemoEntity>("entity:demo");
             this.entities.Build<DemoEntity>("entity:demo");
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            _graphics.Clear(Color.DarkRed);
+
+            base.Draw(gameTime);
         }
     }
 }

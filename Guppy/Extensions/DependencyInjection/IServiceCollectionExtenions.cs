@@ -13,18 +13,19 @@ namespace Guppy.Extensions.DependencyInjection
     public static class IServiceCollectionExtenions
     {
         #region Scene Methods
-        public static void AddLayer<TLayer>(this IServiceCollection service)
+        public static void AddLayer<TLayer>(this IServiceCollection services)
             where TLayer : Layer
         {
-            service.TryAddPool<TLayer, ReusablePool<TLayer>>();
+            services.TryAddPool<TLayer, ReusablePool<TLayer>>();
         }
         #endregion
 
         #region Scene Methods
-        public static void AddScene<TScene>(this IServiceCollection service)
+        public static void AddScene<TScene>(this IServiceCollection services)
             where TScene : Scene
         {
-            service.TryAddPool<TScene, ScopedReusablePool<TScene>>();
+            services.TryAddPool<TScene, ScopedReusablePool<TScene>>();
+            services.AddScoped<TScene>(p => p.GetScene<TScene>());
         }
         #endregion
 
@@ -49,6 +50,7 @@ namespace Guppy.Extensions.DependencyInjection
             where TGame : Game
         {
             services.TryAddPool<TGame, ScopedReusablePool<TGame>>();
+            services.AddScoped<TGame>(p => p.GetGame<TGame>());
         }
         #endregion
 
@@ -67,6 +69,24 @@ namespace Guppy.Extensions.DependencyInjection
         {
             if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
                 services.AddScoped<Pool<T>, TPool>();   
+        }
+
+        /// <summary>
+        /// Automatically add a new type as a pooled service using the
+        /// ReusablePool<> class. This will allow the reference of this
+        /// object to be pulled on construction without re-creating
+        /// any items if the pool has available instances waiting.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="services"></param>
+        public static void AddPooledTransient<T>(this IServiceCollection services)
+            where T : class, IReusable
+        {
+            if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
+                services.AddScoped<Pool<T>, ReusablePool<T>>();
+
+            // Add the requested type as a new pooled service...
+            services.AddTransient<T>(p => p.GetPooledService<T>());
         }
         #endregion
 

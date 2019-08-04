@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Configurations;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy
 {
@@ -17,8 +18,7 @@ namespace Guppy
             base.PreInitialize();
 
             // Update the current scope's game value
-            var config = this.provider.GetService<ScopeConfiguration>();
-            config.Set("game", this);
+            this.provider.SetConfigurationValue("game", this);
         }
     }
 }

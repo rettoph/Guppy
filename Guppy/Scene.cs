@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
+using Guppy.Configurations;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy
 {
@@ -31,6 +33,9 @@ namespace Guppy
             this.layers = this.provider.GetService<LayerCollection>();
             // Load the entity collection for the scene
             this.entities = this.provider.GetService<EntityCollection>();
+
+            // Update the current scope's scene value
+            this.provider.SetConfigurationValue("scene", this);
         }
         #endregion
 
