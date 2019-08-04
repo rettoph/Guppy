@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Demo.Layers
 {
+    [IsLayer]
     public class DemoLayer : Layer
     {
 

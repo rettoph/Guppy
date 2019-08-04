@@ -17,8 +17,7 @@ namespace Guppy.Demo.ServiceLoaders
     {
         public void Boot(IServiceCollection services)
         {
-            services.AddScene<DemoScene>();
-            services.AddLayer<DemoLayer>();
+            // throw new NotImplementedException();
         }
 
         public void PreInitialize(IServiceProvider provider)
