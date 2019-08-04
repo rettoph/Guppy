@@ -38,21 +38,5 @@ namespace Guppy
             this.provider.SetConfigurationValue("scene", this);
         }
         #endregion
-
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.layers.TryUpdate(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.layers.TryDraw(gameTime);
-        }
-        #endregion
     }
 }

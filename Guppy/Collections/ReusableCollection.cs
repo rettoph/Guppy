@@ -15,11 +15,6 @@ namespace Guppy.Collections
     public class ReusableCollection<TResusable> : FrameableCollection<TResusable>, IDisposable
         where TResusable : class, IReusable
     {
-        #region Private Fields
-        private Boolean _dirtyDraws;
-        private Boolean _dirtyUpdates;
-        #endregion
-
         #region Constructors
         public ReusableCollection(IServiceProvider provider) : base(provider)
         {
@@ -36,27 +31,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Frame Methods
-        public override void TryUpdate(GameTime gameTime)
-        {
-            if(_dirtyUpdates)
-            {
-                this.RemapUpdates();
-                _dirtyUpdates = false;
-            }
 
-            base.TryUpdate(gameTime);
-        }
-
-        public override void TryDraw(GameTime gameTime)
-        {
-            if (_dirtyDraws)
-            {
-                this.RemapDraws();
-                _dirtyDraws = false;
-            }
-
-            base.TryDraw(gameTime);
-        }
         #endregion
 
         #region Collection Methods
@@ -70,10 +45,6 @@ namespace Guppy.Collections
                 item.Events.AddDelegate<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
                 item.Events.AddDelegate<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
                 item.Events.AddDelegate<DateTime>("disposing", this.HandleItemDisposing);
-
-                // Mark draws and updates as dirty at this time
-                _dirtyDraws = true;
-                _dirtyUpdates = true;
 
                 return true;
             }
@@ -92,10 +63,6 @@ namespace Guppy.Collections
                 item.Events.RemoveDelegate<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
                 item.Events.RemoveDelegate<DateTime>("disposing", this.HandleItemDisposing);
 
-                // Mark draws and updates as dirty at this time
-                _dirtyDraws = true;
-                _dirtyUpdates = true;
-
                 return true;
             }
 
@@ -106,22 +73,22 @@ namespace Guppy.Collections
         #region Event Handlers
         private void HandleItemDrawOrderChanged(object sender, int arg)
         {
-            _dirtyDraws = true;
+            this.dirtyDraws = true;
         }
 
         private void HandleItemUpdateOrderChanged(object sender, int arg)
         {
-            _dirtyUpdates = true;
+            this.dirtyUpdates = true;
         }
 
         private void HandleItemVisibleChanged(object sender, bool arg)
         {
-            _dirtyDraws = true;
+            this.dirtyDraws = true;
         }
 
         private void HandleItemEnabledChanged(object sender, bool arg)
         {
-            _dirtyUpdates = true;
+            this.dirtyUpdates = true;
         }
 
         private void HandleItemDisposing(object sender, DateTime arg)

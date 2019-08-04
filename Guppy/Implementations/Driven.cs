@@ -1,4 +1,5 @@
-﻿using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.Collections;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -11,8 +12,7 @@ namespace Guppy.Implementations
     public class Driven : Reusable, IDriven
     {
         #region Private Fields
-        private IDriver[] _drivers;
-        private IDriver[] _drawDrivers;
+        private FrameableCollection<IDriver> _drivers;
         #endregion
 
         #region Lifecycle Methods
@@ -22,7 +22,6 @@ namespace Guppy.Implementations
 
             // Create new driver instances for the current driven
             _drivers = provider.GetDrivers(this);
-            _drawDrivers = _drivers.OrderBy(d => d.DrawOrder).ToArray();
         }
 
         protected override void PostCreate(IServiceProvider provider)
@@ -64,14 +63,12 @@ namespace Guppy.Implementations
         {
             base.Draw(gameTime);
 
-            foreach (IDriver driver in _drawDrivers)
-                driver.TryDraw(gameTime);
+            _drivers.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            foreach (IDriver driver in _drivers)
-                driver.TryUpdate(gameTime);
+            _drivers.TryUpdate(gameTime);
 
             base.Update(gameTime);
         }

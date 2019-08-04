@@ -19,6 +19,11 @@ namespace Guppy.Collections
         private IEnumerable<TFrameable> _updates;
         #endregion
 
+        #region Protected Fields
+        protected Boolean dirtyDraws;
+        protected Boolean dirtyUpdates;
+        #endregion
+
         #region Protected Attributes
         protected ILogger logger { get; private set; }
         #endregion
@@ -44,12 +49,24 @@ namespace Guppy.Collections
         #region Frame Methods
         public virtual void TryUpdate(GameTime gameTime)
         {
+            if(this.dirtyUpdates)
+            {
+                this.RemapUpdates();
+                this.dirtyUpdates = false;
+            }
+
             foreach (TFrameable frameable in _updates)
                 frameable.TryUpdate(gameTime);
         }
 
         public virtual void TryDraw(GameTime gameTime)
         {
+            if (this.dirtyDraws)
+            {
+                this.RemapDraws();
+                this.dirtyDraws = false;
+            }
+
             foreach (TFrameable frameable in _updates)
                 frameable.TryDraw(gameTime);
         }
@@ -60,6 +77,10 @@ namespace Guppy.Collections
         {
             if(base.Add(item))
             {
+                // Mark draws and updates as dirty at this time
+                this.dirtyDraws = true;
+                this.dirtyUpdates = true;
+
                 this.Events.Invoke<TFrameable>("added", item);
 
                 return true;
@@ -72,12 +93,22 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
+                // Mark draws and updates as dirty at this time
+                this.dirtyDraws = true;
+                this.dirtyUpdates = true;
+
                 this.Events.Invoke<TFrameable>("removed", item);
 
                 return true;
             }
 
             return false;
+        }
+
+        public virtual void AddRange(IEnumerable<TFrameable> range)
+        {
+            foreach (TFrameable frameable in range)
+                this.Add(frameable);
         }
         #endregion
 

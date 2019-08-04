@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Utilities.Pools;
+using Guppy.Collections;
 
 namespace Guppy.Extensions.DependencyInjection
 {
@@ -130,13 +131,16 @@ namespace Guppy.Extensions.DependencyInjection
         /// </summary>
         /// <param name="driven"></param>
         /// <returns></returns>
-        public static IDriver[] GetDrivers(this IServiceProvider provider, IDriven driven)
+        public static FrameableCollection<IDriver> GetDrivers(this IServiceProvider provider, IDriven driven)
         {
-            return provider.GetServices<DriverConfiguration>()
+            var drivers = new FrameableCollection<IDriver>(provider);
+
+            drivers.AddRange(provider.GetServices<DriverConfiguration>()
                 .Where(c => c.Driven.IsAssignableFrom(driven.GetType()))
                 .Select(c => ActivatorUtilities.CreateInstance(provider, c.Driver, driven) as IDriver)
-                .OrderBy(d => d.UpdateOrder)
-                .ToArray();
+                .OrderBy(d => d.UpdateOrder));
+
+            return drivers;
         }
         #endregion
     }
