@@ -21,11 +21,9 @@ namespace Guppy.Implementations
         #endregion
 
         #region Public Attributes
-        public Guid Id { get; private set; }
         public InitializationStatus Status { get; private set; }
         public EventDelegater Events { get; private set; }
         #endregion
-
 
         #region Lifecycle Methods
         public void TryCreate(IServiceProvider provider)

@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Collections;
 using Guppy.Network.Peers;
 using Pong.Library;
 using System;
@@ -14,7 +15,7 @@ namespace Pong.Client
     {
         private ClientPeer _client;
 
-        public ClientPongGame(ClientPeer client) : base(client)
+        public ClientPongGame(EntityCollection entities, ClientPeer client) : base(client)
         {
             _client = client;
         }

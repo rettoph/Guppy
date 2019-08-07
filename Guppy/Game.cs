@@ -11,7 +11,7 @@ namespace Guppy
     /// <summary>
     /// The main game class for all guppy game instances.
     /// </summary>
-    public abstract class Game : Driven
+    public abstract class Game : Asyncable
     {
         protected override void PreInitialize()
         {

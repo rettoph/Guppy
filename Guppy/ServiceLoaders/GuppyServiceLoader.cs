@@ -20,7 +20,7 @@ namespace Guppy.ServiceLoaders
             services.AddSingleton<ILogger, ConsoleLogger>();
             services.AddScoped<ScopeConfiguration>();
             services.AddTransient<EventDelegater>();
-            services.AddScoped<EntityCollection>();
+            services.AddScoped<EntityCollection, EntityCollection>();
             services.AddScoped<LayerCollection>();
             services.AddTransient<LayerEntityCollection>();
         }

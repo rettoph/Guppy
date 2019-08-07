@@ -12,10 +12,9 @@ namespace Guppy.Interfaces
     /// Reusable objects should contain a working
     /// lifecycle, unique id, and can be pooled (and reused)
     /// </summary>
-    public interface IReusable : IFrameable, IDisposable
+    public interface IReusable : IFrameable
     {
         #region Attributes
-        Guid Id { get; }
         EventDelegater Events { get; }
         #endregion
 

@@ -12,6 +12,8 @@ namespace Guppy.Interfaces
     public interface IFrameable : IInitializable
     {
         #region Public Attributes
+        Guid Id { get; }
+
         Int32 DrawOrder { get; }
         Int32 UpdateOrder { get; }
 

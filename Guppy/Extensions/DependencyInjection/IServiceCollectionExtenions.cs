@@ -69,9 +69,9 @@ namespace Guppy.Extensions.DependencyInjection
         {
             if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
                 if (factory == null)
-                    services.AddSingleton<Pool<T>, TPool>();
+                    services.AddScoped<Pool<T>, TPool>();
                 else
-                    services.AddSingleton<Pool<T>, TPool>(factory);
+                    services.AddScoped<Pool<T>, TPool>(factory);
         }
 
         /// <summary>

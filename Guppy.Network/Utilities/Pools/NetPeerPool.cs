@@ -1,4 +1,5 @@
-﻿using Guppy.Utilities.Pools;
+﻿using Guppy.Extensions.DependencyInjection;
+using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,7 +20,7 @@ namespace Guppy.Network.Utilities.Pools
 
         protected override TNetPeer Create(IServiceProvider provider)
         {
-            return ActivatorUtilities.CreateInstance<TNetPeer>(provider, _configuration);
+            return ActivatorUtilities.CreateInstance<TNetPeer>(provider.CreateScopeWithConfiguration(), _configuration);
         }
     }
 }

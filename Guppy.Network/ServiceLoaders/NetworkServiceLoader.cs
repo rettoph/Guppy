@@ -6,12 +6,13 @@ using Guppy.Network.Peers;
 using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Network.Security.Authentication;
+using Guppy.Utilities.Loaders;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -24,6 +25,8 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void Boot(IServiceCollection services)
         {
+            services.TryAddPool<Claim, ServicePool<Claim>>();
+
             services.TryAddPool<NetOutgoingMessageConfiguration, ServicePool<NetOutgoingMessageConfiguration>>();
             services.AddScoped<NetPeer>(p => p.GetConfigurationValue<NetPeer>("net-peer"));
             services.AddScoped<Peer>(p => p.GetConfigurationValue<Peer>("peer"));
@@ -36,7 +39,8 @@ namespace Guppy.Network.ServiceLoaders
 
         public void Initialize(IServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            var entityLoader = provider.GetLoader<EntityLoader>();
+            entityLoader.TryRegister<User>("guppy:network:entity:user");
         }
 
         public void PostInitialize(IServiceProvider provider)

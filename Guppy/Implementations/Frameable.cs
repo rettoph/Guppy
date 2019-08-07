@@ -11,10 +11,18 @@ namespace Guppy.Implementations
     public class Frameable : Initializable, IFrameable
     {
         #region Public Attributes
+        public Guid Id { get; protected set; }
         public Int32 DrawOrder { get; protected set; }
         public Int32 UpdateOrder { get; protected set; }
         public Boolean Visible { get; protected set; }
         public Boolean Enabled { get; protected set; }
+        #endregion
+
+        #region Constructor
+        public Frameable()
+        {
+            this.Id = Guid.NewGuid();
+        }
         #endregion
 
         #region Frame Methods

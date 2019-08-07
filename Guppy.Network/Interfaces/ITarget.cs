@@ -13,7 +13,7 @@ namespace Guppy.Network.Interfaces
     /// </summary>
     public interface ITarget : IDriven
     {
-        NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0, NetConnection target = null);
+        NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0, NetConnection recipient = null);
         void SendMessage(NetOutgoingMessageConfiguration om);
     }
 }

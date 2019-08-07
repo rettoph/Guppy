@@ -39,6 +39,7 @@ namespace Guppy.Network.Peers
             base.Create(provider);
 
             provider.SetConfigurationValue("peer", this);
+            provider.SetConfigurationValue("target", this);
         }
         #endregion
 

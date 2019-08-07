@@ -124,6 +124,11 @@ namespace Guppy.Collections
             _updates = this
                 .OrderBy(f => f.UpdateOrder);
         }
+
+        public TFrameable GetById(Guid id)
+        {
+            return this.First(f => f.Id == id);
+        }
         #endregion
     }
 }

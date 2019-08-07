@@ -17,7 +17,7 @@ namespace Guppy
     /// however that functionality can be overwritten
     /// if desired.
     /// </summary>
-    public abstract class Scene : Driven
+    public abstract class Scene : Asyncable
     {
         #region Protected Attributes
         protected LayerCollection layers { get; private set; }

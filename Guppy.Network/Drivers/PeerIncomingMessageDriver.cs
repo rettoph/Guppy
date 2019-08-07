@@ -14,7 +14,7 @@ namespace Guppy.Network.Drivers
     /// within the peer and invoke custom events for said
     /// messages.
     /// </summary>
-    [IsDriver(typeof(Peer))]
+    [IsDriver(typeof(Peer), 10)]
     public class PeerIncomingMessageDriver : Driver<Peer>
     {
         #region Private Fields
