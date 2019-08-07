@@ -41,6 +41,7 @@ namespace Guppy.Network.Peers
             if (_client.ConnectionStatus != NetConnectionStatus.Disconnected)
                 throw new Exception("Unable to connect! Client has already started a connection.");
 
+            this.logger.LogInformation($"Attempting to connect to {host}:{port}...");
             _client.Connect(host, port);
         }
         #endregion
