@@ -24,14 +24,16 @@ namespace Guppy.Network.Drivers
     public class TargetOutgoingMessageDriver : Driver<Target>
     {
         #region Private Fields
+        private NetPeer _peer;
         private NetOutgoingMessageConfiguration _om;
         private Queue<NetOutgoingMessageConfiguration> _messageQueue;
         private Pool<NetOutgoingMessageConfiguration> _outgoingMessageConfigurationPool;
         #endregion
 
         #region Constructor
-        public TargetOutgoingMessageDriver(Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool, Target parent) : base(parent)
+        public TargetOutgoingMessageDriver(NetPeer peer, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool, Target parent) : base(parent)
         {
+            _peer = peer;
             _outgoingMessageConfigurationPool = outgoingMessageConfigurationPool;
         }
         #endregion
@@ -66,16 +68,19 @@ namespace Guppy.Network.Drivers
         {
             base.Update(gameTime);
 
-            // Flush the messages
-            while(_messageQueue.Count > 0)
-            {
-                _om = _messageQueue.Dequeue();
+            
+            if(_peer.ConnectionsCount > 0)
+            { // If there is anyone connected...
+                while (_messageQueue.Count > 0)
+                { // Flush any queued messages...
+                    _om = _messageQueue.Dequeue();
 
-                // Ask the parent to send the message...
-                this.parent.SendMessage(_om);
+                    // Ask the parent to send the message...
+                    this.parent.SendMessage(_om);
 
-                // Add the message back into the pool
-                _outgoingMessageConfigurationPool.Put(_om);
+                    // Add the message back into the pool
+                    _outgoingMessageConfigurationPool.Put(_om);
+                }
             }
         }
         #endregion

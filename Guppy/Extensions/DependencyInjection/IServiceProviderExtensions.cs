@@ -104,7 +104,7 @@ namespace Guppy.Extensions.DependencyInjection
             }
             else
             {
-                throw new Exception($"Unable to return value, invalid type. Cached value is an Object<{cached.GetType().Name}>, but Object<{typeof(T).Name}> is expected.");
+                throw new Exception($"Unable to return value, invalid type. Cached value is an Object<{cached.GetType().Name}>, but Object<{typeof(T).Name}> is required.");
             }
         }
         #endregion

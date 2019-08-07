@@ -1,4 +1,5 @@
-﻿using Guppy.Implementations;
+﻿using Guppy.Attributes;
+using Guppy.Implementations;
 using Guppy.Network.Peers;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -9,9 +10,12 @@ using System.Text;
 namespace Guppy.Network.Drivers
 {
     /// <summary>
-    /// 
+    /// Simple driver meant to read raw incoming messages
+    /// within the peer and invoke custom events for said
+    /// messages.
     /// </summary>
-    public class PeerMessageReaderDriver : Driver<Peer>
+    [IsDriver(typeof(Peer))]
+    public class PeerIncomingMessageDriver : Driver<Peer>
     {
         #region Private Fields
         private NetPeer _peer;
@@ -19,7 +23,7 @@ namespace Guppy.Network.Drivers
         #endregion
 
         #region Constructor
-        public PeerMessageReaderDriver(NetPeer peer, Peer parent) : base(parent)
+        public PeerIncomingMessageDriver(NetPeer peer, Peer parent) : base(parent)
         {
             _peer = peer;
         }
