@@ -28,7 +28,7 @@ namespace Pong.Server
 
             _server.Start();
 
-            _server.Events.AddDelegate<NetIncomingMessage>("recieved:connection-approval", this.HandleConnectionApprivalMessage);
+            _server.Events.AddDelegate<NetIncomingMessage>("recieved:connection-approval", this.HandleConnectionApprovalMessage);
         }
 
         #region Frame Methods
@@ -39,7 +39,7 @@ namespace Pong.Server
         #endregion
 
         #region Event Handlers
-        private void HandleConnectionApprivalMessage(object sender, NetIncomingMessage arg)
+        private void HandleConnectionApprovalMessage(object sender, NetIncomingMessage arg)
         {
             throw new NotImplementedException();
         }
