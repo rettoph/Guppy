@@ -1,9 +1,12 @@
 ﻿using Guppy.Attributes;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.Network.Configurations;
 using Guppy.Network.Peers;
+using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +24,7 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void Boot(IServiceCollection services)
         {
+            services.TryAddPool<NetOutgoingMessageConfiguration, ServicePool<NetOutgoingMessageConfiguration>>();
             services.AddScoped<NetPeer>(p => p.GetConfigurationValue<NetPeer>("net-peer"));
             services.AddScoped<Peer>(p => p.GetConfigurationValue<Peer>("peer"));
         }

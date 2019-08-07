@@ -45,8 +45,6 @@ namespace Guppy.Utilities.Delegaters
         }
         #endregion
 
-        
-
         #region Helper Methods
         internal void SetOwner(Object owner)
         {

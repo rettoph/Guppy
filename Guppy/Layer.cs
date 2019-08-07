@@ -21,7 +21,7 @@ namespace Guppy
         public UInt16 Depth { get; private set; }
         #endregion
 
-        #region Initialization
+        #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);

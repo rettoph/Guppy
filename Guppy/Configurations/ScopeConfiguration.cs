@@ -20,10 +20,14 @@ namespace Guppy.Configurations
 
         public T Get<T>(String handle)
         {
-            if(_table.ContainsKey(handle))
-                return (T)_table[handle];
+            return (T)this.Get(handle);
+        }
+        public Object Get(String handle)
+        {
+            if (_table.ContainsKey(handle))
+                return _table[handle];
 
-            return default(T);
+            return null;
         }
 
         public Object Set(String handle, Object value)

@@ -16,20 +16,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static TScene GetScene<TScene>(this IServiceProvider provider, Action<TScene> setup = null)
             where TScene : Scene
         {
-            var cached = provider.GetConfigurationValue<Scene>("scene");
-
-            if (cached == default(Scene))
-            { // Create a new scene instance...
-                return provider.GetPooledService<TScene>(setup);
-            }
-            else if (cached.GetType().IsAssignableFrom(typeof(TScene)))
-            { // Return the cached game...
-                return cached as TScene;
-            }
-            else
-            {
-                throw new Exception($"Unable to return scene, invalid type. Cached scene is a Scene<{cached.GetType().Name}>");
-            }
+            return provider.GetConfigurationValueOrCreate<TScene>("scene", setup);
         }
         #endregion
 
@@ -62,20 +49,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static TGame GetGame<TGame>(this IServiceProvider provider, Action<TGame> setup = null)
             where TGame : Game
         {
-            var cached = provider.GetConfigurationValue<Game>("game");
-
-            if (cached == default(Game))
-            { // Create a new game instance...
-                return provider.GetPooledService<TGame>(setup) as TGame;
-            }
-            else if (cached.GetType().IsAssignableFrom(typeof(TGame)))
-            { // Return the cached game...
-                return cached as TGame;
-            }
-            else
-            {
-                throw new Exception($"Unable to return game, invalid type. Cached game is a Game<{cached.GetType().Name}>");
-            }
+            return provider.GetConfigurationValueOrCreate<TGame>("game", setup);
         }
         #endregion
 
@@ -102,11 +76,36 @@ namespace Guppy.Extensions.DependencyInjection
             var config = provider.GetRequiredService<ScopeConfiguration>();
             return config.Get<TBaseType>(key);
         }
+        public static Object GetConfigurationValue(this IServiceProvider provider, String key)
+        {
+            var config = provider.GetRequiredService<ScopeConfiguration>();
+            return config.Get(key);
+        }
 
         public static void SetConfigurationValue(this IServiceProvider provider, String key, Object value)
         {
             var config = provider.GetRequiredService<ScopeConfiguration>();
             config.Set(key, value);
+        }
+
+        public static T GetConfigurationValueOrCreate<T>(this IServiceProvider provider, String value, Action<T> setup = null)
+            where T : class
+        {
+            // Load the cached configuration value...
+            var cached = provider.GetConfigurationValue(value);
+
+            if(cached == default(T))
+            { // If there is no data cached, create and save a new value...
+                return provider.GetPooledService<T>(setup);
+            }
+            else if (cached.GetType().IsAssignableFrom(typeof(T)))
+            { // There is data cached and it is a valid type; so return the it...
+                return cached as T;
+            }
+            else
+            {
+                throw new Exception($"Unable to return value, invalid type. Cached value is an Object<{cached.GetType().Name}>, but Object<{typeof(T).Name}> is expected.");
+            }
         }
         #endregion
 

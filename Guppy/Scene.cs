@@ -24,7 +24,7 @@ namespace Guppy
         protected EntityCollection entities { get; private set; }
         #endregion
 
-        #region Initialization
+        #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);

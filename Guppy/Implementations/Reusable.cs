@@ -16,7 +16,7 @@ namespace Guppy.Implementations
         #endregion
 
         #region Protected Attributes
-        protected IServiceProvider provider { get; private set; }
+        protected internal IServiceProvider provider { get; private set; }
         protected ILogger logger { get; private set; }
         #endregion
 

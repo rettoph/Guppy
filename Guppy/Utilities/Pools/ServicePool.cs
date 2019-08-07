@@ -6,7 +6,6 @@ using System.Text;
 namespace Guppy.Utilities.Pools
 {
     public class ServicePool<T> : Pool<T>
-        where T : class
     {
         protected Type targetType { get; private set; }
 
@@ -20,7 +19,7 @@ namespace Guppy.Utilities.Pools
             if (targetType == null)
                 return ActivatorUtilities.CreateInstance<T>(provider);
             else
-                return ActivatorUtilities.CreateInstance(provider, targetType) as T;
+                return (T)ActivatorUtilities.CreateInstance(provider, targetType);
         }
     }
 }

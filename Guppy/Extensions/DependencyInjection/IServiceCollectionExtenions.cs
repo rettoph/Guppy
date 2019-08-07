@@ -64,11 +64,14 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TPool"></typeparam>
         /// <param name="services"></param>
-        public static void TryAddPool<T, TPool>(this IServiceCollection services)
+        public static void TryAddPool<T, TPool>(this IServiceCollection services, Func<IServiceProvider, TPool> factory = null)
             where TPool : Pool<T>
         {
             if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
-                services.AddScoped<Pool<T>, TPool>();   
+                if (factory == null)
+                    services.AddSingleton<Pool<T>, TPool>();
+                else
+                    services.AddSingleton<Pool<T>, TPool>(factory);
         }
 
         /// <summary>

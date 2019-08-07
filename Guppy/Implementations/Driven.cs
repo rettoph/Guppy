@@ -16,9 +16,9 @@ namespace Guppy.Implementations
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreCreate(IServiceProvider provider)
+        protected override void Create(IServiceProvider provider)
         {
-            base.PreCreate(provider);
+            base.Create(provider);
 
             // Create new driver instances for the current driven
             _drivers = provider.GetDrivers(this);

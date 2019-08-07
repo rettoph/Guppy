@@ -20,3 +20,19 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | `Guppy` | `FrameableCollection<T>` | `added` | `T` | Invoked when an item is added to the collection. |
 | `Guppy` | `FrameableCollection<T>` | `removed` | `T` | Invoked when an item is removed from the collection. |
 | | | | |
+| `Guppy.Network` | `Target` | `created:message` | `NetOutgoingMessageConfiguration` | Invoked when a message is created. |
+| `Guppy.Network` | `Peer` | `recieved:data` | `NetIncomingMessage` | Invoked when an the peer recieves a data message. |
+| `Guppy.Network` | `Peer` | `recieved:error` | `NetIncomingMessage` | Invoked when an the peer recieves an error message. |
+| `Guppy.Network` | `Peer` | `recieved:status-changed` | `NetIncomingMessage` | Invoked when an the peer recieves a status changed message. |
+| `Guppy.Network` | `Peer` | `recieved:unconnected-data` | `NetIncomingMessage` | Invoked when an the peer recieves an unconnected data message. |
+| `Guppy.Network` | `Peer` | `recieved:connection-approval` | `NetIncomingMessage` | Invoked when an the peer recieves a connection approval message. |
+| `Guppy.Network` | `Peer` | `recieved:reciept` | `NetIncomingMessage` | Invoked when an the peer recieves a reciept message. |
+| `Guppy.Network` | `Peer` | `recieved:discovery-request` | `NetIncomingMessage` | Invoked when an the peer recieves a discovery request message. |
+| `Guppy.Network` | `Peer` | `recieved:discovery-response` | `NetIncomingMessage` | Invoked when an the peer recieves a discovery response message. |
+| `Guppy.Network` | `Peer` | `recieved:verbose-debug-message` | `NetIncomingMessage` | Invoked when an the peer recieves a verbose debug message message. |
+| `Guppy.Network` | `Peer` | `recieved:debug-message` | `NetIncomingMessage` | Invoked when an the peer recieves a debug message message. |
+| `Guppy.Network` | `Peer` | `recieved:warning-message` | `NetIncomingMessage` | Invoked when an the peer recieves a warning message message. |
+| `Guppy.Network` | `Peer` | `recieved:error-message` | `NetIncomingMessage` | Invoked when an the peer recieves an error message message. |
+| `Guppy.Network` | `Peer` | `recieved:nat-introduction-success` | `NetIncomingMessage` | Invoked when an the peer recieves a nat introduction success message. |
+| `Guppy.Network` | `Peer` | `recieved:connection-latency-updated` | `NetIncomingMessage` | Invoked when an the peer recieves a connection latency updated message. |
+| | | | |

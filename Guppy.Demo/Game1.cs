@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Guppy.Network.Extensions;
+using Lidgren.Network;
 
 namespace Guppy.Demo
 {
@@ -12,7 +14,7 @@ namespace Guppy.Demo
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        DemoGuppyGame game;
+        DemoGame game;
 
         public Game1()
         {
@@ -34,8 +36,13 @@ namespace Guppy.Demo
             // TODO: Add your initialization logic here
             var guppy = new GuppyLoader();
             guppy.ConfigureMonoGame(this.graphics, this.Window, this.Content);
+            guppy.ConfigureClient(new NetPeerConfiguration("demo"));
+            guppy.ConfigureServer(new NetPeerConfiguration("demo")
+            {
+                Port = 1337
+            });
             guppy.Initialize();
-            game = guppy.BuildGame<DemoGuppyGame>();
+            game = guppy.BuildGame<DemoGame>();
 
             base.Initialize();
         }
