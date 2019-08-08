@@ -16,6 +16,7 @@ using Guppy.Utilities.Loaders;
 using Guppy.Network.Extensions.DependencyInjection;
 using Guppy.Network.Security.Authentication.Authenticators;
 using Guppy.Network.Collections;
+using Guppy.Network.Groups;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -32,10 +33,15 @@ namespace Guppy.Network.ServiceLoaders
             services.TryAddPool<Claim, ServicePool<Claim>>();
             services.AddTransient<UserCollection>();
 
+            services.TryAddPool<Group, InitializablePool<Group>>();
             services.TryAddPool<NetOutgoingMessageConfiguration, ServicePool<NetOutgoingMessageConfiguration>>();
             services.AddScoped<NetPeer>(p => p.GetConfigurationValue<NetPeer>("net-peer"));
             services.AddScoped<Peer>(p => p.GetConfigurationValue<Peer>("peer"));
-
+            services.TryAddPool<GroupCollection, ServicePool<GroupCollection>>();
+            services.AddScoped<GroupCollection>(p => p.GetConfigurationValueOrCreate<GroupCollection>("group-collection", g =>
+            {
+                p.SetConfigurationValue("group-collection", g);
+            }));
         }
 
         public void PreInitialize(IServiceProvider provider)

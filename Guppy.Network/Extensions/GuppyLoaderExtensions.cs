@@ -8,6 +8,7 @@ using System.Text;
 using Lidgren.Network;
 using Guppy.Network.Utilities;
 using Guppy.Network.Utilities.Pools;
+using Guppy.Network.Groups;
 
 namespace Guppy.Network.Extensions
 {

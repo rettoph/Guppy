@@ -1,6 +1,7 @@
 ﻿using Guppy.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Implementations;
+using Guppy.Network.Collections;
 using Guppy.Network.Configurations;
 using Guppy.Network.Enums;
 using Guppy.Network.Implementations;
@@ -27,6 +28,10 @@ namespace Guppy.Network.Peers
         #region Private Fields
         private NetPeer _peer;
         private EntityCollection _entities;
+        #endregion
+
+        #region Public Attributes
+        public GroupCollection Groups { get; private set; }
         #endregion
 
         #region Constructor

@@ -18,6 +18,10 @@ namespace Guppy.Collections
     public class UniqueCollection<TUnique> : HashSet<TUnique>, IDisposable
         where TUnique : class, IUnique
     {
+        #region Private Fields
+        private Dictionary<Guid, TUnique> _idTable;
+        #endregion
+
         #region Protected Attributes
         protected ILogger logger { get; private set; }
         #endregion
@@ -29,6 +33,8 @@ namespace Guppy.Collections
         #region Constructors
         public UniqueCollection(IServiceProvider provider)
         {
+            _idTable = new Dictionary<Guid, TUnique>();
+
             this.logger = provider.GetService<ILogger>();
             this.Events = provider.GetService<EventDelegater>();
 
@@ -55,6 +61,8 @@ namespace Guppy.Collections
         {
             if (base.Add(item))
             {
+                _idTable.Add(item.Id, item);
+
                 this.Events.Invoke<TUnique>("added", item);
 
                 item.Events.AddDelegate<DateTime>("disposing", this.HandleItemDisposing);
@@ -69,6 +77,8 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
+                _idTable.Remove(item.Id);
+
                 this.Events.Invoke<TUnique>("removed", item);
 
                 item.Events.RemoveDelegate<DateTime>("disposing", this.HandleItemDisposing);
@@ -84,12 +94,21 @@ namespace Guppy.Collections
             foreach (TUnique frameable in range)
                 this.Add(frameable);
         }
+
+        public virtual new void Clear()
+        {
+            while (this.Count() > 0)
+                this.Remove(this.ElementAt(0));
+        }
         #endregion
 
         #region Helper Methods
         public Object GetById(Guid id)
         {
-            return this.First(u => u.Id == id);
+            if (_idTable.ContainsKey(id))
+                return _idTable[id];
+
+            return default(TUnique);
         }
 
         public T GetById<T>(Guid id)

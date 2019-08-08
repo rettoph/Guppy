@@ -55,6 +55,13 @@ namespace Guppy.Network.Peers
             this.Events.AddDelegate<NetIncomingMessage>("recieved:connection-approval", this.HandleConnectionApprovalMessage);
             this.Events.AddDelegate<NetIncomingMessage>("recieved:status-changed", this.HandleStatusChanged);
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Users.Dispose();
+        }
         #endregion
 
         #region Target Implementation
