@@ -8,7 +8,7 @@ namespace Guppy.Collections
     /// Represents a collection of entities residing
     /// within a layer.
     /// </summary>
-    public class LayerEntityCollection : ReusableCollection<Entity>
+    public class LayerEntityCollection : FrameableCollection<Entity>
     {
         public LayerEntityCollection(IServiceProvider provider) : base(provider)
         {

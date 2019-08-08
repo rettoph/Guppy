@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.Utilities.Pools
 {
-    public class InitializablePool<TInitializable> : ServicePool<TInitializable>
+    public class InitializablePool<TInitializable> : UniquePool<TInitializable>
         where TInitializable : class, IInitializable
     {
         public InitializablePool(Type targetType = null) : base(targetType)

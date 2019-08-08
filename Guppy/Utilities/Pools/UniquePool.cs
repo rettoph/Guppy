@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Guppy.Utilities.Pools
 {
-    public class ReusablePool<TReusable> : InitializablePool<TReusable>
-        where TReusable : class, IReusable
+    public class UniquePool<TUnique> : ServicePool<TUnique>
+        where TUnique : class, IUnique
     {
-        public ReusablePool(Type targetType = null) : base(targetType)
+        public UniquePool(Type targetType = null) : base(targetType)
         {
         }
 
-        protected override TReusable Create(IServiceProvider provider)
+        protected override TUnique Create(IServiceProvider provider)
         {
             var child = base.Create(provider);
 
@@ -22,7 +22,7 @@ namespace Guppy.Utilities.Pools
             return child;
         }
 
-        public override TReusable Pull(IServiceProvider provider, Action<TReusable> setup = null)
+        public override TUnique Pull(IServiceProvider provider, Action<TUnique> setup = null)
         {
             var child =  base.Pull(provider, setup);
 
@@ -41,7 +41,7 @@ namespace Guppy.Utilities.Pools
         /// <param name="arg"></param>
         private void HandleChildDisposed(object sender, DateTime arg)
         {
-            this.Put(sender as TReusable);
+            this.Put(sender as TUnique);
         }
         #endregion
     }

@@ -6,6 +6,6 @@ namespace Guppy.Interfaces
 {
     public interface IDriver : IFrameable
     {
-        void TryCreate(IServiceProvider provider);
+        void SetParent(IDriven parent);
     }
 }

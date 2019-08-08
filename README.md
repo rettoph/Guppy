@@ -7,18 +7,19 @@ Custom events are events bound by a simple string and can dynamically be invoked
 
 | Project | Class | Event | Arg | Description |
 | ------- | ----- | ----- | --------- | ----------- |
-| `Guppy` | `Reusable` | `disposing` |` DateTime` | Invoked when the child is disposed. |
-| `Guppy` | `Reusable` | `changed:enabled` |` Boolean` | Invoked when the enabled value is updated. |
-| `Guppy` | `Reusable` | `changed:visible` | `Boolean` | Invoked when the visible value is updated. |
-| `Guppy` | `Reusable` | `changed:update-order` | `Int32` | Invoked when the update order value is changed. |
-| `Guppy` | `Reusable` | `changed:draw` | `Int32` | Invoked when the draw value is updated. |
+| `Guppy` | `Unique` | `disposing` |` DateTime` | Invoked when the child is disposed. |
+| | | | |
+| `Guppy` | `Frameable` | `changed:enabled` |` Boolean` | Invoked when the enabled value is updated. |
+| `Guppy` | `Frameable` | `changed:visible` | `Boolean` | Invoked when the visible value is updated. |
+| `Guppy` | `Frameable` | `changed:update-order` | `Int32` | Invoked when the update order value is changed. |
+| `Guppy` | `Frameable` | `changed:draw` | `Int32` | Invoked when the draw value is updated. |
 | | | | |
 | `Guppy` | `Entity` | `changed:layer-depth` | `UInt16` | Invoked when the layer depth is updated. |
 | | | | |
 | `Guppy` | `Layer` | `changed:depth` | `UInt16` | Invoked when the depth is updated. |
 | | | | |
-| `Guppy` | `FrameableCollection<T>` | `added` | `T` | Invoked when an item is added to the collection. |
-| `Guppy` | `FrameableCollection<T>` | `removed` | `T` | Invoked when an item is removed from the collection. |
+| `Guppy` | `UniqueCollection<T>` | `added` | `T` | Invoked when an item is added to the collection. |
+| `Guppy` | `UniqueCollection<T>` | `removed` | `T` | Invoked when an item is removed from the collection. |
 | | | | |
 | `Guppy.Network` | `Target` | `created:message` | `NetOutgoingMessageConfiguration` | Invoked when a message is created. |
 | `Guppy.Network` | `Peer` | `recieved:data` | `NetIncomingMessage` | Invoked when an the peer recieves a data message. |

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.Collections
 {
-    public class EntityCollection : ReusableCollection<Entity>
+    public class EntityCollection : FrameableCollection<Entity>
     {
         #region Private Fields
         private IServiceProvider _provider;

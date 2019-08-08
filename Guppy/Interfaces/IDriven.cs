@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    public interface IDriven : IReusable
+    public interface IDriven : IFrameable
     {
         TDriver GetFirstDriver<TDriver>()
             where TDriver : class, IDriver;

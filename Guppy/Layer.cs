@@ -30,7 +30,7 @@ namespace Guppy
             this.Entities = this.provider.GetService<LayerEntityCollection>();
 
             // Register custom entity events...
-            this.Events.RegisterDelegate<UInt16>("changed:depth");
+            this.Events.TryRegisterDelegate<UInt16>("changed:depth");
         }
         #endregion
 

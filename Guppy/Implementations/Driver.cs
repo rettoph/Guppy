@@ -4,35 +4,25 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Enums;
 
 namespace Guppy.Implementations
 {
     public class Driver<TDriven> : Frameable, IDriver
-        where TDriven : IDriven
+        where TDriven : class, IDriven
     {
-        private Boolean _created;
-
         protected TDriven parent { get; private set; }
-        protected ILogger logger { get; private set; }
 
-        public Driver(TDriven parent)
+        /// <summary>
+        /// Update the objects parent.
+        /// </summary>
+        /// <param name="parent"></param>
+        public void SetParent(IDriven parent)
         {
-            _created = false;
+            if (this.InitializationStatus != InitializationStatus.NotInitialized)
+                throw new Exception("Unable to set parent. Status is not NotInitialized.");
 
-            this.parent = parent;
-        }
-
-        public void TryCreate(IServiceProvider provider)
-        {
-            if (_created)
-                throw new Exception($"Unable to create more than once");
-
-            this.Create(provider);
-            _created = true;
-        }
-
-        protected virtual void Create(IServiceProvider provider) {
-            this.logger = provider.GetService<ILogger>();
+            this.parent = parent as TDriven;
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Implementations
 {
-    public class Driven : Reusable, IDriven
+    public class Driven : Frameable, IDriven
     {
         #region Private Fields
         private FrameableCollection<IDriver> _drivers;
@@ -22,15 +22,6 @@ namespace Guppy.Implementations
 
             // Create new driver instances for the current driven
             _drivers = provider.GetDrivers(this);
-        }
-
-        protected override void PostCreate(IServiceProvider provider)
-        {
-            base.PostCreate(provider);
-
-            // Call the driver create method
-            foreach (IDriver driver in _drivers)
-                driver.TryCreate(provider);
         }
 
         protected override void PreInitialize()
@@ -55,6 +46,14 @@ namespace Guppy.Implementations
 
             foreach (IDriver driver in _drivers)
                 driver.TryPostInitialize();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            foreach (IDriver driver in _drivers)
+                driver.Dispose();
         }
         #endregion
 

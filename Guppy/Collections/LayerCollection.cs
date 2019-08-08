@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Guppy.Collections
 {
-    public class LayerCollection : ReusableCollection<Layer>
+    public class LayerCollection : FrameableCollection<Layer>
     {
         #region Private Fields
         private IServiceProvider _provider;

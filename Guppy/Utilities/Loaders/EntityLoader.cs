@@ -12,13 +12,13 @@ namespace Guppy.Utilities.Loaders
     [IsLoader(110)]
     public class EntityLoader : Loader<String, EntityConfiguration, EntityConfiguration>
     {
-        private Dictionary<Type, ReusablePool<Entity>> _pools;
+        private Dictionary<Type, UniquePool<Entity>> _pools;
         private StringLoader _strings;
 
         public EntityLoader(StringLoader stringLoader, ILogger logger) : base(logger)
         {
             _strings = stringLoader;
-            _pools = new Dictionary<Type, ReusablePool<Entity>>();
+            _pools = new Dictionary<Type, UniquePool<Entity>>();
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Guppy.Utilities.Loaders
 
             // Ensure that a pool for the requested entity exists...
             if (!_pools.ContainsKey(typeof(TEntity)))
-                _pools[typeof(TEntity)] = new ReusablePool<Entity>(typeof(TEntity));
+                _pools[typeof(TEntity)] = new UniquePool<Entity>(typeof(TEntity));
 
             // Register the entities configuration...
             base.Register(handle, new EntityConfiguration()

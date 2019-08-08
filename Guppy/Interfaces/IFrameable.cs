@@ -12,8 +12,6 @@ namespace Guppy.Interfaces
     public interface IFrameable : IInitializable
     {
         #region Public Attributes
-        Guid Id { get; }
-
         Int32 DrawOrder { get; }
         Int32 UpdateOrder { get; }
 
@@ -24,6 +22,13 @@ namespace Guppy.Interfaces
         #region Frame Methods
         void TryUpdate(GameTime gameTime);
         void TryDraw(GameTime gameTime);
+        #endregion
+
+        #region Helper Methods
+        void SetUpdateOrder(Int32 value);
+        void SetDrawOrder(Int32 value);
+        void SetVisible(Boolean value);
+        void SetEnabled(Boolean value);
         #endregion
     }
 }

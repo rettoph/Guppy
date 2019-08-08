@@ -47,7 +47,7 @@ namespace Guppy.Network
         protected virtual void Read(NetIncomingMessage im)
         {
             // Read the entities id
-            this.SetId(im.ReadGuid());
+            this.Id = im.ReadGuid();
         }
 
         public void TryWrite(NetOutgoingMessage om)

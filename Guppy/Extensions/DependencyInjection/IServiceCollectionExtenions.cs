@@ -12,11 +12,11 @@ namespace Guppy.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtenions
     {
-        #region Scene Methods
+        #region Layer Methods
         public static void AddLayer<TLayer>(this IServiceCollection services)
             where TLayer : Layer
         {
-            services.TryAddPool<TLayer, ReusablePool<TLayer>>();
+            services.TryAddPool<TLayer, UniquePool<TLayer>>();
         }
         #endregion
 
@@ -24,7 +24,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddScene<TScene>(this IServiceCollection services)
             where TScene : Scene
         {
-            services.TryAddPool<TScene, ScopedReusablePool<TScene>>();
+            services.TryAddPool<TScene, ScopedInitiailzablePool<TScene>>();
             services.AddScoped<TScene>(p => p.GetScene<TScene>());
         }
         #endregion
@@ -49,7 +49,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddGame<TGame>(this IServiceCollection services)
             where TGame : Game
         {
-            services.TryAddPool<TGame, ScopedReusablePool<TGame>>();
+            services.TryAddPool<TGame, ScopedInitiailzablePool<TGame>>();
             services.AddScoped<TGame>(p => p.GetGame<TGame>());
         }
         #endregion
@@ -83,10 +83,10 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="services"></param>
         public static void AddPooledTransient<T>(this IServiceCollection services)
-            where T : class, IReusable
+            where T : class, IUnique
         {
             if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
-                services.AddScoped<Pool<T>, ReusablePool<T>>();
+                services.AddScoped<Pool<T>, UniquePool<T>>();
 
             // Add the requested type as a new pooled service...
             services.AddTransient<T>(p => p.GetPooledService<T>());
@@ -111,7 +111,8 @@ namespace Guppy.Extensions.DependencyInjection
             services.AddSingleton(new DriverConfiguration()
             {
                 Driven = driven,
-                Driver = driver
+                Driver = driver,
+                Pool = new UniquePool<IDriver>(driver)
             });
         }
         #endregion

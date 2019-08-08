@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Collections;
 using Guppy.Network.Configurations;
 using Guppy.Network.Security.Authentication;
 using Guppy.Utilities.Pools;
@@ -17,10 +18,25 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetClient _client;
+        private User _identity;
+        #endregion
+
+        #region Public Attributes
+        /// <summary>
+        /// The current client's identity.
+        /// 
+        /// If the client is not connected to a server this value
+        /// will be null.
+        /// </summary>
+        public User Identity {
+            get {
+                return (_client.ConnectionStatus == NetConnectionStatus.Connected ? _identity : null);
+            }
+        }
         #endregion
 
         #region Constructor
-        public ClientPeer(NetClient client, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(client, outgoingMessageConfigurationPool)
+        public ClientPeer(NetClient client, EntityCollection entities, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(client, entities, outgoingMessageConfigurationPool)
         {
             _client = client;
         }
@@ -44,8 +60,15 @@ namespace Guppy.Network.Peers
 
             this.logger.LogInformation($"Attempting to connect to {host}:{port}...");
 
+            // Get rid of the old identity claim, if there is any
+            if (_identity != null && _identity != identity)
+                _identity.Dispose();
+
+            // Store the new identity claim...
+            _identity = identity;
+
             var hail = _client.CreateMessage();
-            identity.TryWrite(hail);
+            _identity.TryWrite(hail);
             _client.Connect(host, port, hail);
         }
         #endregion
@@ -58,9 +81,21 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Event Handlers
-        private void HandleStatusChanged(object sender, NetIncomingMessage arg)
+        private void HandleStatusChanged(object sender, NetIncomingMessage im)
         {
-            this.logger.LogDebug($"Client connection status updated => {(NetConnectionStatus)arg.ReadByte()}");
+            im.Position = 0;
+
+            // The new status value...
+            var status = (NetConnectionStatus)im.ReadByte();
+            this.logger.LogDebug($"Client connection status updated => {status}");
+
+            switch(status)
+            {
+                case NetConnectionStatus.Connected:
+                    // Read the incoming user data...
+                    _identity.TryRead(im.SenderConnection.RemoteHailMessage);
+                    break;
+            }
         }
         #endregion
     }

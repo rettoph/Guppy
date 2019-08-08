@@ -39,7 +39,7 @@ namespace Guppy.Implementations
             }
             else
             {
-                this.logger.LogInformation($"Starting async loop for {this.GetType().Name}({this.Id})...");
+                this.logger.LogDebug($"Starting async loop for {this.GetType().Name}({this.Id})...");
 
                 _delay = delay;
                 _draw = draw;
@@ -56,7 +56,7 @@ namespace Guppy.Implementations
             }
             else
             {
-                this.logger.LogInformation($"Attempting to stop async loop for {this.GetType().Name}({this.Id})...");
+                this.logger.LogDebug($"Attempting to stop async loop for {this.GetType().Name}({this.Id})...");
                 this.RunningAsync = false;
             }
         }
@@ -86,7 +86,7 @@ namespace Guppy.Implementations
                     this.Draw(time);
             }
 
-            this.logger.LogInformation($"Closing async loop for {this.GetType().Name}({this.Id}).");
+            this.logger.LogDebug($"Closing async loop for {this.GetType().Name}({this.Id}).");
         }
     }
 }

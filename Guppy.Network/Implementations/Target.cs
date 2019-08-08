@@ -1,7 +1,9 @@
-﻿using Guppy.Implementations;
+﻿using Guppy.Collections;
+using Guppy.Implementations;
 using Guppy.Network.Configurations;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
+using Guppy.Network.Security.Authentication;
 using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using System;
@@ -31,7 +33,7 @@ namespace Guppy.Network.Implementations
             base.Create(provider);
 
             // Register useful events...
-            this.Events.RegisterDelegate<NetOutgoingMessageConfiguration>("created:message");
+            this.Events.TryRegisterDelegate<NetOutgoingMessageConfiguration>("created:message");
         }
         #endregion
 

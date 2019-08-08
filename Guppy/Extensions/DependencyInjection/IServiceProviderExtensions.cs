@@ -136,7 +136,10 @@ namespace Guppy.Extensions.DependencyInjection
 
             drivers.AddRange(provider.GetServices<DriverConfiguration>()
                 .Where(c => c.Driven.IsAssignableFrom(driven.GetType()))
-                .Select(c => ActivatorUtilities.CreateInstance(provider, c.Driver, driven) as IDriver)
+                .Select(c => c.Pool.Pull(provider, d =>
+                {
+                    d.SetParent(driven);
+                }))
                 .OrderBy(d => d.UpdateOrder));
 
             return drivers;

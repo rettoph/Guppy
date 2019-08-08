@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Collections;
 using Guppy.Network.Peers;
+using Guppy.Network.Security.Authentication;
 using Pong.Library;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,13 @@ namespace Pong.Client
             base.Initialize();
 
             _client.Start();
-            _client.TryConnect("127.0.0.1", 1337);
+
+            var user = _client.TryCreateUser(u =>
+            {
+                u.AddClaim("name", "Rettoph");
+            });
+
+            _client.TryConnect("127.0.0.1", 1337, user);
         }
     }
 }

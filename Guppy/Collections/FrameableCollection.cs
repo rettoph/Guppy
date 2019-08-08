@@ -11,36 +11,22 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Collections
 {
-    public class FrameableCollection<TFrameable> : HashSet<TFrameable>
-        where TFrameable : IFrameable
+    public class FrameableCollection<TFrameable> : UniqueCollection<TFrameable>
+        where TFrameable : class, IFrameable
     {
         #region Private Attributes
         private IEnumerable<TFrameable> _draws;
         private IEnumerable<TFrameable> _updates;
         #endregion
 
-        #region Protected Fields
-        protected Boolean dirtyDraws;
-        protected Boolean dirtyUpdates;
-        #endregion
-
         #region Protected Attributes
-        protected ILogger logger { get; private set; }
-        #endregion
-
-        #region Public Attributes
-        public EventDelegater Events { get; private set; }
+        protected Boolean dirtyDraws { get; set; }
+        protected Boolean dirtyUpdates { get; set; }
         #endregion
 
         #region Constructors
-        public FrameableCollection(IServiceProvider provider)
+        public FrameableCollection(IServiceProvider provider) : base(provider)
         {
-            this.logger = provider.GetService<ILogger>();
-            this.Events = provider.GetService<EventDelegater>();
-
-            this.Events.RegisterDelegate<TFrameable>("added");
-            this.Events.RegisterDelegate<TFrameable>("removed");
-
             this.RemapDraws();
             this.RemapUpdates();
         }
@@ -81,7 +67,11 @@ namespace Guppy.Collections
                 this.dirtyDraws = true;
                 this.dirtyUpdates = true;
 
-                this.Events.Invoke<TFrameable>("added", item);
+                // Bind to any relevant events
+                item.Events.AddDelegate<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
+                item.Events.AddDelegate<Boolean>("changed:visible", this.HandleItemVisibleChanged);
+                item.Events.AddDelegate<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
+                item.Events.AddDelegate<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
 
                 return true;
             }
@@ -97,18 +87,16 @@ namespace Guppy.Collections
                 this.dirtyDraws = true;
                 this.dirtyUpdates = true;
 
-                this.Events.Invoke<TFrameable>("removed", item);
+                // Unbind all related events
+                item.Events.RemoveDelegate<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
+                item.Events.RemoveDelegate<Boolean>("changed:visible", this.HandleItemVisibleChanged);
+                item.Events.RemoveDelegate<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
+                item.Events.RemoveDelegate<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
 
                 return true;
             }
 
             return false;
-        }
-
-        public virtual void AddRange(IEnumerable<TFrameable> range)
-        {
-            foreach (TFrameable frameable in range)
-                this.Add(frameable);
         }
         #endregion
 
@@ -124,16 +112,27 @@ namespace Guppy.Collections
             _updates = this
                 .OrderBy(f => f.UpdateOrder);
         }
+        #endregion
 
-        public TFrameable GetById(Guid id)
+        #region Event Handlers
+        private void HandleItemDrawOrderChanged(object sender, int arg)
         {
-            return this.First(f => f.Id == id);
+            this.dirtyDraws = true;
         }
 
-        public T GetById<T>(Guid id)
-            where T : class, TFrameable
+        private void HandleItemUpdateOrderChanged(object sender, int arg)
         {
-            return this.GetById(id) as T;
+            this.dirtyUpdates = true;
+        }
+
+        private void HandleItemVisibleChanged(object sender, bool arg)
+        {
+            this.dirtyDraws = true;
+        }
+
+        private void HandleItemEnabledChanged(object sender, bool arg)
+        {
+            this.dirtyUpdates = true;
         }
         #endregion
     }

@@ -17,7 +17,7 @@ namespace Guppy.Network.Drivers
         #endregion
 
         #region Constructor
-        public PeerEntityDriver(EntityCollection entities, Peer parent) : base(parent)
+        public PeerEntityDriver(EntityCollection entities)
         {
             _entities = entities;
         }

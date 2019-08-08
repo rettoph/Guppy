@@ -19,7 +19,7 @@ namespace Guppy
             base.Create(provider);
 
             // Register custom entity events...
-            this.Events.RegisterDelegate<UInt16>("changed:layer-depth");
+            this.Events.TryRegisterDelegate<UInt16>("changed:layer-depth");
         }
         #endregion
 

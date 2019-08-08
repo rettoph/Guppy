@@ -25,7 +25,7 @@ namespace Guppy.Drivers
         #endregion
 
         #region Constructor
-        public SceneLayersDriver(Scene parent, LayerCollection layers) : base(parent)
+        public SceneLayersDriver(LayerCollection layers)
         {
             _layers = layers;
         }

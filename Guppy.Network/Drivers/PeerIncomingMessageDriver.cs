@@ -23,32 +23,32 @@ namespace Guppy.Network.Drivers
         #endregion
 
         #region Constructor
-        public PeerIncomingMessageDriver(NetPeer peer, Peer parent) : base(parent)
+        public PeerIncomingMessageDriver(NetPeer peer)
         {
             _peer = peer;
         }
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(IServiceProvider provider)
+        protected override void PreInitialize()
         {
-            base.Create(provider);
+            base.PreInitialize();
 
             // Register the message related events...
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:data");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:error");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:status-changed");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:unconnected-data");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:connection-approval");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:reciept");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:discovery-request");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:discovery-response");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:verbose-debug-message");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:debug-message");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:warning-message");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:error-message");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:nat-introduction-success");
-            this.parent.Events.RegisterDelegate<NetIncomingMessage>("recieved:connection-latency-updated");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:data");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:error");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:status-changed");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:unconnected-data");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:connection-approval");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:reciept");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:discovery-request");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:discovery-response");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:verbose-debug-message");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:debug-message");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:warning-message");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:error-message");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:nat-introduction-success");
+            this.parent.Events.TryRegisterDelegate<NetIncomingMessage>("recieved:connection-latency-updated");
         }
         #endregion
 

@@ -30,7 +30,7 @@ namespace Guppy.Network.Extensions
             {
                 p.SetConfigurationValue("net-peer", peer);
             }));
-            guppy.Services.TryAddPool<ClientPeer, ReusablePool<ClientPeer>>();
+            guppy.Services.TryAddPool<ClientPeer, InitializablePool<ClientPeer>>();
             guppy.Services.AddScoped<ClientPeer>(p => p.GetConfigurationValueOrCreate<ClientPeer>("peer"));
         }
         #endregion
@@ -54,7 +54,7 @@ namespace Guppy.Network.Extensions
             {
                 p.SetConfigurationValue("net-peer", peer);
             }));
-            guppy.Services.TryAddPool<ServerPeer, ReusablePool<ServerPeer>>();
+            guppy.Services.TryAddPool<ServerPeer, InitializablePool<ServerPeer>>();
             guppy.Services.AddScoped<ServerPeer>(p => p.GetConfigurationValueOrCreate<ServerPeer>("peer"));
         }
         #endregion

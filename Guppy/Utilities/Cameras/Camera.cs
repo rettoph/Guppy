@@ -12,7 +12,7 @@ namespace Guppy.Utilities.Cameras
     /// for simple debug rendering. They may also be 
     /// utilized within custom cames for perspective management. 
     /// </summary>
-    public abstract class Camera : Reusable
+    public abstract class Camera : Frameable
     {
         #region Private Fields
         private GraphicsDevice _graphics;
@@ -29,7 +29,7 @@ namespace Guppy.Utilities.Cameras
         #endregion
 
         #region Constructor
-        public Camera(GraphicsDevice graphics)
+        public Camera(GraphicsDevice graphics) : base()
         {
             _graphics = graphics;
         }

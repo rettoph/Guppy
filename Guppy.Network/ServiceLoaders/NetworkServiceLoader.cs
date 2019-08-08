@@ -13,6 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Guppy.Network.Security.Authentication;
 using Guppy.Utilities.Loaders;
+using Guppy.Network.Extensions.DependencyInjection;
+using Guppy.Network.Security.Authentication.Authenticators;
+using Guppy.Network.Collections;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -25,11 +28,14 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void Boot(IServiceCollection services)
         {
+            services.AddAuthenticator<BasicAuthenticator>();
             services.TryAddPool<Claim, ServicePool<Claim>>();
+            services.AddTransient<UserCollection>();
 
             services.TryAddPool<NetOutgoingMessageConfiguration, ServicePool<NetOutgoingMessageConfiguration>>();
             services.AddScoped<NetPeer>(p => p.GetConfigurationValue<NetPeer>("net-peer"));
             services.AddScoped<Peer>(p => p.GetConfigurationValue<Peer>("peer"));
+
         }
 
         public void PreInitialize(IServiceProvider provider)

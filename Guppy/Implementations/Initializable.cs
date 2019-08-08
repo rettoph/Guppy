@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.Implementations
 {
-    public class Initializable : IInitializable, IDisposable
+    public class Initializable : Unique, IInitializable
     {
         #region Public Attributes
         public InitializationStatus InitializationStatus { get; private set; }

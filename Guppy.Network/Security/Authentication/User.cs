@@ -19,6 +19,11 @@ namespace Guppy.Network.Security.Authentication
         private Dictionary<String, Claim> _claims;
         #endregion
 
+        #region Public Attributes
+        public NetConnection NetConnection { get; internal set; }
+        #endregion
+
+
         #region Constructor
         public User(IServiceProvider provider, Pool<Claim> claimPool)
         {
@@ -28,9 +33,9 @@ namespace Guppy.Network.Security.Authentication
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize()
+        protected override void Create(IServiceProvider provider)
         {
-            base.Initialize();
+            base.Create(provider);
 
             // Create a new claim
             _claims = new Dictionary<String, Claim>();

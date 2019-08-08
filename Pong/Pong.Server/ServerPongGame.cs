@@ -18,8 +18,6 @@ namespace Pong.Server
         public ServerPongGame(ServerPeer server) : base(server)
         {
             _server = server;
-
-            
         }
 
         protected override void Initialize()
@@ -27,21 +25,12 @@ namespace Pong.Server
             base.Initialize();
 
             _server.Start();
-
-            _server.Events.AddDelegate<NetIncomingMessage>("recieved:connection-approval", this.HandleConnectionApprovalMessage);
         }
 
         #region Frame Methods
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandleConnectionApprovalMessage(object sender, NetIncomingMessage arg)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

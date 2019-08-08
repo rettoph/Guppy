@@ -1,5 +1,6 @@
 ﻿using Guppy.Interfaces;
 using Guppy.Network.Configurations;
+using Guppy.Network.Security.Authentication;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,8 @@ namespace Guppy.Network.Interfaces
 {
     /// <summary>
     /// A target is an object that can
-    /// recieve and create messages.
+    /// recieve and create messages, and 
+    /// contains users
     /// </summary>
     public interface ITarget : IDriven
     {

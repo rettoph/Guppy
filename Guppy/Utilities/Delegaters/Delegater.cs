@@ -51,17 +51,20 @@ namespace Guppy.Utilities.Delegaters
             _owner = owner;
         }
 
-        public void RegisterDelegate<TCustomArg>(TKey key)
+        public void TryRegisterDelegate<TCustomArg>(TKey key)
         {
             if (_registeredDelegates.ContainsKey(key))
-                throw new Exception($"Unable to register delegate. Key already defined.");
+            {
+                this.logger.LogWarning($"Unable to register delegate. Key already defined.");
+                return;
+            }
 
             // Store the delegate
             _registeredDelegates.Add(key, typeof(TCustomArg));
         }
         public void RegisterDelegate(TKey key)
         {
-            this.RegisterDelegate<TArg>(key);
+            this.TryRegisterDelegate<TArg>(key);
         }
 
         public void AddDelegate<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)

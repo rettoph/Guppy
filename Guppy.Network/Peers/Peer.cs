@@ -1,8 +1,10 @@
-﻿using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.Collections;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Implementations;
 using Guppy.Network.Configurations;
 using Guppy.Network.Enums;
 using Guppy.Network.Implementations;
+using Guppy.Network.Security.Authentication;
 using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -24,12 +26,14 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetPeer _peer;
+        private EntityCollection _entities;
         #endregion
 
         #region Constructor
-        public Peer(NetPeer peer, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(peer, outgoingMessageConfigurationPool)
+        public Peer(NetPeer peer, EntityCollection entities, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(peer, outgoingMessageConfigurationPool)
         {
             _peer = peer;
+            _entities = entities;
         }
         #endregion
 
@@ -54,6 +58,11 @@ namespace Guppy.Network.Peers
         {
             this.logger.LogDebug($"Shutting down Peer<{_peer.GetType().Name}>...");
             _peer.Shutdown(bye);
+        }
+
+        public User TryCreateUser(Action<User> setup = null)
+        {
+            return _entities.Build<User>("guppy:network:entity:user", setup);
         }
         #endregion
 

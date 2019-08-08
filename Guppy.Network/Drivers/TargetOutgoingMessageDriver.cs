@@ -31,7 +31,7 @@ namespace Guppy.Network.Drivers
         #endregion
 
         #region Constructor
-        public TargetOutgoingMessageDriver(NetPeer peer, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool, Target parent) : base(parent)
+        public TargetOutgoingMessageDriver(NetPeer peer, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool)
         {
             _peer = peer;
             _outgoingMessageConfigurationPool = outgoingMessageConfigurationPool;
