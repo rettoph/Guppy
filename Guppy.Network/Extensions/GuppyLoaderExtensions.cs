@@ -46,6 +46,8 @@ namespace Guppy.Network.Extensions
                 throw new Exception("Unable to configure server settings. Server has already been configured.");
 
             GuppyLoaderExtensions.ServerConfiguration = configuration;
+            // Ensure that connection approval is always turned on
+            GuppyLoaderExtensions.ServerConfiguration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
 
             guppy.Services.TryAddPool<NetServer, NetPeerPool<NetServer>>(p => new NetPeerPool<NetServer>(GuppyLoaderExtensions.ServerConfiguration));
             guppy.Services.AddScoped<NetServer>(p => p.GetConfigurationValueOrCreate<NetServer>("net-peer", peer =>

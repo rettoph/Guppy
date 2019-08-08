@@ -11,14 +11,10 @@ namespace Pong.Server
         {
             // Configure guppy...
             var guppy = new GuppyLoader();
-            var config = new NetPeerConfiguration("pong")
+            guppy.ConfigureServer(new NetPeerConfiguration("pong")
             {
                 Port = 1337
-            };
-
-            config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-
-            guppy.ConfigureServer(config);
+            });
             guppy.Initialize();
 
             // Build the game instance...

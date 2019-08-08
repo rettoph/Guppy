@@ -3,6 +3,7 @@ using Guppy.Implementations;
 using Guppy.Network.Security.Enums;
 using Guppy.Utilities.Delegaters;
 using Guppy.Utilities.Pools;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace Guppy.Network.Security.Authentication
 {
-    public class User : Entity
+    public class User : NetworkEntity
     {
         #region Private Fields
         private IServiceProvider _provider;
@@ -50,11 +51,20 @@ namespace Guppy.Network.Security.Authentication
         #region Claim Methods
         public void AddClaim(String key, String value, ClaimScope scope = ClaimScope.Public)
         {
-            _claims[key] = _claimPool.Pull(_provider, c =>
+            if(_claims.ContainsKey(key))
             {
-                c.Value = value;
-                c.Scope = scope;
-            });
+                _claims[key].Value = value;
+                _claims[key].Scope = scope;
+            }
+            else
+            {
+                _claims[key] = _claimPool.Pull(_provider, c =>
+                {
+                    c.Value = value;
+                    c.Scope = scope;
+                });
+            }
+
         }
 
         public String GetClaim(String key)
@@ -64,6 +74,37 @@ namespace Guppy.Network.Security.Authentication
         #endregion
 
         #region Network Methods
+        protected override void Write(NetOutgoingMessage om)
+        {
+            base.Write(om);
+
+            // Load all public claims...
+            var claims = _claims.Where(c => c.Value.Scope != ClaimScope.Private);
+
+            // Write the claim count
+            om.Write(claims.Count());
+
+            // Write all claim data
+            foreach(KeyValuePair<String, Claim> kvp in claims)
+            {
+                om.Write(kvp.Key);
+                om.Write(kvp.Value.Value);
+            }
+        }
+
+        protected override void Read(NetIncomingMessage im)
+        {
+            base.Read(im);
+
+            var claims = im.ReadInt32();
+
+            // Read all recieved claims
+            for(Int32 i=0; i<claims; i++)
+                this.AddClaim(
+                    im.ReadString(), 
+                    im.ReadString(), 
+                    ClaimScope.Public);
+        }
         #endregion
     }
 }

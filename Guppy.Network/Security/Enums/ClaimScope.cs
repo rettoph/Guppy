@@ -13,9 +13,6 @@ namespace Guppy.Network.Security.Enums
         // Shared between all peers
         Public,
 
-        // Shared specifically between the server and client the claim belongs to
-        Protected,
-
         // Saved on a single peer, not shared at all
         Private
     }

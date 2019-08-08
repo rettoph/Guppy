@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Configurations;
+using Guppy.Network.Security.Authentication;
 using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -36,13 +37,16 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Helper Methods
-        public void TryConnect(String host, Int32 port)
+        public void TryConnect(String host, Int32 port, User identity)
         {
             if (_client.ConnectionStatus != NetConnectionStatus.Disconnected)
                 throw new Exception("Unable to connect! Client has already started a connection.");
 
             this.logger.LogInformation($"Attempting to connect to {host}:{port}...");
-            _client.Connect(host, port);
+
+            var hail = _client.CreateMessage();
+            identity.TryWrite(hail);
+            _client.Connect(host, port, hail);
         }
         #endregion
 

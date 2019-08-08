@@ -129,6 +129,12 @@ namespace Guppy.Collections
         {
             return this.First(f => f.Id == id);
         }
+
+        public T GetById<T>(Guid id)
+            where T : class, TFrameable
+        {
+            return this.GetById(id) as T;
+        }
         #endregion
     }
 }

@@ -27,6 +27,15 @@ namespace Guppy.Network.Peers
         }
         #endregion
 
+        #region Lifecycle Methods
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.Events.AddDelegate<NetIncomingMessage>("recieved:connection-approval", this.HandleConnectionApprovalMessage);
+        }
+        #endregion
+
         #region Target Implementation
         public override void SendMessage(NetOutgoingMessageConfiguration om)
         {
@@ -34,6 +43,19 @@ namespace Guppy.Network.Peers
                 _server.SendToAll(om.Message, null, om.Method, om.SequenceChannel);
             else;
                 _server.SendMessage(om.Message, om.Target, om.Method, om.SequenceChannel);
+        }
+        #endregion
+
+        #region Message Handlers
+        /// <summary>
+        /// Handle a new incoming connection approval request.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="om"></param>
+        private void HandleConnectionApprovalMessage(object sender, NetIncomingMessage om)
+        {
+            om.Position = 0;
+
         }
         #endregion
     }

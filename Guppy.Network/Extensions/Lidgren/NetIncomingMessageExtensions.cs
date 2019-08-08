@@ -45,8 +45,8 @@ namespace Guppy.Network.Extensions.Lidgren
             where TEntity : NetworkEntity
         {
             if (im.ReadExists())
-                return entities.GetById(
-                    im.ReadGuid()) as TEntity;
+                return entities.GetById<TEntity>(
+                    im.ReadGuid());
 
             return null;
         }
