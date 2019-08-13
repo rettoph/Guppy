@@ -53,7 +53,7 @@ namespace Guppy.Network.Implementations
                 c.Message = om;
                 c.Method = method;
                 c.SequenceChannel = sequenceChanel;
-                c.Target = target;
+                c.Recipient = target;
             });
 
             // Invoke the created message event

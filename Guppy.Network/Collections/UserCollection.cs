@@ -14,10 +14,6 @@ namespace Guppy.Network.Collections
         {
         }
 
-        #region Collection Methods
-        
-        #endregion
-
         #region Helper Methods
         public User GetByNetConnection(NetConnection connection)
         {

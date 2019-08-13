@@ -24,7 +24,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddScene<TScene>(this IServiceCollection services)
             where TScene : Scene
         {
-            services.TryAddPool<TScene, ScopedInitiailzablePool<TScene>>();
+            services.TryAddPool<TScene, ScopedInitializablePool<TScene>>();
             services.AddScoped<TScene>(p => p.GetScene<TScene>());
         }
         #endregion
@@ -49,7 +49,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddGame<TGame>(this IServiceCollection services)
             where TGame : Game
         {
-            services.TryAddPool<TGame, ScopedInitiailzablePool<TGame>>();
+            services.TryAddPool<TGame, ScopedInitializablePool<TGame>>();
             services.AddScoped<TGame>(p => p.GetGame<TGame>());
         }
         #endregion

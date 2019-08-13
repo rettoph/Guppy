@@ -1,12 +1,14 @@
 ﻿using Guppy.Implementations;
 using Guppy.Network.Collections;
 using Guppy.Network.Configurations;
+using Guppy.Network.Enums;
 using Guppy.Network.Implementations;
 using Guppy.Utilities.Pools;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace Guppy.Network.Groups
 {
@@ -41,6 +43,14 @@ namespace Guppy.Network.Groups
             base.Dispose();
 
             this.Users.Clear();
+        }
+        #endregion
+
+        #region Target Implementation
+        protected override void ConfigureMessage(NetOutgoingMessage om)
+        {
+            om.Write((Byte)MessageTarget.Group);
+            om.Write(this.Id);
         }
         #endregion
     }

@@ -7,10 +7,10 @@ using System.Text;
 
 namespace Guppy.Utilities.Pools
 {
-    public class ScopedInitiailzablePool<T> : InitializablePool<T>
+    public class ScopedInitializablePool<T> : InitializablePool<T>
         where T : class, IInitializable
     {
-        public ScopedInitiailzablePool(Type targetType = null) : base(targetType)
+        public ScopedInitializablePool(Type targetType = null) : base(targetType)
         {
         }
 

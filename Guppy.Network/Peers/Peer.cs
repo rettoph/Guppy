@@ -31,6 +31,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Public Attributes
+        public UserCollection Users { get; private set; }
         public GroupCollection Groups { get; private set; }
         #endregion
 
@@ -49,6 +50,11 @@ namespace Guppy.Network.Peers
 
             provider.SetConfigurationValue("peer", this);
             provider.SetConfigurationValue("target", this);
+            provider.GetConfigurationValueOrCreate<GroupCollection>("group-collection", g =>
+            {
+                provider.SetConfigurationValue("group-collection", g);
+                g.SetGroupType(this.GroupType());
+            });
         }
         #endregion
 
@@ -69,9 +75,11 @@ namespace Guppy.Network.Peers
         {
             return _entities.Build<User>("guppy:network:entity:user", setup);
         }
+
+        protected abstract Type GroupType();
         #endregion
 
-        #region Target Methods
+        #region Target Implementation
         protected override void ConfigureMessage(NetOutgoingMessage om)
         {
             om.Write((Byte)MessageTarget.Peer);

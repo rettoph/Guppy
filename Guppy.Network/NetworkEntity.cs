@@ -46,8 +46,7 @@ namespace Guppy.Network
 
         protected virtual void Read(NetIncomingMessage im)
         {
-            // Read the entities id
-            this.Id = im.ReadGuid();
+            // 
         }
 
         public void TryWrite(NetOutgoingMessage om)
@@ -57,8 +56,7 @@ namespace Guppy.Network
 
         protected virtual void Write(NetOutgoingMessage om)
         {
-            // Write the entities current id
-            om.Write(this.Id);
+            // 
         }
         #endregion
     }

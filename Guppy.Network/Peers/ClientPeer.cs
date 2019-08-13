@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Collections;
 using Guppy.Network.Configurations;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Groups;
 using Guppy.Network.Security.Authentication;
 using Guppy.Utilities.Pools;
 using Lidgren.Network;
@@ -60,16 +62,15 @@ namespace Guppy.Network.Peers
 
             this.logger.LogInformation($"Attempting to connect to {host}:{port}...");
 
-            // Get rid of the old identity claim, if there is any
-            if (_identity != null && _identity != identity)
-                _identity.Dispose();
-
-            // Store the new identity claim...
-            _identity = identity;
-
             var hail = _client.CreateMessage();
-            _identity.TryWrite(hail);
+            identity.TryWrite(hail);
+            identity.Dispose();
             _client.Connect(host, port, hail);
+        }
+
+        protected override Type GroupType()
+        {
+            return typeof(ClientGroup);
         }
         #endregion
 
@@ -93,7 +94,11 @@ namespace Guppy.Network.Peers
             {
                 case NetConnectionStatus.Connected:
                     // Read the incoming user data...
-                    _identity.TryRead(im.SenderConnection.RemoteHailMessage);
+                    this.TryCreateUser(u =>
+                    {
+                        u.SetId(im.SenderConnection.RemoteHailMessage.ReadGuid());
+                        u.TryRead(im.SenderConnection.RemoteHailMessage);
+                    });
                     break;
             }
         }

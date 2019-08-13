@@ -6,6 +6,8 @@ using Guppy.Collections;
 using Guppy.Network.Collections;
 using Guppy.Network.Configurations;
 using Guppy.Network.Extensions.DependencyInjection;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Groups;
 using Guppy.Network.Security.Authentication;
 using Guppy.Network.Security.Authentication.Authenticators;
 using Guppy.Utilities.Pools;
@@ -64,13 +66,20 @@ namespace Guppy.Network.Peers
         }
         #endregion
 
+        #region Helper Methods
+        protected override Type GroupType()
+        {
+            return typeof(ServerGroup);
+        }
+        #endregion
+
         #region Target Implementation
         public override void SendMessage(NetOutgoingMessageConfiguration om)
         {
-            if (om.Target == null)
+            if (om.Recipient == null)
                 _server.SendToAll(om.Message, null, om.Method, om.SequenceChannel);
             else
-                _server.SendMessage(om.Message, om.Target, om.Method, om.SequenceChannel);
+                _server.SendMessage(om.Message, om.Recipient, om.Method, om.SequenceChannel);
         }
         #endregion
 
@@ -106,6 +115,7 @@ namespace Guppy.Network.Peers
 
             // If none of the validators fail.. approve the new connection.
             var hail = _server.CreateMessage();
+            hail.Write(user.Id);
             user.TryWrite(hail);
             im.SenderConnection.Approve(hail);
 

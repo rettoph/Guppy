@@ -23,7 +23,6 @@ namespace Guppy.Network.Security.Authentication
         public NetConnection NetConnection { get; internal set; }
         #endregion
 
-
         #region Constructor
         public User(IServiceProvider provider, Pool<Claim> claimPool)
         {
@@ -110,6 +109,10 @@ namespace Guppy.Network.Security.Authentication
                     im.ReadString(), 
                     ClaimScope.Public);
         }
+        #endregion
+
+        #region Method Overloading
+        public static implicit operator NetConnection(User user) => user.NetConnection;
         #endregion
     }
 }

@@ -14,6 +14,6 @@ namespace Guppy.Network.Configurations
         public NetDeliveryMethod Method;
         public Int32 SequenceChannel;
         public NetOutgoingMessage Message;
-        public NetConnection Target;
+        public NetConnection Recipient;
     }
 }
