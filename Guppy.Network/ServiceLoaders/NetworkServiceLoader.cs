@@ -30,13 +30,11 @@ namespace Guppy.Network.ServiceLoaders
         public void Boot(IServiceCollection services)
         {
             services.AddAuthenticator<BasicAuthenticator>();
-            services.TryAddPool<Claim, ServicePool<Claim>>();
+            services.AddPool<Claim, ServicePool<Claim>>();
 
-            services.TryAddPool<NetOutgoingMessageConfiguration, ServicePool<NetOutgoingMessageConfiguration>>();
+            services.AddPool<NetOutgoingMessageConfiguration, ServicePool<NetOutgoingMessageConfiguration>>();
             services.AddScoped<NetPeer>(p => p.GetConfigurationValue<NetPeer>("net-peer"));
             services.AddScoped<Peer>(p => p.GetConfigurationValue<Peer>("peer"));
-            services.TryAddPool<GroupCollection, ServicePool<GroupCollection>>();
-            services.AddTransient<UserCollection>();
         }
 
         public void PreInitialize(IServiceProvider provider)

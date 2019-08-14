@@ -17,7 +17,7 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Constructor
-        public ServerGroup(UserCollection users, NetServer server, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(users, server, outgoingMessageConfigurationPool)
+        public ServerGroup(NetServer server) : base(server)
         {
             _server = server;
         }

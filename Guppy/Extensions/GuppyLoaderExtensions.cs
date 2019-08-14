@@ -36,7 +36,7 @@ namespace Guppy.Extensions
             guppy.Services.AddSingleton(graphics.GraphicsDevice);
             guppy.Services.AddScoped<SpriteBatch>();
 
-            guppy.Services.AddPooledTransient<Camera2D>();
+            guppy.Services.AddTransientInitializable<Camera2D>();
             guppy.Services.AddTransient<BasicEffect>();
         }
     }

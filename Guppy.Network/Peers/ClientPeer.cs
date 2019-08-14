@@ -38,7 +38,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Constructor
-        public ClientPeer(NetClient client, EntityCollection entities, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(client, entities, outgoingMessageConfigurationPool)
+        public ClientPeer(NetClient client, EntityCollection entities) : base(client, entities)
         {
             _client = client;
         }

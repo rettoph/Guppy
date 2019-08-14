@@ -16,7 +16,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddLayer<TLayer>(this IServiceCollection services)
             where TLayer : Layer
         {
-            services.TryAddPool<TLayer, UniquePool<TLayer>>();
+            services.AddPool<TLayer, UniquePool<TLayer>>();
         }
         #endregion
 
@@ -24,7 +24,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddScene<TScene>(this IServiceCollection services)
             where TScene : Scene
         {
-            services.TryAddPool<TScene, ScopedInitializablePool<TScene>>();
+            services.AddPool<TScene, ScopedInitializablePool<TScene>>();
             services.AddScoped<TScene>(p => p.GetScene<TScene>());
         }
         #endregion
@@ -49,7 +49,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddGame<TGame>(this IServiceCollection services)
             where TGame : Game
         {
-            services.TryAddPool<TGame, ScopedInitializablePool<TGame>>();
+            services.AddPool<TGame, ScopedInitializablePool<TGame>>();
             services.AddScoped<TGame>(p => p.GetGame<TGame>());
         }
         #endregion
@@ -64,31 +64,30 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TPool"></typeparam>
         /// <param name="services"></param>
-        public static void TryAddPool<T, TPool>(this IServiceCollection services, Func<IServiceProvider, TPool> factory = null)
+        public static void AddPool<T, TPool>(this IServiceCollection services, Func<IServiceProvider, TPool> factory = null)
             where TPool : Pool<T>
         {
             if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
+            {
                 if (factory == null)
-                    services.AddScoped<Pool<T>, TPool>();
+                    services.Add(new ServiceDescriptor(typeof(Pool<T>), typeof(TPool), ServiceLifetime.Scoped));
                 else
-                    services.AddScoped<Pool<T>, TPool>(factory);
+                    services.Add(new ServiceDescriptor(typeof(Pool<T>), factory, ServiceLifetime.Scoped));
+
+                return;
+            }
+
+            throw new Exception("Unable to pool service! Another pool for this type already exists.");
         }
 
-        /// <summary>
-        /// Automatically add a new type as a pooled service using the
-        /// ReusablePool<> class. This will allow the reference of this
-        /// object to be pulled on construction without re-creating
-        /// any items if the pool has available instances waiting.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="services"></param>
-        public static void AddPooledTransient<T>(this IServiceCollection services)
-            where T : class, IUnique
+        public static void AddTransientInitializable<T>(this IServiceCollection services, Boolean scoped = false)
+            where T : class, IInitializable
         {
-            if (IServiceCollectionExtenions.RegisteredPools.Add(typeof(T)))
-                services.AddScoped<Pool<T>, UniquePool<T>>();
+            if(scoped)
+                services.AddPool<T, ScopedInitializablePool<T>>();
+            else
+                services.AddPool<T, InitializablePool<T>>();     
 
-            // Add the requested type as a new pooled service...
             services.AddTransient<T>(p => p.GetPooledService<T>());
         }
         #endregion

@@ -15,7 +15,7 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Constructor
-        public ClientGroup(UserCollection users, NetClient client, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(users, client, outgoingMessageConfigurationPool)
+        public ClientGroup(NetClient client) : base(client)
         {
             _client = client;
         }

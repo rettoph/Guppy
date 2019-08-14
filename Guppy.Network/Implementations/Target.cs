@@ -9,6 +9,7 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Implementations
 {
@@ -20,10 +21,9 @@ namespace Guppy.Network.Implementations
         #endregion
 
         #region Constructor
-        public Target(NetPeer peer, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool)
+        public Target(NetPeer peer)
         {
             _peer = peer;
-            _outgoingMessageConfigurationPool = outgoingMessageConfigurationPool;
         }
         #endregion
 
@@ -31,6 +31,9 @@ namespace Guppy.Network.Implementations
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            // Save an outgoing message configuration...
+            _outgoingMessageConfigurationPool = provider.GetService<Pool<NetOutgoingMessageConfiguration>>();
 
             // Register useful events...
             this.Events.TryRegisterDelegate<NetOutgoingMessageConfiguration>("created:message");

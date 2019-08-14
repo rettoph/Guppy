@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Peers
 {
@@ -36,7 +37,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Constructor
-        public Peer(NetPeer peer, EntityCollection entities, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(peer, outgoingMessageConfigurationPool)
+        public Peer(NetPeer peer, EntityCollection entities) : base(peer)
         {
             _peer = peer;
             _entities = entities;
@@ -50,11 +51,9 @@ namespace Guppy.Network.Peers
 
             provider.SetConfigurationValue("peer", this);
             provider.SetConfigurationValue("target", this);
-            provider.GetConfigurationValueOrCreate<GroupCollection>("group-collection", g =>
-            {
-                provider.SetConfigurationValue("group-collection", g);
-                g.SetGroupType(this.GroupType());
-            });
+
+            this.Groups = new GroupCollection(this.GroupType(), provider);
+            this.Users = new UserCollection(provider);
         }
         #endregion
 

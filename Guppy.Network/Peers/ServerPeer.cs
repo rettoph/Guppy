@@ -33,11 +33,9 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Constructor
-        public ServerPeer(NetServer server, EntityCollection entities, UserCollection users, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(server, entities, outgoingMessageConfigurationPool)
+        public ServerPeer(NetServer server, EntityCollection entities, UserCollection users) : base(server, entities)
         {
             _server = server;
-
-            this.Users = users;
         }
         #endregion
 
@@ -46,8 +44,10 @@ namespace Guppy.Network.Peers
         {
             base.Create(provider);
 
+            this.Users = provider.GetService<UserCollection>();
+
             _authenticators = provider.GetAuthenticators();
-            _approvedUsers = provider.GetService<UserCollection>();
+            _approvedUsers = new UserCollection(provider);
         }
 
         protected override void Initialize()

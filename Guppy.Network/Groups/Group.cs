@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Groups
 {
@@ -26,9 +27,8 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Constructor
-        public Group(UserCollection users, NetPeer peer, Pool<NetOutgoingMessageConfiguration> outgoingMessageConfigurationPool) : base(peer, outgoingMessageConfigurationPool)
+        public Group(NetPeer peer) : base(peer)
         {
-            this.Users = users;
         }
         #endregion
 
@@ -36,6 +36,8 @@ namespace Guppy.Network.Groups
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            this.Users = new UserCollection(provider);
         }
 
         public override void Dispose()

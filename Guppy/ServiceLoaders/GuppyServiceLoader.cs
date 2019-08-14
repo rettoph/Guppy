@@ -22,7 +22,6 @@ namespace Guppy.ServiceLoaders
             services.AddTransient<EventDelegater>();
             services.AddScoped<EntityCollection, EntityCollection>();
             services.AddScoped<LayerCollection>();
-            services.AddTransient<LayerEntityCollection>();
         }
 
         public void PreInitialize(IServiceProvider provider)

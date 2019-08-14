@@ -14,14 +14,10 @@ namespace Guppy.Network.Collections
         private Pool<Group> _groupPool;
         private IServiceProvider _provider;
 
-        public GroupCollection(IServiceProvider provider) : base(provider)
+        public GroupCollection(Type groupType, IServiceProvider provider) : base(provider)
         {
             _provider = provider;
-        }
-
-        internal void SetGroupType(Type type)
-        {
-            _groupPool = new ScopedInitializablePool<Group>(type);
+            _groupPool = new InitializablePool<Group>(groupType);
         }
 
         public Group GetOrCreateById(Guid id, Action<Group> setup = null)

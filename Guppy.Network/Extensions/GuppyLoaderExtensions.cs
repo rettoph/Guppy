@@ -26,13 +26,13 @@ namespace Guppy.Network.Extensions
 
             GuppyLoaderExtensions.ClientConfiguration = configuration;
 
-            guppy.Services.TryAddPool<NetClient, NetPeerPool<NetClient>>(p => new NetPeerPool<NetClient>(GuppyLoaderExtensions.ClientConfiguration));
+            guppy.Services.AddPool<ClientPeer, InitializablePool<ClientPeer>>();
+            guppy.Services.AddScoped<ClientPeer>(p => p.GetConfigurationValueOrCreate<ClientPeer>("peer"));
+            guppy.Services.AddPool<NetClient, NetPeerPool<NetClient>>(factory: p => new NetPeerPool<NetClient>(GuppyLoaderExtensions.ClientConfiguration));
             guppy.Services.AddScoped<NetClient>(p => p.GetConfigurationValueOrCreate<NetClient>("net-peer", peer =>
             {
                 p.SetConfigurationValue("net-peer", peer);
             }));
-            guppy.Services.TryAddPool<ClientPeer, InitializablePool<ClientPeer>>();
-            guppy.Services.AddScoped<ClientPeer>(p => p.GetConfigurationValueOrCreate<ClientPeer>("peer"));
         }
         #endregion
 
@@ -48,15 +48,15 @@ namespace Guppy.Network.Extensions
 
             GuppyLoaderExtensions.ServerConfiguration = configuration;
             // Ensure that connection approval is always turned on
-            GuppyLoaderExtensions.ServerConfiguration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+            configuration.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
 
-            guppy.Services.TryAddPool<NetServer, NetPeerPool<NetServer>>(p => new NetPeerPool<NetServer>(GuppyLoaderExtensions.ServerConfiguration));
+            guppy.Services.AddPool<ServerPeer, InitializablePool<ServerPeer>>();
+            guppy.Services.AddScoped<ServerPeer>(p => p.GetConfigurationValueOrCreate<ServerPeer>("peer"));
+            guppy.Services.AddPool<NetServer, NetPeerPool<NetServer>>(factory: p => new NetPeerPool<NetServer>(GuppyLoaderExtensions.ServerConfiguration));
             guppy.Services.AddScoped<NetServer>(p => p.GetConfigurationValueOrCreate<NetServer>("net-peer", peer =>
             {
                 p.SetConfigurationValue("net-peer", peer);
             }));
-            guppy.Services.TryAddPool<ServerPeer, InitializablePool<ServerPeer>>();
-            guppy.Services.AddScoped<ServerPeer>(p => p.GetConfigurationValueOrCreate<ServerPeer>("peer"));
         }
         #endregion
     }

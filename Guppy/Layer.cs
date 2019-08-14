@@ -27,7 +27,7 @@ namespace Guppy
             base.Create(provider);
 
             // Create a new layer entity collection
-            this.Entities = this.provider.GetService<LayerEntityCollection>();
+            this.Entities = new LayerEntityCollection(provider);
 
             // Register custom entity events...
             this.Events.TryRegisterDelegate<UInt16>("changed:depth");

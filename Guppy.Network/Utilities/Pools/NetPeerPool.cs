@@ -20,7 +20,7 @@ namespace Guppy.Network.Utilities.Pools
 
         protected override TNetPeer Create(IServiceProvider provider)
         {
-            return ActivatorUtilities.CreateInstance<TNetPeer>(provider.CreateScopeWithConfiguration(), _configuration);
+            return ActivatorUtilities.CreateInstance<TNetPeer>(provider, _configuration);
         }
     }
 }
