@@ -8,34 +8,55 @@ using System.Text;
 namespace Guppy.Utilities
 {
     /// <summary>
-    /// Simple helper class used to load all
-    /// active assemplies or all loaded types
+    /// Simple static helper class used to interact
+    /// with all loaded assemblies and their types.
+    /// 
+    /// This is required to dynamically load and configure
+    /// games, scenes, layers, and even service loaders.
     /// </summary>
     public static class AssemblyHelper
     {
+        /// <summary>
+        /// List of all unique assemblies loaded
+        /// </summary>
         public static HashSet<Assembly> Assemblies { get; private set; }
+        /// <summary>
+        /// List of all unique types loaded
+        /// </summary>
         public static HashSet<Type> Types { get; private set; }
 
+        #region Constructor
         static AssemblyHelper()
         {
             AssemblyHelper.Assemblies = AssemblyHelper.GetUniqueNestedReferencedAssemblies(Assembly.GetEntryAssembly());
             AssemblyHelper.Types = new HashSet<Type>(
                 AssemblyHelper.Assemblies.AsParallel().SelectMany(a => a.GetTypes()));
         }
+        #endregion
 
-        public static IEnumerable<Type> GetTypesWithAttribute<TAttribute>()
+        #region Helper Methods
+        public static IEnumerable<Type> GetTypesWithAttribute<TBase, TAttribute>()
             where TAttribute : GuppyAttribute
         {
-            return AssemblyHelper.Types.Where(t =>
-            {
-                var info = t.GetCustomAttributes(typeof(TAttribute), true);
-                return info != null && info.Length > 0;
-            })
-            .OrderBy(t =>
-            {
-                var priority = (t.GetCustomAttribute(typeof(TAttribute)) as GuppyAttribute).Priority;
-                return priority;
-            });
+            return AssemblyHelper.GetTypesWithAttribute(typeof(TBase), typeof(TAttribute));
+
+        }
+        public static IEnumerable<Type> GetTypesWithAttribute(Type baseType, Type attribute)
+        {
+            if (!typeof(GuppyAttribute).IsAssignableFrom(attribute))
+                throw new Exception("Unable to load types with attribute, attribute type does not extend GuppyAttribute.");
+
+            return AssemblyHelper.Types
+                .Where(t => baseType.IsAssignableFrom(t))
+                .Where(t => {
+                    var info = t.GetCustomAttributes(attribute, true);
+                    return info != null && info.Length > 0;
+                })
+                .OrderBy(t =>
+                {
+                    var priority = (t.GetCustomAttribute(attribute) as GuppyAttribute).Priority;
+                    return priority;
+                });
         }
 
         /// <summary>
@@ -55,5 +76,6 @@ namespace Guppy.Utilities
 
             return set;
         }
+        #endregion
     }
 }

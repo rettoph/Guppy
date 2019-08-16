@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Guppy.Attributes
 {
-    public class GuppyAttribute : Attribute
+    public abstract class GuppyAttribute : Attribute
     {
-        public readonly UInt16 Priority;
+        public Int32 Priority { get; private set; }
 
-        public GuppyAttribute(UInt16 priority = 100)
+        public GuppyAttribute(Int32 priority = 100)
         {
             this.Priority = priority;
         }
