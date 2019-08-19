@@ -14,7 +14,7 @@ namespace Guppy.Utilities.Delegaters
     /// 
     /// After a delegate has been defined 
     /// </summary>
-    public class Delegater<TKey, TArg>
+    public class Delegater<TKey, TArg> : IDisposable
     {
         #region Delegates
         public delegate void CustomDelegater<TCustomArg>(Object sender, TCustomArg arg)
@@ -24,6 +24,7 @@ namespace Guppy.Utilities.Delegaters
         #region Private Fields
         private ILogger _logger;
         private Dictionary<TKey, Type> _registeredDelegates;
+        private Dictionary<TKey, Delegate> _delegates;
         #endregion
 
         #region Constructor
@@ -34,11 +35,27 @@ namespace Guppy.Utilities.Delegaters
         }
         #endregion
 
+        #region Lifecycle Methods 
+        public void Dispose()
+        {
+            // Clear all saved delegates...
+            _delegates.Clear();
+        }
+        #endregion
+
         #region Register Methods
+        /// <summary>
+        /// Attempt to register a new delegate
+        /// </summary>
+        /// <param name="key"></param>
         public void TryRegister(TKey key)
         {
             this.TryRegister<TArg>(key);
         }
+        /// <summary>
+        /// Attempt to register a new delegate
+        /// </summary>
+        /// <param name="key"></param>
         public void TryRegister<TCustomArg>(TKey key)
             where TCustomArg : TArg
         {
@@ -63,6 +80,124 @@ namespace Guppy.Utilities.Delegaters
         #endregion
 
         #region Add Methods
+        /// <summary>
+        /// Attempt to add a new delegate.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="d"></param>
+        public void TryAdd(TKey key, CustomDelegater<TArg> d)
+        {
+            this.TryAdd<TArg>(key, d);
+        }
+        /// <summary>
+        /// Attempt to add a new delegate.
+        /// </summary>
+        /// <typeparam name="TCustomArg"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="d"></param>
+        public void TryAdd<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+            where TCustomArg : TArg
+        {
+            try
+            {
+                this.Add<TCustomArg>(key, d);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e.Message);
+            }
+        }
+        private void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+            where TCustomArg : TArg
+        {
+            if(this.ValidateDelegateType(key, typeof(TCustomArg))) {
+                if (_delegates.ContainsKey(key))
+                { // Add the delegate...
+                    var delegates = (_delegates[key] as CustomDelegater<TCustomArg>);
+                    delegates += d;
+                    _delegates[key] = delegates;
+                }
+                else
+                { // Save the delegate...
+                    _delegates[key] = d;
+                }
+            }
+        }
+        #endregion
+
+        #region Invocation Methods
+        /// <summary>
+        /// Instantly invoke the delegate. No checks or validations are done.
+        /// 
+        /// This improves speed, but could cause crashes if a delegate is not
+        /// defined or the given arg type is incorrect.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="key"></param>
+        /// <param name="arg"></param>
+        public void Invoke(Object sender, TKey key, TArg arg)
+        {
+            this.Invoke<TArg>(sender, key, arg);
+        }
+        /// <summary>
+        /// Instantly invoke the delegate. No checks or validations are done.
+        /// 
+        /// This improves speed, but could cause crashes if a delegate is not
+        /// defined or the given arg type is incorrect.
+        /// </summary>
+        /// <typeparam name="TCustomArg"></typeparam>
+        /// <param name="sender"></param>
+        /// <param name="key"></param>
+        /// <param name="arg"></param>
+        public void Invoke<TCustomArg>(Object sender, TKey key, TCustomArg arg)
+            where TCustomArg : TArg
+        {
+            // Invoke the delegate...
+            (_delegates[key] as CustomDelegater<TCustomArg>)?.Invoke(sender, arg);
+        }
+        #endregion
+
+        #region Remote Methods
+        /// <summary>
+        /// Attempt to remove a delegate.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="d"></param>
+        public void TryRemove(TKey key, CustomDelegater<TArg> d)
+        {
+            this.TryRemove<TArg>(key, d);
+        }
+        /// <summary>
+        /// Attempt to remove a delegate.
+        /// </summary>
+        /// <typeparam name="TCustomArg"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="d"></param>
+        public void TryRemove<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+            where TCustomArg : TArg
+        {
+            try
+            {
+                this.TryRemove<TCustomArg>(key, d);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e.Message);
+            }
+        }
+        private void Remove<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+            where TCustomArg : TArg
+        {
+            if (this.ValidateDelegateType(key, typeof(TCustomArg)))
+            {
+                if (_delegates.ContainsKey(key))
+                { // Remove the delegate...
+                    var delegates = (_delegates[key] as CustomDelegater<TCustomArg>);
+                    delegates -= d;
+                    _delegates[key] = delegates;
+                }
+            }
+        }
         #endregion
 
         #region Validate Methods
@@ -70,13 +205,11 @@ namespace Guppy.Utilities.Delegaters
         {
             // Validate the requested delegate...
             if (!_registeredDelegates.ContainsKey(key))
-                _logger.LogError($"Unable to validate delegate. Unknown key '{key}'.");
+                throw new Exception($"Unable to validate delegate. Unknown key '{key}'.");
             else if (_registeredDelegates[key] != type)
-                _logger.LogError($"Unable to validate delegate. Improper type defined. Expected {_registeredDelegates[key].Name} but recieved '{type.Name}'.");
+                throw new Exception($"Unable to validate delegate. Improper type defined. Expected {_registeredDelegates[key].Name} but recieved '{type.Name}'.");
             else
                 return true;
-
-            return false;
         }
         #endregion
     }
