@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy;
+using Guppy.Extensions.DependencyInjection;
+using Guppy.Utilities.Loggers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,17 +14,14 @@ namespace Pong.Client
     {
         static void Main(string[] args)
         {
-        }
-    }
+            var guppy = new GuppyLoader();
+            guppy.ConfigureLogger(new ConsoleLogger())
+                .Initialize();
 
-    class Test
-    {
-        public Guid Id;
+            var pong = guppy.BuildGame<PongGame>();
+            var test = guppy.BuildGame<TestGame>();
 
-        public Test()
-        {
-            this.Id = Guid.NewGuid();
-            Console.WriteLine("New Test => " + this.Id.ToString());
+            Console.ReadLine();
         }
     }
 }

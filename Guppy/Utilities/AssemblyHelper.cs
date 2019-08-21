@@ -39,7 +39,6 @@ namespace Guppy.Utilities
             where TAttribute : GuppyAttribute
         {
             return AssemblyHelper.GetTypesWithAttribute(typeof(TBase), typeof(TAttribute));
-
         }
         public static IEnumerable<Type> GetTypesWithAttribute(Type baseType, Type attribute)
         {

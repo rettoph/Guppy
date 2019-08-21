@@ -7,7 +7,7 @@ Custom events are events bound by a simple string and can dynamically be invoked
 
 | Project | Class | Event | Arg | Description |
 | ------- | ----- | ----- | --------- | ----------- |
-| `Guppy` | `Unique` | `disposing` |` DateTime` | Invoked when the child is disposed. |
+| `Guppy` | `Creatable` | `disposing` |` Creatable` | Invoked when the child is disposed. |
 | | | | |
 | `Guppy` | `Frameable` | `changed:enabled` |` Boolean` | Invoked when the enabled value is updated. |
 | `Guppy` | `Frameable` | `changed:visible` | `Boolean` | Invoked when the visible value is updated. |

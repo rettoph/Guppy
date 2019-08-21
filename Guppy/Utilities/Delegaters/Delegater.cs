@@ -32,6 +32,7 @@ namespace Guppy.Utilities.Delegaters
         {
             _logger = logger;
             _registeredDelegates = new Dictionary<TKey, Type>();
+            _delegates = new Dictionary<TKey, Delegate>();
         }
         #endregion
 
@@ -68,13 +69,15 @@ namespace Guppy.Utilities.Delegaters
                 _logger.LogWarning(e.Message);
             }
         }
-        private void Register<TCustomArg>(TKey key)
+
+        public void Register<TCustomArg>(TKey key)
             where TCustomArg : TArg
         {
             if (_registeredDelegates.ContainsKey(key))
                 throw new Exception($"Unable to register delegate '{key}' with Type<{typeof(TCustomArg).Name}>. Another delegate with this key has already been registered.");
 
             // Save the key...
+            _logger.LogDebug($"Registering new delegate: Key<{typeof(TKey).Name}>({key}), Arg<{typeof(TCustomArg).Name}>");
             _registeredDelegates.Add(key, typeof(TCustomArg));
         }
         #endregion
@@ -107,7 +110,8 @@ namespace Guppy.Utilities.Delegaters
                 _logger.LogWarning(e.Message);
             }
         }
-        private void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+
+        public void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
             where TCustomArg : TArg
         {
             if(this.ValidateDelegateType(key, typeof(TCustomArg))) {
@@ -135,9 +139,9 @@ namespace Guppy.Utilities.Delegaters
         /// <param name="sender"></param>
         /// <param name="key"></param>
         /// <param name="arg"></param>
-        public void Invoke(Object sender, TKey key, TArg arg)
+        public void Invoke(TKey key, Object sender, TArg arg)
         {
-            this.Invoke<TArg>(sender, key, arg);
+            this.Invoke<TArg>(key, sender, arg);
         }
         /// <summary>
         /// Instantly invoke the delegate. No checks or validations are done.
@@ -149,7 +153,7 @@ namespace Guppy.Utilities.Delegaters
         /// <param name="sender"></param>
         /// <param name="key"></param>
         /// <param name="arg"></param>
-        public void Invoke<TCustomArg>(Object sender, TKey key, TCustomArg arg)
+        public void Invoke<TCustomArg>(TKey key, Object sender, TCustomArg arg)
             where TCustomArg : TArg
         {
             // Invoke the delegate...
@@ -157,7 +161,7 @@ namespace Guppy.Utilities.Delegaters
         }
         #endregion
 
-        #region Remote Methods
+        #region Remove Methods
         /// <summary>
         /// Attempt to remove a delegate.
         /// </summary>
@@ -185,7 +189,8 @@ namespace Guppy.Utilities.Delegaters
                 _logger.LogWarning(e.Message);
             }
         }
-        private void Remove<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+
+        public void Remove<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
             where TCustomArg : TArg
         {
             if (this.ValidateDelegateType(key, typeof(TCustomArg)))

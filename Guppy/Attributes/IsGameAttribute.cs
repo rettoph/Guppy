@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.Attributes
 {
-    public class ServiceLoaderAttribute : GuppyAttribute
+    public class IsGameAttribute : GuppyAttribute
     {
     }
 }

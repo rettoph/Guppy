@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy
 {
-    public class Game : Driven
+    public class Scene : Asyncable
     {
     }
 }
