@@ -1,6 +1,6 @@
-﻿using Guppy.Implementations;
+﻿using Guppy.Collections;
+using Guppy.Implementations;
 using Guppy.Loaders;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,32 +8,31 @@ using System.Text;
 
 namespace Guppy.Utilities.Factories
 {
-    public class DriverFactory : PooledFactory<Driver>
+    public class DriverFactory
     {
-        private DriverLoader _driverLoader;
+        private IServiceProvider _provider;
+        private PooledFactory<Driver> _factory;
+        private DriverLoader _loader;
 
-        public DriverFactory(DriverLoader driverLoader, ILogger logger, PoolFactory pooled) : base(logger, pooled)
+        public DriverFactory(IServiceProvider provider, PooledFactory<Driver> factory, DriverLoader loader)
         {
-            _driverLoader = driverLoader;
+            _provider = provider;
+            _factory = factory;
+            _loader = loader;
         }
 
-        /// <summary>
-        /// Return instances of drivers bound to the input driven type
-        /// </summary>
-        /// <param name="driven"></param>
-        /// <returns></returns>
-        public IEnumerable<Driver> GetDrivers(Driven driven)
+        public FrameableCollection<Driver> Pull(Driven driven)
         {
-            // Get a list  of all driver types bound to the input driven type
-            // Then create instances of them from the pool factory
-            // Then update the parents in the fresh driver instances
-            return _driverLoader.GetValue(driven.GetType()).Select(t =>
+            var drivers = new FrameableCollection<Driver>(_provider);
+            drivers.AddRange(_loader.GetValue(driven.GetType()).Select(t =>
             {
-                return this.Pull<Driver>(t, d =>
+                return _factory.Pull<Driver>(t, d =>
                 {
                     d.SetParent(driven);
                 });
-            }).ToArray();
+            }).ToArray());
+
+            return drivers;
         }
     }
 }

@@ -8,6 +8,7 @@ using Guppy.Extensions.Linq;
 using Guppy.Implementations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Guppy.Utilities;
 
 namespace Guppy.Loaders
 {
@@ -32,10 +33,8 @@ namespace Guppy.Loaders
         }
         public void TryRegister(Type drivenType, Type driverType)
         {
-            if (!typeof(Driven).IsAssignableFrom(drivenType))
-                throw new Exception($"Unable to register Driver. Type<{drivenType.Name}> does not extend Driven.");
-            else if (!typeof(Driver).IsAssignableFrom(driverType))
-                throw new Exception($"Unable to register Driver. Type<{driverType.Name}> does not extend Driver.");
+            ExceptionHelper.ValidateAssignableFrom<Driven>(drivenType);
+            ExceptionHelper.ValidateAssignableFrom<Driver>(driverType);
 
             // Register the driver type...
             this.Register(drivenType, driverType);

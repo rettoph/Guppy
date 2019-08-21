@@ -22,16 +22,14 @@ namespace Guppy.ServiceLoaders
             services.AddTransient<EventDelegater>();
 
             services.AddSingleton<GameOptions>(p => p.GetService<IOptionsMonitor<GameOptions>>().CurrentValue);
-            services.AddSingleton<Game>(p => p.GetService<GameOptions>().Instance);
-
             services.AddScoped<SceneOptions>(p => p.GetService<IOptionsMonitor<SceneOptions>>().Get(p.GetHashCode().ToString()));
-            services.AddScene<Scene>(false);
 
-            services.AddScoped<PoolFactory>();
-            services.AddSingleton<PooledFactory<Scene>>();
             services.AddScoped<DriverFactory>();
+            services.AddScoped<PoolFactory>();
+            services.AddScoped(typeof(PooledFactory<>));
 
             services.AddSingleton<SceneCollection>();
+            services.AddScoped<LayerCollection>();
         }
 
         public void ConfigureProvider(IServiceProvider provider)

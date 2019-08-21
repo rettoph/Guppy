@@ -16,8 +16,6 @@ namespace Pong.Client
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            this.logger.LogDebug("Updating! " + this.Id);
         }
     }
 }

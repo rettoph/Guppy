@@ -8,13 +8,14 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
 using Guppy.Utilities.Factories;
+using Guppy.Collections;
 
 namespace Guppy.Implementations
 {
     public class Driven : Frameable
     {
         #region Public Attributes
-        public IEnumerable<Driver> Drivers { get; private set; }
+        public FrameableCollection<Driver> Drivers { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -23,7 +24,7 @@ namespace Guppy.Implementations
             base.PreInitialize();
 
             // Load new drivers for the current object
-            this.Drivers = this.provider.GetService<DriverFactory>().GetDrivers(this);
+            this.Drivers = this.provider.GetService<DriverFactory>().Pull(this);
         }
         #endregion
 
@@ -33,8 +34,7 @@ namespace Guppy.Implementations
             base.Draw(gameTime);
 
             // Draw all drivers...
-            foreach (Driver driver in this.Drivers)
-                driver.TryDraw(gameTime);
+            this.Drivers.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
@@ -42,8 +42,7 @@ namespace Guppy.Implementations
             base.Update(gameTime);
 
             // Update all drivers...
-            foreach (Driver driver in this.Drivers)
-                driver.TryUpdate(gameTime);
+            this.Drivers.TryUpdate(gameTime);
         }
         #endregion
 

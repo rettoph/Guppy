@@ -17,13 +17,19 @@ namespace Guppy.Utilities.Options
         public Game Instance { get; internal set; }
 
         /// <summary>
-        /// A list of all scene types registered in the service loader.
+        /// A list of all creatable scene types registered in the service loader.
         /// </summary>
         public HashSet<Type> SceneTypes { get; private set; }
+
+        /// <summary>
+        /// A list of all creatable layer types registered in the service loader
+        /// </summary>
+        public HashSet<Type> LayerTypes { get; private set; }
 
         public GameOptions()
         {
             this.SceneTypes = new HashSet<Type>();
+            this.LayerTypes = new HashSet<Type>();
         }
     }
 }

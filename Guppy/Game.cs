@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using Guppy.Attributes;
 
 namespace Guppy
 {
+    [IsGame]
     public class Game : Asyncable
     {
         #region Protected Fields

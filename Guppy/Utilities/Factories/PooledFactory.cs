@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.Utilities.Factories
 {
-    public class PooledFactory<TBase>
+    public sealed class PooledFactory<TBase>
         where TBase : class
     {
         #region Private Fields
