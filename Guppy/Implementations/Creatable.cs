@@ -63,6 +63,7 @@ namespace Guppy.Implementations
             this.provider = provider;
             this.logger = provider.GetService<ILogger>();
             this.Events = new EventDelegater(this.logger);
+            this.Id = Guid.NewGuid();
         }
 
         protected virtual void Create(IServiceProvider provider)

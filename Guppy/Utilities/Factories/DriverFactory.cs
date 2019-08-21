@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Utilities
+namespace Guppy.Utilities.Factories
 {
     public class DriverFactory
     {

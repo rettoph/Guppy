@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
+using Guppy.Utilities.Factories;
 
 namespace Guppy.Implementations
 {

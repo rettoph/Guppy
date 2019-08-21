@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Utilities.Configurations
+namespace Guppy.Utilities.Options
 {
-    internal class SceneConfiguration
+    internal class SceneOptions
     {
         public Scene Instance { get; internal set; }
     }

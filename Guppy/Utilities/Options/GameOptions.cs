@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Utilities.Configurations
+namespace Guppy.Utilities.Options
 {
     /// <summary>
     /// The game configuration class is used within
@@ -12,8 +12,18 @@ namespace Guppy.Utilities.Configurations
     /// This makes it easy to ensure that only one game
     /// is build per service provider.
     /// </summary>
-    internal class GameConfiguration
+    internal class GameOptions
     {
         public Game Instance { get; internal set; }
+
+        /// <summary>
+        /// A list of all scene types registered in the service loader.
+        /// </summary>
+        public HashSet<Type> SceneTypes { get; private set; }
+
+        public GameOptions()
+        {
+            this.SceneTypes = new HashSet<Type>();
+        }
     }
 }

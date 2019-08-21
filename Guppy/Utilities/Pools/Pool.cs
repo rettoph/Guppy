@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Guppy.Implementations;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +9,7 @@ namespace Guppy.Utilities.Pools
     /// <summary>
     /// Used to generate or reuse instances of an object.
     /// </summary>
-    public abstract class Pool
+    public abstract class Pool : Creatable
     {
         #region Private Fields
         private Queue<Object> _pool;
@@ -45,9 +47,16 @@ namespace Guppy.Utilities.Pools
             T child;
 
             if (_pool.Count == 0)
+            {
+                this.logger.LogDebug($"Pooling: Creating new {this.TargetType.Name} instance.");
                 child = this.Create(provider) as T;
+            }
+
             else
+            {
+                this.logger.LogDebug($"Pooling: Reusing old {this.TargetType.Name} instance.");
                 child = _pool.Dequeue() as T;
+            }
 
             // Run the custom setup method if any
             setup?.Invoke(child);

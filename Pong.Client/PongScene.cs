@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Pong.Client
 {
-    [IsGame]
-    class TestGame : Game
+    [IsScene]
+    public class PongScene : Scene
     {
     }
 }

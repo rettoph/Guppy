@@ -19,7 +19,6 @@ namespace Pong.Client
                 .Initialize();
 
             var pong = guppy.BuildGame<PongGame>();
-            var test = guppy.BuildGame<TestGame>();
 
             Console.ReadLine();
         }

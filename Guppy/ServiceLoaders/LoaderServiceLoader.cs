@@ -11,7 +11,7 @@ using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
-    [IsServiceLoader]
+    [IsServiceLoader(110)]
     public class LoaderServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
