@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Guppy.Attributes;
 using Guppy.Extensions;
-using Guppy.Extensions.Linq;
+using Guppy.Extensions.Collection;
 using Guppy.Implementations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;

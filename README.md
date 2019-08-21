@@ -20,7 +20,6 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | | | | |
 | `Guppy` | `UniqueCollection<T>` | `added` | `T` | Invoked when an item is added to the collection. |
 | `Guppy` | `UniqueCollection<T>` | `removed` | `T` | Invoked when an item is removed from the collection. |
-| `Guppy` | `SceneCollection<T>` | `created` | `T` | Invoked when a scene instance is created. |
 | | | | |
 | `Guppy` | `PooledFactory<T>` | `pulled` | `T` | Invoked when an item is pulled from the factory. |
 | | | | |

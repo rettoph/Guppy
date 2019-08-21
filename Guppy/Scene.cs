@@ -14,6 +14,7 @@ namespace Guppy
     {
         #region Protected Attributes
         protected LayerCollection layers { get; private set; }
+        protected EntityCollection entities { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -22,6 +23,7 @@ namespace Guppy
             base.Create(provider);
 
             this.layers = provider.GetService<LayerCollection>();
+            this.entities = provider.GetService<EntityCollection>();
         }
         #endregion
     }

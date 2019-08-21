@@ -5,10 +5,23 @@ using Guppy.Utilities.Factories;
 
 namespace Guppy.Collections
 {
-    public class LayerCollection : FactoryCollection<Layer>
+    public class LayerCollection : FrameableCollection<Layer>
     {
-        public LayerCollection(PooledFactory<Layer> factory, IServiceProvider provider) : base(factory, provider)
+        private PooledFactory<Layer> _factory;
+
+        public LayerCollection(PooledFactory<Layer> factory, IServiceProvider provider) : base(provider)
         {
+            _factory = factory;
         }
+
+        #region Create Methods
+        public TLayer Create<TLayer>(Action<TLayer> setup = null)
+            where TLayer : Layer
+        {
+            var layer = _factory.Pull<TLayer>(setup);
+            this.Add(layer);
+            return layer;
+        }
+        #endregion
     }
 }

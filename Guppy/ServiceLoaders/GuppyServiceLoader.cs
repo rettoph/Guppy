@@ -30,6 +30,8 @@ namespace Guppy.ServiceLoaders
 
             services.AddSingleton<SceneCollection>();
             services.AddScoped<LayerCollection>();
+            services.AddScoped<EntityCollection>();
+            services.AddTransient<FrameableCollection<Entity>>();
         }
 
         public void ConfigureProvider(IServiceProvider provider)

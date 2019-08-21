@@ -10,19 +10,14 @@ using System.Threading.Tasks;
 
 namespace Pong.Client
 {
-    [IsScene]
-    public class PongScene : Scene
+    [IsLayer]
+    public class PongLayer : Layer
     {
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            this.layers.Create<PongLayer>();
-        }
-
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.logger.LogDebug("Updating Layer " + this.Id);
         }
     }
 }

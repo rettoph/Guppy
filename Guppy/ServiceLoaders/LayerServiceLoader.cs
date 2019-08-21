@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Extensions;
-using Guppy.Extensions.Linq;
+using Guppy.Extensions.Collection;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.Utilities;

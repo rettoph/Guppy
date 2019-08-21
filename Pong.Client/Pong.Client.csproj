@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Game1.cs" />
     <Compile Include="PongGame.cs" />
+    <Compile Include="PongLayer.cs" />
     <Compile Include="PongScene.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

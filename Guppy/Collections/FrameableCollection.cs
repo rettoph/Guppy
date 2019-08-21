@@ -1,4 +1,5 @@
-﻿using Guppy.Implementations;
+﻿using Guppy.Extensions.Collection;
+using Guppy.Implementations;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,11 @@ namespace Guppy.Collections
         protected Boolean dirtyUpdates { get; set; }
         #endregion
 
+        #region Public Attributes
+        public IEnumerable<TFrameable> Draws { get { return _draws; } }
+        public IEnumerable<TFrameable> Updates { get { return _updates; } }
+        #endregion
+
         #region Constructors
         public FrameableCollection(IServiceProvider provider) : base(provider)
         {
@@ -38,26 +44,34 @@ namespace Guppy.Collections
         #region Frame Methods
         public virtual void TryUpdate(GameTime gameTime)
         {
-            if (this.dirtyUpdates)
-            {
-                this.RemapUpdates();
-                this.dirtyUpdates = false;
-            }
+            this.TryCleanUpdates();
 
-            foreach (TFrameable frameable in _updates)
-                frameable.TryUpdate(gameTime);
+            _updates.TryUpdateAll(gameTime);
         }
 
         public virtual void TryDraw(GameTime gameTime)
+        {
+            this.TryCleanDraws();
+
+            _updates.TryDrawAll(gameTime);
+        }
+
+        public virtual void TryCleanDraws()
         {
             if (this.dirtyDraws)
             {
                 this.RemapDraws();
                 this.dirtyDraws = false;
             }
+        }
 
-            foreach (TFrameable frameable in _updates)
-                frameable.TryDraw(gameTime);
+        public virtual void TryCleanUpdates()
+        {
+            if (this.dirtyUpdates)
+            {
+                this.RemapUpdates();
+                this.dirtyUpdates = false;
+            }
         }
         #endregion
 
