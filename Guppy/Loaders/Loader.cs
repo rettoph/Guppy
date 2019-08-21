@@ -73,7 +73,7 @@ namespace Guppy.Loaders
 
             _loaded = true;
 
-            this.logger.LogDebug($"Done. {this.valuesTable.Count} values loaded.");
+            this.logger.LogDebug($"Done. {this.valuesTable.Count} values cached.");
         }
 
         /// <summary>

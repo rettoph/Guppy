@@ -64,11 +64,9 @@ namespace Guppy.Loaders
             if (!this.valuesTable.ContainsKey(handle))
             { // If the drivers for the specified type have not been configured yet...
                 // Load all drivers bound to a type assignable to the input type...
-                var drivers = this.registeredValuesList
+                return this.valuesTable[handle] = this.registeredValuesList
                     .Where(rv => rv.Handle.IsAssignableFrom(handle))
                     .Select(rv => rv.Value);
-
-                this.valuesTable.Add(handle, drivers);
             }
 
             // Return the base value...

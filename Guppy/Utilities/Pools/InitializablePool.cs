@@ -13,13 +13,12 @@ namespace Guppy.Utilities.Pools
     {
         public InitializablePool(Type targetType) : base(targetType)
         {
-            if (!typeof(Initializable).IsAssignableFrom(targetType))
-                throw new Exception($"Unable to create InitializablePool. TargetType must be assignable to Initializable. Input {targetType.Name} is not.");
+            ExceptionHelper.ValidateAssignableFrom<Initializable>(targetType);
         }
 
-        public override T Pull<T>(IServiceProvider provider, Action<T> setup = null)
+        public override T Pull<T>(Action<T> setup = null)
         {
-            var instance = base.Pull(provider, setup);
+            var instance = base.Pull(setup);
 
             // Quickly initialize the instance
             var initializable = instance as Initializable;

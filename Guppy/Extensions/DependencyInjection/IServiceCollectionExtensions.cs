@@ -1,5 +1,6 @@
 ﻿using Guppy.Interfaces;
 using Guppy.Utilities;
+using Guppy.Utilities.Factories;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,10 +20,8 @@ namespace Guppy.Extensions.DependencyInjection
         }
         public static void AddScene(this IServiceCollection services, Type sceneType, Boolean creatable = true)
         {
-            if (!typeof(Scene).IsAssignableFrom(sceneType))
-                throw new Exception($"Unable to add scene. Input Type<{sceneType.Name}> does not extend Scene.");
+            ExceptionHelper.ValidateAssignableFrom<Scene>(sceneType);
 
-            services.AddScoped(sceneType, p => p.GetService<SceneOptions>().Instance);
             if (creatable)
             { // Only add the scene type to the game options if this particular type can be created.
                 services.Configure<GameOptions>(go =>
@@ -30,6 +29,8 @@ namespace Guppy.Extensions.DependencyInjection
                     go.SceneTypes.Add(sceneType);
                 });
             }
+
+            services.AddTransient(sceneType, p => p.GetService<SceneOptions>().Instance);
         }
         #endregion
 
@@ -41,8 +42,7 @@ namespace Guppy.Extensions.DependencyInjection
         }
         public static void AddGame(this IServiceCollection services, Type gameType)
         {
-            if (!typeof(Game).IsAssignableFrom(gameType))
-                throw new Exception($"Unable to add game. Input Type<{gameType.Name}> does not extend Game.");
+            ExceptionHelper.ValidateAssignableFrom<Game>(gameType);
 
             services.AddSingleton(gameType, p =>
             {
@@ -71,8 +71,7 @@ namespace Guppy.Extensions.DependencyInjection
         }
         public static void AddLoader(this IServiceCollection services, Type loaderType)
         {
-            if (!typeof(ILoader).IsAssignableFrom(loaderType))
-                throw new Exception($"Unable to add loader. Input Type<{loaderType.Name}> does not extend ILoader.");
+            ExceptionHelper.ValidateAssignableFrom<ILoader>(loaderType);
 
             services.AddSingleton(typeof(ILoader), loaderType);
             services.AddSingleton(loaderType, p => p.GetServices<ILoader>().First(l => loaderType == l.GetType()));

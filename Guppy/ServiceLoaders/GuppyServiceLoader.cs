@@ -1,7 +1,9 @@
 ﻿using Guppy.Attributes;
+using Guppy.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
+using Guppy.Utilities.Delegaters;
 using Guppy.Utilities.Factories;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,14 +19,19 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<EventDelegater>();
+
             services.AddSingleton<GameOptions>(p => p.GetService<IOptionsMonitor<GameOptions>>().CurrentValue);
             services.AddSingleton<Game>(p => p.GetService<GameOptions>().Instance);
 
             services.AddScoped<SceneOptions>(p => p.GetService<IOptionsMonitor<SceneOptions>>().Get(p.GetHashCode().ToString()));
             services.AddScene<Scene>(false);
 
-            services.AddSingleton<PooledFactory>();
+            services.AddScoped<PoolFactory>();
+            services.AddSingleton<PooledFactory<Scene>>();
             services.AddScoped<DriverFactory>();
+
+            services.AddSingleton<SceneCollection>();
         }
 
         public void ConfigureProvider(IServiceProvider provider)

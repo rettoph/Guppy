@@ -14,11 +14,8 @@ namespace Pong.Client
     {
         static void Main(string[] args)
         {
-            var guppy = new GuppyLoader();
-            guppy.ConfigureLogger(new ConsoleLogger())
-                .Initialize();
-
-            var pong = guppy.BuildGame<PongGame>();
+            var game = new Game1();
+            game.Run();
 
             Console.ReadLine();
         }

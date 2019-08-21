@@ -1,5 +1,6 @@
 ﻿using Guppy.Implementations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,11 +15,10 @@ namespace Guppy.Utilities.Pools
     {
         public CreatablePool(Type targetType) : base(targetType)
         {
-            if (!typeof(Creatable).IsAssignableFrom(targetType))
-                throw new Exception($"Unable to create CreatablePool. TargetType must be assignable to Creatable. Input {targetType.Name} is not.");
+            ExceptionHelper.ValidateAssignableFrom<Creatable>(targetType);
         }
 
-        protected override Object Create(IServiceProvider provider)
+        protected override Object Build(IServiceProvider provider)
         {
             var instance = ActivatorUtilities.CreateInstance(provider, this.TargetType) as Creatable;
 
@@ -27,9 +27,9 @@ namespace Guppy.Utilities.Pools
             return instance;
         }
 
-        public override T Pull<T>(IServiceProvider provider, Action<T> setup = null)
+        public override T Pull<T>(Action<T> setup = null)
         {
-            var instance =  base.Pull(provider, setup);
+            var instance =  base.Pull(setup);
 
 
             (instance as Creatable).Events.Add<Creatable>("disposing", this.HandleInstanceDisposing);
@@ -39,6 +39,7 @@ namespace Guppy.Utilities.Pools
 
         private void HandleInstanceDisposing(object sender, Creatable instance)
         {
+            this.logger.LogDebug($"Pool<{this.GetType().Name}>({this.Id}) => Putting Type<{instance.GetType().Name}>({instance.Id}) instance back into pool.");
             this.Put(instance);
         }
     }

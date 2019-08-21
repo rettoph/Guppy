@@ -27,8 +27,17 @@ namespace Guppy.Utilities.Pools
         }
         #endregion
 
+        #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.logger.LogDebug($"Creating new Pool<{this.GetType().Name}>({this.Id}) for Type<{this.TargetType.Name}>.");
+        }
+        #endregion
+
         #region Abstract Methods
-        protected abstract Object Create(IServiceProvider provider);
+        protected abstract Object Build(IServiceProvider provider);
         #endregion
 
         #region Helper Methods
@@ -37,25 +46,27 @@ namespace Guppy.Utilities.Pools
             _pool.Enqueue(instance);
         }
 
-        public virtual Object Pull(IServiceProvider provider, Action<Object> setup = null)
+        public virtual Object Pull(Action<Object> setup = null)
         {
-            return this.Pull<Object>(provider, setup);
+            return this.Pull<Object>(setup);
         }
-        public virtual T Pull<T>(IServiceProvider provider, Action<T> setup = null)
+        public virtual T Pull<T>(Action<T> setup = null)
             where T : class
         {
+            ExceptionHelper.ValidateAssignableFrom<T>(this.TargetType);
+
             T child;
 
             if (_pool.Count == 0)
             {
-                this.logger.LogDebug($"Pooling: Creating new {this.TargetType.Name} instance.");
-                child = this.Create(provider) as T;
+                this.logger.LogDebug($"Pool<{this.GetType().Name}>({this.Id}) => Building new Type<{this.TargetType.Name}> instance.");
+                child = this.Build(this.provider) as T;
             }
 
             else
             {
-                this.logger.LogDebug($"Pooling: Reusing old {this.TargetType.Name} instance.");
                 child = _pool.Dequeue() as T;
+                this.logger.LogDebug($"Pool<{this.GetType().Name}>({this.Id}) => Reusing old Type<{this.TargetType.Name}> instance.");
             }
 
             // Run the custom setup method if any

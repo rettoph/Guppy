@@ -30,6 +30,8 @@ namespace Guppy.ServiceLoaders
             {
                 driver.GetCustomAttributes(typeof(IsDriverAttribute), true).Select(o => o as IsDriverAttribute).ForEach(attribute =>
                 {
+                    Console.WriteLine("Registering driver!" + driver.Name);
+
                     loader.TryRegister(attribute.Driven, driver);
                 });
             });

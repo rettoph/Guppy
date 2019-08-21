@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.Utilities.Delegaters
@@ -41,6 +42,9 @@ namespace Guppy.Utilities.Delegaters
         {
             // Clear all saved delegates...
             _delegates.Clear();
+            _delegates = _registeredDelegates.ToDictionary(
+                keySelector: kvp => kvp.Key,
+                elementSelector: kvp => (Delegate)null);
         }
         #endregion
 
@@ -77,8 +81,9 @@ namespace Guppy.Utilities.Delegaters
                 throw new Exception($"Unable to register delegate '{key}' with Type<{typeof(TCustomArg).Name}>. Another delegate with this key has already been registered.");
 
             // Save the key...
-            _logger.LogDebug($"Registering new delegate: Key<{typeof(TKey).Name}>({key}), Arg<{typeof(TCustomArg).Name}>");
+            _logger.LogDebug($"Registering new delegate: Key<{typeof(TKey).Name}>('{key}'), Arg<{typeof(TCustomArg).Name}>");
             _registeredDelegates.Add(key, typeof(TCustomArg));
+            _delegates.Add(key, null);
         }
         #endregion
 
@@ -115,7 +120,7 @@ namespace Guppy.Utilities.Delegaters
             where TCustomArg : TArg
         {
             if(this.ValidateDelegateType(key, typeof(TCustomArg))) {
-                if (_delegates.ContainsKey(key))
+                if (_delegates[key] == null)
                 { // Add the delegate...
                     var delegates = (_delegates[key] as CustomDelegater<TCustomArg>);
                     delegates += d;

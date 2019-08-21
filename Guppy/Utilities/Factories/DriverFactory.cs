@@ -1,5 +1,6 @@
 ﻿using Guppy.Implementations;
 using Guppy.Loaders;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,12 @@ using System.Text;
 
 namespace Guppy.Utilities.Factories
 {
-    public class DriverFactory
+    public class DriverFactory : PooledFactory<Driver>
     {
-        private PooledFactory _pooled;
         private DriverLoader _driverLoader;
 
-        public DriverFactory(PooledFactory pooled, DriverLoader driverLoader)
+        public DriverFactory(DriverLoader driverLoader, ILogger logger, PoolFactory pooled) : base(logger, pooled)
         {
-            _pooled = pooled;
             _driverLoader = driverLoader;
         }
 
@@ -29,12 +28,12 @@ namespace Guppy.Utilities.Factories
             // Then create instances of them from the pool factory
             // Then update the parents in the fresh driver instances
             return _driverLoader.GetValue(driven.GetType()).Select(t =>
-             {
-                 return _pooled.Pull<Driver>(t, d =>
-                 {
-                     d.SetParent(driven);
-                 });
-             });
+            {
+                return this.Pull<Driver>(t, d =>
+                {
+                    d.SetParent(driven);
+                });
+            }).ToArray();
         }
     }
 }

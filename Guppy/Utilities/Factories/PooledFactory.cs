@@ -1,67 +1,45 @@
-﻿using Guppy.Implementations;
-using Guppy.Loaders;
-using Guppy.Utilities.Pools;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy.Utilities.Delegaters;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Guppy.Utilities.Factories
 {
-    /// <summary>
-    /// Internal class that contains instances of all
-    /// registered pools within the InitializablePoolLoader.
-    /// 
-    /// This can be used to easily created scoped instances of 
-    /// initializable objects.
-    /// </summary>
-    public class PooledFactory
+    public class PooledFactory<TBase>
+        where TBase : class
     {
         #region Private Fields
-        private IServiceProvider _provider;
-        private Dictionary<Type, Pool> _pools;
-        private PoolLoader _poolLoader;
+        private PoolFactory _poolFactory;
         #endregion
 
-        #region Constructors
-        public PooledFactory(PoolLoader poolLoader, IServiceProvider provider)
+        #region Constructor
+        public PooledFactory(ILogger logger, PoolFactory poolFactory)
         {
-            _poolLoader = poolLoader;
-            _provider = provider;
-
-            _pools = new Dictionary<Type, Pool>();
+            _poolFactory = poolFactory;
         }
         #endregion
 
         #region Helper Methods
-        public Object Pull(Type type, Action<Object> setup = null)
+        public TBase Pull(Type type, Action<TBase> setup = null)
         {
-            return this.GetOrCreatePool(type).Pull(_provider, setup);
-        }
-        public T Pull<T>(Action<T> setup = null)
-            where T : class
-        {
-            return this.GetOrCreatePool(typeof(T)).Pull<T>(_provider, setup);
-        }
-        public T Pull<T>(Type type, Action<T> setup = null)
-            where T : class
-        {
-            return this.GetOrCreatePool(type).Pull<T>(_provider, setup);
-        }
+            var instance = _poolFactory.GetOrCreatePool(type).Pull<TBase>(setup);
 
-        private Pool GetOrCreatePool(Type type)
+            return instance;
+        }
+        public TInstance Pull<TInstance>(Action<TInstance> setup = null)
+            where TInstance : class, TBase
         {
-            if (!_pools.ContainsKey(type))
-            {
-                // If a pool does not alread exist for this type... create it.
-                var pool = ActivatorUtilities.CreateInstance(_provider, _poolLoader.GetValue(type), type) as Pool;
-                pool.TryCreate(_provider);
+            var instance = _poolFactory.GetOrCreatePool(typeof(TInstance)).Pull<TInstance>(setup);
 
-                _pools[type] = pool;
-            }
+            return instance;
+        }
+        public TInstance Pull<TInstance>(Type type, Action<TInstance> setup = null)
+            where TInstance : class, TBase
+        {
+            var instance = _poolFactory.GetOrCreatePool(type).Pull<TInstance>(setup);
 
-            return _pools[type];
+            return instance;
         }
         #endregion
     }

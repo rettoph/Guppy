@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Extensions.Linq;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Guppy.Utilities.Options;
@@ -19,7 +20,6 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public IServiceCollection Services { get { return _services; } }
         public Boolean Initialized { get; private set; }
         #endregion
 
@@ -27,13 +27,22 @@ namespace Guppy
         public GuppyLoader()
         {
             _services = new ServiceCollection();
-            _serviceLoaders = new HashSet<IServiceLoader>(
-                collection: AssemblyHelper.GetTypesWithAttribute<IServiceLoader, IsServiceLoaderAttribute>()
-                    .Select(t => Activator.CreateInstance(t) as IServiceLoader));
+            _serviceLoaders = new HashSet<IServiceLoader>();
+            AssemblyHelper.GetTypesWithAttribute<IServiceLoader, IsServiceLoaderAttribute>()
+                    .Select(t => Activator.CreateInstance(t) as IServiceLoader)
+                    .ForEach(sl => this.AddServiceLoader(sl));
         }
         #endregion
 
         #region Helper Methods
+        public void AddServiceLoader(IServiceLoader serviceLoader)
+        {
+            if (this.Initialized)
+                throw new Exception("Unable to add service loaders after Guppy has been initialized.");
+
+            _serviceLoaders.Add(serviceLoader);
+        }
+
         public GuppyLoader ConfigureLogger(ILogger logger)
         {
             if (this.Initialized)
