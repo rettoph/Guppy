@@ -1,13 +1,15 @@
 ﻿using Guppy.Attributes;
 using Guppy.Implementations;
 using Guppy.Interfaces;
+using Guppy.Utilities;
 using Guppy.Utilities.Pools;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace Guppy.Loaders
+namespace Guppy.Utilities.Loaders
 {
     /// <summary>
     /// The pool loader is a loader used to generate
@@ -27,10 +29,14 @@ namespace Guppy.Loaders
         #region Registration Methods
         public void TryRegister(Type targetType, Type poolType, UInt16 priority = 100)
         {
-            if (!typeof(Pool).IsAssignableFrom(poolType))
-                throw new Exception($"Unable to register pool. Type<{poolType.Name}> does not extend Pool.");
-             
-            this.Register(targetType, poolType, priority);
+            ExceptionHelper.ValidateAssignableFrom<Pool>(poolType);
+
+            if (this.registeredValuesList.Where(rc => rc.Handle == targetType && rc.Value == poolType).Count() == 0)
+            { // Ensure that this exact pool has not already been registered.
+                this.logger.LogTrace($"Registering new Pool<{poolType.Name}>({priority}) => '{targetType.Name}'");
+
+                this.Register(targetType, poolType, priority);
+            }
         }
         #endregion
 

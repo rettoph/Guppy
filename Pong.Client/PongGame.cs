@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Pong.Client.Scenes;
 
 namespace Pong.Client
 {
@@ -31,6 +32,8 @@ namespace Pong.Client
             base.Initialize();
 
             this.scene = this.scenes.Create<PongScene>();
+            this.scene.Dispose();
+            this.scene = this.scenes.Create<PongScene>();
         }
 
         protected override void Update(GameTime gameTime)
@@ -44,7 +47,7 @@ namespace Pong.Client
         {
             base.Draw(gameTime);
 
-            this.graphicsDevice.Clear(Color.CornflowerBlue);
+            this.graphicsDevice.Clear(Color.Black);
 
 
             this.scenes.TryDraw(gameTime);

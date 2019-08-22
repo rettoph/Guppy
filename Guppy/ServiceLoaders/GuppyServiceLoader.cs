@@ -2,6 +2,7 @@
 using Guppy.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.Utilities.Loaders;
 using Guppy.Utilities;
 using Guppy.Utilities.Delegaters;
 using Guppy.Utilities.Factories;
@@ -25,6 +26,7 @@ namespace Guppy.ServiceLoaders
             services.AddScoped<SceneOptions>(p => p.GetService<IOptionsMonitor<SceneOptions>>().Get(p.GetHashCode().ToString()));
 
             services.AddScoped<DriverFactory>();
+            services.AddScoped<EntityFactory>();
             services.AddScoped<PoolFactory>();
             services.AddScoped(typeof(PooledFactory<>));
 
@@ -36,7 +38,10 @@ namespace Guppy.ServiceLoaders
 
         public void ConfigureProvider(IServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            var strings = provider.GetService<StringLoader>();
+
+            strings.TryRegister("name:entity:default", "Default Entity Name");
+            strings.TryRegister("description:entity:default:entity:default", "Default Entity Description.");
         }
     }
 }

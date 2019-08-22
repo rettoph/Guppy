@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Utilities.Factories;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Collections
 {

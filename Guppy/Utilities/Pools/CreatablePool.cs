@@ -39,7 +39,7 @@ namespace Guppy.Utilities.Pools
 
         private void HandleInstanceDisposing(object sender, Creatable instance)
         {
-            this.logger.LogDebug($"Pool<{this.GetType().Name}>({this.Id}) => Putting Type<{instance.GetType().Name}>({instance.Id}) instance back into pool.");
+            this.logger.LogTrace($"Pool<{this.GetType().Name}>({this.Id}) => Putting Type<{instance.GetType().Name}>({instance.Id}) instance back into pool.");
             this.Put(instance);
         }
     }

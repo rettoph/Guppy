@@ -2,7 +2,7 @@
 using Guppy.Extensions;
 using Guppy.Extensions.Collection;
 using Guppy.Interfaces;
-using Guppy.Loaders;
+using Guppy.Utilities.Loaders;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Guppy.ServiceLoaders
 {
-    [IsServiceLoader(90)]
+    [IsServiceLoader]
     public class LayerServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

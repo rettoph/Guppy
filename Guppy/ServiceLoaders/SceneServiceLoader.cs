@@ -2,7 +2,7 @@
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Collection;
 using Guppy.Interfaces;
-using Guppy.Loaders;
+using Guppy.Utilities.Loaders;
 using Guppy.Utilities;
 using Guppy.Utilities.Options;
 using Guppy.Utilities.Pools;

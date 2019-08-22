@@ -53,7 +53,7 @@ namespace Guppy.Collections
         {
             this.TryCleanDraws();
 
-            _updates.TryDrawAll(gameTime);
+            _draws.TryDrawAll(gameTime);
         }
 
         public virtual void TryCleanDraws()

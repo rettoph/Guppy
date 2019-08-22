@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Loaders
+namespace Guppy.Utilities.Loaders
 {
     public class Loader<THandle, TValueIn, TValueOut> : ILoader
     {
@@ -67,13 +67,13 @@ namespace Guppy.Loaders
         /// </summary>
         public virtual void Load()
         {
-            this.logger.LogDebug($"Loading Loader<{this.GetType().Name}>...");
+            this.logger.LogTrace($"Loading Loader<{this.GetType().Name}>...");
 
             this.valuesTable = this.BuildValuesTable();
 
             _loaded = true;
 
-            this.logger.LogDebug($"Done. {this.valuesTable.Count} values cached.");
+            this.logger.LogTrace($"Done. {this.valuesTable.Count} values cached.");
         }
 
         /// <summary>

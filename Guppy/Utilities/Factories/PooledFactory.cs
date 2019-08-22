@@ -10,12 +10,14 @@ namespace Guppy.Utilities.Factories
         where TBase : class
     {
         #region Private Fields
+        private ILogger _logger;
         private PoolFactory _poolFactory;
         #endregion
 
         #region Constructor
         public PooledFactory(ILogger logger, PoolFactory poolFactory)
         {
+            _logger = logger;
             _poolFactory = poolFactory;
         }
         #endregion
@@ -30,6 +32,7 @@ namespace Guppy.Utilities.Factories
         public TInstance Pull<TInstance>(Action<TInstance> setup = null)
             where TInstance : class, TBase
         {
+            _logger.LogTrace($"Pulling {typeof(TBase).Name}<{typeof(TInstance).Name}> instance...");
             var instance = _poolFactory.GetOrCreatePool(typeof(TInstance)).Pull<TInstance>(setup);
 
             return instance;
@@ -37,6 +40,7 @@ namespace Guppy.Utilities.Factories
         public TInstance Pull<TInstance>(Type type, Action<TInstance> setup = null)
             where TInstance : class, TBase
         {
+            _logger.LogTrace($"Pulling {typeof(TBase).Name}<{type.Name}> instance...");
             var instance = _poolFactory.GetOrCreatePool(type).Pull<TInstance>(setup);
 
             return instance;

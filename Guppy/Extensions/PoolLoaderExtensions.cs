@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Implementations;
-using Guppy.Loaders;
 using Guppy.Utilities;
+using Guppy.Utilities.Loaders;
 using Guppy.Utilities.Pools;
 
 namespace Guppy.Extensions

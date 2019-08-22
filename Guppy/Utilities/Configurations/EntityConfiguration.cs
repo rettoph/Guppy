@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Utilities.Options
+namespace Guppy.Utilities.Configurations
 {
-    public class EntityOptions
+    public class EntityConfiguration
     {
         public String Handle { get; internal set; }
         public String Name { get; internal set; }

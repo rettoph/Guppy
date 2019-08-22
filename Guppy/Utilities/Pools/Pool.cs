@@ -32,7 +32,7 @@ namespace Guppy.Utilities.Pools
         {
             base.Create(provider);
 
-            this.logger.LogDebug($"Creating new Pool<{this.GetType().Name}>({this.Id}) for Type<{this.TargetType.Name}>.");
+            this.logger.LogTrace($"Creating new Pool<{this.GetType().Name}>({this.Id}) for Type<{this.TargetType.Name}>.");
         }
         #endregion
 
@@ -59,14 +59,14 @@ namespace Guppy.Utilities.Pools
 
             if (_pool.Count == 0)
             {
-                this.logger.LogDebug($"Pool<{this.GetType().Name}>({this.Id}) => Building new Type<{this.TargetType.Name}> instance.");
+                this.logger.LogTrace($"Pool<{this.GetType().Name}>({this.Id}) => Building new Type<{this.TargetType.Name}> instance.");
                 child = this.Build(this.provider) as T;
             }
 
             else
             {
                 child = _pool.Dequeue() as T;
-                this.logger.LogDebug($"Pool<{this.GetType().Name}>({this.Id}) => Reusing old Type<{this.TargetType.Name}> instance.");
+                this.logger.LogTrace($"Pool<{this.GetType().Name}>({this.Id}) => Reusing old Type<{this.TargetType.Name}> instance.");
             }
 
             // Run the custom setup method if any

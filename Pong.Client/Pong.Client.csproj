@@ -74,6 +74,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.1\lib\netstandard2.0\System.Memory.dll</HintPath>
     </Reference>
@@ -92,11 +93,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\FieldEntity.cs" />
+    <Compile Include="Entities\HumanPaddleEntity.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="PaddleEntity.cs" />
+    <Compile Include="Entities\PaddleEntity.cs" />
     <Compile Include="PongGame.cs" />
-    <Compile Include="PongLayer.cs" />
-    <Compile Include="PongScene.cs" />
+    <Compile Include="Scenes\PongScene.cs" />
+    <Compile Include="ServiceLoaders\PongServiceLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

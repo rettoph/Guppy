@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Guppy.Utilities.Factories;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,12 +17,24 @@ namespace Guppy.Collections
         /// to be remoed from when the changed:layer event is invoked.
         /// </summary>
         private Dictionary<Entity, Layer> _cachedLayers;
+
+        private EntityFactory _factory;
         #endregion
 
         #region Constructor
-        public EntityCollection(LayerCollection layers, IServiceProvider provider) : base(provider)
+        public EntityCollection(EntityFactory factory, LayerCollection layers, IServiceProvider provider) : base(provider)
         {
+            _factory = factory;
             _cachedLayers = new Dictionary<Entity, Layer>();
+        }
+        #endregion
+
+        #region Lifecycle Methods
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _cachedLayers.Clear();
         }
         #endregion
 
@@ -77,16 +91,32 @@ namespace Guppy.Collections
             this.RemoveFromLayer(item);
 
             if(item.Layer != null)
-            {
                 item.Layer.entities.Add(item);
-                _cachedLayers[item] = item.Layer;
-            }
+
+            // Store the current layer
+            _cachedLayers[item] = item.Layer;
         }
         #endregion
 
+        #region Create Method
+        public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null)
+            where TEntity : Entity
+        {
+            var entity = _factory.Pull(handle, setup);
+            this.Add(entity);
+            return entity;
+        }
+        public Entity Create(String handle, Action<Entity> setup = null)
+        {
+            return this.Create<Entity>(handle, setup);
+        }
+        #endregion
+
+        #region Event Handlers
         private void HandleItemLayerChanged(object sender, Layer arg)
         {
             this.AddToLayer(sender as Entity);
         }
+        #endregion
     }
 }

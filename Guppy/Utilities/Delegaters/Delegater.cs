@@ -121,14 +121,14 @@ namespace Guppy.Utilities.Delegaters
         {
             if(this.ValidateDelegateType(key, typeof(TCustomArg))) {
                 if (_delegates[key] == null)
+                { // Save the delegate...
+                    _delegates[key] = d;
+                }
+                else
                 { // Add the delegate...
                     var delegates = (_delegates[key] as CustomDelegater<TCustomArg>);
                     delegates += d;
                     _delegates[key] = delegates;
-                }
-                else
-                { // Save the delegate...
-                    _delegates[key] = d;
                 }
             }
         }

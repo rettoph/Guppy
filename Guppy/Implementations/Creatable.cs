@@ -54,6 +54,8 @@ namespace Guppy.Implementations
 
         public virtual void Dispose()
         {
+            this.logger.LogTrace($"Disposing of {this.GetType().Name}({this.Id}) instance...");
+
             this.Events.Invoke<Creatable>("disposing", this, this);
             this.Events.Dispose();
         }

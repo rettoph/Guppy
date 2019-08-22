@@ -1,5 +1,5 @@
 ﻿using Guppy.Interfaces;
-using Guppy.Loaders;
+using Guppy.Utilities.Loaders;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
 using Guppy.Utilities.Factories;
 using Guppy.Collections;
+using Guppy.Extensions.Collection;
 
 namespace Guppy.Implementations
 {
@@ -25,6 +26,13 @@ namespace Guppy.Implementations
 
             // Load new drivers for the current object
             this.Drivers = this.provider.GetService<DriverFactory>().Pull(this);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Drivers.Dispose();
         }
         #endregion
 

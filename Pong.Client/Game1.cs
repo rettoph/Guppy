@@ -20,6 +20,9 @@ namespace Pong.Client
         {
             this.graphics = new GraphicsDeviceManager(this);
             this.guppy = new GuppyLoader();
+
+            this.Window.AllowUserResizing = true;
+            this.IsMouseVisible = true;
         }
 
         protected override void Initialize()

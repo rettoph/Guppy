@@ -25,6 +25,15 @@ namespace Guppy
             this.layers = provider.GetService<LayerCollection>();
             this.entities = provider.GetService<EntityCollection>();
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            // Dispose of all self contained layers and entities
+            this.layers.Dispose();
+            this.entities.Dispose();
+        }
         #endregion
     }
 }

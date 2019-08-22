@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
 
-namespace Guppy.Loaders
+namespace Guppy.Utilities.Loaders
 {
     [IsLoader(90)]
     public class DriverLoader : Loader<Type, Type, IEnumerable<Type>>
@@ -18,9 +18,9 @@ namespace Guppy.Loaders
         private PoolLoader _poolLoader;
         private HashSet<Type> _rawDriverTypes;
 
-        public DriverLoader(PoolLoader poolLoader, ILogger logger) : base(logger)
+        public DriverLoader(PoolLoader pools, ILogger logger) : base(logger)
         {
-            _poolLoader = poolLoader;
+            _poolLoader = pools;
             _rawDriverTypes = new HashSet<Type>();
         }
 
@@ -36,20 +36,18 @@ namespace Guppy.Loaders
             ExceptionHelper.ValidateAssignableFrom<Driven>(drivenType);
             ExceptionHelper.ValidateAssignableFrom<Driver>(driverType);
 
+            this.logger.LogTrace($"Registering new Driver<{driverType.Name}> => '{drivenType.Name}'");
+
             // Register the driver type...
             this.Register(drivenType, driverType);
             _rawDriverTypes.Add(driverType);
+            _poolLoader.TryRegisterInitializable(driverType);
         }
         #endregion
 
         public override void Load()
         {
             base.Load();
-
-
-            // At this time, ensure that all of the internal raw 
-            // driver types are given pools within the pool loader
-            _rawDriverTypes.ForEach(t => _poolLoader.TryRegisterInitializable(t));
         }
 
         protected override Dictionary<Type, IEnumerable<Type>> BuildValuesTable()

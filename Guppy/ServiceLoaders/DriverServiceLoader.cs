@@ -9,7 +9,7 @@ using System.Linq;
 using Guppy.Extensions.Collection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Implementations;
-using Guppy.Loaders;
+using Guppy.Utilities.Loaders;
 
 namespace Guppy.ServiceLoaders
 {

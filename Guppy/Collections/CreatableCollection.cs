@@ -43,7 +43,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Lifecycle Methods
-        public void Dispose()
+        public virtual void Dispose()
         {
             // auto dispose children
             while (this.Count > 0)

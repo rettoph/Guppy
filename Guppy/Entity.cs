@@ -1,4 +1,6 @@
 ﻿using Guppy.Implementations;
+using Guppy.Utilities.Configurations;
+using Guppy.Utilities.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +10,7 @@ namespace Guppy
     public class Entity : Driven
     {
         #region Public Attributes
+        public EntityConfiguration Configuration { get; internal set; }
         public Layer Layer { get; private set; }
         #endregion
 
