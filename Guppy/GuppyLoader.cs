@@ -43,12 +43,13 @@ namespace Guppy
             _serviceLoaders.Add(serviceLoader);
         }
 
-        public GuppyLoader ConfigureLogger(ILogger logger)
+        public GuppyLoader ConfigureLogger<TLogger>()
+            where TLogger : class, ILogger
         {
             if (this.Initialized)
                 throw new Exception($"Unable to configure Logger after GuppyLoader has been initiailzed.");
 
-            _services.AddSingleton<ILogger>(logger);
+            _services.AddSingleton<ILogger, TLogger>();
 
             return this;
         }

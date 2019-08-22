@@ -26,7 +26,7 @@ namespace Pong.Client
         {
             base.Initialize();
 
-            guppy.ConfigureLogger(new ConsoleLogger())
+            guppy.ConfigureLogger<ConsoleLogger>()
                 .ConfigureMonoGame(this.graphics, this.Content, this.Window)
                 .Initialize();
 

@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.Attributes;
+using Guppy.Extensions.Collection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,7 +18,7 @@ namespace Pong.Client
         {
             base.Update(gameTime);
 
-            this.logger.LogDebug("Updating Layer " + this.Id);
+            this.Updates.TryUpdateAll(gameTime);
         }
     }
 }

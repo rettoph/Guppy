@@ -14,9 +14,7 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | `Guppy` | `Frameable` | `changed:update-order` | `Int32` | Invoked when the update order value is changed. |
 | `Guppy` | `Frameable` | `changed:draw` | `Int32` | Invoked when the draw value is updated. |
 | | | | |
-| `Guppy` | `Entity` | `changed:layer-depth` | `UInt16` | Invoked when the layer depth is updated. |
-| | | | |
-| `Guppy` | `Layer` | `changed:depth` | `UInt16` | Invoked when the depth is updated. |
+| `Guppy` | `Entity` | `changed:layer` | `Layer` | Invoked when the layer is updated. |
 | | | | |
 | `Guppy` | `UniqueCollection<T>` | `added` | `T` | Invoked when an item is added to the collection. |
 | `Guppy` | `UniqueCollection<T>` | `removed` | `T` | Invoked when an item is removed from the collection. |

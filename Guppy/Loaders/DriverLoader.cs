@@ -15,12 +15,12 @@ namespace Guppy.Loaders
     [IsLoader(90)]
     public class DriverLoader : Loader<Type, Type, IEnumerable<Type>>
     {
-        private IServiceProvider _provider;
+        private PoolLoader _poolLoader;
         private HashSet<Type> _rawDriverTypes;
 
-        public DriverLoader(IServiceProvider provider, ILogger logger) : base(logger)
+        public DriverLoader(PoolLoader poolLoader, ILogger logger) : base(logger)
         {
-            _provider = provider;
+            _poolLoader = poolLoader;
             _rawDriverTypes = new HashSet<Type>();
         }
 
@@ -49,8 +49,7 @@ namespace Guppy.Loaders
 
             // At this time, ensure that all of the internal raw 
             // driver types are given pools within the pool loader
-            var poolLoader = _provider.GetService<PoolLoader>();
-            _rawDriverTypes.ForEach(t => poolLoader.TryRegisterInitializable(t));
+            _rawDriverTypes.ForEach(t => _poolLoader.TryRegisterInitializable(t));
         }
 
         protected override Dictionary<Type, IEnumerable<Type>> BuildValuesTable()

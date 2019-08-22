@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Attributes;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy
 {
@@ -19,6 +20,8 @@ namespace Guppy
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            this.logger.LogInformation($"Creating Game<{this.GetType().Name}> instance.");
 
             // Load an easily referenceable scene collection
             this.scenes = provider.GetService<SceneCollection>();

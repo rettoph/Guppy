@@ -75,8 +75,8 @@ namespace Guppy.Extensions.DependencyInjection
         {
             ExceptionHelper.ValidateAssignableFrom<ILoader>(loaderType);
 
-            services.AddSingleton(typeof(ILoader), loaderType);
-            services.AddSingleton(loaderType, p => p.GetServices<ILoader>().First(l => loaderType == l.GetType()));
+            services.AddSingleton(loaderType);
+            services.AddSingleton<ILoader>(p => p.GetService(loaderType) as ILoader);
         }
         #endregion
     }

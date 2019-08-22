@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace Guppy.Utilities.Options
     /// This makes it easy to ensure that only one game
     /// is build per service provider.
     /// </summary>
-    internal class GameOptions
+    public sealed class GameOptions
     {
         public Game Instance { get; internal set; }
 
@@ -26,10 +27,19 @@ namespace Guppy.Utilities.Options
         /// </summary>
         public HashSet<Type> LayerTypes { get; private set; }
 
+        /// <summary>
+        /// The current logging level.
+        /// 
+        /// It is up to the ILogger instance to actually use this value.
+        /// </summary>
+        public LogLevel LogLevel { get; set; }
+
         public GameOptions()
         {
             this.SceneTypes = new HashSet<Type>();
             this.LayerTypes = new HashSet<Type>();
+
+            this.LogLevel = LogLevel.Debug;
         }
     }
 }

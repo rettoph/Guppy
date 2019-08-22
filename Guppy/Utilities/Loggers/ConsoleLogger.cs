@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Guppy.Utilities.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +8,13 @@ namespace Guppy.Utilities.Loggers
 {
     public class ConsoleLogger : ILogger
     {
+        private GameOptions _options;
+
+        public ConsoleLogger(GameOptions options)
+        {
+            _options = options;
+        }
+
         public IDisposable BeginScope<TState>(TState state)
         {
             throw new NotImplementedException();
@@ -14,14 +22,17 @@ namespace Guppy.Utilities.Loggers
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return true;
+            return _options.LogLevel <= logLevel;
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Console.ForegroundColor = this.GetColor(logLevel);
+            if (this.IsEnabled(logLevel))
+            {
+                Console.ForegroundColor = this.GetColor(logLevel);
 
-            Console.WriteLine($"{logLevel}: {state}");
+                Console.WriteLine($"{logLevel}: {state}");
+            }
         }
 
         private ConsoleColor GetColor(LogLevel logLevel)
