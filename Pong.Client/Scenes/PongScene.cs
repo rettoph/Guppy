@@ -22,6 +22,8 @@ namespace Pong.Client.Scenes
         public List<VertexPositionColor> LineList { get; set; }
         public List<VertexPositionColor> TriangleList { get; set; }
 
+        private Double _ballAdded;
+
         public PongScene(GraphicsDevice graphicsDevice)
         {
             _graphicsDevice = graphicsDevice;
@@ -55,6 +57,15 @@ namespace Pong.Client.Scenes
 
         protected override void Update(GameTime gameTime)
         {
+            _ballAdded += gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if(_ballAdded > 1000)
+            {
+                this.entities.Create("pong:ball");
+                _ballAdded = _ballAdded % 1000;
+            }
+
+
             this.entities.TryUpdate(gameTime);
         }
 

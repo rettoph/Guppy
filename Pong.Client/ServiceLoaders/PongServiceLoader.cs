@@ -35,6 +35,7 @@ namespace Pong.Client.ServiceLoaders
             var entities = provider.GetService<EntityLoader>();
 
             entities.TryRegister<FieldEntity>("pong:field");
+            entities.TryRegister<BallEntity>("pong:ball");
             entities.TryRegister<HumanPaddleEntity>("pong:paddle:human", "name:entity:paddle:human", "description:entity:paddle", Matrix.CreateRotationZ(0));
             entities.TryRegister<PaddleEntity>("pong:paddle:ai", "name:entity:paddle:ai", "description:entity:paddle", Matrix.CreateRotationZ(MathHelper.Pi));
         }

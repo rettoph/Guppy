@@ -93,6 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\BallEntity.cs" />
     <Compile Include="Entities\FieldEntity.cs" />
     <Compile Include="Entities\HumanPaddleEntity.cs" />
     <Compile Include="Game1.cs" />
