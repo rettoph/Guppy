@@ -32,8 +32,6 @@ namespace Pong.Client
             base.Initialize();
 
             this.scene = this.scenes.Create<PongScene>();
-            this.scene.Dispose();
-            this.scene = this.scenes.Create<PongScene>();
         }
 
         protected override void Update(GameTime gameTime)

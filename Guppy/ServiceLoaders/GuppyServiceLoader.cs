@@ -12,6 +12,8 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Implementations;
+using Guppy.Utilities.Pools;
 
 namespace Guppy.ServiceLoaders
 {
@@ -42,6 +44,9 @@ namespace Guppy.ServiceLoaders
 
             strings.TryRegister("name:entity:default", "Default Entity Name");
             strings.TryRegister("description:entity:default:entity:default", "Default Entity Description.");
+
+            var pools = provider.GetService<PoolLoader>();
+            pools.TryRegister(typeof(FrameableCollection<Driver>), typeof(ServicePool));
         }
     }
 }

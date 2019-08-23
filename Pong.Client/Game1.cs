@@ -21,8 +21,11 @@ namespace Pong.Client
             this.graphics = new GraphicsDeviceManager(this);
             this.guppy = new GuppyLoader();
 
-            this.Window.AllowUserResizing = true;
+           //this.Window.AllowUserResizing = true;
             this.IsMouseVisible = true;
+
+            this.graphics.PreferredBackBufferHeight = 600;
+            this.graphics.PreferredBackBufferWidth = 900;
         }
 
         protected override void Initialize()

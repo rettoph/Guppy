@@ -11,7 +11,7 @@ namespace Guppy.Utilities.Pools
     /// Pool implementation that requires the input target type
     /// to be assignable to Creatable
     /// </summary>
-    public class CreatablePool : Pool
+    public class CreatablePool : ServicePool
     {
         public CreatablePool(Type targetType) : base(targetType)
         {
@@ -20,7 +20,7 @@ namespace Guppy.Utilities.Pools
 
         protected override Object Build(IServiceProvider provider)
         {
-            var instance = ActivatorUtilities.CreateInstance(provider, this.TargetType) as Creatable;
+            var instance = base.Build(provider) as Creatable;
 
             instance.TryCreate(provider);
 

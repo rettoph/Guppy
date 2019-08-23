@@ -32,7 +32,7 @@ namespace Guppy.Implementations
         {
             base.Dispose();
 
-            this.Drivers.Dispose();
+            this.provider.GetService<DriverFactory>().Put(this.Drivers);
         }
         #endregion
 

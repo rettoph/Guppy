@@ -14,7 +14,7 @@ namespace Guppy.Collections
     /// removes the objects when they are disposed.
     /// </summary>
     /// <typeparam name="TResusable"></typeparam>
-    public class CreatableCollection<TCreateable> : HashSet<TCreateable>, IDisposable
+    public abstract class CreatableCollection<TCreateable> : HashSet<TCreateable>, IDisposable
         where TCreateable : Creatable
     {
         #region Private Fields

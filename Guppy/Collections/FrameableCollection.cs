@@ -76,7 +76,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Collection Methods
-        public virtual new Boolean Add(TFrameable item)
+        public override Boolean Add(TFrameable item)
         {
             if (base.Add(item))
             {
@@ -96,7 +96,7 @@ namespace Guppy.Collections
             return false;
         }
 
-        public virtual new Boolean Remove(TFrameable item)
+        public override Boolean Remove(TFrameable item)
         {
             if (base.Remove(item))
             {

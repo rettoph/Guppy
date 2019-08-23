@@ -41,6 +41,7 @@ namespace Pong.Client.Scenes
 
             _rasturizeState = new RasterizerState();
             _rasturizeState.CullMode = CullMode.None;
+            _rasturizeState.MultiSampleAntiAlias = true;
 
             this.LineList = new List<VertexPositionColor>();
             this.TriangleList = new List<VertexPositionColor>();
@@ -52,7 +53,7 @@ namespace Pong.Client.Scenes
 
             this.entities.Create("pong:field");
             this.entities.Create("pong:paddle:human");
-            this.entities.Create("pong:paddle:ai");
+            //this.entities.Create("pong:paddle:ai");
         }
 
         protected override void Update(GameTime gameTime)
@@ -78,10 +79,10 @@ namespace Pong.Client.Scenes
 
             this.entities.TryDraw(gameTime);
 
+            _graphicsDevice.RasterizerState = _rasturizeState;
+            _graphicsDevice.BlendState = BlendState.AlphaBlend;
             if (this.TriangleList.Count > 0)
             {
-                _graphicsDevice.RasterizerState = _rasturizeState;
-
                 var triangleBuffer = new VertexBuffer(_graphicsDevice, typeof(VertexPositionColor), this.TriangleList.Count, BufferUsage.WriteOnly);
                 triangleBuffer.SetData<VertexPositionColor>(this.TriangleList.ToArray());
 
@@ -91,14 +92,12 @@ namespace Pong.Client.Scenes
                 foreach (EffectPass pass in _basicEffect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    _graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, this.LineList.Count / 3);
+                    _graphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, this.TriangleList.Count / 1);
                 }
             }
 
             if (this.LineList.Count > 0)
             {
-                _graphicsDevice.RasterizerState = _rasturizeState;
-
                 var lineBuffer = new VertexBuffer(_graphicsDevice, typeof(VertexPositionColor), this.LineList.Count, BufferUsage.WriteOnly);
                 lineBuffer.SetData<VertexPositionColor>(this.LineList.ToArray());
 

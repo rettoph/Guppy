@@ -80,6 +80,10 @@ namespace Guppy.Utilities.Delegaters
             if (_registeredDelegates.ContainsKey(key))
                 throw new Exception($"Unable to register delegate '{key}' with Type<{typeof(TCustomArg).Name}>. Another delegate with this key has already been registered.");
 
+            if(key.ToString() == "added")
+            {
+
+            }
             // Save the key...
             _logger.LogTrace($"Registering new delegate: Key<{typeof(TKey).Name}>('{key}'), Arg<{typeof(TCustomArg).Name}>");
             _registeredDelegates.Add(key, typeof(TCustomArg));
