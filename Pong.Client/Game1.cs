@@ -1,6 +1,4 @@
 ﻿using Guppy;
-using Guppy.Extensions;
-using Guppy.Utilities.Loggers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +12,6 @@ namespace Pong.Client
     {
         GraphicsDeviceManager graphics;
         GuppyLoader guppy;
-        PongGame pong;
 
         public Game1()
         {
@@ -32,25 +29,17 @@ namespace Pong.Client
         {
             base.Initialize();
 
-            guppy.ConfigureLogger<ConsoleLogger>()
-                .ConfigureMonoGame(this.graphics, this.Content, this.Window)
-                .Initialize();
-
-            this.pong = guppy.BuildGame<PongGame>();
+            guppy.Initialize();
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-
-            this.pong.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            this.pong.TryUpdate(gameTime);
         }
     }
 }

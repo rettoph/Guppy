@@ -7,7 +7,7 @@ namespace Guppy.Utilities.Delegaters
 {
     public class EventDelegater : Delegater<String, Object>
     {
-        public EventDelegater(ILogger logger) : base(logger)
+        public EventDelegater(ILogger<EventDelegater> logger) : base(logger)
         {
         }
     }

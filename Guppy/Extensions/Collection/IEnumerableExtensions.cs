@@ -1,5 +1,4 @@
-﻿using Guppy.Implementations;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,20 +13,6 @@ namespace Guppy.Extensions.Collection
                 action(item);
 
             return source;
-        }
-
-        public static void TryDrawAll<T>(this IEnumerable<T> source, GameTime gameTime)
-            where T : Frameable
-        {
-            foreach (var item in source)
-                item.TryDraw(gameTime);
-        }
-
-        public static void TryUpdateAll<T>(this IEnumerable<T> source, GameTime gameTime)
-            where T : Frameable
-        {
-            foreach (var item in source)
-                item.TryUpdate(gameTime);
         }
     }
 }

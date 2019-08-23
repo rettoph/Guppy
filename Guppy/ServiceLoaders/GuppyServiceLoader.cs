@@ -1,19 +1,17 @@
 ﻿using Guppy.Attributes;
-using Guppy.Collections;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.Factories;
 using Guppy.Interfaces;
-using Guppy.Utilities.Loaders;
+using Guppy.Pooling;
+using Guppy.Pooling.Interfaces;
 using Guppy.Utilities;
 using Guppy.Utilities.Delegaters;
-using Guppy.Utilities.Factories;
-using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Implementations;
-using Guppy.Utilities.Pools;
 
 namespace Guppy.ServiceLoaders
 {
@@ -24,29 +22,13 @@ namespace Guppy.ServiceLoaders
         {
             services.AddTransient<EventDelegater>();
 
-            services.AddSingleton<GameOptions>(p => p.GetService<IOptionsMonitor<GameOptions>>().CurrentValue);
-            services.AddScoped<SceneOptions>(p => p.GetService<IOptionsMonitor<SceneOptions>>().Get(p.GetHashCode().ToString()));
-
-            services.AddScoped<DriverFactory>();
-            services.AddScoped<EntityFactory>();
-            services.AddScoped<PoolFactory>();
-            services.AddScoped(typeof(PooledFactory<>));
-
-            services.AddSingleton<SceneCollection>();
-            services.AddScoped<LayerCollection>();
-            services.AddScoped<EntityCollection>();
-            services.AddTransient<FrameableCollection<Entity>>();
+            services.AddScoped<PoolManager>();
+            services.AddScoped(typeof(IPool<>), typeof(Pool<>));
+            services.AddScoped(typeof(CreatableFactory<>));
         }
 
         public void ConfigureProvider(IServiceProvider provider)
         {
-            var strings = provider.GetService<StringLoader>();
-
-            strings.TryRegister("name:entity:default", "Default Entity Name");
-            strings.TryRegister("description:entity:default:entity:default", "Default Entity Description.");
-
-            var pools = provider.GetService<PoolLoader>();
-            pools.TryRegister(typeof(FrameableCollection<Driver>), typeof(ServicePool));
         }
     }
 }

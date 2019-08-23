@@ -2,7 +2,6 @@
 using Guppy.Extensions.Collection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
-using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -75,16 +74,6 @@ namespace Guppy
                 serviceLoader.ConfigureProvider(provider);
 
             return provider;
-        }
-
-        public TGame BuildGame<TGame>()
-            where TGame : Game
-        {
-            return this.BuildGame(typeof(TGame)) as TGame;
-        }
-        public Game BuildGame(Type gameType)
-        {
-            return this.BuildServiceProvider().GetService(gameType) as Game;
         }
         #endregion
     }

@@ -23,13 +23,13 @@ namespace Guppy.Utilities.Delegaters
         #endregion
 
         #region Private Fields
-        private ILogger _logger;
+        private ILogger<Delegater<TKey, TArg>> _logger;
         private Dictionary<TKey, Type> _registeredDelegates;
         private Dictionary<TKey, Delegate> _delegates;
         #endregion
 
         #region Constructor
-        public Delegater(ILogger logger)
+        public Delegater(ILogger<Delegater<TKey, TArg>> logger)
         {
             _logger = logger;
             _registeredDelegates = new Dictionary<TKey, Type>();
