@@ -27,6 +27,7 @@ namespace Guppy
         public GuppyLoader()
         {
             _services = new ServiceCollection();
+            _services.AddSingleton(this);
             _serviceLoaders = new HashSet<IServiceLoader>();
             AssemblyHelper.GetTypesWithAttribute<IServiceLoader, IsServiceLoaderAttribute>()
                     .Select(t => Activator.CreateInstance(t) as IServiceLoader)

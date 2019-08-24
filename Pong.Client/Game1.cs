@@ -1,6 +1,8 @@
 ﻿using Guppy;
+using Guppy.Extensions;
 using Guppy.Factories;
 using Guppy.Pooling.Interfaces;
+using Guppy.Utilities;
 using Guppy.Utilities.Loggers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -37,7 +39,7 @@ namespace Pong.Client
 
             new Thread(new ThreadStart(() =>
             {
-                guppy.ConfigureLogger<ConsoleLogger>().Initialize();
+                guppy.ConfigureLogger<ConsoleLogger>().ConfigureMonoGame(this.graphics, this.Content, this.Window).Initialize();
                 this.game = guppy.BuildGame<PongGame>();
             })).Start();
             
