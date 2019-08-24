@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Extensions.Collection;
+using Guppy.Factories;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,6 +68,9 @@ namespace Guppy
 
         private IServiceProvider BuildServiceProvider()
         {
+            if (!this.Initialized)
+                throw new Exception("Unable to build Guppy ServiceProvider before GuppyLoader.Initialize has been called.");
+
             var provider = _services.BuildServiceProvider();
 
             // Iterate through all contained service loaders and configure the provider
@@ -74,6 +78,17 @@ namespace Guppy
                 serviceLoader.ConfigureProvider(provider);
 
             return provider;
+        }
+
+        public Game BuildGame(Type gameType, Action<Game> setup = null)
+        {
+            return this.BuildServiceProvider().GetService<GameFactory>().Build(gameType, setup);
+        }
+
+        public TGame BuildGame<TGame>(Action<TGame> setup = null)
+            where TGame : Game
+        {
+            return this.BuildServiceProvider().GetService<GameFactory>().Build<TGame>(setup);
         }
         #endregion
     }

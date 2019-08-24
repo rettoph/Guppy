@@ -1,6 +1,7 @@
 ﻿using Guppy.Pooling.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,6 +25,8 @@ namespace Guppy.Pooling
         /// A queue of available instances the pool can return instead of building new ones.
         /// </summary>
         private Queue<Object> _available;
+
+        private ILogger _logger;
         #endregion
 
         #region Public Attributes
@@ -34,9 +37,10 @@ namespace Guppy.Pooling
         #endregion
 
         #region Constructor
-        public Pool(Type targetType)
+        public Pool(Type targetType, ILogger logger)
         {
             _available = new Queue<Object>();
+            _logger = logger;
 
             this.TargetType = targetType;
         }
@@ -46,14 +50,22 @@ namespace Guppy.Pooling
         public Object Pull(Func<Type, Object> factory)
         {
             if (_available.Count == 0)
+            {
+                _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Creating new instance...");
                 return factory(this.TargetType);
+            }
             else
+            {
+                _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Pulling old instance...");
                 return _available.Dequeue();
+            }
         }
 
         public void Put(Object instance)
         {
             ExceptionHelper.ValidateAssignableFrom(this.TargetType, instance.GetType());
+
+            _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance...");
 
             _available.Enqueue(instance);
         }

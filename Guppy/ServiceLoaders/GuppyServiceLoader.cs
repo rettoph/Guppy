@@ -12,19 +12,24 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Utilities.Options;
+using Guppy.Collections;
 
 namespace Guppy.ServiceLoaders
 {
     [IsServiceLoader]
-    public class GuppyServiceLoader : IServiceLoader
+    internal sealed class GuppyServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<EventDelegater>();
 
-            services.AddScoped<PoolManager>();
+            services.AddSingleton<GlobalOptions>();
+            services.AddScoped<ScopeOptions>();
+
+            services.AddScoped(typeof(IPoolManager), typeof(PoolManager));
+            services.AddScoped(typeof(IPoolManager<>), typeof(PoolManager<>));
             services.AddScoped(typeof(IPool<>), typeof(Pool<>));
-            services.AddScoped(typeof(CreatableFactory<>));
         }
 
         public void ConfigureProvider(IServiceProvider provider)

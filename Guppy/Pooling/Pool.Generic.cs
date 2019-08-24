@@ -9,9 +9,9 @@ namespace Guppy.Pooling
     {
         private IPool _pool;
 
-        public Pool(PoolManager pools)
+        public Pool(IPoolManager pools)
         {
-            _pool = pools.GetOrCreate<T>();
+            _pool = pools.GetOrCreate(typeof(T));
         }
 
         public T Pull(Func<Type, T> factory)

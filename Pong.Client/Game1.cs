@@ -1,9 +1,14 @@
 ﻿using Guppy;
+using Guppy.Factories;
+using Guppy.Pooling.Interfaces;
+using Guppy.Utilities.Loggers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pong.Client
@@ -12,6 +17,7 @@ namespace Pong.Client
     {
         GraphicsDeviceManager graphics;
         GuppyLoader guppy;
+        Guppy.Game game;
 
         public Game1()
         {
@@ -29,17 +35,26 @@ namespace Pong.Client
         {
             base.Initialize();
 
-            guppy.Initialize();
+            new Thread(new ThreadStart(() =>
+            {
+                guppy.ConfigureLogger<ConsoleLogger>().Initialize();
+                this.game = guppy.BuildGame<PongGame>();
+            })).Start();
+            
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            this.game?.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.game?.TryUpdate(gameTime);
         }
     }
 }

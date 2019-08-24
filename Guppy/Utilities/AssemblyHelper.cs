@@ -35,6 +35,16 @@ namespace Guppy.Utilities
         #endregion
 
         #region Helper Methods
+        public static IEnumerable<Type> GetTypesAssignableFrom<TBAse>()
+        {
+            return AssemblyHelper.GetTypesAssignableFrom(typeof(TBAse));
+        }
+        public static IEnumerable<Type> GetTypesAssignableFrom(Type baseType)
+        {
+            return AssemblyHelper.Types
+                .Where(t => baseType.IsAssignableFrom(t));
+        }
+
         public static IEnumerable<Type> GetTypesWithAttribute<TBase, TAttribute>()
             where TAttribute : GuppyAttribute
         {
@@ -45,8 +55,7 @@ namespace Guppy.Utilities
             if (!typeof(GuppyAttribute).IsAssignableFrom(attribute))
                 throw new Exception("Unable to load types with attribute, attribute type does not extend GuppyAttribute.");
 
-            return AssemblyHelper.Types
-                .Where(t => baseType.IsAssignableFrom(t))
+            return AssemblyHelper.GetTypesAssignableFrom(baseType)
                 .Where(t => {
                     var info = t.GetCustomAttributes(attribute, true);
                     return info != null && info.Length > 0;

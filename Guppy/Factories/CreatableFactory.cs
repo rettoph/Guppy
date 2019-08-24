@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
+using Guppy.Pooling.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Factories
 {
@@ -14,53 +16,52 @@ namespace Guppy.Factories
     /// they are first created.
     /// </summary>
     /// <typeparam name="TBase"></typeparam>
-    public class CreatableFactory<TBase>
+    public class CreatableFactory<TBase> : Factory<TBase>
         where TBase : Creatable
     {
         #region Private Fields
-        private PoolManager _pools;
-        #endregion
-
-        #region Protected Fields
-        protected IServiceProvider provider { get; private set; }
+        private IPoolManager<TBase> _pools;
         #endregion
 
         #region Constructor
-        public CreatableFactory(IServiceProvider provider)
+        public CreatableFactory(IPoolManager<TBase> pools, IServiceProvider provider) : base(pools, provider)
         {
-            _pools = provider.GetService<PoolManager>();
-
-            this.provider = provider;
+            _pools = pools;
         }
         #endregion
 
-        #region Create Methods
-        public TBase Build(Type type, Action<TBase> setup = null)
+        #region Build Methods
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
         {
-            return this.Build<TBase>(type, setup);
-        }
-        public virtual T Build<T>(Action<TBase> setup = null)
-            where T : TBase
-        {
-            return this.Build<T>(typeof(T), setup);
-        }
-        protected virtual T Build<T>(Type type, Action<T> setup = null)
-            where T : TBase
-        {
-            ExceptionHelper.ValidateAssignableFrom<T>(type);
+            this.logger.LogTrace($"Factory<{pool.TargetType.Name}> => Building {typeof(TBase).Name}<{pool.TargetType.Name}> instance...");
 
-            var instance = _pools.GetOrCreate(type).Pull(t =>
+            var instance = pool.Pull(t =>
             { // Define a custom create method within the pool...
-                var i = ActivatorUtilities.CreateInstance(this.provider, t) as Creatable;
-                i.TryCreate(this.provider);
+                var i = ActivatorUtilities.CreateInstance(provider, t) as Creatable;
+                i.TryCreate(provider);
                 return i;
             }) as T;
+
+            // Bind any required event handlers
+            instance.Events.Add<Creatable>("disposing", this.HandleInstanceDisposing);
 
             // Run the setup method if one was provided.
             setup?.Invoke(instance);
 
             // Return the instance.
             return instance;
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// Automatically return any disposed instances back into the pool.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="arg"></param>
+        private void HandleInstanceDisposing(object sender, Creatable arg)
+        {
+            _pools.GetOrCreate(sender.GetType()).Put(sender);
         }
         #endregion
     }

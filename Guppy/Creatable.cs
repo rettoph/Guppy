@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy
 {
@@ -13,7 +14,7 @@ namespace Guppy
     /// The creation process is generally called
     /// manually within a factory class.
     /// </summary>
-    public class Creatable : IDisposable
+    public abstract class Creatable : IDisposable
     {
         #region Private Fields 
         private Boolean _created;
@@ -21,6 +22,7 @@ namespace Guppy
 
         #region Protected Fields
         protected IServiceProvider provider { get; private set; }
+        protected ILogger logger;
         #endregion
 
         #region Public Attributes
@@ -43,6 +45,7 @@ namespace Guppy
         protected virtual void Create(IServiceProvider provider)
         {
             this.provider = provider;
+            this.logger = provider.GetRequiredService<ILogger>();
 
             this.Events = this.provider.GetService<EventDelegater>();
             this.Events.Register<Creatable>("disposing");

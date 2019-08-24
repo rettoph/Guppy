@@ -23,13 +23,13 @@ namespace Guppy.Utilities.Delegaters
         #endregion
 
         #region Private Fields
-        private ILogger<Delegater<TKey, TArg>> _logger;
+        private ILogger _logger;
         private Dictionary<TKey, Type> _registeredDelegates;
         private Dictionary<TKey, Delegate> _delegates;
         #endregion
 
         #region Constructor
-        public Delegater(ILogger<Delegater<TKey, TArg>> logger)
+        public Delegater(ILogger logger)
         {
             _logger = logger;
             _registeredDelegates = new Dictionary<TKey, Type>();
@@ -85,7 +85,7 @@ namespace Guppy.Utilities.Delegaters
 
             }
             // Save the key...
-            _logger.LogTrace($"Registering new delegate: Key<{typeof(TKey).Name}>('{key}'), Arg<{typeof(TCustomArg).Name}>");
+            // _logger.LogTrace($"Registering new delegate: Key<{typeof(TKey).Name}>('{key}'), Arg<{typeof(TCustomArg).Name}>");
             _registeredDelegates.Add(key, typeof(TCustomArg));
             _delegates.Add(key, null);
         }
