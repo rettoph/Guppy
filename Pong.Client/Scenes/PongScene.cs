@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Pooling.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace Pong.Client.Scenes
 {
     public class PongScene : Scene
     {
+        public PongScene(PongGame game)
+        {
+
+        }
+
         protected override void Initialize()
         {
             base.Initialize();

@@ -26,7 +26,7 @@ namespace Guppy.ServiceLoaders
             AssemblyHelper.GetTypesAssignableFrom<Game>().ForEach(t =>
             {
                 // Add each game type as a singleton created via the game factory...
-                services.AddSingleton(t, p => p.GetService<GameFactory>().Build(t));
+                services.AddSingleton(t, p => p.GetRequiredService<GameFactory>().Build(t));
             });
         }
 

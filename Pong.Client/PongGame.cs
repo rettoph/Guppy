@@ -1,4 +1,7 @@
 ﻿using Guppy;
+using Guppy.Network.Peers;
+using Lidgren.Network;
+using Microsoft.Extensions.DependencyInjection;
 using Pong.Client.Scenes;
 using System;
 using System.Collections.Generic;
@@ -15,6 +18,8 @@ namespace Pong.Client
             base.Initialize();
 
             this.scenes.Create<PongScene>();
+
+            var server = this.provider.GetRequiredService<NetServer>();
         }
     }
 }

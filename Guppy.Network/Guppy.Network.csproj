@@ -22,4 +22,9 @@
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Factories\" />
+    <Folder Include="Utilitites\" />
+  </ItemGroup>
+
 </Project>

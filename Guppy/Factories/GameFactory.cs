@@ -12,25 +12,30 @@ namespace Guppy.Factories
     {
         #region Private Fields
         private IServiceProvider _provider;
+        private GlobalOptions _options;
         #endregion
 
         #region Constructor
-        public GameFactory(IPoolManager<Game> pools, IServiceProvider provider) : base(pools, provider)
+        public GameFactory(GlobalOptions options, IPoolManager<Game> pools, IServiceProvider provider) : base(pools, provider)
         {
+            _options = options;
             _provider = provider;
         }
         #endregion
 
         protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
         {
-            var options = _provider.GetRequiredService<GlobalOptions>();
-
             // If the global options doesnt already have a game defined... build a new one
-            if (options.Game == null)
-                options.Game = base.Build<T>(provider, pool, setup);
+            if (_options.Game == null)
+                base.Build<T>(provider, pool, g =>
+                {
+                    _options.Game = g;
+
+                    setup?.Invoke(g);
+                });
 
             // Return the saved global game instance
-            return options.Game as T;
+            return _options.Game as T;
         }
     }
 }

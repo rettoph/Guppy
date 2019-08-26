@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lidgren.Network.1.0.2\lib\net451\Lidgren.Network.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
     </Reference>
@@ -100,12 +103,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\PongScene.cs" />
     <Compile Include="ServiceLoaders\PongServiceLoader.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Guppy.Network\Guppy.Network.csproj">
+      <Project>{759b79c7-b860-4db9-a96f-2ee274c8b507}</Project>
+      <Name>Guppy.Network</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Guppy\Guppy.csproj">
       <Project>{A78160A4-F306-4ACA-8BD8-C76AAFDEAA00}</Project>
       <Name>Guppy</Name>

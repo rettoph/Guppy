@@ -28,7 +28,7 @@ namespace Guppy
         #endregion
 
         #region Initialization Methods
-        public void TryInitialize()
+        internal void TryInitialize()
         {
             if (_initializationStatus == InitializationStatus.NotInitialized)
             {
