@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Guppy.Network.Groups;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,12 +10,12 @@ namespace Guppy.Network.Configurations
     /// Simple configuration used to store message data.
     /// These objects should be pooled.
     /// </summary>
-    internal struct NetOutgoingMessageConfiguration
+    public struct NetOutgoingMessageConfiguration
     {
         public NetDeliveryMethod Method;
         public Int32 SequenceChannel;
         public NetOutgoingMessage Message;
         public NetConnection Recipient;
-        public Target Target;
+        public Group Group;
     }
 }

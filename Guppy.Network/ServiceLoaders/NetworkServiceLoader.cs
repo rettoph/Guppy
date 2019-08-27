@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Extensions.Collection;
 using Guppy.Interfaces;
+using Guppy.Network.Factories;
 using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,10 +23,13 @@ namespace Guppy.Network.ServiceLoaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<NetPeerConfiguration>(new NetPeerConfiguration(_appIdentifier));
+            services.AddSingleton<GroupFactory>();
+            services.AddSingleton<NetPeerFactory>();
+            services.AddSingleton<PeerFactory>();
 
             AssemblyHelper.GetTypesAssignableFrom<NetPeer>().ForEach(t =>
             { // Add each scene type as a singleton created via the scene factory...
-                services.AddSingleton(t);
+                services.AddSingleton(t, p => p.GetRequiredService<NetPeerFactory>().Build(t));
             });
 
             services.Configure<NetPeerConfiguration>(config =>

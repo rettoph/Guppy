@@ -2,22 +2,35 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Configurations;
+using Guppy.Network.Groups;
+using Guppy.Pooling.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Collections;
 
 namespace Guppy.Network.Peers
 {
-    public abstract class Peer : Target
+    public abstract class Peer : Frameable
     {
-        #region Protected Fields
-        internal Queue<NetOutgoingMessageConfiguration> outgoingMessages;
-        #endregion
-
         #region Private Fields
         private NetPeer _peer;
+        private IPool<NetOutgoingMessageConfiguration> _outgoingMessagePool;
+        #endregion
+
+        #region Protected Fields
+        protected Queue<NetOutgoingMessageConfiguration> outgoingMessages;
+        #endregion
+
+        #region Public Fields
+        public GroupCollection Groups { get; private set; }
         #endregion
 
         #region Constructor
+        public Peer(NetPeer peer)
+        {
+            _peer = peer;
+        }
         #endregion
 
         #region Lifecycle Methods
@@ -25,12 +38,30 @@ namespace Guppy.Network.Peers
         {
             base.Create(provider);
 
-            _peer = provider.GetRequiredService<NetPeer>();
+            _outgoingMessagePool = provider.GetRequiredService<IPool<NetOutgoingMessageConfiguration>>();
             this.outgoingMessages = new Queue<NetOutgoingMessageConfiguration>();
         }
         #endregion
 
-        #region Target Implementation
+        #region Frame Methods
+        #endregion
+
+        #region CreateMessage Methods
+        public NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method, int sequenceChanel, NetConnection recipient, Group group)
+        {
+            var config = _outgoingMessagePool.Pull(t => new NetOutgoingMessageConfiguration());
+            config.Method = method;
+            config.SequenceChannel = sequenceChanel;
+            config.Recipient = recipient;
+            config.Group = group;
+            config.Message = _peer.CreateMessage();
+            config.Message.Write(group.Id);
+            config.Message.Write(type);
+
+            this.outgoingMessages.Enqueue(config);
+
+            return config.Message;
+        }
         #endregion
     }
 }
