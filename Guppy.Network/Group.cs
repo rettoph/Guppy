@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Network.Groups
+namespace Guppy.Network
 {
     /// <summary>
     /// Groups represent collections of connections that

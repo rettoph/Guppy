@@ -14,6 +14,7 @@ namespace Guppy.Factories
         #region Private Fields
         private DriverLoader _loader;
         private Dictionary<Type, Type[]> _types;
+        private IServiceProvider _provider;
         #endregion
 
         #region Constructor
@@ -21,6 +22,7 @@ namespace Guppy.Factories
         {
             _types = new Dictionary<Type, Type[]>();
             _loader = loader;
+            _provider = provider;
         }
         #endregion
 

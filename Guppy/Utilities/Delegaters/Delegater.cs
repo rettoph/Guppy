@@ -58,32 +58,21 @@ namespace Guppy.Utilities.Delegaters
             this.TryRegister<TArg>(key);
         }
         /// <summary>
-        /// Attempt to register a new delegate
+        /// Attempt to register a new delegate if one has not already been registered.
+        /// 
+        /// If one has, do nothing.
         /// </summary>
         /// <param name="key"></param>
         public void TryRegister<TCustomArg>(TKey key)
             where TCustomArg : TArg
         {
-            try
-            {
+            if (!_registeredDelegates.ContainsKey(key))
                 this.Register<TCustomArg>(key);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e.Message);
-            }
         }
 
         public void Register<TCustomArg>(TKey key)
             where TCustomArg : TArg
         {
-            if (_registeredDelegates.ContainsKey(key))
-                throw new Exception($"Unable to register delegate '{key}' with Type<{typeof(TCustomArg).Name}>. Another delegate with this key has already been registered.");
-
-            if(key.ToString() == "added")
-            {
-
-            }
             // Save the key...
             // _logger.LogTrace($"Registering new delegate: Key<{typeof(TKey).Name}>('{key}'), Arg<{typeof(TCustomArg).Name}>");
             _registeredDelegates.Add(key, typeof(TCustomArg));

@@ -15,6 +15,7 @@ namespace Guppy.Network.Factories
         #region Constructor
         public PeerFactory(NetworkOptions options ,IPoolManager<Peer> pools, IServiceProvider provider) : base(pools, provider)
         {
+            _options = options;
         }
         #endregion
 

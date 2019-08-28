@@ -21,7 +21,12 @@ namespace Guppy.Network.Factories
         protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
         {
             if (_options.NetPeer == null)
-                _options.NetPeer = pool.Pull(t => ActivatorUtilities.CreateInstance(provider, t)) as NetPeer;
+                _options.NetPeer = pool.Pull(t =>
+                {
+                    NetPeer peer = ActivatorUtilities.CreateInstance(provider, t) as NetPeer;
+                    peer.Start();
+                    return peer;
+                }) as NetPeer;
 
             return _options.NetPeer as T;
         }

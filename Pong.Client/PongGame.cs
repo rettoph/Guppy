@@ -13,13 +13,20 @@ namespace Pong.Client
 {
     public class PongGame : Game
     {
+        private ClientPeer _client;
+
+        public PongGame(ClientPeer client)
+        {
+            _client = client;
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
 
             this.scenes.Create<PongScene>();
 
-            var server = this.provider.GetRequiredService<NetServer>();
+            _client.TryConnect("127.0.0.1", 1337);
         }
     }
 }

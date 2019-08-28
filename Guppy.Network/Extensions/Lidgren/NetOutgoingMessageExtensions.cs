@@ -31,13 +31,13 @@ namespace Guppy.Network.Extensions.Lidgren
         #endregion
 
         #region Entity Methods
-        public static void Write(this NetOutgoingMessage om, NetworkEntity entity)
-        {
-            if (om.WriteExists(entity))
-            {
-                om.Write(entity.Id);
-            }
-        }
+        // public static void Write(this NetOutgoingMessage om, NetworkEntity entity)
+        // {
+        //     if (om.WriteExists(entity))
+        //     {
+        //         om.Write(entity.Id);
+        //     }
+        // }
         #endregion
 
         #region IfNull Methods

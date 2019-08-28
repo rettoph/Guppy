@@ -25,13 +25,6 @@ namespace Guppy
             // Create a new driver collection...
             this.Drivers = provider.GetService<FrameableCollection<Driver>>();
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            this.Drivers.Dispose();
-        }
         #endregion
 
         #region Frame Methods

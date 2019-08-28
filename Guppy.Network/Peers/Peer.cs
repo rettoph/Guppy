@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Configurations;
-using Guppy.Network.Groups;
 using Guppy.Pooling.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Collections;
+using Guppy.Network.Utilitites.Delegaters;
 
 namespace Guppy.Network.Peers
 {
@@ -24,6 +24,7 @@ namespace Guppy.Network.Peers
 
         #region Public Fields
         public GroupCollection Groups { get; private set; }
+        public PeerMessageDelegater Messages { get; private set; }
         #endregion
 
         #region Constructor
@@ -40,6 +41,8 @@ namespace Guppy.Network.Peers
 
             _outgoingMessagePool = provider.GetRequiredService<IPool<NetOutgoingMessageConfiguration>>();
             this.outgoingMessages = new Queue<NetOutgoingMessageConfiguration>();
+            this.Groups = this.provider.GetRequiredService<GroupCollection>();
+            this.Messages = this.provider.GetRequiredService<PeerMessageDelegater>();
         }
         #endregion
 

@@ -36,20 +36,20 @@ namespace Guppy.Network.Extensions.Lidgren
         #endregion
 
         #region Entity Methods
-        public static void ReadEntity<TEntity>(this NetIncomingMessage im, ref TEntity entity, EntityCollection entities)
-            where TEntity : NetworkEntity
-        {
-            entity = im.ReadEntity<TEntity>(entities);
-        }
-        public static TEntity ReadEntity<TEntity>(this NetIncomingMessage im, EntityCollection entities)
-            where TEntity : NetworkEntity
-        {
-            if (im.ReadExists())
-                return entities.GetById<TEntity>(
-                    im.ReadGuid());
-
-            return null;
-        }
+        // public static void ReadEntity<TEntity>(this NetIncomingMessage im, ref TEntity entity, EntityCollection entities)
+        //     where TEntity : NetworkEntity
+        // {
+        //     entity = im.ReadEntity<TEntity>(entities);
+        // }
+        // public static TEntity ReadEntity<TEntity>(this NetIncomingMessage im, EntityCollection entities)
+        //     where TEntity : NetworkEntity
+        // {
+        //     if (im.ReadExists())
+        //         return entities.GetById<TEntity>(
+        //             im.ReadGuid());
+        // 
+        //     return null;
+        // }
         #endregion
 
         #region IfNull Methods

@@ -21,7 +21,6 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | | | | |
 | `Guppy` | `PooledFactory<T>` | `pulled` | `T` | Invoked when an item is pulled from the factory. |
 | | | | |
-| `Guppy.Network` | `Target` | `created:message` | `NetOutgoingMessageConfiguration` | Invoked when a message is created. |
 | `Guppy.Network` | `Peer` | `recieved:data` | `NetIncomingMessage` | Invoked when an the peer recieves a data message. |
 | `Guppy.Network` | `Peer` | `recieved:error` | `NetIncomingMessage` | Invoked when an the peer recieves an error message. |
 | `Guppy.Network` | `Peer` | `recieved:status-changed` | `NetIncomingMessage` | Invoked when an the peer recieves a status changed message. |
