@@ -20,12 +20,15 @@ namespace Guppy.Factories
         }
         #endregion
 
-        protected override void Create<T>(T driven)
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
         {
-            base.Create(driven);
+            return base.Build<T>(provider, pool, d =>
+            {
+                // Build custom drivers for the new instance if needed.
+                _driverFactory.BuildAll(d);
 
-            // Build custom drivers for the new instance if needed.
-            _driverFactory.BuildAll(driven);
+                setup?.Invoke(d);
+            });
         }
     }
 }

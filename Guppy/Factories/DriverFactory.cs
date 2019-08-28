@@ -38,7 +38,7 @@ namespace Guppy.Factories
 
             _types[driven.GetType()].ForEach(driverType =>
             { // Iterate through all drivers bound to the given driven type...
-                driven.Drivers.Add(this.Build(driverType, driver =>
+                driven.drivers.Add(this.Build(driverType, driver =>
                 { // Build instances of the driverTypes & add them to the driven's driver collection
                     driver.SetParent(driven);
                 }));

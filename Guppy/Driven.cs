@@ -13,8 +13,8 @@ namespace Guppy
 {
     public abstract class Driven : Frameable
     {
-        #region Public Attributes
-        public FrameableCollection<Driver> Drivers { get; internal set; }
+        #region Internal Fields
+        internal FrameableCollection<Driver> drivers;
         #endregion
 
         #region Lifecycle Methods
@@ -23,7 +23,14 @@ namespace Guppy
             base.Create(provider);
 
             // Create a new driver collection...
-            this.Drivers = provider.GetService<FrameableCollection<Driver>>();
+            this.drivers = provider.GetService<FrameableCollection<Driver>>();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.drivers.Dispose();
         }
         #endregion
 
@@ -33,7 +40,7 @@ namespace Guppy
             base.Draw(gameTime);
 
             // Draw all drivers...
-            this.Drivers.TryDraw(gameTime);
+            this.drivers.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
@@ -41,7 +48,7 @@ namespace Guppy
             base.Update(gameTime);
 
             // Update all drivers...
-            this.Drivers.TryUpdate(gameTime);
+            this.drivers.TryUpdate(gameTime);
         }
         #endregion
 
@@ -49,7 +56,7 @@ namespace Guppy
         public TDriver GetDriver<TDriver>() 
             where TDriver : Driver
         {
-            return this.Drivers.FirstOrDefault(d => typeof(TDriver).IsAssignableFrom(d.GetType())) as TDriver;
+            return this.drivers.FirstOrDefault(d => typeof(TDriver).IsAssignableFrom(d.GetType())) as TDriver;
         }
         #endregion
     }

@@ -31,18 +31,6 @@ namespace Guppy.Factories
         #endregion
 
         #region Build Methods
-        /// <summary>
-        /// Custom create actions. These run immediatly after the 
-        /// CreatableFactory calls Creatable.TryCreate()
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="instance"></param>
-        protected virtual void Create<T>(T instance)
-            where T : TBase
-        {
-            //
-        }
-
         protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
         {
             this.logger.LogTrace($"Factory<{pool.TargetType.Name}> => Building {typeof(TBase).Name}<{pool.TargetType.Name}> instance...");
@@ -51,7 +39,6 @@ namespace Guppy.Factories
             { // Define a custom create method within the pool...
                 var i = ActivatorUtilities.CreateInstance(provider, t) as Creatable;
                 i.TryCreate(provider);
-                this.Create<T>(i as T);
                 return i;
             }) as T;
 
