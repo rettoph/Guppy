@@ -18,7 +18,7 @@ namespace Guppy.Collections
         {
             if(base.Add(item))
             {
-                item.Events.Add<Creatable>("disposing", this.HandleItemDisposing);
+                item.Events.TryAdd<Creatable>("disposing", this.HandleItemDisposing);
 
                 return true;
             }

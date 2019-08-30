@@ -109,7 +109,7 @@ namespace Guppy.Utilities.Delegaters
             }
         }
 
-        public void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
+        private void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
             where TCustomArg : TArg
         {
             if(this.ValidateDelegateType(key, typeof(TCustomArg))) {

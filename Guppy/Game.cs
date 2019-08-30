@@ -13,7 +13,7 @@ namespace Guppy
     /// and the GuppyLoader.BuildGame method should be used
     /// to create your game instance.
     /// </summary>
-    public class Game : Driven
+    public class Game : Asyncable
     {
         #region Protected Attributes
         protected SceneCollection scenes { get; private set; }

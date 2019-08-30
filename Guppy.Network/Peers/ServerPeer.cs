@@ -8,7 +8,7 @@ namespace Guppy.Network.Peers
     public class ServerPeer : Peer
     {
         #region Constructor
-        public ServerPeer(NetPeer peer) : base(peer)
+        public ServerPeer(NetServer server) : base(server)
         {
         }
         #endregion

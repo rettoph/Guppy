@@ -43,7 +43,7 @@ namespace Guppy.Collections
         {
             if(base.Add(item))
             {
-                item.Events.Add<Layer>("changed:layer", this.HandleItemLayerChanged);
+                item.Events.TryAdd<Layer>("changed:layer", this.HandleItemLayerChanged);
 
                 _cachedLayers.Add(item, null);
                 this.AddToLayer(item);

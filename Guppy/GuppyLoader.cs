@@ -55,7 +55,7 @@ namespace Guppy
             return this;
         }
 
-        public void Initialize()
+        public GuppyLoader Initialize()
         {
             if(this.Initialized)
                 throw new Exception($"Unable to run GuppyLoader.Initialize more than once.");
@@ -65,6 +65,8 @@ namespace Guppy
                 serviceLoader.ConfigureServices(_services);
 
             this.Initialized = true;
+
+            return this;
         }
 
         private IServiceProvider BuildServiceProvider()

@@ -9,6 +9,7 @@ using Guppy.Network.Utilitites.Options;
 using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +30,8 @@ namespace Guppy.Network.ServiceLoaders
         {
             services.AddSingleton<PeerMessageDelegater>();
 
+            services.AddSingleton<NetPeerConfiguration>(p => new NetPeerConfiguration(_appIdentifier));
             services.AddSingleton<NetworkOptions>();
-            services.AddSingleton<NetPeerConfiguration>(new NetPeerConfiguration(_appIdentifier));
             services.AddSingleton<GroupFactory>();
             services.AddSingleton<NetPeerFactory>();
             services.AddSingleton<PeerFactory>();
@@ -44,11 +45,6 @@ namespace Guppy.Network.ServiceLoaders
             AssemblyHelper.GetTypesAssignableFrom<Peer>().Where(t => t.IsClass && !t.IsAbstract).ForEach(t =>
             { // Add each peer type as a singleton created via the scene factory...
                 services.AddSingleton(t, p => p.GetRequiredService<PeerFactory>().Build(t));
-            });
-
-            services.Configure<NetPeerConfiguration>(config =>
-            { // Setup the default NetPeerConfiguration vaues...
-                config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
             });
         }
 

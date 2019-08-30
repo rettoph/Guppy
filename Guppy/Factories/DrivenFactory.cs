@@ -30,7 +30,7 @@ namespace Guppy.Factories
                 setup: driven =>
                 {
                     // Bind any required event handlers
-                    driven.Events.Add<Creatable>("disposing", this.HandleInstanceDisposing);
+                    driven.Events.TryAdd<Creatable>("disposing", this.HandleInstanceDisposing);
 
                     setup?.Invoke(driven);
                 },
