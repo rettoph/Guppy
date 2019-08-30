@@ -18,15 +18,20 @@ namespace Guppy.Network.Factories
             _options = options;
         }
 
-        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
         {
             if (_options.NetPeer == null)
+            {
                 _options.NetPeer = pool.Pull(t =>
                 {
-                    NetPeer peer = ActivatorUtilities.CreateInstance(provider, t) as NetPeer;
+                    T peer = ActivatorUtilities.CreateInstance(provider, t) as T;
                     peer.Start();
+                    create?.Invoke(peer);
                     return peer;
                 }) as NetPeer;
+
+                setup?.Invoke(_options.NetPeer as T);
+            }
 
             return _options.NetPeer as T;
         }

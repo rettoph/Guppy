@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Guppy.Factories
 {
-    public sealed class EntityFactory : InitializableFactory<Entity>
+    public sealed class EntityFactory : DrivenFactory<Entity>
     {
         #region Private Fields
         private EntityLoader _loader;

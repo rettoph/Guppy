@@ -19,9 +19,9 @@ namespace Guppy.Factories
         }
         #endregion
 
-        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
         {
-            var instance = base.Build(provider, pool, setup);
+            var instance = base.Build(provider, pool, setup, create);
 
             instance.TryInitialize();
 

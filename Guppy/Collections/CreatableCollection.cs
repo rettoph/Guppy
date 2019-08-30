@@ -79,8 +79,6 @@ namespace Guppy.Collections
 
                 this.Events.Invoke<TCreateable>("added", this, item);
 
-                item.Events.Add<Creatable>("disposing", this.HandleItemDisposing);
-
                 return true;
             }
 
@@ -95,8 +93,6 @@ namespace Guppy.Collections
                 _idTable.Remove(item.Id);
 
                 this.Events.Invoke<TCreateable>("removed", this, item);
-
-                item.Events.Remove<Creatable>("disposing", this.HandleItemDisposing);
 
                 return true;
             }
@@ -228,14 +224,6 @@ namespace Guppy.Collections
         public T GetById<T>(Guid id)
         {
             return (T)this.GetById(id);
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandleItemDisposing(object sender, Creatable arg)
-        {
-            // Auto remove the child on dispose
-            this.Remove(sender as TCreateable);
         }
         #endregion
     }

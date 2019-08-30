@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.Collections
 {
-    public sealed class SceneCollection : FrameableCollection<Scene>
+    public sealed class SceneCollection : DrivenCollection<Scene>
     {
         private SceneFactory _factory;
 

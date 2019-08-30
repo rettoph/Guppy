@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Factories
 {
-    public class SceneFactory : InitializableFactory<Scene>
+    public class SceneFactory : DrivenFactory<Scene>
     {
         #region Constructor
         public SceneFactory(IPoolManager<Scene> pools, IServiceProvider provider) : base(pools, provider)
@@ -15,7 +15,7 @@ namespace Guppy.Factories
         }
         #endregion
 
-        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
         {
             var options = provider.GetRequiredService<ScopeOptions>();
 
@@ -23,13 +23,17 @@ namespace Guppy.Factories
             if (options.Scene == null)
             {
                 var scope = provider.CreateScope().ServiceProvider;
-                return base.Build<T>(scope, pool, s =>
-                {
-                    // Update the scene's scope...
-                    provider.GetService<ScopeOptions>().Scene = s;
-                    // Run any recieved custom setup methods...
-                    setup?.Invoke(s);
-                });
+                return base.Build<T>(
+                    provider: scope,
+                    pool: pool, 
+                    setup: scene =>
+                    {
+                        // Update the scene's scope...
+                        provider.GetService<ScopeOptions>().Scene = scene;
+                        // Run any recieved custom setup methods...
+                        setup?.Invoke(scene);
+                    },
+                    create: create);
             }
             else
             {

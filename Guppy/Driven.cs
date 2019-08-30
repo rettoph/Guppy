@@ -22,15 +22,19 @@ namespace Guppy
         {
             base.Create(provider);
 
-            // Create a new driver collection...
-            this.drivers = provider.GetService<FrameableCollection<Driver>>();
+            this.drivers.ForEach(d => d.TryCreate(provider));
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            this.drivers.ForEach(d => d.TryInitialize());
         }
 
         public override void Dispose()
         {
             base.Dispose();
-
-            this.drivers.Dispose();
         }
         #endregion
 

@@ -19,14 +19,14 @@ namespace Guppy.Network.Factories
         }
         #endregion
 
-        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
         {
             if(_options.Peer == null)
                 base.Build<T>(provider, pool, p =>
                 {
                     _options.Peer = p;
                     setup?.Invoke(p);
-                });
+                }, create);
 
             return _options.Peer as T;
         }

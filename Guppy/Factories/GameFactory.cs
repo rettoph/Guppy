@@ -23,16 +23,20 @@ namespace Guppy.Factories
         }
         #endregion
 
-        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null)
+        protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
         {
             // If the global options doesnt already have a game defined... build a new one
             if (_options.Game == null)
-                base.Build<T>(provider, pool, g =>
-                {
-                    _options.Game = g;
+                base.Build<T>(
+                    provider: provider, 
+                    pool: pool, 
+                    setup: g =>
+                    {
+                        _options.Game = g;
 
-                    setup?.Invoke(g);
-                });
+                        setup?.Invoke(g);
+                    },
+                    create: create);
 
             // Return the saved global game instance
             return _options.Game as T;

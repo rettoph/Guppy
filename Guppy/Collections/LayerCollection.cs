@@ -6,11 +6,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Guppy.Collections
 {
-    public sealed class LayerCollection : FrameableCollection<Layer>
+    public sealed class LayerCollection : DrivenCollection<Layer>
     {
-        private InitializableFactory<Layer> _factory;
+        private DrivenFactory<Layer> _factory;
 
-        public LayerCollection(InitializableFactory<Layer> factory, IServiceProvider provider) : base(provider)
+        public LayerCollection(DrivenFactory<Layer> factory, IServiceProvider provider) : base(provider)
         {
             _factory = factory;
         }
