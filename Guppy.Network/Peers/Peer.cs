@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Collections;
 using Guppy.Network.Utilitites.Delegaters;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Network.Peers
 {
@@ -16,6 +17,7 @@ namespace Guppy.Network.Peers
         #region Private Fields
         private NetPeer _peer;
         private IPool<NetOutgoingMessageConfiguration> _outgoingMessagePool;
+        private NetIncomingMessage _im;
         #endregion
 
         #region Protected Fields
@@ -47,6 +49,13 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            while((_im = _peer.ReadMessage()) != null)
+                this.Messages.Invoke(_im.MessageType, this, _im);
+        }
         #endregion
 
         #region CreateMessage Methods

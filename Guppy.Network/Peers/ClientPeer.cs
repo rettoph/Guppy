@@ -24,7 +24,7 @@ namespace Guppy.Network.Peers
         {
             if (_client.ConnectionStatus != NetConnectionStatus.Disconnected)
             {
-                this.logger.LogWarning($"Unable to connect. CUrrent connection status is {_client.ConnectionStatus}.");
+                this.logger.LogWarning($"Unable to connect. Current connection status is {_client.ConnectionStatus}.");
             }
             else
             {
