@@ -10,7 +10,7 @@ namespace Guppy.Network.Security
     public sealed class User : Initializable, INetworkObject
     {
         #region Internal Attributes
-        internal NetConnection Connection { get; set; }
+        internal NetConnection connection { get; set; }
         #endregion
 
         #region Public Attributes
@@ -35,6 +35,7 @@ namespace Guppy.Network.Security
 
         public void Write(NetOutgoingMessage om)
         {
+            om.Write(this.Id);
             om.Write(this.Name);
             om.Write(this.Verified);
         }

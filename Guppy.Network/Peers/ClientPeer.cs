@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Configurations;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
@@ -29,7 +32,27 @@ namespace Guppy.Network.Peers
         {
             base.Initialize();
 
-            this.Messages.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
+            this.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
+        }
+        #endregion
+
+        #region Peer Implementation
+        protected override void SendMessage(NetOutgoingMessageConfiguration omc)
+        {
+            if (omc.Recipient == default(NetConnection))
+            { // Send directly to the server...
+                _client.SendMessage(omc.Message, omc.Method, omc.SequenceChannel);
+            }
+            else
+            { // Send to the specified recipient...
+                _client.SendMessage(omc.Message, omc.Recipient, omc.Method, omc.SequenceChannel);
+            }
+        }
+
+        /// <inheritdoc />
+        protected internal override Type GroupType()
+        {
+            return typeof(ClientGroup);
         }
         #endregion
 
@@ -46,7 +69,7 @@ namespace Guppy.Network.Peers
                 var hail = _client.CreateMessage();
                 user.Write(hail);
                 _client.Connect(host, port, hail);
-                user.Dispose();
+                this.User = user;
             }
         }
         #endregion
@@ -57,8 +80,12 @@ namespace Guppy.Network.Peers
             switch(_client.ConnectionStatus)
             {
                 case NetConnectionStatus.Connected:
-                    _client.ServerConnection.RemoteHailMessage.Position = 0;
-                    this.User = this.Users.Create(u => u.Read(_client.ServerConnection.RemoteHailMessage));
+                    this.User.Dispose();
+                    this.User = this.Users.Create(u =>
+                    {
+                        u.SetId(_client.ServerConnection.RemoteHailMessage.ReadGuid());
+                        u.Read(_client.ServerConnection.RemoteHailMessage);
+                    });
                     break;
                 case NetConnectionStatus.Disconnected:
                     this.Users.Dispose();

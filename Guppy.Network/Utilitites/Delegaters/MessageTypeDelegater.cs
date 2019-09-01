@@ -8,14 +8,14 @@ using System.Text;
 
 namespace Guppy.Network.Utilitites.Delegaters
 {
-    public class PeerMessageDelegater : Delegater<NetIncomingMessageType, NetIncomingMessage>
+    public class MessageTypeDelegater : Delegater<NetIncomingMessageType, NetIncomingMessage>
     {
         private static NetIncomingMessageType[] NetIncomingMessageTypes = (NetIncomingMessageType[])Enum.GetValues(typeof(NetIncomingMessageType));
 
-        public PeerMessageDelegater(ILogger logger) : base(logger)
+        public MessageTypeDelegater(ILogger logger) : base(logger)
         {
             // Automatically register all NetIncomingMessageTypes
-            PeerMessageDelegater.NetIncomingMessageTypes.ForEach(this.TryRegister);
+            MessageTypeDelegater.NetIncomingMessageTypes.ForEach(this.TryRegister);
         }
     }
 }

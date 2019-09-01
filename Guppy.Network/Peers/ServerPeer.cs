@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Configurations;
 using Guppy.Network.Factories;
+using Guppy.Network.Groups;
 using Guppy.Network.Security;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
+using Guppy.Network.Extensions.Lidgren;
 
 namespace Guppy.Network.Peers
 {
@@ -35,8 +39,8 @@ namespace Guppy.Network.Peers
         {
             base.Initialize();
 
-            this.Messages.TryAdd(NetIncomingMessageType.ConnectionApproval, this.HandleConnectionApproval);
-            this.Messages.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
+            this.MessagesTypes.TryAdd(NetIncomingMessageType.ConnectionApproval, this.HandleConnectionApproval);
+            this.MessagesTypes.TryAdd(NetIncomingMessageType.StatusChanged, this.HandleStatusChanged);
         }
 
         public override void Dispose()
@@ -44,6 +48,26 @@ namespace Guppy.Network.Peers
             base.Dispose();
 
             _approvedUsers.Clear();
+        }
+        #endregion
+
+        #region Peer Implementation
+        protected override void SendMessage(NetOutgoingMessageConfiguration omc)
+        {
+            if(omc.Recipient == default(NetConnection))
+            { // Send to the entire group...
+                _server.SendMessage(omc.Message, omc.Group.connections, omc.Method, omc.SequenceChannel);
+            }
+            else
+            { // Send to the specified recipient...
+                _server.SendMessage(omc.Message, omc.Recipient, omc.Method, omc.SequenceChannel);
+            }
+        }
+
+        /// <inheritdoc />
+        protected internal override Type GroupType()
+        {
+            return typeof(ServerGroup);
         }
         #endregion
 
@@ -56,10 +80,12 @@ namespace Guppy.Network.Peers
         /// <param name="arg"></param>
         private void HandleConnectionApproval(object sender, NetIncomingMessage arg)
         {
+            arg.ReadGuid(); // Disregard the user id sent from the client
             var user = _userFactory.Build<User>(u =>
             {
-                u.Connection = arg.SenderConnection;
-                u.Read(arg.SenderConnection.RemoteHailMessage);
+                u.connection = arg.SenderConnection;
+                u.Read(arg);
+                u.Verified = true;
             });
 
             var hail = _server.CreateMessage();
@@ -74,6 +100,9 @@ namespace Guppy.Network.Peers
                 case NetConnectionStatus.Connected:
                     this.Users.Add(_approvedUsers[arg.SenderConnection.RemoteUniqueIdentifier]);
                     _approvedUsers.Remove(arg.SenderConnection.RemoteUniqueIdentifier);
+                    break;
+                case NetConnectionStatus.Disconnected:
+                    this.Users.GetByConnection(arg.SenderConnection).Dispose();
                     break;
             }
         }

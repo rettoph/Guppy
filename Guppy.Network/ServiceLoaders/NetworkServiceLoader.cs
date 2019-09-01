@@ -28,7 +28,8 @@ namespace Guppy.Network.ServiceLoaders
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<PeerMessageDelegater>();
+            services.AddSingleton<MessageTypeDelegater>();
+            services.AddSingleton<MessageDelegater>();
 
             services.AddSingleton<NetPeerConfiguration>(p => new NetPeerConfiguration(_appIdentifier));
             services.AddSingleton<NetworkOptions>();
@@ -42,7 +43,7 @@ namespace Guppy.Network.ServiceLoaders
                 services.AddSingleton(t, p => p.GetRequiredService<NetPeerFactory>().Build(t));
             });
 
-            AssemblyHelper.GetTypesAssignableFrom<Peer>().Where(t => t.IsClass && !t.IsAbstract).ForEach(t =>
+            AssemblyHelper.GetTypesAssignableFrom<Peer>().ForEach(t =>
             { // Add each peer type as a singleton created via the scene factory...
                 services.AddSingleton(t, p => p.GetRequiredService<PeerFactory>().Build(t));
             });

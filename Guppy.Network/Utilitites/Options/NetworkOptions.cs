@@ -10,5 +10,6 @@ namespace Guppy.Network.Utilitites.Options
     {
         public NetPeer NetPeer { get; internal set; }
         public Peer Peer { get; internal set; }
+        public Type GroupType { get; internal set; }
     }
 }

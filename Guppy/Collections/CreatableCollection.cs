@@ -62,6 +62,8 @@ namespace Guppy.Collections
 
             _idTable.Clear();
             _list.Clear();
+
+            this.Events.Dispose();
         }
         #endregion
 
@@ -213,7 +215,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Helper Methods
-        public Object GetById(Guid id)
+        public TCreateable GetById(Guid id)
         {
             if (_idTable.ContainsKey(id))
                 return _idTable[id];
@@ -222,8 +224,9 @@ namespace Guppy.Collections
         }
 
         public T GetById<T>(Guid id)
+            where T : TCreateable
         {
-            return (T)this.GetById(id);
+            return this.GetById(id) as T;
         }
         #endregion
 

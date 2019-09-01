@@ -1,4 +1,5 @@
 ﻿using Guppy.Factories;
+using Guppy.Network.Groups;
 using Guppy.Pooling.Interfaces;
 using System;
 using System.Collections.Generic;

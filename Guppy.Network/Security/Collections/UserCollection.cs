@@ -1,7 +1,9 @@
 ﻿using Guppy.Collections;
 using Guppy.Network.Factories;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.Network.Security.Collections
@@ -19,7 +21,7 @@ namespace Guppy.Network.Security.Collections
         }
         #endregion
 
-        #region Create Methods
+        #region Get & Create Methods
         public User Create(String name, Action<User> setup = null)
         {
             return this.Create(u =>
@@ -47,6 +49,11 @@ namespace Guppy.Network.Security.Collections
                 user = this.Create("", u => u.SetId(id));
 
             return user;
+        }
+
+        internal User GetByConnection(NetConnection connection)
+        {
+            return this.First(u => u.connection == connection);
         }
         #endregion
     }

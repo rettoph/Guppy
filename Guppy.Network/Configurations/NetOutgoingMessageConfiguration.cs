@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Guppy.Network.Groups;
+using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;

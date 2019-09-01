@@ -99,14 +99,7 @@ namespace Guppy.Utilities.Delegaters
         public void TryAdd<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
             where TCustomArg : TArg
         {
-            try
-            {
-                this.Add<TCustomArg>(key, d);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning(e.Message);
-            }
+            this.Add<TCustomArg>(key, d);
         }
 
         private void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
@@ -154,6 +147,30 @@ namespace Guppy.Utilities.Delegaters
         {
             // Invoke the delegate...
             (_delegates[key] as CustomDelegater<TCustomArg>)?.Invoke(sender, arg);
+        }
+
+        /// <summary>
+        /// Invoke the delegate if it is valid.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="key"></param>
+        /// <param name="arg"></param>
+        public void TryInvoke(TKey key, Object sender, TArg arg)
+        {
+            this.TryInvoke<TArg>(key, sender, arg);
+        }
+        /// <summary>
+        /// Invoke the delegate if it is valid.
+        /// </summary>
+        /// <typeparam name="TCustomArg"></typeparam>
+        /// <param name="sender"></param>
+        /// <param name="key"></param>
+        /// <param name="arg"></param>
+        public void TryInvoke<TCustomArg>(TKey key, Object sender, TCustomArg arg)
+            where TCustomArg : TArg
+        {
+            if (this.ValidateDelegateType(key, typeof(TCustomArg)))
+                this.Invoke<TCustomArg>(key, sender, arg);
         }
         #endregion
 
@@ -206,11 +223,13 @@ namespace Guppy.Utilities.Delegaters
         {
             // Validate the requested delegate...
             if (!_registeredDelegates.ContainsKey(key))
-                throw new Exception($"Unable to validate delegate. Unknown key '{key}'.");
+                _logger.LogWarning($"Unable to validate delegate. Unknown key '{key}'.");
             else if (_registeredDelegates[key] != type)
-                throw new Exception($"Unable to validate delegate. Improper type defined. Expected {_registeredDelegates[key].Name} but recieved '{type.Name}'.");
+                _logger.LogWarning($"Unable to validate delegate. Improper type defined. Expected {_registeredDelegates[key].Name} but recieved '{type.Name}'.");
             else
                 return true;
+
+            return false;
         }
         #endregion
     }
