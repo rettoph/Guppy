@@ -11,6 +11,7 @@ using Guppy.Network.Utilitites.Delegaters;
 using Microsoft.Xna.Framework;
 using Guppy.Network.Security.Collections;
 using Guppy.Network.Groups;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Network.Peers
 {
@@ -116,7 +117,16 @@ namespace Guppy.Network.Peers
         #region MessageType Handlers
         private void HandleData(object sender, NetIncomingMessage im)
         {
-            this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, im.ReadString(), im);
+            String type = String.Empty;
+            try
+            {
+                this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, (type = im.ReadString()), im);
+            }
+            catch(KeyNotFoundException e)
+            {
+                this.logger.LogWarning($"Unknown Group Message recieved => '{type}'. Closing connection.");
+                im.SenderConnection.Disconnect("Invalid message.");
+            }
         }
         #endregion
     }

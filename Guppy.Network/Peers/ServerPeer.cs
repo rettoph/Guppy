@@ -8,6 +8,7 @@ using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Guppy.Network.Extensions.Lidgren;
+using System.Linq;
 
 namespace Guppy.Network.Peers
 {
@@ -56,7 +57,8 @@ namespace Guppy.Network.Peers
         {
             if(omc.Recipient == default(NetConnection))
             { // Send to the entire group...
-                _server.SendMessage(omc.Message, omc.Group.connections, omc.Method, omc.SequenceChannel);
+                if(omc.Group.connections.Any())
+                    _server.SendMessage(omc.Message, omc.Group.connections, omc.Method, omc.SequenceChannel);
             }
             else
             { // Send to the specified recipient...
