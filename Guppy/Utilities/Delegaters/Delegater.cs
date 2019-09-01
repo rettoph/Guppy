@@ -169,8 +169,10 @@ namespace Guppy.Utilities.Delegaters
         public void TryInvoke<TCustomArg>(TKey key, Object sender, TCustomArg arg)
             where TCustomArg : TArg
         {
-            if (this.ValidateDelegateType(key, typeof(TCustomArg)))
+            if (_delegates.ContainsKey(key))
                 this.Invoke<TCustomArg>(key, sender, arg);
+            else
+                _logger.LogWarning($"Unable to invoke Delegate('{key}'). Unknown or unregistered.");
         }
         #endregion
 

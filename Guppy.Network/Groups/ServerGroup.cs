@@ -12,10 +12,13 @@ namespace Guppy.Network.Groups
 {
     public sealed class ServerGroup : Group
     {
+        #region Constructor
         public ServerGroup(CreatableCollection<User> users, Peer peer) : base(users, peer)
         {
         }
+        #endregion
 
+        #region Lifecycle Methods
         protected override void Initialize()
         {
             base.Initialize();
@@ -23,6 +26,7 @@ namespace Guppy.Network.Groups
             this.Users.Events.TryAdd<User>("added", this.HandleUserAdded);
             this.Users.Events.TryAdd<User>("removed", this.HandleUserRemoved);
         }
+        #endregion
 
         #region Event Handlers
         /// <summary>
@@ -51,6 +55,7 @@ namespace Guppy.Network.Groups
                 }
             });
 
+            // 3. Add the new user to the connections list
             if (newUser.connection != default(NetConnection))
                 this.connections.Add(newUser.connection);
         }
