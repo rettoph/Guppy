@@ -112,16 +112,14 @@ namespace Guppy.Utilities.Delegaters
         private void Add<TCustomArg>(TKey key, CustomDelegater<TCustomArg> d)
             where TCustomArg : TArg
         {
-            if(this.ValidateDelegateType(key, typeof(TCustomArg))) {
+            if (this.ValidateDelegateType(key, typeof(TCustomArg))) {
                 if (_delegates[key] == null)
                 { // Save the delegate...
                     _delegates[key] = d;
                 }
                 else
                 { // Add the delegate...
-                    var delegates = (_delegates[key] as CustomDelegater<TCustomArg>);
-                    delegates += d;
-                    _delegates[key] = delegates;
+                    _delegates[key] = Delegate.Combine(_delegates[key], d);
                 }
             }
         }

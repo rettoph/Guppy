@@ -1,5 +1,7 @@
-﻿using Guppy.Network.Configurations;
+﻿using Guppy.Collections;
+using Guppy.Network.Configurations;
 using Guppy.Network.Peers;
+using Guppy.Network.Security;
 using Guppy.Pooling.Interfaces;
 using Lidgren.Network;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,14 +22,16 @@ namespace Guppy.Network
         private Peer _peer;
         #endregion
 
-        #region Internal Fields
-        internal HashSet<NetConnection> connections;
+        #region Public Attributes
+        public CreatableCollection<User> Users { get; private set; }
         #endregion
 
         #region Constructor
-        public Group(Peer peer)
+        public Group(CreatableCollection<User> users, Peer peer)
         {
             _peer = peer;
+
+            this.Users = users;
         }
         #endregion
 
@@ -35,8 +39,6 @@ namespace Guppy.Network
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
-
-            this.connections = new HashSet<NetConnection>();
         }
         #endregion
 

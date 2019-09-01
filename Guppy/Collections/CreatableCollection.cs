@@ -65,10 +65,6 @@ namespace Guppy.Collections
         }
         #endregion
 
-        #region Frame Methods
-
-        #endregion
-
         #region Collection Methods
         /// <inheritdoc />
         public virtual Boolean Add(TCreateable item)
@@ -76,6 +72,8 @@ namespace Guppy.Collections
             if (_list.Add(item))
             {
                 _idTable.Add(item.Id, item);
+
+                item.Events.TryAdd<Creatable>("disposing", this.HandleItemDisposing);
 
                 this.Events.Invoke<TCreateable>("added", this, item);
 
@@ -91,6 +89,8 @@ namespace Guppy.Collections
             if (_list.Remove(item))
             {
                 _idTable.Remove(item.Id);
+
+                item.Events.Remove<Creatable>("disposing", this.HandleItemDisposing);
 
                 this.Events.Invoke<TCreateable>("removed", this, item);
 
@@ -224,6 +224,14 @@ namespace Guppy.Collections
         public T GetById<T>(Guid id)
         {
             return (T)this.GetById(id);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleItemDisposing(object sender, Creatable arg)
+        {
+            // Auto remove the child on dispose
+            this.Remove(sender as TCreateable);
         }
         #endregion
     }

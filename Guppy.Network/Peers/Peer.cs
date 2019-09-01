@@ -9,6 +9,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Collections;
 using Guppy.Network.Utilitites.Delegaters;
 using Microsoft.Xna.Framework;
+using Guppy.Network.Security.Collections;
 
 namespace Guppy.Network.Peers
 {
@@ -25,6 +26,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Public Fields
+        public UserCollection Users { get; private set; }
         public GroupCollection Groups { get; private set; }
         public PeerMessageDelegater Messages { get; private set; }
         #endregion
@@ -43,8 +45,20 @@ namespace Guppy.Network.Peers
 
             _outgoingMessagePool = provider.GetRequiredService<IPool<NetOutgoingMessageConfiguration>>();
             this.outgoingMessages = new Queue<NetOutgoingMessageConfiguration>();
+            this.Users = this.provider.GetRequiredService<UserCollection>();
             this.Groups = this.provider.GetRequiredService<GroupCollection>();
             this.Messages = this.provider.GetRequiredService<PeerMessageDelegater>();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.outgoingMessages.Clear();
+
+            this.Users.Dispose();
+            this.Groups.Dispose();
+            this.Messages.Dispose();
         }
         #endregion
 
