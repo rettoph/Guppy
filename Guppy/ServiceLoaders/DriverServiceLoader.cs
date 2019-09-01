@@ -19,7 +19,6 @@ namespace Guppy.ServiceLoaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<DriverFactory>();
-            services.AddTransient<FrameableCollection<Driver>>();
         }
 
         public void ConfigureProvider(IServiceProvider provider)

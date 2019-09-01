@@ -14,7 +14,7 @@ namespace Guppy
     public abstract class Driven : Frameable
     {
         #region Internal Fields
-        internal FrameableCollection<Driver> drivers;
+        internal IEnumerable<Driver> drivers;
         #endregion
 
         #region Lifecycle Methods
@@ -25,11 +25,25 @@ namespace Guppy
             this.drivers.ForEach(d => d.TryCreate(provider));
         }
 
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            this.drivers.ForEach(d => d.TryPreInitialize());
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
 
             this.drivers.ForEach(d => d.TryInitialize());
+        }
+
+        protected override void PostInitialize()
+        {
+            base.PostInitialize();
+
+            this.drivers.ForEach(d => d.TryPostInitialize());
         }
 
         public override void Dispose()
@@ -44,7 +58,7 @@ namespace Guppy
             base.Draw(gameTime);
 
             // Draw all drivers...
-            this.drivers.TryDraw(gameTime);
+            this.drivers.ForEach(d => d.TryDraw(gameTime));
         }
 
         protected override void Update(GameTime gameTime)
@@ -52,7 +66,7 @@ namespace Guppy
             base.Update(gameTime);
 
             // Update all drivers...
-            this.drivers.TryUpdate(gameTime);
+            this.drivers.ForEach(d => d.TryUpdate(gameTime));
         }
         #endregion
 

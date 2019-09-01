@@ -35,6 +35,7 @@ namespace Guppy.Network.ServiceLoaders
             services.AddSingleton<GroupFactory>();
             services.AddSingleton<NetPeerFactory>();
             services.AddSingleton<PeerFactory>();
+            services.AddSingleton<UserFactory>();
             services.AddSingleton<GroupCollection>();
 
             AssemblyHelper.GetTypesAssignableFrom<NetPeer>().ForEach(t =>

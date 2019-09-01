@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +21,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Methods
-        public void TryConnect(String host, Int32 port, NetOutgoingMessage hail = null)
+        public void TryConnect(String host, Int32 port, User user)
         {
             if (_client.ConnectionStatus != NetConnectionStatus.Disconnected)
             {
@@ -29,6 +30,8 @@ namespace Guppy.Network.Peers
             else
             {
                 this.logger.LogTrace($"Attempting to connect to {host}:{port}...");
+                var hail = _client.CreateMessage();
+                user.Write(hail);
                 _client.Connect(host, port, hail);
             }
         }

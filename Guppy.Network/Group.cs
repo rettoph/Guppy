@@ -20,6 +20,10 @@ namespace Guppy.Network
         private Peer _peer;
         #endregion
 
+        #region Internal Fields
+        internal HashSet<NetConnection> connections;
+        #endregion
+
         #region Constructor
         public Group(Peer peer)
         {
@@ -31,6 +35,8 @@ namespace Guppy.Network
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            this.connections = new HashSet<NetConnection>();
         }
         #endregion
 

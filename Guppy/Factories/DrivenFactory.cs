@@ -11,14 +11,12 @@ namespace Guppy.Factories
     {
         #region Private Fields
         private DriverFactory _driverFactory;
-        private IPoolManager<TDriven> _pools;
         #endregion
 
         #region Constructors
         public DrivenFactory(IPoolManager<TDriven> pools, IServiceProvider provider) : base(pools, provider)
         {
             _driverFactory = provider.GetService<DriverFactory>();
-            _pools = pools;
         }
         #endregion
 
@@ -27,13 +25,7 @@ namespace Guppy.Factories
             return base.Build<T>(
                 provider: provider,
                 pool: pool,
-                setup: driven =>
-                {
-                    // Bind any required event handlers
-                    driven.Events.TryAdd<Creatable>("disposing", this.HandleInstanceDisposing);
-
-                    setup?.Invoke(driven);
-                },
+                setup: setup,
                 create: driven =>
                 {
                     // Build custom drivers for the new instance if needed.
@@ -43,17 +35,5 @@ namespace Guppy.Factories
                 });
 
         }
-
-        #region Event Handlers
-        /// <summary>
-        /// Automatically return any disposed instances back into the pool.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="arg"></param>
-        private void HandleInstanceDisposing(object sender, Creatable arg)
-        {
-            _pools.GetOrCreate(sender.GetType()).Put(sender);
-        }
-        #endregion
     }
 }
