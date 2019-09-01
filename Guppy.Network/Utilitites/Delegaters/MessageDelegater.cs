@@ -7,10 +7,7 @@ using System.Text;
 
 namespace Guppy.Network.Utilitites.Delegaters
 {
-    public class MessageDelegater : Delegater<String, NetIncomingMessage>
+    public sealed class MessageDelegater : CustomDelegater<String, NetIncomingMessage>
     {
-        public MessageDelegater(ILogger logger) : base(logger)
-        {
-        }
     }
 }

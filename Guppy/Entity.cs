@@ -33,7 +33,7 @@ namespace Guppy
             {
                 this.Layer = layer;
 
-                this.Events.Invoke<Layer>("changed:layer", this, this.Layer);
+                this.Events.TryInvoke<Layer>(this, "changed:layer", this.Layer);
             }
         }
         #endregion

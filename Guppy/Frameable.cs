@@ -20,10 +20,10 @@ namespace Guppy
         {
             base.Create(provider);
 
-            this.Events.TryRegister<Int32>("changed:draw-order");
-            this.Events.TryRegister<Int32>("changed:update-order");
-            this.Events.TryRegister<Boolean>("changed:visible");
-            this.Events.TryRegister<Boolean>("changed:enabled");
+            this.Events.Register<Int32>("changed:draw-order");
+            this.Events.Register<Int32>("changed:update-order");
+            this.Events.Register<Boolean>("changed:visible");
+            this.Events.Register<Boolean>("changed:enabled");
         }
         #endregion
 
@@ -56,7 +56,7 @@ namespace Guppy
             {
                 this.DrawOrder = value;
 
-                this.Events.Invoke<Int32>("changed:draw-order", this, this.DrawOrder);
+                this.Events.TryInvoke<Int32>(this, "changed:draw-order", this.DrawOrder);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Guppy
             {
                 this.UpdateOrder = value;
 
-                this.Events.Invoke<Int32>("changed:update-order", this, this.UpdateOrder);
+                this.Events.TryInvoke<Int32>(this, "changed:update-order", this.UpdateOrder);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Guppy
             {
                 this.Visible = value;
 
-                this.Events.Invoke<Boolean>("changed:visible", this, this.Visible);
+                this.Events.TryInvoke<Boolean>(this, "changed:visible", this.Visible);
             }
         }
 
@@ -86,7 +86,7 @@ namespace Guppy
             {
                 this.Enabled = value;
 
-                this.Events.Invoke<Boolean>("changed:enabled", this, this.Enabled);
+                this.Events.TryInvoke<Boolean>(this, "changed:enabled", this.Enabled);
             }
         }
         #endregion

@@ -79,7 +79,7 @@ namespace Guppy.Network.Peers
 
             // Read any new incoming messages...
             while((_im = _peer.ReadMessage()) != null)
-                this.MessagesTypes.Invoke(_im.MessageType, this, _im);
+                this.MessagesTypes.TryInvoke(this, _im.MessageType, _im);
 
             // Send all outgoing messages...
             while(_outgoingMessages.Count > 0)
@@ -116,7 +116,7 @@ namespace Guppy.Network.Peers
         #region MessageType Handlers
         private void HandleData(object sender, NetIncomingMessage im)
         {
-            this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(im.ReadString(), this, im);
+            this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, im.ReadString(), im);
         }
         #endregion
     }

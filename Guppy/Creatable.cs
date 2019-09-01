@@ -1,9 +1,10 @@
-﻿using Guppy.Utilities.Delegaters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Guppy.Utilities;
+using Guppy.Utilities.Delegaters;
 
 namespace Guppy
 {
@@ -53,7 +54,7 @@ namespace Guppy
 
         public virtual void Dispose()
         {
-            this.Events.Invoke<Creatable>("disposing", this, this);
+            this.Events.TryInvoke<Creatable>(this, "disposing", this);
             this.Events.Dispose();
         }
         #endregion

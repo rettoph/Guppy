@@ -58,7 +58,7 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
-                item.Events.Remove<Layer>("changed:layer", this.HandleItemLayerChanged);
+                item.Events.TryRemove<Layer>("changed:layer", this.HandleItemLayerChanged);
 
                 this.RemoveFromLayer(item);
                 _cachedLayers.Remove(item);

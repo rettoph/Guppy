@@ -1,5 +1,4 @@
-﻿using Guppy.Utilities.Delegaters;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using System.Collections;
 using Guppy.Extensions.Collection;
+using Guppy.Utilities;
+using Guppy.Utilities.Delegaters;
 
 namespace Guppy.Collections
 {
@@ -48,8 +49,8 @@ namespace Guppy.Collections
             this.logger.LogTrace($"Created new CreatableCollection<{typeof(TCreateable).Name}> instance.");
 
             this.Events = provider.GetService<EventDelegater>();
-            this.Events.TryRegister<TCreateable>("added");
-            this.Events.TryRegister<TCreateable>("removed");
+            this.Events.Register<TCreateable>("added");
+            this.Events.Register<TCreateable>("removed");
         }
         #endregion
 
@@ -77,7 +78,7 @@ namespace Guppy.Collections
 
                 item.Events.TryAdd<Creatable>("disposing", this.HandleItemDisposing);
 
-                this.Events.Invoke<TCreateable>("added", this, item);
+                this.Events.TryInvoke<TCreateable>(this, "added", item);
 
                 return true;
             }
@@ -92,9 +93,9 @@ namespace Guppy.Collections
             {
                 _idTable.Remove(item.Id);
 
-                item.Events.Remove<Creatable>("disposing", this.HandleItemDisposing);
+                item.Events.TryRemove<Creatable>("disposing", this.HandleItemDisposing);
 
-                this.Events.Invoke<TCreateable>("removed", this, item);
+                this.Events.TryInvoke<TCreateable>(this, "removed", item);
 
                 return true;
             }

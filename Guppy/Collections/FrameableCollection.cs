@@ -104,10 +104,10 @@ namespace Guppy.Collections
                 this.dirtyUpdates = true;
 
                 // Unbind all related events
-                item.Events.Remove<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
-                item.Events.Remove<Boolean>("changed:visible", this.HandleItemVisibleChanged);
-                item.Events.Remove<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
-                item.Events.Remove<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
+                item.Events.TryRemove<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
+                item.Events.TryRemove<Boolean>("changed:visible", this.HandleItemVisibleChanged);
+                item.Events.TryRemove<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
+                item.Events.TryRemove<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
 
                 return true;
             }

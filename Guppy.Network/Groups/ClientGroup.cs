@@ -27,9 +27,6 @@ namespace Guppy.Network.Groups
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
-
-            this.Messages.TryRegister("user:joined");
-            this.Messages.TryRegister("user:left");
         }
 
         protected override void Initialize()
