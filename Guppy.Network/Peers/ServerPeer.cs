@@ -86,12 +86,12 @@ namespace Guppy.Network.Peers
             var user = _userFactory.Build<User>(u =>
             {
                 u.connection = arg.SenderConnection;
-                u.Read(arg);
+                u.TryRead(arg);
                 u.Verified = true;
             });
 
             var hail = _server.CreateMessage();
-            user.Write(hail);
+            user.TryWrite(hail);
             arg.SenderConnection.Approve(hail);
             _approvedUsers.Add(arg.SenderConnection.RemoteUniqueIdentifier, user);
         }

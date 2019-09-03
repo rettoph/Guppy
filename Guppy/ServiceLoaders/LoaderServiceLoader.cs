@@ -17,11 +17,18 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            AssemblyHelper.GetTypesAssignableFrom<ILoader>().Where(t => t.IsClass && !t.IsAbstract).ForEach(t =>
-            { // Register all the internal loader instances...
-                services.AddSingleton(t);
-                services.AddSingleton<ILoader>(p => p.GetService(t) as ILoader);
-            });
+            AssemblyHelper.GetTypesAssignableFrom<ILoader>()
+                .Where(t => t.IsClass && !t.IsAbstract)
+                .OrderBy(t =>
+                {
+                    var attr = t.GetCustomAttributes(true).FirstOrDefault(a => a is IsLoaderAttribute) as IsLoaderAttribute;
+                    return attr == default(IsLoaderAttribute) ? 100 : attr.Priority;
+                })
+                .ForEach(t =>
+                { // Register all the internal loader instances...
+                    services.AddSingleton(t);
+                    services.AddSingleton<ILoader>(p => p.GetService(t) as ILoader);
+                });
         }
 
         public void ConfigureProvider(IServiceProvider provider)

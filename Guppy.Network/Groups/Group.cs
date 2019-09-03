@@ -63,14 +63,32 @@ namespace Guppy.Network.Groups
         }
         #endregion
 
-        #region CreateMessage methods
-        public NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0, NetConnection recipient = null)
+        #region CreateMessage Methods
+        public NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0)
+        {
+            return _peer.CreateMessage(
+                type: type,
+                method: method,
+                sequenceChanel: sequenceChanel,
+                recipient: null,
+                group: this);
+        }
+        public NetOutgoingMessage CreateMessage(String type, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0)
         {
             return _peer.CreateMessage(
                 type: type,
                 method: method,
                 sequenceChanel: sequenceChanel,
                 recipient: recipient,
+                group: this);
+        }
+        public NetOutgoingMessage CreateMessage(String type, User recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0)
+        {
+            return _peer.CreateMessage(
+                type: type,
+                method: method,
+                sequenceChanel: sequenceChanel,
+                recipient: recipient.connection,
                 group: this);
         }
         #endregion

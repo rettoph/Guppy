@@ -18,11 +18,12 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<DriverFactory>();
+            //
         }
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            //
         }
     }
 }

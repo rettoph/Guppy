@@ -27,13 +27,13 @@ namespace Guppy.Network.Security
         #endregion
 
         #region INetworkObject Implmentation
-        public void Read(NetIncomingMessage im)
+        public void TryRead(NetIncomingMessage im)
         {
             this.Name = im.ReadString();
             this.Verified = im.ReadBoolean();
         }
 
-        public void Write(NetOutgoingMessage om)
+        public void TryWrite(NetOutgoingMessage om)
         {
             om.Write(this.Id);
             om.Write(this.Name);

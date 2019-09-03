@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Guppy.Pooling.Interfaces;
+using Guppy.Loaders;
 
 namespace Guppy.Factories
 {
@@ -16,7 +17,7 @@ namespace Guppy.Factories
         #endregion
 
         #region Constructor
-        public GameFactory(GlobalOptions options, IPoolManager<Game> pools, IServiceProvider provider) : base(pools, provider)
+        public GameFactory(GlobalOptions options, DriverLoader drivers, IPoolManager<Game> pools, IServiceProvider provider) : base(drivers, pools, provider)
         {
             _options = options;
             _provider = provider;

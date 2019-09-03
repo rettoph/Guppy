@@ -28,7 +28,12 @@ namespace Guppy.Loaders
         #region Public Attributes
         public TOut this[THandle handle]
         {
-            get { return this.values[handle]; }
+            get {
+                if (this.values.ContainsKey(handle))
+                    return this.values[handle];
+                else
+                    return default(TOut);
+            }
         }
         #endregion
 

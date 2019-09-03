@@ -57,7 +57,7 @@ namespace Guppy.Network.Groups
             // Load the user from the cached users collection, if it exists...
             var user = _client.Users.GetOrCreateById(arg.ReadGuid());
             // Update the user data...
-            user.Read(arg);
+            user.TryRead(arg);
             // Add the user to the groups user collection
             this.Users.Add(user);
         }

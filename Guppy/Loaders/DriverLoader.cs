@@ -15,7 +15,7 @@ namespace Guppy.Loaders
     /// and create a dictionary of types and the driver
     /// types assigned to them.
     /// </summary>
-    internal sealed class DriverLoader : Loader<Type, Type, Type[]>
+    public sealed class DriverLoader : Loader<Type, Type, Type[]>
     {
         #region Constructor
         public DriverLoader(ILogger logger) : base(logger)
@@ -30,7 +30,7 @@ namespace Guppy.Loaders
             var drivens = AssemblyHelper.GetTypesAssignableFrom<Driven>().Where(t => t.IsClass && !t.IsAbstract);
             
             // Load all drivers...
-            AssemblyHelper.GetTypesWithAttribute<Driver, IsDriverAttribute>().ForEach(driver =>
+            var taggedDriverTypes = AssemblyHelper.GetTypesWithAttribute<Driver, IsDriverAttribute>().ForEach(driver =>
             { // Iterate through all driver types...
                 this.logger.LogTrace($"Loading Driver<{driver.Name}> configurations...");
                 driver.GetCustomAttributes(typeof(IsDriverAttribute), false).Select(attr => attr as IsDriverAttribute).ForEach(attribute =>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 
 namespace Guppy
@@ -8,7 +10,14 @@ namespace Guppy
     public abstract class Driver
     {
         #region Protected Attributes
-        protected internal Driven driven { get; internal set; }
+        protected ILogger logger { get; private set; }
+        protected IServiceProvider provider { get; private set; }
+        #endregion
+
+        #region Constructor
+        public Driver(Driven driven)
+        {
+        }
         #endregion
 
         #region Driven Interfaces
@@ -46,7 +55,8 @@ namespace Guppy
         #region Lifecycle Methods
         protected virtual void Create(IServiceProvider provider)
         {
-            //
+            this.provider = provider;
+            this.logger = this.provider.GetRequiredService<ILogger>();
         }
 
         protected virtual void PreInitialize()

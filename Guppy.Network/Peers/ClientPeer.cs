@@ -67,7 +67,7 @@ namespace Guppy.Network.Peers
             {
                 this.logger.LogTrace($"Attempting to connect to {host}:{port}...");
                 var hail = _client.CreateMessage();
-                user.Write(hail);
+                user.TryWrite(hail);
                 _client.Connect(host, port, hail);
                 this.User = user;
             }
@@ -84,7 +84,7 @@ namespace Guppy.Network.Peers
                     this.User = this.Users.Create(u =>
                     {
                         u.SetId(_client.ServerConnection.RemoteHailMessage.ReadGuid());
-                        u.Read(_client.ServerConnection.RemoteHailMessage);
+                        u.TryRead(_client.ServerConnection.RemoteHailMessage);
                     });
                     break;
                 case NetConnectionStatus.Disconnecting:

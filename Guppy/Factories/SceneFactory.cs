@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,7 @@ namespace Guppy.Factories
     public class SceneFactory : DrivenFactory<Scene>
     {
         #region Constructor
-        public SceneFactory(IPoolManager<Scene> pools, IServiceProvider provider) : base(pools, provider)
+        public SceneFactory(DriverLoader drivers, IPoolManager<Scene> pools, IServiceProvider provider) : base(drivers, pools, provider)
         {
         }
         #endregion

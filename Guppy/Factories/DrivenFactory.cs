@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,13 +12,15 @@ namespace Guppy.Factories
         where TDriven : Driven
     {
         #region Private Fields
-        private DriverFactory _driverFactory;
+        private DriverLoader _drivers;
+        private IServiceProvider _provider;
         #endregion
 
         #region Constructors
-        public DrivenFactory(IPoolManager<TDriven> pools, IServiceProvider provider) : base(pools, provider)
+        public DrivenFactory(DriverLoader drivers, IPoolManager<TDriven> pools, IServiceProvider provider) : base(pools, provider)
         {
-            _driverFactory = provider.GetService<DriverFactory>();
+            _drivers = drivers;
+            _provider = provider;
         }
         #endregion
 
@@ -28,8 +32,10 @@ namespace Guppy.Factories
                 setup: setup,
                 create: driven =>
                 {
-                    // Build custom drivers for the new instance if needed.
-                    driven.drivers = _driverFactory.BuildAll(driven);
+                    // Create driver instances as defined in the drivers loader
+                    driven.drivers = _drivers[driven.GetType()]
+                        .Select(t => ActivatorUtilities.CreateInstance(_provider, t, driven) as Driver)
+                        .AsEnumerable();
 
                     create?.Invoke(driven);
                 });

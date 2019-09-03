@@ -44,15 +44,15 @@ namespace Guppy.Network.Groups
         {
             // 1. Send the current user to all existing users
             NetOutgoingMessage om = this.CreateMessage("user:joined", NetDeliveryMethod.ReliableOrdered, 0);
-            newUser.Write(om);
+            newUser.TryWrite(om);
 
             // 2. Send a list of all existing users to the new user
             this.Users.ForEach(user =>
             {
                 if (user.Id != newUser.Id)
                 { // Dont double send the new user their own data
-                    om = this.CreateMessage("user:joined", NetDeliveryMethod.ReliableOrdered, 0, newUser.connection);
-                    user.Write(om);
+                    om = this.CreateMessage("user:joined", newUser, NetDeliveryMethod.ReliableOrdered, 0);
+                    user.TryWrite(om);
                 }
             });
 

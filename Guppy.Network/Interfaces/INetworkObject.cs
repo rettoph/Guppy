@@ -7,7 +7,7 @@ namespace Guppy.Network.Interfaces
 {
     public interface INetworkObject
     {
-        void Read(NetIncomingMessage im);
-        void Write(NetOutgoingMessage om);
+        void TryRead(NetIncomingMessage im);
+        void TryWrite(NetOutgoingMessage om);
     }
 }

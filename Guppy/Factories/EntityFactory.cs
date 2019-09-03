@@ -14,7 +14,7 @@ namespace Guppy.Factories
         #endregion
 
         #region Constructor
-        public EntityFactory(EntityLoader loader, IPoolManager<Entity> pools, IServiceProvider provider) : base(pools, provider)
+        public EntityFactory(EntityLoader loader, DriverLoader drivers, IPoolManager<Entity> pools, IServiceProvider provider) : base(drivers, pools, provider)
         {
             _loader = loader;
         }
