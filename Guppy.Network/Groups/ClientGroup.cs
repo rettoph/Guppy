@@ -36,6 +36,13 @@ namespace Guppy.Network.Groups
             this.Messages.TryAdd("user:joined", this.HandleUserJoinedMessage);
             this.Messages.TryAdd("user:left", this.HandleUserLeftMessage);
         }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Messages.Dispose();
+        }
         #endregion
 
         #region Message Handlers

@@ -56,7 +56,7 @@ namespace Guppy.Pooling
             }
             else
             {
-                _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Pulling old instance...");
+                _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Pulling old instance from pool...");
                 return _available.Dequeue();
             }
         }
@@ -65,7 +65,7 @@ namespace Guppy.Pooling
         {
             ExceptionHelper.ValidateAssignableFrom(this.TargetType, instance.GetType());
 
-            _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance...");
+            _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance to pool...");
 
             _available.Enqueue(instance);
         }

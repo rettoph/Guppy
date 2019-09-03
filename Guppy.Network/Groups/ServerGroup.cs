@@ -7,6 +7,7 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Network.Groups
 {
@@ -48,7 +49,7 @@ namespace Guppy.Network.Groups
             // 2. Send a list of all existing users to the new user
             this.Users.ForEach(user =>
             {
-                if (user != newUser)
+                if (user.Id != newUser.Id)
                 { // Dont double send the new user their own data
                     om = this.CreateMessage("user:joined", NetDeliveryMethod.ReliableOrdered, 0, newUser.connection);
                     user.Write(om);

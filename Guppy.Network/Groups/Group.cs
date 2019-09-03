@@ -59,7 +59,7 @@ namespace Guppy.Network.Groups
 
             this.connections.Clear();
 
-            this.Users.Dispose();
+            this.Users.Clear();
         }
         #endregion
 

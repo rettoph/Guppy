@@ -87,7 +87,7 @@ namespace Guppy.Network.Peers
                         u.Read(_client.ServerConnection.RemoteHailMessage);
                     });
                     break;
-                case NetConnectionStatus.Disconnected:
+                case NetConnectionStatus.Disconnecting:
                     this.Users.Dispose();
                     this.Groups.Dispose();
                     break;
