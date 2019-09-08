@@ -51,7 +51,7 @@ namespace Guppy.Network.ServiceLoaders
 
         public void ConfigureProvider(IServiceProvider provider)
         {
-            //  throw new NotImplementedException();
+            provider.GetRequiredService<NetPeerConfiguration>().EnableMessageType(NetIncomingMessageType.ConnectionApproval);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Guppy.Factories
                     setup: scene =>
                     {
                         // Update the scene's scope...
-                        provider.GetService<ScopeOptions>().Scene = scene;
+                        scope.GetService<ScopeOptions>().Scene = scene;
                         // Run any recieved custom setup methods...
                         setup?.Invoke(scene);
                     },

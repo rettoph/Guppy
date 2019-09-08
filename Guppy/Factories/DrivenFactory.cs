@@ -13,14 +13,12 @@ namespace Guppy.Factories
     {
         #region Private Fields
         private DriverLoader _drivers;
-        private IServiceProvider _provider;
         #endregion
 
         #region Constructors
         public DrivenFactory(DriverLoader drivers, IPoolManager<TDriven> pools, IServiceProvider provider) : base(pools, provider)
         {
             _drivers = drivers;
-            _provider = provider;
         }
         #endregion
 
@@ -34,7 +32,7 @@ namespace Guppy.Factories
                 {
                     // Create driver instances as defined in the drivers loader
                     driven.drivers = _drivers[driven.GetType()]
-                        .Select(t => ActivatorUtilities.CreateInstance(_provider, t, driven) as Driver)
+                        .Select(t => ActivatorUtilities.CreateInstance(provider, t, driven) as Driver)
                         .AsEnumerable();
 
                     create?.Invoke(driven);
