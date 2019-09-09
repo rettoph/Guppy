@@ -9,10 +9,10 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | ------- | ----- | ----- | --------- | ----------- |
 | `Guppy` | `Creatable` | `disposing` |` Creatable` | Invoked when the child is disposed. |
 | | | | |
-| `Guppy` | `Frameable` | `changed:enabled` |` Boolean` | Invoked when the enabled value is updated. |
-| `Guppy` | `Frameable` | `changed:visible` | `Boolean` | Invoked when the visible value is updated. |
-| `Guppy` | `Frameable` | `changed:update-order` | `Int32` | Invoked when the update order value is changed. |
-| `Guppy` | `Frameable` | `changed:draw` | `Int32` | Invoked when the draw value is updated. |
+| `Guppy` | `Ordered` | `changed:enabled` |` Boolean` | Invoked when the enabled value is updated. |
+| `Guppy` | `Ordered` | `changed:visible` | `Boolean` | Invoked when the visible value is updated. |
+| `Guppy` | `Ordered` | `changed:update-order` | `Int32` | Invoked when the update order value is changed. |
+| `Guppy` | `Ordered` | `changed:draw` | `Int32` | Invoked when the draw value is updated. |
 | | | | |
 | `Guppy` | `Entity` | `changed:layer` | `Layer` | Invoked when the layer is updated. |
 | | | | |

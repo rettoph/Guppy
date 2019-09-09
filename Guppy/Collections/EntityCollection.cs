@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.Collections
 {
-    public sealed class EntityCollection : FrameableCollection<Entity>
+    public sealed class EntityCollection : OrderableCollection<Entity>
     {
         #region Private Fields
         /// <summary>

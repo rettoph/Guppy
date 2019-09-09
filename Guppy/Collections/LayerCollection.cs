@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Guppy.Collections
 {
-    public sealed class LayerCollection : FrameableCollection<Layer>
+    public sealed class LayerCollection : OrderableCollection<Layer>
     {
         private DrivenFactory<Layer> _factory;
 

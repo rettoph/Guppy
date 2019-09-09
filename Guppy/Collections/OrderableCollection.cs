@@ -13,13 +13,13 @@ namespace Guppy.Collections
     /// an ordered list of items organized by draw order
     /// and updated order for easy drawing.
     /// </summary>
-    /// <typeparam name="TFrameable"></typeparam>
-    public class FrameableCollection<TFrameable> : CreatableCollection<TFrameable>
-        where TFrameable : Frameable
+    /// <typeparam name="TOrderable"></typeparam>
+    public class OrderableCollection<TOrderable> : CreatableCollection<TOrderable>
+        where TOrderable : Orderable
     {
         #region Private Attributes
-        private IEnumerable<TFrameable> _draws;
-        private IEnumerable<TFrameable> _updates;
+        private IEnumerable<TOrderable> _draws;
+        private IEnumerable<TOrderable> _updates;
         #endregion
 
         #region Protected Attributes
@@ -28,12 +28,12 @@ namespace Guppy.Collections
         #endregion
 
         #region Public Attributes
-        public IEnumerable<TFrameable> Draws { get { return _draws; } }
-        public IEnumerable<TFrameable> Updates { get { return _updates; } }
+        public IEnumerable<TOrderable> Draws { get { return _draws; } }
+        public IEnumerable<TOrderable> Updates { get { return _updates; } }
         #endregion
 
         #region Constructors
-        public FrameableCollection(IServiceProvider provider) : base(provider)
+        public OrderableCollection(IServiceProvider provider) : base(provider)
         {
             this.RemapDraws();
             this.RemapUpdates();
@@ -75,7 +75,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Collection Methods
-        public virtual new Boolean Add(TFrameable item)
+        public virtual new Boolean Add(TOrderable item)
         {
             if (base.Add(item))
             {
@@ -95,7 +95,7 @@ namespace Guppy.Collections
             return false;
         }
 
-        public virtual new Boolean Remove(TFrameable item)
+        public virtual new Boolean Remove(TOrderable item)
         {
             if (base.Remove(item))
             {

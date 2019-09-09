@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy
 {
-    public class Entity : Driven
+    public class Entity : Orderable
     {
         #region Public Attributes
         public EntityConfiguration Configuration { get; internal set; }

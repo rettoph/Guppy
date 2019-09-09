@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy
 {
-    public class Layer : Driven
+    public class Layer : Orderable
     {
         #region Internal Attributes
-        internal FrameableCollection<Entity> entities { get; private set; }
+        internal OrderableCollection<Entity> entities { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -36,7 +36,7 @@ namespace Guppy
         {
             base.Create(provider);
 
-            this.entities = provider.GetService<FrameableCollection<Entity>>();
+            this.entities = provider.GetService<OrderableCollection<Entity>>();
         }
         #endregion
 

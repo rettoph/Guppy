@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Network.Collections
 {
-    public class GroupCollection : FrameableCollection<Group>
+    public class GroupCollection : CreatableCollection<Group>
     {
         #region Private Fields
         private GroupFactory _factory;
