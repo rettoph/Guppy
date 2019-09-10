@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Collections;
 using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,9 +32,10 @@ namespace Guppy.Factories
                 create: driven =>
                 {
                     // Create driver instances as defined in the drivers loader
-                    driven.drivers = _drivers[driven.GetType()]
+                    driven.drivers = new FrameableCollection<Driver>(provider);
+                    driven.drivers.AddRange(_drivers[driven.GetType()]
                         .Select(t => ActivatorUtilities.CreateInstance(provider, t, driven) as Driver)
-                        .ToArray();
+                        .ToArray());
 
                     create?.Invoke(driven);
                 });

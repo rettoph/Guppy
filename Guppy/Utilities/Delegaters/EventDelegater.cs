@@ -39,6 +39,11 @@ namespace Guppy.Utilities.Delegaters
                 keySelector: kvp => kvp.Key,
                 elementSelector: kvp => (Delegate)null);
         }
+
+        public void Register<T>(string v, object handleBodyCreated)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Register Methods

@@ -30,13 +30,22 @@ namespace Guppy
         public EventDelegater Events { get; private set; }
         #endregion
 
+        #region Constructor
+        public Creatable()
+        {
+            this.Events = new EventDelegater();
+            this.Events.Register<Creatable>("disposing");
+
+            this.Id = Guid.NewGuid();
+        }
+        #endregion
+
         #region Lifecycle Methods
         public void TryCreate(IServiceProvider provider)
         {
             if (_created)
                 throw new Exception("Unable to Create. Instance has already been created.");
 
-            this.Id = Guid.NewGuid();
             this.Create(provider);
 
             _created = true;
@@ -45,9 +54,6 @@ namespace Guppy
         protected virtual void Create(IServiceProvider provider)
         {
             this.logger = provider.GetRequiredService<ILogger>();
-
-            this.Events = provider.GetService<EventDelegater>();
-            this.Events.Register<Creatable>("disposing");
         }
 
         public virtual void Dispose()

@@ -14,63 +14,12 @@ namespace Guppy.Collections
     /// and updated order for easy drawing.
     /// </summary>
     /// <typeparam name="TOrderable"></typeparam>
-    public class OrderableCollection<TOrderable> : CreatableCollection<TOrderable>
+    public class OrderableCollection<TOrderable> : FrameableCollection<TOrderable>
         where TOrderable : Orderable
     {
-        #region Private Attributes
-        private IEnumerable<TOrderable> _draws;
-        private IEnumerable<TOrderable> _updates;
-        #endregion
-
-        #region Protected Attributes
-        protected Boolean dirtyDraws { get; set; }
-        protected Boolean dirtyUpdates { get; set; }
-        #endregion
-
-        #region Public Attributes
-        public IEnumerable<TOrderable> Draws { get { return _draws; } }
-        public IEnumerable<TOrderable> Updates { get { return _updates; } }
-        #endregion
-
         #region Constructors
         public OrderableCollection(IServiceProvider provider) : base(provider)
         {
-            this.RemapDraws();
-            this.RemapUpdates();
-        }
-        #endregion
-
-        #region Frame Methods
-        public virtual void TryUpdate(GameTime gameTime)
-        {
-            this.TryCleanUpdates();
-
-            _updates.TryUpdateAll(gameTime);
-        }
-
-        public virtual void TryDraw(GameTime gameTime)
-        {
-            this.TryCleanDraws();
-
-            _draws.TryDrawAll(gameTime);
-        }
-
-        public virtual void TryCleanDraws()
-        {
-            if (this.dirtyDraws)
-            {
-                this.RemapDraws();
-                this.dirtyDraws = false;
-            }
-        }
-
-        public virtual void TryCleanUpdates()
-        {
-            if (this.dirtyUpdates)
-            {
-                this.RemapUpdates();
-                this.dirtyUpdates = false;
-            }
         }
         #endregion
 
@@ -79,15 +28,8 @@ namespace Guppy.Collections
         {
             if (base.Add(item))
             {
-                // Mark draws and updates as dirty at this time
-                this.dirtyDraws = true;
-                this.dirtyUpdates = true;
-
-                // Bind to any relevant events
-                item.Events.TryAdd<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
-                item.Events.TryAdd<Boolean>("changed:visible", this.HandleItemVisibleChanged);
-                item.Events.TryAdd<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
-                item.Events.TryAdd<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
+                item.Events.TryAdd<Int32>("update-order:changed", this.HandleItemUpdateOrderChanged);
+                item.Events.TryAdd<Int32>("draw-order:changed", this.HandleItemDrawOrderChanged);
 
                 return true;
             }
@@ -99,15 +41,8 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
-                // Mark draws and updates as dirty at this time
-                this.dirtyDraws = true;
-                this.dirtyUpdates = true;
-
-                // Unbind all related events
-                item.Events.TryRemove<Boolean>("changed:enabled", this.HandleItemEnabledChanged);
-                item.Events.TryRemove<Boolean>("changed:visible", this.HandleItemVisibleChanged);
-                item.Events.TryRemove<Int32>("changed:update-order", this.HandleItemUpdateOrderChanged);
-                item.Events.TryRemove<Int32>("changed:draw-order", this.HandleItemDrawOrderChanged);
+                item.Events.TryRemove<Int32>("update-order:changed", this.HandleItemUpdateOrderChanged);
+                item.Events.TryRemove<Int32>("draw-order:changed", this.HandleItemDrawOrderChanged);
 
                 return true;
             }
@@ -117,16 +52,14 @@ namespace Guppy.Collections
         #endregion
 
         #region Helper Methods
-        protected void RemapDraws()
+        protected override IEnumerable<TOrderable> RemapDraws()
         {
-            _draws = this
-                .OrderBy(f => f.DrawOrder);
+            return base.RemapUpdates().OrderBy(o => o.DrawOrder);
         }
 
-        protected void RemapUpdates()
+        protected override IEnumerable<TOrderable> RemapUpdates()
         {
-            _updates = this
-                .OrderBy(f => f.UpdateOrder);
+            return base.RemapUpdates().OrderBy(o => o.UpdateOrder);
         }
         #endregion
 
@@ -137,16 +70,6 @@ namespace Guppy.Collections
         }
 
         private void HandleItemUpdateOrderChanged(object sender, int arg)
-        {
-            this.dirtyUpdates = true;
-        }
-
-        private void HandleItemVisibleChanged(object sender, bool arg)
-        {
-            this.dirtyDraws = true;
-        }
-
-        private void HandleItemEnabledChanged(object sender, bool arg)
         {
             this.dirtyUpdates = true;
         }

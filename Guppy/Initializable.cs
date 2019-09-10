@@ -28,19 +28,37 @@ namespace Guppy
         #endregion
 
         #region Initialization Methods
-        internal void TryInitialize()
+        internal void TryPreInitialize()
         {
             if (_initializationStatus == InitializationStatus.NotInitialized)
             {
                 _initializationStatus = InitializationStatus.Initializing;
                 this.PreInitialize();
+            }
+            else
+                throw new Exception($"Unable to pre initialize, InitializationStatus is {_initializationStatus} but {InitializationStatus.NotInitialized} is required.");
+        }
+
+        internal void TryInitialize()
+        {
+            if (_initializationStatus == InitializationStatus.Initializing)
+            {
                 this.Initialize();
+            }
+            else
+                throw new Exception($"Unable to initialize, InitializationStatus is {_initializationStatus} but {InitializationStatus.Initializing} is required.");
+        }
+
+        internal void TryPostInitialize()
+        {
+            if (_initializationStatus == InitializationStatus.Initializing)
+            {
                 this.PostInitialize();
 
                 _initializationStatus = InitializationStatus.Ready;
             }
             else
-                throw new Exception($"Unable to initialize, InitializationStatus is {_initializationStatus} but {InitializationStatus.NotInitialized} is required.");
+                throw new Exception($"Unable to post initialize, InitializationStatus is {_initializationStatus} but {InitializationStatus.Initializing} is required.");
         }
 
         public override void Dispose()

@@ -23,7 +23,9 @@ namespace Guppy.Factories
         {
             var instance = base.Build(provider, pool, setup, create);
 
+            instance.TryPreInitialize();
             instance.TryInitialize();
+            instance.TryPostInitialize();
 
             return instance;
         }

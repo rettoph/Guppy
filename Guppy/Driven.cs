@@ -14,7 +14,7 @@ namespace Guppy
     public abstract class Driven : Frameable
     {
         #region Internal Fields
-        internal IEnumerable<Driver> drivers;
+        internal FrameableCollection<Driver> drivers;
         #endregion
 
         #region Lifecycle Methods
@@ -50,7 +50,7 @@ namespace Guppy
         {
             base.Dispose();
 
-            this.drivers.ForEach(d => d.TryDispose());
+            this.drivers.ForEach(d => d.Dispose());
         }
         #endregion
 

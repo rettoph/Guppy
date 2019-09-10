@@ -14,19 +14,20 @@ namespace Guppy
         #region Public Attributes
         public Int32 DrawOrder { get; protected set; }
         public Int32 UpdateOrder { get; protected set; }
-        public Boolean Visible { get; protected set; }
-        public Boolean Enabled { get; protected set; }
+        #endregion
+
+        #region Constructor
+        public Orderable()
+        {
+            this.Events.Register<Int32>("draw-order:changed");
+            this.Events.Register<Int32>("update-order:changed");
+        }
         #endregion
 
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
-
-            this.Events.Register<Int32>("changed:draw-order");
-            this.Events.Register<Int32>("changed:update-order");
-            this.Events.Register<Boolean>("changed:visible");
-            this.Events.Register<Boolean>("changed:enabled");
         }
         #endregion
 
@@ -37,7 +38,7 @@ namespace Guppy
             {
                 this.DrawOrder = value;
 
-                this.Events.TryInvoke<Int32>(this, "changed:draw-order", this.DrawOrder);
+                this.Events.TryInvoke<Int32>(this, "draw-order:changed", this.DrawOrder);
             }
         }
 
@@ -47,27 +48,7 @@ namespace Guppy
             {
                 this.UpdateOrder = value;
 
-                this.Events.TryInvoke<Int32>(this, "changed:update-order", this.UpdateOrder);
-            }
-        }
-
-        public void SetVisible(Boolean value)
-        {
-            if (value != this.Visible)
-            {
-                this.Visible = value;
-
-                this.Events.TryInvoke<Boolean>(this, "changed:visible", this.Visible);
-            }
-        }
-
-        public void SetEnabled(Boolean value)
-        {
-            if (value != this.Enabled)
-            {
-                this.Enabled = value;
-
-                this.Events.TryInvoke<Boolean>(this, "changed:enabled", this.Enabled);
+                this.Events.TryInvoke<Int32>(this, "update-order:changed", this.UpdateOrder);
             }
         }
         #endregion
