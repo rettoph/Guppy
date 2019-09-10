@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Collections;
 using Guppy.Attributes;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy
 {

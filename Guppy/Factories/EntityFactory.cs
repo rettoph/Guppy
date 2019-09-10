@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
+using Guppy.Utilities.Options;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Guppy.Factories

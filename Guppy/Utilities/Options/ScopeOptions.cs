@@ -4,8 +4,11 @@ using System.Text;
 
 namespace Guppy.Utilities.Options
 {
-    internal class ScopeOptions
+    internal sealed class ScopeOptions
     {
+        /// <summary>
+        /// The current scope's scene
+        /// </summary>
         public Scene Scene { get; internal set; }
     }
 }

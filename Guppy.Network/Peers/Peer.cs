@@ -49,9 +49,9 @@ namespace Guppy.Network.Peers
 
             _outgoingMessagePool = provider.GetRequiredService<IPool<NetOutgoingMessageConfiguration>>();
             _outgoingMessages = new Queue<NetOutgoingMessageConfiguration>();
-            this.Users = this.provider.GetRequiredService<UserCollection>();
-            this.Groups = this.provider.GetRequiredService<GroupCollection>();
-            this.MessagesTypes = this.provider.GetRequiredService<MessageTypeDelegater>();
+            this.Users = provider.GetRequiredService<UserCollection>();
+            this.Groups = provider.GetRequiredService<GroupCollection>();
+            this.MessagesTypes = provider.GetRequiredService<MessageTypeDelegater>();
         }
 
         protected override void Initialize()

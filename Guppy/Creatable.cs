@@ -22,7 +22,6 @@ namespace Guppy
         #endregion
 
         #region Protected Fields
-        protected IServiceProvider provider { get; private set; }
         protected ILogger logger;
         #endregion
 
@@ -45,10 +44,9 @@ namespace Guppy
 
         protected virtual void Create(IServiceProvider provider)
         {
-            this.provider = provider;
             this.logger = provider.GetRequiredService<ILogger>();
 
-            this.Events = this.provider.GetService<EventDelegater>();
+            this.Events = provider.GetService<EventDelegater>();
             this.Events.Register<Creatable>("disposing");
         }
 

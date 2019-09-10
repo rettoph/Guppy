@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Utilities;
 using Guppy.Pooling.Interfaces;
 using Microsoft.Extensions.Logging;
+using Guppy.Utilities.Options;
 
 namespace Guppy.Factories
 {

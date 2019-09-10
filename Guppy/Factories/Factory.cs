@@ -34,15 +34,22 @@ namespace Guppy.Factories
         public T Build<T>(Type type, Action<T> setup = null, Action<T> create = null)
             where T : class, TBase
         {
-            ExceptionHelper.ValidateAssignableFrom<T>(type);
-
-            return this.Build<T>(_provider, _pools.GetOrCreate(type), setup, create);
+            return this.Build<T>(_provider, type, setup, create);
         }
         public TBase Build(Type type, Action<TBase> setup = null, Action<TBase> create = null)
         {
-            ExceptionHelper.ValidateAssignableFrom<TBase>(type);
+            return this.Build<TBase>(_provider, type, setup, create);
+        }
+        public TBase Build(IServiceProvider provider, Type type, Action<TBase> setup = null, Action<TBase> create = null)
+        {
+            return this.Build<TBase>(provider, type, setup, create);
+        }
+        public T Build<T>(IServiceProvider provider, Type type, Action<T> setup = null, Action<T> create = null)
+            where T : class, TBase
+        {
+            ExceptionHelper.ValidateAssignableFrom<T>(type);
 
-            return this.Build<TBase>(_provider, _pools.GetOrCreate(type), setup, create);
+            return this.Build<T>(provider, _pools.GetOrCreate(type), setup, create);
         }
         public T Build<T>(Action<T> setup = null, Action<T> create = null)
             where T : class, TBase
