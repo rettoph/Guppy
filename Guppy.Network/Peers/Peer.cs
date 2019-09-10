@@ -110,6 +110,8 @@ namespace Guppy.Network.Peers
             }
             catch(Exception e)
             {
+                this.logger.LogError($"Error handling incoming message. Disconnecting connection & skipping message. ({e.GetType().Name}: {e.Message})");
+                _im?.SenderConnection.Disconnect("Goodbye.");
                 this.TryHandleIncomingMessages();
             }
 #endif
