@@ -32,10 +32,9 @@ namespace Guppy.Factories
                 create: driven =>
                 {
                     // Create driver instances as defined in the drivers loader
-                    driven.drivers = new FrameableCollection<Driver>(provider);
-                    driven.drivers.AddRange(_drivers[driven.GetType()]
+                    driven.drivers = _drivers[driven.GetType()]
                         .Select(t => ActivatorUtilities.CreateInstance(provider, t, driven) as Driver)
-                        .ToArray());
+                        .ToArray();
 
                     create?.Invoke(driven);
                 });

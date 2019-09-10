@@ -16,18 +16,13 @@ namespace Guppy
         public Int32 UpdateOrder { get; protected set; }
         #endregion
 
-        #region Constructor
-        public Orderable()
-        {
-            this.Events.Register<Int32>("draw-order:changed");
-            this.Events.Register<Int32>("update-order:changed");
-        }
-        #endregion
-
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            this.Events.Register<Int32>("draw-order:changed");
+            this.Events.Register<Int32>("update-order:changed");
         }
         #endregion
 

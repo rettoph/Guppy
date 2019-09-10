@@ -13,18 +13,13 @@ namespace Guppy
         public Boolean Enabled { get; protected set; }
         #endregion
 
-        #region Constructor
-        public Frameable()
-        {
-            this.Events.Register<Boolean>("visible:changed");
-            this.Events.Register<Boolean>("enabled:changed");
-        }
-        #endregion
-
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            this.Events.Register<Boolean>("visible:changed");
+            this.Events.Register<Boolean>("enabled:changed");
         }
         #endregion
 
