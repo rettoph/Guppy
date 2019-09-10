@@ -10,5 +10,27 @@ namespace Guppy.Network.Utilitites.Delegaters
 {
     public sealed class MessageTypeDelegater : CustomDelegater<NetIncomingMessageType, NetIncomingMessage>
     {
+        private ILogger _logger;
+
+        public MessageTypeDelegater(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        protected override void Invoke<T>(object sender, NetIncomingMessageType key, T arg)
+        {
+#if DEBUG
+            try
+            {
+                base.Invoke(sender, key, arg);
+            }
+            catch (KeyNotFoundException e)
+            {
+                _logger.LogWarning($"Unhandled MessageType recieved => '{key}'");
+            }
+#else
+            base.Invoke(sender, key, arg);
+#endif
+        }
     }
 }

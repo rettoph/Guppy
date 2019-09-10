@@ -86,10 +86,10 @@ namespace Guppy
                 time = new GameTime(now.Subtract(start), now.Subtract(last));
                 last = now;
 
-                this.Update(time);
+                this.TryUpdate(time);
 
                 if (_draw)
-                    this.Draw(time);
+                    this.TryDraw(time);
             }
 
             this.logger.LogDebug($"Closing async loop for {this.GetType().Name}({this.Id}).");

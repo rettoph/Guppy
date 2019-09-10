@@ -78,9 +78,7 @@ namespace Guppy.Network.Peers
         {
             base.Update(gameTime);
 
-            // Read any new incoming messages...
-            while((_im = _peer.ReadMessage()) != null)
-                this.MessagesTypes.TryInvoke(this, _im.MessageType, _im);
+            this.TryHandleIncomingMessages();
 
             // Send all outgoing messages...
             while(_outgoingMessages.Count > 0)
@@ -89,6 +87,32 @@ namespace Guppy.Network.Peers
                 this.SendMessage(_omc);
                 _outgoingMessagePool.Put(_omc);
             }
+        }
+        #endregion
+
+        #region Utility Methods
+        /// <summary>
+        /// Read all incoming messages. If there is an error in the process,
+        /// skip the message and continue
+        /// </summary>
+        private void TryHandleIncomingMessages()
+        {
+#if DEBUG
+            // Read any new incoming messages...
+            while ((_im = _peer.ReadMessage()) != null)
+                this.MessagesTypes.TryInvoke(this, _im.MessageType, _im);
+#else
+            try
+            {
+                // Read any new incoming messages...
+                while ((_im = _peer.ReadMessage()) != null)
+                    this.MessagesTypes.TryInvoke(this, _im.MessageType, _im);
+            }
+            catch(Exception e)
+            {
+                this.TryHandleIncomingMessages();
+            }
+#endif
         }
         #endregion
 
@@ -110,15 +134,15 @@ namespace Guppy.Network.Peers
         }
 
         protected abstract void SendMessage(NetOutgoingMessageConfiguration omc);
-        #endregion
+#endregion
 
         protected internal abstract Type GroupType();
 
-        #region MessageType Handlers
+#region MessageType Handlers
         private void HandleData(object sender, NetIncomingMessage im)
         {
             this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, im.ReadString(), im);
         }
-        #endregion
+#endregion
     }
 }
