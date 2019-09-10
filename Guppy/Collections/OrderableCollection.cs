@@ -75,7 +75,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Collection Methods
-        public virtual new Boolean Add(TOrderable item)
+        public override Boolean Add(TOrderable item)
         {
             if (base.Add(item))
             {
@@ -95,7 +95,7 @@ namespace Guppy.Collections
             return false;
         }
 
-        public virtual new Boolean Remove(TOrderable item)
+        public override Boolean Remove(TOrderable item)
         {
             if (base.Remove(item))
             {

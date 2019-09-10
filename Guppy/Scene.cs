@@ -24,14 +24,6 @@ namespace Guppy
             this.entities = provider.GetService<EntityCollection>();
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            this.layers.Create<Layer>().Dispose();
-            this.layers.Create<Layer>();
-        }
-
         public override void Dispose()
         {
             base.Dispose();

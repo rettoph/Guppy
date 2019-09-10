@@ -41,6 +41,11 @@ namespace Guppy
             this.PostInitialize();
         }
 
+        internal void TryDispose()
+        {
+            this.Dispose();
+        }
+
         internal void TryDraw(GameTime gameTime)
         {
             this.Draw(gameTime);
@@ -70,6 +75,11 @@ namespace Guppy
         }
 
         protected virtual void PostInitialize()
+        {
+            //
+        }
+
+        protected virtual void Dispose()
         {
             //
         }

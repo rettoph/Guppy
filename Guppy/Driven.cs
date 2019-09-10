@@ -49,6 +49,8 @@ namespace Guppy
         public override void Dispose()
         {
             base.Dispose();
+
+            this.drivers.ForEach(d => d.TryDispose());
         }
         #endregion
 

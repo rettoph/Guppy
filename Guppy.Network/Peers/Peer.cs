@@ -117,16 +117,7 @@ namespace Guppy.Network.Peers
         #region MessageType Handlers
         private void HandleData(object sender, NetIncomingMessage im)
         {
-            String type = String.Empty;
-            try
-            {
-                this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, (type = im.ReadString()), im);
-            }
-            catch(KeyNotFoundException e)
-            {
-                this.logger.LogWarning($"Unknown Group Message recieved => '{type}'. Closing connection.");
-                im.SenderConnection.Disconnect("Invalid message.");
-            }
+            this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, im.ReadString(), im);
         }
         #endregion
     }
