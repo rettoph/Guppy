@@ -88,7 +88,7 @@ namespace Guppy.Network.Groups
                 type: type,
                 method: method,
                 sequenceChanel: sequenceChanel,
-                recipient: recipient.connection,
+                recipient: recipient?.connection,
                 group: this);
         }
         #endregion
