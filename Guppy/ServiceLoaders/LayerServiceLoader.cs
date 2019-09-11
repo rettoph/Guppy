@@ -22,12 +22,12 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<DrivenFactory<Layer>>();
-            services.AddScoped<LayerCollection>();
+            //
         }
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            //
         }
     }
 }

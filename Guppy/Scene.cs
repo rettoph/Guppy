@@ -12,7 +12,7 @@ namespace Guppy
     public class Scene : Asyncable
     {
         #region Protected Attributes
-        protected LayerCollection layers { get; private set; }
+        protected OrderableCollection<Layer> layers { get; private set; }
         protected EntityCollection entities { get; private set; }
         #endregion
 
@@ -21,7 +21,7 @@ namespace Guppy
         {
             base.Create(provider);
 
-            this.layers = provider.GetService<LayerCollection>();
+            this.layers = provider.GetService<OrderableCollection<Layer>>();
             this.entities = provider.GetService<EntityCollection>();
         }
 

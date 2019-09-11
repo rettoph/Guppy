@@ -23,7 +23,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Constructor
-        public EntityCollection(EntityFactory factory, LayerCollection layers, IServiceProvider provider) : base(provider)
+        public EntityCollection(EntityFactory factory, OrderableCollection<Layer> layers, IServiceProvider provider) : base(factory, provider)
         {
             _factory = factory;
             _cachedLayers = new Dictionary<Entity, Layer>();

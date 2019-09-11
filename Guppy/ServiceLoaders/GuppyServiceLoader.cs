@@ -24,6 +24,9 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped(typeof(DrivenFactory<>));
+            services.AddScoped(typeof(OrderableCollection<>));
+
             services.AddTransient<EventDelegater>();
 
             services.AddSingleton<GlobalOptions>();
