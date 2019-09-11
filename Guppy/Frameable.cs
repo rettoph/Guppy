@@ -8,7 +8,7 @@ namespace Guppy
 {
     public abstract class Frameable : Initializable
     {
-        #region HelperMethods
+        #region Public Attributes
         public Boolean Visible { get; protected set; }
         public Boolean Enabled { get; protected set; }
         #endregion
@@ -17,6 +17,9 @@ namespace Guppy
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
+
+            this.Visible = true;
+            this.Enabled = true;
 
             this.Events.Register<Boolean>("visible:changed");
             this.Events.Register<Boolean>("enabled:changed");
