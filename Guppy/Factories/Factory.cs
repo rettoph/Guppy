@@ -59,8 +59,9 @@ namespace Guppy.Factories
         protected virtual T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
             where T : class, TBase
         {
+#if DEBUG
             this.logger.LogTrace($"Factory<{pool.TargetType.Name}> => Building {typeof(TBase).Name}<{pool.TargetType.Name}> instance...");
-
+#endif
             var creatable = pool.Pull(t =>
             { // Define a custom create method within the pool...
                 var c = ActivatorUtilities.CreateInstance(provider, t) as T;

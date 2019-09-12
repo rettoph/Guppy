@@ -42,7 +42,9 @@ namespace Guppy.Pooling
         {
             if (!_pools.ContainsKey(type))
             {
+#if DEBUG
                 _logger.LogTrace($"Creating new Pool<{type.Name}> instance...");
+#endif
                 _pools[type] = ActivatorUtilities.CreateInstance<Pool>(_provider, type);
             }
 

@@ -31,9 +31,12 @@ namespace Guppy.Collections
         public virtual T Create<T>(Action<T> setup = null, Action<T> create = null)
             where T : TOrderable
         {
-            var layer = this.factory.Build<T>(setup, create);
-            this.Add(layer);
-            return layer;
+            lock (this.factory)
+            {
+                var layer = this.factory.Build<T>(setup, create);
+                this.Add(layer);
+                return layer;
+            }
         }
         #endregion
 

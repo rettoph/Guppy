@@ -17,11 +17,14 @@ namespace Guppy.Collections
         public TScene Create<TScene>(Action<TScene> setup = null)
             where TScene : Scene
         {
-            var scene = _factory.Build<TScene>(setup);
+            lock (_factory)
+            {
+                var scene = _factory.Build<TScene>(setup);
 
-            this.Add(scene);
+                this.Add(scene);
 
-            return scene;
+                return scene;
+            }
         }
     }
 }

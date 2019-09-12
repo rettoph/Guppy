@@ -103,9 +103,12 @@ namespace Guppy.Collections
         public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null)
             where TEntity : Entity
         {
-            var entity = _factory.Build<TEntity>(handle, setup);
-            this.Add(entity);
-            return entity;
+            lock (_factory)
+            {
+                var entity = _factory.Build<TEntity>(handle, setup);
+                this.Add(entity);
+                return entity;
+            }
         }
         public Entity Create(String handle, Action<Entity> setup = null)
         {

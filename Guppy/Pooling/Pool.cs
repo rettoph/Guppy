@@ -54,10 +54,16 @@ namespace Guppy.Pooling
             {
                 if (_available.Any())
                 {
+#if DEBUG
+                    _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Pulling old instance from pool...");
+#endif
                     return _available.Dequeue();
                 }
                 else
                 {
+#if DEBUG
+                    _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Creating new instance...");
+#endif
                     return factory(this.TargetType);
                 }
             }
@@ -66,6 +72,10 @@ namespace Guppy.Pooling
         public void Put(Object instance)
         {
             ExceptionHelper.ValidateAssignableFrom(this.TargetType, instance.GetType());
+
+#if DEBUG
+            _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance to pool...");
+#endif
             _available.Enqueue(instance);
         }
         #endregion

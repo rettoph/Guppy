@@ -46,7 +46,6 @@ namespace Guppy.Collections
             _list = new HashSet<TCreateable>();
 
             this.logger = provider.GetService<ILogger>();
-            this.logger.LogTrace($"Created new CreatableCollection<{typeof(TCreateable).Name}> instance.");
 
             this.Events = new EventDelegater();
             this.Events.Register<TCreateable>("added");

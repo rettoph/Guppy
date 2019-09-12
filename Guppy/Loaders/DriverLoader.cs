@@ -32,7 +32,9 @@ namespace Guppy.Loaders
             // Load all drivers...
             var taggedDriverTypes = AssemblyHelper.GetTypesWithAttribute<Driver, IsDriverAttribute>().ForEach(driver =>
             { // Iterate through all driver types...
+#if DEBUG
                 this.logger.LogTrace($"Loading Driver<{driver.Name}> configurations...");
+#endif
                 driver.GetCustomAttributes(typeof(IsDriverAttribute), false).Select(attr => attr as IsDriverAttribute).ForEach(attribute =>
                 { // Iterate through all attributes within the current driver...
                     drivens.Where(driven => attribute.Driven.IsAssignableFrom(driven)).ForEach(driven =>
@@ -47,7 +49,9 @@ namespace Guppy.Loaders
             base.Load();
 
             // Ensure that a value gets defined for every driven type
+#if DEBUG
             this.logger.LogTrace($"    - Adding driver placeholders...");
+#endif
             var emptyDrivers = new Type[0];
             drivens.ForEach(driven =>
             {
@@ -55,13 +59,17 @@ namespace Guppy.Loaders
                     this.values[driven] = emptyDrivers;
             });
 
+#if DEBUG
             this.logger.LogTrace($"    - {this.values.Count} values cached.");
+#endif
         }
         #endregion
 
         protected override Type[] BuildOutput(IGrouping<Type, RegisteredValue> input)
         {
+#if DEBUG
             this.logger.LogTrace($"Building Driven<{input.Key}> driver configuration...");
+#endif
             return input.OrderBy(rv => rv.Priority).Select(rv => rv.Value).ToArray();
         }
     }

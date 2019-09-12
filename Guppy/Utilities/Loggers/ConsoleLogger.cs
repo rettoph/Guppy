@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Guppy.Utilities.Options;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +8,13 @@ namespace Guppy.Utilities.Loggers
 {
     public class ConsoleLogger : ILogger
     {
+        private GlobalOptions _options;
+
+        public ConsoleLogger(GlobalOptions options)
+        {
+            _options = options;
+        }
+
         public IDisposable BeginScope<TState>(TState state)
         {
             throw new NotImplementedException();
@@ -14,11 +22,7 @@ namespace Guppy.Utilities.Loggers
 
         public bool IsEnabled(LogLevel logLevel)
         {
-#if DEBUG
-            return true;
-#else
-            return logLevel > LogLevel.Warning;
-#endif
+            return logLevel >= _options.LogLevel;
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
