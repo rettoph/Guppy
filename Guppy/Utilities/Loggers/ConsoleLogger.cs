@@ -14,14 +14,21 @@ namespace Guppy.Utilities.Loggers
 
         public bool IsEnabled(LogLevel logLevel)
         {
+#if DEBUG
             return true;
+#else
+            return logLevel > LogLevel.Warning;
+#endif
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            Console.ForegroundColor = this.GetColor(logLevel);
+            if (this.IsEnabled(logLevel))
+            {
+                Console.ForegroundColor = this.GetColor(logLevel);
 
-            Console.WriteLine($"{logLevel}: {state}");
+                Console.WriteLine($"{logLevel}: {state}");
+            }
         }
 
         private ConsoleColor GetColor(LogLevel logLevel)

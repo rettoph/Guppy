@@ -57,8 +57,8 @@ namespace Guppy.Network.Groups
             });
 
             // 3. Add the new user to the connections list
-            if (newUser.connection != default(NetConnection))
-                this.connections.Add(newUser.connection);
+            if (newUser.Connection != default(NetConnection))
+                this.connections.Add(newUser.Connection);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Guppy.Network.Groups
             om.Write(oldUser.Id);
 
             // 2. Remove the users connection
-            this.connections.Remove(oldUser.connection);
+            this.connections.Remove(oldUser.Connection);
         }
         #endregion
     }

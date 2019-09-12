@@ -10,7 +10,7 @@ namespace Guppy.Network.Security
     public sealed class User : Initializable, INetworkObject
     {
         #region Internal Attributes
-        internal NetConnection connection { get; set; }
+        
         #endregion
 
         #region Public Attributes
@@ -24,6 +24,12 @@ namespace Guppy.Network.Security
         /// verified by the server.
         /// </summary>
         public Boolean Verified { get; internal set; }
+
+        /// <summary>
+        /// The current user's connection. On a client peer this is
+        /// null.
+        /// </summary>
+        public NetConnection Connection { get; set; }
         #endregion
 
         #region INetworkObject Implmentation

@@ -53,7 +53,7 @@ namespace Guppy.Network.Security.Collections
 
         internal User GetByConnection(NetConnection connection)
         {
-            return this.First(u => u.connection == connection);
+            return this.First(u => u.Connection == connection);
         }
         #endregion
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.Pooling
@@ -49,24 +50,22 @@ namespace Guppy.Pooling
         #region Helper Methods
         public Object Pull(Func<Type, Object> factory)
         {
-            if (_available.Count == 0)
+            lock (_available)
             {
-                _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Creating new instance...");
-                return factory(this.TargetType);
-            }
-            else
-            {
-                _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Pulling old instance from pool...");
-                return _available.Dequeue();
+                if (_available.Any())
+                {
+                    return _available.Dequeue();
+                }
+                else
+                {
+                    return factory(this.TargetType);
+                }
             }
         }
 
         public void Put(Object instance)
         {
             ExceptionHelper.ValidateAssignableFrom(this.TargetType, instance.GetType());
-
-            _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance to pool...");
-
             _available.Enqueue(instance);
         }
         #endregion

@@ -85,7 +85,7 @@ namespace Guppy.Network.Peers
             arg.ReadGuid(); // Disregard the user id sent from the client
             var user = _userFactory.Build<User>(u =>
             {
-                u.connection = arg.SenderConnection;
+                u.Connection = arg.SenderConnection;
                 u.TryRead(arg);
                 u.Verified = true;
             });
