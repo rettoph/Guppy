@@ -76,7 +76,8 @@ namespace Guppy.Pooling
 #if DEBUG
             _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance to pool...");
 #endif
-            _available.Enqueue(instance);
+            lock(_available)
+                _available.Enqueue(instance);
         }
         #endregion
     }
