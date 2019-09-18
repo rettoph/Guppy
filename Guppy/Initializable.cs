@@ -20,6 +20,10 @@ namespace Guppy
         private InitializationStatus _initializationStatus;
         #endregion
 
+        #region Public Attributes
+        public Boolean Disposed { get; private set; }
+        #endregion
+
         #region Constructor
         public Initializable()
         {
@@ -32,6 +36,7 @@ namespace Guppy
         {
             if (_initializationStatus == InitializationStatus.NotInitialized)
             {
+                this.Disposed = false;
                 _initializationStatus = InitializationStatus.Initializing;
                 this.PreInitialize();
             }
@@ -66,6 +71,7 @@ namespace Guppy
             base.Dispose();
 
             _initializationStatus = InitializationStatus.NotInitialized;
+            this.Disposed = true;
         }
 
         protected virtual void PreInitialize()

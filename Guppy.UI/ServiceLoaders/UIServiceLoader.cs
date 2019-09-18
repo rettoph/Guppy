@@ -3,6 +3,7 @@ using Guppy.Collections;
 using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.UI.Entities;
+using Guppy.UI.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,16 @@ namespace Guppy.UI.ServiceLoaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<Pointer>(p => p.GetRequiredService<EntityCollection>().Create<Pointer>("ui:pointer"));
+            services.AddScoped<UIScopeOptions>();
+            services.AddScoped<Pointer>(p =>
+            {
+                var options = p.GetRequiredService<UIScopeOptions>();
+
+                if (options.Pointer == default(Pointer) || options.Pointer.Disposed)
+                    options.Pointer = p.GetRequiredService<EntityCollection>().Create<Pointer>("ui:pointer");
+
+                return options.Pointer;
+            });
         }
 
         public void ConfigureProvider(IServiceProvider provider)
