@@ -44,7 +44,7 @@ namespace Guppy.UI.Entities
         /// <summary>
         /// The pointers current scroll value
         /// </summary>
-        public Single Scroll { get; private set; }
+        public Int32 Scroll { get; private set; }
         #endregion
 
         #region Constructor
@@ -73,15 +73,20 @@ namespace Guppy.UI.Entities
             base.Draw(gameTime);
 
             _spriteBatch.DrawString(_font, $"Pointer: {this.Position.X}, {this.Position.Y}", new Vector2(15, 15), Color.White);
+            _spriteBatch.DrawString(_font, $"Buttons: {this.Buttons}", new Vector2(15, 35), Color.White);
+            _spriteBatch.DrawString(_font, $"Scroll: {this.Scroll}", new Vector2(15, 55), Color.White);
         }
         #endregion
 
         #region Utility Methods
         public void MoveTo(Vector2 position)
         {
-            this.Position = position;
+            if (position != this.Position)
+            { // Only update the position if anything has changed
+                this.Position = position;
 
-            this.Events.TryInvoke<Vector2>(this, "moved", this.Position);
+                this.Events.TryInvoke<Vector2>(this, "moved", this.Position);
+            }
         }
 
         public void MoveBy(Vector2 delta)
@@ -89,29 +94,35 @@ namespace Guppy.UI.Entities
             this.MoveTo(this.Position + delta);
         }
 
-        public void ScrollTo(Single scroll)
+        public void ScrollTo(Int32 scroll)
         {
-            this.Scroll = scroll;
+            if (scroll != this.Scroll)
+            { // Only scroll if anything has changed
+                this.Scroll = scroll;
 
-            this.Events.TryInvoke<Single>(this, "scrolled", this.Scroll);
+                this.Events.TryInvoke<Int32>(this, "scrolled", this.Scroll);
+            }
         }
 
-        public void ScrollBy(Single delta)
+        public void ScrollBy(Int32 delta)
         {
             this.ScrollTo(this.Scroll + delta);
         }
 
         public void SetButton(Button button, Boolean value)
         {
-            if (value)
-            {
-                this.Buttons |= button;
-                this.Events.TryInvoke<Button>(this, "pressed", button);
-            }
-            else
-            {
-                this.Buttons &= ~button;
-                this.Events.TryInvoke<Button>(this, "released", button);
+            if (value != this.Buttons.HasFlag(button))
+            { // Only update if the button value is not already the recieved value
+                if (value)
+                {
+                    this.Buttons |= button;
+                    this.Events.TryInvoke<Button>(this, "pressed", button);
+                }
+                else
+                {
+                    this.Buttons &= ~button;
+                    this.Events.TryInvoke<Button>(this, "released", button);
+                }
             }
         }
         #endregion

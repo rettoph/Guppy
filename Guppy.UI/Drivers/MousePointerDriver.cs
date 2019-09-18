@@ -23,6 +23,14 @@ namespace Guppy.UI.Drivers
 
             // Move the pointer to the recieved mouse position
             this.driven.MoveTo(mState.Position.ToVector2());
+
+            // Update the button states
+            this.driven.SetButton(Pointer.Button.Left, mState.LeftButton == ButtonState.Pressed);
+            this.driven.SetButton(Pointer.Button.Middle, mState.MiddleButton == ButtonState.Pressed);
+            this.driven.SetButton(Pointer.Button.Right, mState.RightButton == ButtonState.Pressed);
+
+            // Update the scroll value
+            this.driven.ScrollTo(mState.ScrollWheelValue);
         }
     }
 }
