@@ -37,3 +37,7 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | `Guppy.Network` | `Peer` | `recieved:nat-introduction-success` | `NetIncomingMessage` | Invoked when an the peer recieves a nat introduction success message. |
 | `Guppy.Network` | `Peer` | `recieved:connection-latency-updated` | `NetIncomingMessage` | Invoked when an the peer recieves a connection latency updated message. |
 | | | | |
+| `Guppy.UI` | `Pointer` | `moved` | `Vector2` | Invoked when the pointer position is updated. |
+| `Guppy.UI` | `Pointer` | `pressed` | `Button` | Invoked when a pointer button is pressed. |
+| `Guppy.UI` | `Pointer` | `released` | `Button` | Invoked when a pointer button is released. |
+| `Guppy.UI` | `Pointer` | `scrolled` | `Singke` | Invoked when the pointer is scrolled. |

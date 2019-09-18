@@ -11,8 +11,6 @@ namespace Guppy.UI.Drivers
     [IsDriver(typeof(Pointer))]
     public class MousePointerDriver : Driver<Pointer>
     {
-        private Vector2 _mouse;
-
         public MousePointerDriver(Pointer driven) : base(driven)
         {
         }

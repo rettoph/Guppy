@@ -11,8 +11,8 @@ namespace Guppy.Network.Collections
     public class GroupCollection : CreatableCollection<Group>
     {
         #region Private Fields
-        private GroupFactory _factory;
-        private Type _groupType;
+        private readonly GroupFactory _factory;
+        private readonly Type _groupType;
         #endregion
 
         #region Constructor

@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Submodules\Guppy\Guppy\Guppy.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
 </Project>
