@@ -39,21 +39,5 @@ namespace Guppy
             this.entities = provider.GetService<OrderableCollection<Entity>>();
         }
         #endregion
-
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            this.entities.TryCleanUpdates();
-
-            base.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            this.entities.TryCleanDraws();
-
-            base.Draw(gameTime);
-        }
-        #endregion
     }
 }

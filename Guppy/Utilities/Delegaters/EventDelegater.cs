@@ -27,6 +27,11 @@ namespace Guppy.Utilities.Delegaters
         {
             _registeredDelegates = new Dictionary<String, Type>();
         }
+
+        public void Register<T>(string v, object handlePointerScrolled)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
         #region Lifecycle Methods 
@@ -38,11 +43,6 @@ namespace Guppy.Utilities.Delegaters
             this.delegates = _registeredDelegates.ToDictionary(
                 keySelector: kvp => kvp.Key,
                 elementSelector: kvp => (Delegate)null);
-        }
-
-        public void Register<T>(string v, object handleBodyCreated)
-        {
-            throw new NotImplementedException();
         }
         #endregion
 

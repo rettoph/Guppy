@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Guppy.Utilities.Cameras
         private GameWindow _window;
         private GraphicsDevice _graphics;
         private Vector2 _position;
+        private Single _zoomTarget;
         public RectangleF ViewportBounds { get; private set; }
 
         protected Boolean dirtyViewport;
@@ -25,6 +27,8 @@ namespace Guppy.Utilities.Cameras
             get { return _position; }
             set { _position = value; }
         }
+
+        public Single ZoomLerp = 0.25f;
         public Single Zoom { get; private set; }
 
         public Camera2D(GraphicsDevice graphics, GameWindow window) : base(graphics)
@@ -35,7 +39,7 @@ namespace Guppy.Utilities.Cameras
             this.dirtyViewport = true;
 
             this.Position = Vector2.Zero;
-            this.Zoom = 1f;
+            this.ZoomTo(1f);
 
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
         }
@@ -46,6 +50,13 @@ namespace Guppy.Utilities.Cameras
             {
                 this.ViewportBounds = this.buildViewportBounds();
                 this.dirtyViewport = false;
+                this.dirty = true;
+            }
+
+            if (this.Zoom != _zoomTarget)
+            {
+                // Lerp to the zoom target
+                this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, this.ZoomLerp);
                 this.dirty = true;
             }
 
@@ -136,16 +147,16 @@ namespace Guppy.Utilities.Cameras
         {
             if (multiplier != 1)
             {
-                this.Zoom *= multiplier;
+                _zoomTarget *= multiplier;
 
                 this.dirty = true;
             }
         }
         public void ZoomTo(Single value)
         {
-            if (value != this.Zoom)
+            if (value != _zoomTarget)
             {
-                this.Zoom = value;
+                _zoomTarget = value;
 
                 this.dirty = true;
             }
