@@ -17,7 +17,7 @@ namespace Guppy.UI.ServiceLoaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<UIScopeOptions>();
-            services.AddScoped<Pointer>(p =>
+            services.AddTransient<Pointer>(p =>
             {
                 var options = p.GetRequiredService<UIScopeOptions>();
 
