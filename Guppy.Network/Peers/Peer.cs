@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Guppy.Network.Security.Collections;
 using Guppy.Network.Groups;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Guppy.Network.Peers
 {
@@ -81,7 +82,8 @@ namespace Guppy.Network.Peers
             this.TryHandleIncomingMessages();
 
             // Send all outgoing messages...
-            while(_outgoingMessages.Count > 0)
+            Int32 messages = _outgoingMessages.Count;
+            for(Int32 i=0; i < messages; i++)
             {
                 _omc = _outgoingMessages.Dequeue();
                 this.SendMessage(_omc);

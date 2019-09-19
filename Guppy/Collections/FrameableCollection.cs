@@ -52,7 +52,7 @@ namespace Guppy.Collections
         {
             if (this.dirtyDraws)
             {
-                _draws = this.RemapDraws();
+                _draws = this.RemapDraws().ToArray();
                 this.dirtyDraws = false;
             }
         }
@@ -61,7 +61,7 @@ namespace Guppy.Collections
         {
             if (this.dirtyUpdates)
             {
-                _updates = this.RemapUpdates();
+                _updates = this.RemapUpdates().ToArray();
                 this.dirtyUpdates = false;
             }
         }
