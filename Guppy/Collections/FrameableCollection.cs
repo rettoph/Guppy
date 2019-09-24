@@ -105,11 +105,17 @@ namespace Guppy.Collections
         /// </summary>
         public void Flush()
         {
-            while (_added.Any())
-                this.FlushAdd(_added.Dequeue());
+            lock (_added)
+            {
+                while (_added.Any())
+                    this.FlushAdd(_added.Dequeue());
+            }
 
-            while (_removed.Any())
-                this.FlushRemove(_removed.Dequeue());
+            lock (_removed)
+            {
+                while (_removed.Any())
+                    this.FlushRemove(_removed.Dequeue());
+            }
         }
 
         private void FlushAdd(TFrameable item)
