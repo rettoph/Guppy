@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions.Collection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace Guppy.Collections
         #region Private Attributes
         private IEnumerable<TFrameable> _draws;
         private IEnumerable<TFrameable> _updates;
+        private Queue<TFrameable> _added;
+        private Queue<TFrameable> _removed;
         #endregion
 
         #region Protected Attributes
@@ -28,6 +31,9 @@ namespace Guppy.Collections
         #region Constructor
         public FrameableCollection(IServiceProvider provider) : base(provider)
         {
+            _added = new Queue<TFrameable>();
+            _removed = new Queue<TFrameable>();
+
             this.dirtyDraws = true;
             this.dirtyUpdates = true;
         }
@@ -36,6 +42,8 @@ namespace Guppy.Collections
         #region Frame Methods
         public virtual void TryUpdate(GameTime gameTime)
         {
+            this.Flush();
+
             this.TryCleanUpdates();
 
             _updates.TryUpdateAll(gameTime);
@@ -61,7 +69,7 @@ namespace Guppy.Collections
         {
             if (this.dirtyUpdates)
             {
-                _updates = this.RemapUpdates().ToArray();
+                _updates = this.RemapUpdates();
                 this.dirtyUpdates = false;
             }
         }
@@ -69,6 +77,42 @@ namespace Guppy.Collections
 
         #region Collection Methods
         public override Boolean Add(TFrameable item)
+        {
+            if (!this.Contains(item))
+            {
+                _added.Enqueue(item);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public override Boolean Remove(TFrameable item)
+        {
+            if (this.Contains(item))
+            {
+                _removed.Enqueue(item);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Flush the enqueued added & removed items
+        /// </summary>
+        public void Flush()
+        {
+            while (_added.Any())
+                this.FlushAdd(_added.Dequeue());
+
+            while (_removed.Any())
+                this.FlushRemove(_removed.Dequeue());
+        }
+
+        private void FlushAdd(TFrameable item)
         {
             if (base.Add(item))
             {
@@ -79,14 +123,10 @@ namespace Guppy.Collections
                 // Bind to any relevant events
                 item.Events.TryAdd<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
                 item.Events.TryAdd<Boolean>("visible:changed", this.HandleItemVisibleChanged);
-
-                return true;
             }
-
-            return false;
         }
 
-        public override Boolean Remove(TFrameable item)
+        private void FlushRemove(TFrameable item)
         {
             if (base.Remove(item))
             {
@@ -97,23 +137,26 @@ namespace Guppy.Collections
                 // Unbind all related events
                 item.Events.TryRemove<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
                 item.Events.TryRemove<Boolean>("visible:changed", this.HandleItemVisibleChanged);
-
-                return true;
             }
-
-            return false;
         }
         #endregion
 
         #region Helper Methods
         protected virtual IEnumerable<TFrameable> RemapDraws()
         {
-            return this.Where(o => o.Visible);
+            return this.Where(o => o.Visible).ToArray();
         }
 
         protected virtual IEnumerable<TFrameable> RemapUpdates()
         {
-            return this.Where(o => o.Enabled);
+            return this.Where(o => o.Enabled).ToArray();
+        }
+
+        public override TFrameable GetById(Guid id)
+        {
+            this.Flush();
+
+            return base.GetById(id);
         }
         #endregion
 

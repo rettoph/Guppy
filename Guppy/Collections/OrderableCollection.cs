@@ -71,12 +71,12 @@ namespace Guppy.Collections
         #region Helper Methods
         protected override IEnumerable<TOrderable> RemapDraws()
         {
-            return base.RemapUpdates().OrderBy(o => o.DrawOrder);
+            return base.RemapUpdates().OrderBy(o => o.DrawOrder).ToArray();
         }
 
         protected override IEnumerable<TOrderable> RemapUpdates()
         {
-            return base.RemapUpdates().OrderBy(o => o.UpdateOrder);
+            return base.RemapUpdates().OrderBy(o => o.UpdateOrder).ToArray();
         }
         #endregion
 

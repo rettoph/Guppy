@@ -215,7 +215,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Helper Methods
-        public TCreateable GetById(Guid id)
+        public virtual TCreateable GetById(Guid id)
         {
             if (_idTable.ContainsKey(id))
                 return _idTable[id];
@@ -223,7 +223,7 @@ namespace Guppy.Collections
             return default(TCreateable);
         }
 
-        public T GetById<T>(Guid id)
+        public virtual T GetById<T>(Guid id)
             where T : TCreateable
         {
             return this.GetById(id) as T;
