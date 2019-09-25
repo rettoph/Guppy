@@ -18,6 +18,7 @@ namespace Guppy.Utilities.Cameras
         private GraphicsDevice _graphics;
         private Vector2 _position;
         private Single _zoomTarget;
+        private Vector2 _positionTarget;
         public RectangleF ViewportBounds { get; private set; }
 
         protected Boolean dirtyViewport;
@@ -29,7 +30,11 @@ namespace Guppy.Utilities.Cameras
         }
 
         public Single ZoomLerp = 0.25f;
+        public Single MoveLerp = 0.25f;
         public Single Zoom { get; private set; }
+
+        public Single ZoomTarget { get => _zoomTarget; }
+        public Vector2 PositionTarget { get => _positionTarget; }
 
         public Camera2D(GraphicsDevice graphics, GameWindow window) : base(graphics)
         {
@@ -57,6 +62,13 @@ namespace Guppy.Utilities.Cameras
             {
                 // Lerp to the zoom target
                 this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, this.ZoomLerp);
+                this.dirty = true;
+            }
+
+            if(this.Position != _positionTarget)
+            {
+                // Lerp to the position target
+                this.Position = Vector2.Lerp(this.Position, _positionTarget, this.MoveLerp);
                 this.dirty = true;
             }
 
@@ -97,27 +109,27 @@ namespace Guppy.Utilities.Cameras
         {
             if (x != _position.X || y != _position.Y)
             {
-                _position.X = x;
-                _position.Y = y;
+                _positionTarget.X = x;
+                _positionTarget.Y = y;
 
                 this.dirty = true;
             }
         }
         public void MoveTo(Vector2 pos)
         {
-            if (pos.X != _position.X || pos.Y != _position.Y)
+            if (pos.X != _positionTarget.X || pos.Y != _positionTarget.Y)
             {
-                _position.X = pos.X;
-                _position.Y = pos.Y;
+                _positionTarget.X = pos.X;
+                _positionTarget.Y = pos.Y;
 
                 this.dirty = true;
             }
         }
         public void MoveTo(ref Vector2 pos)
         {
-            if (pos != _position)
+            if (pos != _positionTarget)
             {
-                _position = pos;
+                _positionTarget = pos;
 
                 this.dirty = true;
             }
@@ -127,8 +139,8 @@ namespace Guppy.Utilities.Cameras
         {
             if (x != 0 || y != 0)
             {
-                _position.X += x;
-                _position.Y += y;
+                _positionTarget.X += x;
+                _positionTarget.Y += y;
 
                 this.dirty = true;
             }
@@ -137,7 +149,7 @@ namespace Guppy.Utilities.Cameras
         {
             if (pos != Vector2.Zero)
             {
-                _position += pos;
+                _positionTarget += pos;
 
                 this.dirty = true;
             }
