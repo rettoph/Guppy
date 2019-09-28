@@ -138,15 +138,15 @@ namespace Guppy.Network.Peers
         }
 
         protected abstract void SendMessage(NetOutgoingMessageConfiguration omc);
-#endregion
+        #endregion
 
         protected internal abstract Type GroupType();
 
-#region MessageType Handlers
+        #region MessageType Handlers
         private void HandleData(object sender, NetIncomingMessage im)
         {
             this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, im.ReadString(), im);
         }
-#endregion
+        #endregion
     }
 }
