@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Utilitites.Delegaters;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Network.Groups
 {
@@ -60,6 +61,15 @@ namespace Guppy.Network.Groups
             this.connections.Clear();
 
             this.Users.Clear();
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.Messages.Flush();
         }
         #endregion
 

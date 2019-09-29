@@ -3,6 +3,7 @@ using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,11 @@ namespace Guppy.Pooling
         /// <summary>
         /// A queue of available instances the pool can return instead of building new ones.
         /// </summary>
-        private Queue<Object> _available;
+        private ConcurrentQueue<Object> _available;
 
         private ILogger _logger;
+
+        private Object _dequeued;
         #endregion
 
         #region Public Attributes
@@ -40,7 +43,7 @@ namespace Guppy.Pooling
         #region Constructor
         public Pool(Type targetType, ILogger logger)
         {
-            _available = new Queue<Object>();
+            _available = new ConcurrentQueue<Object>();
             _logger = logger;
 
             this.TargetType = targetType;
@@ -50,34 +53,17 @@ namespace Guppy.Pooling
         #region Helper Methods
         public Object Pull(Func<Type, Object> factory)
         {
-            lock (_available)
-            {
-                if (_available.Any())
-                {
-#if DEBUG
-                    _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Pulling old instance from pool...");
-#endif
-                    return _available.Dequeue();
-                }
-                else
-                {
-#if DEBUG
-                    _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Creating new instance...");
-#endif
-                    return factory(this.TargetType);
-                }
-            }
+            if(!_available.TryDequeue(out _dequeued))
+                return factory(this.TargetType);
+
+            return _dequeued;
         }
 
         public void Put(Object instance)
         {
             ExceptionHelper.ValidateAssignableFrom(this.TargetType, instance.GetType());
 
-#if DEBUG
-            _logger.LogTrace($"Pool<{this.TargetType.Name}>({_available.Count}) => Returning old instance to pool...");
-#endif
-            lock(_available)
-                _available.Enqueue(instance);
+            _available.Enqueue(instance);
         }
         #endregion
     }

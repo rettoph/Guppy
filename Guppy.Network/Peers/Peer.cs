@@ -13,6 +13,8 @@ using Guppy.Network.Security.Collections;
 using Guppy.Network.Groups;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using System.Collections.Concurrent;
+using Guppy.Extensions.Concurrent;
 
 namespace Guppy.Network.Peers
 {
@@ -21,7 +23,7 @@ namespace Guppy.Network.Peers
         #region Private Fields
         private NetPeer _peer;
         private IPool<NetOutgoingMessageConfiguration> _outgoingMessagePool;
-        private Queue<NetOutgoingMessageConfiguration> _outgoingMessages;
+        private ConcurrentQueue<NetOutgoingMessageConfiguration> _outgoingMessages;
         private NetIncomingMessage _im;
         private NetOutgoingMessageConfiguration _omc;
         #endregion
@@ -49,7 +51,7 @@ namespace Guppy.Network.Peers
             base.Create(provider);
 
             _outgoingMessagePool = provider.GetRequiredService<IPool<NetOutgoingMessageConfiguration>>();
-            _outgoingMessages = new Queue<NetOutgoingMessageConfiguration>();
+            _outgoingMessages = new ConcurrentQueue<NetOutgoingMessageConfiguration>();
             this.Users = provider.GetRequiredService<UserCollection>();
             this.Groups = provider.GetRequiredService<GroupCollection>();
             this.MessagesTypes = provider.GetRequiredService<MessageTypeDelegater>();
@@ -82,10 +84,8 @@ namespace Guppy.Network.Peers
             this.TryHandleIncomingMessages();
 
             // Send all outgoing messages...
-            Int32 messages = _outgoingMessages.Count;
-            for(Int32 i=0; i < messages; i++)
+            if (_outgoingMessages.TryDequeue(out _omc))
             {
-                _omc = _outgoingMessages.Dequeue();
                 this.SendMessage(_omc);
                 _outgoingMessagePool.Put(_omc);
             }
@@ -145,7 +145,7 @@ namespace Guppy.Network.Peers
         #region MessageType Handlers
         private void HandleData(object sender, NetIncomingMessage im)
         {
-            this.Groups.GetOrCreateById(im.ReadGuid()).Messages.TryInvoke(this, im.ReadString(), im);
+            this.Groups.GetOrCreateById(im.ReadGuid()).Messages.Enqueue(im);
         }
         #endregion
     }
