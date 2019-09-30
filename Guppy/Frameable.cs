@@ -49,7 +49,7 @@ namespace Guppy
         #endregion
 
         #region Helper Methods
-        public void SetVisible(Boolean value)
+        public virtual void SetVisible(Boolean value)
         {
             if (value != this.Visible)
             {
@@ -59,7 +59,7 @@ namespace Guppy
             }
         }
 
-        public void SetEnabled(Boolean value)
+        public virtual void SetEnabled(Boolean value)
         {
             if (value != this.Enabled)
             {
