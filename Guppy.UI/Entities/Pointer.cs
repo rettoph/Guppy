@@ -68,14 +68,6 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Frame Methods
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            _spriteBatch.DrawString(_font, $"Pointer: {this.Position.X}, {this.Position.Y}", new Vector2(15, 15), Color.White);
-            _spriteBatch.DrawString(_font, $"Buttons: {this.Buttons}", new Vector2(15, 35), Color.White);
-            _spriteBatch.DrawString(_font, $"Scroll: {this.Scroll}", new Vector2(15, 55), Color.White);
-        }
         #endregion
 
         #region Utility Methods

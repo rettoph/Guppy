@@ -84,7 +84,7 @@ namespace Guppy.Network.Peers
             this.TryHandleIncomingMessages();
 
             // Send all outgoing messages...
-            if (_outgoingMessages.TryDequeue(out _omc))
+            while (_outgoingMessages.TryDequeue(out _omc))
             {
                 this.SendMessage(_omc);
                 _outgoingMessagePool.Put(_omc);

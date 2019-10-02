@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,8 +15,9 @@ namespace Guppy.Collections
         #region Private Attributes
         private IEnumerable<TFrameable> _draws;
         private IEnumerable<TFrameable> _updates;
-        private Queue<TFrameable> _added;
-        private Queue<TFrameable> _removed;
+        private ConcurrentQueue<TFrameable> _added;
+        private ConcurrentQueue<TFrameable> _removed;
+        private TFrameable _item;
         #endregion
 
         #region Protected Attributes
@@ -31,8 +33,8 @@ namespace Guppy.Collections
         #region Constructor
         public FrameableCollection(IServiceProvider provider) : base(provider)
         {
-            _added = new Queue<TFrameable>();
-            _removed = new Queue<TFrameable>();
+            _added = new ConcurrentQueue<TFrameable>();
+            _removed = new ConcurrentQueue<TFrameable>();
 
             this.dirtyDraws = true;
             this.dirtyUpdates = true;
@@ -105,17 +107,11 @@ namespace Guppy.Collections
         /// </summary>
         public void Flush()
         {
-            lock (_added)
-            {
-                while (_added.Any())
-                    this.FlushAdd(_added.Dequeue());
-            }
+                while (_added.TryDequeue(out _item))
+                    this.FlushAdd(_item);
 
-            lock (_removed)
-            {
-                while (_removed.Any())
-                    this.FlushRemove(_removed.Dequeue());
-            }
+                while (_removed.TryDequeue(out _item))
+                    this.FlushRemove(_item);
         }
 
         private void FlushAdd(TFrameable item)
