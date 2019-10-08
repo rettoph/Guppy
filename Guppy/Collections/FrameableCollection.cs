@@ -44,8 +44,6 @@ namespace Guppy.Collections
         #region Frame Methods
         public virtual void TryUpdate(GameTime gameTime)
         {
-            this.Flush();
-
             this.TryCleanUpdates();
 
             _updates.TryUpdateAll(gameTime);
@@ -80,9 +78,15 @@ namespace Guppy.Collections
         #region Collection Methods
         public override Boolean Add(TFrameable item)
         {
-            if (!this.Contains(item))
+            if (base.Add(item))
             {
-                _added.Enqueue(item);
+                if (item.Visible)
+                    this.dirtyDraws = true;
+                if (item.Enabled)
+                    this.dirtyUpdates = true;
+
+                item.Events.TryAdd<Boolean>("visible:changed", this.HandleItemVisibleChanged);
+                item.Events.TryAdd<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
 
                 return true;
             }
@@ -92,54 +96,20 @@ namespace Guppy.Collections
 
         public override Boolean Remove(TFrameable item)
         {
-            if (this.Contains(item))
+            if (base.Remove(item))
             {
-                _removed.Enqueue(item);
+                if (item.Visible)
+                    this.dirtyDraws = true;
+                if (item.Enabled)
+                    this.dirtyUpdates = true;
+
+                item.Events.TryRemove<Boolean>("visible:changed", this.HandleItemVisibleChanged);
+                item.Events.TryRemove<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
 
                 return true;
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Flush the enqueued added & removed items
-        /// </summary>
-        public void Flush()
-        {
-                while (_added.TryDequeue(out _item))
-                    this.FlushAdd(_item);
-
-                while (_removed.TryDequeue(out _item))
-                    this.FlushRemove(_item);
-        }
-
-        private void FlushAdd(TFrameable item)
-        {
-            if (base.Add(item))
-            {
-                // Mark draws and updates as dirty at this time
-                this.dirtyDraws = true;
-                this.dirtyUpdates = true;
-
-                // Bind to any relevant events
-                item.Events.TryAdd<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
-                item.Events.TryAdd<Boolean>("visible:changed", this.HandleItemVisibleChanged);
-            }
-        }
-
-        private void FlushRemove(TFrameable item)
-        {
-            if (base.Remove(item))
-            {
-                // Mark draws and updates as dirty at this time
-                this.dirtyDraws = true;
-                this.dirtyUpdates = true;
-
-                // Unbind all related events
-                item.Events.TryRemove<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
-                item.Events.TryRemove<Boolean>("visible:changed", this.HandleItemVisibleChanged);
-            }
         }
         #endregion
 
@@ -152,13 +122,6 @@ namespace Guppy.Collections
         protected virtual IEnumerable<TFrameable> RemapUpdates()
         {
             return this.Where(o => o.Enabled).ToArray();
-        }
-
-        public override TFrameable GetById(Guid id)
-        {
-            this.Flush();
-
-            return base.GetById(id);
         }
         #endregion
 
