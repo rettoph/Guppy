@@ -10,7 +10,7 @@ namespace Guppy
     {
         #region Public Attributes
         public EntityConfiguration Configuration { get; internal set; }
-        public Layer Layer { get; private set; }
+        public Int32 LayerDepth { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -18,7 +18,7 @@ namespace Guppy
         {
             base.Create(provider);
 
-            this.Events.Register<Layer>("changed:layer");
+            this.Events.Register<Int32>("changed:layer-depth");
         }
         #endregion
 
@@ -27,13 +27,13 @@ namespace Guppy
         /// Update the entities layer and invoke the changed:layer event
         /// </summary>
         /// <param name="layer"></param>
-        public void SetLayer(Layer layer)
+        public void SetLayer(Int32 layerDepth)
         {
-            if(layer != this.Layer)
+            if(layerDepth != this.LayerDepth)
             {
-                this.Layer = layer;
+                this.LayerDepth = layerDepth;
 
-                this.Events.TryInvoke<Layer>(this, "changed:layer", this.Layer);
+                this.Events.TryInvoke<Int32>(this, "changed:layer-depth", this.LayerDepth);
             }
         }
         #endregion

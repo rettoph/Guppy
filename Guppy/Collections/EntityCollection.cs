@@ -20,13 +20,16 @@ namespace Guppy.Collections
         private Dictionary<Entity, Layer> _cachedLayers;
 
         private EntityFactory _factory;
+
+        private LayerCollection _layers;
         #endregion
 
         #region Constructor
-        public EntityCollection(EntityFactory factory, OrderableCollection<Layer> layers, IServiceProvider provider) : base(factory, provider)
+        public EntityCollection(EntityFactory factory, LayerCollection layers, IServiceProvider provider) : base(factory, provider)
         {
             _factory = factory;
             _cachedLayers = new Dictionary<Entity, Layer>();
+            _layers = layers;
         }
         #endregion
 
@@ -44,7 +47,7 @@ namespace Guppy.Collections
         {
             if(base.Add(item))
             {
-                item.Events.TryAdd<Layer>("changed:layer", this.HandleItemLayerChanged);
+                item.Events.TryAdd<Int32>("changed:layer-depth", this.HandleItemLayerLapethChanged);
 
                 _cachedLayers.Add(item, null);
                 this.AddToLayer(item);
@@ -59,7 +62,7 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
-                item.Events.TryRemove<Layer>("changed:layer", this.HandleItemLayerChanged);
+                item.Events.TryRemove<Int32>("changed:layer-depth", this.HandleItemLayerLapethChanged);
 
                 this.RemoveFromLayer(item);
                 _cachedLayers.Remove(item);
@@ -79,7 +82,7 @@ namespace Guppy.Collections
         private void RemoveFromLayer(Entity item)
         {
             if (_cachedLayers[item] != null)
-                _cachedLayers[item].entities.Remove(item);
+                _cachedLayers[item]?.entities.Remove(item);
         }
 
         /// <summary>
@@ -91,11 +94,11 @@ namespace Guppy.Collections
             // First remove the entity to whatever layer it was on, if any
             this.RemoveFromLayer(item);
 
-            if(item.Layer != null)
-                item.Layer.entities.Add(item);
+            var layer = _layers.GetByDepth(item.LayerDepth);
 
+            layer?.entities.Add(item);
             // Store the current layer
-            _cachedLayers[item] = item.Layer;
+            _cachedLayers[item] = layer;
         }
         #endregion
 
@@ -117,7 +120,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleItemLayerChanged(object sender, Layer arg)
+        private void HandleItemLayerLapethChanged(object sender, Int32 arg)
         {
             this.AddToLayer(sender as Entity);
         }

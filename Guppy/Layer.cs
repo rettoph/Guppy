@@ -6,6 +6,7 @@ using Guppy.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Guppy.Utilities.LayerDepths;
 
 namespace Guppy
 {
@@ -29,6 +30,14 @@ namespace Guppy
         /// A list of all entities, including enabled and disabled.
         /// </summary>
         public IEnumerable<Entity> Entities { get { return this.entities.AsEnumerable(); } }
+
+        /// <summary>
+        /// The current index that the layer resides on.
+        /// 
+        /// This should be defined when creating a layer
+        /// via the LayerCollection create methods.
+        /// </summary>
+        public LayerDepth Depth { get; internal set; }
         #endregion
 
         #region Lifecycle Methods
