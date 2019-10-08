@@ -14,6 +14,11 @@ namespace Guppy.Pooling
             _pool = pools.GetOrCreate(typeof(T));
         }
 
+        public int Count()
+        {
+            return _pool.Count();
+        }
+
         public T Pull(Func<Type, T> factory)
         {
             return (T)_pool.Pull(t => factory(t));

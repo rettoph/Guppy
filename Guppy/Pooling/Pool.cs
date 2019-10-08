@@ -65,6 +65,11 @@ namespace Guppy.Pooling
 
             _available.Enqueue(instance);
         }
+
+        public int Count()
+        {
+            return _available.Count();
+        }
         #endregion
     }
 }
