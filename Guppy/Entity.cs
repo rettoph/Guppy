@@ -27,7 +27,7 @@ namespace Guppy
         /// Update the entities layer and invoke the changed:layer event
         /// </summary>
         /// <param name="layer"></param>
-        public void SetLayer(Int32 layerDepth)
+        public void SetLayerDepth(Int32 layerDepth)
         {
             if(layerDepth != this.LayerDepth)
             {

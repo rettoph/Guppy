@@ -62,9 +62,9 @@ namespace Guppy.Collections
         #endregion
 
         #region Get Methods 
-        public Layer GetByDepth(Int32 index)
+        public Layer GetByDepth(Int32 depth)
         {
-            return this.FirstOrDefault(l => l.Depth.Contains(index));
+            return this.FirstOrDefault(l => l.Depth.Contains(depth));
         }
 
         private Boolean Overlaps(LayerDepth depth)

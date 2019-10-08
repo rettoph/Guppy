@@ -13,7 +13,7 @@ namespace Guppy
     public class Layer : Orderable
     {
         #region Internal Attributes
-        internal OrderableCollection<Entity> entities { get; private set; }
+        protected internal OrderableCollection<Entity> entities { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -45,7 +45,8 @@ namespace Guppy
         {
             base.Create(provider);
 
-            this.entities = provider.GetService<OrderableCollection<Entity>>();
+            // Create a new entity collection instance
+            this.entities = ActivatorUtilities.CreateInstance<OrderableCollection<Entity>>(provider);
         }
         #endregion
     }
