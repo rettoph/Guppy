@@ -24,6 +24,7 @@ namespace Guppy.Utilities.Cameras
         public Matrix World { get { return _world; } }
         public Matrix View { get { return _view; } }
         public Matrix Projection { get { return _projection; } }
+        public BoundingFrustum Frustum { get; private set; }
         #endregion
 
         #region Constructor
@@ -36,6 +37,8 @@ namespace Guppy.Utilities.Cameras
             _projection = Matrix.Identity;
 
             this.dirty = true;
+
+            this.Frustum = new BoundingFrustum(Matrix.Identity);
         }
         #endregion
 
@@ -67,6 +70,8 @@ namespace Guppy.Utilities.Cameras
                 this.SetWorld(ref _world);
                 this.SetView(ref _view);
                 this.SetProjection(ref _projection);
+
+                this.Frustum.Matrix = this.View * this.Projection;
 
                 this.dirty = false;
 

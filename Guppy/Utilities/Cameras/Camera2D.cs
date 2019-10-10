@@ -78,7 +78,7 @@ namespace Guppy.Utilities.Cameras
         #region Matrice Build Methods
         protected override void SetWorld(ref Matrix world)
         {
-            // world = Matrix.Identity; 
+            world = Matrix.Identity; 
         }
 
         protected override void SetProjection(ref Matrix projection)
@@ -95,7 +95,7 @@ namespace Guppy.Utilities.Cameras
 
         protected override void SetView(ref Matrix view)
         {
-            // view = Matrix.Identity;
+            view = Matrix.Identity;
         }
 
         protected virtual RectangleF buildViewportBounds()
