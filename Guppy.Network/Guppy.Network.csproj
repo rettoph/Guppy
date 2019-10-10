@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net48</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
@@ -13,7 +13,7 @@
 	  <PackageReference Include="Lidgren.Network.Core2" Version="1.0.0" />
   </ItemGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.7.1.189" />
     <PackageReference Include="Lidgren.Network" Version="1.0.2" />
   </ItemGroup>
