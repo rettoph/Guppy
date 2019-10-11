@@ -27,7 +27,7 @@ namespace Guppy.Factories
         {
             var configuration = _loader[handle];
 
-            this.logger.LogDebug($"EntityFactory => Building Entity<{configuration.Type.Name}>('{configuration.Handle}') instance...");
+            this.logger.LogTrace($"EntityFactory => Building Entity<{configuration.Type.Name}>('{configuration.Handle}') instance...");
 
             return this.Build<TEntity>(configuration.Type, e =>
             {
