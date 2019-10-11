@@ -29,7 +29,7 @@ namespace Guppy.Loaders
 
         public T TryGet<T>(String handle)
         {
-            if(this.values.ContainsKey(handle))
+            if(handle != null && this.values.ContainsKey(handle))
                 return (T)this.values[handle];
 
             return default(T);
