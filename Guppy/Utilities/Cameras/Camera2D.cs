@@ -29,8 +29,15 @@ namespace Guppy.Utilities.Cameras
             set { _position = value; }
         }
 
-        public Single ZoomLerp = 0.25f;
-        public Single MoveLerp = 0.25f;
+        /// <summary>
+        /// The amount to lerp the zoom each millisecond
+        /// </summary>
+        public Single ZoomLerp = 0.02f;
+
+        /// <summary>
+        /// The movement lerp speed each millisecond
+        /// </summary>
+        public Single MoveLerp = 0.02f;
         public Single Zoom { get; private set; }
 
         public Single ZoomTarget { get => _zoomTarget; }
@@ -61,14 +68,14 @@ namespace Guppy.Utilities.Cameras
             if (this.Zoom != _zoomTarget)
             {
                 // Lerp to the zoom target
-                this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, this.ZoomLerp);
+                this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, Math.Min(1f, this.ZoomLerp * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
                 this.dirty = true;
             }
 
             if(this.Position != _positionTarget)
             {
                 // Lerp to the position target
-                this.Position = Vector2.Lerp(this.Position, _positionTarget, this.MoveLerp);
+                this.Position = Vector2.Lerp(this.Position, _positionTarget, Math.Min(1f, this.MoveLerp * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
                 this.dirty = true;
             }
 
