@@ -8,6 +8,7 @@ using System.Collections;
 using Guppy.Extensions.Collection;
 using Guppy.Utilities;
 using Guppy.Utilities.Delegaters;
+using System.Collections.Concurrent;
 
 namespace Guppy.Collections
 {
@@ -16,12 +17,12 @@ namespace Guppy.Collections
     /// removes the objects when they are disposed.
     /// </summary>
     /// <typeparam name="TResusable"></typeparam>
-    public class CreatableCollection<TCreateable> : ISet<TCreateable>, IDisposable
+    public class CreatableCollection<TCreateable> : IEnumerable<TCreateable>, IDisposable
         where TCreateable : Creatable
     {
         #region Private Fields
-        private Dictionary<Guid, TCreateable> _idTable;
-        private HashSet<TCreateable> _list;
+        private ConcurrentDictionary<Guid, TCreateable> _items;
+        private TCreateable _item;
         #endregion
 
         #region Protected Fields
@@ -33,17 +34,14 @@ namespace Guppy.Collections
 
         public Int32 Count
         {
-            get { return _list.Count; }
+            get { return _items.Count; }
         }
-
-        public Boolean IsReadOnly { get; private set; } = false;
         #endregion
 
         #region Constructors
         public CreatableCollection(IServiceProvider provider)
         {
-            _idTable = new Dictionary<Guid, TCreateable>();
-            _list = new HashSet<TCreateable>();
+            _items = new ConcurrentDictionary<Guid, TCreateable>();
 
             this.logger = provider.GetService<ILogger>();
 
@@ -60,8 +58,7 @@ namespace Guppy.Collections
             while (this.Count > 0)
                 this.First().Dispose();
 
-            _idTable.Clear();
-            _list.Clear();
+            _items.Clear();
 
             this.Events.Dispose();
         }
@@ -71,10 +68,8 @@ namespace Guppy.Collections
         /// <inheritdoc />
         public virtual Boolean Add(TCreateable item)
         {
-            if (_list.Add(item))
+            if (_items.TryAdd(item.Id, item))
             {
-                _idTable.Add(item.Id, item);
-
                 item.Events.TryAdd<Creatable>("disposing", this.HandleItemDisposing);
 
                 this.Events.TryInvoke<TCreateable>(this, "added", item);
@@ -88,10 +83,8 @@ namespace Guppy.Collections
         /// <inheritdoc />
         public virtual Boolean Remove(TCreateable item)
         {
-            if (_list.Remove(item))
+            if (_items.TryRemove(item.Id, out _item))
             {
-                _idTable.Remove(item.Id);
-
                 item.Events.TryRemove<Creatable>("disposing", this.HandleItemDisposing);
 
                 this.Events.TryInvoke<TCreateable>(this, "removed", item);
@@ -102,123 +95,28 @@ namespace Guppy.Collections
             return false;
         }
 
-        /// <inheritdoc />
-        public virtual void AddRange(IEnumerable<TCreateable> range)
+        public void Clear()
         {
-            foreach (TCreateable frameable in range)
-                this.Add(frameable);
+            this.Remove(_items.First().Value);
         }
 
-        /// <inheritdoc />
-        public virtual void Clear()
-        {
-            while (this.Count() > 0)
-                this.Remove(this.ElementAt(0));
-        }
-
-        /// <inheritdoc />
-        public void ExceptWith(IEnumerable<TCreateable> other)
-        {
-            other.ForEach(item => this.Remove(item));
-        }
-
-        /// <inheritdoc />
-        public void IntersectWith(IEnumerable<TCreateable> other)
-        {
-            this.Clear();
-            this.AddRange(other);
-        }
-
-        /// <inheritdoc />
-        public bool IsProperSubsetOf(IEnumerable<TCreateable> other)
-        {
-            return _list.IsProperSubsetOf(other);
-        }
-
-        /// <inheritdoc />
-        public bool IsProperSupersetOf(IEnumerable<TCreateable> other)
-        {
-            return _list.IsProperSupersetOf(other);
-        }
-
-        /// <inheritdoc />
-        public bool IsSubsetOf(IEnumerable<TCreateable> other)
-        {
-            return _list.IsSubsetOf(other);
-        }
-
-        /// <inheritdoc />
-        public bool IsSupersetOf(IEnumerable<TCreateable> other)
-        {
-            return _list.IsSupersetOf(other);
-        }
-
-        /// <inheritdoc />
-        public bool Overlaps(IEnumerable<TCreateable> other)
-        {
-            return _list.Overlaps(other);
-        }
-
-        /// <inheritdoc />
-        public bool SetEquals(IEnumerable<TCreateable> other)
-        {
-            return other == this;
-        }
-
-        /// <inheritdoc />
-        public void SymmetricExceptWith(IEnumerable<TCreateable> other)
-        {
-            other.ForEach(item =>
-            {
-                if (this.Contains(item))
-                    this.Remove(item);
-                else
-                    this.Add(item);
-            });
-        }
-
-        /// <inheritdoc />
-        public void UnionWith(IEnumerable<TCreateable> other)
-        {
-            other.ForEach(item => this.Add(item));
-        }
-
-        /// <inheritdoc />
-        void ICollection<TCreateable>.Add(TCreateable item)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public bool Contains(TCreateable item)
-        {
-            return _list.Contains(item);
-        }
-
-        /// <inheritdoc />
-        public void CopyTo(TCreateable[] array, int arrayIndex)
-        {
-            _list.CopyTo(array, arrayIndex);
-        }
-
-        /// <inheritdoc />
         public IEnumerator<TCreateable> GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return _items.Values.GetEnumerator();
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _list.GetEnumerator();
+            return _items.GetEnumerator();
         }
         #endregion
 
         #region Helper Methods
         public virtual TCreateable GetById(Guid id)
         {
-            if (_idTable.ContainsKey(id))
-                return _idTable[id];
+            if (_items.TryGetValue(id, out _item))
+                return _item;
 
             return default(TCreateable);
         }

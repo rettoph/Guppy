@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.Concurrent;
+using System.Linq;
 
 namespace Guppy.Network.Utilitites.Delegaters
 {
@@ -51,8 +52,9 @@ namespace Guppy.Network.Utilitites.Delegaters
         /// </summary>
         public void Flush()
         {
-            while (_messages.TryDequeue(out _im))
-                this.Invoke<NetIncomingMessage>(this, _im.ReadString(), _im);
+            while (_messages.Any())
+                if(_messages.TryDequeue(out _im))
+                    this.Invoke<NetIncomingMessage>(this, _im.ReadString(), _im);
         }
 
         public override void Dispose()

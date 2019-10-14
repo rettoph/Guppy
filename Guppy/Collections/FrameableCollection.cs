@@ -13,8 +13,8 @@ namespace Guppy.Collections
         where TFrameable : Frameable
     {
         #region Private Attributes
-        private IEnumerable<TFrameable> _draws;
-        private IEnumerable<TFrameable> _updates;
+        private List<TFrameable> _draws;
+        private List<TFrameable> _updates;
         private ConcurrentQueue<TFrameable> _added;
         private ConcurrentQueue<TFrameable> _removed;
         private TFrameable _item;
@@ -35,6 +35,9 @@ namespace Guppy.Collections
         {
             _added = new ConcurrentQueue<TFrameable>();
             _removed = new ConcurrentQueue<TFrameable>();
+
+            _draws = new List<TFrameable>();
+            _updates = new List<TFrameable>();
 
             this.dirtyDraws = true;
             this.dirtyUpdates = true;
@@ -60,7 +63,8 @@ namespace Guppy.Collections
         {
             if (this.dirtyDraws)
             {
-                _draws = this.RemapDraws().ToArray();
+                _draws.Clear();
+                _draws.AddRange(this.RemapDraws());
                 this.dirtyDraws = false;
             }
         }
@@ -69,7 +73,8 @@ namespace Guppy.Collections
         {
             if (this.dirtyUpdates)
             {
-                _updates = this.RemapUpdates();
+                _updates.Clear();
+                _updates.AddRange(this.RemapUpdates());
                 this.dirtyUpdates = false;
             }
         }
@@ -116,12 +121,12 @@ namespace Guppy.Collections
         #region Helper Methods
         protected virtual IEnumerable<TFrameable> RemapDraws()
         {
-            return this.Where(o => o.Visible).ToArray();
+            return this.Where(o => o.Visible);
         }
 
         protected virtual IEnumerable<TFrameable> RemapUpdates()
         {
-            return this.Where(o => o.Enabled).ToArray();
+            return this.Where(o => o.Enabled);
         }
         #endregion
 
