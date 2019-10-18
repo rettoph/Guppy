@@ -69,7 +69,7 @@ namespace Guppy
             return this;
         }
 
-        private IServiceProvider BuildServiceProvider()
+        public IServiceProvider BuildServiceProvider()
         {
             if (!this.Initialized)
                 throw new Exception("Unable to build Guppy ServiceProvider before GuppyLoader.Initialize has been called.");

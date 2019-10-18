@@ -1,13 +1,14 @@
 ﻿using Guppy.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Guppy.Loaders
 {
-    public abstract class Loader<THandle, TIn, TOut> : ILoader
+    public abstract class Loader<THandle, TIn, TOut> : ILoader, IEnumerable<KeyValuePair<THandle, TOut>>
     {
         public struct RegisteredValue
         {
@@ -70,6 +71,18 @@ namespace Guppy.Loaders
                 Value = value,
                 Priority = priority
             });
+        }
+        #endregion
+
+        #region IEnumerable Implementation
+        public IEnumerator<KeyValuePair<THandle, TOut>> GetEnumerator()
+        {
+            return this.values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.values.GetEnumerator();
         }
         #endregion
     }
