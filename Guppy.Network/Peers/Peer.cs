@@ -22,10 +22,7 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetPeer _peer;
-        private IPool<NetOutgoingMessageConfiguration> _outgoingMessagePool;
-        private ConcurrentQueue<NetOutgoingMessageConfiguration> _outgoingMessages;
         private NetIncomingMessage _im;
-        private NetOutgoingMessageConfiguration _omc;
         #endregion
 
         #region Protected Fields
@@ -35,7 +32,8 @@ namespace Guppy.Network.Peers
         #region Public Fields
         public UserCollection Users { get; private set; }
         public GroupCollection Groups { get; private set; }
-        public MessageTypeDelegater MessagesTypes { get; private set; }
+        public IncomingMessageTypeDelegater MessagesTypes { get; private set; }
+        public IList<NetConnection> Connections { get => _peer.Connections; }
         #endregion
 
         #region Constructor
@@ -50,11 +48,9 @@ namespace Guppy.Network.Peers
         {
             base.Create(provider);
 
-            _outgoingMessagePool = provider.GetRequiredService<IPool<NetOutgoingMessageConfiguration>>();
-            _outgoingMessages = new ConcurrentQueue<NetOutgoingMessageConfiguration>();
             this.Users = provider.GetRequiredService<UserCollection>();
             this.Groups = provider.GetRequiredService<GroupCollection>();
-            this.MessagesTypes = provider.GetRequiredService<MessageTypeDelegater>();
+            this.MessagesTypes = provider.GetRequiredService<IncomingMessageTypeDelegater>();
         }
 
         protected override void Initialize()
@@ -68,8 +64,6 @@ namespace Guppy.Network.Peers
         {
             base.Dispose();
 
-            _outgoingMessages.Clear();
-
             this.Users.Dispose();
             this.Groups.Dispose();
             this.MessagesTypes.Dispose();
@@ -82,13 +76,6 @@ namespace Guppy.Network.Peers
             base.Update(gameTime);
 
             this.TryHandleIncomingMessages();
-
-            // Send all outgoing messages...
-            while (_outgoingMessages.TryDequeue(out _omc))
-            {
-                this.SendMessage(_omc);
-                _outgoingMessagePool.Put(_omc);
-            }
         }
         #endregion
 
@@ -118,26 +105,6 @@ namespace Guppy.Network.Peers
             }
 #endif
         }
-        #endregion
-
-        #region Create & Send Message Methods
-        public NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method, int sequenceChanel, NetConnection recipient, Group group)
-        {
-            var config = _outgoingMessagePool.Pull(t => new NetOutgoingMessageConfiguration());
-            config.Method = method;
-            config.SequenceChannel = sequenceChanel;
-            config.Recipient = recipient;
-            config.Group = group;
-            config.Message = _peer.CreateMessage();
-            config.Message.Write(group.Id);
-            config.Message.Write(type);
-
-            _outgoingMessages.Enqueue(config);
-
-            return config.Message;
-        }
-
-        protected abstract void SendMessage(NetOutgoingMessageConfiguration omc);
         #endregion
 
         protected internal abstract Type GroupType();

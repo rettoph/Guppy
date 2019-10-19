@@ -28,8 +28,8 @@ namespace Guppy.Network.ServiceLoaders
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<MessageTypeDelegater>();
-            services.AddSingleton<MessageDelegater>();
+            services.AddSingleton<IncomingMessageTypeDelegater>();
+            services.AddTransient<GroupMessageDelegater>();
 
             services.AddSingleton<NetPeerConfiguration>(p => new NetPeerConfiguration(_appIdentifier));
             services.AddSingleton<NetworkOptions>();

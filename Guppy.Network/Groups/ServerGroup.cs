@@ -13,6 +13,10 @@ namespace Guppy.Network.Groups
 {
     public sealed class ServerGroup : Group
     {
+        #region Internal Attributes
+        protected internal override IList<NetConnection> connections { get; protected set; }
+        #endregion
+
         #region Constructor
         public ServerGroup(CreatableCollection<User> users, Peer peer) : base(users, peer)
         {
@@ -20,6 +24,13 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Lifecycle Methods
+        protected override void Create(IServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.connections = new List<NetConnection>();
+        }
+
         protected override void Initialize()
         {
             base.Initialize();
@@ -43,7 +54,7 @@ namespace Guppy.Network.Groups
         private void HandleUserAdded(object sender, User newUser)
         {
             // 1. Send the current user to all existing users
-            NetOutgoingMessage om = this.CreateMessage("user:joined", NetDeliveryMethod.ReliableOrdered, 0);
+            NetOutgoingMessage om = this.Messages.Create("user:joined", NetDeliveryMethod.ReliableOrdered, 0);
             newUser.TryWrite(om);
 
             // 2. Send a list of all existing users to the new user
@@ -51,7 +62,7 @@ namespace Guppy.Network.Groups
             {
                 if (user.Id != newUser.Id)
                 { // Dont double send the new user their own data
-                    om = this.CreateMessage("user:joined", newUser, NetDeliveryMethod.ReliableOrdered, 0);
+                    om = this.Messages.Create("user:joined", NetDeliveryMethod.ReliableOrdered, 0, newUser);
                     user.TryWrite(om);
                 }
             });
@@ -72,7 +83,7 @@ namespace Guppy.Network.Groups
         private void HandleUserRemoved(object sender, User oldUser)
         {
             // 1. Broadcast the removed user to all users
-            var om = this.CreateMessage("user:left", NetDeliveryMethod.ReliableOrdered, 0);
+            var om = this.Messages.Create("user:left", NetDeliveryMethod.ReliableOrdered, 0);
             om.Write(oldUser.Id);
 
             // 2. Remove the users connection

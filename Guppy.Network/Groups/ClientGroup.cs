@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Guppy.Collections;
 using Guppy.Network.Extensions.Lidgren;
@@ -7,6 +8,7 @@ using Guppy.Network.Peers;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Network.Groups
 {
@@ -14,6 +16,10 @@ namespace Guppy.Network.Groups
     {
         #region Private Fields
         private ClientPeer _client;
+        #endregion
+
+        #region Internal Attributes
+        protected internal override IList<NetConnection> connections { get => _client.Connections; protected set => throw new NotFiniteNumberException(); }
         #endregion
 
         #region Constructor
@@ -44,6 +50,11 @@ namespace Guppy.Network.Groups
             this.Messages.Dispose();
         }
         #endregion
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
 
         #region Message Handlers
         /// <summary>

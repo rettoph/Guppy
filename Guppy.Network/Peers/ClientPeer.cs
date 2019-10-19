@@ -18,6 +18,7 @@ namespace Guppy.Network.Peers
 
         #region Public Attributes
         public User User { get; internal set; }
+        public NetConnection ServerConnection { get => _client.ServerConnection; }
         #endregion
 
         #region Constructor
@@ -37,18 +38,6 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Peer Implementation
-        protected override void SendMessage(NetOutgoingMessageConfiguration omc)
-        {
-            if (omc.Recipient == default(NetConnection))
-            { // Send directly to the server...
-                _client.SendMessage(omc.Message, omc.Method, omc.SequenceChannel);
-            }
-            else
-            { // Send to the specified recipient...
-                _client.SendMessage(omc.Message, omc.Recipient, omc.Method, omc.SequenceChannel);
-            }
-        }
-
         /// <inheritdoc />
         protected internal override Type GroupType()
         {

@@ -53,19 +53,6 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Peer Implementation
-        protected override void SendMessage(NetOutgoingMessageConfiguration omc)
-        {
-            if(omc.Recipient == default(NetConnection))
-            { // Send to the entire group...
-                if(omc.Group.connections.Any())
-                    _server.SendMessage(omc.Message, omc.Group.connections, omc.Method, omc.SequenceChannel);
-            }
-            else
-            { // Send to the specified recipient...
-                _server.SendMessage(omc.Message, omc.Recipient, omc.Method, omc.SequenceChannel);
-            }
-        }
-
         /// <inheritdoc />
         protected internal override Type GroupType()
         {

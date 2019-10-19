@@ -8,11 +8,11 @@ using System.Text;
 
 namespace Guppy.Network.Utilitites.Delegaters
 {
-    public sealed class MessageTypeDelegater : CustomDelegater<NetIncomingMessageType, NetIncomingMessage>
+    public sealed class IncomingMessageTypeDelegater : CustomDelegater<NetIncomingMessageType, NetIncomingMessage>
     {
         private ILogger _logger;
 
-        public MessageTypeDelegater(ILogger logger)
+        public IncomingMessageTypeDelegater(ILogger logger)
         {
             _logger = logger;
         }

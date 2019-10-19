@@ -16,6 +16,5 @@ namespace Guppy.Network.Configurations
         public Int32 SequenceChannel;
         public NetOutgoingMessage Message;
         public NetConnection Recipient;
-        public Group Group;
     }
 }

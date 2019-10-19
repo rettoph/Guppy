@@ -20,19 +20,19 @@ namespace Guppy.Network.Groups
     /// are capable of sending messages back and fourth
     /// to the connected peer.
     /// </summary>
-    public class Group : Frameable
+    public abstract class Group : Frameable
     {
         #region Private Fields
         private Peer _peer;
         #endregion
 
         #region Internal Attributes
-        internal IList<NetConnection> connections;
+        protected internal abstract IList<NetConnection> connections { get; protected set; }
         #endregion
 
         #region Public Attributes
         public CreatableCollection<User> Users { get; private set; }
-        public MessageDelegater Messages { get; private set; }
+        public GroupMessageDelegater Messages { get; private set; }
         #endregion
 
         #region Constructor
@@ -49,9 +49,8 @@ namespace Guppy.Network.Groups
         {
             base.Create(provider);
 
-            this.connections = new List<NetConnection>();
-
-            this.Messages = provider.GetRequiredService<MessageDelegater>();
+            this.Messages = provider.GetRequiredService<GroupMessageDelegater>();
+            this.Messages.Group = this;
         }
 
         public override void Dispose()
@@ -69,37 +68,8 @@ namespace Guppy.Network.Groups
         {
             base.Update(gameTime);
 
-            this.Messages.Flush();
-        }
-        #endregion
-
-        #region CreateMessage Methods
-        public NetOutgoingMessage CreateMessage(String type, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0)
-        {
-            return _peer.CreateMessage(
-                type: type,
-                method: method,
-                sequenceChanel: sequenceChanel,
-                recipient: null,
-                group: this);
-        }
-        public NetOutgoingMessage CreateMessage(String type, NetConnection recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0)
-        {
-            return _peer.CreateMessage(
-                type: type,
-                method: method,
-                sequenceChanel: sequenceChanel,
-                recipient: recipient,
-                group: this);
-        }
-        public NetOutgoingMessage CreateMessage(String type, User recipient, NetDeliveryMethod method = NetDeliveryMethod.UnreliableSequenced, int sequenceChanel = 0)
-        {
-            return _peer.CreateMessage(
-                type: type,
-                method: method,
-                sequenceChanel: sequenceChanel,
-                recipient: recipient?.Connection,
-                group: this);
+            this.Messages.ReadAll();
+            this.Messages.SendAll();
         }
         #endregion
     }
