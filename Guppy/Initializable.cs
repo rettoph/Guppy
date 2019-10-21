@@ -6,11 +6,12 @@ using System.Text;
 namespace Guppy
 {
     #region InitiailzationStatus Enum
-    internal enum InitializationStatus
+    public enum InitializationStatus
     {
         NotInitialized,
         Initializing,
-        Ready
+        Ready,
+        Disposing
     }
     #endregion
 
@@ -21,7 +22,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public Boolean Disposed { get; private set; }
+        public InitializationStatus Status { get => _initializationStatus; }
         #endregion
 
         #region Constructor
@@ -36,7 +37,6 @@ namespace Guppy
         {
             if (_initializationStatus == InitializationStatus.NotInitialized)
             {
-                this.Disposed = false;
                 _initializationStatus = InitializationStatus.Initializing;
                 this.PreInitialize();
             }
@@ -68,10 +68,11 @@ namespace Guppy
 
         public override void Dispose()
         {
+            _initializationStatus = InitializationStatus.Disposing;
+
             base.Dispose();
 
             _initializationStatus = InitializationStatus.NotInitialized;
-            this.Disposed = true;
         }
 
         protected virtual void PreInitialize()

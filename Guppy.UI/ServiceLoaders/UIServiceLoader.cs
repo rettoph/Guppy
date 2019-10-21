@@ -21,7 +21,7 @@ namespace Guppy.UI.ServiceLoaders
             {
                 var options = p.GetRequiredService<UIScopeOptions>();
 
-                if (options.Pointer == default(Pointer) || options.Pointer.Disposed)
+                if (options.Pointer == default(Pointer) || options.Pointer.Status == InitializationStatus.NotInitialized)
                     options.Pointer = p.GetRequiredService<EntityCollection>().Create<Pointer>("ui:pointer");
 
                 return options.Pointer;
