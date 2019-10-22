@@ -27,11 +27,6 @@ namespace Guppy.Utilities.Delegaters
         {
             _registeredDelegates = new Dictionary<String, Type>();
         }
-
-        public void Register<T>(string v, object handlePointerScrolled)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
         #region Lifecycle Methods 
