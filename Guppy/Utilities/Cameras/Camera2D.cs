@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Guppy.Attributes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,6 +14,7 @@ namespace Guppy.Utilities.Cameras
     /// Specific camera implementation used
     /// to generate 2d perspectives
     /// </summary>
+    [IsCamera(ServiceLifetime.Scoped)]
     public class Camera2D : Camera
     {
         private GameWindow _window;

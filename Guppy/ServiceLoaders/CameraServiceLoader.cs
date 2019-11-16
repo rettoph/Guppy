@@ -19,10 +19,14 @@ namespace Guppy.ServiceLoaders
         {
             services.AddSingleton<CameraFactory>();
 
-            // Auto register any cameras
-            AssemblyHelper.GetTypesAssignableFrom<Camera>()
+            // Auto register any labeled cameras
+            AssemblyHelper.GetTypesWithAttribute<Camera, IsCameraAttribute>(inherit: false)
                 .Where(t => t.IsClass && !t.IsAbstract)
-                .ForEach(t => services.AddTransient(t, p => p.GetRequiredService<CameraFactory>().Build(t)));
+                .ForEach(t => services.Add(
+                    new ServiceDescriptor(
+                        serviceType: t, 
+                        factory: p => p.GetRequiredService<CameraFactory>().Build(t), 
+                        lifetime:((IsCameraAttribute)t.GetCustomAttributes(typeof(IsCameraAttribute), true).First()).Lifetime)));
         }
 
         public void ConfigureProvider(IServiceProvider provider)

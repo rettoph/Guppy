@@ -45,19 +45,19 @@ namespace Guppy.Utilities
                 .Where(t => baseType.IsAssignableFrom(t));
         }
 
-        public static IEnumerable<Type> GetTypesWithAttribute<TBase, TAttribute>()
+        public static IEnumerable<Type> GetTypesWithAttribute<TBase, TAttribute>(Boolean inherit = true)
             where TAttribute : GuppyAttribute
         {
-            return AssemblyHelper.GetTypesWithAttribute(typeof(TBase), typeof(TAttribute));
+            return AssemblyHelper.GetTypesWithAttribute(typeof(TBase), typeof(TAttribute), inherit);
         }
-        public static IEnumerable<Type> GetTypesWithAttribute(Type baseType, Type attribute)
+        public static IEnumerable<Type> GetTypesWithAttribute(Type baseType, Type attribute, Boolean inherit = true)
         {
             if (!typeof(GuppyAttribute).IsAssignableFrom(attribute))
                 throw new Exception("Unable to load types with attribute, attribute type does not extend GuppyAttribute.");
 
             return AssemblyHelper.GetTypesAssignableFrom(baseType)
                 .Where(t => {
-                    var info = t.GetCustomAttributes(attribute, true);
+                    var info = t.GetCustomAttributes(attribute, inherit);
                     return info != null && info.Length > 0;
                 })
                 .OrderBy(t =>
