@@ -18,7 +18,7 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Constructor
-        public ServerGroup(CreatableCollection<User> users, Peer peer) : base(users, peer)
+        public ServerGroup(ServerPeer server, CreatableCollection<User> users) : base(users, server)
         {
         }
         #endregion

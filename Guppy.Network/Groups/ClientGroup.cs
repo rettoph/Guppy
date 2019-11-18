@@ -23,7 +23,7 @@ namespace Guppy.Network.Groups
         #endregion
 
         #region Constructor
-        public ClientGroup(ClientPeer client, CreatableCollection<User> users, Peer peer) : base(users, peer)
+        public ClientGroup(ClientPeer client, CreatableCollection<User> users) : base(users, client)
         {
             _client = client;
         }
