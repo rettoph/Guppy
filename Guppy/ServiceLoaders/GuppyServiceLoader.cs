@@ -35,15 +35,6 @@ namespace Guppy.ServiceLoaders
             services.AddScoped(typeof(IPoolManager), typeof(PoolManager));
             services.AddScoped(typeof(IPoolManager<>), typeof(PoolManager<>));
             services.AddScoped(typeof(IPool<>), typeof(Pool<>));
-
-            // Register all specified services based on the IsServiceAttribute
-            AssemblyHelper.GetTypesWithAttribute<Object, IsServiceAttribute>().ForEach(t =>
-            {
-                t.GetCustomAttributes(true).Where(attr => attr is IsServiceAttribute).Select(attr => attr as IsServiceAttribute).ForEach(attr =>
-                {
-                    services.Add(new ServiceDescriptor(t, attr.Lifetime));
-                });
-            });
         }
 
         public void ConfigureProvider(IServiceProvider provider)

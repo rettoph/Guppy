@@ -63,6 +63,7 @@ namespace Guppy.Network.Utilitites.Delegaters
             }
             else
             { // If messages cannot currently be sent
+                // Remove all messages and return them into the pool
                 while (_outgoing.Any())
                     if (_outgoing.TryDequeue(out _omc))
                         _outgoingPool.Put(_omc);
@@ -122,7 +123,7 @@ namespace Guppy.Network.Utilitites.Delegaters
 
         protected virtual Boolean CanSend()
         {
-            return _peer.ConnectionsCount > 0;
+            return _peer.Connections.Any();
         }
         #endregion
 
