@@ -21,9 +21,18 @@ namespace Guppy.Factories
 
         protected override T Build<T>(IServiceProvider provider, IPool pool, Action<T> setup = null, Action<T> create = null)
         {
-            var instance = base.Build(provider, pool, setup, create);
-
-            instance.TryPreInitialize();
+            var instance = base.Build(
+                provider: provider,
+                pool: pool, 
+                setup: initializable =>
+                {
+                    // Run the pre initialize method before the custom setup
+                    initializable.TryPreInitialize();
+                    // Call the custom setup
+                    setup?.Invoke(initializable);
+                }, 
+                create: create);
+            
             instance.TryInitialize();
             instance.TryPostInitialize();
 

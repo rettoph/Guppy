@@ -94,7 +94,7 @@ namespace Guppy
         #region Helper Methods
         public void SetId(Guid id)
         {
-            if (_initializationStatus != InitializationStatus.NotInitialized)
+            if (_initializationStatus > InitializationStatus.Initializing)
                 throw new Exception("Unable to update id after initialization!");
 
             this.Id = id;
