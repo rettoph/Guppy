@@ -11,6 +11,7 @@ using Guppy.Network.Configurations;
 using Guppy.Pooling.Interfaces;
 using Guppy.Network.Groups;
 using Guppy.Network.Extensions.Lidgren;
+using xxHashSharp;
 
 namespace Guppy.Network.Utilitites.Delegaters
 {
@@ -43,7 +44,7 @@ namespace Guppy.Network.Utilitites.Delegaters
         protected override void Sign(NetOutgoingMessage om, string type)
         {
             om.Write(this.Group.Id);
-            om.Write(type);
+            om.Write(xxHash.CalculateHash(Encoding.UTF8.GetBytes(type)));
         }
         #endregion
     }

@@ -17,7 +17,7 @@ namespace Guppy.Network.Utilitites.Delegaters
     /// A message delegater can create, send, and recieve
     /// network messages.
     /// </summary>
-    public abstract class MessageDelegater : CustomDelegater<String, NetIncomingMessage>
+    public abstract class MessageDelegater : HashedDelegater<NetIncomingMessage>
     {
         #region Private Fields
         private NetPeer _peer;
@@ -78,7 +78,7 @@ namespace Guppy.Network.Utilitites.Delegaters
             // Next, handle all recieved messages
             while (_recieved.Any())
                 if (_recieved.TryDequeue(out _im))
-                    this.Invoke<NetIncomingMessage>(this, _im.ReadString(), _im);
+                    this.Invoke<NetIncomingMessage>(this, _im.ReadUInt32(), _im);
         }
 
         public override void Dispose()
@@ -128,7 +128,7 @@ namespace Guppy.Network.Utilitites.Delegaters
         #endregion
 
         #region Delegator Overrides
-        protected override void Invoke<T>(object sender, string key, T arg)
+        protected override void Invoke<T>(object sender, UInt32 key, T arg)
         {
 #if DEBUG
             try
