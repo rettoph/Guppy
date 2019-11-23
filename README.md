@@ -40,4 +40,4 @@ Custom events are events bound by a simple string and can dynamically be invoked
 | `Guppy.UI` | `Pointer` | `moved` | `Vector2` | Invoked when the pointer position is updated. |
 | `Guppy.UI` | `Pointer` | `pressed` | `Button` | Invoked when a pointer button is pressed. |
 | `Guppy.UI` | `Pointer` | `released` | `Button` | Invoked when a pointer button is released. |
-| `Guppy.UI` | `Pointer` | `scrolled` | `Singke` | Invoked when the pointer is scrolled. |
+| `Guppy.UI` | `Pointer` | `scrolled` | `Single` | Invoked when the pointer is scrolled. |
