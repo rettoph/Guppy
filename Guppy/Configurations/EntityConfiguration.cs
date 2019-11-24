@@ -11,5 +11,10 @@ namespace Guppy.Configurations
         public String Description { get; internal set; }
         public Object Data { get; internal set; }
         public Type Type { get; internal set; }
+
+        public T GetData<T>()
+        {
+            return (T)this.Data;
+        }
     }
 }
