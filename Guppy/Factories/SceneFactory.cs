@@ -21,16 +21,18 @@ namespace Guppy.Factories
             var options = provider.GetRequiredService<ScopeOptions>();
 
             // If there is not an existing scene yet, create one
-            if (options.Scene == null)
+            if (options.Get<Scene>() == null)
             {
-                var scope = provider.CreateScope().ServiceProvider;
+                IServiceScope scope;
+                IServiceProvider scopeProvider = (scope = provider.CreateScope()).ServiceProvider;
                 return base.Build<T>(
-                    provider: scope,
+                    provider: scopeProvider,
                     pool: pool, 
                     setup: scene =>
                     {
                         // Update the scene's scope...
-                        scope.GetService<ScopeOptions>().Scene = scene;
+                        scopeProvider.GetService<ScopeOptions>().Set<Scene>(scene);
+                        scene.scope = scope;
                         // Run any recieved custom setup methods...
                         setup?.Invoke(scene);
                     },
@@ -38,7 +40,7 @@ namespace Guppy.Factories
             }
             else
             {
-                return options.Scene as T;
+                return options.Get<Scene>() as T;
             }
         }
     }

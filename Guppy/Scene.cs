@@ -11,6 +11,10 @@ namespace Guppy
 {
     public class Scene : Asyncable
     {
+        #region Internal Fields
+        internal IServiceScope scope;
+        #endregion
+
         #region Protected Attributes
         protected LayerCollection layers { get; private set; }
         protected EntityCollection entities { get; private set; }
@@ -32,6 +36,8 @@ namespace Guppy
             // Dispose of all self contained layers and entities
             this.layers.Dispose();
             this.entities.Dispose();
+
+            this.scope.Dispose();
         }
         #endregion
     }
