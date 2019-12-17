@@ -22,7 +22,7 @@ namespace Guppy.Factories
         }
         #endregion
 
-        public TEntity Build<TEntity>(String handle, Action<TEntity> setup = null)
+        public TEntity Build<TEntity>(String handle, Action<TEntity> setup = null, Action<TEntity> create = null)
             where TEntity : Entity
         {
             var configuration = _loader[handle];
@@ -34,7 +34,7 @@ namespace Guppy.Factories
                 e.Configuration = configuration;
 
                 setup?.Invoke(e);
-            });
+            }, create);
         }
     }
 }

@@ -103,16 +103,16 @@ namespace Guppy.Collections
         #endregion
 
         #region Create Method
-        public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null)
+        public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null, Action<TEntity> create = null)
             where TEntity : Entity
         {
-            var entity = _factory.Build<TEntity>(handle, setup);
+            var entity = _factory.Build<TEntity>(handle, setup, create);
             this.Add(entity);
             return entity;
         }
-        public Entity Create(String handle, Action<Entity> setup = null)
+        public Entity Create(String handle, Action<Entity> setup = null, Action<Entity> create = null)
         {
-            return this.Create<Entity>(handle, setup);
+            return this.Create<Entity>(handle, setup, create);
         }
         #endregion
 
