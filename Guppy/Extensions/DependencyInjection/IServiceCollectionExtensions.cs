@@ -11,6 +11,7 @@ namespace Guppy.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
+        #region Scoped Methods
         /// <summary>
         /// Add an entity and scope it, ensuring that it can be loaded
         /// via dependency injection. Note, Manually calling the EntityCollection.Create
@@ -28,7 +29,7 @@ namespace Guppy.Extensions.DependencyInjection
             {
                 var scope = p.GetRequiredService<ScopeOptions>();
                 TEntity instance;
-                if((instance = scope.Get<TEntity>()) == null)
+                if ((instance = scope.Get<TEntity>()) == null)
                 { // Create a new instance of the requested entity...
                     instance = p.GetRequiredService<EntityCollection>().Create(handle, setup, create);
                     scope.Set<TEntity>(instance);
@@ -44,11 +45,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TFactory"></typeparam>
         /// <param name="services"></param>
-        public static void AddScoped<T, TFactory>(this IServiceCollection services)
+        public static void AddScoped<T, TFactory>(this IServiceCollection services, Action<T> setup = null, Action<T> create = null)
             where T : Creatable
             where TFactory : Factory<T>
         {
-            services.AddScoped<T, T, TFactory>();
+            services.AddScoped<T, T, TFactory>(setup, create);
         }
         /// <summary>
         /// Add a custom scoped Creatable complete with a custom factory.
@@ -80,5 +81,21 @@ namespace Guppy.Extensions.DependencyInjection
                 return instance as T;
             });
         }
+        #endregion
+
+        #region Transient Methods
+        /// <summary>
+        /// Add a custom scoped Creatable complete with a custom factory.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TFactory"></typeparam>
+        /// <param name="services"></param>
+        public static void AddTransient<T, TFactory>(this IServiceCollection services, Action<T> setup = null, Action<T> create = null)
+            where T : Creatable
+            where TFactory : Factory<T>
+        {
+            services.AddTransient<T>(p => p.GetRequiredService<TFactory>().Build<T>(setup, create));
+        }
+        #endregion
     }
 }
