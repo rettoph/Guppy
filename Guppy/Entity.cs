@@ -13,13 +13,8 @@ namespace Guppy
         public Int32 LayerDepth { get; private set; }
         #endregion
 
-        #region Lifecycle Methods
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            this.Events.Register<Int32>("changed:layer-depth");
-        }
+        #region Events & Delegaters 
+        public event EventHandler<Int32> OnLayerDepthChanged;
         #endregion
 
         #region Helper Methods
@@ -33,7 +28,7 @@ namespace Guppy
             {
                 this.LayerDepth = layerDepth;
 
-                this.Events.TryInvoke<Int32>(this, "changed:layer-depth", this.LayerDepth);
+                this.OnLayerDepthChanged?.Invoke(this, this.LayerDepth);
             }
         }
         #endregion

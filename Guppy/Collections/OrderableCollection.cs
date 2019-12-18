@@ -45,8 +45,8 @@ namespace Guppy.Collections
         {
             if (base.Add(item))
             {
-                item.Events.TryAdd<Int32>("update-order:changed", this.HandleItemUpdateOrderChanged);
-                item.Events.TryAdd<Int32>("draw-order:changed", this.HandleItemDrawOrderChanged);
+                item.OnDrawOrderChanged += this.HandleItemDrawOrderChanged;
+                item.OnUpdateOrderChanged += this.HandleItemUpdateOrderChanged;
 
                 return true;
             }
@@ -58,8 +58,8 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
-                item.Events.TryRemove<Int32>("update-order:changed", this.HandleItemUpdateOrderChanged);
-                item.Events.TryRemove<Int32>("draw-order:changed", this.HandleItemDrawOrderChanged);
+                item.OnDrawOrderChanged -= this.HandleItemDrawOrderChanged;
+                item.OnUpdateOrderChanged -= this.HandleItemUpdateOrderChanged;
 
                 return true;
             }

@@ -47,7 +47,7 @@ namespace Guppy.Collections
         {
             if(base.Add(item))
             {
-                item.Events.TryAdd<Int32>("changed:layer-depth", this.HandleItemLayerLapethChanged);
+                item.OnLayerDepthChanged += this.HandleItemLayerLapethChanged;
 
                 _cachedLayers.Add(item, null);
                 this.AddToLayer(item);
@@ -62,7 +62,7 @@ namespace Guppy.Collections
         {
             if (base.Remove(item))
             {
-                item.Events.TryRemove<Int32>("changed:layer-depth", this.HandleItemLayerLapethChanged);
+                item.OnLayerDepthChanged -= this.HandleItemLayerLapethChanged;
 
                 this.RemoveFromLayer(item);
                 _cachedLayers.Remove(item);

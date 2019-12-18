@@ -55,16 +55,11 @@ namespace Guppy.UI.Entities
         }
         #endregion
 
-        #region Lifecycle Methods
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            this.Events.Register<Vector2>("moved");
-            this.Events.Register<Button>("pressed");
-            this.Events.Register<Button>("released");
-            this.Events.Register<Single>("scrolled");
-        }
+        #region Events
+        public event EventHandler<Vector2> OnMoved;
+        public event EventHandler<Button> OnPressed;
+        public event EventHandler<Button> OnReleased;
+        public event EventHandler<Single> OnScrolled;
         #endregion
 
         #region Frame Methods
@@ -77,7 +72,7 @@ namespace Guppy.UI.Entities
             { // Only update the position if anything has changed
                 this.Position = position;
 
-                this.Events.TryInvoke<Vector2>(this, "moved", this.Position);
+                this.OnMoved?.Invoke(this, this.Position);
             }
         }
 
@@ -92,7 +87,7 @@ namespace Guppy.UI.Entities
             { // Only scroll if anything has changed
                 this.Scroll = scroll;
 
-                this.Events.TryInvoke<Int32>(this, "scrolled", this.Scroll);
+                this.OnScrolled?.Invoke(this, this.Scroll);
             }
         }
 
@@ -108,12 +103,12 @@ namespace Guppy.UI.Entities
                 if (value)
                 {
                     this.Buttons |= button;
-                    this.Events.TryInvoke<Button>(this, "pressed", button);
+                    this.OnPressed?.Invoke(this, button);
                 }
                 else
                 {
                     this.Buttons &= ~button;
-                    this.Events.TryInvoke<Button>(this, "released", button);
+                    this.OnReleased?.Invoke(this, button);
                 }
             }
         }

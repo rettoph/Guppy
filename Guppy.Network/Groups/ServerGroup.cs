@@ -35,8 +35,8 @@ namespace Guppy.Network.Groups
         {
             base.Initialize();
 
-            this.Users.Events.TryAdd<User>("added", this.HandleUserAdded);
-            this.Users.Events.TryAdd<User>("removed", this.HandleUserRemoved);
+            this.Users.OnAdded += this.HandleUserAdded;
+            this.Users.OnRemoved += this.HandleUserRemoved;
         }
         #endregion
 

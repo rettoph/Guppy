@@ -90,8 +90,8 @@ namespace Guppy.Collections
                 if (item.Enabled)
                     this.dirtyUpdates = true;
 
-                item.Events.TryAdd<Boolean>("visible:changed", this.HandleItemVisibleChanged);
-                item.Events.TryAdd<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
+                item.OnVisibleChanged += this.HandleItemVisibleChanged;
+                item.OnEnabledChanged += this.HandleItemEnabledChanged;
 
                 return true;
             }
@@ -108,8 +108,8 @@ namespace Guppy.Collections
                 if (item.Enabled)
                     this.dirtyUpdates = true;
 
-                item.Events.TryRemove<Boolean>("visible:changed", this.HandleItemVisibleChanged);
-                item.Events.TryRemove<Boolean>("enabled:changed", this.HandleItemEnabledChanged);
+                item.OnVisibleChanged -= this.HandleItemVisibleChanged;
+                item.OnEnabledChanged -= this.HandleItemEnabledChanged;
 
                 return true;
             }

@@ -30,12 +30,15 @@ namespace Guppy.Collections
         #endregion
 
         #region Public Attributes
-        public EventDelegater Events { get; private set; }
-
         public Int32 Count
         {
             get { return _items.Count; }
         }
+        #endregion
+
+        #region Events & Delegaters
+        public event EventHandler<TCreateable> OnAdded;
+        public event EventHandler<TCreateable> OnRemoved;
         #endregion
 
         #region Constructors
@@ -44,10 +47,6 @@ namespace Guppy.Collections
             _items = new ConcurrentDictionary<Guid, TCreateable>();
 
             this.logger = provider.GetService<ILogger>();
-
-            this.Events = new EventDelegater();
-            this.Events.Register<TCreateable>("added");
-            this.Events.Register<TCreateable>("removed");
         }
         #endregion
 
@@ -59,8 +58,6 @@ namespace Guppy.Collections
                 this.First().Dispose();
 
             _items.Clear();
-
-            this.Events.Dispose();
         }
         #endregion
 
@@ -70,9 +67,9 @@ namespace Guppy.Collections
         {
             if (_items.TryAdd(item.Id, item))
             {
-                item.Events.TryAdd<Creatable>("disposing", this.HandleItemDisposing);
+                item.OnDisposing += this.HandleItemDisposing;
 
-                this.Events.TryInvoke<TCreateable>(this, "added", item);
+                this.OnAdded?.Invoke(this, item);
 
                 return true;
             }
@@ -85,9 +82,9 @@ namespace Guppy.Collections
         {
             if (_items.TryRemove(item.Id, out _item))
             {
-                item.Events.TryRemove<Creatable>("disposing", this.HandleItemDisposing);
+                item.OnDisposing -= this.HandleItemDisposing;
 
-                this.Events.TryInvoke<TCreateable>(this, "removed", item);
+                this.OnRemoved?.Invoke(this, item);
 
                 return true;
             }
@@ -129,7 +126,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleItemDisposing(object sender, Creatable arg)
+        private void HandleItemDisposing(object sender, EventArgs arg)
         {
             // Auto remove the child on dispose
             this.Remove(sender as TCreateable);

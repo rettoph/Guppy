@@ -16,14 +16,9 @@ namespace Guppy
         public Int32 UpdateOrder { get; protected set; }
         #endregion
 
-        #region Lifecycle Methods
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            this.Events.Register<Int32>("draw-order:changed");
-            this.Events.Register<Int32>("update-order:changed");
-        }
+        #region Events
+        public event EventHandler<Int32> OnDrawOrderChanged;
+        public event EventHandler<Int32> OnUpdateOrderChanged;
         #endregion
 
         #region Helper Methods
@@ -33,7 +28,7 @@ namespace Guppy
             {
                 this.DrawOrder = value;
 
-                this.Events.TryInvoke<Int32>(this, "draw-order:changed", this.DrawOrder);
+                this.OnDrawOrderChanged?.Invoke(this, this.DrawOrder);
             }
         }
 
@@ -43,7 +38,7 @@ namespace Guppy
             {
                 this.UpdateOrder = value;
 
-                this.Events.TryInvoke<Int32>(this, "update-order:changed", this.UpdateOrder);
+                this.OnUpdateOrderChanged?.Invoke(this, this.UpdateOrder);
             }
         }
         #endregion

@@ -40,7 +40,7 @@ namespace Guppy.Factories
                 setup: creatable =>
                 {
                     // Bind any required event handlers
-                    creatable.Events.TryAdd<Creatable>("disposing", this.HandleInstanceDisposing);
+                    creatable.OnDisposing += this.HandleInstanceDisposing;
 
                     setup?.Invoke(creatable);
                 },
@@ -58,8 +58,9 @@ namespace Guppy.Factories
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="arg"></param>
-        private void HandleInstanceDisposing(object sender, Creatable arg)
+        private void HandleInstanceDisposing(object sender, EventArgs arg)
         {
+            (sender as Creatable).OnDisposing -= this.HandleInstanceDisposing;
             _pools.GetOrCreate(sender.GetType()).Put(sender);
         }
         #endregion

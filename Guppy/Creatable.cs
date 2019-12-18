@@ -27,7 +27,10 @@ namespace Guppy
 
         #region Public Attributes
         public Guid Id { get; internal set; }
-        public EventDelegater Events { get; private set; }
+        #endregion
+
+        #region Events & Delegates
+        public event EventHandler OnDisposing;
         #endregion
 
         #region Lifecycle Methods
@@ -35,9 +38,6 @@ namespace Guppy
         {
             if (_created)
                 throw new Exception("Unable to Create. Instance has already been created.");
-
-            this.Events = new EventDelegater();
-            this.Events.Register<Creatable>("disposing");
 
             this.Id = Guid.NewGuid();
             this.Create(provider);
@@ -52,8 +52,7 @@ namespace Guppy
 
         public virtual void Dispose()
         {
-            this.Events.TryInvoke<Creatable>(this, "disposing", this);
-            this.Events.Dispose();
+            this.OnDisposing?.Invoke(this, EventArgs.Empty);
         }
         #endregion
     }

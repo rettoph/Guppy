@@ -13,6 +13,11 @@ namespace Guppy
         public Boolean Enabled { get; protected set; }
         #endregion
 
+        #region Events & Delegaters
+        public event EventHandler<Boolean> OnVisibleChanged;
+        public event EventHandler<Boolean> OnEnabledChanged;
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(IServiceProvider provider)
         {
@@ -20,9 +25,6 @@ namespace Guppy
 
             this.Visible = true;
             this.Enabled = true;
-
-            this.Events.Register<Boolean>("visible:changed");
-            this.Events.Register<Boolean>("enabled:changed");
         }
         #endregion
 
@@ -55,7 +57,7 @@ namespace Guppy
             {
                 this.Visible = value;
 
-                this.Events.TryInvoke<Boolean>(this, "visible:changed", this.Visible);
+                this.OnVisibleChanged?.Invoke(this, this.Visible);
             }
         }
 
@@ -65,7 +67,7 @@ namespace Guppy
             {
                 this.Enabled = value;
 
-                this.Events.TryInvoke<Boolean>(this, "enabled:changed", this.Enabled);
+                this.OnEnabledChanged?.Invoke(this, this.Enabled);
             }
         }
         #endregion
