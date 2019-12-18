@@ -31,12 +31,10 @@ namespace Guppy.Network.Extensions.Lidgren
         #endregion
 
         #region Entity Methods
-        public static void Write(this NetOutgoingMessage om, Creatable entity)
+        public static void Write(this NetOutgoingMessage om, Entity entity)
         {
             if (om.WriteExists(entity))
-            {
                 om.Write(entity.Id);
-            }
         }
         #endregion
 
