@@ -14,7 +14,7 @@ namespace Guppy
     public abstract class Driven : Frameable
     {
         #region Internal Fields
-        internal IEnumerable<Driver> drivers;
+        internal Driver[] drivers;
         #endregion
 
         #region Lifecycle Methods
