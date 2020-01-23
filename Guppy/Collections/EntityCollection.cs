@@ -1,4 +1,5 @@
 ﻿using Guppy.Factories;
+using Guppy.Utilities;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.Logging;
 using System;
@@ -103,13 +104,30 @@ namespace Guppy.Collections
         #endregion
 
         #region Create Method
-        public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null, Action<TEntity> create = null)
+        public TEntity Create<TEntity>(Action<TEntity> setup = null, Action<TEntity> create = null)
             where TEntity : Entity
         {
-            var entity = _factory.Build<TEntity>(handle, setup, create);
+            var entity = _factory.Build<TEntity>(setup, create);
             this.Add(entity);
             return entity;
         }
+
+        public TBase Create<TBase>(Type type, String handle, Action<TBase> setup = null, Action<TBase> create = null)
+            where TBase : Entity
+        {
+            ExceptionHelper.ValidateAssignableFrom<TBase>(type);
+
+            var entity = _factory.Build<TBase>(type, handle, setup, create);
+            this.Add(entity);
+            return entity;
+        }
+
+        public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null, Action<TEntity> create = null)
+            where TEntity : Entity
+        {
+            return this.Create<TEntity>(typeof(TEntity), handle, setup, create);
+        }
+
         public Entity Create(String handle, Action<Entity> setup = null, Action<Entity> create = null)
         {
             return this.Create<Entity>(handle, setup, create);

@@ -23,9 +23,6 @@ namespace Guppy.UI.ServiceLoaders
 
         public void ConfigureProvider(IServiceProvider provider)
         {
-            var entities = provider.GetRequiredService<EntityLoader>();
-
-            entities.TryRegister<Pointer>("ui:pointer");
         }
     }
 }

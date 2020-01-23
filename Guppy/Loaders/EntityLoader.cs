@@ -1,5 +1,4 @@
-﻿using Guppy.Configurations;
-using Guppy.Utilities;
+﻿using Guppy.Utilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Guppy.Loaders
     /// <summary>
     /// Simple class used to register entity configurations at runtime.
     /// </summary>
-    public sealed class EntityLoader : SimpleLoader<String, EntityConfiguration>
+    public sealed class EntityLoader : SimpleLoader<String, (Type type, Action<Object> setup)>
     {
         #region Private Fields
         private StringLoader _strings;
@@ -25,36 +24,13 @@ namespace Guppy.Loaders
         #endregion
 
         #region Registration Methods
-        public void TryRegister<TEntity>(String handle, String nameHandle = "name:entity:default", String descriptionHandle = "description:entity:default", Object data = null, Int32 priority = 100)
+        public void TryRegister<TEntity>(String handle, Action<TEntity> setup, Int32 priority = 100)
             where TEntity : Entity
         {
-            this.Register(handle, new EntityConfiguration()
-            {
-                Handle = handle,
-                Name = nameHandle,
-                Description = descriptionHandle,
-                Data = data,
-                Type = typeof(TEntity)
-            }, priority);
-        }
-
-        protected override EntityConfiguration BuildOutput(IGrouping<string, RegisteredValue> registeredValues)
-        {
-            var config = base.BuildOutput(registeredValues);
-
-            // Update the internal string values
-            config.Name = _strings[config.Name];
-            config.Description = _strings[config.Description];
-
-            return config;
-        }
-
-
-        public override void TryRegister(String handle, EntityConfiguration value, Int32 priority = 100)
-        {
-            ExceptionHelper.ValidateAssignableFrom<Entity>(value.Type);
-
-            base.Register(handle, value, priority);
+            this.Register(
+                handle, 
+                (type: typeof(TEntity), setup: (entity) => setup(entity as TEntity)), 
+                priority);
         }
         #endregion
     }

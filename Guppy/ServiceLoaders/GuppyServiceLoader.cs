@@ -29,7 +29,7 @@ namespace Guppy.ServiceLoaders
             services.AddScoped(typeof(DrivenFactory<>));
             services.AddScoped(typeof(OrderableCollection<>));
 
-            services.AddTransient<EventDelegater>();
+            services.AddTransient<LoadedString>();
 
             services.AddSingleton<GlobalOptions>();
             services.AddScoped<ScopeOptions>();
