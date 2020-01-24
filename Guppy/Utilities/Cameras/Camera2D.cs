@@ -32,6 +32,12 @@ namespace Guppy.Utilities.Cameras
             set { _position = value; }
         }
 
+        /// <summary>
+        /// When true, the position of the camera will be centered on the viewport.
+        /// 
+        /// Otherwise, the position represents the top left corner of the viewport.
+        /// </summary>
+        public Boolean Center { get; set; } = true;
         public Single ZoomLerp = 0.015625f;
         public Single MoveLerp = 0.015625f;
         public Single Zoom { get; private set; }
@@ -86,14 +92,28 @@ namespace Guppy.Utilities.Cameras
 
         protected override void SetProjection(ref Matrix projection)
         {
-            projection = Matrix.CreateOrthographicOffCenter(
-                    this.Position.X - this.ViewportBounds.Width / 2,
-                    this.Position.X + this.ViewportBounds.Width / 2,
-                    this.Position.Y + this.ViewportBounds.Height / 2,
-                    this.Position.Y - this.ViewportBounds.Height / 2,
+            if(this.Center)
+            {
+                projection = Matrix.CreateOrthographicOffCenter(
+                        this.Position.X - this.ViewportBounds.Width / 2,
+                        this.Position.X + this.ViewportBounds.Width / 2,
+                        this.Position.Y + this.ViewportBounds.Height / 2,
+                        this.Position.Y - this.ViewportBounds.Height / 2,
+                        0f,
+                        1f)
+                    * Matrix.CreateScale(this.Zoom);
+            }
+            else
+            {
+                projection = Matrix.CreateOrthographicOffCenter(
+                    this.Position.X,
+                    this.Position.X + this.ViewportBounds.Width,
+                    this.Position.Y + this.ViewportBounds.Height,
+                    this.Position.Y,
                     0f,
                     1f)
                 * Matrix.CreateScale(this.Zoom);
+            }
         }
 
         protected override void SetView(ref Matrix view)
