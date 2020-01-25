@@ -10,7 +10,7 @@ namespace Guppy.UI.Utilities
     public class ElementBounds : UnitRectangle
     {
         #region Private Fields
-        private Element _parent;
+        private BaseElement _parent;
         #endregion
 
         #region Protected Fields 
@@ -18,11 +18,11 @@ namespace Guppy.UI.Utilities
         #endregion
 
         #region Constructor
-        internal ElementBounds(Element parent)
+        internal ElementBounds(BaseElement parent)
         {
             _parent = parent;
         }
-        internal ElementBounds(Element parent, Unit top, Unit left, Unit width, Unit height) : base(top, left, width, height)
+        internal ElementBounds(BaseElement parent, Unit top, Unit left, Unit width, Unit height) : base(top, left, width, height)
         {
             _parent = parent;
         }
