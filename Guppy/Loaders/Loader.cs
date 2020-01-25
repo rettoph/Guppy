@@ -30,7 +30,7 @@ namespace Guppy.Loaders
         public TOut this[THandle handle]
         {
             get {
-                if (this.values.ContainsKey(handle))
+                if (handle != null && this.values.ContainsKey(handle))
                     return this.values[handle];
                 else
                     return default(TOut);
