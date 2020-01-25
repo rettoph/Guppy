@@ -165,9 +165,20 @@ namespace Guppy.UI.Entities.UI
         {
             base.Draw(gameTime);
 
-            this.children.TryDrawAll(gameTime);
 
-            this.primitiveBatch.DrawRectangle(this.Bounds, Color.Green);
+            Color color = new Color(100, 100, 0);
+
+            if (this.Buttons.HasFlag(Pointer.Button.Left))
+                color.R = 255;
+            if (this.Buttons.HasFlag(Pointer.Button.Right))
+                color.G = 255;
+            if (this.Hovered)
+                color.B = 255;
+
+            this.primitiveBatch.FillRectangle(this.Bounds, new Color(color, 50));
+            this.primitiveBatch.DrawRectangle(this.Bounds, color);
+
+            this.children.TryDrawAll(gameTime);
         }
         #endregion
 
