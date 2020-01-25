@@ -13,8 +13,8 @@ namespace Guppy.UI.Utilities
         private BaseElement _parent;
         #endregion
 
-        #region Protected Fields 
-        protected Rectangle pixel;
+        #region Public Fields 
+        public Rectangle Pixel;
         #endregion
 
         #region Constructor
@@ -32,19 +32,19 @@ namespace Guppy.UI.Utilities
         protected internal virtual void Clean()
         {
             // Generate a new pixel rectangle based on the parent element's parent's bounds.
-            this.pixel = this.ToPixel(_parent.GetParentBounds());
+            this.Pixel = this.ToPixel(_parent.GetParentBounds());
         }
 
         public Boolean Contains(Vector2 point)
         {
-            return this.pixel.Contains(point);
+            return this.Pixel.Contains(point);
         }
         #endregion
 
         #region Operators
         public static implicit operator Rectangle(ElementBounds bounds)
         {
-            return bounds.pixel;
+            return bounds.Pixel;
         }
         #endregion
     }

@@ -34,6 +34,30 @@ namespace Guppy.UI.Entities.UI
             /// </summary>
             Propagate,
         }
+
+        [Flags]
+        public enum Alignment
+        {
+            Top = 1,
+            VerticalCenter = 2,
+            Bottom = 4,
+            Left = 8,
+            HorizontalCenter = 16,
+            Right = 32,
+
+            TopLeft = Alignment.Top | Alignment.Left,
+            TopCenter = Alignment.Top | Alignment.HorizontalCenter,
+            TopRight = Alignment.Top | Alignment.Right,
+
+            CenterLeft = Alignment.VerticalCenter | Alignment.Left,
+            CenterCenter = Alignment.VerticalCenter | Alignment.HorizontalCenter,
+            Center = Alignment.VerticalCenter | Alignment.HorizontalCenter,
+            CenterRight = Alignment.VerticalCenter | Alignment.Right,
+
+            BottomLeft = Alignment.Bottom | Alignment.Left,
+            BottomCenter = Alignment.Bottom | Alignment.HorizontalCenter,
+            BottomRight = Alignment.Bottom | Alignment.Right
+        }
         #endregion
 
         #region Private Fields
@@ -189,6 +213,8 @@ namespace Guppy.UI.Entities.UI
             if (this.Hovered)
                 color.B = 255;
 
+            this.primitiveBatch.FillRectangle(this.Align(new Rectangle(0, 0, 100, 100), Alignment.Center, true), color);
+
             this.primitiveBatch.DrawRectangle(this.Bounds, color);
 
             this.children.TryDrawAll(gameTime);
@@ -281,6 +307,56 @@ namespace Guppy.UI.Entities.UI
         private Boolean CanTriggerEvents()
         {
             return this.EventType == EventTypes.Propagate || (this.EventType == EventTypes.Normal && !this.childHovered);
+        }
+
+        
+        /// <summary>
+        /// Aligns the given rectangle in the requested alignment method.
+        /// 
+        /// This will update the rectangles internal position.
+        /// </summary>
+        /// <param name="rectangle">The rectangle to align.</param>
+        /// <param name="alignment">The requested alignment type. Default is Top Left</param>
+        /// <param name="useWorldCoordinates">Whether or not the response should be in local or world coords.</param>
+        public void Align(ref Rectangle rectangle, BaseElement.Alignment alignment, Boolean useWorldCoordinates = false)
+        {
+            // Default to Top Left alignment...
+            Point position = useWorldCoordinates ? this.Bounds.Pixel.Location : Point.Zero;
+
+            // Vertical Alignment...
+            if((alignment & Alignment.Bottom) != 0)
+            { // Bottom align...
+                position.Y += this.Bounds.Pixel.Height - rectangle.Height;
+            }
+            else if ((alignment & Alignment.VerticalCenter) != 0)
+            { // VerticalCenter align...
+                position.Y += (this.Bounds.Pixel.Height - rectangle.Height) / 2;
+            }
+
+            // Horizontal Alignment
+            if ((alignment & Alignment.Right) != 0)
+            { // Right align...
+                position.X += this.Bounds.Pixel.Width - rectangle.Width;
+            }
+            else if ((alignment & Alignment.HorizontalCenter) != 0)
+            { // HorizontalCenter align...
+                position.X += (this.Bounds.Pixel.Width - rectangle.Width) / 2;
+            }
+
+            // Update the recieved rectangles position.
+            rectangle.Location = position;
+        }
+        /// <summary>
+        /// Returns a rectangle aligned to the current element with the
+        /// requested alignment type
+        /// </summary>
+        /// <param name="rectangle">The rectangle to align.</param>
+        /// <param name="alignment">The requested alignment type. Default is Top Left</param>
+        /// <param name="useWorldCoordinates">Whether or not the response should be in local or world coords.</param>
+        public Rectangle Align(Rectangle rectangle, BaseElement.Alignment alignment, Boolean useWorldCoordinates = false)
+        {
+            this.Align(ref rectangle, alignment, useWorldCoordinates);
+            return rectangle;
         }
         #endregion
 
