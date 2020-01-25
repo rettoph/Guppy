@@ -32,7 +32,12 @@ namespace Guppy.UI.Utilities
         protected internal virtual void Clean()
         {
             // Generate a new pixel rectangle based on the parent element's parent's bounds.
-            this.pixel = this.ToPixel(_parent is Stage ? (_parent as Stage).ViewportBounds : _parent.Parent.Bounds);
+            this.pixel = this.ToPixel(_parent.GetParentBounds());
+        }
+
+        public Boolean Contains(Vector2 point)
+        {
+            return this.pixel.Contains(point);
         }
         #endregion
 

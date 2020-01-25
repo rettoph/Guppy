@@ -1,5 +1,6 @@
 ﻿using Guppy.Collections;
 using Guppy.Extensions.Collection;
+using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
 using Guppy.UI.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,14 @@ namespace Guppy.UI.Entities.UI
         #endregion
 
         #region Protected Attributes
+        /// <summary>
+        /// The scoped UI pointer instance.
+        /// </summary>
+        protected Pointer pointer { get; private set; }
+
+        /// <summary>
+        /// A collection of all entities (mainly useful for creating new entities)
+        /// </summary>
         protected EntityCollection entities { get; private set; }
 
         /// <summary>
@@ -50,6 +59,11 @@ namespace Guppy.UI.Entities.UI
         /// The current element's parent (if any)
         /// </summary>
         public Element Parent { get; internal set; }
+
+        /// <summary>
+        /// The pointer flags (as of the most recent update)
+        /// </summary>
+        public PointerFlags PointerFlags { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -62,6 +76,7 @@ namespace Guppy.UI.Entities.UI
             this.primitiveBatch = provider.GetRequiredService<PrimitiveBatch>();
             this.spritebatch = provider.GetRequiredService<SpriteBatch>();
             this.entities = provider.GetRequiredService<EntityCollection>();
+            this.pointer = provider.GetRequiredService<Pointer>();
         }
 
         protected override void PreInitialize()
@@ -97,6 +112,17 @@ namespace Guppy.UI.Entities.UI
             base.Update(gameTime);
 
             this.TryClean();
+
+            if (this.Parent == null || this.Parent.PointerFlags.HasFlag(PointerFlags.Over))
+            { // Only check the over status if the parent is currently hovered...
+                this.PointerFlags = this.Bounds.Contains(this.pointer.Position) ? this.PointerFlags | PointerFlags.Over : this.PointerFlags & ~PointerFlags.Over;
+            }
+            else if(this.PointerFlags.HasFlag(PointerFlags.Over))
+            { // Assume the over status is false...
+                this.PointerFlags &= ~PointerFlags.Over;
+            }
+
+            
             this.children.TryUpdateAll(gameTime);
         }
 
@@ -161,6 +187,11 @@ namespace Guppy.UI.Entities.UI
         public void Remove(Element child)
         {
             _children.Remove(child);
+        }
+
+        protected internal virtual Rectangle GetParentBounds()
+        {
+            return this.Parent.Bounds;
         }
         #endregion
 

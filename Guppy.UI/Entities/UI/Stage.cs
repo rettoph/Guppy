@@ -12,12 +12,7 @@ namespace Guppy.UI.Entities.UI
     {
         #region Private Fields
         private GameWindow _window;
-        #endregion
-
-        #region Public Attributes
-        public Rectangle ViewportBounds { 
-            get => new Rectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1); 
-        }
+        private Rectangle _viewport;
         #endregion
 
         #region Lifecycle Methods
@@ -26,6 +21,7 @@ namespace Guppy.UI.Entities.UI
             base.Create(provider);
 
             _window = provider.GetRequiredService<GameWindow>();
+            _viewport = new Rectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
         }
 
         protected override void PreInitialize()
@@ -46,10 +42,18 @@ namespace Guppy.UI.Entities.UI
         }
         #endregion
 
+        #region Methods
+        protected internal override Rectangle GetParentBounds()
+        {
+            return _viewport;
+        }
+        #endregion
+
         #region Event Handlers
         private void HandleClientSizeChanged(object sender, EventArgs e)
         {
             this.dirty = true;
+            _viewport = new Rectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
         }
         #endregion
     }
