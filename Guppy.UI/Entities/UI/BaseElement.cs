@@ -19,6 +19,23 @@ namespace Guppy.UI.Entities.UI
     /// </summary>
     public class BaseElement : Entity
     {
+        #region Enums
+        public enum EventTypes {
+            /// <summary>
+            /// Track no events on this element
+            /// </summary>
+            None,
+            /// <summary>
+            /// Only track top level events on this element
+            /// </summary>
+            Normal,
+            /// <summary>
+            /// Track all events on this element no matter its position
+            /// </summary>
+            Propagate,
+        }
+        #endregion
+
         #region Private Fields
         private HashSet<Element> _children;
         #endregion
@@ -56,8 +73,9 @@ namespace Guppy.UI.Entities.UI
         /// </summary>
         protected internal Boolean childHovered { get; set; }
 
-        protected PrimitiveBatch primitiveBatch;
-        protected SpriteBatch spritebatch;
+        protected virtual PrimitiveBatch primitiveBatch { get => this.stage.primitiveBatch; }
+
+        protected virtual SpriteBatch spriteBatch { get => this.stage.spriteBatch; }
         #endregion
 
         #region Public Attributes
@@ -80,11 +98,11 @@ namespace Guppy.UI.Entities.UI
         /// The buttons currently pressed over the element
         /// </summary>
         public Pointer.Button Buttons { get; private set; }
-
+        
         /// <summary>
-        /// When true, button events will not bubble.
+        /// The elements current event tracking type.
         /// </summary>
-        public Boolean StopPropagation { get; set; } = true;
+        public EventTypes EventType { get; set; } = EventTypes.Normal;
         #endregion
 
         #region Event 
@@ -100,8 +118,6 @@ namespace Guppy.UI.Entities.UI
 
             _children = new HashSet<Element>();
 
-            this.primitiveBatch = provider.GetRequiredService<PrimitiveBatch>();
-            this.spritebatch = provider.GetRequiredService<SpriteBatch>();
             this.entities = provider.GetRequiredService<EntityCollection>();
             this.pointer = provider.GetRequiredService<Pointer>();
         }
@@ -146,19 +162,17 @@ namespace Guppy.UI.Entities.UI
             // Update all internal children...
             this.children.TryUpdateAll(gameTime);
 
-            // Update the current over status & trigger an event if needed
-            if (this.Hovered != (this.Hovered = this.GetHovered()))
-                this.OnHoveredChanged?.Invoke(this, this.Hovered);
-        }
+            if (this.EventType != EventTypes.None)
+            {
+                // Update the current over status & trigger an event if needed
+                if (this.Hovered != (this.Hovered = this.GetHovered()))
+                    this.OnHoveredChanged?.Invoke(this, this.Hovered);
 
-        protected override void PostUpdate(GameTime gameTime)
-        {
-            base.PostUpdate(gameTime);
-
-            // Update all the pointer buttons
-            this.UpdateButton(Pointer.Button.Left);
-            this.UpdateButton(Pointer.Button.Middle);
-            this.UpdateButton(Pointer.Button.Right);
+                // Update all the pointer buttons
+                this.UpdateButton(Pointer.Button.Left);
+                this.UpdateButton(Pointer.Button.Middle);
+                this.UpdateButton(Pointer.Button.Right);
+            }
         }
 
         protected override void Draw(GameTime gameTime)
@@ -175,7 +189,6 @@ namespace Guppy.UI.Entities.UI
             if (this.Hovered)
                 color.B = 255;
 
-            this.primitiveBatch.FillRectangle(this.Bounds, new Color(color, 50));
             this.primitiveBatch.DrawRectangle(this.Bounds, color);
 
             this.children.TryDrawAll(gameTime);
@@ -239,7 +252,7 @@ namespace Guppy.UI.Entities.UI
 
         private void UpdateButton(Pointer.Button button)
         {
-            if ((!this.StopPropagation || !this.childHovered) && this.Hovered && (this.stage.pressed & ~this.Buttons & button) != 0)
+            if (this.CanTriggerEvents() && this.Hovered && (this.stage.pressed & ~this.Buttons & button) != 0)
             {
                 this.Buttons |= button;
                 this.OnButtonPressed?.Invoke(this, button);
@@ -257,7 +270,17 @@ namespace Guppy.UI.Entities.UI
         /// <returns></returns>
         protected virtual Boolean GetHovered()
         {
-            return this.Bounds.Contains(this.pointer.Position);
+            return this.CanTriggerEvents() && this.Bounds.Contains(this.pointer.Position);
+        }
+
+        /// <summary>
+        /// Internal helper class designed to help detect
+        /// if the current element should trigger top level events
+        /// </summary>
+        /// <returns></returns>
+        private Boolean CanTriggerEvents()
+        {
+            return this.EventType == EventTypes.Propagate || (this.EventType == EventTypes.Normal && !this.childHovered);
         }
         #endregion
 

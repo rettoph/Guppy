@@ -1,4 +1,5 @@
 ﻿using Guppy.Collections;
+using Guppy.UI.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +14,10 @@ namespace Guppy.UI.Entities.UI
         #region Private Fields
         private GameWindow _window;
         private Rectangle _viewport;
+        private PrimitiveBatch _defaultPrimitiveBatch;
+        private SpriteBatch _defaultSpriteBatch;
+        private PrimitiveBatch _primitiveBatch;
+        private SpriteBatch _spriteBatch;
         #endregion
 
         #region Internal Fields
@@ -28,6 +33,10 @@ namespace Guppy.UI.Entities.UI
 
         #region Protected Fields
         protected override Stage stage => this;
+
+        protected override PrimitiveBatch primitiveBatch => _primitiveBatch;
+
+        protected override SpriteBatch spriteBatch => _spriteBatch;
         #endregion
 
         #region Lifecycle Methods
@@ -37,6 +46,9 @@ namespace Guppy.UI.Entities.UI
 
             _window = provider.GetRequiredService<GameWindow>();
             _viewport = new Rectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
+
+            _defaultPrimitiveBatch = provider.GetRequiredService<PrimitiveBatch>();
+            _defaultSpriteBatch = provider.GetRequiredService<SpriteBatch>();
         }
 
         protected override void PreInitialize()
@@ -45,6 +57,9 @@ namespace Guppy.UI.Entities.UI
 
             this.SetEnabled(true);
             this.SetVisible(true);
+
+            // Disable events on the stage by default
+            this.EventType = EventTypes.None;
 
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
 
@@ -61,11 +76,6 @@ namespace Guppy.UI.Entities.UI
         #endregion
 
         #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
         protected override void PostUpdate(GameTime gameTime)
         {
             base.PostUpdate(gameTime);
@@ -74,12 +84,50 @@ namespace Guppy.UI.Entities.UI
             this.pressed = 0;
             this.released = 0;
         }
+
+        protected override void PreDraw(GameTime gameTIme)
+        {
+            base.PreDraw(gameTIme);
+
+            this.ResetBatchs();
+        }
         #endregion
 
         #region Methods
         protected internal override Rectangle GetParentBounds()
         {
             return _viewport;
+        }
+
+        /// <summary>
+        /// Set a custom spritebatch (for the remainder of this frame)
+        /// Starting next frame the batches will be restored to their
+        /// defaults.
+        /// </summary>
+        public void SetBatches(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
+        {
+            this.SetSpriteBatch(spriteBatch);
+            this.SetPrimitiveBatch(primitiveBatch);
+        }
+
+        public void SetSpriteBatch(SpriteBatch spriteBatch)
+        {
+            _spriteBatch = spriteBatch;
+        }
+
+        public void SetPrimitiveBatch(PrimitiveBatch primitiveBatch)
+        {
+            _primitiveBatch = primitiveBatch;
+        }
+
+        /// <summary>
+        /// Reset the primitivebatch &
+        /// & spritebatchs to their default
+        /// values
+        /// </summary>
+        public void ResetBatchs()
+        {
+            this.SetBatches(_defaultSpriteBatch, _defaultPrimitiveBatch);
         }
         #endregion
 

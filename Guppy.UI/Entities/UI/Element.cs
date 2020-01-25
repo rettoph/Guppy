@@ -17,7 +17,7 @@ namespace Guppy.UI.Entities.UI
 
         protected override Boolean GetHovered()
         {
-            return this.Parent.Hovered ? base.GetHovered() : false;
+            return this.Parent.Hovered || this.EventType == EventTypes.Normal ? base.GetHovered() : false;
         }
     }
 }
