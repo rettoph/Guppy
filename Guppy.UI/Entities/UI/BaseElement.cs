@@ -17,7 +17,7 @@ namespace Guppy.UI.Entities.UI
     /// sizing, debug rendering, child relationships,
     /// & more.
     /// </summary>
-    public class BaseElement : Entity
+    public abstract class BaseElement : Entity
     {
         #region Enums
         public enum EventTypes {
@@ -126,7 +126,7 @@ namespace Guppy.UI.Entities.UI
         /// <summary>
         /// The elements current event tracking type.
         /// </summary>
-        public EventTypes EventType { get; set; } = EventTypes.Normal;
+        public EventTypes EventType { get; set; } = EventTypes.None;
         #endregion
 
         #region Event 
@@ -203,20 +203,6 @@ namespace Guppy.UI.Entities.UI
         {
             base.Draw(gameTime);
 
-
-            Color color = new Color(100, 100, 0);
-
-            if (this.Buttons.HasFlag(Pointer.Button.Left))
-                color.R = 255;
-            if (this.Buttons.HasFlag(Pointer.Button.Right))
-                color.G = 255;
-            if (this.Hovered)
-                color.B = 255;
-
-            this.primitiveBatch.FillRectangle(this.Align(new Rectangle(0, 0, 100, 100), Alignment.Center, true), color);
-
-            this.primitiveBatch.DrawRectangle(this.Bounds, color);
-
             this.children.TryDrawAll(gameTime);
         }
         #endregion
@@ -245,30 +231,6 @@ namespace Guppy.UI.Entities.UI
         {
             this.Bounds.Clean();
             this.children.ForEach(c => c.dirty = true);
-        }
-
-        public void Add(Element child)
-        {
-            if(_children.Add(child))
-            {
-                child.Parent = this;
-                child.dirty = true;
-            }
-        }
-        public void Add<T>(String handle = default(String), Action<T> setup = null, Action<T> create = null)
-            where T : Element
-        {
-            this.Add(this.entities.Create<T>(handle, setup, create));
-        }
-        public void Add<T>(Action<T> setup = null, Action<T> create = null)
-            where T : Element
-        {
-            this.Add(this.entities.Create<T>(setup, create));
-        }
-
-        public void Remove(Element child)
-        {
-            _children.Remove(child);
         }
 
         protected internal virtual Rectangle GetParentBounds()
@@ -357,6 +319,65 @@ namespace Guppy.UI.Entities.UI
         {
             this.Align(ref rectangle, alignment, useWorldCoordinates);
             return rectangle;
+        }
+
+        public Vector2 Align(Vector2 size, BaseElement.Alignment alignment, Boolean useWorldCoordinates = false)
+        {
+            // Default to Top Left alignment...
+            Vector2 position = useWorldCoordinates ? this.Bounds.Pixel.Location.ToVector2() : Vector2.Zero;
+
+            // Vertical Alignment...
+            if ((alignment & Alignment.Bottom) != 0)
+            { // Bottom align...
+                position.Y += (Int32)(this.Bounds.Pixel.Height - size.Y);
+            }
+            else if ((alignment & Alignment.VerticalCenter) != 0)
+            { // VerticalCenter align...
+                position.Y += (Int32)((this.Bounds.Pixel.Height - size.Y) / 2);
+            }
+
+            // Horizontal Alignment
+            if ((alignment & Alignment.Right) != 0)
+            { // Right align...
+                position.X += (Int32)(this.Bounds.Pixel.Width - size.X);
+            }
+            else if ((alignment & Alignment.HorizontalCenter) != 0)
+            { // HorizontalCenter align...
+                position.X += (Int32)((this.Bounds.Pixel.Width - size.X) / 2);
+            }
+
+            return position;
+        }
+        #endregion
+
+        #region Add/Remove Methods
+        protected Element add(Element child)
+        {
+            if (_children.Add(child))
+            {
+                child.Parent?.remove(child);
+                child.Parent = this;
+                child.dirty = true;
+
+                return child;
+            }
+
+            return default(Element);
+        }
+        protected T add<T>(String handle, Action<T> setup = null, Action<T> create = null)
+            where T : Element
+        {
+            return this.add(this.entities.Create<T>(handle, setup, create)) as T;
+        }
+        protected T add<T>(Action<T> setup = null, Action<T> create = null)
+            where T : Element
+        {
+            return this.add(this.entities.Create<T>(setup, create)) as T;
+        }
+
+        protected void remove(Element child)
+        {
+            _children.Remove(child);
         }
         #endregion
 

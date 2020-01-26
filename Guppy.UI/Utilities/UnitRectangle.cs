@@ -69,7 +69,7 @@ namespace Guppy.UI.Utilities
             _width = 1f;
             _height = 1f;
         }
-        public UnitRectangle(Unit top, Unit left, Unit width, Unit height)
+        public UnitRectangle(Unit left, Unit top, Unit width, Unit height)
         {
             _top = top;
             _left = left;
@@ -83,6 +83,14 @@ namespace Guppy.UI.Utilities
                 y: parent.Y + this.Top.ToPixel(parent.Height),
                 width: this.Width.ToPixel(parent.Width),
                 height: this.Height.ToPixel(parent.Height));
+        }
+
+        public void Set(Unit left, Unit top, Unit width, Unit height)
+        {
+            this.Top = top;
+            this.Left = left;
+            this.Width = width;
+            this.Height = height;
         }
     }
 }

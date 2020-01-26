@@ -27,6 +27,10 @@ namespace Guppy.UI.Utilities.Units
         {
             return new NestedUnit(values);
         }
+        public static implicit operator Unit(Func<Int32, Int32> toPixel)
+        {
+            return new CustomUnit(toPixel);
+        }
         public static Unit operator -(Unit uv)
         {
             return uv.Flip();

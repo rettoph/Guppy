@@ -23,6 +23,8 @@ namespace Guppy.UI.ServiceLoaders
 
         public void ConfigureProvider(IServiceProvider provider)
         {
+            var contents = provider.GetRequiredService<ContentLoader>();
+            contents.TryRegister("ui:font", "UI/Font");
         }
     }
 }

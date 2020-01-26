@@ -135,6 +135,11 @@ namespace Guppy.UI.Utilities
 
             this.TryFlushLineVertices();
         }
+
+        public void DrawLine(Vector2 p1, Vector2 p2, Color c)
+        {
+            this.DrawLine(p1, c, p2, c);
+        }
         #endregion
 
         #region Helper Methods

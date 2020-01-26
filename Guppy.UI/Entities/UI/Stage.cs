@@ -1,4 +1,5 @@
 ﻿using Guppy.Collections;
+using Guppy.UI.Entities.UI.Interfaces;
 using Guppy.UI.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Guppy.UI.Entities.UI
 {
-    public class Stage : BaseElement
+    public class Stage : BaseElement, IContainer
     {
         #region Private Fields
         private GameWindow _window;
@@ -128,6 +129,32 @@ namespace Guppy.UI.Entities.UI
         public void ResetBatchs()
         {
             this.SetBatches(_defaultSpriteBatch, _defaultPrimitiveBatch);
+        }
+        #endregion
+
+        #region IContainer Implementation
+        /// <inheritdoc />
+        public Element Add(Element child)
+        {
+            return this.add(child);
+        }
+
+        /// <inheritdoc />
+        public T Add<T>(String handle, Action<T> setup = null, Action<T> create = null) where T : Element
+        {
+            return this.add<T>(handle, setup, create);
+        }
+
+        /// <inheritdoc />
+        public T Add<T>(Action<T> setup = null, Action<T> create = null) where T : Element
+        {
+            return this.add<T>(setup, create);
+        }
+
+        /// <inheritdoc />
+        public void Remove(Element child)
+        {
+            this.remove(child);
         }
         #endregion
 
