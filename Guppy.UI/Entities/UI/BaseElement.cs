@@ -170,6 +170,9 @@ namespace Guppy.UI.Entities.UI
             base.Dispose();
 
             this.Bounds.OnChanged -= this.HandleBoundsChanged;
+
+            this.children.ForEach(c => c.Dispose());
+            _children.Clear();
         }
         #endregion
 

@@ -8,14 +8,15 @@ namespace Guppy.UI.Entities.UI.Interfaces
     /// A container is a UI element that can publicly add
     /// multiple children.
     /// </summary>
-    public interface IContainer
+    public interface IContainer<TElement>
+        where TElement : BaseElement
     {
         /// <summary>
         /// Add a pre existing element into the current container.
         /// </summary>
         /// <param name="child"></param>
         /// <returns></returns>
-        Element Add(Element child);
+        TElement Add(TElement child);
 
         /// <summary>
         /// Create a new element & add it to the current container.
@@ -26,7 +27,7 @@ namespace Guppy.UI.Entities.UI.Interfaces
         /// <param name="create"></param>
         /// <returns></returns>
         T Add<T>(String handle, Action<T> setup = null, Action<T> create = null)
-            where T : Element;
+            where T : TElement;
 
         /// <summary>
         /// Create a new element & add it to the current container.
@@ -36,12 +37,12 @@ namespace Guppy.UI.Entities.UI.Interfaces
         /// <param name="create"></param>
         /// <returns></returns>
         T Add<T>(Action<T> setup = null, Action<T> create = null)
-            where T : Element;
+            where T : TElement;
 
         /// <summary>
         /// Remove the given element from the current container.
         /// </summary>
         /// <param name="child"></param>
-        void Remove(Element child);
+        void Remove(TElement child);
     }
 }

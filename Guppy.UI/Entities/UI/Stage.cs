@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Guppy.UI.Entities.UI
 {
-    public class Stage : BaseElement, IContainer
+    public class Stage : BaseElement, IContainer<Element>
     {
         #region Private Fields
         private GameWindow _window;

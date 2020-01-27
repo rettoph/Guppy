@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.UI.Entities.UI
 {
-    public class Container : StyleElement, IContainer
+    public class Container : StyleElement, IContainer<Element>
     {
         #region IContainer Implementation
         /// <inheritdoc />
