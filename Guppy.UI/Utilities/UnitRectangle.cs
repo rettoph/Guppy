@@ -8,26 +8,26 @@ namespace Guppy.UI.Utilities
 {
     public class UnitRectangle
     {
-        private Unit _top;
-        private Unit _left;
+        private Unit _y;
+        private Unit _x;
         private Unit _width;
         private Unit _height;
 
-        public Unit Top
+        public Unit Y
         {
-            get => _top;
+            get => _y;
             set {
-                _top = value;
-                this.OnChanged?.Invoke(this, EventArgs.Empty);
+                _y = value;
+                this.OnPositionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
-        public Unit Left
+        public Unit X
         {
-            get => _left;
+            get => _x;
             set
             {
-                _left = value;
-                this.OnChanged?.Invoke(this, EventArgs.Empty);
+                _x = value;
+                this.OnPositionChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         public Unit Width
@@ -36,7 +36,7 @@ namespace Guppy.UI.Utilities
             set
             {
                 _width = value;
-                this.OnChanged?.Invoke(this, EventArgs.Empty);
+                this.OnSizeChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         public Unit Height
@@ -45,52 +45,88 @@ namespace Guppy.UI.Utilities
             set
             {
                 _height = value;
-                this.OnChanged?.Invoke(this, EventArgs.Empty);
+                this.OnSizeChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
-        public Unit Right
-        {
-            get => new NestedUnit(this.Left, this.Width);
-            set => this.Left = new NestedUnit(value, this.Width.Flip());
-        }
-        public Unit Bottom
-        {
-            get => new NestedUnit(this.Top, this.Height);
-            set => this.Top = new NestedUnit(value, this.Height.Flip());
-        }
-
-        public event EventHandler OnChanged;
+        public event EventHandler OnPositionChanged;
+        public event EventHandler OnSizeChanged;
 
         public UnitRectangle()
         {
-            _top = 0;
-            _left = 0;
+            _y = 0;
+            _x = 0;
             _width = 1f;
             _height = 1f;
         }
-        public UnitRectangle(Unit left, Unit top, Unit width, Unit height)
+        public UnitRectangle(Unit x, Unit y, Unit width, Unit height)
         {
-            _top = top;
-            _left = left;
+            _y = y;
+            _x = x;
             _width = width;
             _height = height;
         }
         public Rectangle ToPixel(Rectangle parent)
         {
             return new Rectangle(
-                x: parent.X + this.Left.ToPixel(parent.Width),
-                y: parent.Y + this.Top.ToPixel(parent.Height),
+                x: parent.X + this.X.ToPixel(parent.Width),
+                y: parent.Y + this.Y.ToPixel(parent.Height),
                 width: this.Width.ToPixel(parent.Width),
                 height: this.Height.ToPixel(parent.Height));
         }
 
-        public void Set(Unit left, Unit top, Unit width, Unit height)
+        public void Set(Unit x = null, Unit y = null, Unit width = null, Unit height = null)
         {
-            this.Top = top;
-            this.Left = left;
-            this.Width = width;
-            this.Height = height;
+            if(y != null)
+                this.Y = y;
+            if(x != null)
+                this.X = x;
+            if(width != null)
+                this.Width = width;
+            if(height != null)
+                this.Height = height;
         }
+
+        #region Reference Getters
+        public void GetX(ref Unit x)
+        {
+            x = this.GetX();
+        }
+
+        public void GetY(ref Unit y)
+        {
+            y = this.GetY();
+        }
+
+        public void GetWidth(ref Unit width)
+        {
+            width = this.GetWidth();
+        }
+
+        public void GetHeight(ref Unit height)
+        {
+            height = this.GetHeight();
+        }
+
+        public ref Unit GetX()
+        {
+            return ref _x;
+        }
+
+        public ref Unit GetY()
+        {
+            return ref _y;
+        }
+
+        public ref Unit GetWidth()
+        {
+            return ref _width;
+        }
+
+        public ref Unit GetHeight()
+        {
+            return ref _height;
+        }
+        #endregion
     }
 }

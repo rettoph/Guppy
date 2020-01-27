@@ -1,71 +1,51 @@
-﻿using Guppy.Collections;
-using Guppy.UI.Entities.UI.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using Guppy.UI.Utilities;
+using Guppy.UI.Utilities.Units;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Guppy.UI.Entities.UI
 {
-    public class Stage : BaseElement, IContainer<Element>
+    public class Stage : Element
     {
         #region Private Fields
-        private GameWindow _window;
-        private Rectangle _viewport;
-        private PrimitiveBatch _defaultPrimitiveBatch;
-        private SpriteBatch _defaultSpriteBatch;
-        private PrimitiveBatch _primitiveBatch;
         private SpriteBatch _spriteBatch;
-        #endregion
-
-        #region Internal Fields
-        /// <summary>
-        /// All pointer buttons that have been pressed since last frame
-        /// </summary>
-        internal Pointer.Button pressed { get; private set; }
-        /// <summary>
-        /// All pointer buttons that have been released since last frame
-        /// </summary>
-        internal Pointer.Button released { get; private set; }
+        private PrimitiveBatch _primitiveBatch;
+        private Pointer _pointer;
+        private GraphicsDevice _graphics;
+        private GameWindow _window;
         #endregion
 
         #region Protected Fields
-        protected override Stage stage => this;
+        protected override SpriteBatch spriteBatch => _spriteBatch;
 
         protected override PrimitiveBatch primitiveBatch => _primitiveBatch;
 
-        protected override SpriteBatch spriteBatch => _spriteBatch;
+        protected override Pointer pointer => _pointer;
         #endregion
 
-        #region Lifecycle Methods
+        #region Lifecycle Method 
         protected override void Create(IServiceProvider provider)
         {
             base.Create(provider);
 
+            _spriteBatch = provider.GetRequiredService<SpriteBatch>();
+            _primitiveBatch = provider.GetRequiredService<PrimitiveBatch>();
+            _pointer = provider.GetRequiredService<Pointer>();
+            _graphics = provider.GetRequiredService<GraphicsDevice>();
             _window = provider.GetRequiredService<GameWindow>();
-            _viewport = new Rectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
-
-            _defaultPrimitiveBatch = provider.GetRequiredService<PrimitiveBatch>();
-            _defaultSpriteBatch = provider.GetRequiredService<SpriteBatch>();
         }
 
-        protected override void PreInitialize()
+        protected override void PostInitialize()
         {
-            base.PreInitialize();
+            base.PostInitialize();
 
-            this.SetEnabled(true);
-            this.SetVisible(true);
-
-            // Disable events on the stage by default
-            this.EventType = EventTypes.None;
+            this.Bounds.Set(0, 0, Unit.Get(1f, -1), Unit.Get(1f, -1));
 
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
-
-            this.pointer.OnPressed += this.HandleButtonPressed;
-            this.pointer.OnReleased += this.HandleButtonReleased;
         }
 
         public override void Dispose()
@@ -76,85 +56,10 @@ namespace Guppy.UI.Entities.UI
         }
         #endregion
 
-        #region Frame Methods
-        protected override void PostUpdate(GameTime gameTime)
+        #region Helper Methods
+        public override Rectangle GetContainerBounds()
         {
-            base.PostUpdate(gameTime);
-
-            // Reset frame updates..
-            this.pressed = 0;
-            this.released = 0;
-        }
-
-        protected override void PreDraw(GameTime gameTIme)
-        {
-            base.PreDraw(gameTIme);
-
-            this.ResetBatchs();
-        }
-        #endregion
-
-        #region Methods
-        protected internal override Rectangle GetParentBounds()
-        {
-            return _viewport;
-        }
-
-        /// <summary>
-        /// Set a custom spritebatch (for the remainder of this frame)
-        /// Starting next frame the batches will be restored to their
-        /// defaults.
-        /// </summary>
-        public void SetBatches(SpriteBatch spriteBatch, PrimitiveBatch primitiveBatch)
-        {
-            this.SetSpriteBatch(spriteBatch);
-            this.SetPrimitiveBatch(primitiveBatch);
-        }
-
-        public void SetSpriteBatch(SpriteBatch spriteBatch)
-        {
-            _spriteBatch = spriteBatch;
-        }
-
-        public void SetPrimitiveBatch(PrimitiveBatch primitiveBatch)
-        {
-            _primitiveBatch = primitiveBatch;
-        }
-
-        /// <summary>
-        /// Reset the primitivebatch &
-        /// & spritebatchs to their default
-        /// values
-        /// </summary>
-        public void ResetBatchs()
-        {
-            this.SetBatches(_defaultSpriteBatch, _defaultPrimitiveBatch);
-        }
-        #endregion
-
-        #region IContainer Implementation
-        /// <inheritdoc />
-        public Element Add(Element child)
-        {
-            return this.add(child);
-        }
-
-        /// <inheritdoc />
-        public T Add<T>(String handle, Action<T> setup = null, Action<T> create = null) where T : Element
-        {
-            return this.add<T>(handle, setup, create);
-        }
-
-        /// <inheritdoc />
-        public T Add<T>(Action<T> setup = null, Action<T> create = null) where T : Element
-        {
-            return this.add<T>(setup, create);
-        }
-
-        /// <inheritdoc />
-        public void Remove(Element child)
-        {
-            this.remove(child);
+            return _graphics.Viewport.Bounds;
         }
         #endregion
 
@@ -162,17 +67,6 @@ namespace Guppy.UI.Entities.UI
         private void HandleClientSizeChanged(object sender, EventArgs e)
         {
             this.dirty = true;
-            _viewport = new Rectangle(0, 0, _window.ClientBounds.Width - 1, _window.ClientBounds.Height - 1);
-        }
-
-        private void HandleButtonPressed(object sender, Pointer.Button e)
-        {
-            this.pressed |= e;
-        }
-
-        private void HandleButtonReleased(object sender, Pointer.Button e)
-        {
-            this.released |= e;
         }
         #endregion
     }

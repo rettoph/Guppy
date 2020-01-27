@@ -40,7 +40,7 @@ namespace Guppy.Utilities.Cameras
         public Boolean Center { get; set; } = true;
         public Single ZoomLerp = 0.015625f;
         public Single MoveLerp = 0.015625f;
-        public Single Zoom { get; private set; }
+        public Single Zoom { get; private set; } = 1;
 
         public Single ZoomTarget { get => _zoomTarget; }
         public Vector2 PositionTarget { get => _positionTarget; }

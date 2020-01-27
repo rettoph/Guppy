@@ -10,7 +10,7 @@ namespace Guppy.UI.Utilities
     public class ElementBounds : UnitRectangle
     {
         #region Private Fields
-        private BaseElement _parent;
+        private Element _parent;
         #endregion
 
         #region Public Fields 
@@ -18,11 +18,11 @@ namespace Guppy.UI.Utilities
         #endregion
 
         #region Constructor
-        internal ElementBounds(BaseElement parent)
+        internal ElementBounds(Element parent)
         {
             _parent = parent;
         }
-        internal ElementBounds(BaseElement parent, Unit top, Unit left, Unit width, Unit height) : base(top, left, width, height)
+        internal ElementBounds(Element parent, Unit top, Unit left, Unit width, Unit height) : base(top, left, width, height)
         {
             _parent = parent;
         }
@@ -32,7 +32,7 @@ namespace Guppy.UI.Utilities
         protected internal virtual void Clean()
         {
             // Generate a new pixel rectangle based on the parent element's parent's bounds.
-            this.Pixel = this.ToPixel(_parent.GetParentBounds());
+            this.Pixel = this.ToPixel(_parent.GetContainerBounds());
         }
 
         public Boolean Contains(Vector2 point)

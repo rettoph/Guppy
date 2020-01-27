@@ -14,6 +14,16 @@ namespace Guppy.UI.Utilities.Units
         public abstract Int32 ToPixel(Int32 parent);
         public abstract Unit Flip();
 
+        #region Static Methods
+        public static Unit Get(params Unit[] units)
+        {
+            if (units.Length == 1)
+                return units[0];
+
+            return new NestedUnit(units);
+        }
+        #endregion
+
         #region Operators
         public static implicit operator Unit(Single amount)
         {
