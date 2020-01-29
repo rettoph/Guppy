@@ -12,6 +12,7 @@ namespace Guppy.Utilities
     public sealed class LoadedString
     {
         private String _key;
+        private String _value;
         private StringLoader _strings;
 
         public LoadedString(StringLoader strings)
@@ -27,6 +28,8 @@ namespace Guppy.Utilities
         {
             if (_key == default(String))
                 return default(String);
+            else if (!_strings.ContainsKey(_key))
+                return _key;
 
             return _strings[_key];
         }

@@ -45,6 +45,11 @@ namespace Guppy.Loaders
             this.logger = logger;
         }
 
+        public Boolean ContainsKey(THandle key)
+        {
+            return this.values.ContainsKey(key);
+        }
+
         #region ILoader Implementation
         public virtual void Load()
         {

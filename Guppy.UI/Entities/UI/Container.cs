@@ -14,42 +14,16 @@ using System.Text;
 
 namespace Guppy.UI.Entities.UI
 {
-    public class Container<TElement> : Element, IContainer<TElement>
+    /// <summary>
+    /// Basic implementation of the IContainer interface designed to hold
+    /// any type extending Element
+    /// </summary>
+    /// <typeparam name="TElement"></typeparam>
+    public abstract class Container<TElement> : ProtectedContainer<TElement>, IContainer<TElement>
         where TElement : Element
     {
-        #region Private Fields
-        private HashSet<TElement> _children;
-        private EntityCollection _entities;
-        #endregion
-
         #region Protected Fields
-        public IReadOnlyCollection<TElement> Children => _children;
-        #endregion
-
-        #region Lifecycle Method 
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            _entities = provider.GetRequiredService<EntityCollection>();
-        }
-
-        protected override void PreInitialize()
-        {
-            base.PreInitialize();
-
-            _children = new HashSet<TElement>();
-
-            this.Bounds.Set(0, 0, Unit.Get(1f, -1), Unit.Get(1f, -1));
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            while (_children.Any())
-                this.Remove(_children.First());
-        }
+        public IReadOnlyCollection<TElement> Children => this.children;
         #endregion
 
         #region Frame Methods 
@@ -57,24 +31,14 @@ namespace Guppy.UI.Entities.UI
         {
             base.Update(gameTime);
 
-            _children.TryUpdateAll(gameTime);
+            this.Children.TryUpdateAll(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            _children.TryDrawAll(gameTime);
-        }
-        #endregion
-
-        #region Methods
-        protected override void Clean()
-        {
-            base.Clean();
-
-            // Mark all internal children dirty too
-            _children.ForEach(c => c.dirty = true);
+            this.Children.TryDrawAll(gameTime);
         }
         #endregion
 
@@ -88,25 +52,24 @@ namespace Guppy.UI.Entities.UI
         #region IContainer Implementation
         public TElement Add(TElement child)
         {
-            _children.Add(child);
-            child.container = this;
-
-            return child;
+            return this.add(child);
         }
 
-        public T Add<T>(string handle, Action<T> setup = null, Action<T> create = null) where T : TElement
+        public T Add<T>(string handle, Action<T> setup = null, Action<T> create = null) 
+            where T : TElement
         {
-            return this.Add(_entities.Create<T>(handle, setup, create)) as T;
+            return this.add<T>(handle, setup, create);
         }
 
-        public T Add<T>(Action<T> setup = null, Action<T> create = null) where T : TElement
+        public T Add<T>(Action<T> setup = null, Action<T> create = null) 
+            where T : TElement
         {
-            return this.Add(_entities.Create<T>(setup, create)) as T;
+            return this.add<T>(setup, create);
         }
 
         public void Remove(TElement child)
         {
-            _children.Remove(child);
+            this.remove(child);
         }
         #endregion
     }
