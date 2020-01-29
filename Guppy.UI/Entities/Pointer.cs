@@ -42,6 +42,16 @@ namespace Guppy.UI.Entities
         public Button Buttons { get; private set; }
 
         /// <summary>
+        /// The buttons that were just pressed within the last frame.
+        /// </summary>
+        public Button Pressed { get; private set; }
+
+        /// <summary>
+        /// The buttons that were just released within the last frame.
+        /// </summary>
+        public Button Released { get; private set; }
+
+        /// <summary>
         /// The pointers current scroll value
         /// </summary>
         public Int32 Scroll { get; private set; }
@@ -63,6 +73,13 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Frame Methods
+        protected override void PreUpdate(GameTime gameTIme)
+        {
+            base.PreUpdate(gameTIme);
+
+            this.Pressed = 0;
+            this.Released = 0;
+        }
         #endregion
 
         #region Utility Methods
@@ -103,11 +120,13 @@ namespace Guppy.UI.Entities
                 if (value)
                 {
                     this.Buttons |= button;
+                    this.Pressed |= button;
                     this.OnPressed?.Invoke(this, button);
                 }
                 else
                 {
                     this.Buttons &= ~button;
+                    this.Released |= button;
                     this.OnReleased?.Invoke(this, button);
                 }
             }

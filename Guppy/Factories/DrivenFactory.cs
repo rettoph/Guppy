@@ -32,7 +32,7 @@ namespace Guppy.Factories
                 create: driven =>
                 {
                     // Create driver instances as defined in the drivers loader
-                    driven.drivers = _drivers[driven.GetType()]
+                    driven.drivers = _drivers[driven.GetType().IsGenericType ? driven.GetType().GetGenericTypeDefinition() : driven.GetType()]
                         .Select(t => ActivatorUtilities.CreateInstance(provider, t, driven) as Driver)
                         .ToArray();
 
