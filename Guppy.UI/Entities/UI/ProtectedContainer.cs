@@ -14,7 +14,7 @@ namespace Guppy.UI.Entities.UI
     /// elements to publicly be added.
     /// </summary>
     /// <typeparam name="TElement"></typeparam>
-    public abstract class ProtectedContainer<TElement> : Element
+    public abstract class ProtectedContainer<TElement> : FancyElement
         where TElement : Element
     {
         #region Private Fields
@@ -67,6 +67,7 @@ namespace Guppy.UI.Entities.UI
         {
             _children.Add(child);
             child.container = this;
+            this.dirty = true;
 
             return child;
         }
@@ -84,6 +85,7 @@ namespace Guppy.UI.Entities.UI
         protected void remove(TElement child)
         {
             _children.Remove(child);
+            this.dirty = true;
         }
         #endregion
     }
