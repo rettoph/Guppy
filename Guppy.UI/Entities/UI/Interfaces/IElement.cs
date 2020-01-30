@@ -20,6 +20,11 @@ namespace Guppy.UI.Entities.UI.Interfaces
         Boolean Hovered { get; }
 
         /// <summary>
+        /// The current active state.
+        /// </summary>
+        Boolean Active { get; }
+
+        /// <summary>
         /// The pointer buttons currently pressed on this element.
         /// </summary>
         Pointer.Button Buttons { get; }
@@ -27,6 +32,7 @@ namespace Guppy.UI.Entities.UI.Interfaces
 
         #region Events
         event EventHandler<Boolean> OnHoveredChanged;
+        event EventHandler<Boolean> OnActiveChanged;
         event EventHandler<Pointer.Button> OnButtonPressed;
         event EventHandler<Pointer.Button> OnButtonReleased;
         #endregion

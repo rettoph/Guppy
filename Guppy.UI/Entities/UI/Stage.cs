@@ -51,6 +51,14 @@ namespace Guppy.UI.Entities.UI
             _window = provider.GetRequiredService<GameWindow>();
         }
 
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            this.SetEnabled(true);
+            this.SetVisible(true);
+        }
+
         protected override void PostInitialize()
         {
             base.PostInitialize();

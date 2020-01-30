@@ -2,6 +2,7 @@
 using Guppy.Extensions.Collection;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,22 @@ namespace Guppy.UI.Entities.UI
 
             while (_children.Any())
                 this.remove(_children.First());
+        }
+        #endregion
+
+        #region Frame Methods 
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            this.children.TryUpdateAll(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            this.children.TryDrawAll(gameTime);
         }
         #endregion
 

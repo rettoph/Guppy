@@ -39,11 +39,14 @@ namespace Guppy.UI.Entities.UI
         /// <inheritdoc />
         public Boolean Hovered { get; private set; }
         /// <inheritdoc />
+        public Boolean Active { get; private set; }
+        /// <inheritdoc />
         public Pointer.Button Buttons { get; private set; }
         #endregion
 
         #region Events
         public event EventHandler<Boolean> OnHoveredChanged;
+        public event EventHandler<Boolean> OnActiveChanged;
         public event EventHandler<Pointer.Button> OnButtonPressed;
         public event EventHandler<Pointer.Button> OnButtonReleased;
         #endregion
@@ -54,6 +57,14 @@ namespace Guppy.UI.Entities.UI
             base.Create(provider);
 
             this.Bounds = new ElementBounds(this);
+        }
+
+        protected override void PreInitialize()
+        {
+            base.PreInitialize();
+
+            this.SetEnabled(false);
+            this.SetVisible(false);
         }
 
         protected override void Initialize()
@@ -81,6 +92,18 @@ namespace Guppy.UI.Entities.UI
             // Update the hovered value as needed..
             if ((this.Hovered || this.container == null || this.container.Hovered) && this.Hovered != (this.Hovered = this.GetHovered()))
                 this.OnHoveredChanged?.Invoke(this, this.Hovered);
+
+            // Update the current active state of the element.
+            if (!this.Active && this.Hovered && (this.Buttons & this.pointer.Released & Pointer.Button.Left) != 0)
+            {
+                this.Active = true;
+                this.OnActiveChanged?.Invoke(this, this.Active);
+            } 
+            else if (this.Active && !this.Hovered && (this.pointer.Pressed & Pointer.Button.Left) != 0)
+            {
+                this.Active = false;
+                this.OnActiveChanged?.Invoke(this, this.Active);
+            }
         }
 
         protected override void PostUpdate(GameTime gameTime)

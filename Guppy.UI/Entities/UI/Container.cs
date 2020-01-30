@@ -26,22 +26,6 @@ namespace Guppy.UI.Entities.UI
         public IReadOnlyCollection<TElement> Children => this.children;
         #endregion
 
-        #region Frame Methods 
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.Children.TryUpdateAll(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.Children.TryDrawAll(gameTime);
-        }
-        #endregion
-
         #region Event Handlers
         private void HandleClientSizeChanged(object sender, EventArgs e)
         {
