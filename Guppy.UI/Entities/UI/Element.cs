@@ -80,12 +80,12 @@ namespace Guppy.UI.Entities.UI
         {
             base.Draw(gameTime);
 
-            this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Red);
+            // this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Red);
         }
 
-        protected override void PreUpdate(GameTime gameTIme)
+        protected override void PreUpdate(GameTime gameTime)
         {
-            base.PreUpdate(gameTIme);
+            base.PreUpdate(gameTime);
 
             this.TryClean();
 
@@ -254,6 +254,9 @@ namespace Guppy.UI.Entities.UI
             { // HorizontalCenter align...
                 position.X += (Int32)((this.Bounds.Pixel.Width - size.X) / 2);
             }
+
+            position.X = (Int32)position.X;
+            position.Y = (Int32)position.Y;
 
             return position;
         }

@@ -57,4 +57,8 @@ namespace Guppy.UI.Entities.UI
         }
         #endregion
     }
+
+    public class Container : Container<Element> {
+
+    }
 }

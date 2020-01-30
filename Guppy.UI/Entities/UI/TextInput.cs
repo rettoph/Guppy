@@ -111,8 +111,8 @@ namespace Guppy.UI.Entities.UI
                     size.X > _text.Bounds.Pixel.Width ? this.Alignment | Alignment.Right : this.Alignment,
                     false);
                 this.primitiveBatch.DrawLine(
-                    _text.Bounds.Pixel.Location.ToVector2() + position + new Vector2(size.X + 1, 0),
-                    _text.Bounds.Pixel.Location.ToVector2() + position + new Vector2(size.X + 1, Font.LineSpacing),
+                    _text.Bounds.Pixel.Location.ToVector2() + position + new Vector2((Int32)size.X + 1, 0),
+                    _text.Bounds.Pixel.Location.ToVector2() + position + new Vector2((Int32)size.X + 1, Font.LineSpacing),
                     this.Color);
             }
         }

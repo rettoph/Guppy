@@ -43,7 +43,7 @@ namespace Guppy
             this.PostUpdate(gameTime);
         }
 
-        protected virtual void PreDraw(GameTime gameTIme)
+        protected virtual void PreDraw(GameTime gameTime)
         {
             //
         }
@@ -51,12 +51,12 @@ namespace Guppy
         {
             // 
         }
-        protected virtual void PostDraw(GameTime gameTIme)
+        protected virtual void PostDraw(GameTime gameTime)
         {
             //
         }
 
-        protected virtual void PreUpdate(GameTime gameTIme)
+        protected virtual void PreUpdate(GameTime gameTime)
         {
             //
         }
@@ -64,7 +64,7 @@ namespace Guppy
         {
             // 
         }
-        protected virtual void PostUpdate(GameTime gameTIme)
+        protected virtual void PostUpdate(GameTime gameTime)
         {
             //
         }

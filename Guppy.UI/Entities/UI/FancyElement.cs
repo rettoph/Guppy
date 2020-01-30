@@ -1,5 +1,7 @@
-﻿using Guppy.UI.Extensions;
+﻿using Guppy.UI.Enums;
+using Guppy.UI.Extensions;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +20,8 @@ namespace Guppy.UI.Entities.UI
         #endregion
 
         #region Public Attributes
+        public BackgroundStyle BackgroundStyle { get; set; } = BackgroundStyle.Center;
+        public Texture2D BackgroundImage { get; set; }
         public Color? BackgroundColor { get; set; }
         public Color BorderColor { get; set; }
         public Byte BorderSize
@@ -57,7 +61,20 @@ namespace Guppy.UI.Entities.UI
             if (this.BackgroundColor.HasValue)
                 this.primitiveBatch.FillRectangle(this.Bounds, this.BackgroundColor.Value);
 
-            // Render the background, if any is requested
+            // Draw the background image, if any
+            if(this.BackgroundImage != default(Texture2D))
+            {
+                switch (this.BackgroundStyle) {
+                    case BackgroundStyle.Center:
+                        this.spriteBatch.Draw(this.BackgroundImage, this.Align(this.BackgroundImage.Bounds, Alignment.Center, true), Color.White);
+                        break;
+                    case BackgroundStyle.Fill:
+                        this.spriteBatch.Draw(this.BackgroundImage, this.Bounds.Pixel, null, Color.White);
+                        break;
+                }
+            }
+
+            // Render the border, if any is requested
             if (this.BorderSize > 0)
             { // Draw the 4 border bounds...
                 this.primitiveBatch.FillRectangle(_borderBounds[0], this.BorderColor);

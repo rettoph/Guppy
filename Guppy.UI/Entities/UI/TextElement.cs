@@ -47,15 +47,7 @@ namespace Guppy.UI.Entities.UI
                 this.dirty = true;
             }
         }
-        public Color Color
-        {
-            get => _color;
-            set
-            {
-                _color = value;
-                this.dirty = true;
-            }
-        }
+        public Color Color { get; set; } = Color.White;
         public Alignment Alignment
         {
             get => _alignment; 
@@ -120,7 +112,7 @@ namespace Guppy.UI.Entities.UI
                         size,
                         size.X > this.Bounds.Pixel.Width ? this.Alignment | Alignment.Right : this.Alignment,
                         false),
-                    this.Color);
+                    Color.White);
                 _spriteBatch.End();
 
                 _graphics.SetRenderTargets(targets);
@@ -135,7 +127,7 @@ namespace Guppy.UI.Entities.UI
 
             // Draw the render target...
             if (_renderTarget != default(RenderTarget2D))
-                this.spriteBatch.Draw(_renderTarget, this.Bounds.Pixel.Location.ToVector2(), Color.White);
+                this.spriteBatch.Draw(_renderTarget, this.Bounds.Pixel.Location.ToVector2(), this.Color);
         }
         #endregion
     }
