@@ -68,8 +68,7 @@ namespace Guppy.UI.Entities.UI
 
             this.Bounds.Width = size.X;
             this.Bounds.Height = size.Y;
-
-
+            this.Bounds.Clean();
 
             // Update the position of all internal children
             Int32 offset = 0;
@@ -79,14 +78,14 @@ namespace Guppy.UI.Entities.UI
                 {
                     case StackMethod.Horizontal:
                         c.Bounds.X = offset;
-                        offset += c.Bounds.Width.ToPixel(this.GetContainerBounds().Width);
+                        offset += c.Bounds.Pixel.Width;
                         break;
                     case StackMethod.Vertical:
                         c.Bounds.Y = offset;
-                        offset += c.Bounds.Height.ToPixel(this.GetContainerBounds().Height);
+                        offset += c.Bounds.Pixel.Height;
                         break;
                 }
-            });            
+            });
         }
         #endregion
 
@@ -100,32 +99,25 @@ namespace Guppy.UI.Entities.UI
 
         protected override TElement add(TElement child)
         {
-            child.OnBoundsChanged += this.HandleBoundsChanged;
+            child.OnBoundsChanged += this.HandleChildBoundsChanged;
 
             return base.add(child);
         }
 
         protected override void remove(TElement child)
         {
-            child.OnBoundsChanged -= this.HandleBoundsChanged;
+            child.OnBoundsChanged -= this.HandleChildBoundsChanged;
 
             base.remove(child);
         }
         #endregion
 
         #region Event Handlers
-        private void HandleBoundsChanged(object sender, Rectangle e)
+        private void HandleChildBoundsChanged(object sender, Rectangle e)
         {
             this.dirty = true;
         }
         #endregion
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Blue);
-        }
     }
 
     public class StackContainer : StackContainer<Element>

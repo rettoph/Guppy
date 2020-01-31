@@ -19,6 +19,7 @@ namespace Guppy.Network.Peers
         #region Public Attributes
         public User User { get; internal set; }
         public NetConnection ServerConnection { get => _client.ServerConnection; }
+        public NetConnectionStatus ConnectionStatus { get => _client.ConnectionStatus; }
         #endregion
 
         #region Constructor

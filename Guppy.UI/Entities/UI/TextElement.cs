@@ -121,7 +121,7 @@ namespace Guppy.UI.Entities.UI
                 _graphics.Clear(Color.Transparent);
 
                 // Draw the text onto the render target...
-                _spriteBatch.Begin(blendState: BlendState.AlphaBlend);
+                _spriteBatch.Begin(blendState: BlendState.Opaque);
                 var size = this.Font.MeasureString(this.Text);
                 size.Y = Math.Max(Font.LineSpacing, size.Y);
                 _spriteBatch.DrawString(

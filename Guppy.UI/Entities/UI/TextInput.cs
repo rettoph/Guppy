@@ -69,6 +69,7 @@ namespace Guppy.UI.Entities.UI
 
             _text = this.add<TextElement>(t =>
             {
+                t.Inline = false;
                 t.Alignment = Alignment.CenterLeft;
                 t.Bounds.Set(
                     x: new CustomUnit(p => this.PadLeft.ToPixel(p)),

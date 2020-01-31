@@ -42,6 +42,8 @@ namespace Guppy.UI.Entities.UI
             _children = new HashSet<TElement>();
 
             this.Bounds.Set(0, 0, Unit.Get(1f, -1), Unit.Get(1f, -1));
+
+            this.OnBoundsChanged += this.HandleBoundsChanged;
         }
 
         public override void Dispose()
@@ -50,6 +52,8 @@ namespace Guppy.UI.Entities.UI
 
             while (_children.Any())
                 this.remove(_children.First());
+
+            this.OnBoundsChanged -= this.HandleBoundsChanged;
         }
         #endregion
 
@@ -70,17 +74,7 @@ namespace Guppy.UI.Entities.UI
         #endregion
 
         #region Clean Methods
-        protected override void Clean()
-        {
-            // Cache the old size
-            var size = this.GetBounds();
 
-            base.Clean();
-
-            // Clean all children  if the size has changed...
-            if(size != this.GetBounds())
-                _children.ForEach(c => c.TryClean(true));
-        }
         #endregion
 
         #region Container Methods
@@ -107,6 +101,19 @@ namespace Guppy.UI.Entities.UI
         {
             _children.Remove(child);
             this.dirty = true;
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// When the container bounds are updated we need to clean 
+        /// the children.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleBoundsChanged(object sender, Rectangle e)
+        {
+            _children.ForEach(c => c.TryClean(true));
         }
         #endregion
     }

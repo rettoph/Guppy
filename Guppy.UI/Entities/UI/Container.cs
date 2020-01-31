@@ -26,13 +26,6 @@ namespace Guppy.UI.Entities.UI
         public IReadOnlyCollection<TElement> Children => this.children;
         #endregion
 
-        #region Event Handlers
-        private void HandleClientSizeChanged(object sender, EventArgs e)
-        {
-            this.dirty = true;
-        }
-        #endregion
-
         #region IContainer Implementation
         public TElement Add(TElement child)
         {

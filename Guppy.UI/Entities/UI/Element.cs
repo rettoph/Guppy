@@ -92,7 +92,7 @@ namespace Guppy.UI.Entities.UI
         {
             base.Draw(gameTime);
 
-            this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Red);
+            // this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Red);
         }
 
         protected override void PreUpdate(GameTime gameTime)
