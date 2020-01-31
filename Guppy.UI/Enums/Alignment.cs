@@ -7,6 +7,8 @@ namespace Guppy.UI.Enums
     [Flags]
     public enum Alignment
     {
+        None = 0,
+
         Top = 1,
         VerticalCenter = 2,
         Bottom = 4,

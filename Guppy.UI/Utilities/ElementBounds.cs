@@ -29,6 +29,11 @@ namespace Guppy.UI.Utilities
         #endregion
 
         #region Methods
+        public void TryUpdate(GameTime gameTime)
+        {
+            this.Pixel.Location = new Point(this.X.ToPixel(_parent.GetContainerBounds().Width), this.Y.ToPixel(_parent.GetContainerBounds().Height));
+        }
+
         protected internal virtual void Clean()
         {
             // Generate a new pixel rectangle based on the parent element's parent's bounds.

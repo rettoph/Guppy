@@ -72,15 +72,19 @@ namespace Guppy.UI.Entities.UI
         #region Clean Methods
         protected override void Clean()
         {
+            // Cache the old size
+            var size = this.GetBounds();
+
             base.Clean();
 
-            // Mark all internal children dirty too
-            _children.ForEach(c => c.dirty = true);
+            // Clean all children  if the size has changed...
+            if(size != this.GetBounds())
+                _children.ForEach(c => c.TryClean(true));
         }
         #endregion
 
         #region Container Methods
-        protected TElement add(TElement child)
+        protected virtual TElement add(TElement child)
         {
             _children.Add(child);
             child.container = this;
@@ -99,7 +103,7 @@ namespace Guppy.UI.Entities.UI
             return this.add(_entities.Create<T>(setup, create)) as T;
         }
 
-        protected void remove(TElement child)
+        protected virtual void remove(TElement child)
         {
             _children.Remove(child);
             this.dirty = true;

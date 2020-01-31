@@ -49,6 +49,7 @@ namespace Guppy.UI.Entities.UI
         public event EventHandler<Boolean> OnActiveChanged;
         public event EventHandler<Pointer.Button> OnButtonPressed;
         public event EventHandler<Pointer.Button> OnButtonReleased;
+        public event EventHandler<Rectangle> OnBoundsChanged;
         #endregion
 
         #region Lifecycle Methods 
@@ -72,6 +73,17 @@ namespace Guppy.UI.Entities.UI
             base.Initialize();
 
             this.dirty = true;
+
+            this.Bounds.OnPositionChanged += this.HandleBoundsChanged;
+            this.Bounds.OnSizeChanged += this.HandleBoundsChanged;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.Bounds.OnPositionChanged -= this.HandleBoundsChanged;
+            this.Bounds.OnSizeChanged -= this.HandleBoundsChanged;
         }
         #endregion
 
@@ -80,7 +92,7 @@ namespace Guppy.UI.Entities.UI
         {
             base.Draw(gameTime);
 
-            // this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Red);
+            this.primitiveBatch.DrawRectangle(this.Bounds.Pixel, Color.Red);
         }
 
         protected override void PreUpdate(GameTime gameTime)
@@ -147,10 +159,22 @@ namespace Guppy.UI.Entities.UI
         #endregion
 
         #region Helper Methods
+        /// <summary>
+        /// Internal method used to grab the current elements bounds.
+        /// 
+        /// These bounds will be used within the element's children
+        /// to represent the container bounds.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Rectangle GetBounds()
+        {
+            return this.Bounds.Pixel;
+        }
+
         ///<inheritdoc />
         public virtual Rectangle GetContainerBounds()
         {
-            return this.container.Bounds.Pixel;
+            return this.container.GetBounds();
         }
 
         /// <summary>
@@ -176,7 +200,10 @@ namespace Guppy.UI.Entities.UI
 
         protected virtual void Clean()
         {
+            var old = this.GetBounds();
             this.Bounds.Clean();
+            if (old != this.GetBounds())
+                this.OnBoundsChanged?.Invoke(this, this.GetBounds());
         }
         #endregion
 
@@ -259,6 +286,13 @@ namespace Guppy.UI.Entities.UI
             position.Y = (Int32)position.Y;
 
             return position;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleBoundsChanged(object sender, EventArgs e)
+        {
+            this.dirty = true;
         }
         #endregion
     }
