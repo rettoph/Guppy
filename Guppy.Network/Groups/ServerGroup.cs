@@ -8,11 +8,17 @@ using Guppy.Network.Security;
 using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Microsoft.Extensions.Logging;
+using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace Guppy.Network.Groups
 {
     public sealed class ServerGroup : Group
     {
+        #region Private Fields
+        private Queue<User> _newUsers;
+        #endregion
+
         #region Internal Attributes
         protected internal override IList<NetConnection> connections { get; protected set; }
         #endregion
@@ -35,8 +41,39 @@ namespace Guppy.Network.Groups
         {
             base.Initialize();
 
+            _newUsers = new Queue<User>();
+
             this.Users.OnAdded += this.HandleUserAdded;
             this.Users.OnRemoved += this.HandleUserRemoved;
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            while (_newUsers.Any())
+                this.FlushNewUserInfo(_newUsers.Dequeue());
+        }
+        #endregion
+
+        #region Helper Methods
+        private void FlushNewUserInfo(User newUser)
+        {
+            // 1. Send the current user to all existing users
+            NetOutgoingMessage om = this.Messages.Create("user:joined", NetDeliveryMethod.ReliableOrdered, 0);
+            newUser.TryWrite(om);
+
+            // 2. Send a list of all existing users to the new user
+            this.Users.ForEach(user =>
+            {
+                if (user.Id != newUser.Id)
+                { // Dont double send the new user their own data
+                    om = this.Messages.Create("user:joined", NetDeliveryMethod.ReliableOrdered, 0, newUser);
+                    user.TryWrite(om);
+                }
+            });
         }
         #endregion
 
@@ -53,23 +90,11 @@ namespace Guppy.Network.Groups
         /// <param name="newUser"></param>
         private void HandleUserAdded(object sender, User newUser)
         {
-            // 1. Send the current user to all existing users
-            NetOutgoingMessage om = this.Messages.Create("user:joined", NetDeliveryMethod.ReliableOrdered, 0);
-            newUser.TryWrite(om);
-
-            // 2. Send a list of all existing users to the new user
-            this.Users.ForEach(user =>
-            {
-                if (user.Id != newUser.Id)
-                { // Dont double send the new user their own data
-                    om = this.Messages.Create("user:joined", NetDeliveryMethod.ReliableOrdered, 0, newUser);
-                    user.TryWrite(om);
-                }
-            });
-
-            // 3. Add the new user to the connections list
+            // Add the new user to the connections list
             if (newUser.Connection != default(NetConnection))
                 this.connections.Add(newUser.Connection);
+
+            _newUsers.Enqueue(newUser);
         }
 
         /// <summary>
