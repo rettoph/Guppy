@@ -4,6 +4,7 @@ using System.Text;
 using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
 using Guppy.Utilities;
+using Guppy.Extensions.Logging;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,7 +33,7 @@ namespace Guppy.Factories
             // Ensure that the loaded type is an entity...
             ExceptionHelper.ValidateAssignableFrom<TBase>(type);
 
-            this.logger.LogTrace($"EntityFactory => Building Entity<{type.Name}>('{handle}') instance...");
+            this.logger.LogTrace(() => $"EntityFactory => Building Entity<{type.Name}>('{handle}') instance...");
 
             return this.Build<TBase>(type, e =>
             {

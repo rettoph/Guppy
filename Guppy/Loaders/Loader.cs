@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Extensions.Logging;
 
 namespace Guppy.Loaders
 {
@@ -53,12 +54,12 @@ namespace Guppy.Loaders
         #region ILoader Implementation
         public virtual void Load()
         {
-            this.logger.LogTrace($"Loading Loader<{this.GetType().Name}>...");
+            this.logger.LogTrace(() => $"Loading Loader<{this.GetType().Name}>...");
             this.values = _registeredValues.GroupBy(rv => rv.Handle).ToDictionary(
                 keySelector: g => g.Key,
                 elementSelector: this.BuildOutput);
 
-            this.logger.LogTrace($"{this.values.Count} values cached.");
+            this.logger.LogTrace(() => $"{this.values.Count} values cached.");
         }
         #endregion
 
@@ -68,7 +69,7 @@ namespace Guppy.Loaders
         protected virtual void Register(THandle handle, TIn value, Int32 priority = 100)
         {
 #if DEBUG
-            this.logger.LogTrace($"{this.GetType().Name} => Registering '{value}' under '{handle}' with priority {priority}.");
+            this.logger.LogTrace(() => $"{this.GetType().Name} => Registering '{value}' under '{handle}' with priority {priority}.");
 #endif
             _registeredValues.Add(new RegisteredValue()
             {

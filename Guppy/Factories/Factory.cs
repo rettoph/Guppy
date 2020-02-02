@@ -1,10 +1,11 @@
 ﻿using Guppy.Pooling.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Guppy.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Guppy.Factories
 {
@@ -60,7 +61,7 @@ namespace Guppy.Factories
             where T : class, TBase
         {
 #if DEBUG
-            this.logger.LogTrace($"Factory<{pool.TargetType.Name}> => Building {typeof(TBase).Name}<{pool.TargetType.Name}> instance...");
+            this.logger.LogTrace(() => $"Factory<{pool.TargetType.Name}> => Building {typeof(TBase).Name}<{pool.TargetType.Name}> instance...");
 #endif
             var creatable = pool.Pull(t =>
             { // Define a custom create method within the pool...

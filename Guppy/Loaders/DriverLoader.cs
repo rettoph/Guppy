@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Extensions.Logging;
 
 namespace Guppy.Loaders
 {
@@ -33,7 +34,7 @@ namespace Guppy.Loaders
             var taggedDriverTypes = AssemblyHelper.GetTypesWithAttribute<Driver, IsDriverAttribute>().ForEach(driver =>
             { // Iterate through all driver types...
 #if DEBUG
-                this.logger.LogTrace($"Loading Driver<{driver.Name}> configurations...");
+                this.logger.LogTrace(() => $"Loading Driver<{driver.Name}> configurations...");
 #endif
                 driver.GetCustomAttributes(typeof(IsDriverAttribute), false).Select(attr => attr as IsDriverAttribute).ForEach(attribute =>
                 { // Iterate through all attributes within the current driver...
@@ -50,7 +51,7 @@ namespace Guppy.Loaders
 
             // Ensure that a value gets defined for every driven type
 #if DEBUG
-            this.logger.LogTrace($"    - Adding driver placeholders...");
+            this.logger.LogTrace(() => $"    - Adding driver placeholders...");
 #endif
             var emptyDrivers = new Type[0];
             drivens.ForEach(driven =>
@@ -60,7 +61,7 @@ namespace Guppy.Loaders
             });
 
 #if DEBUG
-            this.logger.LogTrace($"    - {this.values.Count} values cached.");
+            this.logger.LogTrace(() => $"    - {this.values.Count} values cached.");
 #endif
         }
         #endregion
@@ -68,7 +69,7 @@ namespace Guppy.Loaders
         protected override Type[] BuildOutput(IGrouping<Type, RegisteredValue> input)
         {
 #if DEBUG
-            this.logger.LogTrace($"Building Driven<{input.Key}> driver configuration...");
+            this.logger.LogTrace(() => $"Building Driven<{input.Key}> driver configuration...");
 #endif
             return input.OrderBy(rv => rv.Priority).Select(rv => rv.Value).ToArray();
         }
