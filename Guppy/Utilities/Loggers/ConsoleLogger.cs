@@ -31,7 +31,7 @@ namespace Guppy.Utilities.Loggers
             {
                 Console.ForegroundColor = this.GetColor(logLevel);
 
-                Console.WriteLine($"{logLevel}: {state}");
+                Console.WriteLine($"[{DateTime.Now.ToString("HH:mm:ss")}] {logLevel}: {state}");
             }
         }
 
