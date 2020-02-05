@@ -20,6 +20,7 @@ namespace Guppy.UI.Entities.UI
         #endregion
 
         #region Public Attributes
+        public Color BackgroundTransform { get; set; } = Color.White;
         public BackgroundStyle BackgroundStyle { get; set; } = BackgroundStyle.Center;
         public Texture2D BackgroundImage { get; set; }
         public Color? BackgroundColor { get; set; }
@@ -66,10 +67,10 @@ namespace Guppy.UI.Entities.UI
             {
                 switch (this.BackgroundStyle) {
                     case BackgroundStyle.Center:
-                        this.spriteBatch.Draw(this.BackgroundImage, this.Align(this.BackgroundImage.Bounds, Alignment.Center, true), Color.White);
+                        this.spriteBatch.Draw(this.BackgroundImage, this.Align(this.BackgroundImage.Bounds, Alignment.Center, true), this.BackgroundTransform);
                         break;
                     case BackgroundStyle.Fill:
-                        this.spriteBatch.Draw(this.BackgroundImage, this.Bounds.Pixel, null, Color.White);
+                        this.spriteBatch.Draw(this.BackgroundImage, this.Bounds.Pixel, null, this.BackgroundTransform);
                         break;
                 }
             }

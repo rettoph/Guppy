@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.UI.Entities.UI
 {
-    public sealed class Stage : Container<Element>
+    public class Stage : Container<Element>
     {
         #region Private Fields
         private SpriteBatch _spriteBatch;
