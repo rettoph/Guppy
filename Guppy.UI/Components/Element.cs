@@ -35,8 +35,6 @@ namespace Guppy.UI.Components
         public Boolean Active { get; private set; }
         /// <inheritdoc />
         public Pointer.Button Buttons { get; private set; }
-
-        public Boolean Hidden { get; set; }
         public IBaseElement Container { get; set; }
         public Boolean Dirty { get; set; }
         #endregion
@@ -89,18 +87,6 @@ namespace Guppy.UI.Components
         #endregion
 
         #region Frame Methods
-        public override void TryDraw(GameTime gameTime)
-        {
-            if(!this.Hidden)
-                base.TryDraw(gameTime);
-        }
-
-        public override void TryUpdate(GameTime gameTime)
-        {
-            if(!this.Hidden)
-                base.TryUpdate(gameTime);
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
