@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,38 +10,43 @@ namespace Guppy
     /// 
     /// Mostly used via entities and layers.
     /// </summary>
-    public class Orderable : Driven
+    public class Orderable : Driven, IOrderable
     {
+        #region Private Fields
+        private Int32 _drawOrder;
+        private Int32 _updateOrder;
+        #endregion
+
         #region Public Attributes
-        public Int32 DrawOrder { get; protected set; }
-        public Int32 UpdateOrder { get; protected set; }
+        public Int32 DrawOrder
+        {
+            get => _drawOrder;
+            set
+            {
+                if(this.DrawOrder != value)
+                {
+                    _drawOrder = value;
+                    this.OnDrawOrderChanged?.Invoke(this, _drawOrder);
+                }
+            }
+        }
+        public Int32 UpdateOrder
+        {
+            get => _updateOrder;
+            set
+            {
+                if (this.UpdateOrder != value)
+                {
+                    _updateOrder = value;
+                    this.OnUpdateOrderChanged?.Invoke(this, _updateOrder);
+                }
+            }
+        }
         #endregion
 
         #region Events
         public event EventHandler<Int32> OnDrawOrderChanged;
         public event EventHandler<Int32> OnUpdateOrderChanged;
-        #endregion
-
-        #region Helper Methods
-        public void SetDrawOrder(Int32 value)
-        {
-            if (value != this.DrawOrder)
-            {
-                this.DrawOrder = value;
-
-                this.OnDrawOrderChanged?.Invoke(this, this.DrawOrder);
-            }
-        }
-
-        public void SetUpdateOrder(Int32 value)
-        {
-            if (value != this.UpdateOrder)
-            {
-                this.UpdateOrder = value;
-
-                this.OnUpdateOrderChanged?.Invoke(this, this.UpdateOrder);
-            }
-        }
         #endregion
     }
 }

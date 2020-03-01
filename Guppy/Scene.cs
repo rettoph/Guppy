@@ -6,16 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Guppy.Collections;
 using Guppy.Attributes;
 using Microsoft.Extensions.Logging;
+using Guppy.Interfaces;
 
 namespace Guppy
 {
-    public class Scene : Asyncable
+    public class Scene : Asyncable, IScene
     {
-        #region Internal Fields
-        internal IServiceScope scope;
-        #endregion
 
         #region Protected Attributes
+        public IServiceScope Scope { get; set; }
+
         protected LayerCollection layers { get; private set; }
         protected EntityCollection entities { get; private set; }
         #endregion
@@ -37,7 +37,7 @@ namespace Guppy
             this.layers.Dispose();
             this.entities.Dispose();
 
-            this.scope.Dispose();
+            this.Scope.Dispose();
         }
         #endregion
     }

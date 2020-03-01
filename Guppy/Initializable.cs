@@ -15,7 +15,7 @@ namespace Guppy
     }
     #endregion
 
-    public class Initializable : Creatable
+    public class Initializable : Creatable, IInitializable
     {
         #region Private Fields
         private InitializationStatus _initializationStatus;
@@ -33,7 +33,7 @@ namespace Guppy
         #endregion
 
         #region Initialization Methods
-        internal void TryPreInitialize()
+        public void TryPreInitialize()
         {
             if (_initializationStatus == InitializationStatus.NotInitialized)
             {
@@ -44,7 +44,7 @@ namespace Guppy
                 throw new Exception($"Unable to pre initialize, InitializationStatus is {_initializationStatus} but {InitializationStatus.NotInitialized} is required.");
         }
 
-        internal void TryInitialize()
+        public void TryInitialize()
         {
             if (_initializationStatus == InitializationStatus.Initializing)
             {
@@ -54,7 +54,7 @@ namespace Guppy
                 throw new Exception($"Unable to initialize, InitializationStatus is {_initializationStatus} but {InitializationStatus.Initializing} is required.");
         }
 
-        internal void TryPostInitialize()
+        public void TryPostInitialize()
         {
             if (_initializationStatus == InitializationStatus.Initializing)
             {

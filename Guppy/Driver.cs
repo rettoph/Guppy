@@ -1,97 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 
 namespace Guppy
 {
-    public abstract class Driver
+    public abstract class Driver : Frameable, IDriver
     {
-        #region Protected Attributes
-        protected ILogger logger { get; private set; }
+        #region Public Attributes
+        public IDriven Driven { get; private set; }
         #endregion
 
         #region Constructor
-        public Driver(Driven driven)
+        public Driver(IDriven driven)
         {
-        }
-        #endregion
-
-        #region Driven Interfaces
-        internal void TryCreate(IServiceProvider provider)
-        {
-            this.Create(provider);
-        }
-
-        internal void TryPreInitialize()
-        {
-            this.PreInitialize();
-        }
-
-        internal void TryInitialize()
-        {
-            this.Initialize();
-        }
-
-        internal void TryPostInitialize()
-        {
-            this.PostInitialize();
-        }
-
-        internal void TryDispose()
-        {
-            this.Dispose();
-        }
-
-        internal void TryDraw(GameTime gameTime)
-        {
-            this.Draw(gameTime);
-        }
-
-        internal void TryUpdate(GameTime gameTime)
-        {
-            this.Update(gameTime);
-        }
-        #endregion
-
-        #region Lifecycle Methods
-        protected virtual void Create(IServiceProvider provider)
-        {
-            this.logger = provider.GetRequiredService<ILogger>();
-        }
-
-        protected virtual void PreInitialize()
-        {
-            //
-        }
-
-        protected virtual void Initialize()
-        {
-            //
-        }
-
-        protected virtual void PostInitialize()
-        {
-            //
-        }
-
-        protected virtual void Dispose()
-        {
-            //
-        }
-        #endregion
-
-        #region Frame Methods
-        protected virtual void Draw(GameTime gameTime)
-        {
-            //
-        }
-
-        protected virtual void Update(GameTime gameTime)
-        {
-            //
+            this.Driven = driven;
         }
         #endregion
     }

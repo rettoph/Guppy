@@ -7,36 +7,14 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Guppy.Utilities.LayerDepths;
+using Guppy.Interfaces;
 
 namespace Guppy
 {
-    public class Layer : Orderable
+    public class Layer : Configurable, ILayer
     {
         #region Internal Attributes
-        protected internal OrderableCollection<Entity> entities { get; private set; }
-        #endregion
-
-        #region Public Attributes
-        /// <summary>
-        /// A list of all enabled entities withing the layer ordered by UpdateOrder.
-        /// </summary>
-        public IEnumerable<Entity> Updates { get { return this.entities.Updates; } }
-        /// <summary>
-        /// A list of all visible entities within the layer ordered by DrawOrder.
-        /// </summary>
-        public IEnumerable<Entity> Draws { get { return this.entities.Draws; } }
-
-        /// <summary>
-        /// A list of all entities, including enabled and disabled.
-        /// </summary>
-        public IEnumerable<Entity> Entities { get { return this.entities.AsEnumerable(); } }
-
-        /// <summary>
-        /// The current index that the layer resides on.
-        /// 
-        /// This should be defined when creating a layer
-        /// via the LayerCollection create methods.
-        /// </summary>
+        public OrderableCollection<IEntity> Entities { get; private set; }
         public LayerDepth Depth { get; internal set; }
         #endregion
 
@@ -46,7 +24,7 @@ namespace Guppy
             base.Create(provider);
 
             // Create a new entity collection instance
-            this.entities = ActivatorUtilities.CreateInstance<OrderableCollection<Entity>>(provider);
+            this.Entities = ActivatorUtilities.CreateInstance<OrderableCollection<IEntity>>(provider);
         }
         #endregion
     }

@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Factories;
+using Guppy.Interfaces;
 using Guppy.Utilities.LayerDepths;
 
 namespace Guppy.Collections
 {
-    public class LayerCollection : OrderableCollection<Layer>
+    public class LayerCollection : ConfigurableCollection<ILayer>
     {
-        public LayerCollection(DrivenFactory<Layer> factory, IServiceProvider provider) : base(factory, provider)
+        public LayerCollection(ConfigurableFactory<ILayer> factory, IServiceProvider provider) : base(factory, provider)
         {
         }
 
         #region Collection Methods
-        public override bool Add(Layer item)
+        public override bool Add(ILayer item)
         {
             if (this.Overlaps(item.Depth))
                 return false;
@@ -62,7 +63,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Get Methods 
-        public Layer GetByDepth(Int32 depth)
+        public ILayer GetByDepth(Int32 depth)
         {
             return this.FirstOrDefault(l => l.Depth.Contains(depth));
         }

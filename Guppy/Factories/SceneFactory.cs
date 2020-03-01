@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
 using Guppy.Utilities.Options;
@@ -8,10 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Factories
 {
-    public class SceneFactory : DrivenFactory<Scene>
+    public class SceneFactory : DrivenFactory<IScene>
     {
         #region Constructor
-        public SceneFactory(DriverLoader drivers, IPoolManager<Scene> pools, IServiceProvider provider) : base(drivers, pools, provider)
+        public SceneFactory(DriverLoader drivers, IPoolManager<IScene> pools, IServiceProvider provider) : base(drivers, pools, provider)
         {
         }
         #endregion
@@ -21,7 +22,7 @@ namespace Guppy.Factories
             var options = provider.GetRequiredService<ScopeOptions>();
 
             // If there is not an existing scene yet, create one
-            if (options.Get<Scene>() == null)
+            if (options.Get<IScene>() == null)
             {
                 IServiceScope scope;
                 IServiceProvider scopeProvider = (scope = provider.CreateScope()).ServiceProvider;
@@ -31,8 +32,8 @@ namespace Guppy.Factories
                     setup: scene =>
                     {
                         // Update the scene's scope...
-                        scopeProvider.GetService<ScopeOptions>().Set<Scene>(scene);
-                        scene.scope = scope;
+                        scopeProvider.GetService<ScopeOptions>().Set<IScene>(scene);
+                        scene.Scope = scope;
                         // Run any recieved custom setup methods...
                         setup?.Invoke(scene);
                     },
@@ -40,7 +41,7 @@ namespace Guppy.Factories
             }
             else
             {
-                return options.Get<Scene>() as T;
+                return (T)options.Get<IScene>();
             }
         }
     }

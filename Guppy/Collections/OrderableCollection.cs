@@ -1,5 +1,6 @@
 ﻿using Guppy.Extensions.Collection;
 using Guppy.Factories;
+using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,29 +17,11 @@ namespace Guppy.Collections
     /// </summary>
     /// <typeparam name="TOrderable"></typeparam>
     public class OrderableCollection<TOrderable> : FrameableCollection<TOrderable>
-        where TOrderable : Orderable
+        where TOrderable : IOrderable
     {
-        #region Protected Fields
-        protected DrivenFactory<TOrderable> factory;
-        #endregion
-
-        public OrderableCollection(DrivenFactory<TOrderable> factory, IServiceProvider provider) : base(provider)
+        public OrderableCollection(IServiceProvider provider) : base(provider)
         {
-            this.factory = factory;
         }
-
-        #region Create Methods
-        public virtual T Create<T>(Action<T> setup = null, Action<T> create = null)
-            where T : TOrderable
-        {
-            lock (this.factory)
-            {
-                var layer = this.factory.Build<T>(setup, create);
-                this.Add(layer);
-                return layer;
-            }
-        }
-        #endregion
 
         #region Collection Methods
         public override Boolean Add(TOrderable item)

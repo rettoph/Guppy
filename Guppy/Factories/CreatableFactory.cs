@@ -7,6 +7,7 @@ using Guppy.Utilities;
 using Guppy.Pooling.Interfaces;
 using Microsoft.Extensions.Logging;
 using Guppy.Utilities.Options;
+using Guppy.Interfaces;
 
 namespace Guppy.Factories
 {
@@ -18,7 +19,7 @@ namespace Guppy.Factories
     /// </summary>
     /// <typeparam name="TCreatable"></typeparam>
     public class CreatableFactory<TCreatable> : Factory<TCreatable>
-        where TCreatable : Creatable
+        where TCreatable : ICreatable
     {
         #region Private Fields
         private IPoolManager<TCreatable> _pools;

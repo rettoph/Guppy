@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Collections;
+using Guppy.Extensions.Collection;
+using Guppy.Interfaces;
 using Guppy.Loaders;
 using Guppy.Pooling.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Guppy.Factories
 {
     public class DrivenFactory<TDriven> : InitializableFactory<TDriven>
-        where TDriven : Driven
+        where TDriven : IDriven
     {
         #region Private Fields
         private DriverLoader _drivers;
@@ -31,10 +33,12 @@ namespace Guppy.Factories
                 setup: setup,
                 create: driven =>
                 {
+                    var drivers = new FrameableCollection<IDriver>(provider);
+                    _drivers[driven.GetType().IsGenericType ? driven.GetType().GetGenericTypeDefinition() : driven.GetType()]
+                        .Select(t => ActivatorUtilities.CreateInstance(provider, t, driven) as IDriver)
+                        .ForEach(d => drivers.Add(d));
                     // Create driver instances as defined in the drivers loader
-                    driven.drivers = _drivers[driven.GetType().IsGenericType ? driven.GetType().GetGenericTypeDefinition() : driven.GetType()]
-                        .Select(t => ActivatorUtilities.CreateInstance(provider, t, driven) as Driver)
-                        .ToArray();
+                    driven.Drivers = drivers;
 
                     create?.Invoke(driven);
                 });

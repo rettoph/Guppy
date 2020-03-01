@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Guppy.Utilities;
 using Guppy.Utilities.Delegaters;
+using Guppy.Interfaces;
 
 namespace Guppy
 {
@@ -15,7 +16,7 @@ namespace Guppy
     /// The creation process is generally called
     /// manually within a factory class.
     /// </summary>
-    public abstract class Creatable : IDisposable
+    public abstract class Creatable : ICreatable
     {
         #region Private Fields 
         private Boolean _created;
@@ -32,6 +33,11 @@ namespace Guppy
         #region Events & Delegates
         public event EventHandler OnDisposing;
         #endregion
+
+        public Creatable()
+        {
+            this.Id = Guid.NewGuid();
+        }
 
         #region Lifecycle Methods
         public void TryCreate(IServiceProvider provider)

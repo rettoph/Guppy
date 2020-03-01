@@ -1,4 +1,5 @@
-﻿using Guppy.Utilities;
+﻿using Guppy.Interfaces;
+using Guppy.Utilities;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,49 +8,30 @@ using System.Text;
 
 namespace Guppy
 {
-    public class Entity : Orderable
+    public class Entity : Configurable, IEntity
     {
         #region Private Fields
-        private LoadedString _name;
-        private LoadedString _description;
+        private Int32 _layerDepth;
         #endregion
 
-        #region Public Attributes
-        public String Handle { get; set; }
-        public String Name { get => _name; set => _name.Set(value); }
-        public String Description { get => _description; set => _description.Set(value); }
+        #region
+        public Int32 LayerDepth
+        {
+            get => _layerDepth;
+            set
+            {
+                if (_layerDepth != value)
+                {
+                    _layerDepth = value;
 
-        public Int32 LayerDepth { get; private set; }
+                    this.OnLayerDepthChanged?.Invoke(this, this.LayerDepth);
+                }
+            }
+        }
         #endregion
 
         #region Events & Delegaters 
         public event EventHandler<Int32> OnLayerDepthChanged;
-        #endregion
-
-        #region Lifecycle Methods
-        protected override void Create(IServiceProvider provider)
-        {
-            base.Create(provider);
-
-            _name = provider.GetRequiredService<LoadedString>();
-            _description = provider.GetRequiredService<LoadedString>();
-        }
-        #endregion
-
-        #region Helper Methods
-        /// <summary>
-        /// Update the entities layer and invoke the changed:layer event
-        /// </summary>
-        /// <param name="layer"></param>
-        public void SetLayerDepth(Int32 layerDepth)
-        {
-            if(layerDepth != this.LayerDepth)
-            {
-                this.LayerDepth = layerDepth;
-
-                this.OnLayerDepthChanged?.Invoke(this, this.LayerDepth);
-            }
-        }
         #endregion
     }
 }

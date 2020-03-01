@@ -25,7 +25,7 @@ namespace Guppy.ServiceLoaders
             services.AddSingleton<SceneFactory>();
             services.AddSingleton<SceneCollection>();
 
-            AssemblyHelper.GetTypesAssignableFrom<Scene>().ForEach(t =>
+            AssemblyHelper.GetTypesAssignableFrom<IScene>().ForEach(t =>
             { // Add each scene type as a singleton created via the scene factory...
                 services.AddScoped(t, p => p.GetRequiredService<SceneFactory>().Build(p, t));
             });

@@ -6,11 +6,40 @@ using System.Text;
 
 namespace Guppy
 {
-    public abstract class Frameable : Initializable
+    public abstract class Frameable : Initializable, IFrameable
     {
+        #region Private Fields
+        private Boolean _visible;
+        private Boolean _enabled;
+        #endregion
+
         #region Public Attributes
-        public Boolean Visible { get; protected set; }
-        public Boolean Enabled { get; protected set; }
+        public Boolean Visible
+        {
+            get => _visible;
+            set
+            {
+                if (value != this.Visible)
+                {
+                    _visible = value;
+
+                    this.OnVisibleChanged?.Invoke(this, this.Visible);
+                }
+            }
+        }
+        public Boolean Enabled
+        {
+            get => _enabled;
+            set
+            {
+                if (value != this.Enabled)
+                {
+                    _enabled = value;
+
+                    this.OnEnabledChanged?.Invoke(this, this.Enabled);
+                }
+            }
+        }
         #endregion
 
         #region Events & Delegaters
@@ -67,28 +96,6 @@ namespace Guppy
         protected virtual void PostUpdate(GameTime gameTime)
         {
             //
-        }
-        #endregion
-
-        #region Helper Methods
-        public virtual void SetVisible(Boolean value)
-        {
-            if (value != this.Visible)
-            {
-                this.Visible = value;
-
-                this.OnVisibleChanged?.Invoke(this, this.Visible);
-            }
-        }
-
-        public virtual void SetEnabled(Boolean value)
-        {
-            if (value != this.Enabled)
-            {
-                this.Enabled = value;
-
-                this.OnEnabledChanged?.Invoke(this, this.Enabled);
-            }
         }
         #endregion
     }

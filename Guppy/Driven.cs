@@ -11,10 +11,10 @@ using Guppy.Collections;
 
 namespace Guppy
 {
-    public abstract class Driven : Frameable
+    public abstract class Driven : Frameable, IDriven
     {
-        #region Internal Fields
-        internal Driver[] drivers;
+        #region Public Attributes
+        public FrameableCollection<IDriver> Drivers { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -22,35 +22,35 @@ namespace Guppy
         {
             base.Create(provider);
 
-            this.drivers.ForEach(d => d.TryCreate(provider));
+            this.Drivers.ForEach(d => d.TryCreate(provider));
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
-            this.drivers.ForEach(d => d.TryPreInitialize());
+            this.Drivers.ForEach(d => d.TryPreInitialize());
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.drivers.ForEach(d => d.TryInitialize());
+            this.Drivers.ForEach(d => d.TryInitialize());
         }
 
         protected override void PostInitialize()
         {
             base.PostInitialize();
 
-            this.drivers.ForEach(d => d.TryPostInitialize());
+            this.Drivers.ForEach(d => d.TryPostInitialize());
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            this.drivers.ForEach(d => d.TryDispose());
+            this.Drivers.ForEach(d => d.Dispose());
         }
         #endregion
 
@@ -60,7 +60,7 @@ namespace Guppy
             base.Draw(gameTime);
 
             // Draw all drivers...
-            this.drivers.ForEach(d => d.TryDraw(gameTime));
+            this.Drivers.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
@@ -68,15 +68,7 @@ namespace Guppy
             base.Update(gameTime);
 
             // Update all drivers...
-            this.drivers.ForEach(d => d.TryUpdate(gameTime));
-        }
-        #endregion
-
-        #region Helper Methods
-        public TDriver GetDriver<TDriver>() 
-            where TDriver : Driver
-        {
-            return this.drivers.FirstOrDefault(d => typeof(TDriver).IsAssignableFrom(d.GetType())) as TDriver;
+            this.Drivers.TryUpdate(gameTime);
         }
         #endregion
     }

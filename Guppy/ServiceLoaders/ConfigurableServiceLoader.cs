@@ -18,11 +18,12 @@ namespace Guppy.ServiceLoaders
     /// game types into the service collection.
     /// </summary>
     [IsServiceLoader]
-    internal sealed class EntityServiceLoader : IServiceLoader
+    internal sealed class ConfigurableServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<EntityCollection>();
+            services.AddScoped(typeof(ConfigurableFactory<>));
+            services.AddScoped(typeof(ConfigurableCollection<>));
         }
 
         public void ConfigureProvider(IServiceProvider provider)

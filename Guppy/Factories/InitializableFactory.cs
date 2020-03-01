@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Interfaces;
 using Guppy.Pooling.Interfaces;
 
 namespace Guppy.Factories
@@ -11,7 +12,7 @@ namespace Guppy.Factories
     /// returning them.
     /// </summary>
     public class InitializableFactory<TInitializable> : CreatableFactory<TInitializable>
-        where TInitializable : Initializable
+        where TInitializable : IInitializable
     {
         #region Constructor
         public InitializableFactory(IPoolManager<TInitializable> pools, IServiceProvider provider) : base(pools, provider)

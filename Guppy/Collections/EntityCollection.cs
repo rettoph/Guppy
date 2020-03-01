@@ -1,14 +1,12 @@
 ﻿using Guppy.Factories;
-using Guppy.Utilities;
-using Guppy.Utilities.Options;
-using Microsoft.Extensions.Logging;
+using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.Collections
 {
-    public sealed class EntityCollection : OrderableCollection<Entity>
+    public sealed class EntityCollection : ConfigurableCollection<IEntity>
     {
         #region Private Fields
         /// <summary>
@@ -18,37 +16,25 @@ namespace Guppy.Collections
         /// This is so the EntityColelction knows what layer the entity needs
         /// to be remoed from when the changed:layer event is invoked.
         /// </summary>
-        private Dictionary<Entity, Layer> _cachedLayers;
-
-        private EntityFactory _factory;
+        private Dictionary<IEntity, ILayer> _cachedLayers;
 
         private LayerCollection _layers;
         #endregion
 
         #region Constructor
-        public EntityCollection(EntityFactory factory, LayerCollection layers, IServiceProvider provider) : base(factory, provider)
+        public EntityCollection(ConfigurableFactory<IEntity> factory, LayerCollection layers, IServiceProvider provider) : base(factory, provider)
         {
-            _factory = factory;
-            _cachedLayers = new Dictionary<Entity, Layer>();
+            _cachedLayers = new Dictionary<IEntity, ILayer>();
             _layers = layers;
         }
         #endregion
 
-        #region Lifecycle Methods
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            _cachedLayers.Clear();
-        }
-        #endregion
-
         #region Collection Methods
-        public override bool Add(Entity item)
+        public override bool Add(IEntity item)
         {
-            if(base.Add(item))
+            if (base.Add(item))
             {
-                item.OnLayerDepthChanged += this.HandleItemLayerLapethChanged;
+                item.OnLayerDepthChanged += this.HandleItemLayerDepthChanged;
 
                 _cachedLayers.Add(item, null);
                 this.AddToLayer(item);
@@ -59,11 +45,11 @@ namespace Guppy.Collections
             return false;
         }
 
-        public override bool Remove(Entity item)
+        public override bool Remove(IEntity item)
         {
             if (base.Remove(item))
             {
-                item.OnLayerDepthChanged -= this.HandleItemLayerLapethChanged;
+                item.OnLayerDepthChanged -= this.HandleItemLayerDepthChanged;
 
                 this.RemoveFromLayer(item);
                 _cachedLayers.Remove(item);
@@ -80,62 +66,31 @@ namespace Guppy.Collections
         /// Remove the item from its old layer, if there was any
         /// </summary>
         /// <param name="item"></param>
-        private void RemoveFromLayer(Entity item)
+        private void RemoveFromLayer(IEntity item)
         {
             if (_cachedLayers[item] != null)
-                _cachedLayers[item]?.entities.Remove(item);
+                _cachedLayers[item]?.Entities.Remove(item);
         }
 
         /// <summary>
         /// Add the item to its current layer
         /// </summary>
         /// <param name="item"></param>
-        private void AddToLayer(Entity item)
+        private void AddToLayer(IEntity item)
         {
             // First remove the entity to whatever layer it was on, if any
             this.RemoveFromLayer(item);
 
             var layer = _layers.GetByDepth(item.LayerDepth);
 
-            layer?.entities.Add(item);
+            layer?.Entities.Add(item);
             // Store the current layer
             _cachedLayers[item] = layer;
         }
         #endregion
 
-        #region Create Method
-        public TEntity Create<TEntity>(Action<TEntity> setup = null, Action<TEntity> create = null)
-            where TEntity : Entity
-        {
-            var entity = _factory.Build<TEntity>(setup, create);
-            this.Add(entity);
-            return entity;
-        }
-
-        public TBase Create<TBase>(Type type, String handle, Action<TBase> setup = null, Action<TBase> create = null)
-            where TBase : Entity
-        {
-            ExceptionHelper.ValidateAssignableFrom<TBase>(type);
-
-            var entity = _factory.Build<TBase>(type, handle, setup, create);
-            this.Add(entity);
-            return entity;
-        }
-
-        public TEntity Create<TEntity>(String handle, Action<TEntity> setup = null, Action<TEntity> create = null)
-            where TEntity : Entity
-        {
-            return this.Create<TEntity>(typeof(TEntity), handle, setup, create);
-        }
-
-        public Entity Create(String handle, Action<Entity> setup = null, Action<Entity> create = null)
-        {
-            return this.Create<Entity>(handle, setup, create);
-        }
-        #endregion
-
         #region Event Handlers
-        private void HandleItemLayerLapethChanged(object sender, Int32 arg)
+        private void HandleItemLayerDepthChanged(object sender, Int32 arg)
         {
             this.AddToLayer(sender as Entity);
         }

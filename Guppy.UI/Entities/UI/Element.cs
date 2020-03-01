@@ -66,8 +66,8 @@ namespace Guppy.UI.Entities.UI
         {
             base.PreInitialize();
 
-            this.SetEnabled(false);
-            this.SetVisible(false);
+            this.Enabled = false;
+            this.Visible = false;
         }
 
         protected override void Initialize()

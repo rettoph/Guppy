@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Guppy.Interfaces;
+using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Guppy
     /// seen in multiplayer servers where there are several
     /// Scene instances running at the same time.
     /// </summary>
-    public abstract class Asyncable : Driven
+    public abstract class Asyncable : Driven, IAsyncable
     {
         #region Private Fields
         private Int32 _delay;

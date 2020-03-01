@@ -8,34 +8,36 @@ using Guppy.Extensions.Logging;
 using Guppy.Utilities.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Guppy.Interfaces;
 
 namespace Guppy.Factories
 {
-    public sealed class EntityFactory : DrivenFactory<Entity>
+    public sealed class ConfigurableFactory<TConfigurable> : DrivenFactory<TConfigurable>
+        where TConfigurable : IConfigurable
     {
         #region Private Fields
-        private EntityLoader _loader;
+        private ConfigurationLoader _loader;
         #endregion
 
         #region Constructor
-        public EntityFactory(EntityLoader loader, DriverLoader drivers, IPoolManager<Entity> pools, IServiceProvider provider) : base(drivers, pools, provider)
+        public ConfigurableFactory(ConfigurationLoader loader, DriverLoader drivers, IPoolManager<TConfigurable> pools, IServiceProvider services) : base(drivers, pools, services)
         {
             _loader = loader;
         }
         #endregion
 
-        public TBase Build<TBase>(Type type, String handle, Action<TBase> setup = null, Action<TBase> create = null)
-            where TBase : Entity
+        public T Build<T>(Type type, String handle, Action<T> setup = null, Action<T> create = null)
+            where T : TConfigurable
         {
             var loaded = _loader[handle];
             type = loaded.type == default(Type) ? type : loaded.type;
 
             // Ensure that the loaded type is an entity...
-            ExceptionHelper.ValidateAssignableFrom<TBase>(type);
+            ExceptionHelper.ValidateAssignableFrom<TConfigurable>(type);
 
             this.logger.LogTrace(() => $"EntityFactory => Building Entity<{type.Name}>('{handle}') instance...");
 
-            return this.Build<TBase>(type, e =>
+            return this.Build<T>(type, e =>
             {
                 // Update the handle...
                 e.Handle = handle == default(String) ? type.Name : handle;
@@ -49,15 +51,10 @@ namespace Guppy.Factories
             }, create);
         }
 
-        public TEntity Build<TEntity>(String handle, Action<TEntity> setup = null, Action<TEntity> create = null)
-            where TEntity : Entity
+        public T Build<T>(String handle, Action<T> setup = null, Action<T> create = null)
+            where T : TConfigurable
         {
-            return this.Build<TEntity>(typeof(TEntity), handle, setup, create);
-        }
-
-        public Entity Build(Type type, String handle, Action<Entity> setup = null, Action<Entity> create = null)
-        {
-            return this.Build<Entity>(type, handle, setup, create);
+            return this.Build<T>(typeof(T), handle, setup, create);
         }
     }
 }

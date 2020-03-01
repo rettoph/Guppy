@@ -9,6 +9,7 @@ using Guppy.Extensions.Collection;
 using Guppy.Utilities;
 using Guppy.Utilities.Delegaters;
 using System.Collections.Concurrent;
+using Guppy.Interfaces;
 
 namespace Guppy.Collections
 {
@@ -18,7 +19,7 @@ namespace Guppy.Collections
     /// </summary>
     /// <typeparam name="TResusable"></typeparam>
     public class CreatableCollection<TCreateable> : IEnumerable<TCreateable>, IDisposable
-        where TCreateable : Creatable
+        where TCreateable : ICreatable
     {
         #region Private Fields
         private ConcurrentDictionary<Guid, TCreateable> _items;
@@ -119,7 +120,7 @@ namespace Guppy.Collections
         }
 
         public virtual T GetById<T>(Guid id)
-            where T : TCreateable
+            where T : class, TCreateable
         {
             return this.GetById(id) as T;
         }
@@ -129,7 +130,7 @@ namespace Guppy.Collections
         private void HandleItemDisposing(object sender, EventArgs arg)
         {
             // Auto remove the child on dispose
-            this.Remove(sender as TCreateable);
+            this.Remove((TCreateable)sender);
         }
         #endregion
     }

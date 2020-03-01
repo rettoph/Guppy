@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions.Collection;
+using Guppy.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,7 +11,7 @@ using System.Text;
 namespace Guppy.Collections
 {
     public class FrameableCollection<TFrameable> : CreatableCollection<TFrameable>
-        where TFrameable : Frameable
+        where TFrameable : IFrameable
     {
         #region Private Attributes
         private List<TFrameable> _draws;
