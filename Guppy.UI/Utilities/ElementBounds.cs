@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Entities.UI;
+﻿using Guppy.UI.Components;
+using Guppy.UI.Components.Interfaces;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,7 +11,7 @@ namespace Guppy.UI.Utilities
     public class ElementBounds : UnitRectangle
     {
         #region Private Fields
-        private Element _parent;
+        private IElement _parent;
         #endregion
 
         #region Public Fields 
@@ -31,13 +32,13 @@ namespace Guppy.UI.Utilities
         #region Methods
         public void TryUpdate(GameTime gameTime)
         {
-            this.Pixel.Location = new Point(this.X.ToPixel(_parent.GetContainerBounds().Width), this.Y.ToPixel(_parent.GetContainerBounds().Height));
+            this.Pixel.Location = new Point(this.X.ToPixel(_parent.Container.GetBounds().Width), this.Y.ToPixel(_parent.Container.GetBounds().Height));
         }
 
         protected internal virtual void Clean()
         {
             // Generate a new pixel rectangle based on the parent element's parent's bounds.
-            this.Pixel = this.ToPixel(_parent.GetContainerBounds());
+            this.Pixel = this.ToPixel(_parent.Container.GetBounds());
         }
 
         public Boolean Contains(Vector2 point)

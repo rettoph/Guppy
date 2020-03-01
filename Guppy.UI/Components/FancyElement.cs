@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.UI.Entities.UI
+namespace Guppy.UI.Components
 {
     /// <summary>
     /// Element designed to contain some level in internal styling capabilities
@@ -31,7 +31,7 @@ namespace Guppy.UI.Entities.UI
             set
             {
                 _borderSize = value;
-                this.dirty = true;
+                this.Dirty = true;
             }
         }
         #endregion

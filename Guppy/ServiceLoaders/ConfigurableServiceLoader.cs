@@ -23,7 +23,7 @@ namespace Guppy.ServiceLoaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped(typeof(ConfigurableFactory<>));
-            services.AddScoped(typeof(ConfigurableCollection<>));
+            services.AddTransient(typeof(ConfigurableCollection<>));
         }
 
         public void ConfigureProvider(IServiceProvider provider)

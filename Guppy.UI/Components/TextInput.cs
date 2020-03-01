@@ -1,4 +1,5 @@
 ﻿using Guppy.UI.Enums;
+using Guppy.UI.Extensions;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -8,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.UI.Entities.UI
+namespace Guppy.UI.Components
 {
     /// <summary>
     /// Allows users to directly input text via typing.
@@ -67,7 +68,7 @@ namespace Guppy.UI.Entities.UI
             this.PadLeft = 7;
             this.PadTop = 0;
 
-            _text = this.add<TextElement>(t =>
+            _text = this.children.Create<TextElement>(t =>
             {
                 t.Inline = false;
                 t.Alignment = Alignment.CenterLeft;

@@ -1,5 +1,6 @@
 ﻿using Guppy.Loaders;
 using Guppy.UI.Enums;
+using Guppy.UI.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.UI.Entities.UI
+namespace Guppy.UI.Components
 {
     /// <summary>
     /// Basic text element designed to contain text and nothing else
@@ -37,7 +38,7 @@ namespace Guppy.UI.Entities.UI
             get => _inline;
             set {
                 _inline = value;
-                this.dirty = true;
+                this.Dirty = true;
             }
         }
         public String Text
@@ -46,7 +47,7 @@ namespace Guppy.UI.Entities.UI
             set
             {
                 _text = value;
-                this.dirty = true;
+                this.Dirty = true;
             }
         }
         public SpriteFont Font
@@ -55,7 +56,7 @@ namespace Guppy.UI.Entities.UI
             set
             {
                 _font = value;
-                this.dirty = true;
+                this.Dirty = true;
             }
         }
         public Color Color { get; set; } = Color.White;
@@ -65,7 +66,7 @@ namespace Guppy.UI.Entities.UI
             set
             {
                 _alignment = value;
-                this.dirty = true;
+                this.Dirty = true;
             }
         }
         #endregion
@@ -93,8 +94,8 @@ namespace Guppy.UI.Entities.UI
             {
                 // Auto update the internal bounds
                 var size = this.Font.MeasureString(this.Text);
-                this.Bounds.Width = Math.Min((Int32)size.X, this.GetContainerBounds().Width);
-                this.Bounds.Height = Math.Min((Int32)size.Y, this.GetContainerBounds().Height);
+                this.Bounds.Width = Math.Min((Int32)size.X, this.Container.GetBounds().Width);
+                this.Bounds.Height = Math.Min((Int32)size.Y, this.Container.GetBounds().Height);
             }
 
             base.Clean();

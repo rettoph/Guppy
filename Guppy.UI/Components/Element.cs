@@ -1,9 +1,11 @@
 ﻿using Guppy.Extensions.Collection;
-using Guppy.UI.Entities.UI.Interfaces;
+using Guppy.UI.Components.Interfaces;
+using Guppy.UI.Entities;
 using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -11,26 +13,17 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Guppy.UI.Entities.UI
+namespace Guppy.UI.Components
 {
     /// <summary>
     /// Defines the minimum templating required for a UI element.
     /// </summary>
-    public abstract class Element : Entity, IElement
+    public abstract class Element : Configurable, IElement
     {
-        #region Protected Fields
-        protected virtual SpriteBatch spriteBatch {
-            get => this.container.spriteBatch;
-            set => this.container.spriteBatch = value;
-        }
-        protected virtual PrimitiveBatch primitiveBatch
-        {
-            get => this.container.primitiveBatch;
-            set => this.container.primitiveBatch = value;
-        }
-        protected virtual Pointer pointer => this.container.pointer;
-        protected internal Boolean dirty { get; set; }
-        protected internal Element container { get; set; }
+        #region Protected Attributes
+        protected Pointer pointer { get; private set; }
+        protected SpriteBatch spriteBatch { get; private set; }
+        protected PrimitiveBatch primitiveBatch { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -44,6 +37,8 @@ namespace Guppy.UI.Entities.UI
         public Pointer.Button Buttons { get; private set; }
 
         public Boolean Hidden { get; set; }
+        public IBaseElement Container { get; set; }
+        public Boolean Dirty { get; set; }
         #endregion
 
         #region Events
@@ -60,21 +55,25 @@ namespace Guppy.UI.Entities.UI
             base.Create(provider);
 
             this.Bounds = new ElementBounds(this);
+
+            this.pointer = provider.GetRequiredService<Pointer>();
+            this.spriteBatch = provider.GetRequiredService<SpriteBatch>();
+            this.primitiveBatch = provider.GetRequiredService<PrimitiveBatch>();
         }
 
         protected override void PreInitialize()
         {
             base.PreInitialize();
 
-            this.Enabled = false;
-            this.Visible = false;
+            this.Enabled = true;
+            this.Visible = true;
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            this.dirty = true;
+            this.Dirty = true;
 
             this.Bounds.OnPositionChanged += this.HandleBoundsChanged;
             this.Bounds.OnSizeChanged += this.HandleBoundsChanged;
@@ -116,7 +115,7 @@ namespace Guppy.UI.Entities.UI
             this.TryClean();
 
             // Update the hovered value as needed..
-            if ((this.Hovered || this.container == null || this.container.Hovered) && this.Hovered != (this.Hovered = this.GetHovered()))
+            if ((this.Hovered || this.Container == null || this.Container.Hovered) && this.Hovered != (this.Hovered = this.GetHovered()))
                 this.OnHoveredChanged?.Invoke(this, this.Hovered);
 
             // Update the current active state of the element.
@@ -174,24 +173,6 @@ namespace Guppy.UI.Entities.UI
 
         #region Helper Methods
         /// <summary>
-        /// Internal method used to grab the current elements bounds.
-        /// 
-        /// These bounds will be used within the element's children
-        /// to represent the container bounds.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual Rectangle GetBounds()
-        {
-            return this.Bounds.Pixel;
-        }
-
-        ///<inheritdoc />
-        public virtual Rectangle GetContainerBounds()
-        {
-            return this.container.GetBounds();
-        }
-
-        /// <summary>
         /// Calculate the current hovered state of the element
         /// </summary>
         /// <returns></returns>
@@ -199,114 +180,37 @@ namespace Guppy.UI.Entities.UI
         {
             return this.Bounds.Pixel.Contains(this.pointer.Position);
         }
+
+        public virtual Rectangle GetBounds()
+        {
+            return this.Bounds.Pixel;
+        }
         #endregion
 
         #region Clean Methods
         ///<inheritdoc />
         public void TryClean(Boolean force = false)
         {
-            if(this.dirty || force)
+            if(this.Dirty || force)
             {
                 this.Clean();
-                this.dirty = false;
+                this.Dirty = false;
             }
         }
 
         protected virtual void Clean()
         {
-            var old = this.GetBounds();
+            var old = this.Bounds.Pixel;
             this.Bounds.Clean();
-            if (old != this.GetBounds())
-                this.OnBoundsChanged?.Invoke(this, this.GetBounds());
-        }
-        #endregion
-
-        #region Align Methods
-        /// <summary>
-        /// Aligns the given rectangle in the requested alignment method.
-        /// 
-        /// This will update the rectangles internal position.
-        /// </summary>
-        /// <param name="rectangle">The rectangle to align.</param>
-        /// <param name="alignment">The requested alignment type. Default is Top Left</param>
-        /// <param name="useWorldCoordinates">Whether or not the response should be in local or world coords.</param>
-        public void Align(ref Rectangle rectangle, Alignment alignment, Boolean useWorldCoordinates = false)
-        {
-            // Default to Top Left alignment...
-            Point position = useWorldCoordinates ? this.Bounds.Pixel.Location : Point.Zero;
-
-            // Vertical Alignment...
-            if ((alignment & Alignment.Bottom) != 0)
-            { // Bottom align...
-                position.Y += this.Bounds.Pixel.Height - rectangle.Height;
-            }
-            else if ((alignment & Alignment.VerticalCenter) != 0)
-            { // VerticalCenter align...
-                position.Y += (this.Bounds.Pixel.Height - rectangle.Height) / 2;
-            }
-
-            // Horizontal Alignment
-            if ((alignment & Alignment.Right) != 0)
-            { // Right align...
-                position.X += this.Bounds.Pixel.Width - rectangle.Width;
-            }
-            else if ((alignment & Alignment.HorizontalCenter) != 0)
-            { // HorizontalCenter align...
-                position.X += (this.Bounds.Pixel.Width - rectangle.Width) / 2;
-            }
-
-            // Update the recieved rectangles position.
-            rectangle.Location = position;
-        }
-        /// <summary>
-        /// Returns a rectangle aligned to the current element with the
-        /// requested alignment type
-        /// </summary>
-        /// <param name="rectangle">The rectangle to align.</param>
-        /// <param name="alignment">The requested alignment type. Default is Top Left</param>
-        /// <param name="useWorldCoordinates">Whether or not the response should be in local or world coords.</param>
-        public Rectangle Align(Rectangle rectangle, Alignment alignment, Boolean useWorldCoordinates = false)
-        {
-            this.Align(ref rectangle, alignment, useWorldCoordinates);
-            return rectangle;
-        }
-
-        public Vector2 Align(Vector2 size, Alignment alignment, Boolean useWorldCoordinates = false)
-        {
-            // Default to Top Left alignment...
-            Vector2 position = useWorldCoordinates ? this.Bounds.Pixel.Location.ToVector2() : Vector2.Zero;
-
-            // Vertical Alignment...
-            if ((alignment & Alignment.Bottom) != 0)
-            { // Bottom align...
-                position.Y += (Int32)(this.Bounds.Pixel.Height - size.Y);
-            }
-            else if ((alignment & Alignment.VerticalCenter) != 0)
-            { // VerticalCenter align...
-                position.Y += (Int32)((this.Bounds.Pixel.Height - size.Y) / 2);
-            }
-
-            // Horizontal Alignment
-            if ((alignment & Alignment.Right) != 0)
-            { // Right align...
-                position.X += (Int32)(this.Bounds.Pixel.Width - size.X);
-            }
-            else if ((alignment & Alignment.HorizontalCenter) != 0)
-            { // HorizontalCenter align...
-                position.X += (Int32)((this.Bounds.Pixel.Width - size.X) / 2);
-            }
-
-            position.X = (Int32)position.X;
-            position.Y = (Int32)position.Y;
-
-            return position;
+            if (old != this.Bounds.Pixel)
+                this.OnBoundsChanged?.Invoke(this, this.Bounds.Pixel);
         }
         #endregion
 
         #region Event Handlers
         private void HandleBoundsChanged(object sender, EventArgs e)
         {
-            this.dirty = true;
+            this.Dirty = true;
         }
         #endregion
     }

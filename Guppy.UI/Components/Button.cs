@@ -1,11 +1,12 @@
-﻿using Guppy.UI.Enums;
+﻿using Guppy.UI.Entities;
+using Guppy.UI.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.UI.Entities.UI
+namespace Guppy.UI.Components
 {
     public class Button : ProtectedContainer<TextElement>
     {
@@ -48,7 +49,7 @@ namespace Guppy.UI.Entities.UI
         {
             base.PreInitialize();
 
-            _text = this.add<TextElement>(t =>
+            _text = this.children.Create<TextElement>(t =>
             {
                 t.Alignment = Alignment.Center;
                 t.Inline = false;

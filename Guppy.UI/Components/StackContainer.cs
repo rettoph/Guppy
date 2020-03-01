@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.UI.Entities.UI
+namespace Guppy.UI.Components
 {
     /// <summary>
     /// An container designed to hold multiple children and automatically
@@ -31,7 +31,7 @@ namespace Guppy.UI.Entities.UI
                 if(value != _method)
                 {
                     _method = value;
-                    this.dirty = true;
+                    this.Dirty = true;
                 }
             }
         }
@@ -49,19 +49,19 @@ namespace Guppy.UI.Entities.UI
             {
                 case StackMethod.Horizontal:
                     size = new Point(
-                        x: this.children.Sum(c => c.Bounds.Width.ToPixel(this.GetContainerBounds().Width)),
-                        y: this.children.Max(c => c.Bounds.Height.ToPixel(this.GetContainerBounds().Height)));
+                        x: this.children.Sum(c => c.Bounds.Width.ToPixel(this.Container.GetBounds().Width)),
+                        y: this.children.Max(c => c.Bounds.Height.ToPixel(this.Container.GetBounds().Height)));
                     break;
                 case StackMethod.Vertical:
                     size = new Point(
-                        x: this.children.Max(c => c.Bounds.Width.ToPixel(this.GetContainerBounds().Width)),
-                        y: this.children.Sum(c => c.Bounds.Height.ToPixel(this.GetContainerBounds().Height)));
+                        x: this.children.Max(c => c.Bounds.Width.ToPixel(this.Container.GetBounds().Width)),
+                        y: this.children.Sum(c => c.Bounds.Height.ToPixel(this.Container.GetBounds().Height)));
                     break;
             }
 
             if(this.Alignment != Alignment.None)
             {
-                var pos = this.container.Align(size.ToVector2(), this.Alignment).ToPoint();
+                var pos = this.Container.Align(size.ToVector2(), this.Alignment).ToPoint();
                 this.Bounds.X = pos.X;
                 this.Bounds.Y = pos.Y;
             }
@@ -86,36 +86,6 @@ namespace Guppy.UI.Entities.UI
                         break;
                 }
             });
-        }
-        #endregion
-
-        #region Helper Methods
-        protected override Rectangle GetBounds()
-        {
-            return this.Bounds.Pixel;
-
-            return new Rectangle(this.Bounds.Pixel.Location, this.GetContainerBounds().Size);
-        }
-
-        protected override TElement add(TElement child)
-        {
-            child.OnBoundsChanged += this.HandleChildBoundsChanged;
-
-            return base.add(child);
-        }
-
-        protected override void remove(TElement child)
-        {
-            child.OnBoundsChanged -= this.HandleChildBoundsChanged;
-
-            base.remove(child);
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandleChildBoundsChanged(object sender, Rectangle e)
-        {
-            this.dirty = true;
         }
         #endregion
     }

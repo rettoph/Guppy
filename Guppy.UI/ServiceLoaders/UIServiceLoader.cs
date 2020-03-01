@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.UI.Utilities;
+using Guppy.UI.Collections;
 
 namespace Guppy.UI.ServiceLoaders
 {
@@ -19,6 +20,8 @@ namespace Guppy.UI.ServiceLoaders
         {
             services.AddScoped<Pointer>("ui:pointer");
             services.AddScoped<PrimitiveBatch>();
+            services.AddTransient(typeof(ElementCollection<>));
+            services.AddTransient(typeof(ElementCollection));
         }
 
         public void ConfigureProvider(IServiceProvider provider)
