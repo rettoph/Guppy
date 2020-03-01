@@ -24,6 +24,7 @@ namespace Guppy.Collections
         #region Private Fields
         private ConcurrentDictionary<Guid, TCreateable> _items;
         private TCreateable _item;
+        private List<TCreateable> _list;
         #endregion
 
         #region Protected Fields
@@ -46,6 +47,7 @@ namespace Guppy.Collections
         public CreatableCollection(IServiceProvider provider)
         {
             _items = new ConcurrentDictionary<Guid, TCreateable>();
+            _list = new List<TCreateable>();
 
             this.logger = provider.GetService<ILogger>();
         }
@@ -68,6 +70,8 @@ namespace Guppy.Collections
         {
             if (_items.TryAdd(item.Id, item))
             {
+                _list.Add(item);
+
                 item.OnDisposing += this.HandleItemDisposing;
 
                 this.OnAdded?.Invoke(this, item);
@@ -83,6 +87,7 @@ namespace Guppy.Collections
         {
             if (_items.TryRemove(item.Id, out _item))
             {
+                _list.Remove(item);
                 item.OnDisposing -= this.HandleItemDisposing;
 
                 this.OnRemoved?.Invoke(this, item);
@@ -100,13 +105,13 @@ namespace Guppy.Collections
 
         public IEnumerator<TCreateable> GetEnumerator()
         {
-            return _items.Values.GetEnumerator();
+            return _list.GetEnumerator();
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _items.GetEnumerator();
+            return _list.GetEnumerator();
         }
         #endregion
 
