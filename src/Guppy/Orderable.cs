@@ -10,7 +10,7 @@ namespace Guppy
     /// 
     /// Mostly used via entities and layers.
     /// </summary>
-    public abstract class Orderable : Frameable, IOrderable
+    public abstract class Orderable : Frameable
     {
         #region Private Fields
         private Boolean _visible;
@@ -79,6 +79,16 @@ namespace Guppy
         public event EventHandler<Int32> OnUpdateOrderChanged;
         public event EventHandler<Boolean> OnVisibleChanged;
         public event EventHandler<Boolean> OnEnabledChanged;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.Enabled = true;
+            this.Visible = true;
+        }
         #endregion
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    public interface IFrameable : IService
+    public interface IFrameable
     {
         void TryDraw(GameTime gameTime);
         void TryUpdate(GameTime gameTime);

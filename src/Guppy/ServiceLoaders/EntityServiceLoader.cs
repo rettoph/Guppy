@@ -1,29 +1,25 @@
 ﻿using Guppy.Attributes;
+using Guppy.Collections;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
-using Guppy.Loaders;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class LoaderServiceLoader : IServiceLoader
+    internal sealed class EntityServiceLoader : IServiceLoader
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            // throw new NotImplementedException();
+            services.AddScoped<EntityCollection>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-            AssemblyHelper.GetTypesWithAutoLoadAttribute<Loader>().Select(t => (Loader)provider.GetService(t)).ForEach(l =>
-            { // Load all auto loaded drivers now.
-                l.Load(provider);
-            });
+            // throw new NotImplementedException();
         }
     }
 }

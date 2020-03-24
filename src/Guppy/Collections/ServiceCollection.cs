@@ -95,6 +95,12 @@ namespace Guppy.Collections
         {
             return this.Create<T>(serviceType.FullName, setup);
         }
+
+        public T Create<T>(Action<ServiceProvider, T> setup = null)
+            where T : TService
+        {
+            return this.Create<T>(typeof(T).FullName, setup);
+        }
         #endregion
 
         #region ICollection Implementation

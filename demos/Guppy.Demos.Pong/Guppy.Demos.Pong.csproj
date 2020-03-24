@@ -48,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Ball.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Layers\MainLayer.cs" />
     <Compile Include="PongGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

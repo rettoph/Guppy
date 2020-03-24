@@ -50,7 +50,7 @@ namespace Guppy
         #endregion
 
         #region Constructor
-        internal ServiceProvider(ServiceCollection collection) : this()
+        internal ServiceProvider(ServiceCollection collection)
         {
             _factories = collection.factories;
             _services = collection.ToDictionary(
@@ -60,9 +60,11 @@ namespace Guppy
             this.singletons = new Dictionary<UInt32, IService>();
             this.typedSingletons = collection.typedSingletons;
             this.genericSingletons = collection.genericSingletons;
+            this.scopes = new Dictionary<UInt32, IService>();
+            this.typedScopes = new Dictionary<Type, IService>();
         }
 
-        private ServiceProvider(ServiceProvider parent) : this()
+        private ServiceProvider(ServiceProvider parent)
         {
             _factories = parent._factories;
             _services = parent._services;
@@ -70,12 +72,9 @@ namespace Guppy
             this.singletons = parent.singletons;
             this.typedSingletons = parent.typedSingletons;
             this.genericSingletons = parent.genericSingletons;
-        }
 
-        private ServiceProvider()
-        {
-            this.scopes = new Dictionary<UInt32, IService>();
-            this.typedScopes = new Dictionary<Type, IService>();
+            this.scopes = new Dictionary<UInt32, IService>(parent.scopes);
+            this.typedScopes = new Dictionary<Type, IService>(parent.typedScopes);
         }
         #endregion
 

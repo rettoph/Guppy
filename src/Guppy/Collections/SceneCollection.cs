@@ -6,14 +6,14 @@ using System.Text;
 
 namespace Guppy.Collections
 {
-    public sealed class SceneCollection : ServiceCollection<IScene>, IFrameable
+    public sealed class SceneCollection : ServiceCollection<Scene>, IFrameable
     {
         #region Public Attributes
-        public IScene Scene { get; private set; }
+        public Scene Scene { get; private set; }
         #endregion
 
         #region Helper Methods
-        public void SetScene(IScene scene)
+        public void SetScene(Scene scene)
         {
             if (!this.Contains(scene))
                 throw new Exception("UNable to render non-child theme.");
@@ -23,7 +23,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Factory Methods
-        protected override IScene Create(ServiceProvider provider, uint id, Action<ServiceProvider, IScene> setup)
+        protected override Scene Create(ServiceProvider provider, uint id, Action<ServiceProvider, Scene> setup)
         {
             return base.Create(provider.CreateScope(), id, setup);
         }
@@ -32,12 +32,12 @@ namespace Guppy.Collections
         #region Frame Methods
         public void TryDraw(GameTime gameTime)
         {
-            this.Scene.TryDraw(gameTime);
+            this.Scene?.TryDraw(gameTime);
         }
 
         public void TryUpdate(GameTime gameTime)
         {
-            this.Scene.TryUpdate(gameTime);
+            this.Scene?.TryUpdate(gameTime);
         }
         #endregion
     }

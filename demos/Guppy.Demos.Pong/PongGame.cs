@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.Extensions;
+using Guppy.Demos.Pong.Scenes;
 
 namespace Guppy.Demos.Pong
 {
@@ -20,6 +21,8 @@ namespace Guppy.Demos.Pong
             base.Initialize(provider);
 
             _graphics = provider.GetService<GraphicsDevice>();
+
+            this.Scenes.SetScene(this.Scenes.Create<GameScene>());
         }
 
         protected override void Draw(GameTime gameTime)

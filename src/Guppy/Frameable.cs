@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy
 {
-    public abstract class Frameable : Service, IFrameable
+    public abstract class Frameable : Service
     {
         #region Lifecycle Methods
         #endregion

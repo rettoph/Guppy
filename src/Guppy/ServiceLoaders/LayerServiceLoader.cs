@@ -5,20 +5,22 @@ using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class SceneServiceLoader : IServiceLoader
+    internal sealed class LayerServiceLoader : IServiceLoader
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<SceneCollection>();
+            services.AddScoped<LayerCollection>();
+            services.AddScoped<LayerEntityCollection>();
 
-            AssemblyHelper.GetTypesAssignableFrom<Scene>().ForEach(t =>
-            { // Auto register any Scene classes as a scoped type.
-                services.AddTypedScoped(t, typeof(Scene));
+            AssemblyHelper.GetTypesAssignableFrom<Layer>().Where(l => l.IsClass && !l.IsAbstract).ForEach(t =>
+            { // Auto register any Layer classes as a transient type.
+                services.AddTransient(t);
             });
         }
 

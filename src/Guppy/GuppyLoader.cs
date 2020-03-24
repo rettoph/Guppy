@@ -51,7 +51,7 @@ namespace Guppy
 
         #region Helper Methods
         public T BuildGame<T>(Action<ServiceProvider, T> setup = null)
-            where T : class, IGame
+            where T : Game
         {
             return _provider.CreateScope().GetService<T>(setup);
         }

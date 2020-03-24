@@ -15,7 +15,7 @@ namespace Guppy.Collections
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class OrderableCollection<T> : ServiceCollection<T>, IFrameable
-        where T : IOrderable
+        where T : Orderable
     {
         #region Private Attributes
         private List<T> _draws;
@@ -57,7 +57,7 @@ namespace Guppy.Collections
         {
             this.TryCleanDraws();
 
-            _draws.ForEach(u => u.TryUpdate(gameTime));
+            _draws.ForEach(u => u.TryDraw(gameTime));
         }
 
         public virtual void TryCleanDraws()

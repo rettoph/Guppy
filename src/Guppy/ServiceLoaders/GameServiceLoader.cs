@@ -13,9 +13,9 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            AssemblyHelper.GetTypesAssignableFrom<IGame>().ForEach(t =>
+            AssemblyHelper.GetTypesAssignableFrom<Game>().ForEach(t =>
             { // Auto register any IGame class as a scoped type.
-                services.AddTypedScoped(t, typeof(IGame));
+                services.AddTypedScoped(t, typeof(Game));
             });
         }
 
