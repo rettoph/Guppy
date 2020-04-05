@@ -27,9 +27,9 @@ namespace Guppy.Demos.Pong
 
         protected override void Draw(GameTime gameTime)
         {
-            base.Draw(gameTime);
+            _graphics.Clear(Color.Black);
 
-            _graphics.Clear(Color.Brown);
+            base.Draw(gameTime);
         }
     }
 }

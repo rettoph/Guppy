@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
+using Guppy.Utilities;
 using Guppy.Enums;
 using Guppy.Interfaces;
-using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -12,7 +12,7 @@ namespace Guppy
 {
     public sealed class ServiceCollection : List<ServiceDescriptor>
     {
-        #region internal Fields
+        #region Internal Fields
         internal Dictionary<Type, Object> genericSingletons;
         internal Dictionary<Type, IService> typedSingletons;
         internal Dictionary<Type, Func<ServiceProvider, Type, Object>> factories;
@@ -33,12 +33,15 @@ namespace Guppy
             return new ServiceProvider(this);
         }
 
-        public void ConfigureMonoGame(GameWindow window, GraphicsDeviceManager graphics)
+        public ServiceCollection ConfigureMonoGame(GameWindow window, GraphicsDeviceManager graphics)
         {
             this.AddSingleton<GameWindow>(window);
             this.AddSingleton<GraphicsDeviceManager>(graphics);
             this.AddSingleton<GraphicsDevice>(graphics.GraphicsDevice);
             this.AddSingleton<SpriteBatch>(new SpriteBatch(graphics.GraphicsDevice));
+            this.AddSingleton<PrimitiveBatch>(new PrimitiveBatch(graphics.GraphicsDevice));
+
+            return this;
         }
         #endregion
 
@@ -48,10 +51,9 @@ namespace Guppy
             this.factories.Add(type, factory);
         }
 
-        public void AddFactory<T>(Func<ServiceProvider, Type, IService> factory)
-            where T : IService
+        public void AddFactory<T>(Func<ServiceProvider, Type, T> factory)
         {
-            this.AddFactory(typeof(T), factory);
+            this.AddFactory(typeof(T), (s, t) => factory(s, t));
         }
         #endregion
 

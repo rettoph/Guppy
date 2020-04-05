@@ -18,6 +18,8 @@ namespace Guppy.Demos.Pong
         {
             _graphics = new GraphicsDeviceManager(this);
             _guppy = new GuppyLoader();
+
+            this.Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()

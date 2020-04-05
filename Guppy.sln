@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{6EF6EBFB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Demos.Pong", "demos\Guppy.Demos.Pong\Guppy.Demos.Pong.csproj", "{CDE8369E-A8FE-4FC3-8941-50CF23275392}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Network", "src\Guppy.Network\Guppy.Network.csproj", "{C7309346-3D19-4600-8470-5D04E29BDAB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{CDE8369E-A8FE-4FC3-8941-50CF23275392}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDE8369E-A8FE-4FC3-8941-50CF23275392}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDE8369E-A8FE-4FC3-8941-50CF23275392}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7309346-3D19-4600-8470-5D04E29BDAB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7309346-3D19-4600-8470-5D04E29BDAB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7309346-3D19-4600-8470-5D04E29BDAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7309346-3D19-4600-8470-5D04E29BDAB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E8EA9184-376E-43FF-9AFE-B83FFB763273} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 		{CDE8369E-A8FE-4FC3-8941-50CF23275392} = {6EF6EBFB-3F4A-4DE7-B973-145BEEB6BE4B}
+		{C7309346-3D19-4600-8470-5D04E29BDAB4} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}

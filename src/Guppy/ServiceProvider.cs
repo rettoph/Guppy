@@ -152,6 +152,8 @@ namespace Guppy
                 return this.GetService(serviceType.FullName);
             else if (this.genericSingletons.ContainsKey(serviceType))
                 return this.genericSingletons[serviceType];
+            else if (_factories.ContainsKey(serviceType))
+                return _factories[serviceType](this, serviceType);
             else
                 throw new ArgumentException();
         }
