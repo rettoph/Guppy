@@ -1,4 +1,4 @@
-﻿using Guppy.Enums;
+﻿using Guppy.DependencyInjection;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -9,9 +9,8 @@ namespace Guppy.Interfaces
     public interface IService
     {
         #region Attributes
+        Configuration Configuration { get; set; }
         Guid Id { get; set; }
-        ServiceDescriptor Descriptor { get; set; }
-        InitializationStatus InitializationStatus { get; }
         #endregion
 
         #region Events

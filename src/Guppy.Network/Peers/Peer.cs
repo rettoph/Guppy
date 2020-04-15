@@ -1,25 +1,40 @@
-﻿using Guppy.Utilities.Delegaters;
-using Lidgren.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using Guppy.DependencyInjection;
+using Lidgren.Network;
 
 namespace Guppy.Network.Peers
 {
-    /// <summary>
-    /// The Network Peer is a service that, by default,
-    /// is self managed and will asynchronously update
-    /// itself after the TryStart method is first called.
-    /// </summary>
-    public class Peer : Service
+    public class Peer : Messageable
     {
         #region Private Fields
         private NetPeer _peer;
+        private Thread _updateThread;
+        private Boolean _running;
         private NetIncomingMessage _im;
         #endregion
 
         #region Public Attributes
-        public CustomDelegater<NetIncomingMessageType, NetIncomingMessage> MessagesTypes { get; private set; }
+        /// <summary>
+        /// The peer's update interval in milliseconds.
+        /// </summary>
+        public Int32 Interval { get; set; } = 32;
+        public ReadOnlyDictionary<NetIncomingMessageType, MessageTypeDelegate> MessageTypeDelegates { get; private set; }
+        #endregion
+
+        #region Delegates
+        public delegate void MessageTypeDelegate(NetIncomingMessage im);
+        #endregion
+
+        #region Constructor
+        public Peer()
+        {
+
+        }
         #endregion
 
         #region Lifecycle Methods
@@ -27,24 +42,63 @@ namespace Guppy.Network.Peers
         {
             base.PreInitialize(provider);
 
-            this.MessagesTypes = new CustomDelegater<NetIncomingMessageType, NetIncomingMessage>();
+            this.MessageTypeDelegates = new ReadOnlyDictionary<NetIncomingMessageType, MessageTypeDelegate>(((NetIncomingMessageType[])Enum.GetValues(typeof(NetIncomingMessageType))).ToDictionary(
+                keySelector: mt => mt,
+                elementSelector: mt => default(MessageTypeDelegate)));
+
+            _peer = provider.GetService<NetPeer>();
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.MessageTypeDelegates = null;
+        }
+        #endregion
+
+        #region Helper Methods
+        public void Start()
+        {
+            lock (this)
+            {
+                if (_running)
+                    throw new Exception("Unable to Start when already running.");
+
+                _peer.Start();
+                _updateThread = new Thread(new ThreadStart(this.UpdateLoop));
+                _running = true;
+            }
+        }
+
+        public void Stop()
+        {
+            lock (this)
+            {
+                if (!_running)
+                    throw new Exception("Unable to stop when not running");
+
+                _running = false;
+            }
         }
         #endregion
 
         #region Frame Methods
-        private void TryHandleIncomingMessages()
+        public void UpdateLoop()
         {
-            try
+            while(_running)
             {
-                // Read any new incoming messages...
-                while ((_im = _peer.ReadMessage()) != null)
-                    this.MessagesTypes.TryInvoke(this, _im.MessageType, _im);
+                this.Update();
+                Thread.Sleep(this.Interval);
             }
-            catch (Exception e)
-            {
-                _im?.SenderConnection.Disconnect("Goodbye.");
-                this.TryHandleIncomingMessages();
-            }
+        }
+
+        public override void Update()
+        {
+            while (_peer.ReadMessage(out _im))
+                this.MessageTypeDelegates[_im.MessageType]?.Invoke(_im);
+
+            base.Update();
         }
         #endregion
     }

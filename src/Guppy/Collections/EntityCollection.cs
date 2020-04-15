@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.DependencyInjection;
 using Guppy.Extensions;
 
 namespace Guppy.Collections

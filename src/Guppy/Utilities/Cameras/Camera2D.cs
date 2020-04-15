@@ -7,10 +7,10 @@ using System.Text;
 using Guppy.Extensions;
 using Guppy.Attributes;
 using Guppy.Enums;
+using Guppy.DependencyInjection;
 
 namespace Guppy.Utilities.Cameras
 {
-    [Service(Lifetime.Scoped)]
     public class Camera2D : Camera
     {
         #region Private Fields

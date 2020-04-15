@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
+using Guppy.DependencyInjection;
 
 namespace Guppy
 {

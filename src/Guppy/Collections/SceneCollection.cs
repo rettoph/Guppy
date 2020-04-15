@@ -1,4 +1,5 @@
-﻿using Guppy.Interfaces;
+﻿using Guppy.DependencyInjection;
+using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,16 +17,26 @@ namespace Guppy.Collections
         public void SetScene(Scene scene)
         {
             if (!this.Contains(scene))
-                throw new Exception("UNable to render non-child theme.");
+                throw new Exception("Unable to render non-child theme.");
 
             this.Scene = scene;
         }
         #endregion
 
-        #region Factory Methods
-        protected override Scene Create(ServiceProvider provider, uint id, Action<ServiceProvider, Scene> setup)
+        #region Collection Methods
+        protected override void Add(Scene item)
         {
-            return base.Create(provider.CreateScope(), id, setup);
+            base.Add(item);
+
+            if (this.Scene == null)
+                this.SetScene(item);
+        }
+        #endregion
+
+        #region Factory Methods
+        protected override Scene Create(ServiceProvider provider, uint id)
+        {
+            return base.Create(provider.CreateScope(), id);
         }
         #endregion
 

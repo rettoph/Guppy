@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
-using Guppy.Extensions.Collections;
+using Guppy.Collections;
+using Guppy.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,14 +9,12 @@ using System.Text;
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    public sealed class GameServiceLoader : IServiceLoader
+    internal sealed class LayerServiceCollection : IServiceLoader
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            AssemblyHelper.GetTypesAssignableFrom<Game>().ForEach(t =>
-            { // Auto register any IGame class as a scoped type.
-                services.AddTypedScoped(t, typeof(Game));
-            });
+            services.AddScoped<LayerCollection>((p) => new LayerCollection());
+            services.AddTransient<LayerEntityCollection>((p) => new LayerEntityCollection());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

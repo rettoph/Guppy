@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
+using Guppy.DependencyInjection;
 
 namespace Guppy.Collections
 {
@@ -38,13 +39,21 @@ namespace Guppy.Collections
         #endregion
 
         #region Factory Methods
-        protected override Entity Create(ServiceProvider provider, uint id, Action<ServiceProvider, Entity> setup)
+        protected override Entity Create(ServiceProvider provider, Type serviceType)
         {
-            var entity = base.Create(provider, id, (p, i) =>
-            {
-                i.LayerGroup = this.layer.Group.GetValue();
-                setup?.Invoke(p, i);
-            });
+            var entity = base.Create(provider, serviceType);
+            entity.LayerGroup = this.layer.Group.GetValue();
+
+            // Automatically add the new entity into the global entity collection.
+            _entities.TryAdd(entity);
+
+            return entity;
+        }
+
+        protected override Entity Create(ServiceProvider provider, uint id)
+        {
+            var entity = base.Create(provider, id);
+            entity.LayerGroup = this.layer.Group.GetValue();
 
             // Automatically add the new entity into the global entity collection.
             _entities.TryAdd(entity);

@@ -37,9 +37,9 @@ namespace Guppy.Utilities
         #endregion
 
         #region Helper Methods
-        public static IEnumerable<Type> GetTypesAssignableFrom<TBAse>()
+        public static IEnumerable<Type> GetTypesAssignableFrom<TBase>()
         {
-            return AssemblyHelper.GetTypesAssignableFrom(typeof(TBAse));
+            return AssemblyHelper.GetTypesAssignableFrom(typeof(TBase));
         }
         public static IEnumerable<Type> GetTypesAssignableFrom(Type baseType)
         {

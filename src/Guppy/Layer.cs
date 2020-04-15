@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
 using Microsoft.Xna.Framework;
+using Guppy.DependencyInjection;
 
 namespace Guppy
 {
@@ -34,10 +35,8 @@ namespace Guppy
         {
             base.PreInitialize(provider);
 
-            this.Entities = provider.GetService<LayerEntityCollection>((p, i) =>
-            { // Create a new LayerEntityCollection bound to this layer.
-                i.layer = this;
-            });
+            this.Entities = provider.GetService<LayerEntityCollection>();
+            this.Entities.layer = this;
         }
         #endregion
 

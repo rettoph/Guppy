@@ -1,8 +1,11 @@
 ﻿using Guppy.Attributes;
 using Guppy.Collections;
+using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,11 +17,11 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<SceneCollection>();
+            services.AddSingleton<SceneCollection>(new SceneCollection());
 
-            AssemblyHelper.GetTypesAssignableFrom<Scene>().ForEach(t =>
-            { // Auto register any Scene classes as a scoped type.
-                services.AddTypedScoped(t, typeof(Scene));
+            AssemblyHelper.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
+            {
+                services.AddScene(s, (p) => ActivatorUtilities.CreateInstance(p, s));
             });
         }
 

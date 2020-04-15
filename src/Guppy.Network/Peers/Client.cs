@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.Network.Peers
 {
-    class Server
+    class Client
     {
     }
 }

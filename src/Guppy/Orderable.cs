@@ -1,4 +1,5 @@
-﻿using Guppy.Interfaces;
+﻿using Guppy.DependencyInjection;
+using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;

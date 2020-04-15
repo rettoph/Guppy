@@ -1,4 +1,5 @@
-﻿using Guppy.Enums;
+﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -10,11 +11,23 @@ namespace Guppy
     public abstract class Service : IService
     {
         #region Private Fields
+        private Configuration _configuration;
         private Guid _id;
         private ServiceDescriptor _descriptor;
         #endregion
 
         #region Public Attributes
+        public Configuration Configuration
+        {
+            get => _configuration;
+            set
+            {
+                if (this.InitializationStatus == InitializationStatus.Ready)
+                    throw new InvalidOperationException("Unable to update Configuration after initialization.");
+
+                _configuration = value;
+            }
+        }
         public Guid Id
         {
             get => _id;

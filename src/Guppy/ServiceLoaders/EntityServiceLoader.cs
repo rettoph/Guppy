@@ -1,8 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Collections;
-using Guppy.Extensions.Collections;
+using Guppy.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,11 +9,11 @@ using System.Text;
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class EntityServiceLoader : IServiceLoader
+    internal sealed class EntityServiceCollection : IServiceLoader
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<EntityCollection>();
+            services.AddScoped<EntityCollection>((p) => new EntityCollection());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

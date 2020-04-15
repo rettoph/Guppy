@@ -1,19 +1,18 @@
 ﻿using Guppy.Attributes;
+using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Guppy.Demos.Pong.ServiceLoaders
+namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    public class PongServiceLoader : IServiceLoader
+    internal sealed class GuppyServiceLoader : IServiceLoader
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            // throw new NotImplementedException();
+            services.AddSingleton<UpdateBuffer>((p) => new UpdateBuffer());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

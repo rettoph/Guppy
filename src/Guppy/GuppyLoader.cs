@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
 using Guppy.Utilities;
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Guppy.Extensions;
 
 namespace Guppy
 {
@@ -17,7 +17,6 @@ namespace Guppy
     {
         #region Private Fields
         private ServiceCollection _services;
-        private ServiceProvider _provider;
         private HashSet<IServiceLoader> _serviceLoaders;
         #endregion
 
@@ -45,23 +44,17 @@ namespace Guppy
             _serviceLoaders = new HashSet<IServiceLoader>();
             AssemblyHelper.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
                     .Select(t => Activator.CreateInstance(t) as IServiceLoader)
-                    .ForEach(sl => this.AddServiceLoader(sl));
+                    .ForEach(sl => this.RegisterServiceLoader(sl));
         }
         #endregion
 
         #region Helper Methods
-        public T BuildGame<T>(Action<ServiceProvider, T> setup = null)
-            where T : Game
-        {
-            return _provider.CreateScope().GetService<T>(setup);
-        }
-
         /// <summary>
         /// Manually add a service loader into Guppy. Note, this only
         /// works pre initialization.
         /// </summary>
         /// <param name="serviceLoader"></param>
-        public void AddServiceLoader(IServiceLoader serviceLoader)
+        public void RegisterServiceLoader(IServiceLoader serviceLoader)
         {
             if (this.Initialized)
                 throw new InvalidOperationException("Unable to add service loaders after Guppy has been initialized.");
@@ -78,16 +71,39 @@ namespace Guppy
             foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.ConfigureServices(this.Services);
 
-            // Create a new service provider
-            _provider = new ServiceProvider(_services);
-
-            // Iterate through all contained service loaders and configure the provider
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.ConfigureProvider(_provider);
-
             this.Initialized = true;
 
             return this;
+        }
+
+        public T BuildGame<T>()
+            where T : Game
+        {
+            if (!this.Initialized)
+                throw new Exception("Please initialize Guppy before building a game instance.");
+
+            var provider = _services.BuildServiceProvider();
+
+            // Iterate through all contained service loaders and configure the provider
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+                serviceLoader.ConfigureProvider(provider);
+
+            return provider.GetService<T>();
+        }
+
+        public T BuildGame<T>(String configuration)
+            where T : Game
+        {
+            if (!this.Initialized)
+                throw new Exception("Please initialize Guppy before building a game instance.");
+
+            var provider = _services.BuildServiceProvider();
+
+            // Iterate through all contained service loaders and configure the provider
+            foreach (IServiceLoader serviceLoader in _serviceLoaders)
+                serviceLoader.ConfigureProvider(provider);
+
+            return provider.GetService<T>(configuration);
         }
         #endregion
     }

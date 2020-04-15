@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Guppy.Attributes;
 using Guppy.Enums;
+using Guppy.DependencyInjection;
 
 namespace Guppy
 {
@@ -18,7 +19,6 @@ namespace Guppy
     /// Example uses: Multi threaded actions (network updates),
     /// unexpected cleans, ect
     /// </summary>
-    [Service(Lifetime.TypedScoped)]
     public sealed class UpdateBuffer : Service
     {
         #region Private Fields
