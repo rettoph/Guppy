@@ -40,19 +40,13 @@ namespace Guppy
         {
             base.PostInitialize(provider);
 
-            // Create a temp configuration that will be used to setup all internal drivers.
-            var driverSetup = new ConfigurationDescriptor()
-            {
-                Priority = -20,
-                Configure = (i, p, f2) =>
-                {
-                    ((Driver)i).SetDriven(this);
-                    return i;
-                }
-            };
-
             // For each registered type create a new instance with the custom setup
-            _drivers = _driverTypes.Select(d => (Driver)provider.GetFactory(d).CustomBuild(provider, driverSetup)).ToArray();
+            _drivers = _driverTypes.Select(d =>
+            {
+                var driver = (Driver)provider.GetService(d);
+                driver.TryConfigure(this, provider);
+                return driver;
+            }).ToArray();
         }
         #endregion
 

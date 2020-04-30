@@ -36,30 +36,6 @@ namespace Guppy.DependencyInjection
             // Return configured instance...
             return instance;
         }
-        /// <summary>
-        /// Builds the service with custom one time configurations.
-        /// 
-        /// These configurations will be used once then forgotten.
-        /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="customConfigurations"></param>
-        /// <returns></returns>
-        public Object CustomBuild(ServiceProvider provider, params ConfigurationDescriptor[] customConfigurations)
-        {
-            // Create new instance...
-            var instance = this.ServiceDescriptor.Factory(provider);
-            ExceptionHelper.ValidateAssignableFrom(this.ServiceDescriptor.ServiceType, instance.GetType());
-
-            // Apply recieved configurations...
-            this.ConfigurationDescriptors
-                .Concat(customConfigurations)
-                .OrderBy(c => c.Priority)
-                .ForEach(c => instance = c.Configure(instance, provider, this));
-
-            // Return configured instance...
-            return instance;
-        }
-
 
         public static UInt32 GetId(String name) => xxHash.CalculateHash(Encoding.UTF8.GetBytes(name));
     }
