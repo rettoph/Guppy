@@ -1,4 +1,5 @@
 ﻿using Guppy.Utilities;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,8 +17,9 @@ namespace Guppy.Extensions
             loader.Services.AddSingleton<ContentManager>(content);
             loader.Services.AddSingleton<GameWindow>(window);
             loader.Services.AddSingleton<GraphicsDevice>(graphics.GraphicsDevice);
-            loader.Services.AddScoped<SpriteBatch>((p) => new SpriteBatch(p.GetService<GraphicsDevice>()));
-            loader.Services.AddScoped<PrimitiveBatch>((p) => new PrimitiveBatch(p.GetService<GraphicsDevice>()));
+            loader.Services.AddScoped<SpriteBatch>(p => new SpriteBatch(p.GetService<GraphicsDevice>()));
+            loader.Services.AddScoped<PrimitiveBatch>(p => new PrimitiveBatch(p.GetService<GraphicsDevice>()));
+            loader.Services.AddScoped<Camera2D>(p => new Camera2D());
 
             return loader;
         }

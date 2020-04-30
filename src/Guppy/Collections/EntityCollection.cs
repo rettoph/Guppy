@@ -52,7 +52,7 @@ namespace Guppy.Collections
         private void UpdateItemLayer(Entity item)
         {
             // Add into the new layer...
-            _layers.GetByGroup(item.LayerGroup)?.Entities.TryAdd(item);
+            _layers.GetByGroup(item.LayerGroup).Entities.TryAdd(item);
         }
         #endregion
 

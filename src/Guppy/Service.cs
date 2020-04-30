@@ -11,13 +11,13 @@ namespace Guppy
     public abstract class Service : IService
     {
         #region Private Fields
-        private Configuration _configuration;
+        private ServiceFactory _configuration;
         private Guid _id;
         private ServiceDescriptor _descriptor;
         #endregion
 
         #region Public Attributes
-        public Configuration Configuration
+        public ServiceFactory Configuration
         {
             get => _configuration;
             set
@@ -37,18 +37,6 @@ namespace Guppy
                     throw new InvalidOperationException("Unable to update Id after initialization.");
 
                 _id = value;
-            }
-        }
-
-        public ServiceDescriptor Descriptor
-        {
-            get => _descriptor;
-            set
-            {
-                if (this.InitializationStatus == InitializationStatus.Ready)
-                    throw new InvalidOperationException("Unable to update Descriptor after initialization.");
-
-                _descriptor = value;
             }
         }
 
@@ -100,7 +88,7 @@ namespace Guppy
 
         protected virtual void PreInitialize(ServiceProvider provider)
         {
-            //
+            this.Id = Guid.NewGuid();
         }
 
         protected virtual void Initialize(ServiceProvider provider)

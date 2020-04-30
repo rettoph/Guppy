@@ -10,7 +10,7 @@ namespace Guppy.DependencyInjection
         #region Public Attributes
         public String Name { get; set; }
         public Type ServiceType { get; set; }
-        public Func<Object, ServiceProvider, Configuration, Object> Configure { get; set; }
+        public Func<Object, ServiceProvider, ServiceFactory, Object> Configure { get; set; }
         public Int32 Priority { get; set; }
         #endregion
     }

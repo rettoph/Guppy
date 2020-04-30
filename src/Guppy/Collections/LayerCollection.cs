@@ -23,12 +23,12 @@ namespace Guppy.Collections
         #region Helper Methods
         public Layer GetByGroup(Int32 group)
         {
-            return this.FirstOrDefault(l => l.Group.Contains(group));
+            return this.First(l => l.Group.Contains(group));
         }
         public T GetByGroup<T>(Int32 group)
             where T : Layer
         {
-            return this.FirstOrDefault(l => l.Group.Contains(group)) as T;
+            return this.GetByGroup(group) as T;
         }
         #endregion
     }

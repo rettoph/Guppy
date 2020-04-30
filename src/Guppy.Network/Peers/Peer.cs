@@ -9,7 +9,7 @@ using Lidgren.Network;
 
 namespace Guppy.Network.Peers
 {
-    public class Peer : Messageable
+    public abstract class Peer : Messageable
     {
         #region Private Fields
         private NetPeer _peer;
@@ -46,7 +46,7 @@ namespace Guppy.Network.Peers
                 keySelector: mt => mt,
                 elementSelector: mt => default(MessageTypeDelegate)));
 
-            _peer = provider.GetService<NetPeer>();
+            _peer = this.GetPeer(provider);
         }
 
         protected override void Dispose()
@@ -81,6 +81,8 @@ namespace Guppy.Network.Peers
                 _running = false;
             }
         }
+
+        protected abstract NetPeer GetPeer(ServiceProvider provider);
         #endregion
 
         #region Frame Methods
@@ -95,7 +97,7 @@ namespace Guppy.Network.Peers
 
         public override void Update()
         {
-            while (_peer.ReadMessage(out _im))
+            while ((_im = _peer.ReadMessage()) != null)
                 this.MessageTypeDelegates[_im.MessageType]?.Invoke(_im);
 
             base.Update();

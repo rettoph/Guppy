@@ -66,13 +66,13 @@ namespace Guppy.Collections
             ExceptionHelper.ValidateAssignableFrom<TService>(serviceType);
 
             var item = (TService)provider.GetService(serviceType);
-            this.Add(item);
+            this.TryAdd(item);
             return item;
         }
         protected virtual TService Create(ServiceProvider provider, UInt32 id)
         {
             var item = provider.GetService<TService>(id);
-            this.Add(item);
+            this.TryAdd(item);
             return item;
         }
         public TService Create(UInt32 id)

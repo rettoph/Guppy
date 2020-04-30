@@ -14,6 +14,8 @@ namespace Guppy.ServiceLoaders
         public void ConfigureServices(ServiceCollection services)
         {
             services.AddScoped<EntityCollection>((p) => new EntityCollection());
+            // Add custom configuration to auto add the entity into the global entity collection post initialization
+            services.AddConfiguration<Entity>((e, p, f) => p.GetService<EntityCollection>().TryAdd(e), Int32.MaxValue);
         }
 
         public void ConfigureProvider(ServiceProvider provider)

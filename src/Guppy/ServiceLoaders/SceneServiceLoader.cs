@@ -21,7 +21,7 @@ namespace Guppy.ServiceLoaders
 
             AssemblyHelper.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
             {
-                services.AddScene(s, (p) => ActivatorUtilities.CreateInstance(p, s));
+                services.AddScene(s, p => ActivatorUtilities.CreateInstance(p, s));
             });
         }
 

@@ -40,6 +40,5 @@ namespace Guppy
             this.Layers.TryUpdate(gameTime);
         }
         #endregion
-
     }
 }

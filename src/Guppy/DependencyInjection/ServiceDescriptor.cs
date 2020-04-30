@@ -34,46 +34,25 @@ namespace Guppy.DependencyInjection
         /// ConfigurationDescriptor  arraywill simply be ignored.
         /// </summary>
         /// <param name="provider"></param>
-        /// <param name="configuration"></param>
+        /// <param name="factory"></param>
         /// <returns></returns>
-        public Object GetInstance(ServiceProvider provider, Configuration configuration)
+        public Object GetInstance(ServiceProvider provider, ServiceFactory factory)
         {
             switch (this.Lifetime)
             {
                 case ServiceLifetime.Transient:
-                    return this.BuildInstance(provider, configuration);
+                    return factory.Build(provider);
                 case ServiceLifetime.Scoped:
                     if (!provider.scopedInstances.ContainsKey(this.CacheType))
-                        provider.scopedInstances[this.CacheType] = this.BuildInstance(provider, configuration);
+                        provider.scopedInstances[this.CacheType] = factory.Build(provider);
                     return provider.scopedInstances[this.CacheType];
                 case ServiceLifetime.Singleton:
                     if (!provider.singletonInstances.ContainsKey(this.CacheType))
-                        provider.singletonInstances[this.CacheType] = this.BuildInstance(provider, configuration);
+                        provider.singletonInstances[this.CacheType] = factory.Build(provider);
                     return provider.singletonInstances[this.CacheType];
                 default:
                     throw new Exception($"Unable to create instance, unknown service lifetime value ({this.Lifetime}).");
             }
-        }
-
-        /// <summary>
-        /// Create a brand new service instance and automatically
-        /// apply the recieved ConfigurationDescriptor.
-        /// 
-        /// This will ignore the defined ServiceLifetime.
-        /// </summary>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public Object BuildInstance(ServiceProvider provider, Configuration configuration)
-        {
-            // Create new instance...
-            var instance = this.Factory(provider);
-            ExceptionHelper.ValidateAssignableFrom(this.ServiceType, instance.GetType());
-
-            // Apply recieved configurations...
-            configuration.Descriptors.ForEach(c => instance = c.Configure(instance, provider, configuration));
-
-            // Return configured instance...
-            return instance;
         }
         #endregion
     }

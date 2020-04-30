@@ -8,21 +8,17 @@ namespace Guppy.Network.Extensions
 {
     public static class GuppyLoaderExtensions
     {
-        public static GuppyLoader ConfigureServer(this GuppyLoader guppy, String appIdentifier)
+        public static GuppyLoader ConfigureServer(this GuppyLoader guppy, NetPeerConfiguration configuration)
         {
-            guppy.Services.AddSingleton<NetPeerConfiguration>(p => new NetPeerConfiguration(appIdentifier));
-            guppy.Services.AddSingleton<NetPeer>(p => throw new Exception("No NetPeer instance created."));
-            guppy.Services.AddSingleton<NetServer>(p => new NetServer(p.GetService<NetPeerConfiguration>()), 0, typeof(NetPeer));
+            guppy.Services.AddSingleton<NetServer>(p => new NetServer(configuration));
             guppy.Services.AddSingleton<Server>(p => new Server());
 
             return guppy;
         }
 
-        public static GuppyLoader ConfigureClient(this GuppyLoader guppy, String appIdentifier)
+        public static GuppyLoader ConfigureClient(this GuppyLoader guppy, NetPeerConfiguration configuration)
         {
-            guppy.Services.AddSingleton<NetPeerConfiguration>(p => new NetPeerConfiguration(appIdentifier));
-            guppy.Services.AddSingleton<NetPeer>(p => throw new Exception("No NetPeer instance created."));
-            guppy.Services.AddSingleton<NetClient>(p => new NetClient(p.GetService<NetPeerConfiguration>()), 0, typeof(NetPeer));
+            guppy.Services.AddSingleton<NetClient>(p => new NetClient(configuration));
             guppy.Services.AddSingleton<Client>(p => new Client());
 
             return guppy;

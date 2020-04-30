@@ -44,7 +44,7 @@ namespace Guppy.Utilities
         public static IEnumerable<Type> GetTypesAssignableFrom(Type baseType)
         {
             return AssemblyHelper.Types
-                .Where(t => baseType.IsAssignableFrom(t));
+                .Where(t => baseType.IsAssignableFrom(t) || (baseType.IsGenericType && AssemblyHelper.IsSubclassOfRawGeneric(baseType, t)));
         }
 
         public static IEnumerable<Type> GetTypesWithAttribute<TBase, TAttribute>(Boolean inherit = true)
@@ -95,11 +95,35 @@ namespace Guppy.Utilities
             if (set == null)
                 set = new HashSet<Assembly>();
 
+            var test = entry.GetReferencedAssemblies();
+
+
             if (set.Add(entry))
-                foreach (Assembly child in entry.GetReferencedAssemblies().AsParallel().Where(an => AssemblyName.ReferenceMatchesDefinition(an, executing) || Assembly.Load(an).GetReferencedAssemblies().Contains(executing)).Select(an => Assembly.Load(an)))
+                foreach (Assembly child in entry.GetReferencedAssemblies().Where(an => AssemblyName.ReferenceMatchesDefinition(an, executing) || Assembly.Load(an).GetReferencedAssemblies().Any(nan => AssemblyName.ReferenceMatchesDefinition(nan, executing))).Select(an => Assembly.Load(an)))
                     AssemblyHelper.GetUniqueNestedReferencedAssemblies(child, executing, set);
 
             return set;
+        }
+
+        /// <summary>
+        /// As advertised, stolen from here:
+        /// https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class
+        /// </summary>
+        /// <param name="generic"></param>
+        /// <param name="toCheck"></param>
+        /// <returns></returns>
+        public static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
+        {
+            while (toCheck != null && toCheck != typeof(object))
+            {
+                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+                if (generic == cur)
+                {
+                    return true;
+                }
+                toCheck = toCheck.BaseType;
+            }
+            return false;
         }
         #endregion
     }
