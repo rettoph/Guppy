@@ -11,6 +11,7 @@ namespace Guppy
     {
         protected Object driven { get; private set; }
 
+        #region Lifecycle Methods
         /// <summary>
         /// The "Initialize" equivalent for Drivers. This will automatically be called
         /// by the containing driven instance on creation (which takes place within
@@ -26,6 +27,17 @@ namespace Guppy
         {
             this.driven = driven;
         }
+
+        internal virtual void TryDispose()
+        {
+            this.Dispose();
+        }
+
+        protected virtual void Dispose()
+        {
+
+        }
+        #endregion
 
         #region Frame Methods
         internal virtual void TryDraw(GameTime gameTime)

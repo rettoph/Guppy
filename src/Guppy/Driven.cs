@@ -48,6 +48,13 @@ namespace Guppy
                 return driver;
             }).ToArray();
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _drivers.ForEach(d => d.TryDispose());
+        }
         #endregion
 
         #region Helper Methods
