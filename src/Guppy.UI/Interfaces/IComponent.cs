@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.UI.Entities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,11 +9,14 @@ namespace Guppy.UI.Interfaces
     {
         #region Attributes
         IElement Container { get; set; }
+        Boolean Active { get; }
+        Cursor.Button Buttons { get; }
         #endregion
 
         #region Events
-        event EventHandler<Boolean> OnHoveredChanged;
         event EventHandler<Boolean> OnActiveChanged;
+        event EventHandler<Cursor.Button> OnButtonPressed;
+        event EventHandler<Cursor.Button> OnButtonReleased;
         #endregion
     }
 }

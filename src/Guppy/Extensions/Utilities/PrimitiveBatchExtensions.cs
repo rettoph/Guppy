@@ -1,6 +1,7 @@
 ﻿using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,9 +10,9 @@ namespace Guppy.Extensions.Utilities
 {
     public static class PrimitiveBatchExtensions
     {
-        public static void Begin(this PrimitiveBatch primitiveBatch, Camera2D camera)
+        public static void Begin(this PrimitiveBatch primitiveBatch, Camera2D camera, BlendState blendstate = null)
         {
-            primitiveBatch.Begin(camera.View, camera.Projection);
+            primitiveBatch.Begin(camera.View, camera.Projection, blendstate);
         }
 
         public static void DrawRectangle(this PrimitiveBatch batch, Rectangle rectangle, Color color)

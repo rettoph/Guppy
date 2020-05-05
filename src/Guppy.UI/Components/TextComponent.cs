@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Enums;
+﻿using Guppy.DependencyInjection;
+using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
 using Guppy.UI.Interfaces;
 using Microsoft.Xna.Framework;
@@ -9,61 +10,79 @@ using System.Text;
 
 namespace Guppy.UI.Components
 {
-    public class TextComponent : Component, ITextElement
+    public class TextComponent : Component, ITextComponent
     {
         #region Private Fields
-        private SpriteFont _font;
-        private Color _color;
-        private String _text;
-        private Alignment _textAlignment;
+        private GraphicsDevice _graphics;
+        #endregion
+
+        #region Private Fields
+        protected SpriteFont font;
+        protected Color color;
+        protected String text;
+        protected Alignment textAlignment;
+        protected Boolean inline;
         #endregion
 
         #region Public Attributes
         public SpriteFont Font
         {
-            get => _font;
+            get => this.font;
             set
             {
-                if(value != _font)
+                if(value != this.font)
                 {
-                    _font = value;
-                    this.OnFontChanged?.Invoke(this, _font);
+                    this.font = value;
+                    this.OnFontChanged?.Invoke(this, this.font);
                 }
             }
         }
         public Color Color
         {
-            get => _color;
+            get => this.color;
             set
             {
-                if (value != _color)
+                if (value != this.color)
                 {
-                    _color = value;
-                    this.OnColorChanged?.Invoke(this, _color);
+                    this.color = value;
+                    this.OnColorChanged?.Invoke(this, this.color);
                 }
             }
         }
         public String Text
         {
-            get => _text;
+            get => this.text;
             set
             {
-                if (value != _text)
+                if (value != this.text)
                 {
-                    _text = value;
-                    this.OnTextChanged?.Invoke(this, _text);
+                    this.text = value;
+                    this.OnTextChanged?.Invoke(this, this.text);
                 }
             }
         }
         public Alignment TextAlignment
         {
-            get => _textAlignment;
+            get => this.textAlignment;
             set
             {
-                if (value != _textAlignment)
+                if (value != this.textAlignment)
                 {
-                    _textAlignment = value;
-                    this.OnTextAlignmentChanged?.Invoke(this, _textAlignment);
+                    this.textAlignment = value;
+                    this.OnTextAlignmentChanged?.Invoke(this, this.textAlignment);
+                }
+            }
+        }
+
+        public Boolean Inline
+        {
+            get => this.inline;
+            set
+            {
+                if (value != this.inline)
+                {
+                    this.inline = value;
+                    this.OnInlineChanged?.Invoke(this, this.inline);
                 }
             }
         }
@@ -74,6 +93,33 @@ namespace Guppy.UI.Components
         public event EventHandler<Color> OnColorChanged;
         public event EventHandler<String> OnTextChanged;
         public event EventHandler<Alignment> OnTextAlignmentChanged;
+        public event EventHandler<Boolean> OnInlineChanged;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+
+            provider.Service(out _graphics);
+        }
+
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.OnInlineChanged += this.HandleInlineChanged;
+            this.TrackInlineEvents(this.Inline);
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnInlineChanged -= this.HandleInlineChanged;
+            this.TrackInlineEvents(false);
+        }
         #endregion
 
         #region Frame Methods
@@ -81,7 +127,54 @@ namespace Guppy.UI.Components
         {
             base.Draw(gameTime);
 
+            var scissor = _graphics.ScissorRectangle;
+            _graphics.ScissorRectangle = this.Bounds.Pixel;
             this.SpriteBatch.DrawString(this.Font, this.Text, this.GetTextPosition(), this.Color);
+            _graphics.ScissorRectangle = scissor;
+        }
+        #endregion
+
+        #region Helper Methods
+        private void TrackInlineEvents(Boolean track)
+        {
+            if (track)
+            {
+                this.OnTextChanged += this.HandleTextChanged;
+                this.OnFontChanged += this.HandleFontChanged;
+            }
+            else
+            {
+                this.OnTextChanged -= this.HandleTextChanged;
+                this.OnFontChanged -= this.HandleFontChanged;
+            }
+        }
+
+        /// <summary>
+        /// Automatically resize the element to match its inline size.
+        /// </summary>
+        private void CleanInlineSize()
+        {
+            // Auto update the internal bounds
+            var size = this.Font.MeasureString(this.Text);
+            this.Bounds.Width = Math.Min((Int32)size.X, this.Container.Bounds.Pixel.Width);
+            this.Bounds.Height = Math.Min((Int32)size.Y, this.Container.Bounds.Pixel.Height);
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleInlineChanged(object sender, bool e)
+        {
+            this.TrackInlineEvents(e);
+        }
+
+        private void HandleFontChanged(object sender, SpriteFont e)
+        {
+            this.CleanInlineSize();
+        }
+
+        private void HandleTextChanged(object sender, string e)
+        {
+            this.CleanInlineSize();
         }
         #endregion
     }

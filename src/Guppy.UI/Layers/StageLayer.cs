@@ -20,6 +20,7 @@ namespace Guppy.UI.Layers
         private PrimitiveBatch _primitiveBatch;
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
+        private RasterizerState _rasterizerState;
         #endregion
 
         #region Lifecycle Methods
@@ -30,6 +31,11 @@ namespace Guppy.UI.Layers
             provider.Service(out _camera);
             provider.Service(out _primitiveBatch);
             provider.Service(out _spriteBatch);
+
+            _rasterizerState = new RasterizerState() {
+                ScissorTestEnable = true,
+                MultiSampleAntiAlias = true
+            };
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -43,13 +49,13 @@ namespace Guppy.UI.Layers
         #region Frame Methods
         protected override void Draw(GameTime gameTime)
         {
-            _primitiveBatch.Begin(_camera);
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointWrap, rasterizerState: _rasterizerState);
+            _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
 
             base.Draw(gameTime);
-
-            _spriteBatch.End();
+            
             _primitiveBatch.End();
+            _spriteBatch.End();
         }
         #endregion
     }

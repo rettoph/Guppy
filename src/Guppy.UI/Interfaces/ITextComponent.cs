@@ -7,13 +7,14 @@ using System.Text;
 
 namespace Guppy.UI.Interfaces
 {
-    public interface ITextElement : IElement
+    public interface ITextComponent : IComponent
     {
         #region Attributes
         SpriteFont Font { get; set; }
         Color Color { get; set; }
         String Text { get; set; }
         Alignment TextAlignment { get; set; }
+        Boolean Inline { get; set; }
         #endregion
 
         #region Events
@@ -21,6 +22,7 @@ namespace Guppy.UI.Interfaces
         event EventHandler<Color> OnColorChanged;
         event EventHandler<String> OnTextChanged;
         event EventHandler<Alignment> OnTextAlignmentChanged;
+        event EventHandler<Boolean> OnInlineChanged;
         #endregion
     }
 }

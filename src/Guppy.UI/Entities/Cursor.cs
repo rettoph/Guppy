@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.UI.Entities
 {
-    public sealed class Indicator : Entity
+    public sealed class Cursor : Entity
     {
         #region Enums
         [Flags]
@@ -46,7 +46,7 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Constructor
-        public Indicator()
+        public Cursor()
         {
         }
         #endregion

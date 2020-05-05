@@ -175,7 +175,7 @@ namespace Guppy.Utilities
         /// Attempt to draw the vertices..
         /// </summary>
         /// <param name="force"></param>
-        private Boolean TryFlushTriangleVertices(Boolean force = false)
+        public Boolean TryFlushTriangleVertices(Boolean force = false)
         {
             if (_triangleVerticeCount == _triangleVertices.Length || (_triangleVerticeCount > 0 && force))
             { // Attempt to render the vertices as is...
@@ -202,7 +202,7 @@ namespace Guppy.Utilities
         /// Attempt to draw the vertices..
         /// </summary>
         /// <param name="force"></param>
-        private Boolean TryFlushLineVertices(Boolean force = false)
+        public Boolean TryFlushLineVertices(Boolean force = false)
         {
             if (_lineVerticeCount == _lineVertices.Length || (_lineVerticeCount > 0 && force))
             { // Attempt to render the vertices as is...

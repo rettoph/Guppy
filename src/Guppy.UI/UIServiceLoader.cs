@@ -9,6 +9,7 @@ using Guppy.UI.Drivers.Entities;
 using Guppy.UI.Entities;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Layers;
+using Guppy.UI.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -22,21 +23,22 @@ namespace Guppy.UI
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            
+            services.AddSingleton<GraphicsHelper>(p => new GraphicsHelper());
             services.AddTransient<StageLayer>(p => new StageLayer());
             services.AddTransient<ComponentCollection>(p => new ComponentCollection());
 
             // Register Entities...
-            services.AddEntity<Indicator>(p => new Indicator());
+            services.AddEntity<Cursor>(p => new Cursor());
             services.AddEntity<Stage>(p => new Stage());
 
             // Register UI Components...
+            services.AddTransient<TextComponent>(p => new TextComponent());
             services.AddTransient<Label>(p => new Label());
             services.AddTransient<TextInput>(p => new TextInput());
 
             //Register Drivers...
             services.AddDriver<MouseIndicatorDriver>(p => new MouseIndicatorDriver());
-            services.BindDriver<Indicator, MouseIndicatorDriver>();
+            services.BindDriver<Cursor, MouseIndicatorDriver>();
 
             // Register Content
             services.AddConfiguration<ContentLoader>((content, p, c) =>
@@ -45,7 +47,7 @@ namespace Guppy.UI
             });
 
             // Register default setup
-            services.AddConfiguration<ITextElement>((e, p, c) =>
+            services.AddConfiguration<ITextComponent>((e, p, c) =>
             {
                 e.Font = p.GetContent<SpriteFont>("ui:font");
                 e.Color = Color.Black;

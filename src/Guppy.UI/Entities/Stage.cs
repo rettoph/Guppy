@@ -3,6 +3,7 @@ using Guppy.Extensions.Collections;
 using Guppy.UI.Collections;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Utilities;
+using Guppy.UI.Utilities.Backgrounds;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -17,6 +18,7 @@ namespace Guppy.UI.Entities
         private GameWindow _window;
         private GraphicsDevice _graphics;
         private SpriteBatch _defaultSpriteBatch;
+        private Background _background;
         #endregion
 
         #region Public Attributes
@@ -24,7 +26,23 @@ namespace Guppy.UI.Entities
         public ComponentCollection Children { get; private set; }
         public UnitRectangle Bounds { get; private set; }
         public Boolean Hovered => true;
-        public Boolean Active => true;
+        public Background Background
+        {
+            get => _background;
+            set
+            {
+                if(_background != value)
+                {
+                    _background = value;
+                    this.OnBackgroundChanged?.Invoke(this, _background);
+                }
+            }
+        }
+        #endregion
+
+        #region Events
+        public event EventHandler<Boolean> OnHoveredChanged;
+        public event EventHandler<Background> OnBackgroundChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -37,6 +55,8 @@ namespace Guppy.UI.Entities
             provider.Service(out _graphics);
 
             this.Children = provider.GetService<ComponentCollection>();
+            this.Children.Parent = this;
+
             this.Bounds = new UnitRectangle()
             {
                 X = 0,

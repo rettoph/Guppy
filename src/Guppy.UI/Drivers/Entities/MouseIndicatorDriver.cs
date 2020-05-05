@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.UI.Drivers.Entities
 {
-    public class MouseIndicatorDriver : Driver<Indicator>
+    public class MouseIndicatorDriver : Driver<Cursor>
     {
         protected override void Update(GameTime gameTime)
         {
@@ -19,9 +19,9 @@ namespace Guppy.UI.Drivers.Entities
             this.driven.MoveTo(mState.Position.ToVector2());
     
             // Update the button states
-            this.driven.SetButton(Indicator.Button.Left, mState.LeftButton == ButtonState.Pressed);
-            this.driven.SetButton(Indicator.Button.Middle, mState.MiddleButton == ButtonState.Pressed);
-            this.driven.SetButton(Indicator.Button.Right, mState.RightButton == ButtonState.Pressed);
+            this.driven.SetButton(Cursor.Button.Left, mState.LeftButton == ButtonState.Pressed);
+            this.driven.SetButton(Cursor.Button.Middle, mState.MiddleButton == ButtonState.Pressed);
+            this.driven.SetButton(Cursor.Button.Right, mState.RightButton == ButtonState.Pressed);
     
             // Update the scroll value
             this.driven.ScrollTo(mState.ScrollWheelValue);

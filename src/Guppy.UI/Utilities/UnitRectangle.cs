@@ -68,6 +68,23 @@ namespace Guppy.UI.Utilities
                 }
             }
         }
+
+        public Unit Left
+        {
+            set => this.X = value;
+        }
+        public Unit Top
+        {
+            set => this.Y = value;
+        }
+        public Unit Right
+        {
+            set => this.Width = 1f - this.X - value;
+        }
+        public Unit Bottom
+        {
+            set => this.Height = 1f - this.Y - value;
+        }
         #endregion
 
         #region Events
