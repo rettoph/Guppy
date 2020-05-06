@@ -15,7 +15,7 @@ namespace Guppy.UI.Components
     /// that contain internal children accessible from the outside.
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    public class ProtectedContainer : Component
+    public class ProtectedContainer : Component, IBaseContainer
     {
         #region Protected Attributes
         protected ComponentCollection children { get; private set; }
@@ -44,6 +44,36 @@ namespace Guppy.UI.Components
             base.Update(gameTime);
 
             this.children.ForEach(c => c.TryUpdate(gameTime));
+        }
+        #endregion
+
+        #region IBaseContainer Implementation 
+        /// <inheritdoc />
+        Point IBaseContainer.GetContainerLocation()
+            => this.GetContainerLocation();
+
+        /// <summary>
+        /// Return the location of the container that all 
+        /// children should utilize for positioning.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Point GetContainerLocation()
+        {
+            return this.Bounds.Pixel.Location;
+        }
+
+        /// <inheritdoc />
+        Point IBaseContainer.GetContainerSize()
+            => this.GetContainerSize();
+
+        /// <summary>
+        /// Return the size of the container that all 
+        /// children should utilize for sizing.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Point GetContainerSize()
+        {
+            return this.Bounds.Pixel.Size;
         }
         #endregion
     }

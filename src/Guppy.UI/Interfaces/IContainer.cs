@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.UI.Interfaces
 {
-    public interface IContainer : IElement
+    public interface IContainer : IBaseContainer
     {
         ComponentCollection Children { get; }
     }

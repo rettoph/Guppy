@@ -12,6 +12,7 @@ namespace Guppy.UI.Utilities.Backgrounds
 {
     public class ColorBackground : Background
     {
+        private SpriteBatch _spriteBatch;
         private IElement _element;
         private Texture2D _pixel;
 
@@ -23,11 +24,12 @@ namespace Guppy.UI.Utilities.Backgrounds
 
             _element = element;
             _pixel = provider.GetService<GraphicsHelper>().Pixel;
+            provider.Service(out _spriteBatch);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            _element.SpriteBatch.Draw(_pixel, _element.Bounds.Pixel, this.Color);
+            _spriteBatch.Draw(_pixel, _element.Bounds.Pixel, this.Color);
         }
     }
 }

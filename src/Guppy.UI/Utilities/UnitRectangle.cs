@@ -9,8 +9,11 @@ namespace Guppy.UI.Utilities
     public sealed class UnitRectangle
     {
         #region Private Fields
-        private Rectangle _container;
         private Rectangle _pixel;
+        private Point _cLocation;
+        private Point _cSize;
+        private Point _location;
+        private Point _size;
         private Unit _x = 0;
         private Unit _y = 0;
         private Unit _width = 1f;
@@ -89,22 +92,25 @@ namespace Guppy.UI.Utilities
 
         #region Events
         public event EventHandler<Rectangle> OnChanged;
+        public event EventHandler<Point> OnLocationChanged;
+        public event EventHandler<Point> OnSizeChanged;
         #endregion
 
         #region Helper Methods
-        public void TryClean(Rectangle container)
+        public void TryClean(Point location, Point size)
         {
-            if(_container != container || _dirty)
+            if(_cLocation != location || _cSize != size || _dirty)
             {
                 this.Pixel = new Rectangle()
                 {
-                    X = container.X + this.X.ToPixel(container.Width),
-                    Y = container.Y + this.Y.ToPixel(container.Height),
-                    Width = this.Width.ToPixel(container.Width),
-                    Height = this.Height.ToPixel(container.Height)
+                    X = location.X + this.X.ToPixel(size.X),
+                    Y = location.Y + this.Y.ToPixel(size.Y),
+                    Width = this.Width.ToPixel(size.X),
+                    Height = this.Height.ToPixel(size.Y)
                 };
 
-                _container = container;
+                _cLocation = location;
+                _cSize = size;
                 _dirty = false;
             }
         }

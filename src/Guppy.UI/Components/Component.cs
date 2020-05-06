@@ -26,8 +26,12 @@ namespace Guppy.UI.Components
         private Background _background;
         #endregion
 
+        #region Protected Fields
+        protected SpriteBatch spriteBatch;
+        #endregion
+
         #region Public Atttributes
-        public IElement Container { get; set; }
+        public IBaseContainer Container { get; set; }
         public UnitRectangle Bounds
         {
             get => _bounds;
@@ -71,7 +75,6 @@ namespace Guppy.UI.Components
                 }
             }
         }
-        public SpriteBatch SpriteBatch { get => this.Container.SpriteBatch; }
         #endregion
 
         #region Events
@@ -91,6 +94,7 @@ namespace Guppy.UI.Components
             provider.Service(out _graphics);
             provider.Service(out _primitiveBatch);
             provider.Service(out _cursor);
+            provider.Service(out spriteBatch);
 
             this.Bounds = new UnitRectangle();
         }
@@ -122,7 +126,7 @@ namespace Guppy.UI.Components
             base.PreUpdate(gameTime);
 
             // Clean the internal bounds if needed...
-            this.Bounds.TryClean(this.Container.Bounds.Pixel);
+            this.Bounds.TryClean(this.Container.GetContainerLocation(), this.Container.GetContainerSize());
         }
 
         protected override void Update(GameTime gameTime)

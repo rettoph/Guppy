@@ -13,15 +13,12 @@ namespace Guppy.UI.Interfaces
     public interface IElement : IService, IFrameable
     {
         #region Attributes
-        Background Background { get; set; }
-        SpriteBatch SpriteBatch { get; }
         UnitRectangle Bounds { get; }
         Boolean Hovered { get; }
         #endregion
 
         #region Events
         event EventHandler<Boolean> OnHoveredChanged;
-        event EventHandler<Background> OnBackgroundChanged;
         #endregion
     }
 }

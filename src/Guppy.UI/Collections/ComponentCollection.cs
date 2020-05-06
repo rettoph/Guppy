@@ -9,7 +9,7 @@ namespace Guppy.UI.Collections
     public sealed class ComponentCollection : ServiceCollection<IComponent>
     {
         #region Private Fields
-        public IElement Parent { get; set; }
+        public IBaseContainer Parent { get; set; }
         #endregion
 
         #region Constructor

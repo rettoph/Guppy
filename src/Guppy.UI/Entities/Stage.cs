@@ -22,27 +22,13 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Public Attributes
-        public SpriteBatch SpriteBatch { get; set; }
         public ComponentCollection Children { get; private set; }
         public UnitRectangle Bounds { get; private set; }
         public Boolean Hovered => true;
-        public Background Background
-        {
-            get => _background;
-            set
-            {
-                if(_background != value)
-                {
-                    _background = value;
-                    this.OnBackgroundChanged?.Invoke(this, _background);
-                }
-            }
-        }
         #endregion
 
         #region Events
         public event EventHandler<Boolean> OnHoveredChanged;
-        public event EventHandler<Background> OnBackgroundChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -79,7 +65,6 @@ namespace Guppy.UI.Entities
         {
             base.Draw(gameTime);
 
-            this.SpriteBatch = _defaultSpriteBatch;
             this.Children.ForEach(c => c.TryDraw(gameTime));
         }
 
@@ -88,7 +73,7 @@ namespace Guppy.UI.Entities
             base.PreUpdate(gameTime);
 
             // Clean the internal bounds if needed...
-            this.Bounds.TryClean(_graphics.Viewport.Bounds);
+            this.Bounds.TryClean(_graphics.Viewport.Bounds.Location, _graphics.Viewport.Bounds.Size);
         }
 
         protected override void Update(GameTime gameTime)
@@ -97,6 +82,16 @@ namespace Guppy.UI.Entities
 
             this.Children.ForEach(c => c.TryUpdate(gameTime));
         }
+        #endregion
+
+        #region IBaseContainer Implementation 
+        /// <inheritdoc />
+        Point IBaseContainer.GetContainerLocation()
+            => this.Bounds.Pixel.Location;
+
+        /// <inheritdoc />
+        Point IBaseContainer.GetContainerSize()
+            => this.Bounds.Pixel.Size;
         #endregion
     }
 }

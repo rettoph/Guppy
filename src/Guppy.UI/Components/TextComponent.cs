@@ -129,7 +129,7 @@ namespace Guppy.UI.Components
 
             var scissor = _graphics.ScissorRectangle;
             _graphics.ScissorRectangle = this.Bounds.Pixel;
-            this.SpriteBatch.DrawString(this.Font, this.Text, this.GetTextPosition(), this.Color);
+            this.spriteBatch.DrawString(this.Font, this.Text, this.GetTextPosition(), this.Color);
             _graphics.ScissorRectangle = scissor;
         }
         #endregion
