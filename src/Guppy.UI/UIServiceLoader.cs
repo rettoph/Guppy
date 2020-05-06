@@ -32,11 +32,13 @@ namespace Guppy.UI
             services.AddEntity<Stage>(p => new Stage());
 
             // Register UI Components...
+            services.AddTransient<Component>(p => new Component());
             services.AddTransient<TextComponent>(p => new TextComponent());
             services.AddTransient<Label>(p => new Label());
             services.AddTransient<TextInput>(p => new TextInput());
             services.AddTransient<TextButton>(p => new TextButton());
             services.AddTransient<StackContainer>(p => new StackContainer());
+            services.AddTransient<ScrollContainer>(p => new ScrollContainer());
 
             //Register Drivers...
             services.AddDriver<MouseIndicatorDriver>(p => new MouseIndicatorDriver());

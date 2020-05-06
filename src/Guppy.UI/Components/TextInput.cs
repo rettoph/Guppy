@@ -83,6 +83,7 @@ namespace Guppy.UI.Components
                 size.Y = Math.Max(this.Text.Font.LineSpacing, size.Y);
                 var position = this.Text.GetTextPosition();
 
+                // TODO: Dont use primitve batch here
                 _primitiveBatch.DrawLine(
                     position + new Vector2((Int32)size.X + 1, 0),
                     position + new Vector2((Int32)size.X + 1, this.Text.Font.LineSpacing + 1),
