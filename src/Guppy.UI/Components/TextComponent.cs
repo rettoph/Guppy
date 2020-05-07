@@ -2,6 +2,7 @@
 using Guppy.UI.Enums;
 using Guppy.UI.Extensions;
 using Guppy.UI.Extensions.Microsoft.Xna.Framework;
+using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -130,10 +131,9 @@ namespace Guppy.UI.Components
 
             if (this.Bounds.Pixel.Intersects(_graphics.ScissorRectangle))
             { // Only draw the text if its within the scissor rectangle...
-                var scissor = _graphics.ScissorRectangle;
-                _graphics.ScissorRectangle = this.Bounds.Pixel.Intersection(_graphics.ScissorRectangle);
+                _graphics.PushScissorRectangle(this.Bounds.Pixel);
                 this.spriteBatch.DrawString(this.Font, this.Text, this.GetTextPosition(), this.Color);
-                _graphics.ScissorRectangle = scissor;
+                _graphics.PopScissorRectangle();
             }
         }
         #endregion

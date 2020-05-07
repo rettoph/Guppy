@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.UI.Collections;
 using Guppy.UI.Entities;
+using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
@@ -89,14 +90,18 @@ namespace Guppy.UI.Components
             }
         }
 
-        protected override void Draw(GameTime gameTime)
+        protected override void PreDraw(GameTime gameTime)
         {
-            var rectangle = _graphics.ScissorRectangle;
-            _graphics.ScissorRectangle = this.Bounds.Pixel;
+            base.PreDraw(gameTime);
 
-            base.Draw(gameTime);
+            _graphics.PushScissorRectangle(this.Bounds.Pixel);
+        }
 
-            _graphics.ScissorRectangle = rectangle;
+        protected override void PostDraw(GameTime gameTime)
+        {
+            base.PostDraw(gameTime);
+
+            _graphics.PopScissorRectangle();
         }
         #endregion
 
