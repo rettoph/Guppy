@@ -99,7 +99,11 @@ namespace Guppy.UI.Components
             => base.GetContainerLocation();
 
         protected override Point GetContainerSize()
-            => this.Container.GetContainerSize();
+            => new Point()
+            {
+                X = this.Direction == Direction.Horizontal ? this.Container.GetContainerSize().X : base.GetContainerSize().X,
+                Y = this.Direction == Direction.Vertical ? this.Container.GetContainerSize().Y : base.GetContainerSize().Y
+            };
         #endregion
     }
 }
