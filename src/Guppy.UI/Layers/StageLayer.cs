@@ -21,6 +21,7 @@ namespace Guppy.UI.Layers
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
         private RasterizerState _rasterizerState;
+        private GraphicsDevice _graphics;
         #endregion
 
         #region Lifecycle Methods
@@ -28,6 +29,7 @@ namespace Guppy.UI.Layers
         {
             base.PreInitialize(provider);
 
+            provider.Service(out _graphics);
             provider.Service(out _camera);
             provider.Service(out _primitiveBatch);
             provider.Service(out _spriteBatch);
@@ -49,6 +51,7 @@ namespace Guppy.UI.Layers
         #region Frame Methods
         protected override void Draw(GameTime gameTime)
         {
+            _graphics.ScissorRectangle = _graphics.Viewport.Bounds;
             _spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointWrap, rasterizerState: _rasterizerState);
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
 

@@ -37,8 +37,10 @@ namespace Guppy.UI
             services.AddTransient<Label>(p => new Label());
             services.AddTransient<TextInput>(p => new TextInput());
             services.AddTransient<TextButton>(p => new TextButton());
+            services.AddTransient<Container>(p => new StackContainer());
             services.AddTransient<StackContainer>(p => new StackContainer());
             services.AddTransient<ScrollContainer>(p => new ScrollContainer());
+            services.AddTransient<Paginator>(p => new Paginator());
 
             //Register Drivers...
             services.AddDriver<MouseIndicatorDriver>(p => new MouseIndicatorDriver());
@@ -55,7 +57,7 @@ namespace Guppy.UI
             {
                 e.Font = p.GetContent<SpriteFont>("ui:font");
                 e.Color = Color.Black;
-            });
+            }, -5);
         }
 
         public void ConfigureProvider(ServiceProvider provider)

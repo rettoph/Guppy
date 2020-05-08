@@ -16,6 +16,7 @@ namespace Guppy.UI.Components
     {
         #region Private Fields
         private GraphicsDevice _graphics;
+        private Boolean _dirty;
         #endregion
 
         #region Private Fields
@@ -125,6 +126,16 @@ namespace Guppy.UI.Components
         #endregion
 
         #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(_dirty)
+            {
+                this.CleanInlineSize();
+                _dirty = false;
+            }
+        }
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -143,6 +154,7 @@ namespace Guppy.UI.Components
         {
             if (track)
             {
+                _dirty = true;
                 this.OnTextChanged += this.HandleTextChanged;
                 this.OnFontChanged += this.HandleFontChanged;
             }
@@ -161,7 +173,7 @@ namespace Guppy.UI.Components
             // Auto update the internal bounds
             var size = this.Font.MeasureString(this.Text);
             this.Bounds.Width = Math.Min((Int32)size.X, this.Container.Bounds.Pixel.Width);
-            this.Bounds.Height = Math.Min((Int32)size.Y, this.Container.Bounds.Pixel.Height);
+            // this.Bounds.Height = Math.Min((Int32)size.Y, this.Container.Bounds.Pixel.Height);
         }
         #endregion
 
@@ -173,12 +185,12 @@ namespace Guppy.UI.Components
 
         private void HandleFontChanged(object sender, SpriteFont e)
         {
-            this.CleanInlineSize();
+            _dirty = true;
         }
 
         private void HandleTextChanged(object sender, string e)
         {
-            this.CleanInlineSize();
+            _dirty = true;
         }
         #endregion
     }

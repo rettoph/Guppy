@@ -36,6 +36,11 @@ namespace Guppy.UI.Components
         {
             base.Draw(gameTime);
 
+            this.DrawChildren(gameTime);
+        }
+
+        protected virtual void DrawChildren(GameTime gameTime)
+        {
             this.children.ForEach(c => c.TryDraw(gameTime));
         }
 
@@ -43,6 +48,11 @@ namespace Guppy.UI.Components
         {
             base.Update(gameTime);
 
+            this.UpdateChildren(gameTime);
+        }
+
+        protected virtual void UpdateChildren(GameTime gameTime)
+        {
             this.children.ForEach(c => c.TryUpdate(gameTime));
         }
         #endregion
