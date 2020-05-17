@@ -39,9 +39,9 @@ namespace Guppy.Collections
         #endregion
 
         #region Factory Methods
-        protected override Entity Create(ServiceProvider provider, Type serviceType)
+        protected override Entity Create(ServiceProvider provider, Type serviceType, Action<Entity, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            var entity = base.Create(provider, serviceType);
+            var entity = base.Create(provider, serviceType, setup);
             entity.LayerGroup = this.layer.Group.GetValue();
 
             // Automatically add the new entity into the global entity collection.
@@ -50,9 +50,9 @@ namespace Guppy.Collections
             return entity;
         }
 
-        protected override Entity Create(ServiceProvider provider, uint id)
+        protected override Entity Create(ServiceProvider provider, uint id, Action<Entity, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            var entity = base.Create(provider, id);
+            var entity = base.Create(provider, id, setup);
             entity.LayerGroup = this.layer.Group.GetValue();
 
             // Automatically add the new entity into the global entity collection.

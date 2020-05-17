@@ -34,21 +34,21 @@ namespace Guppy.DependencyInjection
         /// ConfigurationDescriptor  arraywill simply be ignored.
         /// </summary>
         /// <param name="provider"></param>
-        /// <param name="factory"></param>
+        /// <param name="configuration"></param>
         /// <returns></returns>
-        public Object GetInstance(ServiceProvider provider, ServiceFactory factory)
+        public Object GetInstance(ServiceProvider provider, ServiceConfiguration configuration, Action<Object, ServiceProvider, ServiceConfiguration> setup)
         {
             switch (this.Lifetime)
             {
                 case ServiceLifetime.Transient:
-                    return factory.Build(provider);
+                    return configuration.Build(provider, setup);
                 case ServiceLifetime.Scoped:
                     if (!provider.scopedInstances.ContainsKey(this.CacheType))
-                        provider.scopedInstances[this.CacheType] = factory.Build(provider);
+                        provider.scopedInstances[this.CacheType] = configuration.Build(provider, setup);
                     return provider.scopedInstances[this.CacheType];
                 case ServiceLifetime.Singleton:
                     if (!provider.singletonInstances.ContainsKey(this.CacheType))
-                        provider.singletonInstances[this.CacheType] = factory.Build(provider);
+                        provider.singletonInstances[this.CacheType] = configuration.Build(provider, setup);
                     return provider.singletonInstances[this.CacheType];
                 default:
                     throw new Exception($"Unable to create instance, unknown service lifetime value ({this.Lifetime}).");

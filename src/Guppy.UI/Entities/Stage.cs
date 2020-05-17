@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Guppy.UI.Entities
 {
-    public class Stage : Entity, IContainer
+    public class Stage : Entity, IContainer<IComponent>
     {
         #region Private Fields
         private GameWindow _window;
@@ -22,7 +22,7 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Public Attributes
-        public ComponentCollection Children { get; private set; }
+        public ComponentCollection<IComponent> Children { get; private set; }
         public UnitRectangle Bounds { get; private set; }
         public Boolean Hovered => true;
         #endregion
@@ -40,7 +40,7 @@ namespace Guppy.UI.Entities
             provider.Service(out _window);
             provider.Service(out _graphics);
 
-            this.Children = provider.GetService<ComponentCollection>();
+            this.Children = provider.GetService<ComponentCollection<IComponent>>();
             this.Children.Parent = this;
 
             this.Bounds = new UnitRectangle()

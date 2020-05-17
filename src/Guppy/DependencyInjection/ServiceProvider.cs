@@ -12,13 +12,13 @@ namespace Guppy.DependencyInjection
     public sealed class ServiceProvider : IServiceProvider
     {
         #region Internal Fields
-        internal Dictionary<UInt32, ServiceFactory> factories;
+        internal Dictionary<UInt32, ServiceConfiguration> factories;
         internal Dictionary<Type, Object> scopedInstances;
         internal Dictionary<Type, Object> singletonInstances;
         #endregion
 
         #region Constructors
-        internal ServiceProvider(Dictionary<Type, Object> singletonInstances, Dictionary<UInt32, ServiceFactory> factories)
+        internal ServiceProvider(Dictionary<Type, Object> singletonInstances, Dictionary<UInt32, ServiceConfiguration> factories)
         {
             this.factories = factories;
             this.singletonInstances = singletonInstances;
@@ -65,7 +65,7 @@ namespace Guppy.DependencyInjection
                     // Now add all global configuration methods...
                     configurationCache.AddRange(collection.ConfigurationDescriptors.Where(c => String.IsNullOrEmpty(c.Name) && c.ServiceType.IsAssignableFrom(serviceType)));
 
-                    return new ServiceFactory(g.Key, services[serviceType], configurationCache.OrderBy(c => c.Priority).ToArray());
+                    return new ServiceConfiguration(g.Key, services[serviceType], configurationCache.OrderBy(c => c.Priority).ToArray());
                 })
                 .ToDictionary(
                     keySelector: c => c.Id,
@@ -76,9 +76,9 @@ namespace Guppy.DependencyInjection
 
             services.Keys.ForEach(s =>
             { // Ensure that every service at least has a default empty factory instance
-                if (!this.factories.ContainsKey(ServiceFactory.GetId(s.FullName)))
+                if (!this.factories.ContainsKey(ServiceConfiguration.GetId(s.FullName)))
                 { // If there is no factory defined for this service...
-                    var configuration = new ServiceFactory(s.FullName, services[s], collection.ConfigurationDescriptors.Where(c => String.IsNullOrEmpty(c.Name) && c.ServiceType.IsAssignableFrom(s)).OrderBy(c => c.Priority).ToArray());
+                    var configuration = new ServiceConfiguration(s.FullName, services[s], collection.ConfigurationDescriptors.Where(c => String.IsNullOrEmpty(c.Name) && c.ServiceType.IsAssignableFrom(s)).OrderBy(c => c.Priority).ToArray());
                     this.factories.Add(configuration.Id, configuration);
                 }
             });
@@ -89,6 +89,11 @@ namespace Guppy.DependencyInjection
         public Object GetService(Type serviceType)
         {
             return this.GetService<Object>(serviceType.FullName);
+        }
+
+        public Object GetService(Type serviceType, Action<Object, ServiceProvider, ServiceConfiguration> setup)
+        {
+            return this.GetService<Object>(serviceType.FullName, setup);
         }
         #endregion
 
@@ -108,10 +113,10 @@ namespace Guppy.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="configurationId"></param>
         /// <returns></returns>
-        public T GetService<T>(UInt32 configurationId)
+        public T GetService<T>(UInt32 configurationId, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
             var factory = this.GetFactory(configurationId); ;
-            return (T)factory.ServiceDescriptor.GetInstance(this, factory);
+            return (T)factory.ServiceDescriptor.GetInstance(this, factory, (i, p, c) => setup?.Invoke((T)i, p, c));
             // return (T)this.services[configuration.ServiceType].GetInstance(this, factory);
         }
 
@@ -123,9 +128,9 @@ namespace Guppy.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public T GetService<T>(String configuration)
+        public T GetService<T>(String configuration, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return this.GetService<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(configuration)));
+            return this.GetService<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(configuration)), setup);
         }
 
         /// <summary>
@@ -133,18 +138,18 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T GetService<T>()
+        public T GetService<T>(Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return (T)this.GetService(typeof(T));
+            return (T)this.GetService(typeof(T), (i, p, c) => setup?.Invoke((T)i, p, c));
         }
         /// <summary>
         /// Automaitcally set the out value via the intenral GetService method
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="service"></param>
-        public void Service<T>(out T service)
+        public void Service<T>(out T service, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            service = this.GetService<T>();
+            service = this.GetService<T>(setup);
         }
         #endregion
     }

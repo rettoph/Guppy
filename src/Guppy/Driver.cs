@@ -38,27 +38,6 @@ namespace Guppy
 
         }
         #endregion
-
-        #region Frame Methods
-        internal virtual void TryDraw(GameTime gameTime)
-        {
-            this.Draw(gameTime);
-        }
-
-        internal virtual void TryUpdate(GameTime gameTime)
-        {
-            this.Update(gameTime);
-        }
-
-        protected virtual void Draw(GameTime gameTime)
-        {
-
-        }
-        protected virtual void Update(GameTime gameTime)
-        {
-
-        }
-        #endregion
     }
     public class Driver<T> : Driver
         where T : Driven

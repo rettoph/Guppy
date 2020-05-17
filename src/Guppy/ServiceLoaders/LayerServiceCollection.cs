@@ -13,8 +13,8 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<LayerCollection>((p) => new LayerCollection());
-            services.AddTransient<LayerEntityCollection>((p) => new LayerEntityCollection());
+            services.AddScoped<LayerCollection>(p => new LayerCollection());
+            services.AddTransient<LayerEntityCollection>(p => new LayerEntityCollection());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

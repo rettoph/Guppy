@@ -61,52 +61,52 @@ namespace Guppy.Collections
         #endregion
 
         #region Factory Methods
-        protected virtual TService Create(ServiceProvider provider, Type serviceType)
+        protected virtual TService Create(ServiceProvider provider, Type serviceType, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
             ExceptionHelper.ValidateAssignableFrom<TService>(serviceType);
 
-            var item = (TService)provider.GetService(serviceType);
+            var item = (TService)provider.GetService(serviceType, (i, p, c) => setup?.Invoke((TService)i, p, c));
             this.TryAdd(item);
             return item;
         }
-        protected virtual TService Create(ServiceProvider provider, UInt32 id)
+        protected virtual TService Create(ServiceProvider provider, UInt32 id, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            var item = provider.GetService<TService>(id);
+            var item = provider.GetService<TService>(id, setup);
             this.TryAdd(item);
             return item;
         }
-        public TService Create(UInt32 id)
+        public TService Create(UInt32 id, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return this.Create(_provider, id);
+            return this.Create(_provider, id, setup);
         }
-        public TService Create(String handle)
+        public TService Create(String handle, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return this.Create(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)));
+            return this.Create(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)), setup);
         }
-        public TService Create(Type serviceType)
+        public TService Create(Type serviceType, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return this.Create(_provider, serviceType);
+            return this.Create(_provider, serviceType, setup);
         }
-        public T Create<T>(UInt32 id)
+        public T Create<T>(UInt32 id, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : TService
         {
-            return (T)this.Create(_provider, id);
+            return (T)this.Create(_provider, id, (i, p, c) => setup?.Invoke((T)i, p, c));
         }
-        public T Create<T>(String handle)
+        public T Create<T>(String handle, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : TService
         {
-            return this.Create<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)));
+            return this.Create<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)), setup);
         }
-        public T Create<T>(Type serviceType)
+        public T Create<T>(Type serviceType, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : TService
         {
-            return (T)this.Create(serviceType);
+            return (T)this.Create(serviceType, (i, p, c) => setup?.Invoke((T)i, p, c));
         }
 
-        public T Create<T>()
+        public T Create<T>(Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : TService
         {
-            return this.Create<T>(typeof(T));
+            return this.Create<T>(typeof(T), setup);
         }
         #endregion
 

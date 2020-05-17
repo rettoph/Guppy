@@ -146,6 +146,14 @@ namespace Guppy.Extensions.DependencyInjection
             where TDriven : Driven
             where TDriver : Driver
                 => services.BindDriver(typeof(TDriven), typeof(TDriver));
+
+        public static void AddAndBindDriver<TDriven, TDriver>(this ServiceCollection services, Func<ServiceProvider, TDriver> factory)
+            where TDriver : Driver
+            where TDriven : Driven
+        {
+            services.AddDriver<TDriver>(factory);
+            services.BindDriver<TDriven, TDriver>();
+        }
         #endregion
     }
 }

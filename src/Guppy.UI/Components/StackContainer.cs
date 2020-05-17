@@ -5,11 +5,13 @@ using Guppy.UI.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.UI.Components
 {
-    public class StackContainer : Container
+    public class StackContainer<TComponent> : Container<TComponent>
+        where TComponent : IComponent
     {
         #region Private Fields
         private Boolean _dirty;
@@ -17,6 +19,7 @@ namespace Guppy.UI.Components
 
         #region Public Attributes
         public Direction Direction { get; set; }
+        public Boolean Inline { get; set; } = false;
         #endregion
 
         #region Lifecycle Methods
@@ -61,6 +64,10 @@ namespace Guppy.UI.Components
                     });
 
                     this.Bounds.Width = pos;
+
+                    if (this.Inline)
+                        this.Bounds.Height = this.Children.Last().Bounds.Pixel.Bottom;
+
                     break;
                 case Direction.Vertical:
                     this.Children.ForEach(c =>
@@ -70,19 +77,23 @@ namespace Guppy.UI.Components
                     });
 
                     this.Bounds.Height = pos;
+
+                    if (this.Inline)
+                        this.Bounds.Width = this.Children.Max(c => c.Bounds.Pixel.Width);
+
                     break;
             }
         }
         #endregion
 
         #region Event Handlers
-        private void HandleChildAdded(object sender, IComponent e)
+        private void HandleChildAdded(object sender, TComponent e)
         {
             _dirty = true;
             e.Bounds.OnChanged += this.HandleChildBoundsChanged;
         }
 
-        private void HandleChildRemoved(object sender, IComponent e)
+        private void HandleChildRemoved(object sender, TComponent e)
         {
             _dirty = true;
             e.Bounds.OnChanged -= this.HandleChildBoundsChanged;
@@ -100,10 +111,10 @@ namespace Guppy.UI.Components
 
         protected override Point GetContainerSize()
             => new Point()
-            {
-                X = this.Direction == Direction.Horizontal ? this.Container.GetContainerSize().X : base.GetContainerSize().X,
-                Y = this.Direction == Direction.Vertical ? this.Container.GetContainerSize().Y : base.GetContainerSize().Y
-            };
+                {
+                    X = this.Direction == Direction.Horizontal ? this.Container.GetContainerSize().X : base.GetContainerSize().X,
+                    Y = this.Direction == Direction.Vertical ? this.Container.GetContainerSize().Y : base.GetContainerSize().Y
+                };
         #endregion
     }
 }

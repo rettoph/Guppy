@@ -12,7 +12,7 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddSingleton<UpdateBuffer>((p) => new UpdateBuffer());
+            services.AddSingleton<UpdateBuffer>(p => new UpdateBuffer());
         }
 
         public void ConfigureProvider(ServiceProvider provider)

@@ -23,6 +23,15 @@ namespace Guppy.Collections
         private List<T> _updates;
         #endregion
 
+        #region Events
+        public event Step OnPreDraw;
+        public event Step OnDraw;
+        public event Step OnPostDraw;
+        public event Step OnPreUpdate;
+        public event Step OnUpdate;
+        public event Step OnPostUpdate;
+        #endregion
+
         #region Protected Attributes
         protected Boolean dirtyDraws { get; set; }
         protected Boolean dirtyUpdates { get; set; }
@@ -34,6 +43,14 @@ namespace Guppy.Collections
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.OnDraw += this.Draw;
+            this.OnUpdate += this.Update;
+        }
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
@@ -44,21 +61,43 @@ namespace Guppy.Collections
             this.dirtyDraws = true;
             this.dirtyUpdates = true;
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnDraw -= this.Draw;
+            this.OnUpdate -= this.Update;
+        }
         #endregion
 
         #region Frame Methods
-        public virtual void TryUpdate(GameTime gameTime)
+        public virtual void TryDraw(GameTime gameTime)
         {
-            this.TryCleanUpdates();
-
-            _updates.ForEach(u => u.TryUpdate(gameTime));
+            this.OnPreDraw?.Invoke(gameTime);
+            this.OnDraw?.Invoke(gameTime);
+            this.OnPostDraw?.Invoke(gameTime);
         }
 
-        public virtual void TryDraw(GameTime gameTime)
+        public virtual void TryUpdate(GameTime gameTime)
+        {
+            this.OnPreUpdate?.Invoke(gameTime);
+            this.OnUpdate?.Invoke(gameTime);
+            this.OnPostUpdate?.Invoke(gameTime);
+        }
+
+        protected virtual void Draw(GameTime gameTime)
         {
             this.TryCleanDraws();
 
             _draws.ForEach(u => u.TryDraw(gameTime));
+        }
+
+        protected virtual void Update(GameTime gameTime)
+        {
+            this.TryCleanUpdates();
+
+            _updates.ForEach(u => u.TryUpdate(gameTime));
         }
 
         public virtual void TryCleanDraws()

@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Loaders;
@@ -7,9 +8,11 @@ using Guppy.UI.Collections;
 using Guppy.UI.Components;
 using Guppy.UI.Drivers.Entities;
 using Guppy.UI.Entities;
+using Guppy.UI.Extensions.DependencyInjection;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Layers;
 using Guppy.UI.Utilities;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -25,22 +28,24 @@ namespace Guppy.UI
         {
             services.AddSingleton<GraphicsHelper>(p => new GraphicsHelper());
             services.AddTransient<StageLayer>(p => new StageLayer());
-            services.AddTransient<ComponentCollection>(p => new ComponentCollection());
+            services.AddTransient<ComponentCollection<IComponent>>(p => new ComponentCollection<IComponent>());
+            services.AddTransient<Container<IComponent>>(p => new Container<IComponent>());
+            services.AddTransient<StackContainer<IComponent>>(p => new StackContainer<IComponent>());
+
+            // Register UI Components...
+            services.AddUIComponent<Component>(p => new Component());
+            services.AddUIComponent<TextComponent>(p => new TextComponent());
+            services.AddUIComponent<Label>(p => new Label());
+            services.AddUIComponent<TextInput>(p => new TextInput());
+            services.AddUIComponent<TextButton>(p => new TextButton());
+            services.AddUIComponent<ScrollContainer>(p => new ScrollContainer());
+            services.AddUIComponent<Paginator>(p => new Paginator());
+            services.AddUIComponent<Page>(p => new Page());
+
 
             // Register Entities...
             services.AddEntity<Cursor>(p => new Cursor());
             services.AddEntity<Stage>(p => new Stage());
-
-            // Register UI Components...
-            services.AddTransient<Component>(p => new Component());
-            services.AddTransient<TextComponent>(p => new TextComponent());
-            services.AddTransient<Label>(p => new Label());
-            services.AddTransient<TextInput>(p => new TextInput());
-            services.AddTransient<TextButton>(p => new TextButton());
-            services.AddTransient<Container>(p => new StackContainer());
-            services.AddTransient<StackContainer>(p => new StackContainer());
-            services.AddTransient<ScrollContainer>(p => new ScrollContainer());
-            services.AddTransient<Paginator>(p => new Paginator());
 
             //Register Drivers...
             services.AddDriver<MouseIndicatorDriver>(p => new MouseIndicatorDriver());

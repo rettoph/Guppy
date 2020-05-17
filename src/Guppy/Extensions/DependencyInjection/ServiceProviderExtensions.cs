@@ -17,9 +17,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="configurationId"></param>
         /// <returns></returns>
-        public static T BuildService<T>(this ServiceProvider provider, UInt32 configurationId)
+        public static T BuildService<T>(this ServiceProvider provider, UInt32 configurationId, Action<Object, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return (T)provider.GetFactory(configurationId).Build(provider);;
+            return (T)provider.GetFactory(configurationId).Build(provider, setup);
         }
 
         /// <summary>
@@ -85,15 +85,15 @@ namespace Guppy.Extensions.DependencyInjection
         /// </summary>
         /// <param name="configurationId"></param>
         /// <returns></returns>
-        public static ServiceFactory GetFactory(this ServiceProvider provider, UInt32 configurationId)
+        public static ServiceConfiguration GetFactory(this ServiceProvider provider, UInt32 configurationId)
         {
             return provider.factories[configurationId];
         }
-        public static ServiceFactory GetFactory(this ServiceProvider provider, String configuration)
+        public static ServiceConfiguration GetFactory(this ServiceProvider provider, String configuration)
         {
             return provider.GetFactory(xxHash.CalculateHash(Encoding.UTF8.GetBytes(configuration)));
         }
-        public static ServiceFactory GetFactory(this ServiceProvider provider, Type serviceType)
+        public static ServiceConfiguration GetFactory(this ServiceProvider provider, Type serviceType)
         {
             return provider.GetFactory(serviceType.FullName);
         }

@@ -9,10 +9,11 @@ using System.Text;
 
 namespace Guppy.UI.Components
 {
-    public class Container : ProtectedContainer, IContainer
+    public class Container<TComponent> : ProtectedContainer<TComponent>, IContainer<TComponent>
+        where TComponent : IComponent
     {
         #region Public Attributes
-        public ComponentCollection Children => this.children;
+        public ComponentCollection<TComponent> Children => this.children;
         #endregion
     }
 }

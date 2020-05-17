@@ -1,4 +1,5 @@
-﻿using Guppy.UI.Entities;
+﻿using Guppy.DependencyInjection;
+using Guppy.UI.Entities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -9,10 +10,25 @@ namespace Guppy.UI.Drivers.Entities
 {
     public class MouseIndicatorDriver : Driver<Cursor>
     {
-        protected override void Update(GameTime gameTime)
+        #region Lifecycle Methods
+        protected override void Configure(object driven, ServiceProvider provider)
         {
-            base.Update(gameTime);
-    
+            base.Configure(driven, provider);
+
+            this.driven.OnUpdate += this.Update;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.driven.OnUpdate -= this.Update;
+        }
+        #endregion
+
+        #region Frame Methods
+        private void Update(GameTime gameTime)
+        {
             var mState = Mouse.GetState();
     
             // Move the pointer to the recieved mouse position
@@ -26,5 +42,6 @@ namespace Guppy.UI.Drivers.Entities
             // Update the scroll value
             this.driven.ScrollTo(mState.ScrollWheelValue);
         }
+        #endregion
     }
 }

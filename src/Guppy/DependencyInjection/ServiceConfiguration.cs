@@ -8,7 +8,7 @@ using xxHashSharp;
 
 namespace Guppy.DependencyInjection
 {
-    public class ServiceFactory
+    public class ServiceConfiguration
     {
         public UInt32 Id { get; private set; }
         public String Name { get; private set; }
@@ -16,22 +16,32 @@ namespace Guppy.DependencyInjection
 
         public ConfigurationDescriptor[] ConfigurationDescriptors { get; private set; }
 
-        internal ServiceFactory(String name, ServiceDescriptor service, params ConfigurationDescriptor[] configurationDescriptors)
+        internal ServiceConfiguration(String name, ServiceDescriptor service, params ConfigurationDescriptor[] configurationDescriptors)
         {
-            this.Id = ServiceFactory.GetId(name);
+            this.Id = ServiceConfiguration.GetId(name);
             this.Name = name;
             this.ServiceDescriptor = service;
             this.ConfigurationDescriptors = configurationDescriptors;
         }
 
-        public Object Build(ServiceProvider provider)
+        public Object Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceConfiguration> setup)
         {
             // Create new instance...
             var instance = this.ServiceDescriptor.Factory(provider);
             ExceptionHelper.ValidateAssignableFrom(this.ServiceDescriptor.ServiceType, instance.GetType());
 
             // Apply recieved configurations...
-            this.ConfigurationDescriptors.ForEach(c => instance = c.Configure(instance, provider, this));
+            var ranSetup = false;
+            this.ConfigurationDescriptors.ForEach(c =>
+            {
+                if (!ranSetup && c.Priority >= 0 && (ranSetup = true))
+                    setup?.Invoke(instance, provider, this); // Run custom setup as default 0 priority configuration
+
+                instance = c.Configure(instance, provider, this);
+            });
+
+            if(!ranSetup) // Run custom setup if needed...
+                setup?.Invoke(instance, provider, this);
 
             // Return configured instance...
             return instance;

@@ -11,13 +11,13 @@ namespace Guppy
     public abstract class Service : IService
     {
         #region Private Fields
-        private ServiceFactory _configuration;
+        private ServiceConfiguration _configuration;
         private Guid _id;
         private ServiceDescriptor _descriptor;
         #endregion
 
         #region Public Attributes
-        public ServiceFactory Configuration
+        public ServiceConfiguration Configuration
         {
             get => _configuration;
             set

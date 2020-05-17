@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Guppy.UI.Components
 {
-    public class TextInput : ProtectedContainer
+    public class TextInput : ProtectedContainer<TextComponent>
     {
         #region Private Fields
         private GameWindow _window;

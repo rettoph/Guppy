@@ -6,7 +6,8 @@ using System.Text;
 
 namespace Guppy.UI.Collections
 {
-    public sealed class ComponentCollection : ServiceCollection<IComponent>
+    public class ComponentCollection<TComponent> : ServiceCollection<TComponent>
+        where TComponent : IComponent
     {
         #region Private Fields
         public IBaseContainer Parent { get; set; }
@@ -19,14 +20,14 @@ namespace Guppy.UI.Collections
         #endregion
 
         #region Collection Methods
-        protected override void Add(IComponent item)
+        protected override void Add(TComponent item)
         {
             base.Add(item);
 
             item.Container = this.Parent;
         }
 
-        protected override void Remove(IComponent item)
+        protected override void Remove(TComponent item)
         {
             base.Remove(item);
 

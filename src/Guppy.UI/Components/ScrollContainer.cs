@@ -13,10 +13,10 @@ using System.Text;
 
 namespace Guppy.UI.Components
 {
-    public class ScrollContainer : ProtectedContainer, IContainer
+    public class ScrollContainer : ProtectedContainer<IComponent>, IContainer<IComponent>
     {
         #region Private Fields
-        private StackContainer _container;
+        private StackContainer<IComponent> _container;
         private Cursor _cursor;
         private Boolean _scrolling;
         private Int32 _oldScroll;
@@ -25,7 +25,7 @@ namespace Guppy.UI.Components
         #endregion
 
         #region Public Attributes
-        public ComponentCollection Children => _container.Children;
+        public ComponentCollection<IComponent> Children => _container.Children;
         public Component Thumb;
         public Single Scroll { get; private set; }
         public Unit ScrollWheelStep { get; set; }
@@ -39,7 +39,7 @@ namespace Guppy.UI.Components
             provider.Service(out _cursor);
             provider.Service(out _graphics);
 
-            _container = this.children.Create<StackContainer>();
+            _container = this.children.Create<StackContainer<IComponent>>();
             _container.Bounds.Set(
                 x: 0,
                 y: 0,

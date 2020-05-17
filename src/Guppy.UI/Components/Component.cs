@@ -118,7 +118,7 @@ namespace Guppy.UI.Components
         {
             base.Draw(gameTime);
 
-            _primitiveBatch.DrawRectangle(this.Bounds.Pixel, this.Hovered ? Color.Blue : Color.Red);
+            // _primitiveBatch.DrawRectangle(this.Bounds.Pixel, this.Hovered ? Color.Blue : Color.Red);
         }
 
         protected override void PreUpdate(GameTime gameTime)

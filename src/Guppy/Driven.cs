@@ -68,21 +68,5 @@ namespace Guppy
             _driverTypes.Add(driver);
         }
         #endregion
-
-        #region Frame Methods
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            _drivers.ForEach(d => d.TryUpdate(gameTime));
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            _drivers.ForEach(d => d.TryDraw(gameTime));
-        }
-        #endregion
     }
 }

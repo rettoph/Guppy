@@ -35,5 +35,13 @@ namespace Guppy.UI.Utilities.Backgrounds
                 Color = color
             };
         }
+
+        public static implicit operator Background(Texture2D texture)
+        {
+            return new ImageBackground()
+            {
+                Texture = texture
+            };
+        }
     }
 }

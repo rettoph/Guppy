@@ -100,7 +100,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Configuration Helper Methods
-        public void AddConfiguration(Type service, String name, Func<Object, ServiceProvider, ServiceFactory, Object> configure, Int32 priority = 0)
+        public void AddConfiguration(Type service, String name, Func<Object, ServiceProvider, ServiceConfiguration, Object> configure, Int32 priority = 0)
         {
             this.ConfigurationDescriptors.Add(new ConfigurationDescriptor()
             {
@@ -118,7 +118,7 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="configure"></param>
         /// <param name="priority"></param>
-        public void AddConfiguration<TService>(String name, Func<TService, ServiceProvider, ServiceFactory, TService> configure, Int32 priority = 0) 
+        public void AddConfiguration<TService>(String name, Func<TService, ServiceProvider, ServiceConfiguration, TService> configure, Int32 priority = 0) 
         {
             this.AddConfiguration(typeof(TService), name, (i, p, c) => configure((TService)i, p, c), priority);
         }
@@ -131,7 +131,7 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="configure"></param>
         /// <param name="priority"></param>
-        public void AddConfiguration<TService>(String name, Action<TService, ServiceProvider, ServiceFactory> configure, Int32 priority = 0)
+        public void AddConfiguration<TService>(String name, Action<TService, ServiceProvider, ServiceConfiguration> configure, Int32 priority = 0)
         {
             this.AddConfiguration<TService>(name, (i, p, c) =>
             {
@@ -146,7 +146,7 @@ namespace Guppy.DependencyInjection
         /// <typeparam name="TService"></typeparam>
         /// <param name="configure"></param>
         /// <param name="priority"></param>
-        public void AddConfiguration<TService>(Func<TService, ServiceProvider, ServiceFactory, TService> configure, Int32 priority = 0)
+        public void AddConfiguration<TService>(Func<TService, ServiceProvider, ServiceConfiguration, TService> configure, Int32 priority = 0)
         {
             this.AddConfiguration<TService>(String.Empty, configure, priority);
         }
@@ -157,7 +157,7 @@ namespace Guppy.DependencyInjection
         /// <typeparam name="TService"></typeparam>
         /// <param name="configure"></param>
         /// <param name="priority"></param>
-        public void AddConfiguration<TService>(Action<TService, ServiceProvider, ServiceFactory> configure, Int32 priority = 0)
+        public void AddConfiguration<TService>(Action<TService, ServiceProvider, ServiceConfiguration> configure, Int32 priority = 0)
         {
             this.AddConfiguration<TService>(String.Empty, configure, priority);
         }

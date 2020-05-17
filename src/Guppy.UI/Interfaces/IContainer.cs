@@ -5,8 +5,9 @@ using System.Text;
 
 namespace Guppy.UI.Interfaces
 {
-    public interface IContainer : IBaseContainer
+    public interface IContainer<TComponent> : IBaseContainer
+        where TComponent : IComponent
     {
-        ComponentCollection Children { get; }
+        ComponentCollection<TComponent> Children { get; }
     }
 }

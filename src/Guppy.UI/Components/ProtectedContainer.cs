@@ -15,10 +15,11 @@ namespace Guppy.UI.Components
     /// that contain internal children accessible from the outside.
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    public class ProtectedContainer : Component, IBaseContainer
+    public class ProtectedContainer<TComponent> : Component, IBaseContainer
+        where TComponent : IComponent
     {
         #region Protected Attributes
-        protected ComponentCollection children { get; private set; }
+        protected ComponentCollection<TComponent> children { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -26,7 +27,7 @@ namespace Guppy.UI.Components
         {
             base.PreInitialize(provider);
 
-            this.children = provider.GetService<ComponentCollection>();
+            this.children = provider.GetService<ComponentCollection<TComponent>>();
             this.children.Parent = this;
         }
         #endregion

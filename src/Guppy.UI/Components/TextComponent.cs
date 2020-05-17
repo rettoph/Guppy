@@ -22,7 +22,7 @@ namespace Guppy.UI.Components
         #region Private Fields
         protected SpriteFont font;
         protected Color color;
-        protected String text;
+        protected String text = String.Empty;
         protected Alignment textAlignment;
         protected Boolean inline;
         #endregion

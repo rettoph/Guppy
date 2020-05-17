@@ -8,7 +8,7 @@ using Guppy.DependencyInjection;
 
 namespace Guppy
 {
-    public abstract class Scene : Frameable
+    public abstract class Scene : Driven
     {
         #region Public Attributes
         public LayerCollection Layers { get; private set; }

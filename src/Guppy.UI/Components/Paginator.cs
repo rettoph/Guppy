@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.UI.Components
 {
-    public class Paginator : Container
+    public class Paginator : Container<Page>
     {
         #region Private Fields
         private Dictionary<IComponent, Action<Object>> _clickHandlers;
@@ -49,7 +49,7 @@ namespace Guppy.UI.Components
         #endregion
 
         #region Helper Methods
-        public Action<Object> GetSetPageOnClickHandler(IComponent page)
+        public Action<Object> GetSetPageOnClickHandler(Page page)
         {
             if (!_clickHandlers.ContainsKey(page))
                 _clickHandlers[page] = o => this.SetPage(page);
@@ -57,7 +57,7 @@ namespace Guppy.UI.Components
             return _clickHandlers[page];
         }
 
-        public void SetPage(IComponent page)
+        public void SetPage(Page page)
         {
             if (!this.Children.Contains(page))
                 throw new ArgumentException("Unable to set page to Paginator child.");
