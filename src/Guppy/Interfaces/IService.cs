@@ -9,7 +9,7 @@ namespace Guppy.Interfaces
     public interface IService
     {
         #region Attributes
-        ServiceConfiguration Configuration { get; set; }
+        ServiceConfiguration ServiceConfiguration { get; set; }
         Guid Id { get; set; }
         #endregion
 

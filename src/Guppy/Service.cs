@@ -17,7 +17,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public ServiceConfiguration Configuration
+        public ServiceConfiguration ServiceConfiguration
         {
             get => _configuration;
             set

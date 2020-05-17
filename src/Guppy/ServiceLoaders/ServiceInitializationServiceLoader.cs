@@ -15,9 +15,9 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddConfiguration<IService>((s, p, f) =>
+            services.AddConfiguration<IService>((s, p, c) =>
             {
-                s.Configuration = f;
+                s.ServiceConfiguration = c;
                 s.TryPreInitialize(p);
             }, -10);
 
