@@ -20,6 +20,8 @@ namespace Guppy.Utilities.Cameras
         private Single _zoom;
         private Single _zoomTarget;
         private Vector2 _positionTarget;
+        private Single _minZoom = Single.MaxValue;
+        private Single _maxZoom = Single.Epsilon;
         #endregion
 
         #region Public Attributes
@@ -44,6 +46,26 @@ namespace Guppy.Utilities.Cameras
 
         public Single ZoomTarget { get => _zoomTarget; }
         public Vector2 PositionTarget { get => _positionTarget; }
+        public Single MaxZoom
+        {
+            get => _maxZoom;
+            set
+            {
+                _maxZoom = value;
+                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
+                this.Zoom = MathHelper.Clamp(this.Zoom, this.MinZoom, this.MaxZoom);
+            }
+        }
+        public Single MinZoom
+        {
+            get => _minZoom;
+            set
+            {
+                _minZoom = value;
+                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
+                this.Zoom = MathHelper.Clamp(this.Zoom, this.MinZoom, this.MaxZoom);
+            }
+        }
 
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
@@ -77,13 +99,13 @@ namespace Guppy.Utilities.Cameras
             if (this.Zoom != _zoomTarget)
             { // Lerp to the zoom target
                 this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, this.ZoomLerp * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
-                this.EnqueueClean();
+                this.EnqueueClean(next: true);
             }
 
             if (this.Position != _positionTarget)
             { // Lerp to the position target
                 this.Position = Vector2.Lerp(this.Position, _positionTarget, this.MoveLerp * (Single)gameTime.ElapsedGameTime.TotalMilliseconds);
-                this.EnqueueClean();
+                this.EnqueueClean(next: true);
             }
         }
         #endregion
@@ -187,6 +209,7 @@ namespace Guppy.Utilities.Cameras
             if (multiplier != 1)
             {
                 _zoomTarget *= multiplier;
+                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
 
                 this.dirty = true;
             }
@@ -196,6 +219,7 @@ namespace Guppy.Utilities.Cameras
             if (value != _zoomTarget)
             {
                 _zoomTarget = value;
+                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
 
                 this.dirty = true;
             }

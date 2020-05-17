@@ -68,23 +68,22 @@ namespace Guppy.Utilities.Cameras
         /// Enqueue the internal camera clean method, 
         /// if its not already.
         /// </summary>
-        protected void EnqueueClean()
+        protected void EnqueueClean(Boolean next = false)
         {
             if(!_cleanEnqueued)
             {
-                _buffer.Enqueue(this.TryClean);
-                _cleanEnqueued = false;
+                _buffer.Enqueue(this.TryClean, next);
+                _cleanEnqueued = true;
             }
         }
 
         public void TryClean(GameTime gameTime)
         {
-            _cleanEnqueued = false;
-
-            if (this.dirty)
+            if (this.dirty || _cleanEnqueued)
             {
-                this.Clean(gameTime);
+                _cleanEnqueued = false;
 
+                this.Clean(gameTime);
                 this.dirty = false;
             }
         }

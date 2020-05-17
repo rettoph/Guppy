@@ -23,6 +23,7 @@ namespace Guppy
     {
         #region Private Fields
         private ConcurrentQueue<Action<GameTime>> _queue;
+        private ConcurrentQueue<Action<GameTime>> _next;
         private Action<GameTime> _update;
         #endregion
 
@@ -32,6 +33,7 @@ namespace Guppy
             base.Initialize(provider);
 
             _queue = new ConcurrentQueue<Action<GameTime>>();
+            _next = new ConcurrentQueue<Action<GameTime>>();
         }
 
         protected override void Dispose()
@@ -44,9 +46,18 @@ namespace Guppy
         #endregion
 
         #region Helper Methods
-        public void Enqueue(Action<GameTime> update)
+        /// <summary>
+        /// If next is true, the request update will be saved until next
+        /// frame, otherwise the update will run asap
+        /// </summary>
+        /// <param name="update"></param>
+        /// <param name="next"></param>
+        public void Enqueue(Action<GameTime> update, Boolean next = false)
         {
-            _queue.Enqueue(update);
+            if (next)
+                _next.Enqueue(update);
+            else
+                _queue.Enqueue(update);
         }
 
         /// <summary>
@@ -58,6 +69,10 @@ namespace Guppy
             while (_queue.Any())
                 if (_queue.TryDequeue(out _update))
                     _update(gameTime);
+
+            while (_next.Any())
+                if (_next.TryDequeue(out _update))
+                    this.Enqueue(_update);
         }
         #endregion
     }
