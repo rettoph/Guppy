@@ -28,7 +28,11 @@ namespace Guppy
             set
             {
                 if (value != this.Visible)
-                    this.OnVisibleChanged?.Invoke(this, _visible = value);
+                {
+                    _visible = value;
+                    this.OnVisibleChanged?.Invoke(this, this.Visible);
+                }
+                    
             }
         }
         public Boolean Enabled
@@ -36,8 +40,10 @@ namespace Guppy
             get => _enabled;
             set
             {
-                if (value != this.Enabled)
-                    this.OnEnabledChanged?.Invoke(this, _enabled = value);
+                if (value != this.Enabled) {
+                    _enabled = value;
+                    this.OnEnabledChanged?.Invoke(this, this.Enabled);
+                }
             }
         }
 
@@ -47,7 +53,11 @@ namespace Guppy
             set
             {
                 if (this.DrawOrder != value)
-                    this.OnDrawOrderChanged?.Invoke(this, _drawOrder = value);
+                {
+                    _drawOrder = value;
+                    this.OnDrawOrderChanged?.Invoke(this, this.DrawOrder);
+                }
+                    
             }
         }
         public Int32 UpdateOrder
@@ -56,7 +66,10 @@ namespace Guppy
             set
             {
                 if (this.UpdateOrder != value)
-                    this.OnUpdateOrderChanged?.Invoke(this, _updateOrder = value);
+                {
+                    _updateOrder = value;
+                    this.OnUpdateOrderChanged?.Invoke(this, this.UpdateOrder);
+                }
             }
         }
         #endregion

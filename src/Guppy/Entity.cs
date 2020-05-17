@@ -19,7 +19,10 @@ namespace Guppy
             set
             {
                 if (value != _layer)
-                    this.OnLayerChanged?.Invoke(this, _layer = value);
+                {
+                    _layer = value;
+                    this.OnLayerChanged?.Invoke(this, this.Layer);
+                }
             }
         }
         public Int32 LayerGroup
@@ -28,7 +31,11 @@ namespace Guppy
             set
             {
                 if (value != _layerGroup)
-                    this.OnLayerGroupChanged?.Invoke(this, _layerGroup = value);
+                {
+                    _layerGroup = value;
+                    this.OnLayerGroupChanged?.Invoke(this, this.LayerGroup);
+                }
+                    
             }
         }
         #endregion
