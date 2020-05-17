@@ -44,7 +44,7 @@ namespace Guppy
         #endregion
 
         #region Events
-        public event EventHandler OnDisposed;
+        public event GuppyEventHandler<IService> OnDisposed;
         #endregion
 
         #region Lifecycle Methods
@@ -81,7 +81,7 @@ namespace Guppy
             this.InitializationStatus = InitializationStatus.Disposing;
 
             this.Dispose();
-            this.OnDisposed?.Invoke(this, EventArgs.Empty);
+            this.OnDisposed?.Invoke(this);
 
             this.InitializationStatus = InitializationStatus.NotReady;
         }

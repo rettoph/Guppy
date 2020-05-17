@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,12 +16,10 @@ namespace Guppy
         public Layer Layer
         {
             get => _layer;
-            set {
-                if(value != _layer)
-                {
-                    _layer = value;
-                    this.OnLayerChanged?.Invoke(this, this.Layer);
-                }
+            set
+            {
+                if (value != _layer)
+                    this.OnLayerChanged?.Invoke(this, _layer = value);
             }
         }
         public Int32 LayerGroup
@@ -29,10 +28,7 @@ namespace Guppy
             set
             {
                 if (value != _layerGroup)
-                {
-                    _layerGroup = value;
-                    this.OnLayerGroupChanged?.Invoke(this, this.LayerGroup);
-                }
+                    this.OnLayerGroupChanged?.Invoke(this, _layerGroup = value);
             }
         }
         #endregion
@@ -42,13 +38,13 @@ namespace Guppy
         /// Indicates that the current entity has been succesfully added to 
         /// the current LayerGroup value.
         /// </summary>
-        public event EventHandler<Layer> OnLayerChanged;
+        public event GuppyEventHandler<Entity, Layer> OnLayerChanged;
 
         /// <summary>
         /// Indicates that the current entity wishes to change to another layer.
         /// This will trigger automated processes to update the layer.
         /// </summary>
-        public event EventHandler<Int32> OnLayerGroupChanged;
+        public event GuppyEventHandler<Entity, Int32> OnLayerGroupChanged;
         #endregion
     }
 }

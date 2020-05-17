@@ -28,11 +28,7 @@ namespace Guppy
             set
             {
                 if (value != this.Visible)
-                {
-                    _visible = value;
-
-                    this.OnVisibleChanged?.Invoke(this, this.Visible);
-                }
+                    this.OnVisibleChanged?.Invoke(this, _visible = value);
             }
         }
         public Boolean Enabled
@@ -41,11 +37,7 @@ namespace Guppy
             set
             {
                 if (value != this.Enabled)
-                {
-                    _enabled = value;
-
-                    this.OnEnabledChanged?.Invoke(this, this.Enabled);
-                }
+                    this.OnEnabledChanged?.Invoke(this, _enabled = value);
             }
         }
 
@@ -55,10 +47,7 @@ namespace Guppy
             set
             {
                 if (this.DrawOrder != value)
-                {
-                    _drawOrder = value;
-                    this.OnDrawOrderChanged?.Invoke(this, _drawOrder);
-                }
+                    this.OnDrawOrderChanged?.Invoke(this, _drawOrder = value);
             }
         }
         public Int32 UpdateOrder
@@ -67,19 +56,16 @@ namespace Guppy
             set
             {
                 if (this.UpdateOrder != value)
-                {
-                    _updateOrder = value;
-                    this.OnUpdateOrderChanged?.Invoke(this, _updateOrder);
-                }
+                    this.OnUpdateOrderChanged?.Invoke(this, _updateOrder = value);
             }
         }
         #endregion
 
         #region Events
-        public event EventHandler<Int32> OnDrawOrderChanged;
-        public event EventHandler<Int32> OnUpdateOrderChanged;
-        public event EventHandler<Boolean> OnVisibleChanged;
-        public event EventHandler<Boolean> OnEnabledChanged;
+        public event GuppyEventHandler<Orderable, Int32> OnDrawOrderChanged;
+        public event GuppyEventHandler<Orderable, Int32> OnUpdateOrderChanged;
+        public event GuppyEventHandler<Orderable, Boolean> OnVisibleChanged;
+        public event GuppyEventHandler<Orderable, Boolean> OnEnabledChanged;
         #endregion
 
         #region Lifecycle Methods

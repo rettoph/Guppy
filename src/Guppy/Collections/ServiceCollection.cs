@@ -177,7 +177,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleItemDisposed(object sender, EventArgs e)
+        private void HandleItemDisposed(IService sender)
         {
             this.TryRemove((TService)sender);
         }
