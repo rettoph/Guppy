@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Interfaces;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -52,10 +53,10 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Events
-        public event EventHandler<Vector2> OnMoved;
-        public event EventHandler<Button> OnPressed;
-        public event EventHandler<Button> OnReleased;
-        public event EventHandler<Single> OnScrolled;
+        public event GuppyDeltaEventHandler<Cursor, Vector2> OnMoved;
+        public event GuppyEventHandler<Cursor, Button> OnPressed;
+        public event GuppyEventHandler<Cursor, Button> OnReleased;
+        public event GuppyDeltaEventHandler<Cursor, Single> OnScrolled;
         #endregion
 
         #region Frame Methods
@@ -73,9 +74,10 @@ namespace Guppy.UI.Entities
         {
             if (position != this.Position)
             { // Only update the position if anything has changed
+                var old = this.Position;
                 this.Position = position;
 
-                this.OnMoved?.Invoke(this, this.Position);
+                this.OnMoved?.Invoke(this, old, this.Position);
             }
         }
 
@@ -88,9 +90,10 @@ namespace Guppy.UI.Entities
         {
             if (scroll != this.Scroll)
             { // Only scroll if anything has changed
+                var old = this.Scroll;
                 this.Scroll = scroll;
 
-                this.OnScrolled?.Invoke(this, this.Scroll);
+                this.OnScrolled?.Invoke(this, old, this.Scroll);
             }
         }
 

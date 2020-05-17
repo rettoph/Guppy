@@ -20,7 +20,6 @@ namespace Guppy.UI.Components
         private Cursor _cursor;
         private Boolean _scrolling;
         private Int32 _oldScroll;
-        private Int32 _oldWheel;
         private GraphicsDevice _graphics;
         #endregion
 
@@ -144,18 +143,15 @@ namespace Guppy.UI.Components
             }
         }
 
-        private void HandleCursorScrolled(object sender, float e)
+        private void HandleCursorScrolled(Cursor sender, float old, float value)
         {
-            this.ScrollBy(((Single)this.ScrollWheelStep.ToPixel(this.Bounds.Pixel.Height) / this.Bounds.Pixel.Height) * ((_oldWheel - e) / 120));
-
-            _oldWheel = _cursor.Scroll;
+            this.ScrollBy(((Single)this.ScrollWheelStep.ToPixel(this.Bounds.Pixel.Height) / this.Bounds.Pixel.Height) * ((old - value) / 120));
         }
 
         private void HandleHoveredChanged(object sender, bool e)
         {
             if(e)
             {
-                _oldWheel = _cursor.Scroll;
                 _cursor.OnScrolled += this.HandleCursorScrolled;
             }
             else
