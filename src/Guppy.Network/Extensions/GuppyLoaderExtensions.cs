@@ -1,4 +1,8 @@
-﻿using Guppy.Network.Peers;
+﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
+using Guppy.Network.Groups;
+using Guppy.Network.Peers;
+using Guppy.Network.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -10,18 +14,50 @@ namespace Guppy.Network.Extensions
     {
         public static GuppyLoader ConfigureServer(this GuppyLoader guppy, NetPeerConfiguration configuration)
         {
-            guppy.Services.AddSingleton<NetServer>(p => new NetServer(configuration));
-            guppy.Services.AddSingleton<Server>(p => new Server());
+            guppy.Services.AddSingleton<UserNetConnectionDictionary>(p => new UserNetConnectionDictionary());
+            guppy.ConfigurePeer<NetServer, ServerPeer>(
+                p => new NetServer(configuration),
+                p => new ServerPeer());
 
             return guppy;
         }
 
         public static GuppyLoader ConfigureClient(this GuppyLoader guppy, NetPeerConfiguration configuration)
         {
-            guppy.Services.AddSingleton<NetClient>(p => new NetClient(configuration));
-            guppy.Services.AddSingleton<Client>(p => new Client());
+            guppy.ConfigurePeer<NetClient, ClientPeer>(
+                p => new NetClient(configuration), 
+                p => new ClientPeer());
 
             return guppy;
+        }
+
+        private static void ConfigurePeer<TNetPeer, TPeer>(this GuppyLoader guppy, Func<ServiceProvider, TNetPeer> netPeerFactory, Func<ServiceProvider, TPeer> peerFactory)
+            where TPeer : Peer
+            where TNetPeer : NetPeer
+        {
+            Func<ServiceProvider, TNetPeer> netPeer = p =>
+            {
+                var data = p.GetService<PeerData>();
+
+                if (data.NetPeer == null)
+                    data.NetPeer = netPeerFactory(p);
+
+                return data.NetPeer as TNetPeer;
+            };
+
+            Func<ServiceProvider, TPeer> peer = p =>
+            {
+                var data = p.GetService<PeerData>();
+
+                if (data.Peer == null)
+                    data.Peer = peerFactory(p);
+
+                return data.Peer as TPeer;
+            };
+
+            // Register related services...
+            guppy.Services.AddSingleton(typeof(TNetPeer), netPeer, 0, typeof(NetPeer));
+            guppy.Services.AddSingleton(typeof(TPeer), peer, 0, typeof(Peer));
         }
     }
 }

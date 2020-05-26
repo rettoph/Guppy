@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Network.Utilities;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Guppy.Network
     /// <summary>
     /// An Object capable of sending & recieving messages.
     /// </summary>
-    public class Messageable : Service
+    public class Messageable : Asyncable
     {
         #region Public Attributes
         /// <summary>
@@ -31,6 +32,7 @@ namespace Guppy.Network
         {
             base.PreInitialize(provider);
 
+            this.Messages = new Queue<NetIncomingMessage>();
             this.MessageDelegater = new MessageDelegater();
         }
 
@@ -41,8 +43,10 @@ namespace Guppy.Network
         #endregion
 
         #region Frame Methods
-        public virtual void Update()
+        protected override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             while (this.Messages.Any())
                 this.MessageDelegater.Handle(this, this.Messages.Dequeue());
         }

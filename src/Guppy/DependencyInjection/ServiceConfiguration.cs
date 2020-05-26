@@ -31,17 +31,17 @@ namespace Guppy.DependencyInjection
             ExceptionHelper.ValidateAssignableFrom(this.ServiceDescriptor.ServiceType, instance.GetType());
 
             // Apply recieved configurations...
-            var ranSetup = false;
+            var ranSetup = setup == null;
             this.ConfigurationDescriptors.ForEach(c =>
             {
                 if (!ranSetup && c.Priority >= 0 && (ranSetup = true))
-                    setup?.Invoke(instance, provider, this); // Run custom setup as default 0 priority configuration
+                    setup.Invoke(instance, provider, this); // Run custom setup as default 0 priority configuration
 
                 instance = c.Configure(instance, provider, this);
             });
 
             if(!ranSetup) // Run custom setup if needed...
-                setup?.Invoke(instance, provider, this);
+                setup.Invoke(instance, provider, this);
 
             // Return configured instance...
             return instance;

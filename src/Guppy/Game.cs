@@ -12,7 +12,7 @@ namespace Guppy
     /// <summary>
     /// The main Guppy game class. Manages scene instances.
     /// </summary>
-    public abstract class Game : Frameable
+    public abstract class Game : Asyncable
     {
         #region Private Fields
         private UpdateBuffer _updateBuffer;

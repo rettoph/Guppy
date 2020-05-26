@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Guppy.DependencyInjection;
+using Guppy.Network.Collections;
+using Guppy.Network.Groups;
 using Lidgren.Network;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Network.Peers
 {
@@ -13,9 +16,11 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetPeer _peer;
-        private Thread _updateThread;
-        private Boolean _running;
         private NetIncomingMessage _im;
+        #endregion
+
+        #region Protected Attribtes
+        protected ServiceProvider provider { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -23,7 +28,8 @@ namespace Guppy.Network.Peers
         /// The peer's update interval in milliseconds.
         /// </summary>
         public Int32 Interval { get; set; } = 32;
-        public ReadOnlyDictionary<NetIncomingMessageType, MessageTypeDelegate> MessageTypeDelegates { get; private set; }
+        public Dictionary<NetIncomingMessageType, MessageTypeDelegate> MessageTypeDelegates { get; private set; }
+        public GroupCollection Groups { get; private set; }
         #endregion
 
         #region Delegates
@@ -31,7 +37,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Constructor
-        public Peer()
+        internal Peer()
         {
 
         }
@@ -42,11 +48,15 @@ namespace Guppy.Network.Peers
         {
             base.PreInitialize(provider);
 
-            this.MessageTypeDelegates = new ReadOnlyDictionary<NetIncomingMessageType, MessageTypeDelegate>(((NetIncomingMessageType[])Enum.GetValues(typeof(NetIncomingMessageType))).ToDictionary(
+            this.provider = provider;
+
+            this.MessageTypeDelegates = new Dictionary<NetIncomingMessageType, MessageTypeDelegate>(((NetIncomingMessageType[])Enum.GetValues(typeof(NetIncomingMessageType))).ToDictionary(
                 keySelector: mt => mt,
                 elementSelector: mt => default(MessageTypeDelegate)));
 
             _peer = this.GetPeer(provider);
+
+            this.Groups = provider.GetService<GroupCollection>();
         }
 
         protected override void Dispose()
@@ -58,49 +68,24 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Helper Methods
-        public void Start()
-        {
-            lock (this)
-            {
-                if (_running)
-                    throw new Exception("Unable to Start when already running.");
-
-                _peer.Start();
-                _updateThread = new Thread(new ThreadStart(this.UpdateLoop));
-                _running = true;
-            }
-        }
-
-        public void Stop()
-        {
-            lock (this)
-            {
-                if (!_running)
-                    throw new Exception("Unable to stop when not running");
-
-                _running = false;
-            }
-        }
-
         protected abstract NetPeer GetPeer(ServiceProvider provider);
+        internal abstract Group GroupFactory();
         #endregion
 
         #region Frame Methods
-        public void UpdateLoop()
+        protected override void Start(bool draw)
         {
-            while(_running)
-            {
-                this.Update();
-                Thread.Sleep(this.Interval);
-            }
+            _peer.Start();
+
+            base.Start(draw);
         }
 
-        public override void Update()
+        protected override void Update(GameTime gameTime)
         {
             while ((_im = _peer.ReadMessage()) != null)
                 this.MessageTypeDelegates[_im.MessageType]?.Invoke(_im);
 
-            base.Update();
+            base.Update(gameTime);
         }
         #endregion
     }

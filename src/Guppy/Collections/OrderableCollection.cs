@@ -15,7 +15,7 @@ namespace Guppy.Collections
     /// and each frame will update both lists in Update/Draw order
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class OrderableCollection<T> : ServiceCollection<T>, IFrameable
+    public class OrderableCollection<T> : FactoryCollection<T>, IFrameable
         where T : Orderable
     {
         #region Private Attributes
@@ -49,6 +49,9 @@ namespace Guppy.Collections
 
             this.OnDraw += this.Draw;
             this.OnUpdate += this.Update;
+
+            this.OnAdd += this.AddItem;
+            this.OnRemove += this.RemoveItem;
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -66,8 +69,43 @@ namespace Guppy.Collections
         {
             base.Dispose();
 
+            _draws.Clear();
+            _updates.Clear();
+
             this.OnDraw -= this.Draw;
             this.OnUpdate -= this.Update;
+
+            this.OnAdd -= this.AddItem;
+            this.OnRemove -= this.RemoveItem;
+        }
+        #endregion
+
+        #region Collection Methods
+        private void AddItem(T item)
+        {
+            if (item.Visible)
+                this.dirtyDraws = true;
+            if (item.Enabled)
+                this.dirtyUpdates = true;
+
+            item.OnVisibleChanged += this.HandleItemVisibleChanged;
+            item.OnEnabledChanged += this.HandleItemEnabledChanged;
+            item.OnUpdateOrderChanged += this.HandleItemUpdateOrderChanged;
+            item.OnDrawOrderChanged += this.HandleItemDrawOrderChanged;
+        }
+
+        private void RemoveItem(T item)
+        {
+
+            if (item.Visible)
+                this.dirtyDraws = true;
+            if (item.Enabled)
+                this.dirtyUpdates = true;
+
+            item.OnVisibleChanged -= this.HandleItemVisibleChanged;
+            item.OnEnabledChanged -= this.HandleItemEnabledChanged;
+            item.OnUpdateOrderChanged -= this.HandleItemUpdateOrderChanged;
+            item.OnDrawOrderChanged -= this.HandleItemDrawOrderChanged;
         }
         #endregion
 
@@ -118,46 +156,6 @@ namespace Guppy.Collections
                 _updates.AddRange(this.RemapUpdates());
                 this.dirtyUpdates = false;
             }
-        }
-        #endregion
-
-        #region Collection Methods
-        protected override void Clear()
-        {
-            base.Clear();
-
-            _draws.Clear();
-            _updates.Clear();
-        }
-
-        protected override void Add(T item)
-        {
-            base.Add(item);
-
-            if (item.Visible)
-                this.dirtyDraws = true;
-            if (item.Enabled)
-                this.dirtyUpdates = true;
-
-            item.OnVisibleChanged += this.HandleItemVisibleChanged;
-            item.OnEnabledChanged += this.HandleItemEnabledChanged;
-            item.OnUpdateOrderChanged += this.HandleItemUpdateOrderChanged;
-            item.OnDrawOrderChanged += this.HandleItemDrawOrderChanged;
-        }
-
-        protected override void Remove(T item)
-        {
-            base.Remove(item);
-
-            if (item.Visible)
-                this.dirtyDraws = true;
-            if (item.Enabled)
-                this.dirtyUpdates = true;
-
-            item.OnVisibleChanged -= this.HandleItemVisibleChanged;
-            item.OnEnabledChanged -= this.HandleItemEnabledChanged;
-            item.OnUpdateOrderChanged -= this.HandleItemUpdateOrderChanged;
-            item.OnDrawOrderChanged -= this.HandleItemDrawOrderChanged;
         }
         #endregion
 

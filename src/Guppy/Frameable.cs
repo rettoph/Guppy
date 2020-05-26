@@ -10,11 +10,17 @@ namespace Guppy
     public abstract class Frameable : Service, IFrameable
     {
         #region Events
+        /// <inheritdoc/>
         public event Step OnPreDraw;
+        /// <inheritdoc/>
         public event Step OnDraw;
+        /// <inheritdoc/>
         public event Step OnPostDraw;
+        /// <inheritdoc/>
         public event Step OnPreUpdate;
+        /// <inheritdoc/>
         public event Step OnUpdate;
+        /// <inheritdoc/>
         public event Step OnPostUpdate;
         #endregion
 
@@ -47,6 +53,7 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
+        /// <inheritdoc/>
         public virtual void TryDraw(GameTime gameTime)
         {
             this.OnPreDraw?.Invoke(gameTime);
@@ -54,6 +61,7 @@ namespace Guppy
             this.OnPostDraw?.Invoke(gameTime);
         }
 
+        /// <inheritdoc/>
         public virtual void TryUpdate(GameTime gameTime)
         {
             this.OnPreUpdate?.Invoke(gameTime);

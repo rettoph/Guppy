@@ -23,18 +23,15 @@ namespace Guppy.Collections
             base.PreInitialize(provider);
 
             _entities = provider.GetService<EntityCollection>();
+
+            this.OnAdd += this.AddEntity;
         }
-        #endregion
 
-        #region Collection Methods
-        protected override void Add(Entity item)
+        protected override void Dispose()
         {
-            base.Add(item);
+            base.Dispose();
 
-            // Remove from the old layer...
-            item.Layer?.Entities.TryRemove(item);
-            // Update the internal layer value...
-            item.Layer = this.layer;
+            this.OnAdd -= this.AddEntity;
         }
         #endregion
 
@@ -59,6 +56,16 @@ namespace Guppy.Collections
             _entities.TryAdd(entity);
 
             return entity;
+        }
+        #endregion
+
+        #region Collection Methods
+        private void AddEntity(Entity entity)
+        {
+            // Remove from the old layer...
+            entity.Layer?.Entities.TryRemove(entity);
+            // Update the internal layer value...
+            entity.Layer = this.layer;
         }
         #endregion
     }

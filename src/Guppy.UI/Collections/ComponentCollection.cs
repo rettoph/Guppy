@@ -1,4 +1,5 @@
 ﻿using Guppy.Collections;
+using Guppy.DependencyInjection;
 using Guppy.UI.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Guppy.UI.Collections
 {
-    public class ComponentCollection<TComponent> : ServiceCollection<TComponent>
+    public class ComponentCollection<TComponent> : FactoryCollection<TComponent>
         where TComponent : IComponent
     {
         #region Private Fields
@@ -19,18 +20,32 @@ namespace Guppy.UI.Collections
         }
         #endregion
 
-        #region Collection Methods
-        protected override void Add(TComponent item)
+        #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Add(item);
+            base.PreInitialize(provider);
 
+            this.OnAdd += this.AddComponent;
+            this.OnRemove += this.RemoveComponent;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnAdd -= this.AddComponent;
+            this.OnRemove -= this.RemoveComponent;
+        }
+        #endregion
+
+        #region Collection Methods
+        private void AddComponent(TComponent item)
+        {
             item.Container = this.Parent;
         }
 
-        protected override void Remove(TComponent item)
+        private void RemoveComponent(TComponent item)
         {
-            base.Remove(item);
-
             item.Container = null;
         }
         #endregion
