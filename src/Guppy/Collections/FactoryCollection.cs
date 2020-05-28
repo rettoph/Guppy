@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -51,7 +52,7 @@ namespace Guppy.Collections
         }
         public TService Create(String handle, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return this.Create(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)), setup);
+            return this.Create(ServiceConfiguration.GetId(handle), setup);
         }
         public TService Create(Type serviceType, Action<TService, ServiceProvider, ServiceConfiguration> setup = null)
         {
@@ -65,7 +66,7 @@ namespace Guppy.Collections
         public T Create<T>(String handle, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : TService
         {
-            return this.Create<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)), setup);
+            return this.Create<T>(ServiceConfiguration.GetId(handle), setup);
         }
         public T Create<T>(Type serviceType, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
             where T : TService
@@ -98,7 +99,7 @@ namespace Guppy.Collections
             if (this.ContainsId(id))
                 return this.GetById(id);
             else
-                return this.Create(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)), (i, p, c) =>
+                return this.Create(ServiceConfiguration.GetId(handle), (i, p, c) =>
                 {
                     i.Id = id;
                     setup?.Invoke(i, p, c);
@@ -133,7 +134,7 @@ namespace Guppy.Collections
             if (this.ContainsId(id))
                 return this.GetById<T>(id);
             else
-                return this.Create<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(handle)), (i, p, c) =>
+                return this.Create<T>(ServiceConfiguration.GetId(handle), (i, p, c) =>
                 {
                     i.Id = id;
                     setup?.Invoke(i, p, c);

@@ -30,18 +30,12 @@ namespace Guppy.Network.Utilities
         {
             _connections.Add(user, connection);
             _users.Add(connection, user);
-
-            user.OnDisposed += this.HandleUserDisposed;
         }
 
-        private void HandleUserDisposed(IService sender)
+        internal void Remove(NetConnection connection)
         {
-            var user = sender as User;
-
-            _users.Remove(_connections[user]);
-            _connections.Remove(user);
-
-            user.OnDisposed -= this.HandleUserDisposed;
+            _connections.Remove(_users[connection]);
+            _users.Remove(connection);
         }
     }
 }

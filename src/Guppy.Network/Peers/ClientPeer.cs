@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using Guppy.DependencyInjection;
+using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
+using Guppy.Network.Structs;
 using Lidgren.Network;
 
 namespace Guppy.Network.Peers
@@ -11,6 +14,10 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetClient _client;
+        #endregion
+
+        #region Public Attributes
+        public User CurrentUser { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -55,12 +62,38 @@ namespace Guppy.Network.Peers
                 case NetConnectionStatus.RespondedConnect:
                     break;
                 case NetConnectionStatus.Connected:
+                    this.HandleConnectedSatusChangedMessageType(im);
                     break;
                 case NetConnectionStatus.Disconnecting:
                     break;
                 case NetConnectionStatus.Disconnected:
                     break;
             }
+        }
+        #endregion
+
+        #region StatucChangedMessageType Handlers
+        private void HandleConnectedSatusChangedMessageType(NetIncomingMessage im)
+        {
+            // Read the new user instance
+            this.CurrentUser = this.provider.GetService<User>((u, p, c) =>
+            {
+                u.Id = im.SenderConnection.RemoteHailMessage.ReadGuid();
+                u.TryRead(im.SenderConnection.RemoteHailMessage);
+            });
+
+            // Add the recieved user into the global user collection...
+            this.Users.TryAdd(this.CurrentUser);
+        }
+        #endregion
+
+        #region Messageable Implementation
+        protected override void Send(NetOutgoingMessageConfiguration message)
+        {
+            _client.SendMessage(
+                msg: message.Message,
+                method: message.Method,
+                sequenceChannel: message.SequenceChannel);
         }
         #endregion
 

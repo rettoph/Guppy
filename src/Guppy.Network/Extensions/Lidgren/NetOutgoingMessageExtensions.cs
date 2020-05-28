@@ -1,8 +1,10 @@
-﻿using Lidgren.Network;
+﻿using Guppy.Extensions.System;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using xxHashSharp;
 
 namespace Guppy.Network.Extensions.Lidgren
 {
@@ -27,6 +29,27 @@ namespace Guppy.Network.Extensions.Lidgren
         {
             om.Write(vector2.X);
             om.Write(vector2.Y);
+        }
+        #endregion
+
+        #region MessageType Methods
+        /// <summary>
+        /// Write a signed message with custom data.
+        /// 
+        /// This will encode the recieved type then invoke the
+        /// recieved writer.
+        /// 
+        /// This is used for passing custom data, and can be processed
+        /// by a MessageReader instance.
+        /// </summary>
+        /// <param name="om"></param>
+        /// <param name="type"></param>
+        /// <param name="writer"></param>
+        public static NetOutgoingMessage Write(this NetOutgoingMessage om, String type, Action<NetOutgoingMessage> writer)
+        {
+            om.Write(type.xxHash());
+            writer(om);
+            return om;
         }
         #endregion
 

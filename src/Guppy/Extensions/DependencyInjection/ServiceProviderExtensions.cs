@@ -19,7 +19,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <returns></returns>
         public static T BuildService<T>(this ServiceProvider provider, UInt32 configurationId, Action<Object, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return (T)provider.GetFactory(configurationId).Build(provider, setup);
+            T instance = default(T);
+            provider.GetFactory(configurationId).Build(provider, setup, i => instance = (T)i);
+            return instance;
         }
 
         /// <summary>
@@ -27,11 +29,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// the configuration name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="configuration"></param>
+        /// <param name="handle"></param>
         /// <returns></returns>
-        public static T BuildService<T>(this ServiceProvider provider, String configuration)
+        public static T BuildService<T>(this ServiceProvider provider, String handle)
         {
-            return provider.BuildService<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(configuration)));
+            return provider.BuildService<T>(ServiceConfiguration.GetId(handle));
         }
 
         /// <summary>
@@ -89,9 +91,9 @@ namespace Guppy.Extensions.DependencyInjection
         {
             return provider.factories[configurationId];
         }
-        public static ServiceConfiguration GetFactory(this ServiceProvider provider, String configuration)
+        public static ServiceConfiguration GetFactory(this ServiceProvider provider, String handle)
         {
-            return provider.GetFactory(xxHash.CalculateHash(Encoding.UTF8.GetBytes(configuration)));
+            return provider.GetFactory(ServiceConfiguration.GetId(handle));
         }
         public static ServiceConfiguration GetFactory(this ServiceProvider provider, Type serviceType)
         {

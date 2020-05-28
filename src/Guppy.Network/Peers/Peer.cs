@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using Guppy.DependencyInjection;
 using Guppy.Network.Collections;
+using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
@@ -17,6 +19,13 @@ namespace Guppy.Network.Peers
         #region Private Fields
         private NetPeer _peer;
         private NetIncomingMessage _im;
+        #endregion
+
+        #region Public Attributes
+        /// <summary>
+        /// List of all connected users.
+        /// </summary>
+        public UserCollection Users { get; private set; }
         #endregion
 
         #region Protected Attribtes
@@ -48,22 +57,30 @@ namespace Guppy.Network.Peers
         {
             base.PreInitialize(provider);
 
+            _peer = this.GetPeer(provider);
+
             this.provider = provider;
 
             this.MessageTypeDelegates = new Dictionary<NetIncomingMessageType, MessageTypeDelegate>(((NetIncomingMessageType[])Enum.GetValues(typeof(NetIncomingMessageType))).ToDictionary(
                 keySelector: mt => mt,
                 elementSelector: mt => default(MessageTypeDelegate)));
 
-            _peer = this.GetPeer(provider);
-
             this.Groups = provider.GetService<GroupCollection>();
+            this.Users = provider.GetService<UserCollection>();
+        }
+
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.MessageTypeDelegates[NetIncomingMessageType.Data] += this.HandleDataMessageType;
         }
 
         protected override void Dispose()
         {
             base.Dispose();
 
-            this.MessageTypeDelegates = null;
+            this.MessageTypeDelegates[NetIncomingMessageType.Data] -= this.HandleDataMessageType;
         }
         #endregion
 
@@ -87,6 +104,28 @@ namespace Guppy.Network.Peers
 
             base.Update(gameTime);
         }
+        #endregion
+
+        #region MessageType Handlers
+        private void HandleDataMessageType(NetIncomingMessage im)
+        {
+            switch ((MessageTarget)im.ReadByte())
+            {
+                case MessageTarget.Group:
+                    this.Groups.GetOrCreateById(im.ReadGuid()).IncomingMessages.Enqueue(im);
+                    break;
+                case MessageTarget.Peer:
+                    im.ReadGuid();
+                    this.IncomingMessages.Enqueue(im);
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Messageable Implementation
+        protected override MessageTarget TargetType()
+            => MessageTarget.Peer;
         #endregion
     }
 }

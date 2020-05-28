@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Collections;
 using Guppy.Network.Utilities;
+using Guppy.Network.Structs;
 
 namespace Guppy.Network.Peers
 {
@@ -16,13 +17,6 @@ namespace Guppy.Network.Peers
         #region Private Fields
         private NetServer _server;
         private UserNetConnectionDictionary _userConnections;
-        #endregion
-
-        #region Public Attributes
-        /// <summary>
-        /// List of all connected users.
-        /// </summary>
-        public UserCollection Users { get; private set; }
         #endregion
 
         #region Events
@@ -45,11 +39,21 @@ namespace Guppy.Network.Peers
             provider.Service<NetServer>(out _server);
             provider.Service<UserNetConnectionDictionary>(out _userConnections);
 
-            this.Users = provider.GetService<UserCollection>();
-
             base.PreInitialize(provider);
+        }
+
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
 
             this.MessageTypeDelegates[NetIncomingMessageType.StatusChanged] += this.HandleSatusChangedMessageType;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.MessageTypeDelegates[NetIncomingMessageType.StatusChanged] -= this.HandleSatusChangedMessageType;
         }
         #endregion
 
@@ -144,6 +148,25 @@ namespace Guppy.Network.Peers
         {
             // Automatically dispose of the old user.
             _userConnections.Users[im.SenderConnection].TryDispose();
+            _userConnections.Remove(im.SenderConnection);
+        }
+        #endregion
+
+        #region Messageable Implementation
+        protected override void Send(NetOutgoingMessageConfiguration message)
+        {
+            if (message.Recipient != default(NetConnection))
+                _server.SendMessage(
+                    msg: message.Message,
+                    recipient: message.Recipient,
+                    method: message.Method,
+                    sequenceChannel: message.SequenceChannel);
+            else
+                _server.SendToAll(
+                    msg: message.Message,
+                    except: default(NetConnection),
+                    method: message.Method,
+                    sequenceChannel: message.SequenceChannel);
         }
         #endregion
 

@@ -41,14 +41,16 @@ namespace Guppy.DependencyInjection
             switch (this.Lifetime)
             {
                 case ServiceLifetime.Transient:
-                    return configuration.Build(provider, setup);
+                    Object instance = null;
+                    configuration.Build(provider, setup, i => i = instance = i);
+                    return instance;
                 case ServiceLifetime.Scoped:
                     if (!provider.scopedInstances.ContainsKey(this.CacheType))
-                        provider.scopedInstances[this.CacheType] = configuration.Build(provider, setup);
+                        configuration.Build(provider, setup, i => provider.scopedInstances[this.CacheType] = i);
                     return provider.scopedInstances[this.CacheType];
                 case ServiceLifetime.Singleton:
                     if (!provider.singletonInstances.ContainsKey(this.CacheType))
-                        provider.singletonInstances[this.CacheType] = configuration.Build(provider, setup);
+                        configuration.Build(provider, setup, i => provider.singletonInstances[this.CacheType] = i);
                     return provider.singletonInstances[this.CacheType];
                 default:
                     throw new Exception($"Unable to create instance, unknown service lifetime value ({this.Lifetime}).");

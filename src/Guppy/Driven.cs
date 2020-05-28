@@ -36,9 +36,9 @@ namespace Guppy
             _driverTypes = new HashSet<Type>();
         }
 
-        protected override void PostInitialize(ServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
-            base.PostInitialize(provider);
+            base.Initialize(provider);
 
             // For each registered type create a new instance with the custom setup
             _drivers = _driverTypes.Select(d =>

@@ -33,7 +33,7 @@ namespace Guppy.DependencyInjection
                 .GroupBy(s => s.ServiceType)
                 .ToDictionary(
                     keySelector: kvp => kvp.Key,
-                    elementSelector: kvp => kvp.OrderBy(s => s.Priority).First());
+                    elementSelector: kvp => kvp.OrderByDescending(s => s.Priority).First());
 
             var configurationCache = new List<ConfigurationDescriptor>();
             this.factories = collection.ConfigurationDescriptors
@@ -115,7 +115,7 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public T GetService<T>(UInt32 configurationId, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            var factory = this.GetFactory(configurationId); ;
+            var factory = this.GetFactory(configurationId);
             return (T)factory.ServiceDescriptor.GetInstance(this, factory, (i, p, c) => setup?.Invoke((T)i, p, c));
             // return (T)this.services[configuration.ServiceType].GetInstance(this, factory);
         }
@@ -126,11 +126,11 @@ namespace Guppy.DependencyInjection
         /// the configuration name.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="configuration"></param>
+        /// <param name="handle"></param>
         /// <returns></returns>
-        public T GetService<T>(String configuration, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
+        public T GetService<T>(String handle, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            return this.GetService<T>(xxHash.CalculateHash(Encoding.UTF8.GetBytes(configuration)), setup);
+            return this.GetService<T>(ServiceConfiguration.GetId(handle), setup);
         }
 
         /// <summary>

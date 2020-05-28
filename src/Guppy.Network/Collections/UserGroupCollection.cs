@@ -12,7 +12,7 @@ namespace Guppy.Network.Collections
     /// this is every group but on the client this
     /// will only contain shared groups.
     /// </summary>
-    public class UserGroupCollection : ServiceCollection<Group>
+    public class UserGroupCollection : NetworkServiceCollection<Group>
     {
         internal UserGroupCollection()
         {

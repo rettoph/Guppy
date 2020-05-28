@@ -5,6 +5,7 @@ using Guppy.Network.Collections;
 using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.Network.Utilities;
+using Guppy.Network.Utilities.Messages;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;

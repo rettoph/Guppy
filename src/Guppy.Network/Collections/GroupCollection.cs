@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Network.Collections
 {
-    public class GroupCollection : ServiceCollection<Group>
+    public class GroupCollection : ProtectedServiceCollection<Group>
     {
         #region Private Fields
         private ServiceProvider _provider;

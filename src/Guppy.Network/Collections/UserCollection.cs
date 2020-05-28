@@ -8,9 +8,11 @@ namespace Guppy.Network.Collections
 {
     public class UserCollection : ServiceCollection<User>
     {
+        #region Constructor
         internal UserCollection()
         {
 
         }
+        #endregion
     }
 }

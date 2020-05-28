@@ -101,7 +101,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Configuration Helper Methods
-        public void AddConfiguration(Type service, String name, Func<Object, ServiceProvider, ServiceConfiguration, Object> configure, Int32 priority = 0)
+        public void AddConfiguration(Type service, String name, Action<Object, ServiceProvider, ServiceConfiguration> configure, Int32 priority = 0)
         {
             this.ConfigurationDescriptors.Add(new ConfigurationDescriptor()
             {

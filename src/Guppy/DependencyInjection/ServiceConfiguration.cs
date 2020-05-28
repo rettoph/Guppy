@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,11 @@ namespace Guppy.DependencyInjection
             this.ConfigurationDescriptors = configurationDescriptors;
         }
 
-        public Object Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceConfiguration> setup)
+        public void Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceConfiguration> setup, Action<Object> cacher = null)
         {
             // Create new instance...
             var instance = this.ServiceDescriptor.Factory(provider);
+            cacher?.Invoke(instance);
             ExceptionHelper.ValidateAssignableFrom(this.ServiceDescriptor.ServiceType, instance.GetType());
 
             // Apply recieved configurations...
@@ -37,16 +39,13 @@ namespace Guppy.DependencyInjection
                 if (!ranSetup && c.Priority >= 0 && (ranSetup = true))
                     setup.Invoke(instance, provider, this); // Run custom setup as default 0 priority configuration
 
-                instance = c.Configure(instance, provider, this);
+                c.Configure(instance, provider, this);
             });
 
             if(!ranSetup) // Run custom setup if needed...
                 setup.Invoke(instance, provider, this);
-
-            // Return configured instance...
-            return instance;
         }
 
-        public static UInt32 GetId(String name) => xxHash.CalculateHash(Encoding.UTF8.GetBytes(name));
+        public static UInt32 GetId(String name) => name.xxHash();
     }
 }
