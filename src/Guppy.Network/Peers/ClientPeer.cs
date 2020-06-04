@@ -16,10 +16,6 @@ namespace Guppy.Network.Peers
         private NetClient _client;
         #endregion
 
-        #region Public Attributes
-        public User CurrentUser { get; private set; }
-        #endregion
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {

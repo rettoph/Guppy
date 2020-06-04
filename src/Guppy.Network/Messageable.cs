@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using xxHashSharp;
 using Guppy.Network.Utilities.Messages;
+using System.Collections.Concurrent;
 
 namespace Guppy.Network
 {
@@ -26,6 +27,8 @@ namespace Guppy.Network
     {
         #region Private Fields
         private NetPeer _peer;
+        private NetOutgoingMessageConfiguration _om;
+        private NetIncomingMessage _im;
         #endregion
 
         #region Public Attributes
@@ -34,12 +37,12 @@ namespace Guppy.Network
         /// <summary>
         /// Messages to be read next invocation of Update
         /// </summary>
-        public Queue<NetIncomingMessage> IncomingMessages { get; private set; }
+        public ConcurrentQueue<NetIncomingMessage> IncomingMessages { get; private set; }
 
         /// <summary>
         /// Messages to be sent out next invocation of Update
         /// </summary>
-        public Queue<NetOutgoingMessageConfiguration> OutgoingMessages { get; private set; }
+        public ConcurrentQueue<NetOutgoingMessageConfiguration> OutgoingMessages { get; private set; }
         #endregion
 
         #region Lifeccyle Methods
@@ -49,8 +52,8 @@ namespace Guppy.Network
 
             provider.Service<NetPeer>(out _peer);
 
-            this.OutgoingMessages = new Queue<NetOutgoingMessageConfiguration>();
-            this.IncomingMessages = new Queue<NetIncomingMessage>();
+            this.OutgoingMessages = new ConcurrentQueue<NetOutgoingMessageConfiguration>();
+            this.IncomingMessages = new ConcurrentQueue<NetIncomingMessage>();
             this.Messages = new MessageManager(this.CreateMessage);
         }
 
@@ -67,11 +70,13 @@ namespace Guppy.Network
 
             // Send all outbound messages...
             while (this.OutgoingMessages.Any())
-                this.Send(this.OutgoingMessages.Dequeue());
+                if(this.OutgoingMessages.TryDequeue(out _om))
+                    this.Send(_om);
 
             // Read all inbound messages...
             while (this.IncomingMessages.Any())
-                this.Messages.Read(this.IncomingMessages.Dequeue());
+                if(this.IncomingMessages.TryDequeue(out _im))
+                    this.Messages.Read(_im);
         }
         #endregion
 

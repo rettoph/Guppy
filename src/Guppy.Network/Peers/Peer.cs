@@ -26,6 +26,8 @@ namespace Guppy.Network.Peers
         /// List of all connected users.
         /// </summary>
         public UserCollection Users { get; private set; }
+
+        public User CurrentUser { get; protected set; }
         #endregion
 
         #region Protected Attribtes

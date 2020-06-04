@@ -1,4 +1,5 @@
-﻿using Lidgren.Network;
+﻿using Guppy.Collections;
+using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,10 @@ namespace Guppy.Network.Extensions.Lidgren
     public static class NetIncomingMessageExtensions
     {
         #region Guid Methods
+        public static Guid PeekGuid(this NetIncomingMessage im)
+        {
+            return new Guid(im.PeekBytes(16));
+        }
         public static Guid ReadGuid(this NetIncomingMessage im)
         {
             return new Guid(im.ReadBytes(16));
@@ -16,6 +21,10 @@ namespace Guppy.Network.Extensions.Lidgren
         #endregion
 
         #region Color Methods
+        public static Color PeekColor(this NetIncomingMessage im)
+        {
+            return new Color(im.PeekUInt32());
+        }
         public static Color ReadColor(this NetIncomingMessage im)
         {
             return new Color(im.ReadUInt32());
@@ -23,6 +32,13 @@ namespace Guppy.Network.Extensions.Lidgren
         #endregion
 
         #region Vector2 Methods
+        public static Vector2 PeekVector2(this NetIncomingMessage im)
+        {
+            var v = new Vector2(im.ReadSingle(), im.ReadSingle());
+            im.Position -= 64;
+
+            return v;
+        }
         public static void ReadVector2(this NetIncomingMessage im, ref Vector2 vector2)
         {
             vector2.X = im.ReadSingle();
@@ -38,6 +54,17 @@ namespace Guppy.Network.Extensions.Lidgren
         public static Boolean ReadExists(this NetIncomingMessage im)
         {
             return im.ReadBoolean();
+        }
+        #endregion
+
+        #region Entity Methods
+        public static T ReadEntity<T>(this NetIncomingMessage im, EntityCollection entities)
+            where T : Entity
+        {
+            if (im.ReadExists())
+                return entities.GetById<T>(im.ReadGuid());
+
+            return default(T);
         }
         #endregion
     }

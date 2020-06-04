@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Collections.Concurrent;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Network.Groups
 {
@@ -17,6 +19,10 @@ namespace Guppy.Network.Groups
         private NetServer _server;
         private IList<NetConnection> _connections;
         private UserNetConnectionDictionary _userConnections;
+
+        private User _user;
+        private ConcurrentQueue<User> _joinedUsers;
+        private ConcurrentQueue<User> _leftUsers;
         #endregion
 
         #region Lifecycle Methods
@@ -25,12 +31,29 @@ namespace Guppy.Network.Groups
             base.PreInitialize(provider);
 
             _connections = new List<NetConnection>();
+            _joinedUsers = new ConcurrentQueue<User>();
+            _leftUsers = new ConcurrentQueue<User>();
 
             provider.Service(out _userConnections);
             provider.Service(out _server);
 
             this.Users.OnAdded += this.HandleUserJoined;
             this.Users.OnRemoved += this.HandleUserLeft;
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            while(_joinedUsers.Any())
+                if(_joinedUsers.TryDequeue(out _user))
+                    _connections.Add(_userConnections.Connections[_user]);
+
+            while (_leftUsers.Any())
+                if (_leftUsers.TryDequeue(out _user))
+                    _connections.Remove(_userConnections.Connections[_user]);
+
+            base.Update(gameTime);
         }
         #endregion
 
@@ -59,7 +82,7 @@ namespace Guppy.Network.Groups
             user.Groups.TryAdd(this);
 
             // Save the new user connection, so they will recieve group messages.
-            _connections.Add(_userConnections.Connections[user]);
+            _joinedUsers.Enqueue(user);
 
             // Notify all connected users about the new in group user...
             this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write("user:joined", om =>
@@ -75,7 +98,7 @@ namespace Guppy.Network.Groups
             user.Groups.TryRemove(this);
 
             // Remove the user connection, so they will no longer recieve messages.
-            _connections.Remove(_userConnections.Connections[user]);
+            _leftUsers.Enqueue(user);
 
             // Alert all remaining users if any about the user leaving
             this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write("user:left", om =>
