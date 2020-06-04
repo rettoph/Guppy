@@ -22,7 +22,9 @@ namespace Guppy.Network.Groups
 
         private User _user;
         private ConcurrentQueue<User> _joinedUsers;
-        private ConcurrentQueue<User> _leftUsers;
+
+        private NetConnection _connection;
+        private ConcurrentQueue<NetConnection> _leftConnection;
         #endregion
 
         #region Lifecycle Methods
@@ -32,7 +34,7 @@ namespace Guppy.Network.Groups
 
             _connections = new List<NetConnection>();
             _joinedUsers = new ConcurrentQueue<User>();
-            _leftUsers = new ConcurrentQueue<User>();
+            _leftConnection = new ConcurrentQueue<NetConnection>();
 
             provider.Service(out _userConnections);
             provider.Service(out _server);
@@ -49,9 +51,9 @@ namespace Guppy.Network.Groups
                 if(_joinedUsers.TryDequeue(out _user))
                     _connections.Add(_userConnections.Connections[_user]);
 
-            while (_leftUsers.Any())
-                if (_leftUsers.TryDequeue(out _user))
-                    _connections.Remove(_userConnections.Connections[_user]);
+            while (_leftConnection.Any())
+                if (_leftConnection.TryDequeue(out _connection))
+                    _connections.Remove(_connection);
 
             base.Update(gameTime);
         }
@@ -98,7 +100,7 @@ namespace Guppy.Network.Groups
             user.Groups.TryRemove(this);
 
             // Remove the user connection, so they will no longer recieve messages.
-            _leftUsers.Enqueue(user);
+            _leftConnection.Enqueue(_userConnections.Connections[user]);
 
             // Alert all remaining users if any about the user leaving
             this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write("user:left", om =>

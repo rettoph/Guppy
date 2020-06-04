@@ -103,5 +103,17 @@ namespace Guppy.Utilities.Cameras
         protected abstract void SetView(ref Matrix view);
         protected abstract void SetProjection(ref Matrix projection);
         #endregion
+
+        #region Utility Methods
+
+        public Vector3 Project(Vector3 source)
+        {
+            return _graphics.Viewport.Project(source, this.Projection, this.View, this.World);
+        }
+        public Vector3 Unproject(Vector3 source)
+        {
+            return _graphics.Viewport.Unproject(source, this.Projection, this.View, this.World);
+        }
+        #endregion
     }
 }
