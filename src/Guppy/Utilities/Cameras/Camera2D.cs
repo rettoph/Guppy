@@ -99,13 +99,13 @@ namespace Guppy.Utilities.Cameras
             if (MathHelper.Distance(this.Zoom, _zoomTarget) > 0.0001f)
             { // Lerp to the zoom target
                 this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, Math.Min(1, this.ZoomLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
-                this.EnqueueClean(next: true);
+                this.dirty = true;
             }
 
             if (Vector2.Distance(this.Position, _positionTarget) > 0.001f)
             { // Lerp to the position target
                 this.Position = Vector2.Lerp(this.Position, _positionTarget, Math.Min(1, this.MoveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
-                this.EnqueueClean(next: true);
+                this.dirty = true;
             }
         }
         #endregion

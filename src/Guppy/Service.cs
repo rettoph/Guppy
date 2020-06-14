@@ -28,7 +28,7 @@ namespace Guppy
                 _configuration = value;
             }
         }
-        public Guid Id
+        public virtual Guid Id
         {
             get => _id;
             set

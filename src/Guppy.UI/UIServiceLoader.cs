@@ -44,7 +44,7 @@ namespace Guppy.UI
 
 
             // Register Entities...
-            services.AddEntity<Cursor>(p => new Cursor());
+            services.AddScoped<Cursor>(p => new Cursor());
             services.AddEntity<Stage>(p => new Stage());
 
             //Register Drivers...

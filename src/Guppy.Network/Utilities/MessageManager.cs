@@ -42,6 +42,11 @@ namespace Guppy.Network.Utilities.Messages
             }
         }
 
+        public void set(string v, object handleShipTractorBeamActionRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Set the incoming message handler when
         /// the inputed type is recieved.

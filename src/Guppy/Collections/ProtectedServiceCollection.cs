@@ -100,7 +100,7 @@ namespace Guppy.Collections
             return _dictionary.ContainsKey(item.Id);
         }
 
-        public TService GetById(Guid id)
+        public virtual TService GetById(Guid id)
         {
             if (_dictionary.ContainsKey(id))
                 return _dictionary[id];

@@ -17,8 +17,14 @@ namespace Guppy.Utilities.Cameras
 
         private Boolean _dirty;
         private GraphicsDevice _graphics;
-        private UpdateBuffer _buffer;
-        private Boolean _cleanEnqueued;
+        #endregion
+
+        #region Protected Attributes
+        protected bool dirty
+        {
+            get => _dirty;
+            set => _dirty = value;
+        }
         #endregion
 
         #region Public Attributes
@@ -28,63 +34,30 @@ namespace Guppy.Utilities.Cameras
         public BoundingFrustum Frustum { get; private set; }
         #endregion
 
-        #region Protected Fields
-        protected Boolean dirty
-        {
-            get => _dirty;
-            set
-            {
-                if(_dirty != value)
-                {
-                    _dirty = value;
-
-                    if (_dirty) // Auto Enqueue the clean method if needed.
-                        this.EnqueueClean();
-                }
-            }
-        }
-        #endregion
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _graphics = provider.GetService<GraphicsDevice>();
-            _buffer = provider.GetService<UpdateBuffer>();
 
             _world = Matrix.Identity;
             _view = Matrix.Identity;
             _projection = Matrix.Identity;
 
-            this.dirty = true;
+            this.TryClean(new GameTime(), true);
 
             this.Frustum = new BoundingFrustum(Matrix.Identity);
         }
         #endregion
 
         #region Clean Methods
-        /// <summary>
-        /// Enqueue the internal camera clean method, 
-        /// if its not already.
-        /// </summary>
-        protected void EnqueueClean(Boolean next = false)
+        public void TryClean(GameTime gameTime, Boolean force = false)
         {
-            if(!_cleanEnqueued)
+            if (this.dirty || false)
             {
-                _buffer.Enqueue(this.TryClean, next);
-                _cleanEnqueued = true;
-            }
-        }
-
-        public void TryClean(GameTime gameTime)
-        {
-            if (this.dirty || _cleanEnqueued)
-            {
-                _cleanEnqueued = false;
-
-                this.Clean(gameTime);
                 this.dirty = false;
+                this.Clean(gameTime);
             }
         }
 
