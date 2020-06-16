@@ -12,15 +12,16 @@ namespace Guppy.DependencyInjection
     public sealed class ServiceProvider : IServiceProvider
     {
         #region Internal Fields
-        internal Dictionary<UInt32, ServiceConfiguration> factories;
+        internal Dictionary<Type, ServiceTypeDescriptor> serviceTypeDescriptors;
+        internal Dictionary<UInt32, ServiceConfiguration> serviceConfigurations;
         internal Dictionary<Type, Object> scopedInstances;
         internal Dictionary<Type, Object> singletonInstances;
         #endregion
 
         #region Constructors
-        internal ServiceProvider(Dictionary<Type, Object> singletonInstances, Dictionary<UInt32, ServiceConfiguration> factories)
+        internal ServiceProvider(Dictionary<Type, Object> singletonInstances, Dictionary<UInt32, ServiceConfiguration> configurations)
         {
-            this.factories = factories;
+            this.serviceConfigurations = configurations;
             this.singletonInstances = singletonInstances;
             this.scopedInstances = new Dictionary<Type, Object>();
         }
@@ -28,15 +29,14 @@ namespace Guppy.DependencyInjection
         {
             this.scopedInstances = new Dictionary<Type, Object>();
             this.singletonInstances = new Dictionary<Type, Object>();
-
-            var services = collection.ServiceDescriptors
+            this.serviceTypeDescriptors = collection.ServiceTypeDescriptors
                 .GroupBy(s => s.ServiceType)
                 .ToDictionary(
                     keySelector: kvp => kvp.Key,
-                    elementSelector: kvp => kvp.OrderByDescending(s => s.Priority).First());
+                    elementSelector: kvp => kvp.OrderByDescending(s => s.Priority).First()); ;
 
             var configurationCache = new List<ConfigurationDescriptor>();
-            this.factories = collection.ConfigurationDescriptors
+            this.serviceConfigurations = collection.ConfigurationDescriptors
                 .Where(c => !String.IsNullOrEmpty(c.Name))
                 .GroupBy(c => c.Name)
                 .Select(g =>
@@ -65,7 +65,7 @@ namespace Guppy.DependencyInjection
                     // Now add all global configuration methods...
                     configurationCache.AddRange(collection.ConfigurationDescriptors.Where(c => String.IsNullOrEmpty(c.Name) && c.ServiceType.IsAssignableFrom(serviceType)));
 
-                    return new ServiceConfiguration(g.Key, services[serviceType], configurationCache.OrderBy(c => c.Priority).ToArray());
+                    return new ServiceConfiguration(g.Key, this.serviceTypeDescriptors[serviceType], configurationCache.OrderBy(c => c.Priority).ToArray());
                 })
                 .ToDictionary(
                     keySelector: c => c.Id,
@@ -74,12 +74,12 @@ namespace Guppy.DependencyInjection
             // Clear the configuration cache, just to be safe...
             configurationCache.Clear();
 
-            services.Keys.ForEach(s =>
+            this.serviceTypeDescriptors.Keys.ForEach(s =>
             { // Ensure that every service at least has a default empty factory instance
-                if (!this.factories.ContainsKey(ServiceConfiguration.GetId(s.FullName)))
+                if (!this.serviceConfigurations.ContainsKey(ServiceConfiguration.GetId(s.FullName)))
                 { // If there is no factory defined for this service...
-                    var configuration = new ServiceConfiguration(s.FullName, services[s], collection.ConfigurationDescriptors.Where(c => String.IsNullOrEmpty(c.Name) && c.ServiceType.IsAssignableFrom(s)).OrderBy(c => c.Priority).ToArray());
-                    this.factories.Add(configuration.Id, configuration);
+                    var configuration = new ServiceConfiguration(s.FullName, this.serviceTypeDescriptors[s], collection.ConfigurationDescriptors.Where(c => String.IsNullOrEmpty(c.Name) && c.ServiceType.IsAssignableFrom(s)).OrderBy(c => c.Priority).ToArray());
+                    this.serviceConfigurations.Add(configuration.Id, configuration);
                 }
             });
         }
@@ -100,7 +100,7 @@ namespace Guppy.DependencyInjection
         #region Helper Methods
         public ServiceProvider CreateScope()
         {
-            return new ServiceProvider(this.singletonInstances, this.factories);
+            return new ServiceProvider(this.singletonInstances, this.serviceConfigurations);
         }
         #endregion
 
@@ -115,8 +115,8 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public T GetService<T>(UInt32 configurationId, Action<T, ServiceProvider, ServiceConfiguration> setup = null)
         {
-            var factory = this.GetFactory(configurationId);
-            return (T)factory.ServiceDescriptor.GetInstance(this, factory, (i, p, c) => setup?.Invoke((T)i, p, c));
+            var factory = this.GetServiceConfiguration(configurationId);
+            return (T)factory.ServiceTypeDescriptor.GetInstance(this, factory, (i, p, c) => setup?.Invoke((T)i, p, c));
             // return (T)this.services[configuration.ServiceType].GetInstance(this, factory);
         }
 

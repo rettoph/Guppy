@@ -13,7 +13,7 @@ namespace Guppy
         #region Private Fields
         private ServiceConfiguration _configuration;
         private Guid _id;
-        private ServiceDescriptor _descriptor;
+        private ServiceTypeDescriptor _descriptor;
         #endregion
 
         #region Public Attributes

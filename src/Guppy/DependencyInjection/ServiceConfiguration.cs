@@ -13,24 +13,24 @@ namespace Guppy.DependencyInjection
     {
         public UInt32 Id { get; private set; }
         public String Name { get; private set; }
-        public ServiceDescriptor ServiceDescriptor { get; private set; }
+        public ServiceTypeDescriptor ServiceTypeDescriptor { get; private set; }
 
         public ConfigurationDescriptor[] ConfigurationDescriptors { get; private set; }
 
-        internal ServiceConfiguration(String name, ServiceDescriptor service, params ConfigurationDescriptor[] configurationDescriptors)
+        internal ServiceConfiguration(String name, ServiceTypeDescriptor service, params ConfigurationDescriptor[] configurationDescriptors)
         {
             this.Id = ServiceConfiguration.GetId(name);
             this.Name = name;
-            this.ServiceDescriptor = service;
+            this.ServiceTypeDescriptor = service;
             this.ConfigurationDescriptors = configurationDescriptors;
         }
 
         public void Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceConfiguration> setup, Action<Object> cacher = null)
         {
             // Create new instance...
-            var instance = this.ServiceDescriptor.Factory(provider);
+            var instance = this.ServiceTypeDescriptor.Get(provider);
             cacher?.Invoke(instance);
-            ExceptionHelper.ValidateAssignableFrom(this.ServiceDescriptor.ServiceType, instance.GetType());
+            ExceptionHelper.ValidateAssignableFrom(this.ServiceTypeDescriptor.ServiceType, instance.GetType());
 
             // Apply recieved configurations...
             var ranSetup = setup == null;

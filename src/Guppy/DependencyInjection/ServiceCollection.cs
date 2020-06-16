@@ -9,22 +9,22 @@ namespace Guppy.DependencyInjection
     public sealed class ServiceCollection
     {
         #region Public Fields
-        public HashSet<ServiceDescriptor> ServiceDescriptors;
+        public HashSet<ServiceTypeDescriptor> ServiceTypeDescriptors;
         public HashSet<ConfigurationDescriptor> ConfigurationDescriptors;
         #endregion
 
         #region Events
-        public event EventHandler<ServiceDescriptor> OnServiceAdded;
+        public event EventHandler<ServiceTypeDescriptor> OnServiceAdded;
         public event EventHandler<ConfigurationDescriptor> OnConfigurationAdded;
 
-        public event EventHandler<ServiceDescriptor> OnServiceRemoved;
+        public event EventHandler<ServiceTypeDescriptor> OnServiceRemoved;
         public event EventHandler<ConfigurationDescriptor> OnConfigurationRemoved;
         #endregion
 
         #region Constructor
         internal ServiceCollection()
         {
-            this.ServiceDescriptors = new HashSet<ServiceDescriptor>();
+            this.ServiceTypeDescriptors = new HashSet<ServiceTypeDescriptor>();
             this.ConfigurationDescriptors = new HashSet<ConfigurationDescriptor>();
         }
         #endregion
@@ -39,7 +39,7 @@ namespace Guppy.DependencyInjection
         #region Service Helper Methods
         public void AddSingleton(Type serviceType, Func<ServiceProvider, Object> factory, Int32 priority = 0, Type cacheType = null)
         {
-            this.ServiceDescriptors.Add(new ServiceDescriptor()
+            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
             {
                 ServiceType = serviceType,
                 CacheType = cacheType == null ? serviceType : cacheType,
@@ -54,7 +54,7 @@ namespace Guppy.DependencyInjection
         }
         public void AddSingleton(Type serviceType, Object instance, Int32 priority = 0)
         {
-            this.ServiceDescriptors.Add(new ServiceDescriptor()
+            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
             {
                 ServiceType = serviceType,
                 CacheType = serviceType,
@@ -70,7 +70,7 @@ namespace Guppy.DependencyInjection
 
         public void AddScoped(Type serviceType, Func<ServiceProvider, Object> factory, Int32 priority = 0, Type cacheType = null)
         {
-            this.ServiceDescriptors.Add(new ServiceDescriptor()
+            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
             {
                 ServiceType = serviceType,
                 CacheType = cacheType == null ? serviceType : cacheType,
@@ -86,7 +86,7 @@ namespace Guppy.DependencyInjection
 
         public void AddTransient(Type serviceType, Func<ServiceProvider, Object> factory, Int32 priority = 0)
         {
-            this.ServiceDescriptors.Add(new ServiceDescriptor()
+            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
             {
                 ServiceType = serviceType,
                 Factory = factory,
