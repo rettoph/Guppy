@@ -60,11 +60,10 @@ namespace Guppy
         {
             _running = true;
             _start = DateTime.Now;
+            _now = DateTime.Now;
 
             while (_running)
             {
-                _now = DateTime.Now;
-
                 Thread.Sleep(16);
 
                 _last = _now;
