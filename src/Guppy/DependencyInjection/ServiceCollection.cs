@@ -1,167 +1,80 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy.DependencyInjection.Enums;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.DependencyInjection
 {
+    /// <summary>
+    /// The primary service collection instance, used to register services
+    /// within service loaders.
+    /// </summary>
     public sealed class ServiceCollection
     {
-        #region Public Fields
-        public HashSet<ServiceTypeDescriptor> ServiceTypeDescriptors;
-        public HashSet<ConfigurationDescriptor> ConfigurationDescriptors;
+        #region Private Fields
+        private List<ServiceFactoryData> _factories;
+        private List<ServiceDescriptorData> _services;
+        private List<ServiceConfigurationData> _configurations;
         #endregion
 
-        #region Events
-        public event EventHandler<ServiceTypeDescriptor> OnServiceAdded;
-        public event EventHandler<ConfigurationDescriptor> OnConfigurationAdded;
-
-        public event EventHandler<ServiceTypeDescriptor> OnServiceRemoved;
-        public event EventHandler<ConfigurationDescriptor> OnConfigurationRemoved;
-        #endregion
-
-        #region Constructor
+        #region Constructors
         internal ServiceCollection()
         {
-            this.ServiceTypeDescriptors = new HashSet<ServiceTypeDescriptor>();
-            this.ConfigurationDescriptors = new HashSet<ConfigurationDescriptor>();
+            _factories = new List<ServiceFactoryData>();
+            _services = new List<ServiceDescriptorData>();
+            _configurations = new List<ServiceConfigurationData>();
         }
         #endregion
 
-        #region Helper Methods
-        internal ServiceProvider BuildServiceProvider()
-        {
-            return new ServiceProvider(this);
-        }
-        #endregion
-
-        #region Service Helper Methods
-        public void AddSingleton(Type serviceType, Func<ServiceProvider, Object> factory, Int32 priority = 0, Type cacheType = null)
-        {
-            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
+        #region Methods
+        /// <summary>
+        /// Create a new factory method to create an instance of a specified service.
+        /// </summary>
+        /// <param name="type">The lookup & return type of the factory method.</param>
+        /// <param name="factory">The main factory method to create a new instance.</param>
+        /// <param name="priority">Only the highest priority level for each lookup type will be saved post initialization.</param>
+        public void AddFactory(Type type, Func<ServiceProvider, Object> factory, Int32 priority = 10)
+            => _factories.Add(new ServiceFactoryData()
             {
-                ServiceType = serviceType,
-                CacheType = cacheType == null ? serviceType : cacheType,
+                Type = type,
                 Factory = factory,
-                Priority = priority,
-                Lifetime = ServiceLifetime.Singleton,
+                Priority = priority
             });
-        }
-        public void AddSingleton<TService>(Func<ServiceProvider, TService> factory, Int32 priority = 0, Type cacheType = null)
-        {
-            this.AddSingleton(typeof(TService), p => factory(p), priority, cacheType);
-        }
-        public void AddSingleton(Type serviceType, Object instance, Int32 priority = 0)
-        {
-            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
-            {
-                ServiceType = serviceType,
-                CacheType = serviceType,
-                Factory = p => instance,
-                Priority = priority,
-                Lifetime = ServiceLifetime.Singleton,
-            });
-        }
-        public void AddSingleton<TService>(TService instance, Int32 priority = 0)
-        {
-            this.AddSingleton(typeof(TService), instance, priority);
-        }
 
-        public void AddScoped(Type serviceType, Func<ServiceProvider, Object> factory, Int32 priority = 0, Type cacheType = null)
-        {
-            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
-            {
-                ServiceType = serviceType,
-                CacheType = cacheType == null ? serviceType : cacheType,
-                Factory = factory,
-                Priority = priority,
-                Lifetime = ServiceLifetime.Scoped,
-            });
-        }
-        public void AddScoped<TService>(Func<ServiceProvider, TService> factory, Int32 priority = 0, Type cacheType = null)
-        {
-            this.AddScoped(typeof(TService), p => factory(p), priority, cacheType);
-        }
-
-        public void AddTransient(Type serviceType, Func<ServiceProvider, Object> factory, Int32 priority = 0)
-        {
-            this.ServiceTypeDescriptors.Add(new ServiceTypeDescriptor()
-            {
-                ServiceType = serviceType,
-                Factory = factory,
-                Priority = priority,
-                Lifetime = ServiceLifetime.Transient,
-            });
-        }
-        public void AddTransient<TService>(Func<ServiceProvider, TService> factory, Int32 priority = 0)
-        {
-            this.AddTransient(typeof(TService), p => factory(p), priority);
-        }
-        #endregion
-
-        #region Configuration Helper Methods
-        public void AddConfiguration(Type service, String name, Action<Object, ServiceProvider, ServiceConfiguration> configure, Int32 priority = 0)
-        {
-            this.ConfigurationDescriptors.Add(new ConfigurationDescriptor()
+        /// <summary>
+        /// Create a new service with a unique name.
+        /// </summary>
+        /// <param name="name">The primary lookup name for this service.</param>
+        /// <param name="factory">The factory lookup type to utilize when creating a new service instance.</param>
+        /// <param name="lifetime">The service lifetime.</param>
+        /// <param name="priority">Only the highest priority level for each lookup name will be saved post initialization.</param>
+        /// <param name="cacheType">Optional: When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
+        public void AddService(String name, Type factory, ServiceLifetime lifetime, Int32 priority = 10, Type cacheType = null)
+            => _services.Add(new ServiceDescriptorData()
             {
                 Name = name,
-                Configure = configure,
-                ServiceType = service,
+                Factory = factory,
+                Lifetime = lifetime,
                 Priority = priority,
+                CacheType = cacheType ?? factory
             });
-        }
-        /// <summary>
-        /// Add a custom configuration that can be used to 
-        /// generate specific instances of a certain type.
-        /// </summary>
-        /// <typeparam name="TService"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="configure"></param>
-        /// <param name="priority"></param>
-        public void AddConfiguration<TService>(String name, Func<TService, ServiceProvider, ServiceConfiguration, TService> configure, Int32 priority = 0) 
-        {
-            this.AddConfiguration(typeof(TService), name, (i, p, c) => configure((TService)i, p, c), priority);
-        }
 
         /// <summary>
-        /// Add a custom configuration that can be used to 
-        /// generate specific instances of a certain type.
+        /// Add a new custom configuration for a service that will
+        /// automatically be excecuted when a new instance is pulled.
         /// </summary>
-        /// <typeparam name="TService"></typeparam>
-        /// <param name="name"></param>
-        /// <param name="configure"></param>
-        /// <param name="priority"></param>
-        public void AddConfiguration<TService>(String name, Action<TService, ServiceProvider, ServiceConfiguration> configure, Int32 priority = 0)
-        {
-            this.AddConfiguration<TService>(name, (i, p, c) =>
+        /// <param name="service">The service name (or partial name) that this configuration should be applied to.</param>
+        /// <param name="configuration">The method to run.</param>
+        /// <param name="order">The order in which this particular configuration should run.</param>
+        /// <param name="assignable">The base type (if any) that the service must be assignable to/from in order for thisconfiguration to be applied.</param>
+        public void AddConfiguration(String service, Action<ServiceProvider, Object> configuration, Int32 order = 10, Type assignable = null)
+            => _configurations.Add(new ServiceConfigurationData()
             {
-                configure(i, p, c);
-                return i;
-            }, priority);
-        }
-        /// <summary>
-        /// Add global configuration that will be applied to all
-        /// instances of ServiceType<TService>.
-        /// </summary>
-        /// <typeparam name="TService"></typeparam>
-        /// <param name="configure"></param>
-        /// <param name="priority"></param>
-        public void AddConfiguration<TService>(Func<TService, ServiceProvider, ServiceConfiguration, TService> configure, Int32 priority = 0)
-        {
-            this.AddConfiguration<TService>(String.Empty, configure, priority);
-        }
-        /// <summary>
-        /// Add global configuration that will be applied to all
-        /// instances of ServiceType<TService>.
-        /// </summary>
-        /// <typeparam name="TService"></typeparam>
-        /// <param name="configure"></param>
-        /// <param name="priority"></param>
-        public void AddConfiguration<TService>(Action<TService, ServiceProvider, ServiceConfiguration> configure, Int32 priority = 0)
-        {
-            this.AddConfiguration<TService>(String.Empty, configure, priority);
-        }
+                Service = service,
+                Configuration = configuration,
+                Order = order,
+                Assignable = assignable
+            });
         #endregion
     }
 }
