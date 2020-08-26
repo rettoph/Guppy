@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.Utilities
 {
-    internal static class ExceptionHelper
+    public static class ExceptionHelper
     {
         /// <summary>
         /// Verify that the target type is assignable from the given base type.

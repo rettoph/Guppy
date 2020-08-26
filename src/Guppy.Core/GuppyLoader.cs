@@ -1,13 +1,12 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
 using Guppy.Utilities;
+using Guppy.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy
 {
@@ -63,6 +62,10 @@ namespace Guppy
             _serviceLoaders.Add(serviceLoader);
         }
 
+        /// <summary>
+        /// One time call to initialize Guppy. This will run all service loaders.
+        /// </summary>
+        /// <returns></returns>
         public GuppyLoader Initialize()
         {
             if (this.Initialized)
@@ -77,34 +80,20 @@ namespace Guppy
             return this;
         }
 
-        public T BuildGame<T>()
-            where T : Game
+        /// <summary>
+        /// Build a brand new service provider and automatically
+        /// run any service loader configurations to it.
+        /// </summary>
+        /// <returns></returns>
+        public ServiceProvider BuildServiceProvider()
         {
-            if (!this.Initialized)
-                throw new Exception("Please initialize Guppy before building a game instance.");
-
             var provider = _services.BuildServiceProvider();
 
             // Iterate through all contained service loaders and configure the provider
             foreach (IServiceLoader serviceLoader in _serviceLoaders)
                 serviceLoader.ConfigureProvider(provider);
 
-            return provider.GetService<T>();
-        }
-
-        public T BuildGame<T>(String configuration)
-            where T : Game
-        {
-            if (!this.Initialized)
-                throw new Exception("Please initialize Guppy before building a game instance.");
-
-            var provider = _services.BuildServiceProvider();
-
-            // Iterate through all contained service loaders and configure the provider
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.ConfigureProvider(provider);
-
-            return provider.GetService<T>(configuration);
+            return provider;
         }
         #endregion
     }

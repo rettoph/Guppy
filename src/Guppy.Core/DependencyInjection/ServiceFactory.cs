@@ -9,6 +9,10 @@ namespace Guppy.DependencyInjection
 {
     public sealed class ServiceFactory
     {
+        #region Static Fields
+        public static Int32 MaxServicePoolSize { get; set; } = 512;
+        #endregion
+
         #region Private Fields
         /// <summary>
         /// The internal factory method, only used when no items pooled.
@@ -38,7 +42,7 @@ namespace Guppy.DependencyInjection
         internal ServiceFactory(ServiceFactoryData data)
         {
             _count = 0;
-            _pool = new Stack<Object>(GuppySettings.MaxServicePoolSize);
+            _pool = new Stack<Object>(ServiceFactory.MaxServicePoolSize);
             _factory = data.Factory;
 
             this.Type = data.Type;
@@ -72,7 +76,7 @@ namespace Guppy.DependencyInjection
         {
             ExceptionHelper.ValidateAssignableFrom(this.Type, instance.GetType());
 
-            if(_count < GuppySettings.MaxServicePoolSize)
+            if(_count < ServiceFactory.MaxServicePoolSize)
             { // If the pool has smace remaining...
                 _count++;
                 _pool.Push(instance);

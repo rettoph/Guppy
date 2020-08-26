@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
+using Guppy;
+using Guppy.Interfaces;
 
 namespace Guppy.Extensions
 {
@@ -29,6 +31,18 @@ namespace Guppy.Extensions
             loader.Services.AddScoped<Camera2D>();
 
             return loader;
+        }
+
+        public static T BuildGame<T>(this GuppyLoader guppy, String configuration = null)
+            where T : Game
+        {
+            if (!guppy.Initialized)
+                throw new Exception("Please initialize Guppy before building a game instance.");
+
+            if(configuration == null)
+                return guppy.BuildServiceProvider().GetService<T>();
+
+            return guppy.BuildServiceProvider().GetService<T>(configuration);
         }
     }
 }
