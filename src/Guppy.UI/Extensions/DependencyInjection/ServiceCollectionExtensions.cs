@@ -5,6 +5,7 @@ using Guppy.UI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.UI.Extensions.DependencyInjection
 {
@@ -13,10 +14,17 @@ namespace Guppy.UI.Extensions.DependencyInjection
         public static void AddUIComponent<TComponent>(this ServiceCollection services, Func<ServiceProvider, TComponent> factory)
             where TComponent : IComponent
         {
-            services.AddTransient<TComponent>(factory);
-            services.AddTransient<ComponentCollection<TComponent>>(p => new ComponentCollection<TComponent>());
-            services.AddTransient<Container<TComponent>>(p => new Container<TComponent>());
-            services.AddTransient<StackContainer<TComponent>>(p => new StackContainer<TComponent>());
+            // Configure factories...
+            services.AddFactory<TComponent>(factory);
+            services.AddFactory<ComponentCollection<TComponent>>(p => new ComponentCollection<TComponent>());
+            services.AddFactory<Container<TComponent>>(p => new Container<TComponent>());
+            services.AddFactory<StackContainer<TComponent>>(p => new StackContainer<TComponent>());
+
+            // Configure service lifetimes...
+            services.AddTransient<TComponent>();
+            services.AddTransient<ComponentCollection<TComponent>>();
+            services.AddTransient<Container<TComponent>>();
+            services.AddTransient<StackContainer<TComponent>>();
         }
     }
 }

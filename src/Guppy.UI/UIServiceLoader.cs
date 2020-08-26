@@ -26,11 +26,23 @@ namespace Guppy.UI
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddSingleton<GraphicsHelper>(p => new GraphicsHelper());
-            services.AddTransient<StageLayer>(p => new StageLayer());
-            services.AddTransient<ComponentCollection<IComponent>>(p => new ComponentCollection<IComponent>());
-            services.AddTransient<Container<IComponent>>(p => new Container<IComponent>());
-            services.AddTransient<StackContainer<IComponent>>(p => new StackContainer<IComponent>());
+            // Add factories...
+            services.AddFactory<GraphicsHelper>(p => new GraphicsHelper());
+            services.AddFactory<StageLayer>(p => new StageLayer());
+            services.AddFactory<ComponentCollection<IComponent>>(p => new ComponentCollection<IComponent>());
+            services.AddFactory<Container<IComponent>>(p => new Container<IComponent>());
+            services.AddFactory<StackContainer<IComponent>>(p => new StackContainer<IComponent>());
+            services.AddFactory<Cursor>(p => new Cursor());
+            services.AddFactory<Stage>(p => new Stage());
+
+            // Setup service lifetimes
+            services.AddSingleton<GraphicsHelper>();
+            services.AddTransient<StageLayer>();
+            services.AddTransient<ComponentCollection<IComponent>>();
+            services.AddTransient<Container<IComponent>>();
+            services.AddTransient<StackContainer<IComponent>>();
+            services.AddScoped<Cursor>();
+            services.AddTransient<Stage>();
 
             // Register UI Components...
             services.AddUIComponent<Component>(p => new Component());
@@ -41,11 +53,7 @@ namespace Guppy.UI
             services.AddUIComponent<ScrollContainer>(p => new ScrollContainer());
             services.AddUIComponent<Paginator>(p => new Paginator());
             services.AddUIComponent<Page>(p => new Page());
-
-
-            // Register Entities...
-            services.AddScoped<Cursor>(p => new Cursor());
-            services.AddEntity<Stage>(p => new Stage());
+            
 
             //Register Drivers...
             services.AddDriver<MouseIndicatorDriver>(p => new MouseIndicatorDriver());

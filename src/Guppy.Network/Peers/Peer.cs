@@ -11,6 +11,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Peers
 {

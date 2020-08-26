@@ -8,6 +8,7 @@ using Guppy.Extensions;
 using Guppy.Attributes;
 using Guppy.Enums;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Utilities.Cameras
 {

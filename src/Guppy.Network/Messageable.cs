@@ -13,6 +13,7 @@ using System.Text;
 using xxHashSharp;
 using Guppy.Network.Utilities.Messages;
 using System.Collections.Concurrent;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network
 {

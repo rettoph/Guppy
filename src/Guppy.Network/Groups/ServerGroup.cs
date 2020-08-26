@@ -10,6 +10,7 @@ using System.Text;
 using System.Linq;
 using System.Collections.Concurrent;
 using Microsoft.Xna.Framework;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Groups
 {

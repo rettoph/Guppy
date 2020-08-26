@@ -4,6 +4,7 @@ using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
@@ -12,7 +13,8 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddSingleton<UpdateBuffer>(p => new UpdateBuffer());
+            services.AddFactory<UpdateBuffer>(p => new UpdateBuffer());
+            services.AddSingleton<UpdateBuffer>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

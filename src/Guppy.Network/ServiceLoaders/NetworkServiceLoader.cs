@@ -10,6 +10,7 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -18,14 +19,25 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddTransient<User>(p => new User());
-            services.AddTransient<UserCollection>(p => new UserCollection());
-            services.AddTransient<UserGroupCollection>(p => new UserGroupCollection());
-            services.AddSingleton<GroupCollection>(p => new GroupCollection());
-            services.AddSingleton<PeerData>(p => new PeerData());
-            services.AddSingleton<NetPeer>(p => p.GetService<PeerData>().NetPeer);
-            services.AddSingleton<Peer>(p => p.GetService<PeerData>().Peer);
-            services.AddSingleton<Group>(p => p.GetService<Peer>().GroupFactory());
+            // Configure service factories...
+            services.AddFactory<User>(p => new User());
+            services.AddFactory<UserCollection>(p => new UserCollection());
+            services.AddFactory<UserGroupCollection>(p => new UserGroupCollection());
+            services.AddFactory<GroupCollection>(p => new GroupCollection());
+            services.AddFactory<PeerData>(p => new PeerData());
+            services.AddFactory<NetPeer>(p => p.GetService<PeerData>().NetPeer);
+            services.AddFactory<Peer>(p => p.GetService<PeerData>().Peer);
+            services.AddFactory<Group>(p => p.GetService<Peer>().GroupFactory());
+
+            // Setup service scopes...
+            services.AddTransient<User>();
+            services.AddTransient<UserCollection>();
+            services.AddTransient<UserGroupCollection>();
+            services.AddSingleton<GroupCollection>();
+            services.AddSingleton<PeerData>();
+            services.AddSingleton<NetPeer>();
+            services.AddSingleton<Peer>();
+            services.AddSingleton<Group>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

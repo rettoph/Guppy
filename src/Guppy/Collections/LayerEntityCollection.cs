@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Collections
 {
@@ -36,7 +37,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Factory Methods
-        protected override Entity Create(ServiceProvider provider, Type serviceType, Action<Entity, ServiceProvider, ServiceConfiguration> setup = null)
+        protected override Entity Create(ServiceProvider provider, Type serviceType, Action<Entity, ServiceProvider, ServiceDescriptor> setup = null)
         {
             var entity = base.Create(provider, serviceType, setup);
             entity.LayerGroup = this.layer.Group.GetValue();
@@ -47,7 +48,7 @@ namespace Guppy.Collections
             return entity;
         }
 
-        protected override Entity Create(ServiceProvider provider, uint id, Action<Entity, ServiceProvider, ServiceConfiguration> setup = null)
+        protected override Entity Create(ServiceProvider provider, uint id, Action<Entity, ServiceProvider, ServiceDescriptor> setup = null)
         {
             var entity = base.Create(provider, id, setup);
             entity.LayerGroup = this.layer.Group.GetValue();

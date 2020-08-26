@@ -59,7 +59,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Factory Methods
-        protected override Scene Create(ServiceProvider provider, uint id, Action<Scene, ServiceProvider, ServiceConfiguration> setup = null)
+        protected override Scene Create(ServiceProvider provider, uint id, Action<Scene, ServiceProvider, ServiceDescriptor> setup = null)
         {
             return base.Create(provider.CreateScope(), id, setup);
         }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Utilities.Cameras
 {

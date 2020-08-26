@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.UI.Layers
 {

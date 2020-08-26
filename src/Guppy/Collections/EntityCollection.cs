@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.DependencyInjection;
 using Guppy.Extensions;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Collections
 {

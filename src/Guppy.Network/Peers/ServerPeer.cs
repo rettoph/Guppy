@@ -9,6 +9,7 @@ using System.Text;
 using Guppy.Network.Collections;
 using Guppy.Network.Utilities;
 using Guppy.Network.Structs;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Peers
 {

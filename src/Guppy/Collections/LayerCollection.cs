@@ -37,7 +37,7 @@ namespace Guppy.Collections
         {
             foreach (Layer layer in this)
                 if (item.Group.Overlap(layer.Group))
-                    throw new Exception("Unable to add Layer to collecion, Group overlap detected.");
+                    throw new Exception("Unable to add Layer to collection, Group overlap detected.");
 
             return true;
         }

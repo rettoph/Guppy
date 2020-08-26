@@ -7,6 +7,7 @@ using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Guppy.Network.Structs;
 using Lidgren.Network;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Peers
 {

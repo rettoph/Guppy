@@ -14,7 +14,9 @@ namespace Guppy.Network.Extensions
     {
         public static GuppyLoader ConfigureServer(this GuppyLoader guppy, NetPeerConfiguration configuration)
         {
-            guppy.Services.AddSingleton<UserNetConnectionDictionary>(p => new UserNetConnectionDictionary());
+            guppy.Services.AddFactory<UserNetConnectionDictionary>(p => new UserNetConnectionDictionary());
+            guppy.Services.AddSingleton<UserNetConnectionDictionary>();
+
             guppy.ConfigurePeer<NetServer, ServerPeer>(
                 p => new NetServer(configuration),
                 p => new ServerPeer());
@@ -56,8 +58,11 @@ namespace Guppy.Network.Extensions
             };
 
             // Register related services...
-            guppy.Services.AddSingleton(typeof(TNetPeer), netPeer, 0, typeof(NetPeer));
-            guppy.Services.AddSingleton(typeof(TPeer), peer, 0, typeof(Peer));
+            guppy.Services.AddFactory(typeof(TNetPeer), netPeer);
+            guppy.Services.AddFactory(typeof(TPeer), peer);
+
+            guppy.Services.AddSingleton<TNetPeer>(cacheType: typeof(NetPeer));
+            guppy.Services.AddSingleton<TPeer>(cacheType: typeof(Peer));
         }
     }
 }

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using xxHashSharp;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network
 {

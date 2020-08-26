@@ -6,6 +6,7 @@ using System.Text;
 using Guppy.Extensions;
 using Microsoft.Xna.Framework;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy
 {

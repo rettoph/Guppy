@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection.Enums;
+using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,21 +13,21 @@ namespace Guppy.DependencyInjection
     public sealed class ServiceCollection
     {
         #region Private Fields
-        private List<ServiceFactoryData> _factories;
-        private List<ServiceDescriptorData> _services;
-        private List<ServiceConfigurationData> _configurations;
+        internal List<ServiceFactoryData> factories;
+        internal List<ServiceDescriptorData> services;
+        internal List<ServiceConfiguration> configurations;
         #endregion
 
         #region Constructors
         internal ServiceCollection()
         {
-            _factories = new List<ServiceFactoryData>();
-            _services = new List<ServiceDescriptorData>();
-            _configurations = new List<ServiceConfigurationData>();
+            this.factories = new List<ServiceFactoryData>();
+            this.services = new List<ServiceDescriptorData>();
+            this.configurations = new List<ServiceConfiguration>();
         }
         #endregion
 
-        #region Methods
+        #region Base Methods
         /// <summary>
         /// Create a new factory method to create an instance of a specified service.
         /// </summary>
@@ -34,12 +35,15 @@ namespace Guppy.DependencyInjection
         /// <param name="factory">The main factory method to create a new instance.</param>
         /// <param name="priority">Only the highest priority level for each lookup type will be saved post initialization.</param>
         public void AddFactory(Type type, Func<ServiceProvider, Object> factory, Int32 priority = 10)
-            => _factories.Add(new ServiceFactoryData()
+            => this.factories.Add(new ServiceFactoryData()
             {
                 Type = type,
                 Factory = factory,
                 Priority = priority
             });
+
+        public void AddFactory<T>(Func<ServiceProvider, T> factory, Int32 priority = 10)
+            => this.AddFactory(typeof(T), p => factory.Invoke(p), priority);
 
         /// <summary>
         /// Create a new service with a unique name.
@@ -50,13 +54,13 @@ namespace Guppy.DependencyInjection
         /// <param name="priority">Only the highest priority level for each lookup name will be saved post initialization.</param>
         /// <param name="cacheType">Optional: When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
         public void AddService(String name, Type factory, ServiceLifetime lifetime, Int32 priority = 10, Type cacheType = null)
-            => _services.Add(new ServiceDescriptorData()
+            => this.services.Add(new ServiceDescriptorData()
             {
                 Name = name,
                 Factory = factory,
                 Lifetime = lifetime,
                 Priority = priority,
-                CacheType = cacheType ?? factory
+                CacheType = cacheType
             });
 
         /// <summary>
@@ -66,15 +70,18 @@ namespace Guppy.DependencyInjection
         /// <param name="service">The service name (or partial name) that this configuration should be applied to.</param>
         /// <param name="configuration">The method to run.</param>
         /// <param name="order">The order in which this particular configuration should run.</param>
-        /// <param name="assignable">The base type (if any) that the service must be assignable to/from in order for thisconfiguration to be applied.</param>
-        public void AddConfiguration(String service, Action<ServiceProvider, Object> configuration, Int32 order = 10, Type assignable = null)
-            => _configurations.Add(new ServiceConfigurationData()
-            {
-                Service = service,
-                Configuration = configuration,
-                Order = order,
-                Assignable = assignable
-            });
+        public void AddConfiguration(ServiceConfigurationKey key, Action<Object, ServiceProvider, ServiceDescriptor> configuration, Int32 order = 0)
+            => this.configurations.Add(new ServiceConfiguration(key, configuration, order));
+        #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Return a brand new service provider based on
+        /// the current service collection
+        /// </summary>
+        /// <returns></returns>
+        public ServiceProvider BuildServiceProvider()
+            => new ServiceProvider(this);
         #endregion
     }
 }

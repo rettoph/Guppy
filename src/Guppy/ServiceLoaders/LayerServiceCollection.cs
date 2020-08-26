@@ -5,6 +5,7 @@ using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
@@ -13,8 +14,13 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddScoped<LayerCollection>(p => new LayerCollection());
-            services.AddTransient<LayerEntityCollection>(p => new LayerEntityCollection());
+            // Configure factories...
+            services.AddFactory<LayerCollection>(p => new LayerCollection());
+            services.AddFactory<LayerEntityCollection>(p => new LayerEntityCollection());
+
+            // Configure services...
+            services.AddScoped<LayerCollection>();
+            services.AddTransient<LayerEntityCollection>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

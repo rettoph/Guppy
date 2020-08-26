@@ -5,6 +5,7 @@ using Guppy.Network.Peers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Collections
 {

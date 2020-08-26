@@ -11,21 +11,20 @@ namespace Guppy
     public abstract class Service : IService
     {
         #region Private Fields
-        private ServiceConfiguration _configuration;
+        private ServiceDescriptor _descriptor;
         private Guid _id;
-        private ServiceTypeDescriptor _descriptor;
         #endregion
 
         #region Public Attributes
-        public ServiceConfiguration ServiceConfiguration
+        public ServiceDescriptor ServiceDescriptor
         {
-            get => _configuration;
+            get => _descriptor;
             set
             {
                 if (this.InitializationStatus == InitializationStatus.Ready)
                     throw new InvalidOperationException("Unable to update Configuration after initialization.");
 
-                _configuration = value;
+                _descriptor = value;
             }
         }
         public virtual Guid Id

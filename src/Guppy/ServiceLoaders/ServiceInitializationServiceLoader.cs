@@ -18,17 +18,17 @@ namespace Guppy.ServiceLoaders
 
         public void ConfigureServices(ServiceCollection services)
         {
-            services.AddConfiguration<IService>((s, p, c) =>
+            services.AddConfiguration<IService>((s, p, sd) =>
             {
-                s.ServiceConfiguration = c;
+                s.ServiceDescriptor = sd;
                 s.TryPreInitialize(p);
 
                 s.OnDisposed += this.HandleServiceDisposed;
             }, -10);
 
-            services.AddConfiguration<IService>((s, p, f) => s.TryInitialize(p), 10);
+            services.AddConfiguration<IService>((s, p, sd) => s.TryInitialize(p), 10);
 
-            services.AddConfiguration<IService>((s, p, f) => s.TryPostInitialize(p), 20);
+            services.AddConfiguration<IService>((s, p, sd) => s.TryPostInitialize(p), 20);
         }
 
         public void ConfigureProvider(ServiceProvider provider)
@@ -46,7 +46,7 @@ namespace Guppy.ServiceLoaders
         {
             sender.OnDisposed -= this.HandleServiceDisposed;
 
-            _provider.GetServiceTypeDescriptor(sender.GetType()).Release(sender);
+            _provider.GetServiceDescriptor(sender.GetType()).Factory.Return(sender);
         }
         #endregion
     }

@@ -9,52 +9,85 @@ namespace Guppy.Extensions.DependencyInjection
 {
     public static class ServiceProviderExtensions
     {
-        #region Build Service Methods
+        #region GetService Methods
         /// <summary>
-        /// Build a new instance of a service regardless of it's
-        /// lifetime.
+        /// Return a new instance of a service 
+        /// based on the recieved service id value
+        /// & automatically cast to type T.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="configurationId"></param>
+        /// <param name="id"></param>
+        /// <param name="setup"></param>
         /// <returns></returns>
-        public static T BuildService<T>(this ServiceProvider provider, UInt32 configurationId, Action<Object, ServiceProvider, ServiceConfiguration> setup = null)
-        {
-            T instance = default(T);
-            provider.GetServiceConfiguration(configurationId).Build(provider, setup, i => instance = (T)i);
-            return instance;
-        }
+        public static T GetService<T>(
+            this ServiceProvider provider,
+            UInt32 id,
+            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+        )
+            => (T)provider.GetService(id, (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
-        /// Returns a new service registered under
-        /// the configuration name.
+        /// Return a new instance of a service 
+        /// based on the recieved service name value
+        /// & automatically cast to type T.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="handle"></param>
+        /// <param name="id"></param>
+        /// <param name="setup"></param>
         /// <returns></returns>
-        public static T BuildService<T>(this ServiceProvider provider, String handle)
-        {
-            return provider.BuildService<T>(ServiceConfiguration.GetId(handle));
-        }
+        public static T GetService<T>(
+            this ServiceProvider provider,
+            String name,
+            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+        )
+            => (T)provider.GetService(name, (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
-        /// Returns a new instance of the requested service type.
+        /// Return a new nameless service instance
+        /// based on the recieved type
+        /// & automatically cast to type T.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="setup"></param>
         /// <returns></returns>
-        public static Object BuildService(this ServiceProvider provider, Type type)
-        {
-            return provider.BuildService<Object>(type.FullName);
-        }
+        public static T GetService<T>(
+            this ServiceProvider provider,
+            Type type,
+            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+        )
+            => (T)provider.GetService(type, (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
-        /// Returns a new instance of the requested service type.
+        /// Return a new nameless service instance
+        /// based on the recieved generic type
+        /// and cast into type T.
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="id"></param>
+        /// <param name="setup"></param>
         /// <returns></returns>
-        public static T BuildService<T>(this ServiceProvider provider)
-        {
-            return (T)provider.BuildService(typeof(T));
-        }
+        public static T GetService<T>(
+            this ServiceProvider provider,
+            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+        )
+            => (T)provider.GetService(typeof(T), (i, p, s) => setup?.Invoke((T)i, p, s));
+
+        /// <summary>
+        /// Automaitcally set the out value via the intenral GetService method
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="service"></param>
+        public static void Service<T>(this ServiceProvider provider, out T service, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+            => service = ServiceProviderExtensions.GetService<T>(provider, setup);
+
+        /// <summary>
+        /// Automaitcally set the out value via the intenral GetService method
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="service"></param>
+        public static void Service<T>(this ServiceProvider provider, out T service, String name, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+            => service = ServiceProviderExtensions.GetService<T>(provider, name, setup);
         #endregion
 
         #region Content Methods
@@ -78,28 +111,6 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="content"></param>
         public static void Content<T>(this ServiceProvider provider, String handle, out T content)
             => content = provider.GetContent<T>(handle);
-        #endregion
-
-        #region GetService Methods
-        public static ServiceTypeDescriptor GetServiceTypeDescriptor(this ServiceProvider provider, Type type)
-            => provider.serviceTypeDescriptors[type];
-        public static ServiceTypeDescriptor GetServiceTypeDescriptor<T>(this ServiceProvider provider)
-            => provider.GetServiceTypeDescriptor(typeof(T));
-        #endregion
-
-        #region GetConfiguration Methods
-        /// <summary>
-        /// Returns the raw underlying factory from a given
-        /// configuration id.
-        /// </summary>
-        /// <param name="configurationId"></param>
-        /// <returns></returns>
-        public static ServiceConfiguration GetServiceConfiguration(this ServiceProvider provider, UInt32 configurationId)
-            => provider.serviceConfigurations[configurationId];
-        public static ServiceConfiguration GetServiceConfiguration(this ServiceProvider provider, String handle)
-            => provider.GetServiceConfiguration(ServiceConfiguration.GetId(handle));
-        public static ServiceConfiguration GetServiceConfiguration(this ServiceProvider provider, Type serviceType)
-            => provider.GetServiceConfiguration(serviceType.FullName);
         #endregion
     }
 }
