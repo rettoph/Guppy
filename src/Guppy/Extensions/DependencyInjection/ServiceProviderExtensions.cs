@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Loaders;
+using Guppy.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +19,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static T GetContent<T>(this ServiceProvider provider, String handle)
-            => provider.GetService<ContentLoader>().Get<T>(handle);
+            => provider.GetService<ContentService>().Get<T>(handle);
         /// <summary>
         /// Automatically load content from the internal ContentLoader
         /// and set the value to the recieved instance.

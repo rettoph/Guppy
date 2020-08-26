@@ -5,14 +5,14 @@ using System.Text;
 using Guppy.Enums;
 using System.Linq;
 
-namespace Guppy.Loaders
+namespace Guppy.Services
 {
     /// <summary>
     /// Loaders represent Singleton services that should contain
     /// editable global assets & values. Examples include Colors,
     /// Strings, and Content.
     /// </summary>
-    public abstract class Loader<THandle, TInValue, TOutValue> : Service
+    public abstract class LoaderService<THandle, TInValue, TOutValue> : Service
     {
         #region Structs
         public struct RegisteredValue
@@ -79,7 +79,7 @@ namespace Guppy.Loaders
         #endregion
     }
 
-    public abstract class Loader<THandle, TValue> : Loader<THandle, TValue, TValue> { 
+    public abstract class LoaderService<THandle, TValue> : LoaderService<THandle, TValue, TValue> { 
     
     }
 }

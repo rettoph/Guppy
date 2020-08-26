@@ -2,7 +2,7 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
-using Guppy.Loaders;
+using Guppy.Services;
 using Guppy.Utilities;
 using Guppy.Extensions.DependencyInjection;
 using System;
@@ -13,11 +13,11 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class LoaderServiceLoader : IServiceLoader
+    internal sealed class LoaderServiceServiceLoader : IServiceLoader
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            AssemblyHelper.GetTypesWithAutoLoadAttribute(typeof(Loader<,,>)).ForEach(s =>
+            AssemblyHelper.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(s =>
             {
                 services.AddFactory(s, p => ActivatorUtilities.CreateInstance(p, s));
                 services.AddSingleton(s, s);

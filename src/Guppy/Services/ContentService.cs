@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Loaders
+namespace Guppy.Services
 {
     [AutoLoad]
-    public sealed class ContentLoader : Loader<String, String, Object>
+    public sealed class ContentService : LoaderService<String, String, Object>
     {
         #region Private Fields
         private ContentManager _content;

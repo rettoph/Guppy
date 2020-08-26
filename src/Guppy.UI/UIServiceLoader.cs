@@ -3,7 +3,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Loaders;
+using Guppy.Services;
 using Guppy.UI.Collections;
 using Guppy.UI.Components;
 using Guppy.UI.Drivers.Entities;
@@ -60,7 +60,7 @@ namespace Guppy.UI
             services.BindDriver<Cursor, MouseIndicatorDriver>();
 
             // Register Content
-            services.AddConfiguration<ContentLoader>((content, p, c) =>
+            services.AddConfiguration<ContentService>((content, p, c) =>
             {
                 content.TryRegister("ui:font", "UI/Font");
             });
