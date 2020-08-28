@@ -13,6 +13,16 @@ namespace Guppy.IO.Extensions.log4net
 {
     public static class ILogExtensions
     {
+        #region Static Fields
+        private static PatternLayout PatternLayout = new PatternLayout();
+
+        static ILogExtensions()
+        {
+            ILogExtensions.PatternLayout.ConversionPattern = "[%d{HH:mm:ss}] [%level] %message%n";
+            ILogExtensions.PatternLayout.ActivateOptions();
+        }
+        #endregion
+
         #region Level Methods
         /// <summary>
         /// Get the current log level.
@@ -46,19 +56,28 @@ namespace Guppy.IO.Extensions.log4net
             ((Hierarchy)log.Logger.Repository).RaiseConfigurationChanged(EventArgs.Empty);
         }
 
-        public static void ConfigureConsoleAppender(this ILog log, params ManagedColoredConsoleAppender.LevelColors[] mapping)
+        public static ILog ConfigureManagedColoredConsoleAppender(this ILog log, params ManagedColoredConsoleAppender.LevelColors[] mapping)
         {
-            PatternLayout patternLayout = new PatternLayout();
-            patternLayout.ConversionPattern = "[%d{HH:mm:ss}] [%level] %message%n";
-            patternLayout.ActivateOptions();
+            var appender = new ManagedColoredConsoleAppender();
+            appender.Layout = ILogExtensions.PatternLayout;
+            mapping.ForEach(m => appender.AddMapping(m));
+            appender.ActivateOptions();
 
-            var console = new ManagedColoredConsoleAppender();
-            console.Layout = patternLayout;
-            mapping.ForEach(m => console.AddMapping(m));
-            console.ActivateOptions();
+            log.AddAppender(appender);
 
-            log.AddAppender(console);
-            log.SetLevel(Level.Verbose);
+            return log;
+        }
+
+        public static ILog ConfigureFileAppender(this ILog log, String file)
+        {
+            var appender = new FileAppender();
+            appender.Layout = ILogExtensions.PatternLayout;
+            appender.File = file;
+            appender.ActivateOptions();
+
+            log.AddAppender(appender);
+
+            return log;
         }
         #endregion
 
