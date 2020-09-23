@@ -36,9 +36,9 @@ namespace Guppy
             _next = new ConcurrentQueue<Action<GameTime>>();
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             while (_queue.Any()) // Empty the queue out
                 _queue.TryDequeue(out _update);

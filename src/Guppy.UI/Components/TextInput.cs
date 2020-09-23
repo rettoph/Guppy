@@ -57,9 +57,9 @@ namespace Guppy.UI.Components
             this.OnActiveChanged += this.HandleActiveChanged;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _window.TextInput -= this.HandleTextInput;
         }

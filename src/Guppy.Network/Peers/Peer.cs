@@ -79,9 +79,9 @@ namespace Guppy.Network.Peers
             this.MessageTypeDelegates[NetIncomingMessageType.Data] += this.HandleDataMessageType;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.MessageTypeDelegates[NetIncomingMessageType.Data] -= this.HandleDataMessageType;
         }

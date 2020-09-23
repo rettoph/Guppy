@@ -38,9 +38,9 @@ namespace Guppy
             this.OnPostUpdate += this.PostUpdate;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnPreDraw -= this.PreDraw;
             this.OnDraw -= this.Draw;

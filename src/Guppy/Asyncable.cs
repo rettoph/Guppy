@@ -19,9 +19,9 @@ namespace Guppy
         private GameTime _gameTime;
         private Thread _loop;
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             if (_running)
                 this.TryStop();

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy
 {
-    public abstract class Service : IService
+    public abstract class Service : IService, IDisposable
     {
         #region Private Fields
         private ServiceDescriptor _descriptor;
@@ -43,46 +43,72 @@ namespace Guppy
         #endregion
 
         #region Events
-        public event GuppyEventHandler<IService> OnDisposed;
+        public event GuppyEventHandler<IService> OnReleased;
         #endregion
 
         #region Lifecycle Methods
-        public void TryPreInitialize(ServiceProvider provider)
+        void IService.TryCreate(ServiceProvider provider)
+        {
+            if (this.InitializationStatus != InitializationStatus.NotCreated)
+                return;
+
+            this.InitializationStatus = InitializationStatus.Creating;
+            this.Create(provider);
+            this.InitializationStatus = InitializationStatus.NotReady;
+        }
+
+        void IService.TryPreInitialize(ServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.NotReady)
-                throw new InvalidOperationException("Unable to PreInitialize service.");
+                return;
 
             this.InitializationStatus = InitializationStatus.PreInitializing;
             this.PreInitialize(provider);
         }
 
-        public void TryInitialize(ServiceProvider provider)
+        void IService.TryInitialize(ServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.PreInitializing)
-                throw new InvalidOperationException("Unable to Initialize service.");
+                return;
 
             this.InitializationStatus = InitializationStatus.Initializing;
             this.Initialize(provider);
         }
 
-        public void TryPostInitialize(ServiceProvider provider)
+        void IService.TryPostInitialize(ServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.Initializing)
-                throw new InvalidOperationException("Unable to PostInitialize service.");
+                return;
 
             this.InitializationStatus = InitializationStatus.PostInitializing;
             this.PostInitialize(provider);
             this.InitializationStatus = InitializationStatus.Ready;
         }
 
-        public void TryDispose()
+        public void TryRelease()
         {
-            this.InitializationStatus = InitializationStatus.Disposing;
+            if (this.InitializationStatus != InitializationStatus.Ready && this.InitializationStatus != InitializationStatus.Disposing)
+                return;
 
-            this.Dispose();
-            this.OnDisposed?.Invoke(this);
+            this.InitializationStatus = InitializationStatus.Releasing;
+
+            this.Release();
+            this.OnReleased?.Invoke(this);
 
             this.InitializationStatus = InitializationStatus.NotReady;
+        }
+
+        public void TryDispose()
+        {
+            this.TryRelease();
+
+            this.InitializationStatus = InitializationStatus.Disposing;
+            this.Dispose();
+        }
+
+        protected virtual void Create(ServiceProvider provider)
+        {
+            //
         }
 
         protected virtual void PreInitialize(ServiceProvider provider)
@@ -100,10 +126,20 @@ namespace Guppy
             //
         }
 
+        protected virtual void Release()
+        {
+            //
+        }
+
         protected virtual void Dispose()
         {
             //
         }
+        #endregion
+
+        #region IDisposable Implementation
+        void IDisposable.Dispose()
+            => this.TryDispose();
         #endregion
     }
 }

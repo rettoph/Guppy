@@ -50,9 +50,9 @@ namespace Guppy.Network.Peers
             this.MessageTypeDelegates[NetIncomingMessageType.StatusChanged] += this.HandleSatusChangedMessageType;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.MessageTypeDelegates[NetIncomingMessageType.StatusChanged] -= this.HandleSatusChangedMessageType;
         }
@@ -162,7 +162,7 @@ namespace Guppy.Network.Peers
         private void HandleDisconnectedSatusChangedMessageType(NetIncomingMessage im)
         {
             // Automatically dispose of the old user.
-            _userConnections.Users[im.SenderConnection].TryDispose();
+            _userConnections.Users[im.SenderConnection].TryRelease();
             _userConnections.Remove(im.SenderConnection);
         }
         #endregion

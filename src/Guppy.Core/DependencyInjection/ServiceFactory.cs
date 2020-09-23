@@ -1,4 +1,6 @@
-﻿using Guppy.DependencyInjection.Enums;
+﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Enums;
+using Guppy.Extensions.Collections;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -36,16 +38,22 @@ namespace Guppy.DependencyInjection
         /// The base type returned by this factory instance.
         /// </summary>
         public readonly Type Type;
+
+        /// <summary>
+        /// The builders to be excecuted when constructing a new instance.
+        /// </summary>
+        public readonly ServiceBuilder[] Builders;
         #endregion
 
         #region Constructor
-        internal ServiceFactory(ServiceFactoryData data)
+        internal ServiceFactory(ServiceFactoryData data, ServiceBuilder[] builders)
         {
             _count = 0;
             _pool = new Stack<Object>(ServiceFactory.MaxServicePoolSize);
             _factory = data.Factory;
 
             this.Type = data.Type;
+            this.Builders = builders;
         }
         #endregion
 
@@ -62,10 +70,13 @@ namespace Guppy.DependencyInjection
                 _count--;
                 return _pool.Pop();
             }
-                
+
 
             // Build a new instance...
-            return _factory.Invoke(provider);
+            var instance = _factory.Invoke(provider);
+            this.Builders.ForEach(b => b.Build(instance, provider));
+
+            return instance;
         }
 
         /// <summary>

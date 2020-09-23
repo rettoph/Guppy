@@ -58,9 +58,9 @@ namespace Guppy.Network
             this.Messages = new MessageManager(this.CreateMessage);
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
         }
         #endregion
 

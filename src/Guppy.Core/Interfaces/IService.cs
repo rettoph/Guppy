@@ -20,14 +20,15 @@ namespace Guppy.Interfaces
         #endregion
 
         #region Events
-        event GuppyEventHandler<IService> OnDisposed;
+        event GuppyEventHandler<IService> OnReleased;
         #endregion
 
         #region Methods
+        void TryCreate(ServiceProvider provider);
         void TryPreInitialize(ServiceProvider provider);
         void TryInitialize(ServiceProvider provider);
         void TryPostInitialize(ServiceProvider provider);
-
+        void TryRelease();
         void TryDispose();
         #endregion
     }

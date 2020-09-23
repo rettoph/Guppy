@@ -117,9 +117,9 @@ namespace Guppy.UI.Components
             this.TrackInlineEvents(this.Inline);
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnInlineChanged -= this.HandleInlineChanged;
             this.TrackInlineEvents(false);

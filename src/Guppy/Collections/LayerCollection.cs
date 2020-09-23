@@ -18,9 +18,9 @@ namespace Guppy.Collections
             this.OnCanAdd += this.CanAddLayer;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnCanAdd -= this.CanAddLayer;
         }

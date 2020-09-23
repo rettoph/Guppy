@@ -82,9 +82,9 @@ namespace Guppy.Utilities.Cameras
             _window.ClientSizeChanged += this.HandleClientBoundsChanged;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _window.ClientSizeChanged -= this.HandleClientBoundsChanged;
         }

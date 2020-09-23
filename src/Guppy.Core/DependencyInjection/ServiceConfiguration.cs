@@ -19,14 +19,14 @@ namespace Guppy.DependencyInjection
 
         /// <summary>
         /// The configuration method's numerical order. Defines
-        /// when to execute the configuration method when building
+        /// when to execute the configuration method when pulling
         /// a new service instance.
         /// </summary>
         public readonly Int32 Order;
         #endregion
 
         #region Private Fields
-        private Action<Object, ServiceProvider, ServiceDescriptor> _configuration;
+        private readonly Action<Object, ServiceProvider, ServiceDescriptor> _configuration;
         #endregion
 
         #region Constructor
@@ -46,8 +46,9 @@ namespace Guppy.DependencyInjection
         /// <summary>
         /// Execute the configuration method on the recieved instance.
         /// </summary>
-        /// <param name="provider"></param>
         /// <param name="instance"></param>
+        /// <param name="provider"></param>
+        /// <param name="descriptor"></param>
         public void Configure(Object instance, ServiceProvider provider, ServiceDescriptor descriptor)
             => _configuration.Invoke(instance, provider, descriptor);
         #endregion

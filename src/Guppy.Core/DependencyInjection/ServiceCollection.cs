@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection.Enums;
+﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Guppy.DependencyInjection
         internal List<ServiceFactoryData> factories;
         internal List<ServiceDescriptorData> services;
         internal List<ServiceConfiguration> configurations;
+        internal List<ServiceBuilder> builders;
         #endregion
 
         #region Constructors
@@ -23,6 +25,7 @@ namespace Guppy.DependencyInjection
             this.factories = new List<ServiceFactoryData>();
             this.services = new List<ServiceDescriptorData>();
             this.configurations = new List<ServiceConfiguration>();
+            this.builders = new List<ServiceBuilder>();
         }
         #endregion
 
@@ -71,6 +74,18 @@ namespace Guppy.DependencyInjection
         /// <param name="order">The order in which this particular configuration should run.</param>
         public void AddConfiguration(ServiceConfigurationKey key, Action<Object, ServiceProvider, ServiceDescriptor> configuration, Int32 order = 0)
             => this.configurations.Add(new ServiceConfiguration(key, configuration, order));
+
+        /// <summary>
+        /// Add a new PostBuilder. These are one time methods that are executed only once
+        /// after a factory builds a new instance. This should be used for one time
+        /// setup that will never change, unlike configurations which will be
+        /// excecuted every time a new instance is pulled.
+        /// </summary>
+        /// <param name="factory">The factory this builder should be applied to.</param>
+        /// <param name="builder">The builder method itself.</param>
+        /// <param name="order">The order in which this particular builder should run.</param>
+        public void AddBuilder(Type factory, Action<Object, ServiceProvider> builder, Int32 order = 0)
+            => this.builders.Add(new ServiceBuilder(factory, builder, order));
         #endregion
 
         #region Helper Methods

@@ -28,9 +28,9 @@ namespace Guppy.Collections
             this.OnRemove += this.RemoveEntity;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnAdd -= this.AddEntity;
             this.OnRemove -= this.RemoveEntity;

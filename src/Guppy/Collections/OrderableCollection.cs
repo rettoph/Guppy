@@ -65,9 +65,9 @@ namespace Guppy.Collections
             this.dirtyUpdates = true;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _draws.Clear();
             _updates.Clear();

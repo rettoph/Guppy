@@ -78,7 +78,7 @@ namespace Guppy.Network.Groups
 
             // Automatically dispose of the recieved user if it is not in any shared groups...
             if (user != _clientPeer.CurrentUser && user.Groups.Count == 0)
-                user.TryDispose();
+                user.TryRelease();
         }
         #endregion
     }

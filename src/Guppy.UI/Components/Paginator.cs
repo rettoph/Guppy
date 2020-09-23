@@ -24,9 +24,9 @@ namespace Guppy.UI.Components
 
             _clickHandlers = new Dictionary<IComponent, Action<Object>>();
         }
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             _clickHandlers.Clear();
         }

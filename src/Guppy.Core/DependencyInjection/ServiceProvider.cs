@@ -38,7 +38,7 @@ namespace Guppy.DependencyInjection
             _factories = collection.factories
                 .GroupBy(fd => fd.Type)
                 .Select(g => g.OrderBy(fd => fd.Priority).First())
-                .Select(fd => new ServiceFactory(fd))
+                .Select(fd => new ServiceFactory(fd, collection.builders.Where(b => b.Factory.IsAssignableFrom(fd.Type)).ToArray()))
                 .ToDictionary(f => f.Type);
 
             // Create a lookup table of service descriptors

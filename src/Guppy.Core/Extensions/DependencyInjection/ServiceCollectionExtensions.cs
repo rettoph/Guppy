@@ -46,6 +46,11 @@ namespace Guppy.Extensions.DependencyInjection
             => services.AddConfiguration(new ServiceConfigurationKey(typeof(T), String.Empty), (i, p, s) => configuration.Invoke((T)i, p, s), order);
         #endregion
 
+        #region AddBuilder Methods
+        public static void AddBuilder<TFactory>(this ServiceCollection services, Action<TFactory, ServiceProvider> builder, Int32 order = 0)
+            => services.AddBuilder(typeof(TFactory), (i, p) => builder.Invoke((TFactory)i, p), order);
+        #endregion
+
         #region Singleton Methods
         /// <summary>
         /// Create a new singleton service descriptor.

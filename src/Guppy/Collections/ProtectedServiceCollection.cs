@@ -23,7 +23,7 @@ namespace Guppy.Collections
         /// Recursive chain of delegates used to detect if a
         /// requested item may be added into the current collection.
         /// 
-        /// Simple return true or false.
+        /// Simply return true or false.
         /// </summary>
         protected event CheckItemDelegate OnCanAdd;
 
@@ -71,9 +71,9 @@ namespace Guppy.Collections
         #endregion
 
         #region Lifecycle Methods
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.Clear();
         }
@@ -120,7 +120,7 @@ namespace Guppy.Collections
                 _list.Add(item);
                 _dictionary.Add(item.Id, item);
 
-                item.OnDisposed += this.HandleItemDisposed;
+                item.OnReleased += this.HandleItemReleased;
 
                 this.OnAdd?.Invoke(item);
                 this.OnAdded?.Invoke(this, item);
@@ -138,7 +138,7 @@ namespace Guppy.Collections
                 _list.Remove(item);
                 _dictionary.Remove(item.Id);
 
-                item.OnDisposed -= this.HandleItemDisposed;
+                item.OnReleased -= this.HandleItemReleased;
 
                 this.OnRemove?.Invoke(item);
                 this.OnRemoved?.Invoke(this, item);
@@ -169,7 +169,7 @@ namespace Guppy.Collections
         #endregion
 
         #region Event Handlers
-        private void HandleItemDisposed(IService sender)
+        private void HandleItemReleased(IService sender)
         {
             this.Remove((TService)sender);
         }

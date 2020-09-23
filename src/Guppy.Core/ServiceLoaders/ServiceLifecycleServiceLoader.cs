@@ -12,18 +12,20 @@ using System.Text;
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad(Int32.MaxValue)]
-    internal class ServiceInitializationServiceLoader : IServiceLoader
+    internal class ServiceLifecycleServiceLoader : IServiceLoader
     {
         private ServiceProvider _provider;
 
         public void ConfigureServices(ServiceCollection services)
         {
+            services.AddBuilder<IService>((s, p) => s.TryCreate(p));
+
             services.AddConfiguration<IService>((s, p, sd) =>
             {
                 s.ServiceDescriptor = sd;
                 s.TryPreInitialize(p);
 
-                s.OnDisposed += this.HandleServiceDisposed;
+                s.OnReleased += this.HandleServiceReleased;
             }, -10);
 
             services.AddConfiguration<IService>((s, p, sd) => s.TryInitialize(p), 10);
@@ -42,9 +44,9 @@ namespace Guppy.ServiceLoaders
         /// return the instance to the ServiceTypeDescriptor pool.
         /// </summary>
         /// <param name="sender"></param>
-        private void HandleServiceDisposed(IService sender)
+        private void HandleServiceReleased(IService sender)
         {
-            sender.OnDisposed -= this.HandleServiceDisposed;
+            sender.OnReleased -= this.HandleServiceReleased;
 
             _provider.GetServiceDescriptor(sender.GetType()).Factory.Return(sender);
         }

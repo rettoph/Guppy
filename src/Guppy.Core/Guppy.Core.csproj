@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <AssemblyName>Guppy.Core</AssemblyName>
+    <RootNamespace>Guppy</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>

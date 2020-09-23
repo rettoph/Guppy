@@ -29,9 +29,9 @@ namespace Guppy.UI.Collections
             this.OnRemove += this.RemoveComponent;
         }
 
-        protected override void Dispose()
+        protected override void Release()
         {
-            base.Dispose();
+            base.Release();
 
             this.OnAdd -= this.AddComponent;
             this.OnRemove -= this.RemoveComponent;
