@@ -1,4 +1,4 @@
-﻿using Guppy.UI.Collections;
+﻿using Guppy.UI.Lists;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,8 +6,8 @@ using System.Text;
 namespace Guppy.UI.Interfaces
 {
     public interface IContainer<TComponent> : IBaseContainer
-        where TComponent : IComponent
+        where TComponent : class, IComponent
     {
-        ComponentCollection<TComponent> Children { get; }
+        ComponentList<TComponent> Children { get; }
     }
 }

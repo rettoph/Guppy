@@ -1,19 +1,19 @@
-﻿using Guppy.Collections;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
 
 namespace Guppy
 {
     public abstract class Scene : Driven
     {
         #region Public Attributes
-        public LayerCollection Layers { get; private set; }
-        public EntityCollection Entities { get; private set; }
+        public LayerList Layers { get; private set; }
+        public EntityList Entities { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -21,8 +21,8 @@ namespace Guppy
         {
             base.PreInitialize(provider);
 
-            this.Layers = provider.GetService<LayerCollection>();
-            this.Entities = provider.GetService<EntityCollection>();
+            this.Layers = provider.GetService<LayerList>();
+            this.Entities = provider.GetService<EntityList>();
         }
         #endregion
 

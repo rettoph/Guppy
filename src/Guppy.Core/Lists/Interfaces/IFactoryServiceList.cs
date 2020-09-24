@@ -1,27 +1,61 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Utilities;
+using Guppy.Lists.Delegates;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.Lists.Interfaces
 {
-    /// <summary>
-    /// Simple interface used to auto add factory
-    /// functionality into a service list.
-    /// 
-    /// Simply imlement this service then 
-    /// access to help extension methods will be
-    /// available.
-    /// </summary>
-    /// <typeparam name="TService"></typeparam>
-    public interface IFactoryServiceList : IServiceList
+    public interface IFactoryServiceList<TService> : IServiceList<TService>
+        where TService : class, IService
     {
-        /// <summary>
-        /// Primary provider used for internal factory creation.
-        /// </summary>
-        ServiceProvider Provider { get; }
+        #region Events
+        event ItemDelegate<TService> OnCreated;
+        #endregion
+
+        #region Create Methods
+        TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceDescriptor> setup = null);
+
+        TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceDescriptor> setup = null);
+
+        TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceDescriptor> setup = null);
+
+        TService Create(Action<TService, ServiceProvider, ServiceDescriptor> setup = null);
+
+        T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+            where T : class, TService;
+
+        T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+            where T : class, TService;
+
+        T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+            where T : class, TService;
+
+        T Create<T>(Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+            where T : class, TService;
+        #endregion
+
+        #region GetOrCreateById Methods
+        TService GetOrCreateById(Guid id, UInt32 descriptorId);
+
+        TService GetOrCreateById(Guid id, String descriptorName);
+
+        TService GetOrCreateById(Guid id, Type descriptorType);
+
+        TService GetOrCreateById(Guid id);
+
+        T GetOrCreateById<T>(Guid id, UInt32 descriptorId)
+            where T : class, TService;
+
+        T GetOrCreateById<T>(Guid id, String descriptorName)
+            where T : class, TService;
+
+        T GetOrCreateById<T>(Guid id, Type descriptorType)
+            where T : class, TService;
+
+        T GetOrCreateById<T>(Guid id)
+            where T : class, TService;
+        #endregion
     }
 }

@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Guppy.DependencyInjection;
+using Guppy.Lists.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.DependencyInjection;
-using Guppy.Extensions;
 using Guppy.Extensions.DependencyInjection;
 
-namespace Guppy.Collections
+namespace Guppy.Lists
 {
-    /// <summary>
-    /// The main entity collection, this list will contain all entities
-    /// within a single scene.
-    /// </summary>
-    public sealed class EntityCollection : FactoryCollection<Entity>
+    public class EntityList : OrderableList<Entity>
     {
         #region Private Fields
-        private LayerCollection _layers;
+        private LayerList _layers;
         #endregion
 
         #region Lifecycle Methods
@@ -22,7 +18,9 @@ namespace Guppy.Collections
         {
             base.PreInitialize(provider);
 
-            _layers = provider.GetService<LayerCollection>();
+            _layers = provider.GetService<LayerList>();
+
+            this.AutoFill = true;
 
             this.OnAdd += this.AddEntity;
             this.OnRemove += this.RemoveEntity;
@@ -70,8 +68,12 @@ namespace Guppy.Collections
         /// <param name="item"></param>
         private void UpdateItemLayer(Entity item)
         {
+            // Remove from old layer...
+            item.Layer?.Entities.TryRemove(item);
+
             // Add into the new layer...
-            _layers.GetByGroup(item.LayerGroup).Entities.TryAdd(item);
+            item.Layer = _layers.GetByGroup(item.LayerGroup);
+            item.Layer.Entities.TryAdd(item);
         }
         #endregion
 

@@ -1,4 +1,4 @@
-﻿using Guppy.Collections;
+﻿using Guppy.Lists;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
@@ -58,7 +58,7 @@ namespace Guppy.Network.Extensions.Lidgren
         #endregion
 
         #region Entity Methods
-        public static T ReadEntity<T>(this NetIncomingMessage im, EntityCollection entities)
+        public static T ReadEntity<T>(this NetIncomingMessage im, EntityList entities)
             where T : Entity
         {
             if (im.ReadExists())

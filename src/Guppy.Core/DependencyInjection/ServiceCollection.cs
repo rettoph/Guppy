@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Enums;
+using Guppy.DependencyInjection.Structs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -54,16 +54,24 @@ namespace Guppy.DependencyInjection
         /// <param name="factory">The factory lookup type to utilize when creating a new service instance.</param>
         /// <param name="lifetime">The service lifetime.</param>
         /// <param name="priority">Only the highest priority level for each lookup name will be saved post initialization.</param>
-        /// <param name="cacheType">Optional: When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
-        public void AddService(String name, Type factory, ServiceLifetime lifetime, Int32 priority = 10, Type cacheType = null)
-            => this.services.Add(new ServiceDescriptorData()
+        /// <param name="cacheType">(Optional) When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public void AddService(String name, Type factory, ServiceLifetime lifetime, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+        {
+            var id = ServiceDescriptor.GetId(name);
+            var data = new ServiceDescriptorData()
             {
                 Name = name,
                 Factory = factory,
                 Lifetime = lifetime,
                 Priority = priority,
-                CacheType = cacheType
-            });
+                CacheType = cacheType,
+                AutoBuild = autoBuild
+            };
+
+
+            this.services.Add(data);
+        }
 
         /// <summary>
         /// Add a new custom configuration for a service that will

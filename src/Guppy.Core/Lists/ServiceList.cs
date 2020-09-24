@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Lists
 {
@@ -20,7 +21,7 @@ namespace Guppy.Lists
     /// the current collection.
     /// </summary>
     /// <typeparam name="TService"></typeparam>
-    public class ServiceList<TService> : Service, IServiceList<TService>, IFactoryServiceList
+    public partial class ServiceList<TService> : Service, IServiceList<TService>
         where TService : class, IService
     {
         #region Private Fields
@@ -28,12 +29,18 @@ namespace Guppy.Lists
         private List<TService> _list;
         #endregion
 
+        #region Protected Fields
+        protected ServiceProvider provider { get; private set; }
+        #endregion
+
         #region Public Properties
         public Int32 Count => _list.Count;
 
-        Type IServiceList.ListType => typeof(TService);
+        /// <inheritdoc />
+        public Boolean AutoFill { get; set; }
 
-        public ServiceProvider Provider => throw new NotImplementedException();
+        Type IServiceList.BaseType => typeof(TService);
+        ServiceProvider IServiceList.Provider => this.provider;
         #endregion
 
         #region Events
@@ -64,6 +71,13 @@ namespace Guppy.Lists
         public event OnEventDelegate<IServiceList<TService>, TService> OnRemoved;
         #endregion
 
+        #region Constructors
+        public ServiceList(Boolean autoFill = false)
+        {
+            this.AutoFill = autoFill;
+        }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
         {
@@ -76,6 +90,10 @@ namespace Guppy.Lists
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            this.provider = provider;
+
+            this.AutoFill = false;
 
             this.CanAdd += this.HandleCanAdd;
             this.OnAdd += this.HandleAdd;
@@ -121,6 +139,12 @@ namespace Guppy.Lists
 
             return true;
         }
+
+        public Boolean Contains(TService item)
+            => _dictionary.ContainsKey(item.Id);
+
+        public TService GetById(Guid id)
+            => this.GetById<TService>(id);
 
         public T GetById<T>(Guid id)
             where T : class, TService
@@ -202,6 +226,12 @@ namespace Guppy.Lists
     }
 
     public class ServiceList : ServiceList<IService>
-    { 
+    {
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.AutoFill = true;
+        }
     }
 }

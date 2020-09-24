@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Enums;
+using Guppy.DependencyInjection.Structs;
 using Guppy.Extensions.Collections;
 using Guppy.Utilities;
 using System;

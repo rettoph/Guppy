@@ -1,28 +1,29 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.LayerGroups;
+using Guppy.Lists.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using xxHashSharp;
 
-namespace Guppy.Collections
+namespace Guppy.Lists
 {
-    public sealed class LayerCollection : OrderableCollection<Layer>
+    public class LayerList : OrderableList<Layer>
     {
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            this.OnCanAdd += this.CanAddLayer;
+            this.AutoFill = true;
+
+            this.CanAdd += this.CanAddLayer;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.OnCanAdd -= this.CanAddLayer;
+            this.CanAdd -= this.CanAddLayer;
         }
         #endregion
 
@@ -33,10 +34,12 @@ namespace Guppy.Collections
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private bool CanAddLayer(Layer item)
+        private bool CanAddLayer(IServiceList<Layer> list, Layer item)
         {
             foreach (Layer layer in this)
-                if (item.Group.Overlap(layer.Group))
+                if (item.Id == layer.Id)
+                    return false;
+                else if (item.Group.Overlap(layer.Group))
                     throw new Exception("Unable to add Layer to collection, Group overlap detected.");
 
             return true;

@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.UI.Collections;
+using Guppy.UI.Lists;
 using Guppy.UI.Entities;
 using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Interfaces;
@@ -25,7 +25,7 @@ namespace Guppy.UI.Components
         #endregion
 
         #region Public Attributes
-        public ComponentCollection<IComponent> Children => _container.Children;
+        public ComponentList<IComponent> Children => _container.Children;
         public Component Thumb;
         public Single Scroll { get; private set; }
         public Unit ScrollWheelStep { get; set; }

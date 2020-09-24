@@ -1,4 +1,5 @@
-﻿using Guppy.Events.Delegates;
+﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Interfaces;
 using System;
 using System.Collections;
@@ -9,15 +10,28 @@ namespace Guppy.Lists.Interfaces
 {
     public interface IServiceList : IService, IEnumerable
     {
-        Type ListType { get; }
+        ServiceProvider Provider { get; }
+
+        /// <summary>
+        /// The basetype stored within the current list.
+        /// </summary>
+        Type BaseType { get; }
+
+        /// <summary>
+        /// Determins whether or not the current list
+        /// should auto fill when new service instances
+        /// are created.
+        /// </summary>
+        Boolean AutoFill { get; set; }
 
         void TryAdd(Object instance);
+
         T GetById<T>(Guid id)
             where T : class, IService;
     }
 
     public interface IServiceList<TService> : IServiceList, IEnumerable<TService>
-        where TService : IService
+        where TService : class, IService
     {
         #region Events
         /// <summary>
@@ -48,6 +62,9 @@ namespace Guppy.Lists.Interfaces
         #region Helper Methods
         Boolean TryAdd(TService item);
         Boolean TryRemove(TService item);
+        Boolean Contains(TService item);
+
+        TService GetById(Guid id);
 
         new T GetById<T>(Guid id)
             where T : class, TService;

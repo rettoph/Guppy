@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
-using Guppy.Collections;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
 
 namespace Guppy
 {
@@ -20,7 +20,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public SceneCollection Scenes { get; private set; }
+        public SceneList Scenes { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -30,7 +30,7 @@ namespace Guppy
 
             _updateBuffer = provider.GetService<UpdateBuffer>();
 
-            this.Scenes = provider.GetService<SceneCollection>();
+            this.Scenes = provider.GetService<SceneList>();
         }
         #endregion
 

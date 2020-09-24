@@ -11,7 +11,7 @@ using System.Text;
 namespace Guppy.UI.Components
 {
     public class StackContainer<TComponent> : Container<TComponent>
-        where TComponent : IComponent
+        where TComponent : class, IComponent
     {
         #region Private Fields
         private Boolean _dirty;

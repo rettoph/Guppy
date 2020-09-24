@@ -1,23 +1,17 @@
-﻿using Guppy.Collections;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
+using Guppy.Lists;
 using Guppy.UI.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.UI.Collections
+namespace Guppy.UI.Lists
 {
-    public class ComponentCollection<TComponent> : FactoryCollection<TComponent>
-        where TComponent : IComponent
+    public class ComponentList<TComponent> : ServiceList<TComponent>
+        where TComponent : class, IComponent
     {
         #region Private Fields
         public IBaseContainer Parent { get; set; }
-        #endregion
-
-        #region Constructor
-        public ComponentCollection()
-        {
-        }
         #endregion
 
         #region Lifecycle Methods

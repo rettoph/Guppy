@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Guppy.DependencyInjection;
-using Guppy.Network.Collections;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Groups;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
 
 namespace Guppy.Network.Peers
 {
@@ -26,7 +26,7 @@ namespace Guppy.Network.Peers
         /// <summary>
         /// List of all connected users.
         /// </summary>
-        public UserCollection Users { get; private set; }
+        public ServiceList<User> Users { get; private set; }
 
         public User CurrentUser { get; protected set; }
         #endregion
@@ -41,7 +41,7 @@ namespace Guppy.Network.Peers
         /// </summary>
         public Int32 Interval { get; set; } = 32;
         public Dictionary<NetIncomingMessageType, MessageTypeDelegate> MessageTypeDelegates { get; private set; }
-        public GroupCollection Groups { get; private set; }
+        public ServiceList<Group> Groups { get; private set; }
         #endregion
 
         #region Delegates
@@ -68,8 +68,8 @@ namespace Guppy.Network.Peers
                 keySelector: mt => mt,
                 elementSelector: mt => default(MessageTypeDelegate)));
 
-            this.Groups = provider.GetService<GroupCollection>();
-            this.Users = provider.GetService<UserCollection>();
+            this.Users = provider.GetService<ServiceList<User>>();
+            this.Groups = provider.GetService<ServiceList<Group>>();
         }
 
         protected override void Initialize(ServiceProvider provider)

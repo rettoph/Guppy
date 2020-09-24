@@ -1,5 +1,4 @@
-﻿using Guppy.Collections;
-using Guppy.LayerGroups;
+﻿using Guppy.LayerGroups;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +6,9 @@ using Guppy.Extensions;
 using Microsoft.Xna.Framework;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
+using Guppy.Extensions.Collections;
+using Guppy.Lists.Interfaces;
 
 namespace Guppy
 {
@@ -17,7 +19,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public LayerEntityCollection Entities { get; private set; }
+        public OrderableList<Entity> Entities { get; private set; }
         public LayerGroup Group
         {
             get => _group;
@@ -36,8 +38,15 @@ namespace Guppy
         {
             base.PreInitialize(provider);
 
-            this.Entities = provider.GetService<LayerEntityCollection>();
-            this.Entities.layer = this;
+            this.Entities = provider.GetService<OrderableList<Entity>>();
+            this.Entities.OnCreated += this.handleEntityCreated;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.Entities.OnCreated -= this.handleEntityCreated;
         }
         #endregion
 
@@ -56,6 +65,20 @@ namespace Guppy
 
             // Auto update all entities within layer
             this.Entities.TryUpdate(gameTime);
+        }
+        #endregion
+
+        #region Event Handlers
+        /// <summary>
+        /// Automatically update the entities layer to match the current
+        /// Layer's group as needed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="item"></param>
+        private void handleEntityCreated(Entity item)
+        {
+            if(!this.Group.Contains(item.LayerGroup))
+                item.LayerGroup = this.Group.GetValue();
         }
         #endregion
     }

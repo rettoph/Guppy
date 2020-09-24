@@ -1,7 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
-using Guppy.Network.Collections;
 using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using System;
@@ -9,6 +8,9 @@ using System.Collections.Generic;
 using System.Text;
 using xxHashSharp;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
+using Guppy.Network.Groups;
+using Guppy.Lists.Interfaces;
 
 namespace Guppy.Network
 {
@@ -16,7 +18,7 @@ namespace Guppy.Network
     {
         #region Public Attributes
         public Dictionary<String, String> Claims;
-        public UserGroupCollection Groups { get; private set; }
+        public ServiceList<Group> Groups { get; private set; }
         public String Name
         {
             get => this.Claims["name"];
@@ -36,7 +38,7 @@ namespace Guppy.Network
         {
             base.PreInitialize(provider);
 
-            this.Groups = provider.GetService<UserGroupCollection>();
+            this.Groups = provider.GetService<ServiceList<Group>>();
 
             this.Claims = new Dictionary<String, String>();
             this.Claims["name"] = String.Empty;

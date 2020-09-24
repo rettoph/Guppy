@@ -1,8 +1,11 @@
-﻿using Guppy.Exceptions;
+﻿using Guppy.Extensions.DependencyInjection;
+using Guppy.Exceptions;
+using Guppy.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Extensions.Collections;
 
 namespace Guppy.DependencyInjection
 {
@@ -14,17 +17,21 @@ namespace Guppy.DependencyInjection
         /// </summary>
         private Dictionary<Type, ServiceFactory> _factories;
 
-        /// <summary>
-        /// A lookup table of all service descriptors by id.
-        /// </summary>
-        private Dictionary<UInt32, ServiceDescriptor> _services;
-
         private ServiceDescriptor _service;
+
+        private ServiceProvider _root;
         #endregion
 
         #region Internal Fields
         internal Dictionary<Type, Object> scopedInstances;
         internal Dictionary<Type, Object> singletonInstances;
+
+        /// <summary>
+        /// A lookup table of all service descriptors by id.
+        /// </summary>
+        internal Dictionary<UInt32, ServiceDescriptor> services;
+
+        internal ServiceProvider root => _root ?? this;
         #endregion
 
         #region Public Fields
@@ -32,7 +39,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Constructors
-        internal ServiceProvider(ServiceCollection collection)
+        internal ServiceProvider(ServiceCollection collection) : base()
         {
             // Create a lookup table of service factories.
             _factories = collection.factories
@@ -42,7 +49,7 @@ namespace Guppy.DependencyInjection
                 .ToDictionary(f => f.Type);
 
             // Create a lookup table of service descriptors
-            _services = collection.services
+            this.services = collection.services
                 .GroupBy(sdd => sdd.Name)
                 .Select(g => g.OrderBy(sdd => sdd.Priority).First())
                 .Select(sdd => new ServiceDescriptor(
@@ -56,13 +63,18 @@ namespace Guppy.DependencyInjection
             this.singletonInstances = new Dictionary<Type, Object>();
 
             this.Id = Guid.NewGuid();
+
+            this.AutoBuildServices(ServiceLifetime.Singleton);
         }
-        private ServiceProvider(ServiceProvider parent)
+        private ServiceProvider(ServiceProvider root)
         {
+            _root = root;
+
             this.scopedInstances = new Dictionary<Type, Object>();
-            this.singletonInstances = parent.singletonInstances;
 
             this.Id = Guid.NewGuid();
+
+            this.AutoBuildServices(ServiceLifetime.Scoped);
         }
         #endregion
 
@@ -78,7 +90,7 @@ namespace Guppy.DependencyInjection
         {
             try
             {
-                _service = _services[id];
+                _service = this.root.services[id];
             }
             catch(KeyNotFoundException e)
             {
@@ -118,7 +130,7 @@ namespace Guppy.DependencyInjection
         {
             try
             {
-                return this.GetService(type.FullName, setup);
+                return this.GetService(ServiceDescriptor.GetId(type), setup);
             }
             catch (ServiceNameUnknown e)
             {
@@ -138,6 +150,17 @@ namespace Guppy.DependencyInjection
 
         #region Helper Methods
         /// <summary>
+        /// Automatically generate all autobuild services.
+        /// </summary>
+        private void AutoBuildServices(ServiceLifetime lifetime)
+        {
+            this.root.services.Values.Where(d => d.AutoBuild && d.Lifetime == lifetime).ForEach(d =>
+            {
+                this.GetService(d.Id);
+            });
+        }
+
+        /// <summary>
         /// Return a ServiceFactory instance from on factory
         /// type key.
         /// </summary>
@@ -153,7 +176,7 @@ namespace Guppy.DependencyInjection
         /// <param name="id"></param>
         /// <returns></returns>
         public ServiceDescriptor GetServiceDescriptor(UInt32 id)
-            => _services[id];
+            => this.root.services[id];
 
         public ServiceDescriptor GetServiceDescriptor(String name)
             => this.GetServiceDescriptor(ServiceDescriptor.GetId(name));
@@ -168,7 +191,15 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <returns></returns>
         public ServiceProvider CreateScope()
-            => new ServiceProvider(this);
+            => new ServiceProvider(this.root);
+
+        /// <summary>
+        /// If this is a scoped provider, return itself
+        /// otherwise create and return a new scope.
+        /// </summary>
+        /// <returns></returns>
+        public ServiceProvider GetScope()
+            => this.root == this ? this.CreateScope() : this;
         #endregion
     }
 }

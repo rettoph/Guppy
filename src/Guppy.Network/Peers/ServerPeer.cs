@@ -6,7 +6,6 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Network.Collections;
 using Guppy.Network.Utilities;
 using Guppy.Network.Structs;
 using Guppy.Extensions.DependencyInjection;

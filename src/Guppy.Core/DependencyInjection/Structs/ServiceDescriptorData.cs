@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.DependencyInjection.Enums
+namespace Guppy.DependencyInjection.Structs
 {
     internal struct ServiceDescriptorData
     {
@@ -11,5 +11,6 @@ namespace Guppy.DependencyInjection.Enums
         public ServiceLifetime Lifetime;
         public Type CacheType;
         public Int32 Priority;
+        public Boolean AutoBuild;
     }
 }

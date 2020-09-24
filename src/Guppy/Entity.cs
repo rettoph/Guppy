@@ -16,7 +16,7 @@ namespace Guppy
         public Layer Layer
         {
             get => _layer;
-            set
+            internal set
             {
                 if (value != _layer)
                 {

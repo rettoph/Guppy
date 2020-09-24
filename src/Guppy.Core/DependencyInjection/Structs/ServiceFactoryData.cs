@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.DependencyInjection.Enums
+namespace Guppy.DependencyInjection.Structs
 {
     internal struct ServiceFactoryData
     {

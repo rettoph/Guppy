@@ -1,13 +1,14 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.Lists.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Collections
+namespace Guppy.Lists
 {
-    public sealed class SceneCollection : FactoryCollection<Scene>, IFrameable
+    public class SceneList : ServiceList<Scene>
     {
         #region Public Attributes
         public Scene Scene { get; private set; }
@@ -55,13 +56,6 @@ namespace Guppy.Collections
                 throw new Exception("Unable to render non-child theme.");
 
             this.Scene = scene;
-        }
-        #endregion
-
-        #region Factory Methods
-        protected override Scene Create(ServiceProvider provider, uint id, Action<Scene, ServiceProvider, ServiceDescriptor> setup = null)
-        {
-            return base.Create(provider.CreateScope(), id, setup);
         }
         #endregion
 

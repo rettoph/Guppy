@@ -4,7 +4,7 @@ using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Services;
-using Guppy.UI.Collections;
+using Guppy.UI.Lists;
 using Guppy.UI.Components;
 using Guppy.UI.Drivers.Entities;
 using Guppy.UI.Entities;
@@ -29,7 +29,7 @@ namespace Guppy.UI
             // Add factories...
             services.AddFactory<GraphicsHelper>(p => new GraphicsHelper());
             services.AddFactory<StageLayer>(p => new StageLayer());
-            services.AddFactory<ComponentCollection<IComponent>>(p => new ComponentCollection<IComponent>());
+            services.AddFactory<ComponentList<IComponent>>(p => new ComponentList<IComponent>());
             services.AddFactory<Container<IComponent>>(p => new Container<IComponent>());
             services.AddFactory<StackContainer<IComponent>>(p => new StackContainer<IComponent>());
             services.AddFactory<Cursor>(p => new Cursor());
@@ -38,7 +38,7 @@ namespace Guppy.UI
             // Setup service lifetimes
             services.AddSingleton<GraphicsHelper>();
             services.AddTransient<StageLayer>();
-            services.AddTransient<ComponentCollection<IComponent>>();
+            services.AddTransient<ComponentList<IComponent>>();
             services.AddTransient<Container<IComponent>>();
             services.AddTransient<StackContainer<IComponent>>();
             services.AddScoped<Cursor>();

@@ -1,6 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
-using Guppy.UI.Collections;
+using Guppy.UI.Lists;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Backgrounds;
@@ -23,7 +23,7 @@ namespace Guppy.UI.Entities
         #endregion
 
         #region Public Attributes
-        public ComponentCollection<IComponent> Children { get; private set; }
+        public ComponentList<IComponent> Children { get; private set; }
         public UnitRectangle Bounds { get; private set; }
         public Boolean Hovered => true;
         #endregion
@@ -41,7 +41,7 @@ namespace Guppy.UI.Entities
             provider.Service(out _window);
             provider.Service(out _graphics);
 
-            this.Children = provider.GetService<ComponentCollection<IComponent>>();
+            this.Children = provider.GetService<ComponentList<IComponent>>();
             this.Children.Parent = this;
 
             this.Bounds = new UnitRectangle()

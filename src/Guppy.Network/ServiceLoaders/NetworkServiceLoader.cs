@@ -1,7 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Network.Collections;
 using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.Network.Utilities;
@@ -11,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Lists;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -21,9 +21,8 @@ namespace Guppy.Network.ServiceLoaders
         {
             // Configure service factories...
             services.AddFactory<User>(p => new User());
-            services.AddFactory<UserCollection>(p => new UserCollection());
-            services.AddFactory<UserGroupCollection>(p => new UserGroupCollection());
-            services.AddFactory<GroupCollection>(p => new GroupCollection());
+            services.AddFactory<ServiceList<User>>(p => new ServiceList<User>());
+            services.AddFactory<ServiceList<Group>>(p => new ServiceList<Group>());
             services.AddFactory<PeerData>(p => new PeerData());
             services.AddFactory<NetPeer>(p => p.GetService<PeerData>().NetPeer);
             services.AddFactory<Peer>(p => p.GetService<PeerData>().Peer);
@@ -31,9 +30,8 @@ namespace Guppy.Network.ServiceLoaders
 
             // Setup service scopes...
             services.AddTransient<User>();
-            services.AddTransient<UserCollection>();
-            services.AddTransient<UserGroupCollection>();
-            services.AddSingleton<GroupCollection>();
+            services.AddTransient<ServiceList<User>>();
+            services.AddSingleton<ServiceList<Group>>();
             services.AddSingleton<PeerData>();
             services.AddSingleton<NetPeer>();
             services.AddSingleton<Peer>();

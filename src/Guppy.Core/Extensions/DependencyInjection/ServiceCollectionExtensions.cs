@@ -59,8 +59,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="factory">The factory to be used when creating a new instance.</param>
         /// <param name="priority">(Optional) The priority of this key definition. If a service with the same key is registered then that will be used instead.</param>
         /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
-        public static void AddSingleton(this ServiceCollection services, String name, Type factory, Int32 priority = 10, Type cacheType = null)
-            => services.AddService(name, factory, ServiceLifetime.Singleton, priority, cacheType);
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddSingleton(this ServiceCollection services, String name, Type factory, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+            => services.AddService(name, factory, ServiceLifetime.Singleton, priority, cacheType, autoBuild);
 
         /// <summary>
         /// Create a new nameless singleton service descriptor.
@@ -69,8 +70,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="factory">(Optional) The factory to be used when creating a new instance. When null, the "type" value will be used instead.</param>
         /// <param name="priority">(Optional) The priority of this key definition. If a service with the same key is registered then that will be used instead.</param>
         /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
-        public static void AddSingleton(this ServiceCollection services, Type type, Type factory = null, Int32 priority = 10, Type cacheType = null)
-            => services.AddSingleton(type.FullName, factory ?? type, priority, cacheType);
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddSingleton(this ServiceCollection services, Type type, Type factory = null, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+            => services.AddSingleton(type.FullName, factory ?? type, priority, cacheType, autoBuild);
 
         /// <summary>
         /// Create a new nameless singleton service descriptor.
@@ -80,12 +82,13 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="factory">(Optional) The factory to be used when creating a new instance. When null, the "type" value will be used instead.</param>
         /// <param name="priority">(Optional) The priority of this key definition. If a service with the same key is registered then that will be used instead.</param>
         /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
-        public static void AddSingleton<T>(this ServiceCollection services, String name = null, Type factory = null, Int32 priority = 10, Type cacheType = null)
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddSingleton<T>(this ServiceCollection services, String name = null, Type factory = null, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
         {
             if (name == null)
-                services.AddSingleton(typeof(T), factory, priority, cacheType);
+                services.AddSingleton(typeof(T), factory, priority, cacheType, autoBuild);
             else
-                services.AddSingleton(name, factory ?? typeof(T), priority, cacheType);
+                services.AddSingleton(name, factory ?? typeof(T), priority, cacheType, autoBuild);
         }
 
         /// <summary>
@@ -94,14 +97,17 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
         /// <param name="priority"></param>
-        public static void AddSingleton<T>(this ServiceCollection services, String name, T instance, Int32 priority = 10, Type cacheType = null)
+        /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddSingleton<T>(this ServiceCollection services, String name, T instance, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
         {
             services.AddFactory<T>(factory: p => instance, priority: priority);
             services.AddSingleton(
                 name: name,
                 factory: typeof(T),
                 priority: priority,
-                cacheType: cacheType);
+                cacheType: cacheType,
+                autoBuild: autoBuild);
         }
 
         /// <summary>
@@ -110,8 +116,10 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
         /// <param name="priority"></param>
-        public static void AddSingleton<T>(this ServiceCollection services, T instance, Int32 priority = 10, Type cacheType = null)
-            => services.AddSingleton<T>(typeof(T).FullName, instance, priority, cacheType);
+        /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddSingleton<T>(this ServiceCollection services, T instance, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+            => services.AddSingleton<T>(typeof(T).FullName, instance, priority, cacheType, autoBuild);
 
         /// <summary>
         /// Add a nameless instanced singleton
@@ -119,8 +127,10 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
         /// <param name="priority"></param>
-        public static void AddSingleton(this ServiceCollection services, Type type, Object instance, Int32 priority = 10, Type cacheType = null)
-            => services.AddSingleton(type.FullName, instance, priority, cacheType);
+        /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddSingleton(this ServiceCollection services, Type type, Object instance, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+            => services.AddSingleton(type.FullName, instance, priority, cacheType, autoBuild);
 
         #endregion
 
@@ -132,8 +142,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="factory">The factory to be used when creating a new instance.</param>
         /// <param name="priority">(Optional) The priority of this key definition. If a service with the same key is registered then that will be used instead.</param>
         /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
-        public static void AddScoped(this ServiceCollection services, String name, Type factory, Int32 priority = 10, Type cacheType = null)
-            => services.AddService(name, factory, ServiceLifetime.Scoped, priority, cacheType);
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddScoped(this ServiceCollection services, String name, Type factory, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+            => services.AddService(name, factory, ServiceLifetime.Scoped, priority, cacheType, autoBuild);
 
         /// <summary>
         /// Create a new nameless scoped service descriptor.
@@ -142,8 +153,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="factory">(Optional) The factory to be used when creating a new instance. When null, the "type" value will be used instead.</param>
         /// <param name="priority">(Optional) The priority of this key definition. If a service with the same key is registered then that will be used instead.</param>
         /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
-        public static void AddScoped(this ServiceCollection services, Type type, Type factory = null, Int32 priority = 10, Type cacheType = null)
-            => services.AddScoped(type.FullName, factory ?? type, priority, cacheType);
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddScoped(this ServiceCollection services, Type type, Type factory = null, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
+            => services.AddScoped(type.FullName, factory ?? type, priority, cacheType, autoBuild);
 
         /// <summary>
         /// Create a new nameless scoped service descriptor.
@@ -153,12 +165,13 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="factory">(Optional) The factory to be used when creating a new instance. When null, the "type" value will be used instead.</param>
         /// <param name="priority">(Optional) The priority of this key definition. If a service with the same key is registered then that will be used instead.</param>
         /// <param name="cacheType">(Optional) The cache type of the singleton instance. When null, the factory type will be used instead.</param>
-        public static void AddScoped<T>(this ServiceCollection services, String name = null, Type factory = null, Int32 priority = 10, Type cacheType = null)
+        /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
+        public static void AddScoped<T>(this ServiceCollection services, String name = null, Type factory = null, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
         {
             if (name == null)
-                services.AddScoped(typeof(T), factory, priority, cacheType);
+                services.AddScoped(typeof(T), factory, priority, cacheType, autoBuild);
             else
-                services.AddScoped(name, factory ?? typeof(T), priority, cacheType);
+                services.AddScoped(name, factory ?? typeof(T), priority, cacheType, autoBuild);
         }
         #endregion
 

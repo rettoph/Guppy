@@ -26,7 +26,7 @@ namespace Guppy.LayerGroups
         /// Return a single value that falls within the 
         /// current LayerGroup. This will be the deafault
         /// value assigned to entities when they are added
-        /// directly into a Layer's EntityCollection.
+        /// directly into a Layer's EntityList.
         /// </summary>
         /// <returns></returns>
         internal abstract Int32 GetValue();

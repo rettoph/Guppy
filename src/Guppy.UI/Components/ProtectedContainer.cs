@@ -1,6 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
-using Guppy.UI.Collections;
+using Guppy.UI.Lists;
 using Guppy.UI.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,10 +17,10 @@ namespace Guppy.UI.Components
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
     public class ProtectedContainer<TComponent> : Component, IBaseContainer
-        where TComponent : IComponent
+        where TComponent : class, IComponent
     {
         #region Protected Attributes
-        protected ComponentCollection<TComponent> children { get; private set; }
+        protected ComponentList<TComponent> children { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -28,7 +28,7 @@ namespace Guppy.UI.Components
         {
             base.PreInitialize(provider);
 
-            this.children = provider.GetService<ComponentCollection<TComponent>>();
+            this.children = provider.GetService<ComponentList<TComponent>>();
             this.children.Parent = this;
         }
         #endregion
