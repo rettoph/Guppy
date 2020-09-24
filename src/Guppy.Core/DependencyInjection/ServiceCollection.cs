@@ -37,15 +37,21 @@ namespace Guppy.DependencyInjection
         /// <param name="factory">The main factory method to create a new instance.</param>
         /// <param name="priority">Only the highest priority level for each lookup type will be saved post initialization.</param>
         public void AddFactory(Type type, Func<ServiceProvider, Object> factory, Int32 priority = 10)
-            => this.factories.Add(new ServiceFactoryData()
+        {
+            if (!type.IsClass && !type.IsByRef && !type.IsInterface)
+                throw new Exception($"Only classes may be services, {type.Name} is not a class.");
+
+            this.factories.Add(new ServiceFactoryData()
             {
                 Type = type,
                 Factory = factory,
                 Priority = priority
             });
+        }
 
         public void AddFactory<T>(Func<ServiceProvider, T> factory, Int32 priority = 10)
-            => this.AddFactory(typeof(T), p => factory.Invoke(p), priority);
+            where T : class
+                => this.AddFactory(typeof(T), p => factory.Invoke(p), priority);
 
         /// <summary>
         /// Create a new service with a unique name.
@@ -57,9 +63,7 @@ namespace Guppy.DependencyInjection
         /// <param name="cacheType">(Optional) When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
         /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
         public void AddService(String name, Type factory, ServiceLifetime lifetime, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
-        {
-            var id = ServiceDescriptor.GetId(name);
-            var data = new ServiceDescriptorData()
+            => this.services.Add(new ServiceDescriptorData()
             {
                 Name = name,
                 Factory = factory,
@@ -67,11 +71,7 @@ namespace Guppy.DependencyInjection
                 Priority = priority,
                 CacheType = cacheType,
                 AutoBuild = autoBuild
-            };
-
-
-            this.services.Add(data);
-        }
+            });
 
         /// <summary>
         /// Add a new custom configuration for a service that will

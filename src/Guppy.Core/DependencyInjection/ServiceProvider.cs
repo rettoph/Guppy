@@ -132,7 +132,7 @@ namespace Guppy.DependencyInjection
             {
                 return this.GetService(ServiceDescriptor.GetId(type), setup);
             }
-            catch (ServiceNameUnknown e)
+            catch (ServiceIdUnknownException e)
             {
                 throw new ServiceTypeUnknown(type, e);
             }
