@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Guppy.IO.Commands.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.IO.Commands.Interfaces
+namespace Guppy.IO.Commands
 {
     public struct Command
     {
-        /// <summary>
-        /// The current command's context
-        /// </summary>
-        public ICommandContext Context { get; internal set; }
+        public readonly Segment Segment;
+        public readonly Object Data;
 
-        /// <summary>
-        /// The parsed command data.
-        /// </summary>
-        public Object Data { get; internal set; }
+        public Command(Segment segment, object data)
+        {
+            Segment = segment;
+            Data = data;
+        }
     }
 }

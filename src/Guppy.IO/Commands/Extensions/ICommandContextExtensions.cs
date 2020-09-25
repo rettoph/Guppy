@@ -2,54 +2,83 @@
 using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Guppy.IO.Commands.Extensions
 {
     public static class ICommandContextExtensions
     {
-        /// <summary>
-        /// Parse a given argument array and return a new ICommand instance.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="args"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        public static Command Build(this ICommandContext context, String[] args, Byte position)
+        public static Object GetOutput(this ICommandContext context, String[] input, Int32 position, Dictionary<String, Object> args)
         {
-            Int32 offset = 0;
-            Dictionary<String, Object> parsedArgs = new Dictionary<String, Object>();
-            String cur;
-            ArgContext arg;
+            args.Clear();
 
-            while(position + offset < args.Length)
-            {
-                cur = args[position + offset];
-
-                if (cur[0] != CommandService.ArgumentIdentifier)
-                    throw new Exception($"Unexpected argument identifier. Please use '{CommandService.ArgumentIdentifier}'");
-
-                // Trim the argument identifier
-                cur = cur.Substring(1);
-                // Identify the inputed argument.
-                arg = context.Arguments.First(ac => ac.Name == cur || (cur.Length == 1 && ac.Aliases.Contains(cur[0])));
-
-                // Parse the argument input...
-                parsedArgs.Add(arg.Name, arg.Type.Parse(args[position + ++offset]));
-
-                offset++;
-            }
+            while (position < input.Length)
+                context.AddNextArgument(input, ref position, ref args);
 
             // Ensure that all required args were recieved...
-            if(context.Arguments.Any(ac => ac.Required && !parsedArgs.ContainsKey(ac.Name)))
-                throw new Exception("Missing required argument!");
-
-            return new Command()
+            if (context.Arguments.Any(ac => ac.Required && !args.ContainsKey(ac.Identifier)))
             {
-                Context = context,
-                Data = context.BuildData(parsedArgs)
-            };
+                var missing = context.Arguments.Where(ac => ac.Required && !args.ContainsKey(ac.Identifier));
+                throw new MissingMemberException($"Missing arguments required: {String.Join(" ", missing.Select(ac => CommandService.ArgumentIdentifier + ac.Identifier).ToArray())}.");
+            }
+
+            return context.GetOutput(args);
+        }
+
+        /// <summary>
+        /// Find the next argument identifier & its value
+        /// then add it do the recieved args collection
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private static void AddNextArgument(this ICommandContext context, String[] input, ref Int32 position, ref Dictionary<String, Object> args)
+        {
+            if (input[position][0] != CommandService.ArgumentIdentifier)
+                throw new Exception($"Unexpected argument identifier. Please use '{CommandService.ArgumentIdentifier}'");
+
+            String identifier;
+            String value;
+            Int32 index;
+
+            String next = input[position].Substring(1);
+
+            if ((index = next.IndexOf('=')) > 0)
+            { // There is an equal sign, thus no space seperator
+                identifier = next.Substring(0, index);
+                value = Regex.Unescape(next.Substring(++index, next.Length - index));
+            }
+            else
+            {
+                identifier = next;
+                value = Regex.Unescape(input[++position]);
+            }
+
+            if(value[0] == '"')
+            { // If a quote is returned...
+                while(value[value.Length - 1] != '"')
+                {
+                    value += ' ' + Regex.Unescape(input[++position]);
+                }
+
+                value = value.Trim('"');
+            }
+
+            // Identify which argument is being returned & parse the String value
+            try
+            {
+                var argType = context.Arguments.First(ac => ac.Identifier == identifier || (identifier.Length == 1 && ac.Aliases.Contains(identifier[0])));
+                args.Add(identifier, argType.Type.Parse(value));
+            }
+            catch(InvalidOperationException e)
+            {
+                throw new ArgumentException($"Unknown argument identifier or aliase '{identifier}'.");
+            }
+
+            position++;
         }
     }
 }

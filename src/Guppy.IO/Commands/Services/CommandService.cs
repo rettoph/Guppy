@@ -1,59 +1,55 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.IO.Commands.Extensions;
-using Guppy.IO.Commands.Interfaces;
+﻿using Guppy.IO.Commands.Delegates;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.IO.Commands.Services
 {
-    public sealed class CommandService : Service, ICommandGroupContextParent
+    public sealed class CommandService : SegmentBase
     {
-        #region Static Attributes
-        public static Char ArgumentIdentifier { get; } = '-';
-        #endregion
-
-        #region Private Attributes
-        private Dictionary<String, ICommandGroupContext> _groups;
+        #region Static Fields
+        public static readonly Char ArgumentIdentifier = '-';
         #endregion
 
         #region Public Attributes
-        /// <inheritdoc />
-        public IReadOnlyDictionary<String, ICommandGroupContext> Groups => _groups;
+        public override String FullIdentifier { get; } = "";
         #endregion
 
-        #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            _groups = new Dictionary<String, ICommandGroupContext>();
-        }
+        #region Events
+        public event OnExecuteDelegate OnExcecute;
         #endregion
 
         #region Helper Methods
-        public void Excecute(String command)
-            => this.Excecute(this.Build(command));
+        /// <summary>
+        /// Attempt to parse a raw string & execute the command.
+        /// </summary>
+        /// <param name="input"></param>
+        public void TryExecute(String input)
+            => this.TryExecute(this.TryBuild(input));
+        /// <summary>
+        /// Attempt to execute a pre existing command instance.
+        /// </summary>
+        /// <param name="command"></param>
+        public void TryExecute(Command command)
+            => command.Segment.Execute(command);
 
-        public Command Build(String command)
-            => this.Build(command.Split(' '), 0);
+        /// <summary>
+        /// Attempt to construct a command instance
+        /// from a recieved raw command string.
+        /// 
+        /// Input args will be confirmed & validated.
+        /// </summary>
+        /// <param name="input">The command input string</param>
+        public Command TryBuild(String input)
+            => this.TryBuild(input.Split(' '), 0);
 
-        public void Excecute(Command command)
-        {
+        internal override Command TryBuild(string[] input, int position)
+            => this[input[position]].TryBuild(input, ++position);
+        #endregion
 
-        }
-
-        public void Add(ICommandGroupContext context)
-        {
-            if (context.TrySetParent(null))
-                _groups.Add(context.Name, context);
-        }
-
-        public void Remove(ICommandGroupContext context)
-        {
-            if (this.Groups.ContainsKey(context.Name) && context.TrySetParent(null))
-                _groups.Remove(context.Name);
-        }
+        #region SegmentBase Implementation
+        internal override void Execute(Command command)
+            => this.OnExcecute?.Invoke(command);
         #endregion
     }
 }

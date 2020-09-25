@@ -4,22 +4,20 @@ using System.Text;
 
 namespace Guppy.IO.Commands.Interfaces
 {
-    public interface ICommandContext : ICommandGroupContext
+    public interface ICommandContext
     {
         /// <summary>
-        /// An array of all arguments this particular command expects.
-        /// All input string will be parsed according to the ArgContext
-        /// Type converter.
+        /// A human readble description of what the current command
+        /// physically does.
+        /// </summary>
+        String Description { get; }
+
+        /// <summary>
+        /// A full list of all possible arguments
+        /// this command may recieve.
         /// </summary>
         ArgContext[] Arguments { get; }
 
-        /// <summary>
-        /// Convert a parsed argument value 
-        /// pair into a single useable object
-        /// to push through the command pipeline.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        Object BuildData(IReadOnlyDictionary<String, Object> args);
+        Object GetOutput(Dictionary<String, Object> args);
     }
 }
