@@ -1,6 +1,8 @@
 ﻿using Guppy.Extensions.Collections;
+using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.IO.Commands
@@ -66,6 +68,11 @@ namespace Guppy.IO.Commands
                 return (T)this[identifier];
 
             return default(T);
+        }
+
+        public override String ToString()
+        {
+            return this.Command.Phrase + String.Join("", this.args.Select(kvp => $" {CommandService.ArgumentIdentifier}{kvp.Key}={kvp.Value}"));
         }
     }
 }
