@@ -2,7 +2,7 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.IO.Commands.Demos;
+using Guppy.IO.Commands.Contexts;
 using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
@@ -16,25 +16,24 @@ namespace Guppy.IO.Commands.ServiceLoaders
         public void ConfigureServices(ServiceCollection services)
         {
             services.AddFactory<CommandService>(p => new CommandService());
-            services.AddFactory<Segment>(p => new Segment());
+            services.AddFactory<Command>(p => new Command());
 
             services.AddSingleton<CommandService>(autoBuild: true);
-            services.AddTransient<Segment>();
+            services.AddTransient<Command>();
 
             services.AddConfiguration<CommandService>((commands, p, d) =>
             {
-                commands.TryAdd(new SegmentContext()
+                commands.TryAddSubCommand(new CommandContext()
                 {
-                    Identifier = "hello",
-                    SubSegments = new SegmentContext[] {
-                        new SegmentContext()
+                    Word = "hello",
+                    SubCommands = new CommandContext[] {
+                        new CommandContext()
                         {
-                            Identifier = "world",
-                            Command = new WorldCommand()
+                            Word = "world",
                         },
-                        new SegmentContext()
+                        new CommandContext()
                         {
-                            Identifier = "dolly"
+                            Word = "dolly"
                         }
                     }
                 });
