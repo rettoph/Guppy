@@ -23,6 +23,10 @@ namespace Guppy.IO.Input.Services
         private Int32 _keyCount;
         #endregion
 
+        #region Public Properties
+        public InputManager this[Keys key] => _inputs[key];
+        #endregion
+
         #region Lifecyle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {

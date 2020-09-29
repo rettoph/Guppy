@@ -30,7 +30,6 @@ namespace Guppy.IO.Input
         private CommandService _commands;
         private InputService _inputs;
         private InputManager _inputManager;
-        private IReadOnlyDictionary<ButtonState, CommandArguments> _commandArguments;
         #endregion
 
         #region Public Properties
@@ -46,16 +45,9 @@ namespace Guppy.IO.Input
         public InputType Input { get; private set; }
 
         /// <summary>
-        /// The command that should be parsed
-        /// & executed on input.
+        /// An dictionary of button states and the command to run
         /// </summary>
-        public String Command { get; private set; }
-
-        /// <summary>
-        /// A list of all input states that can invoke the
-        /// current InputCommand.
-        /// </summary>
-        public ButtonState[] States { get; private set; }
+        public IReadOnlyDictionary<ButtonState, CommandArguments> CommandArguments { get; private set; }
         #endregion
 
         #region Constructor
@@ -65,17 +57,19 @@ namespace Guppy.IO.Input
         #endregion
 
         #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            provider.Service(out _commands);
+            provider.Service(out _inputs);
+        }
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
-            provider.Service(out _commands);
-            provider.Service(out _inputs);
             this.ConfigureInput(this.Input);
-
-            _commandArguments = this.States.ToDictionary(
-                keySelector: bs => bs,
-                elementSelector: bs => _commands.TryBuild(this.ParseCommand(bs)).Copy());
         }
 
         protected override void Release()
@@ -94,19 +88,10 @@ namespace Guppy.IO.Input
 
             this.Handle = context.Handle;
             this.Input = context.DefaultInput;
-            this.Command = context.Command;
-            this.States = context.States;
+            this.CommandArguments = context.Commands.ToDictionary(
+                keySelector: bsc => bsc.state,
+                elementSelector: bsc => _commands.TryBuild(bsc.command).Copy());
         }
-
-        /// <summary>
-        /// Return the command string parsed as if the recieved button
-        /// state event just took place.
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="bs"></param>
-        /// <returns></returns>
-        private String ParseCommand(ButtonState bs)
-            => this.Command.Replace(InputCommand.StateShortcode, bs == ButtonState.Pressed ? "true" : "false");
 
         /// <summary>
         /// Update the input listeners to the specified input type.
@@ -116,21 +101,21 @@ namespace Guppy.IO.Input
         {
             if(_inputManager != null)
             { // Unset the old manager...
-                this.States.ForEach(bs => _inputManager.OnState[bs] -= this.HandleInput);
+                this.CommandArguments.Keys.ForEach(bs => _inputManager.OnState[bs] -= this.HandleInput);
             }
 
             if (input != null)
             { // Configure the new value...
                 this.Input = input.Value;
                 _inputManager = _inputs.GetManager(this.Input);
-                this.States.ForEach(bs => _inputManager.OnState[bs] += this.HandleInput);
+                this.CommandArguments.Keys.ForEach(bs => _inputManager.OnState[bs] += this.HandleInput);
             }
         }
         #endregion
 
         #region Event Handlers
         private void HandleInput(InputManager sender, InputArgs args)
-            => _commands.TryExecute(_commandArguments[args.State]);
+            => _commands.TryExecute(this.CommandArguments[args.State]);
         #endregion
     }
 }

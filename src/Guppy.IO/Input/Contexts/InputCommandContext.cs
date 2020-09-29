@@ -19,15 +19,8 @@ namespace Guppy.IO.Input.Contexts
         public InputType DefaultInput { get; set; }
 
         /// <summary>
-        /// The command that should be parsed
-        /// & executed on input.
+        /// An array of button states and their command to run
         /// </summary>
-        public String Command { get; set; }
-
-        /// <summary>
-        /// A list of all input states that can invoke the
-        /// current InputCommand.
-        /// </summary>
-        public ButtonState[] States { get; set; }
+        public (ButtonState state, String command)[] Commands { get; set; }
     }
 }

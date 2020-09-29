@@ -24,22 +24,24 @@ namespace Guppy.IO.Commands
         #region Public Fields
         public readonly String Name;
         private readonly String[] Whitelist;
+        public readonly Boolean StrictFilter;
         #endregion
 
         #region Constructors
-        public ArgType(String name, Func<String, Object> parser, params String[] whitelist)
+        public ArgType(String name, Func<String, Object> parser, Boolean strictFilter = false, params String[] whitelist)
         {
             _parser = parser;
 
             this.Name = name;
             this.Whitelist = whitelist;
+            this.StrictFilter = strictFilter;
         }
 
         public Object Parse(String value)
         {
             try
             {
-                if(!this.Whitelist.Any() || this.Whitelist.Contains(value))
+                if(!this.Whitelist.Any() || this.Whitelist.Contains(value, this.StrictFilter ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase))
                     return _parser(value);
                 else
                     throw new ArgumentOutOfRangeException($"Unexpected {this.Name} value.");
@@ -57,6 +59,16 @@ namespace Guppy.IO.Commands
             ArgType.Int32 = new ArgType("Int32", s => int.Parse(s));
             ArgType.Single = new ArgType("Single", s => float.Parse(s));
             ArgType.Byte = new ArgType("Byte", s => byte.Parse(s));
+        }
+
+        public static ArgType FromEnum<T>(String name = null)
+            where T : Enum
+        {
+            return new ArgType(
+                name ?? typeof(T).Name,
+                s => Enum.Parse(typeof(T), s, true),
+                false,
+                ((T[])Enum.GetValues(typeof(T))).Select(d => d.ToString().ToLower()).ToArray());
         }
         #endregion
     }
