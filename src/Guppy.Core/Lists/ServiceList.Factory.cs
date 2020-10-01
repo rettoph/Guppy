@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists.Delegates;
+using Guppy.Exceptions;
 
 namespace Guppy.Lists
 {
@@ -31,11 +32,29 @@ namespace Guppy.Lists
 
         public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
             where T : class, TService
-                => this.Create<T>(ServiceDescriptor.GetId(descriptorType), setup);
+        {
+            try
+            {
+                return this.Create<T>(ServiceDescriptor.GetId(descriptorType), setup);
+            }
+            catch(ServiceIdUnknownException e)
+            {
+                throw new ServiceTypeUnknown(descriptorType, e);
+            }
+        }
 
         public T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
             where T : class, TService
-                => this.Create<T>(ServiceDescriptor.GetId(descriptorName), setup);
+        {
+            try
+            {
+                return this.Create<T>(ServiceDescriptor.GetId(descriptorName), setup);
+            }
+            catch (ServiceIdUnknownException e)
+            {
+                throw new ServiceNameUnknown(descriptorName, e);
+            }
+        }
 
         public T Create<T>(Action<T, ServiceProvider, ServiceDescriptor> setup = null)
             where T : class, TService

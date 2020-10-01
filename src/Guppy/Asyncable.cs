@@ -37,7 +37,7 @@ namespace Guppy
 
         protected virtual void Start(Boolean draw)
         {
-            _draw = true;
+            _draw = draw;
             
             _loop = new Thread(new ThreadStart(this.Loop));
             _loop.Start();

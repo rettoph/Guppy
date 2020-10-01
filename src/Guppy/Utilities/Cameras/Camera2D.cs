@@ -21,8 +21,8 @@ namespace Guppy.Utilities.Cameras
         private Single _zoom;
         private Single _zoomTarget;
         private Vector2 _positionTarget;
-        private Single _minZoom = Single.MaxValue;
-        private Single _maxZoom = Single.Epsilon;
+        private Single _minZoom = Single.Epsilon;
+        private Single _maxZoom = Single.MaxValue;
         #endregion
 
         #region Public Attributes
@@ -215,14 +215,18 @@ namespace Guppy.Utilities.Cameras
                 this.dirty = true;
             }
         }
-        public void ZoomTo(Single value)
+        public void ZoomTo(Single value, Boolean lerp = true)
         {
-            if (value != _zoomTarget)
+            if (lerp && value != _zoomTarget)
             {
-                _zoomTarget = value;
-                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
+                _zoomTarget = MathHelper.Clamp(value, this.MinZoom, this.MaxZoom);
 
                 this.dirty = true;
+            }
+            else if(!lerp)
+            {
+                _zoomTarget = MathHelper.Clamp(value, this.MinZoom, this.MaxZoom);
+                this.Zoom = _zoomTarget;
             }
         }
         #endregion
