@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Utilities.Primitives;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace Guppy.Utilities
         #endregion
 
         #region Draw Methods
-        public void DrawTriangle(ref VertexPositionColor v1, ref VertexPositionColor v2, ref VertexPositionColor v3)
+        public void DrawTriangle(VertexPositionColor v1, VertexPositionColor v2, VertexPositionColor v3)
         {
             if (!_started)
                 throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
@@ -50,6 +51,23 @@ namespace Guppy.Utilities
             _triangleVertices[_triangleVerticeCount + 0] = v1;
             _triangleVertices[_triangleVerticeCount + 1] = v2;
             _triangleVertices[_triangleVerticeCount + 2] = v3;
+
+            _triangleVerticeCount += 3;
+
+            this.TryFlushTriangleVertices();
+        }
+
+        public void DrawTriangle(Color color, Vector3 p1, Vector3 p2, Vector3 p3)
+        {
+            if (!_started)
+                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
+
+            _triangleVertices[_triangleVerticeCount + 0].Position = p1;
+            _triangleVertices[_triangleVerticeCount + 0].Color = color;
+            _triangleVertices[_triangleVerticeCount + 1].Position = p2;
+            _triangleVertices[_triangleVerticeCount + 1].Color = color;
+            _triangleVertices[_triangleVerticeCount + 2].Position = p3;
+            _triangleVertices[_triangleVerticeCount + 2].Color = color;
 
             _triangleVerticeCount += 3;
 
@@ -67,6 +85,26 @@ namespace Guppy.Utilities
             _triangleVertices[_triangleVerticeCount + 1].Color = c2;
             _triangleVertices[_triangleVerticeCount + 2].Position = p3;
             _triangleVertices[_triangleVerticeCount + 2].Color = c3;
+
+            _triangleVerticeCount += 3;
+
+            this.TryFlushTriangleVertices();
+        }
+
+        public void DrawTriangle(Color color, Vector2 p1, Vector2 p2, Vector2 p3)
+        {
+            if (!_started)
+                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
+
+            _triangleVertices[_triangleVerticeCount + 0].Position.X = p1.X;
+            _triangleVertices[_triangleVerticeCount + 0].Position.Y = p1.Y;
+            _triangleVertices[_triangleVerticeCount + 0].Color = color;
+            _triangleVertices[_triangleVerticeCount + 1].Position.X = p2.X;
+            _triangleVertices[_triangleVerticeCount + 1].Position.Y = p2.Y;
+            _triangleVertices[_triangleVerticeCount + 1].Color = color;
+            _triangleVertices[_triangleVerticeCount + 2].Position.X = p3.X;
+            _triangleVertices[_triangleVerticeCount + 2].Position.Y = p3.Y;
+            _triangleVertices[_triangleVerticeCount + 2].Color = color;
 
             _triangleVerticeCount += 3;
 
@@ -142,6 +180,21 @@ namespace Guppy.Utilities
         {
             this.DrawLine(p1, c, p2, c);
         }
+
+        public void DrawPrimitive(ref Color color, Primitive primitive)
+        {
+            foreach (Vector3 vertice in primitive.Vertices)
+            {
+                _triangleVertices[_triangleVerticeCount].Color = color;
+                _triangleVertices[_triangleVerticeCount].Position = vertice;
+                _triangleVerticeCount++;
+
+                if (_triangleVerticeCount == _triangleVertices.Length)
+                    this.TryFlushTriangleVertices();
+            }
+        }
+        public void DrawPrimitive(Color color, Primitive primitive)
+            => this.DrawPrimitive(ref color, primitive);
         #endregion
 
         #region Helper Methods

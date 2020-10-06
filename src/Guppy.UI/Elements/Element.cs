@@ -10,10 +10,12 @@ using Guppy.UI.Interfaces;
 using Guppy.UI.Services;
 using Guppy.UI.Utilities;
 using Guppy.Utilities;
+using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.UI.Elements
@@ -26,6 +28,7 @@ namespace Guppy.UI.Elements
         #region Private Fields
         private UIService _ui;
         private PrimitiveBatch _primitiveBatch;
+        private Queue<IDisposable> _stateValues;
         #endregion
 
         #region Public Properties
@@ -43,6 +46,16 @@ namespace Guppy.UI.Elements
 
         /// <inheritdoc />
         public Rectangle InnerBounds { get; private set; }
+
+        /// <summary>
+        /// The current background color, if any
+        /// </summary>
+        public ElementStateValue<Color> BackgroundColor { get; private set; }
+
+        /// <summary>
+        /// The current border color, if any
+        /// </summary>
+        public ElementStateValue<Color> BorderColor { get; private set; }
         #endregion
 
         #region Events
@@ -57,6 +70,8 @@ namespace Guppy.UI.Elements
         protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
+
+            _stateValues = new Queue<IDisposable>();
 
             this.OnState = DictionaryHelper.BuildEnumDictionary<ElementState, OnStateChangedDelegate>();
         }
@@ -76,6 +91,9 @@ namespace Guppy.UI.Elements
             this.OnStateChanged += this.HandleStateChanged;
             this.OnState[ElementState.Hovered] += this.HandleHoveredStateChanged;
             this.OnState[ElementState.Pressed] += this.HandlePressedStateChanged;
+
+            this.BackgroundColor = this.BuildStateValue<Color>();
+            this.BorderColor = this.BuildStateValue<Color>();
         }
 
         protected override void Release()
@@ -83,6 +101,9 @@ namespace Guppy.UI.Elements
             base.Release();
 
             this.Padding.OnChanged -= this.HandlePaddingChanged;
+
+            while (_stateValues.Any())
+                _stateValues.Dequeue().Dispose();
         }
         #endregion
 
@@ -91,8 +112,14 @@ namespace Guppy.UI.Elements
         {
             base.Draw(gameTime);
 
-            _primitiveBatch.DrawRectangle(this.InnerBounds, Color.Blue);
-            _primitiveBatch.DrawRectangle(this.OuterBounds, Color.Red);
+            // if (this.BackgroundColor.Current != default(Color))
+            //     _primitiveBatch.FillRectangle(this.OuterBounds, this.BackgroundColor.Current);
+            // 
+            // if (this.BorderColor.Current != default(Color))
+            //     _primitiveBatch.DrawRectangle(this.OuterBounds, this.BorderColor.Current);
+
+            // _primitiveBatch.DrawRectangle(this.InnerBounds, Color.Blue);
+            // _primitiveBatch.DrawRectangle(this.OuterBounds, Color.Red);
         }
 
         protected override void Update(GameTime gameTime)
@@ -191,14 +218,14 @@ namespace Guppy.UI.Elements
         private void HandlePressedStateChanged(IElement sender, ElementState which, bool value)
         {
             if (value && !this.State.HasFlag(ElementState.Hovered))
-                this.TrySetState(ElementState.Active, false);
+                this.TrySetState(ElementState.Focused, false);
             else if (!value && this.State.HasFlag(ElementState.Hovered))
-                this.TrySetState(ElementState.Active, true);
+                this.TrySetState(ElementState.Focused, true);
         }
 
         private void HandleStateChanged(IElement sender, ElementState which, bool value)
         {
-            if (this.State == ElementState.None)
+            if (this.State == ElementState.Default)
             { // Only stop listening to pressed events if the element state is "empty"
                 _ui.OnPressedChanged -= this.HandleUIPressedChanged;
             }
@@ -216,10 +243,19 @@ namespace Guppy.UI.Elements
                 if (this.State.HasFlag(ElementState.Hovered))
                     this.TrySetState(ElementState.Pressed, true);
                 else
-                    this.TrySetState(ElementState.Active, false);
+                    this.TrySetState(ElementState.Focused, false);
             }
             else
                 this.TrySetState(ElementState.Pressed, false);
+        }
+
+        protected ElementStateValue<T> BuildStateValue<T>(T defaultValue = default(T))
+        {
+            var sv = new ElementStateValue<T>(this, defaultValue);
+
+            _stateValues.Enqueue(sv);
+
+            return sv;
         }
         #endregion
     }

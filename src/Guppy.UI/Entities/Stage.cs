@@ -7,6 +7,8 @@ using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Guppy.UI.Enums;
+using Guppy.Utilities.Primitives;
 
 namespace Guppy.UI.Entities
 {
@@ -46,6 +48,9 @@ namespace Guppy.UI.Entities
             {
                 e.Bounds.Width = 0.5f;
                 e.Bounds.X = 100;
+                e.BackgroundColor[ElementState.Hovered] = Color.Red;
+                e.BackgroundColor[ElementState.Pressed] = Color.Blue;
+                e.BorderColor[ElementState.Default] = Color.Green;
             });
 
             this.Content.TryCleanBounds(this.GetBounds());

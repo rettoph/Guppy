@@ -7,9 +7,9 @@ namespace Guppy.UI.Enums
     [Flags]
     public enum ElementState
     {
-        None = 0,
+        Default = 0,
         Hovered = 1,
         Pressed = 2,
-        Active = 4
+        Focused = 4
     }
 }
