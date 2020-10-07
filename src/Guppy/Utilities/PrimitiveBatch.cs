@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Guppy.Utilities
@@ -11,6 +12,7 @@ namespace Guppy.Utilities
     {
         #region Static Fields
         public static Int32 BufferSize { get; private set; } = 500;
+        private static Single Zero = 0;
         #endregion
 
         #region Private Fields
@@ -42,159 +44,119 @@ namespace Guppy.Utilities
         }
         #endregion
 
-        #region Draw Methods
-        public void DrawTriangle(VertexPositionColor v1, VertexPositionColor v2, VertexPositionColor v3)
+        #region Add Methods
+        public void AddTriangleVertice(ref Color color, ref Single x, ref Single y, ref Single z)
         {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
+            _triangleVertices[_triangleVerticeCount].Color = color;
+            _triangleVertices[_triangleVerticeCount].Position.X = x;
+            _triangleVertices[_triangleVerticeCount].Position.Y = y;
+            _triangleVertices[_triangleVerticeCount].Position.Z = z;
 
-            _triangleVertices[_triangleVerticeCount + 0] = v1;
-            _triangleVertices[_triangleVerticeCount + 1] = v2;
-            _triangleVertices[_triangleVerticeCount + 2] = v3;
+            _triangleVerticeCount++;
+        }
 
-            _triangleVerticeCount += 3;
+        public void AddLineVertice(ref Color color, ref Single x, ref Single y, ref Single z)
+        {
+            _lineVertices[_lineVerticeCount].Color = color;
+            _lineVertices[_lineVerticeCount].Position.X = x;
+            _lineVertices[_lineVerticeCount].Position.Y = y;
+            _lineVertices[_lineVerticeCount].Position.Z = z;
+
+            _lineVerticeCount++;
+        }
+        #endregion
+
+        #region DrawTriangle Methods
+        public void DrawTriangle(
+            Color c1, Single x1, Single y1, Single z1,
+            Color c2, Single x2, Single y2, Single z2,
+            Color c3, Single x3, Single y3, Single z3)
+        {
+            this.AddTriangleVertice(ref c1, ref x1, ref y1, ref z1);
+            this.AddTriangleVertice(ref c2, ref x2, ref y2, ref z2);
+            this.AddTriangleVertice(ref c3, ref x3, ref y3, ref z3);
 
             this.TryFlushTriangleVertices();
         }
+        public void DrawTriangle(VertexPositionColor v1, VertexPositionColor v2, VertexPositionColor v3)
+            => this.DrawTriangle(
+                c1: v1.Color, x1: v1.Position.X, y1: v1.Position.Y, z1: v1.Position.Z,
+                c2: v2.Color, x2: v2.Position.X, y2: v2.Position.Y, z2: v2.Position.Z,
+                c3: v3.Color, x3: v3.Position.X, y3: v3.Position.Y, z3: v3.Position.Z);
 
         public void DrawTriangle(Color color, Vector3 p1, Vector3 p2, Vector3 p3)
-        {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
-
-            _triangleVertices[_triangleVerticeCount + 0].Position = p1;
-            _triangleVertices[_triangleVerticeCount + 0].Color = color;
-            _triangleVertices[_triangleVerticeCount + 1].Position = p2;
-            _triangleVertices[_triangleVerticeCount + 1].Color = color;
-            _triangleVertices[_triangleVerticeCount + 2].Position = p3;
-            _triangleVertices[_triangleVerticeCount + 2].Color = color;
-
-            _triangleVerticeCount += 3;
-
-            this.TryFlushTriangleVertices();
-        }
-
-        public void DrawTriangle(Vector3 p1, Color c1, Vector3 p2, Color c2, Vector3 p3, Color c3)
-        {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
-
-            _triangleVertices[_triangleVerticeCount + 0].Position = p1;
-            _triangleVertices[_triangleVerticeCount + 0].Color = c1;
-            _triangleVertices[_triangleVerticeCount + 1].Position = p2;
-            _triangleVertices[_triangleVerticeCount + 1].Color = c2;
-            _triangleVertices[_triangleVerticeCount + 2].Position = p3;
-            _triangleVertices[_triangleVerticeCount + 2].Color = c3;
-
-            _triangleVerticeCount += 3;
-
-            this.TryFlushTriangleVertices();
-        }
+            => this.DrawTriangle(
+                c1: color, x1: p1.X, y1: p1.Y, z1: p1.Z,
+                c2: color, x2: p2.X, y2: p2.Y, z2: p2.Z,
+                c3: color, x3: p3.X, y3: p3.Y, z3: p3.Z);
+        public void DrawTriangle(Color c1, Vector3 p1, Color c2, Vector3 p2, Color c3, Vector3 p3)
+            => this.DrawTriangle(
+                c1: c1, x1: p1.X, y1: p1.Y, z1: p1.Z,
+                c2: c2, x2: p2.X, y2: p2.Y, z2: p2.Z,
+                c3: c3, x3: p3.X, y3: p3.Y, z3: p3.Z);
 
         public void DrawTriangle(Color color, Vector2 p1, Vector2 p2, Vector2 p3)
+            => this.DrawTriangle(
+                c1: color, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
+                c2: color, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
+                c3: color, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
+
+        public void DrawTriangle(Color c1, Vector2 p1, Color c2, Vector2 p2, Color c3, Vector2 p3)
+            => this.DrawTriangle(
+                c1: c1, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
+                c2: c2, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
+                c3: c3, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
+
+        /// <summary>
+        /// Draw many triangles in bulk
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="vertices"></param>
+        public void DrawTriangles(Color color, params Vector2[] vertices)
         {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
+            Debug.Assert(vertices.Length % 3 == 0);
 
-            _triangleVertices[_triangleVerticeCount + 0].Position.X = p1.X;
-            _triangleVertices[_triangleVerticeCount + 0].Position.Y = p1.Y;
-            _triangleVertices[_triangleVerticeCount + 0].Color = color;
-            _triangleVertices[_triangleVerticeCount + 1].Position.X = p2.X;
-            _triangleVertices[_triangleVerticeCount + 1].Position.Y = p2.Y;
-            _triangleVertices[_triangleVerticeCount + 1].Color = color;
-            _triangleVertices[_triangleVerticeCount + 2].Position.X = p3.X;
-            _triangleVertices[_triangleVerticeCount + 2].Position.Y = p3.Y;
-            _triangleVertices[_triangleVerticeCount + 2].Color = color;
-
-            _triangleVerticeCount += 3;
-
-            this.TryFlushTriangleVertices();
+            for(Int32 i = 0; i<vertices.Length; i++)
+                this.DrawTriangle(color, vertices[i++], vertices[i++], vertices[i++]);
         }
+        #endregion
 
-        public void DrawTriangle(Vector2 p1, Color c1, Vector2 p2, Color c2, Vector2 p3, Color c3)
+        #region DrawLine Methods
+        public void DrawLine(
+            Color c1, Single x1, Single y1, Single z1,
+            Color c2, Single x2, Single y2, Single z2)
         {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
-
-            _triangleVertices[_triangleVerticeCount + 0].Position.X = p1.X;
-            _triangleVertices[_triangleVerticeCount + 0].Position.Y = p1.Y;
-            _triangleVertices[_triangleVerticeCount + 0].Color = c1;
-            _triangleVertices[_triangleVerticeCount + 1].Position.X = p2.X;
-            _triangleVertices[_triangleVerticeCount + 1].Position.Y = p2.Y;
-            _triangleVertices[_triangleVerticeCount + 1].Color = c2;
-            _triangleVertices[_triangleVerticeCount + 2].Position.X = p3.X;
-            _triangleVertices[_triangleVerticeCount + 2].Position.Y = p3.Y;
-            _triangleVertices[_triangleVerticeCount + 2].Color = c3;
-
-            _triangleVerticeCount += 3;
-
-            this.TryFlushTriangleVertices();
-        }
-
-        public void DrawLine(ref VertexPositionColor v1, ref VertexPositionColor v2)
-        {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
-
-            _lineVertices[_lineVerticeCount + 0] = v1;
-            _lineVertices[_lineVerticeCount + 1] = v2;
-
-            _lineVerticeCount += 2;
+            this.AddLineVertice(ref c1, ref x1, ref y1, ref z1);
+            this.AddLineVertice(ref c2, ref x2, ref y2, ref z2);
 
             this.TryFlushLineVertices();
         }
 
-        public void DrawLine(Vector3 p1, Color c1, Vector3 p2, Color c2)
-        {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
+        public void DrawLine(Color color, Vector3 p1, Vector3 p2)
+            => this.DrawLine(
+                c1: color, x1: p1.X, y1: p1.Y, z1: p1.Z,
+                c2: color, x2: p2.X, y2: p2.Y, z2: p2.Z);
+        public void DrawLine(Color c1, Vector3 p1, Color c2, Vector3 p2)
+            => this.DrawLine(
+                c1: c1, x1: p1.X, y1: p1.Y, z1: p1.Z,
+                c2: c2, x2: p2.X, y2: p2.Y, z2: p2.Z);
 
-            _lineVertices[_lineVerticeCount + 0].Position = p1;
-            _lineVertices[_lineVerticeCount + 0].Color = c1;
-            _lineVertices[_lineVerticeCount + 1].Position = p2;
-            _lineVertices[_lineVerticeCount + 1].Color = c2;
+        public void DrawLine(Color color, Vector2 p1, Vector2 p2)
+            => this.DrawLine(
+                c1: color, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
+                c2: color, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero);
 
-            _lineVerticeCount += 2;
+        public void DrawLine(Color c1, Vector2 p1, Color c2, Vector2 p2)
+            => this.DrawLine(
+                c1: c1, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
+                c2: c2, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero);
+        #endregion
 
-            this.TryFlushLineVertices();
-        }
-
-        public void DrawLine(Vector2 p1, Color c1, Vector2 p2, Color c2)
-        {
-            if (!_started)
-                throw new Exception("Unable to draw primitive, PrimitiveBatch not started.");
-
-            _lineVertices[_lineVerticeCount + 0].Position.X = p1.X;
-            _lineVertices[_lineVerticeCount + 0].Position.Y = p1.Y;
-            _lineVertices[_lineVerticeCount + 0].Color = c1;
-            _lineVertices[_lineVerticeCount + 1].Position.X = p2.X;
-            _lineVertices[_lineVerticeCount + 1].Position.Y = p2.Y;
-            _lineVertices[_lineVerticeCount + 1].Color = c2;
-
-            _lineVerticeCount += 2;
-
-            this.TryFlushLineVertices();
-        }
-
-        public void DrawLine(Vector2 p1, Vector2 p2, Color c)
-        {
-            this.DrawLine(p1, c, p2, c);
-        }
-
-        public void DrawPrimitive(ref Color color, Primitive primitive)
-        {
-            foreach (Vector3 vertice in primitive.Vertices)
-            {
-                _triangleVertices[_triangleVerticeCount].Color = color;
-                _triangleVertices[_triangleVerticeCount].Position = vertice;
-                _triangleVerticeCount++;
-
-                if (_triangleVerticeCount == _triangleVertices.Length)
-                    this.TryFlushTriangleVertices();
-            }
-        }
-        public void DrawPrimitive(Color color, Primitive primitive)
-            => this.DrawPrimitive(ref color, primitive);
+        #region DrawPrimitivePath Methods
+        public void DrawPrimitive(Primitive primitive, Color color)
+            => this.DrawPrimitive(primitive, color, Matrix.Identity);
+        public void DrawPrimitive(Primitive primitive, Color color, Matrix transformation)
+            => primitive.Draw(color, transformation, this);
         #endregion
 
         #region Helper Methods

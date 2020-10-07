@@ -15,18 +15,36 @@ namespace Guppy.Extensions.Utilities
             primitiveBatch.Begin(camera.View, camera.Projection, blendstate);
         }
 
-        public static void DrawRectangle(this PrimitiveBatch batch, Rectangle rectangle, Color color)
+        public static void DrawRectangle(this PrimitiveBatch batch, Color color, Rectangle rectangle)
         {
-            batch.DrawLine(new Vector2(rectangle.Left, rectangle.Top), color, new Vector2(rectangle.Right, rectangle.Top), color);
-            batch.DrawLine(new Vector2(rectangle.Left, rectangle.Bottom), color, new Vector2(rectangle.Right, rectangle.Bottom), color);
-            batch.DrawLine(new Vector2(rectangle.Left, rectangle.Top), color, new Vector2(rectangle.Left, rectangle.Bottom), color);
-            batch.DrawLine(new Vector2(rectangle.Right, rectangle.Top), color, new Vector2(rectangle.Right, rectangle.Bottom), color);
+            batch.DrawLine(
+                c1: color, x1: rectangle.Left, y1: rectangle.Top, z1: 0,
+                c2: color, x2: rectangle.Right, y2: rectangle.Top, z2: 0);
+
+            batch.DrawLine(
+                c1: color, x1: rectangle.Left, y1: rectangle.Bottom, z1: 0,
+                c2: color, x2: rectangle.Right, y2: rectangle.Bottom, z2: 0);
+
+            batch.DrawLine(
+                c1: color, x1: rectangle.Left, y1: rectangle.Top, z1: 0,
+                c2: color, x2: rectangle.Left, y2: rectangle.Bottom, z2: 0);
+
+            batch.DrawLine(
+                c1: color, x1: rectangle.Right, y1: rectangle.Top, z1: 0,
+                c2: color, x2: rectangle.Right, y2: rectangle.Bottom, z2: 0);
         }
 
-        public static void FillRectangle(this PrimitiveBatch batch, Rectangle rectangle, Color color)
+        public static void FillRectangle(this PrimitiveBatch batch, Color color, Rectangle rectangle)
         {
-            batch.DrawTriangle(new Vector2(rectangle.Left, rectangle.Top), color, new Vector2(rectangle.Right, rectangle.Top), color, new Vector2(rectangle.Right, rectangle.Bottom), color);
-            batch.DrawTriangle(new Vector2(rectangle.Right, rectangle.Bottom), color, new Vector2(rectangle.Left, rectangle.Bottom), color, new Vector2(rectangle.Left, rectangle.Top), color);
+            batch.DrawTriangle(
+                c1: color, x1: rectangle.Left, y1: rectangle.Top, z1: 0,
+                c2: color, x2: rectangle.Right, y2: rectangle.Top, z2: 0,
+                c3: color, x3: rectangle.Right, y3: rectangle.Bottom, z3: 0);
+
+            batch.DrawTriangle(
+                c1: color, x1: rectangle.Right, y1: rectangle.Bottom, z1: 0,
+                c2: color, x2: rectangle.Left, y2: rectangle.Bottom, z2: 0,
+                c3: color, x3: rectangle.Left, y3: rectangle.Top, z3: 0);
         }
     }
 }
