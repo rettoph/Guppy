@@ -93,11 +93,11 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Frame Methods
-        protected override void Start(bool draw)
+        protected override void Start(bool draw, int period)
         {
             _peer.Start();
 
-            base.Start(draw);
+            base.Start(draw, period);
         }
 
         protected override void Update(GameTime gameTime)

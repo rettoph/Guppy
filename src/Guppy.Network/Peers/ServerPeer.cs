@@ -58,9 +58,9 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Helper Methods
-        protected override void Start(bool draw)
+        protected override void Start(bool draw, int period)
         {
-            base.Start(draw);
+            base.Start(draw, period);
 
             // Create a new default user representing the server...
             this.CurrentUser = this.provider.GetService<User>((u, p, c) =>

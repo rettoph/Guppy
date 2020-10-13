@@ -88,16 +88,9 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public Object GetService(UInt32 id, Action<Object, ServiceProvider, ServiceDescriptor> setup = null)
         {
-            try
-            {
-                _service = this.root.services[id];
-            }
-            catch(KeyNotFoundException e)
-            {
-                throw new ServiceIdUnknownException(id);
-            }
+            this.root.services.TryGetValue(id, out _service);
 
-            return _service.GetInstance(this, setup);
+            return _service?.GetInstance(this, setup);
         }
 
         /// <summary>
@@ -108,16 +101,7 @@ namespace Guppy.DependencyInjection
         /// <param name="setup"></param>
         /// <returns></returns>
         public Object GetService(String name, Action<Object, ServiceProvider, ServiceDescriptor> setup = null)
-        {
-            try
-            {
-                return this.GetService(ServiceDescriptor.GetId(name), setup);
-            }
-            catch(ServiceIdUnknownException e)
-            {
-                throw new ServiceNameUnknown(name, e);
-            }
-        }
+            => this.GetService(ServiceDescriptor.GetId(name), setup);
 
         /// <summary>
         /// Return a new nameless service instance
@@ -127,16 +111,7 @@ namespace Guppy.DependencyInjection
         /// <param name="setup"></param>
         /// <returns></returns>
         public Object GetService(Type type, Action<Object, ServiceProvider, ServiceDescriptor> setup)
-        {
-            try
-            {
-                return this.GetService(ServiceDescriptor.GetId(type), setup);
-            }
-            catch (ServiceIdUnknownException e)
-            {
-                throw new ServiceTypeUnknown(type, e);
-            }
-        }
+            => this.GetService(ServiceDescriptor.GetId(type), setup);
 
         /// <summary>
         /// Return a new nameless service instance
