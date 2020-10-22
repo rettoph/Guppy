@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -25,60 +26,31 @@ namespace Guppy
         public Boolean Visible
         {
             get => _visible;
-            set
-            {
-                if (value != this.Visible)
-                {
-                    _visible = value;
-                    this.OnVisibleChanged?.Invoke(this, this.Visible);
-                }
-                    
-            }
+            set => this.OnVisibleChanged.InvokeIfChanged(value != _visible, this, ref _visible, value);
         }
         public Boolean Enabled
         {
             get => _enabled;
-            set
-            {
-                if (value != this.Enabled) {
-                    _enabled = value;
-                    this.OnEnabledChanged?.Invoke(this, this.Enabled);
-                }
-            }
+            set => this.OnEnabledChanged.InvokeIfChanged(value != _enabled, this, ref _enabled, value);
         }
 
         public Int32 DrawOrder
         {
             get => _drawOrder;
-            set
-            {
-                if (this.DrawOrder != value)
-                {
-                    _drawOrder = value;
-                    this.OnDrawOrderChanged?.Invoke(this, this.DrawOrder);
-                }
-                    
-            }
+            set => this.OnDrawOrderChanged.InvokeIfChanged(value != _drawOrder, this, ref _drawOrder, value);
         }
         public Int32 UpdateOrder
         {
             get => _updateOrder;
-            set
-            {
-                if (this.UpdateOrder != value)
-                {
-                    _updateOrder = value;
-                    this.OnUpdateOrderChanged?.Invoke(this, this.UpdateOrder);
-                }
-            }
+            set => this.OnUpdateOrderChanged.InvokeIfChanged(value != _updateOrder, this, ref _updateOrder, value);
         }
         #endregion
 
         #region Events
-        public event GuppyEventHandler<Orderable, Int32> OnDrawOrderChanged;
-        public event GuppyEventHandler<Orderable, Int32> OnUpdateOrderChanged;
-        public event GuppyEventHandler<Orderable, Boolean> OnVisibleChanged;
-        public event GuppyEventHandler<Orderable, Boolean> OnEnabledChanged;
+        public event OnEventDelegate<Orderable, Int32> OnDrawOrderChanged;
+        public event OnEventDelegate<Orderable, Int32> OnUpdateOrderChanged;
+        public event OnEventDelegate<Orderable, Boolean> OnVisibleChanged;
+        public event OnEventDelegate<Orderable, Boolean> OnEnabledChanged;
         #endregion
 
         #region Lifecycle Methods

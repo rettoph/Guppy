@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Commands;
@@ -54,7 +55,7 @@ namespace Guppy.UI.Services
         #endregion
 
         #region Events
-        public event GuppyEventHandler<Boolean> OnPressedChanged;
+        public event OnEventDelegate<Boolean> OnPressedChanged;
         #endregion
 
         #region Lifecycle Methods

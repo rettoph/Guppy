@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -6,12 +7,6 @@ using System.Text;
 
 namespace Guppy.Interfaces
 {
-    #region Delegates
-    public delegate void GuppyEventHandler<TSender>(TSender sender);
-    public delegate void GuppyEventHandler<TSender, TArg>(TSender sender, TArg arg);
-    public delegate void GuppyDeltaEventHandler<TSender, TArg>(TSender sender, TArg old, TArg value);
-    #endregion
-
     public interface IService
     {
         #region Attributes
@@ -20,7 +15,7 @@ namespace Guppy.Interfaces
         #endregion
 
         #region Events
-        event GuppyEventHandler<IService> OnReleased;
+        event OnEventDelegate<IService> OnReleased;
         #endregion
 
         #region Methods

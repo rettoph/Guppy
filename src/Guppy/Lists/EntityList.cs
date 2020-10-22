@@ -82,11 +82,10 @@ namespace Guppy.Lists
         /// Automatically update an entities Layer.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HandleItemLayerGroupChanged(object sender, int e)
-        {
-            this.UpdateItemLayer(sender as Entity);
-        }
+        /// <param name="old"></param>
+        /// <param name="value"></param>
+        private void HandleItemLayerGroupChanged(object sender, Int32 old, Int32 value)
+            => this.UpdateItemLayer(sender as Entity);
         #endregion
     }
 }

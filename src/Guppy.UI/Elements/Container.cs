@@ -1,5 +1,6 @@
 ﻿
 using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
@@ -24,7 +25,7 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Events
-        private event GuppyEventHandler<IElement, GameTime> OnUpdateChild;
+        private event OnEventDelegate<IElement, GameTime> OnUpdateChild;
         #endregion
 
         #region Lifecycle Methods

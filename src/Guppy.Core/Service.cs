@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
+using Guppy.Events.Delegates;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -43,7 +44,7 @@ namespace Guppy
         #endregion
 
         #region Events
-        public event GuppyEventHandler<IService> OnReleased;
+        public event OnEventDelegate<IService> OnReleased;
         #endregion
 
         #region Lifecycle Methods
