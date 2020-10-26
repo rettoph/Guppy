@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Services;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -103,10 +104,7 @@ namespace Guppy.Extensions.DependencyInjection
             ExceptionHelper.ValidateAssignableFrom<Driven>(driven);
             ExceptionHelper.ValidateAssignableFrom<Driver>(driver);
 
-            services.AddConfiguration(driven, configuration, (i, p, f) =>
-            {
-                ((Driven)i).AddDriver(driver);
-            }, 5);
+            services.AddConfiguration<DriverService>((drivers, p, d) => drivers.AddDriver(driven, driver));
         }
 
         /// <summary>
@@ -116,14 +114,23 @@ namespace Guppy.Extensions.DependencyInjection
         /// for every driven instance created with the 
         /// recieved configuration.
         /// </summary>
+        /// <typeparam name="TDriven"></typeparam>
+        /// <typeparam name="TDriver"></typeparam>
         /// <param name="services"></param>
-        /// <param name="driven"></param>
-        /// <param name="driver"></param>
+        /// <param name="configuration"></param>
         public static void BindDriver<TDriven, TDriver>(this ServiceCollection services, String configuration)
             where TDriven : Driven
             where TDriver : Driver
                 => services.BindDriver(typeof(TDriven), typeof(TDriver));
 
+        /// <summary>
+        /// Create a new Driver & automatically bind it to a target driven.
+        /// </summary>
+        /// <typeparam name="TDriven"></typeparam>
+        /// <typeparam name="TDriver"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="factory"></param>
+        /// <param name="priority"></param>
         public static void AddAndBindDriver<TDriven, TDriver>(this ServiceCollection services, Func<ServiceProvider, TDriver> factory, Int32 priority = 0)
             where TDriver : Driver
             where TDriven : Driven
