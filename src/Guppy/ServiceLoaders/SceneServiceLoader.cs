@@ -2,6 +2,7 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Lists;
 using Guppy.Utilities;
@@ -20,7 +21,7 @@ namespace Guppy.ServiceLoaders
             services.AddFactory<SceneList>(p => new SceneList());
             services.AddSingleton<SceneList>(autoBuild: true);
 
-            AssemblyHelper.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
+            AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
             {
                 services.AddScene(s, p => ActivatorUtilities.CreateInstance(p, s));
             });

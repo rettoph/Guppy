@@ -18,24 +18,33 @@ namespace Guppy.Lists
         #endregion
 
         #region Create Methods
-        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
             where T : class, TService
         {
-            var instance = this.provider.GetService<T>(descriptorId, setup);
-            this.OnCreated?.Invoke(instance);
+            var instance = this.provider.GetService<T>(descriptorId, (i, p, d) =>
+            {
+                if (id != null)
+                    i.Id = id.Value;
 
-            if(!this.AutoFill)
+                _created.Push(i);
+                this.OnCreated?.Invoke(i);
+
+                setup?.Invoke(i, p, d);
+            });
+
+            _created.Pop();
+            if (!this.AutoFill)
                 this.TryAdd(instance);
 
             return instance;
         }
 
-        public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+        public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
             where T : class, TService
         {
             try
             {
-                return this.Create<T>(ServiceDescriptor.GetId(descriptorType), setup);
+                return this.Create<T>(ServiceDescriptor.GetId(descriptorType), setup, id);
             }
             catch(ServiceIdUnknownException e)
             {
@@ -43,12 +52,12 @@ namespace Guppy.Lists
             }
         }
 
-        public T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+        public T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
             where T : class, TService
         {
             try
             {
-                return this.Create<T>(ServiceDescriptor.GetId(descriptorName), setup);
+                return this.Create<T>(ServiceDescriptor.GetId(descriptorName), setup, id);
             }
             catch (ServiceIdUnknownException e)
             {
@@ -56,33 +65,27 @@ namespace Guppy.Lists
             }
         }
 
-        public T Create<T>(Action<T, ServiceProvider, ServiceDescriptor> setup = null)
+        public T Create<T>(Action <T, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
             where T : class, TService
-                => this.Create<T>(typeof(T), setup);
+                => this.Create<T>(typeof(T), setup, id);
 
-        public TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceDescriptor> setup = null)
-            => this.Create<TService>(descriptorId, setup);
+        public TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
+            => this.Create<TService>(descriptorId, setup, id);
 
-        public TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceDescriptor> setup = null)
-            => this.Create(ServiceDescriptor.GetId(descriptorType), setup);
+        public TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
+            => this.Create(ServiceDescriptor.GetId(descriptorType), setup, id);
 
-        public TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceDescriptor> setup = null)
-            => this.Create(ServiceDescriptor.GetId(descriptorName), setup);
+        public TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
+            => this.Create(ServiceDescriptor.GetId(descriptorName), setup, id);
 
-        public TService Create(Action<TService, ServiceProvider, ServiceDescriptor> setup = null)
-             => this.Create(typeof(TService), setup);
+        public TService Create(Action <TService, ServiceProvider, ServiceDescriptor> setup = null, Guid? id = null)
+             => this.Create(typeof(TService), setup, id);
         #endregion
 
         #region GetOrCreateById Methods
         public T GetOrCreateById<T>(Guid id, UInt32 descriptorId)
             where T : class, TService
-        {
-            var instance = this.GetById<T>(id);
-            if (instance != default(T))
-                return instance;
-
-            return this.Create<T>(descriptorId, (i, p, d) => i.Id = id);
-        }
+                => this.GetById<T>(id) ?? this.Create<T>(descriptorId, null, id);
 
         public T GetOrCreateById<T>(Guid id, String descriptorName)
             where T : class, TService

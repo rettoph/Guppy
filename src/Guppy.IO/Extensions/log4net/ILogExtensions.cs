@@ -91,7 +91,7 @@ namespace Guppy.IO.Extensions.log4net
 
         public static void Verbose(this ILog log, Func<String> message)
         {
-            if(log.GetLevel() >= Level.Verbose)
+            if(log.GetLevel() <= Level.Verbose)
                 log.Logger.Log(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Verbose,
@@ -103,7 +103,7 @@ namespace Guppy.IO.Extensions.log4net
         #region Debug
         public static void Debug(this ILog log, Func<String> message)
         {
-            if (log.GetLevel() >= Level.Debug)
+            if (log.GetLevel() <= Level.Debug)
                 log.Logger.Log(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Debug,
@@ -115,7 +115,7 @@ namespace Guppy.IO.Extensions.log4net
         #region Info
         public static void Info(this ILog log, Func<String> message)
         {
-            if (log.GetLevel() >= Level.Info)
+            if (log.GetLevel() <= Level.Info)
                 log.Logger.Log(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Info,
@@ -127,7 +127,7 @@ namespace Guppy.IO.Extensions.log4net
         #region Warn
         public static void Warn(this ILog log, Func<String> message)
         {
-            if (log.GetLevel() >= Level.Warn)
+            if (log.GetLevel() <= Level.Warn)
                 log.Logger.Log(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Warn,
@@ -139,7 +139,7 @@ namespace Guppy.IO.Extensions.log4net
         #region Error
         public static void Error(this ILog log, Func<String> message)
         {
-            if (log.GetLevel() >= Level.Error)
+            if (log.GetLevel() <= Level.Error)
                 log.Logger.Log(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Error,
@@ -151,7 +151,7 @@ namespace Guppy.IO.Extensions.log4net
         #region Fatal
         public static void Fatal(this ILog log, Func<String> message)
         {
-            if (log.GetLevel() >= Level.Fatal)
+            if (log.GetLevel() <= Level.Fatal)
                 log.Logger.Log(
                     System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Fatal,

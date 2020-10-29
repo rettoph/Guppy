@@ -2,6 +2,7 @@
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ namespace Guppy.ServiceLoaders
     {
         public void ConfigureServices(ServiceCollection services)
         {
-            AssemblyHelper.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(g =>
+            AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(g =>
             {
                 services.AddGame(g, p => ActivatorUtilities.CreateInstance(p, g));
             });

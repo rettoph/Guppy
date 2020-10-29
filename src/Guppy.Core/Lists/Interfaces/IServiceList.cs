@@ -20,9 +20,9 @@ namespace Guppy.Lists.Interfaces
         /// <summary>
         /// Determins whether or not the current list
         /// should auto fill when new service instances
-        /// are created.
+        /// are created from anywhere.
         /// </summary>
-        Boolean AutoFill { get; set; }
+        Boolean AutoFill { get; }
 
         void TryAdd(Object instance);
 

@@ -15,7 +15,7 @@ namespace Guppy.Services
     internal class ServiceListService : Service
     {
         #region Private Fields
-        private Dictionary<ServiceProvider, List<IServiceList>> _lists;
+        private Dictionary<ServiceProvider, List<IServiceList>> _autoFillLists;
         #endregion
 
         #region Lifecycle Methods
@@ -23,28 +23,26 @@ namespace Guppy.Services
         {
             base.Create(provider);
 
-            _lists = new Dictionary<ServiceProvider, List<IServiceList>>();
+            _autoFillLists = new Dictionary<ServiceProvider, List<IServiceList>>();
         }
         #endregion
 
         #region Helper Methods
         internal void TryAddList(IServiceList list)
         {
-            try
-            {
-                _lists[list.Provider].Add(list);
+            if(!_autoFillLists.ContainsKey(list.Provider))
+                _autoFillLists[list.Provider] = new List<IServiceList>();
+
+            if(list.AutoFill)
+            { // Track the list if needed...
+                _autoFillLists[list.Provider].Add(list);
                 list.OnReleased += this.HandleListReleased;
-            }
-            catch (KeyNotFoundException e)
-            {
-                _lists[list.Provider] = new List<IServiceList>();
-                this.TryAddList(list);
             }
         }
 
         internal void TryRemoveList(IServiceList list)
         {
-            _lists[list.Provider].Remove(list);
+            _autoFillLists[list.Provider].Remove(list);
             list.OnReleased -= this.HandleListReleased;
         }
 
@@ -52,15 +50,15 @@ namespace Guppy.Services
         {
             try
             {
-                _lists[provider].ForEach(l =>
+                _autoFillLists[provider].ForEach(l =>
                 {
-                    if (l.AutoFill && l.BaseType.IsAssignableFrom(service.GetType()))
+                    if (l.BaseType.IsAssignableFrom(service.GetType()))
                         l.TryAdd(service);
                 });
             }
             catch(KeyNotFoundException e)
             {
-                _lists[provider] = new List<IServiceList>();
+                _autoFillLists[provider] = new List<IServiceList>();
                 this.TryAddService(service, provider);
             }
 

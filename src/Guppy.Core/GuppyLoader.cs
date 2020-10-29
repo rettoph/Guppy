@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Extensions.System;
 
 namespace Guppy
 {
@@ -42,7 +43,7 @@ namespace Guppy
             _services = new ServiceCollection();
 
             _serviceLoaders = new HashSet<IServiceLoader>();
-            AssemblyHelper.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
+            AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
                     .Select(t => Activator.CreateInstance(t) as IServiceLoader)
                     .ForEach(sl => this.RegisterServiceLoader(sl));
         }

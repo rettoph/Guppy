@@ -45,12 +45,13 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="driver"></param>
         /// <param name="factory"></param>
-        public static void AddDriver(this ServiceCollection services, Type driver, Func<ServiceProvider, Object> factory, Int32 priority = 0)
+        public static void AddDriver(this ServiceCollection services, Type driver, Func<ServiceProvider, Object> factory, Func<Driven, ServiceProvider, Boolean> filter = null, Int32 priority = 0)
         {
             ExceptionHelper.ValidateAssignableFrom<Driver>(driver);
 
             services.AddFactory(driver, factory, priority);
             services.AddTransient(driver);
+            services.AddDriverFilter(driver, filter);
         }
 
         /// <summary>
@@ -59,9 +60,15 @@ namespace Guppy.Extensions.DependencyInjection
         /// <typeparam name="TDriver"></typeparam>
         /// <param name="services"></param>
         /// <param name="factory"></param>
-        public static void AddDriver<TDriver>(this ServiceCollection services, Func<ServiceProvider, TDriver> factory, Int32 priority = 0)
+        public static void AddDriver<TDriver>(this ServiceCollection services, Func<ServiceProvider, TDriver> factory, Func<Driven, ServiceProvider, Boolean> filter = null, Int32 priority = 0)
             where TDriver : Driver
-                => services.AddDriver(typeof(TDriver), p => factory(p), priority);
+                => services.AddDriver(typeof(TDriver), p => factory(p), (i, p) => filter?.Invoke(i, p) ?? true, priority);
+
+        public static void AddDriverFilter(this ServiceCollection services, Type driver, Func<Driven, ServiceProvider, Boolean> filter)
+        {
+            if(filter != default)
+                services.AddConfiguration<DriverService>((drivers, p, d) => drivers.AddFilter(driver, filter));
+        }
 
         /// <summary>
         /// Bind a Driver type to a recieved Driven type. 
@@ -104,7 +111,7 @@ namespace Guppy.Extensions.DependencyInjection
             ExceptionHelper.ValidateAssignableFrom<Driven>(driven);
             ExceptionHelper.ValidateAssignableFrom<Driver>(driver);
 
-            services.AddConfiguration<DriverService>((drivers, p, d) => drivers.AddDriver(driven, driver));
+            services.AddConfiguration<DriverService>((drivers, p, d) => drivers.BindDriver(driven, driver));
         }
 
         /// <summary>
@@ -131,11 +138,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="services"></param>
         /// <param name="factory"></param>
         /// <param name="priority"></param>
-        public static void AddAndBindDriver<TDriven, TDriver>(this ServiceCollection services, Func<ServiceProvider, TDriver> factory, Int32 priority = 0)
+        public static void AddAndBindDriver<TDriven, TDriver>(this ServiceCollection services, Func<ServiceProvider, TDriver> factory, Func<TDriven, ServiceProvider, Boolean> filter = null, Int32 priority = 0)
             where TDriver : Driver
             where TDriven : Driven
         {
-            services.AddDriver<TDriver>(factory, priority);
+            services.AddDriver<TDriver>(factory, (i, p) => filter?.Invoke(i as TDriven, p) ?? true, priority);
             services.BindDriver<TDriven, TDriver>();
         }
         #endregion

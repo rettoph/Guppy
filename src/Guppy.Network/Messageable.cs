@@ -47,20 +47,20 @@ namespace Guppy.Network
         #endregion
 
         #region Lifeccyle Methods
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
 
-            provider.Service<NetPeer>(out _peer);
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
 
             this.OutgoingMessages = new ConcurrentQueue<NetOutgoingMessageConfiguration>();
             this.IncomingMessages = new ConcurrentQueue<NetIncomingMessage>();
             this.Messages = new MessageManager(this.CreateMessage);
         }
-
-        protected override void Release()
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Release();
+            base.PreInitialize(provider);
+
+            provider.Service<NetPeer>(out _peer);
         }
         #endregion
 

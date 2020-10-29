@@ -23,11 +23,9 @@ namespace Guppy
     /// </summary>
     public class Driven : Frameable
     {
-        #region Static Fields
-        #endregion
-
         #region Private Fields
         private Driver[] _drivers;
+        private DriverService _driverService;
         #endregion
 
         #region Lifecycle Methods
@@ -35,44 +33,21 @@ namespace Guppy
         {
             base.Create(provider);
 
-            _drivers = provider.GetService<DriverService>().BuildDrivers(this, provider);
-
-            _drivers.ForEach(d => d.TryCreate(this, provider));
-        }
-
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            _drivers.ForEach(d => d.TryPreInitialize(this, provider));
+            provider.Service(out _driverService);
         }
 
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
-            _drivers.ForEach(d => d.TryInitialize(this, provider));
-        }
-
-        protected override void PostInitialize(ServiceProvider provider)
-        {
-            base.PostInitialize(provider);
-
-            _drivers.ForEach(d => d.TryPostInitialize(this, provider));
+            _drivers = _driverService.BuildDrivers(this, provider);
         }
 
         protected override void Release()
         {
             base.Release();
 
-            _drivers.ForEach(d => d.TryRelease(this));
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            _drivers.ForEach(d => d.TryDispose(this));
+            _driverService.ReleaseDrivers(this, ref _drivers);
         }
         #endregion
     }

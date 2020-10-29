@@ -48,7 +48,7 @@ namespace Guppy.ServiceLoaders
         {
             sender.OnReleased -= this.HandleServiceReleased;
 
-            _provider.GetServiceDescriptor(sender.GetType()).Factory.Return(sender);
+            sender.ServiceDescriptor.Factory.Return(sender);
         }
         #endregion
     }

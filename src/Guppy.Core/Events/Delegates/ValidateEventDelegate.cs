@@ -19,13 +19,19 @@ namespace Guppy.Events.Delegates
 
     public static class ValidateEventDelegateExtensions
     {
-        public static Boolean Validate<TSender, TArgs>(this ValidateEventDelegate<TSender, TArgs> validator, TSender sender, TArgs args)
+        public static Boolean Validate<TSender, TArgs>(this ValidateEventDelegate<TSender, TArgs> validator, TSender sender, TArgs args, Boolean ifNull)
         {
-            foreach (ValidateEventDelegate<TSender, TArgs> v in validator.GetInvocationList())
-                if (!v(sender, args))
-                    return false;
+            if (validator == default)
+                return ifNull;
+            else
+                foreach (ValidateEventDelegate<TSender, TArgs> v in validator.GetInvocationList())
+                    if (!v(sender, args))
+                        return false;
 
             return true;
         }
+
+        public static ValidateEventDelegate<TSender, TArgs> ToValidateEventDelegate<TSender, TArgs>(this Func<TSender, TArgs, Boolean> func)
+            => (s, a) => func(s, a);
     }
 }

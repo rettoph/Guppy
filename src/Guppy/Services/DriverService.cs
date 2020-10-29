@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,12 @@ namespace Guppy.Services
     internal sealed class DriverService : Service
     {
         #region Private Fields
-        private Dictionary<Type, ValidateEventDelegate<Driven, ServiceProvider>> _filters;
-        private Dictionary<Type, List<Type>> _drivers;
+        private Dictionary<Type, ValidateEventDelegate<Driven, ServiceProvider>> _driverFilters;
+        private Dictionary<Type, List<Type>> _drivenDrivers;
+
+        private List<Type> _driverTypes;
+        private List<Type> _drivenTypes;
+        private ServiceProvider _provider;
         #endregion
 
         #region Lifecycle Methods 
@@ -26,37 +31,53 @@ namespace Guppy.Services
         {
             base.PreInitialize(provider);
 
-            _drivers = AssemblyHelper.GetTypesAssignableFrom<Driven>().ToDictionary(
+            _provider = provider;
+            _drivenTypes = AssemblyHelper.Types.GetTypesAssignableFrom<Driven>().Where(t => !t.IsAbstract).ToList();
+            _driverTypes = AssemblyHelper.Types.GetTypesAssignableFrom<Driver>().Where(t => !t.IsAbstract).ToList();
+
+            _drivenDrivers = _drivenTypes.ToDictionary(
                 keySelector: t => t,
                 elementSelector: t => new List<Type>());
 
-            _filters = AssemblyHelper.GetTypesAssignableFrom<Driver>().ToDictionary(
+            _driverFilters = _driverTypes.ToDictionary(
                 keySelector: t => t,
                 elementSelector: t => default(ValidateEventDelegate<Driven, ServiceProvider>));
         }
         #endregion
 
         #region Helper Methods
-        internal void AddFilter(Type driver, ValidateEventDelegate<Driven, ServiceProvider> filter)
-            => _filters[driver] += filter;
+        internal void AddFilter(Type driver, Func<Driven, ServiceProvider, Boolean> filter)
+            => _driverTypes.GetTypesAssignableFrom(driver).ForEach(driverType => _driverFilters[driverType] += filter.ToValidateEventDelegate());
 
-        internal void AddDriver(Type driven, Type driver)
-            => _drivers[driven].Add(driver);
+        internal void BindDriver(Type driven, Type driver)
+            => _drivenTypes.GetTypesAssignableFrom(driven).ForEach(drivenType => _drivenDrivers[drivenType].Add(driver));
 
         internal Driver[] BuildDrivers(Driven driven, ServiceProvider provider)
         {
             var drivers = new List<Driver>();
 
-            _drivers[driven.GetType()].ForEach(driverType =>
+            _drivenDrivers[driven.GetType()].ForEach(driverType =>
             {
-                if (_filters[driverType]?.Validate(driven, provider) ?? true)
+                if (_driverFilters[driverType].Validate(driven, provider, true))
                 {
                     var driver = (Driver)provider.GetService(driverType);
+                    driver.TryInitialize(driven, provider);
                     drivers.Add(driver);
                 }
             });
 
             return drivers.ToArray();
+        }
+
+        internal void ReleaseDrivers(Driven driven, ref Driver[] drivers)
+        {
+            drivers.ForEach(d =>
+            {
+                d.TryRelease(driven);
+                _provider.GetFactory(d.GetType()).Return(d);
+            });
+
+            drivers = default;
         }
         #endregion
     }

@@ -27,6 +27,7 @@ namespace Guppy.Lists
         #region Private Fields
         private Dictionary<Guid, TService> _dictionary;
         private List<TService> _list;
+        private Stack<TService> _created;
         #endregion
 
         #region Protected Fields
@@ -37,7 +38,7 @@ namespace Guppy.Lists
         public Int32 Count => _list.Count;
 
         /// <inheritdoc />
-        public Boolean AutoFill { get; set; }
+        public Boolean AutoFill { get; private set; }
 
         Type IServiceList.BaseType => typeof(TService);
         ServiceProvider IServiceList.Provider => this.provider;
@@ -85,6 +86,7 @@ namespace Guppy.Lists
 
             _dictionary = new Dictionary<Guid, TService>();
             _list = new List<TService>();
+            _created = new Stack<TService>();
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -92,8 +94,6 @@ namespace Guppy.Lists
             base.PreInitialize(provider);
 
             this.provider = provider;
-
-            this.AutoFill = false;
 
             this.CanAdd += this.HandleCanAdd;
             this.OnAdd += this.HandleAdd;
@@ -120,7 +120,7 @@ namespace Guppy.Lists
         #region Helper Methods
         public Boolean TryAdd(TService item)
         {
-            if (!this.CanAdd?.Validate(this, item) ?? false)
+            if (!this.CanAdd.Validate(this, item, false))
                 return false;
 
             this.OnAdd?.Invoke(item);
@@ -131,7 +131,7 @@ namespace Guppy.Lists
 
         public Boolean TryRemove(TService item)
         {
-            if (!this.CanRemove?.Validate(this, item) ?? false)
+            if (!this.CanRemove.Validate(this, item, false))
                 return false;
 
             this.OnRemove?.Invoke(item);
@@ -146,22 +146,9 @@ namespace Guppy.Lists
         public TService GetById(Guid id)
             => this.GetById<TService>(id);
 
-        public T GetById<T>(Guid id)
+        public virtual T GetById<T>(Guid id)
             where T : class, TService
-        {
-            try
-            {
-                return _dictionary[id] as T;
-            }
-            catch (KeyNotFoundException e)
-            {
-                return default(T);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+                => (_dictionary.ContainsKey(id) ? _dictionary[id] : _created.FirstOrDefault(i => i.Id == id)) as T;
 
         protected void Clear()
         {
@@ -227,11 +214,5 @@ namespace Guppy.Lists
 
     public class ServiceList : ServiceList<IService>
     {
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            this.AutoFill = true;
-        }
     }
 }
