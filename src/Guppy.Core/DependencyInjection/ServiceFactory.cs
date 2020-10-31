@@ -2,6 +2,7 @@
 using Guppy.DependencyInjection.Structs;
 using Guppy.Extensions.Collections;
 using Guppy.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,6 @@ namespace Guppy.DependencyInjection
 
         #region Private Fields
         /// <summary>
-        /// The internal factory method, only used when no items pooled.
-        /// </summary>
-        private Func<ServiceProvider, Object> _factory;
-
-        /// <summary>
         /// A small collection of pooled item instances to be
         /// returned over a new instance.
         /// </summary>
@@ -35,14 +31,23 @@ namespace Guppy.DependencyInjection
 
         #region Public Fields
         /// <summary>
-        /// The base type returned by this factory instance.
-        /// </summary>
-        public readonly Type Type;
-
-        /// <summary>
         /// The builders to be excecuted when constructing a new instance.
         /// </summary>
         public readonly ServiceBuilder[] Builders;
+
+        /// <summary>
+        /// The primary Microsoft service descriptor linked 
+        /// to this factory.
+        /// </summary>
+        public readonly ServiceDescriptor Descriptor;
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// The primary factory type. This is either the descriptor implementation type
+        /// or the descripto service type.
+        /// </summary>
+        public Type Type => this.Descriptor.ImplementationType ?? this.Descriptor.ServiceType;
         #endregion
 
         #region Constructor
@@ -50,9 +55,8 @@ namespace Guppy.DependencyInjection
         {
             _count = 0;
             _pool = new Stack<Object>(ServiceFactory.MaxServicePoolSize);
-            _factory = data.Factory;
 
-            this.Type = data.Type;
+            this.Descriptor = data.Descriptor;
             this.Builders = builders;
         }
         #endregion
@@ -71,9 +75,8 @@ namespace Guppy.DependencyInjection
                 return _pool.Pop();
             }
 
-
             // Build a new instance...
-            var instance = _factory.Invoke(provider);
+            var instance = this.Descriptor.ImplementationFactory?.Invoke(provider) ?? ActivatorUtilities.CreateInstance(provider, this.Type);
             this.Builders.ForEach(b => b.Build(instance, provider));
 
             return instance;
@@ -85,7 +88,7 @@ namespace Guppy.DependencyInjection
         /// <param name="instance"></param>
         public void Return(Object instance)
         {
-            ExceptionHelper.ValidateAssignableFrom(this.Type, instance.GetType());
+            ExceptionHelper.ValidateAssignableFrom(this.Descriptor.ImplementationType, instance.GetType());
 
             if(_count < ServiceFactory.MaxServicePoolSize)
             { // If the pool has smace remaining...

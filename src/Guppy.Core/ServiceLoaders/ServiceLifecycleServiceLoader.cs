@@ -1,7 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.Collections;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;

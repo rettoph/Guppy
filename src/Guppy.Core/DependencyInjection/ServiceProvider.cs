@@ -1,15 +1,15 @@
-﻿using Guppy.Extensions.DependencyInjection;
-using Guppy.Exceptions;
+﻿using Guppy.Exceptions;
 using Guppy.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Extensions.Collections;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.DependencyInjection
 {
-    public sealed class ServiceProvider : IServiceProvider
+    public sealed partial class ServiceProvider : IServiceProvider
     {
         #region Private Fields
         /// <summary>
@@ -17,7 +17,7 @@ namespace Guppy.DependencyInjection
         /// </summary>
         private Dictionary<Type, ServiceFactory> _factories;
 
-        private ServiceDescriptor _service;
+        private ServiceContext _service;
 
         private ServiceProvider _root;
         #endregion
@@ -29,7 +29,7 @@ namespace Guppy.DependencyInjection
         /// <summary>
         /// A lookup table of all service descriptors by id.
         /// </summary>
-        internal Dictionary<UInt32, ServiceDescriptor> services;
+        internal Dictionary<UInt32, ServiceContext> services;
 
         internal ServiceProvider root => _root ?? this;
         #endregion
@@ -45,14 +45,14 @@ namespace Guppy.DependencyInjection
             _factories = collection.factories
                 .GroupBy(fd => fd.Type)
                 .Select(g => g.OrderBy(fd => fd.Priority).First())
-                .Select(fd => new ServiceFactory(fd, collection.builders.Where(b => b.Factory.IsAssignableFrom(fd.Type)).ToArray()))
+                .Select(fd => new ServiceFactory(fd, collection.builders.Where(b => b.ImplementationType.IsAssignableFrom(fd.Type)).ToArray()))
                 .ToDictionary(f => f.Type);
 
             // Create a lookup table of service descriptors
             this.services = collection.services
                 .GroupBy(sdd => sdd.Name)
                 .Select(g => g.OrderBy(sdd => sdd.Priority).First())
-                .Select(sdd => new ServiceDescriptor(
+                .Select(sdd => new ServiceContext(
                     data: sdd,
                     provider: this,
                     configurations: collection.configurations.Where(sc => sc.Key.Includes(sdd.Factory, sdd.Name)).OrderBy(sc => sc.Order).ToArray()))
@@ -86,7 +86,7 @@ namespace Guppy.DependencyInjection
         /// <param name="id"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetService(UInt32 id, Action<Object, ServiceProvider, ServiceDescriptor> setup = null)
+        public Object GetService(UInt32 id, Action<Object, ServiceProvider, ServiceContext> setup = null)
         {
             this.root.services.TryGetValue(id, out _service);
 
@@ -100,8 +100,8 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetService(String name, Action<Object, ServiceProvider, ServiceDescriptor> setup = null)
-            => this.GetService(ServiceDescriptor.GetId(name), setup);
+        public Object GetService(String name, Action<Object, ServiceProvider, ServiceContext> setup = null)
+            => this.GetService(ServiceContext.GetId(name), setup);
 
         /// <summary>
         /// Return a new nameless service instance
@@ -110,8 +110,8 @@ namespace Guppy.DependencyInjection
         /// <param name="type"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetService(Type type, Action<Object, ServiceProvider, ServiceDescriptor> setup)
-            => this.GetService(ServiceDescriptor.GetId(type), setup);
+        public Object GetService(Type type, Action<Object, ServiceProvider, ServiceContext> setup)
+            => this.GetService(ServiceContext.GetId(type), setup);
 
         /// <summary>
         /// Return a new nameless service instance
@@ -150,15 +150,15 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ServiceDescriptor GetServiceDescriptor(UInt32 id)
+        public ServiceContext GetServiceDescriptor(UInt32 id)
             => this.root.services[id];
 
-        public ServiceDescriptor GetServiceDescriptor(String name)
-            => this.GetServiceDescriptor(ServiceDescriptor.GetId(name));
-        public ServiceDescriptor GetServiceDescriptor(Type type)
+        public ServiceContext GetServiceDescriptor(String name)
+            => this.GetServiceDescriptor(ServiceContext.GetId(name));
+        public ServiceContext GetServiceDescriptor(Type type)
             => this.GetServiceDescriptor(type.FullName);
 
-        public ServiceDescriptor GetServiceDescriptor<T>()
+        public ServiceContext GetServiceDescriptor<T>()
             => this.GetServiceDescriptor(typeof(T));
 
         /// <summary>

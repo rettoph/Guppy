@@ -4,7 +4,6 @@ using Guppy.Extensions.Collections;
 using Guppy.Interfaces;
 using Guppy.Services;
 using Guppy.Utilities;
-using Guppy.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,8 +19,7 @@ namespace Guppy.ServiceLoaders
         {
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(s =>
             {
-                services.AddFactory(s, p => ActivatorUtilities.CreateInstance(p, s));
-                services.AddSingleton(s, s);
+                services.AddSingleton(s);
             });
         }
 

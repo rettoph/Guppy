@@ -9,9 +9,9 @@ namespace Guppy.DependencyInjection
     {
         #region Public Fields
         /// <summary>
-        /// The factory this builder is linked to.
+        /// The factory  implementation type this builder is linked to.
         /// </summary>
-        public readonly Type Factory;
+        public readonly Type ImplementationType;
 
         /// <summary>
         /// The builder's numerical order. Defines
@@ -33,7 +33,7 @@ namespace Guppy.DependencyInjection
         {
             _builder = builder;
 
-            this.Factory = factory;
+            this.ImplementationType = factory;
             this.Order = order;
         }
         #endregion

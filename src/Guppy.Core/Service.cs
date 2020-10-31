@@ -12,12 +12,12 @@ namespace Guppy
     public abstract class Service : IService, IDisposable
     {
         #region Private Fields
-        private ServiceDescriptor _descriptor;
+        private ServiceContext _descriptor;
         private Guid _id;
         #endregion
 
         #region Public Attributes
-        public ServiceDescriptor ServiceDescriptor
+        public ServiceContext ServiceDescriptor
         {
             get => _descriptor;
             set

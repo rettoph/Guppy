@@ -1,7 +1,10 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.DependencyInjection.Structs;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.DependencyInjection
@@ -10,11 +13,15 @@ namespace Guppy.DependencyInjection
     /// The primary service collection instance, used to register services
     /// within service loaders.
     /// </summary>
-    public sealed class ServiceCollection
+    public sealed partial class ServiceCollection : IServiceCollection
     {
         #region Private Fields
+        private IList<ServiceDescriptor> _descriptors => this.factories.Select(fd => fd.Descriptor).ToList();
+        #endregion
+
+        #region Internal Fields
         internal List<ServiceFactoryData> factories;
-        internal List<ServiceDescriptorData> services;
+        internal List<ServiceContextData> services;
         internal List<ServiceConfiguration> configurations;
         internal List<ServiceBuilder> builders;
         #endregion
@@ -23,53 +30,49 @@ namespace Guppy.DependencyInjection
         internal ServiceCollection()
         {
             this.factories = new List<ServiceFactoryData>();
-            this.services = new List<ServiceDescriptorData>();
+            this.services = new List<ServiceContextData>();
             this.configurations = new List<ServiceConfiguration>();
             this.builders = new List<ServiceBuilder>();
         }
         #endregion
 
-        #region Base Methods
+        #region Helper Methods
         /// <summary>
-        /// Create a new factory method to create an instance of a specified service.
+        /// Create and add a brand new factory.
+        /// This will auto generate a default
+        /// ServiceContext.
         /// </summary>
-        /// <param name="type">The lookup & return type of the factory method.</param>
-        /// <param name="factory">The main factory method to create a new instance.</param>
-        /// <param name="priority">Only the highest priority level for each lookup type will be saved post initialization.</param>
-        public void AddFactory(Type type, Func<ServiceProvider, Object> factory, Int32 priority = 10)
+        /// <param name="item"></param>
+        /// <param name="priority"></param>
+        public void AddFactory(ServiceDescriptor item, Int32 priority)
         {
-            if (!type.IsClass && !type.IsByRef && !type.IsInterface)
-                throw new Exception($"Only classes may be services, {type.Name} is not a class.");
-
             this.factories.Add(new ServiceFactoryData()
             {
-                Type = type,
-                Factory = factory,
+                Descriptor = item,
                 Priority = priority
             });
+
+            // Add a default context for this factory...
+            this.AddContext(name: item.ServiceType.FullName, factory: item.ImplementationType ?? item.ServiceType, priority: priority);
         }
 
-        public void AddFactory<T>(Func<ServiceProvider, T> factory, Int32 priority = 10)
-            where T : class
-                => this.AddFactory(typeof(T), p => factory.Invoke(p), priority);
-
         /// <summary>
-        /// Create a new service with a unique name.
+        /// Create a new ServiceContext with a unique name.
         /// </summary>
         /// <param name="name">The primary lookup name for this service.</param>
-        /// <param name="factory">The factory lookup type to utilize when creating a new service instance.</param>
-        /// <param name="lifetime">The service lifetime.</param>
+        /// <param name="factory">The factory implementation type to utilize when creating a new service instance.</param>
+        /// <param name="lifetime">The service lifetime If null the factory lifetime will be used instead.</param>
         /// <param name="priority">Only the highest priority level for each lookup name will be saved post initialization.</param>
-        /// <param name="cacheType">(Optional) When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
+        /// <param name="serviceType">(Optional) When the lifetime is singleton or scoped this allows for a custom lookup type. If none is defined the factory type will be used instead.</param>
         /// <param name="autoBuild">(Optional) When true, scoped and singleton instances will automatically be created.</param>
-        public void AddService(String name, Type factory, ServiceLifetime lifetime, Int32 priority = 10, Type cacheType = null, Boolean autoBuild = false)
-            => this.services.Add(new ServiceDescriptorData()
+        public void AddContext(String name, Type factory, ServiceLifetime? lifetime = null, Int32 priority = 10, Type serviceType = null, Boolean autoBuild = false)
+            => this.services.Add(new ServiceContextData()
             {
                 Name = name,
                 Factory = factory,
+                ServiceType = serviceType ?? factory,
                 Lifetime = lifetime,
                 Priority = priority,
-                CacheType = cacheType,
                 AutoBuild = autoBuild
             });
 
@@ -80,7 +83,7 @@ namespace Guppy.DependencyInjection
         /// <param name="service">The service name (or partial name) that this configuration should be applied to.</param>
         /// <param name="configuration">The method to run.</param>
         /// <param name="order">The order in which this particular configuration should run.</param>
-        public void AddConfiguration(ServiceConfigurationKey key, Action<Object, ServiceProvider, ServiceDescriptor> configuration, Int32 order = 0)
+        public void AddConfiguration(ServiceConfigurationKey key, Action<Object, ServiceProvider, ServiceContext> configuration, Int32 order = 0)
             => this.configurations.Add(new ServiceConfiguration(key, configuration, order));
 
         /// <summary>
@@ -94,16 +97,55 @@ namespace Guppy.DependencyInjection
         /// <param name="order">The order in which this particular builder should run.</param>
         public void AddBuilder(Type factory, Action<Object, ServiceProvider> builder, Int32 order = 0)
             => this.builders.Add(new ServiceBuilder(factory, builder, order));
-        #endregion
 
-        #region Helper Methods
         /// <summary>
-        /// Return a brand new service provider based on
-        /// the current service collection
+        /// Return a brand new ServiceProvider instance based on the current
+        /// collection values.
         /// </summary>
         /// <returns></returns>
         public ServiceProvider BuildServiceProvider()
             => new ServiceProvider(this);
+        #endregion
+
+        #region IServiceCollection Implementation
+        ServiceDescriptor IList<ServiceDescriptor>.this[int index] { get => this.factories[index].Descriptor; set => this.factories[index] = new ServiceFactoryData() { Descriptor = value, Priority = this.factories[index].Priority }; }
+
+        int ICollection<ServiceDescriptor>.Count => this.factories.Count;
+
+        bool ICollection<ServiceDescriptor>.IsReadOnly => false;
+
+        void ICollection<ServiceDescriptor>.Add(ServiceDescriptor item)
+            => this.AddFactory(item, 0);
+
+        void ICollection<ServiceDescriptor>.Clear()
+            => this.factories.Clear();
+
+        bool ICollection<ServiceDescriptor>.Contains(ServiceDescriptor item)
+            => this.factories.Any(fd => fd.Descriptor == item);
+
+        void ICollection<ServiceDescriptor>.CopyTo(ServiceDescriptor[] array, int arrayIndex)
+            => _descriptors.CopyTo(array, arrayIndex);
+
+        IEnumerator<ServiceDescriptor> IEnumerable<ServiceDescriptor>.GetEnumerator()
+            => _descriptors.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => _descriptors.GetEnumerator();
+
+        int IList<ServiceDescriptor>.IndexOf(ServiceDescriptor item)
+            => _descriptors.IndexOf(item);
+
+        void IList<ServiceDescriptor>.Insert(int index, ServiceDescriptor item)
+            => this.factories.Insert(index, new ServiceFactoryData()
+            {
+                Descriptor = item
+            });
+
+        bool ICollection<ServiceDescriptor>.Remove(ServiceDescriptor item)
+            => this.factories.Remove(this.factories.First(fd => fd.Descriptor == item));
+
+        void IList<ServiceDescriptor>.RemoveAt(int index)
+            => this.factories.RemoveAt(index);
         #endregion
     }
 }

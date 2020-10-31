@@ -2,6 +2,7 @@
 using Guppy.Extensions.Collections;
 using Guppy.Extensions.System;
 using Guppy.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Guppy.DependencyInjection
     /// Simple class used to describe a specific service.
     /// Note: Services are indexed by their Id
     /// </summary>
-    public sealed class ServiceDescriptor
+    public sealed class ServiceContext
     {
         #region Public Attributes
         /// <summary>
@@ -40,13 +41,6 @@ namespace Guppy.DependencyInjection
         public readonly ServiceLifetime Lifetime;
 
         /// <summary>
-        /// The internally stored type used when the service lifetime
-        /// is scoped or singleton. If null, then the cache type will
-        /// default to the recieved factory service type.
-        /// </summary>
-        public readonly Type CacheType;
-
-        /// <summary>
         /// When true the provider will automatically generate an instance
         /// of this service on creation. 
         /// 
@@ -62,20 +56,27 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Constructor
-        internal ServiceDescriptor(ServiceDescriptorData data, ServiceProvider provider, ServiceConfiguration[] configurations)
+        internal ServiceContext(ServiceContextData data, ServiceProvider provider, ServiceConfiguration[] configurations)
         {
-            this.Id = ServiceDescriptor.GetId(data.Name);
+            this.Id = ServiceContext.GetId(data.Name);
             this.Name = data.Name;
             this.Factory = provider.GetFactory(data.Factory);
-            this.Lifetime = data.Lifetime;
-            this.CacheType = data.CacheType ?? this.Factory.Type;
+            this.Lifetime = data.Lifetime ?? this.Factory.Descriptor.Lifetime;
             this.AutoBuild = data.AutoBuild;
             this.Configurations = configurations;
         }
         #endregion
 
         #region Helper Methods
-        public Object Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceDescriptor> setup = null, Action<Object> cacher = null)
+        /// <summary>
+        /// Return a new instance of the current service This will
+        /// completely ignore scope.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="setup"></param>
+        /// <param name="cacher"></param>
+        /// <returns></returns>
+        public Object Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceContext> setup = null, Action<Object> cacher = null)
         {
             var instance = this.Factory.Build(provider);
             cacher?.Invoke(instance);
@@ -101,7 +102,7 @@ namespace Guppy.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetInstance(ServiceProvider provider, Action<Object, ServiceProvider, ServiceDescriptor> setup = null)
+        public Object GetInstance(ServiceProvider provider, Action<Object, ServiceProvider, ServiceContext> setup = null)
         {
             switch (this.Lifetime)
             {
@@ -109,13 +110,13 @@ namespace Guppy.DependencyInjection
                     return this.Build(provider, setup);
                 case ServiceLifetime.Scoped:
                     var scope = provider.GetScope();
-                    if (!scope.scopedInstances.ContainsKey(this.CacheType))
-                        this.Build(scope, setup, i => scope.scopedInstances[this.CacheType] = i);
-                    return scope.scopedInstances[this.CacheType];
+                    if (!scope.scopedInstances.ContainsKey(this.Factory.Descriptor.ServiceType))
+                        this.Build(scope, setup, i => scope.scopedInstances[this.Factory.Descriptor.ServiceType] = i);
+                    return scope.scopedInstances[this.Factory.Descriptor.ServiceType];
                 case ServiceLifetime.Singleton:
-                    if (!provider.root.singletonInstances.ContainsKey(this.CacheType))
-                        this.Build(provider.root, setup, i => provider.root.singletonInstances[this.CacheType] = i);
-                    return provider.root.singletonInstances[this.CacheType];
+                    if (!provider.root.singletonInstances.ContainsKey(this.Factory.Descriptor.ServiceType))
+                        this.Build(provider.root, setup, i => provider.root.singletonInstances[this.Factory.Descriptor.ServiceType] = i);
+                    return provider.root.singletonInstances[this.Factory.Descriptor.ServiceType];
             }
 
             throw new Exception("This should never happen.");
@@ -133,7 +134,7 @@ namespace Guppy.DependencyInjection
             => name.xxHash();
 
         public static UInt32 GetId(Type type)
-            => ServiceDescriptor.GetId(type.FullName);
+            => ServiceContext.GetId(type.FullName);
         #endregion
     }
 }

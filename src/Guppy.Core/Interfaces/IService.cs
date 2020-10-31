@@ -10,7 +10,7 @@ namespace Guppy.Interfaces
     public interface IService
     {
         #region Attributes
-        ServiceDescriptor ServiceDescriptor { get; set; }
+        ServiceContext ServiceDescriptor { get; set; }
         Guid Id { get; set; }
         #endregion
 

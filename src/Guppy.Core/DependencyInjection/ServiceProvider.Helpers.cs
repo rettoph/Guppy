@@ -1,12 +1,10 @@
-﻿using Guppy.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using xxHashSharp;
 
-namespace Guppy.Extensions.DependencyInjection
+namespace Guppy.DependencyInjection
 {
-    public static class ServiceProviderExtensions
+    public partial class ServiceProvider
     {
         #region GetService Methods
         /// <summary>
@@ -18,12 +16,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="id"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public static T GetService<T>(
-            this ServiceProvider provider,
+        public T GetService<T>(
             UInt32 id,
-            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+            Action<T, ServiceProvider, ServiceContext> setup = null
         )
-            => (T)provider.GetService(id, (i, p, s) => setup?.Invoke((T)i, p, s));
+            => (T)this.GetService(id, (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
         /// Return a new instance of a service 
@@ -34,12 +31,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="id"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public static T GetService<T>(
-            this ServiceProvider provider,
+        public T GetService<T>(
             String name,
-            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+            Action<T, ServiceProvider, ServiceContext> setup = null
         )
-            => (T)provider.GetService(name, (i, p, s) => setup?.Invoke((T)i, p, s));
+            => (T)this.GetService(name, (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
         /// Return a new nameless service instance
@@ -50,12 +46,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="id"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public static T GetService<T>(
-            this ServiceProvider provider,
+        public T GetService<T>(
             Type type,
-            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+            Action<T, ServiceProvider, ServiceContext> setup = null
         )
-            => (T)provider.GetService(type, (i, p, s) => setup?.Invoke((T)i, p, s));
+            => (T)this.GetService(type, (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
         /// Return a new nameless service instance
@@ -66,27 +61,26 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="id"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public static T GetService<T>(
-            this ServiceProvider provider,
-            Action<T, ServiceProvider, ServiceDescriptor> setup = null
+        public T GetService<T>(
+            Action<T, ServiceProvider, ServiceContext> setup = null
         )
-            => (T)provider.GetService(typeof(T), (i, p, s) => setup?.Invoke((T)i, p, s));
+            => (T)this.GetService(typeof(T), (i, p, s) => setup?.Invoke((T)i, p, s));
 
         /// <summary>
         /// Automaitcally set the out value via the intenral GetService method
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="service"></param>
-        public static void Service<T>(this ServiceProvider provider, out T service, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
-            => service = ServiceProviderExtensions.GetService<T>(provider, setup);
+        public void Service<T>(out T service, Action<T, ServiceProvider, ServiceContext> setup = null)
+            => service = this.GetService<T>(setup);
 
         /// <summary>
         /// Automaitcally set the out value via the intenral GetService method
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="service"></param>
-        public static void Service<T>(this ServiceProvider provider, out T service, String name, Action<T, ServiceProvider, ServiceDescriptor> setup = null)
-            => service = ServiceProviderExtensions.GetService<T>(provider, name, setup);
+        public void Service<T>(out T service, String name, Action<T, ServiceProvider, ServiceContext> setup = null)
+            => service = this.GetService<T>(name, setup);
         #endregion
     }
 }

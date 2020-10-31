@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
-using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Lists
 {
