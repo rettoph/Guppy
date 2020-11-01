@@ -56,7 +56,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Constructor
-        internal ServiceContext(ServiceContextData data, ServiceProvider provider, ServiceConfiguration[] configurations)
+        internal ServiceContext(ServiceContextData data, GuppyServiceProvider provider, ServiceConfiguration[] configurations)
         {
             this.Id = ServiceContext.GetId(data.Name);
             this.Name = data.Name;
@@ -76,7 +76,7 @@ namespace Guppy.DependencyInjection
         /// <param name="setup"></param>
         /// <param name="cacher"></param>
         /// <returns></returns>
-        public Object Build(ServiceProvider provider, Action<Object, ServiceProvider, ServiceContext> setup = null, Action<Object> cacher = null)
+        public Object Build(GuppyServiceProvider provider, Action<Object, GuppyServiceProvider, ServiceContext> setup = null, Action<Object> cacher = null)
         {
             var instance = this.Factory.Build(provider);
             cacher?.Invoke(instance);
@@ -102,7 +102,7 @@ namespace Guppy.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetInstance(ServiceProvider provider, Action<Object, ServiceProvider, ServiceContext> setup = null)
+        public Object GetInstance(GuppyServiceProvider provider, Action<Object, GuppyServiceProvider, ServiceContext> setup = null)
         {
             switch (this.Lifetime)
             {
@@ -115,7 +115,10 @@ namespace Guppy.DependencyInjection
                     return scope.scopedInstances[this.Factory.Descriptor.ServiceType];
                 case ServiceLifetime.Singleton:
                     if (!provider.root.singletonInstances.ContainsKey(this.Factory.Descriptor.ServiceType))
-                        this.Build(provider.root, setup, i => provider.root.singletonInstances[this.Factory.Descriptor.ServiceType] = i);
+                        if (this.Factory.Descriptor.ImplementationInstance == default)
+                            this.Build(provider.root, setup, i => provider.root.singletonInstances[this.Factory.Descriptor.ServiceType] = i);
+                        else
+                            provider.root.singletonInstances[this.Factory.Descriptor.ServiceType] = this.Factory.Descriptor.ImplementationInstance;
                     return provider.root.singletonInstances[this.Factory.Descriptor.ServiceType];
             }
 

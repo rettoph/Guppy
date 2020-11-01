@@ -15,24 +15,24 @@ namespace Guppy.Lists.Interfaces
         #endregion
 
         #region Create Methods
-        TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null);
+        TService Create(UInt32 descriptorId, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null);
 
-        TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null);
+        TService Create(Type descriptorType, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null);
 
-        TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null);
+        TService Create(String descriptorName, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null);
 
-        TService Create(Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null);
+        TService Create(Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null);
 
-        T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        T Create<T>(UInt32 descriptorId, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService;
 
-        T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        T Create<T>(Type descriptorType, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService;
 
-        T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        T Create<T>(String descriptorName, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService;
 
-        T Create<T>(Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        T Create<T>(Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService;
         #endregion
 

@@ -22,13 +22,13 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Private Fields
-        private readonly Action<Object, ServiceProvider> _builder;
+        private readonly Action<Object, GuppyServiceProvider> _builder;
         #endregion
 
         #region Constructor
         internal ServiceBuilder(
             Type factory,
-            Action<Object, ServiceProvider> builder,
+            Action<Object, GuppyServiceProvider> builder,
             Int32 order)
         {
             _builder = builder;
@@ -39,7 +39,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Methods
-        public void Build(Object instance, ServiceProvider provider)
+        public void Build(Object instance, GuppyServiceProvider provider)
             => _builder.Invoke(instance, provider);
         #endregion
     }

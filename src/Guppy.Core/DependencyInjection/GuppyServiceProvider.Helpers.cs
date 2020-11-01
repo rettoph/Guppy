@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public partial class ServiceProvider
+    public partial class GuppyServiceProvider
     {
         #region GetService Methods
         /// <summary>
@@ -18,7 +18,7 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public T GetService<T>(
             UInt32 id,
-            Action<T, ServiceProvider, ServiceContext> setup = null
+            Action<T, GuppyServiceProvider, ServiceContext> setup = null
         )
             => (T)this.GetService(id, (i, p, s) => setup?.Invoke((T)i, p, s));
 
@@ -33,7 +33,7 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public T GetService<T>(
             String name,
-            Action<T, ServiceProvider, ServiceContext> setup = null
+            Action<T, GuppyServiceProvider, ServiceContext> setup = null
         )
             => (T)this.GetService(name, (i, p, s) => setup?.Invoke((T)i, p, s));
 
@@ -48,7 +48,7 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public T GetService<T>(
             Type type,
-            Action<T, ServiceProvider, ServiceContext> setup = null
+            Action<T, GuppyServiceProvider, ServiceContext> setup = null
         )
             => (T)this.GetService(type, (i, p, s) => setup?.Invoke((T)i, p, s));
 
@@ -62,7 +62,7 @@ namespace Guppy.DependencyInjection
         /// <param name="setup"></param>
         /// <returns></returns>
         public T GetService<T>(
-            Action<T, ServiceProvider, ServiceContext> setup = null
+            Action<T, GuppyServiceProvider, ServiceContext> setup = null
         )
             => (T)this.GetService(typeof(T), (i, p, s) => setup?.Invoke((T)i, p, s));
 
@@ -71,7 +71,7 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="service"></param>
-        public void Service<T>(out T service, Action<T, ServiceProvider, ServiceContext> setup = null)
+        public void Service<T>(out T service, Action<T, GuppyServiceProvider, ServiceContext> setup = null)
             => service = this.GetService<T>(setup);
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="service"></param>
-        public void Service<T>(out T service, String name, Action<T, ServiceProvider, ServiceContext> setup = null)
+        public void Service<T>(out T service, String name, Action<T, GuppyServiceProvider, ServiceContext> setup = null)
             => service = this.GetService<T>(name, setup);
         #endregion
     }

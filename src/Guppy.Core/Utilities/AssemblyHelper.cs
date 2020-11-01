@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Guppy.Utilities
@@ -24,7 +25,6 @@ namespace Guppy.Utilities
         /// List of all unique types loaded
         /// </summary>
         public static HashSet<Type> Types { get; private set; }
-
         #region Constructor
         static AssemblyHelper()
         {
@@ -36,6 +36,19 @@ namespace Guppy.Utilities
 
         #region Helper Methods
         /// <summary>
+        /// Ass a new assembly reference after configuration.
+        /// This is rare but userful for importing external
+        /// assemblies.
+        /// </summary>
+        /// <param name="assembly"></param>
+        public static void AddAssembly(Assembly assembly)
+        {
+            AssemblyHelper.GetUniqueNestedReferencedAssemblies(assembly, Assembly.GetExecutingAssembly().GetName(), AssemblyHelper.Assemblies);
+            AssemblyHelper.Types = new HashSet<Type>(
+                AssemblyHelper.Assemblies.AsParallel().SelectMany(a => a.GetTypes()));
+        }
+
+        /// <summary>
         /// Return a list of all referenced assemblies
         /// </summary>
         /// <param name="entry"></param>
@@ -45,9 +58,6 @@ namespace Guppy.Utilities
         {
             if (set == null)
                 set = new HashSet<Assembly>();
-
-            var test = entry.GetReferencedAssemblies();
-
 
             if (set.Add(entry))
                 foreach (Assembly child in entry.GetReferencedAssemblies().Where(an => AssemblyName.ReferenceMatchesDefinition(an, executing) || Assembly.Load(an).GetReferencedAssemblies().Any(nan => AssemblyName.ReferenceMatchesDefinition(nan, executing))).Select(an => Assembly.Load(an)))

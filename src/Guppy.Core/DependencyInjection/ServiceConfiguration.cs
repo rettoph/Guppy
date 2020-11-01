@@ -26,13 +26,13 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Private Fields
-        private readonly Action<Object, ServiceProvider, ServiceContext> _configuration;
+        private readonly Action<Object, GuppyServiceProvider, ServiceContext> _configuration;
         #endregion
 
         #region Constructor
         internal ServiceConfiguration(
             ServiceConfigurationKey key, 
-            Action<Object, ServiceProvider, ServiceContext> configuration,
+            Action<Object, GuppyServiceProvider, ServiceContext> configuration,
             Int32 Order)
         {
             _configuration = configuration;
@@ -49,7 +49,7 @@ namespace Guppy.DependencyInjection
         /// <param name="instance"></param>
         /// <param name="provider"></param>
         /// <param name="descriptor"></param>
-        public void Configure(Object instance, ServiceProvider provider, ServiceContext descriptor)
+        public void Configure(Object instance, GuppyServiceProvider provider, ServiceContext descriptor)
             => _configuration.Invoke(instance, provider, descriptor);
         #endregion
     }

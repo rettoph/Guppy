@@ -37,14 +37,14 @@ namespace Guppy.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _registeredValues = new HashSet<RegisteredValue>();
         }
 
-        protected override void PostInitialize(ServiceProvider provider)
+        protected override void PostInitialize(GuppyServiceProvider provider)
         {
             base.PostInitialize(provider);
 

@@ -9,7 +9,7 @@ namespace Guppy.DependencyInjection
     /// Partial class to store any ServiceCollection helper
     /// methods. This replaces the Extension methods.
     /// </summary>
-    public partial class ServiceCollection
+    public partial class GuppyServiceCollection
     {
         #region AddConfiguration Methods
         /// <summary>
@@ -21,7 +21,7 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="configuration"></param>
         /// <param name="order"></param>
-        public void AddConfiguration(Type type, String name, Action<Object, ServiceProvider, ServiceContext> configuration, Int32 order = 0)
+        public void AddConfiguration(Type type, String name, Action<Object, GuppyServiceProvider, ServiceContext> configuration, Int32 order = 0)
             => this.AddConfiguration(new ServiceConfigurationKey(type, name), configuration, order);
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="configuration"></param>
         /// <param name="order"></param>
-        public void AddConfiguration<T>(String name, Action<T, ServiceProvider, ServiceContext> configuration, Int32 order = 0)
+        public void AddConfiguration<T>(String name, Action<T, GuppyServiceProvider, ServiceContext> configuration, Int32 order = 0)
             where T : class
                 => this.AddConfiguration(new ServiceConfigurationKey(typeof(T), name), (i, p, s) => configuration.Invoke(i as T, p, s), order);
 
@@ -46,7 +46,7 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="configuration"></param>
         /// <param name="order"></param>
-        public void AddConfiguration<T>(Action<T, ServiceProvider, ServiceContext> configuration, Int32 order = 0)
+        public void AddConfiguration<T>(Action<T, GuppyServiceProvider, ServiceContext> configuration, Int32 order = 0)
             where T : class
                 => this.AddConfiguration(new ServiceConfigurationKey(typeof(T), String.Empty), (i, p, s) => configuration.Invoke(i as T, p, s), order);
         #endregion
@@ -63,7 +63,7 @@ namespace Guppy.DependencyInjection
         /// <typeparam name="TFactory"></typeparam>
         /// <param name="builder"></param>
         /// <param name="order"></param>
-        public void AddBuilder<TFactory>(Action<TFactory, ServiceProvider> builder, Int32 order = 0)
+        public void AddBuilder<TFactory>(Action<TFactory, GuppyServiceProvider> builder, Int32 order = 0)
             where TFactory : class
                 => this.AddBuilder(typeof(TFactory), (i, p) => builder.Invoke(i as TFactory, p), order);
         #endregion

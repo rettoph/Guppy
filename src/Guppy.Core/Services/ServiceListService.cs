@@ -15,15 +15,15 @@ namespace Guppy.Services
     internal class ServiceListService : Service
     {
         #region Private Fields
-        private Dictionary<ServiceProvider, List<IServiceList>> _autoFillLists;
+        private Dictionary<GuppyServiceProvider, List<IServiceList>> _autoFillLists;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
-            _autoFillLists = new Dictionary<ServiceProvider, List<IServiceList>>();
+            _autoFillLists = new Dictionary<GuppyServiceProvider, List<IServiceList>>();
         }
         #endregion
 
@@ -46,7 +46,7 @@ namespace Guppy.Services
             list.OnReleased -= this.HandleListReleased;
         }
 
-        internal void TryAddService(IService service, ServiceProvider provider)
+        internal void TryAddService(IService service, GuppyServiceProvider provider)
         {
             try
             {

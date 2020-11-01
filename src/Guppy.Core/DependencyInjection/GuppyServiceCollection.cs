@@ -13,7 +13,7 @@ namespace Guppy.DependencyInjection
     /// The primary service collection instance, used to register services
     /// within service loaders.
     /// </summary>
-    public sealed partial class ServiceCollection : IServiceCollection
+    public sealed partial class GuppyServiceCollection : IServiceCollection
     {
         #region Private Fields
         private IList<ServiceDescriptor> _descriptors => this.factories.Select(fd => fd.Descriptor).ToList();
@@ -27,7 +27,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Constructors
-        internal ServiceCollection()
+        internal GuppyServiceCollection()
         {
             this.factories = new List<ServiceFactoryData>();
             this.services = new List<ServiceContextData>();
@@ -53,6 +53,7 @@ namespace Guppy.DependencyInjection
             });
 
             // Add a default context for this factory...
+            this.AddContext(name: (item.ImplementationType ?? item.ServiceType).FullName, factory: item.ImplementationType ?? item.ServiceType, priority: priority);
             this.AddContext(name: item.ServiceType.FullName, factory: item.ImplementationType ?? item.ServiceType, priority: priority);
         }
 
@@ -83,7 +84,7 @@ namespace Guppy.DependencyInjection
         /// <param name="service">The service name (or partial name) that this configuration should be applied to.</param>
         /// <param name="configuration">The method to run.</param>
         /// <param name="order">The order in which this particular configuration should run.</param>
-        public void AddConfiguration(ServiceConfigurationKey key, Action<Object, ServiceProvider, ServiceContext> configuration, Int32 order = 0)
+        public void AddConfiguration(ServiceConfigurationKey key, Action<Object, GuppyServiceProvider, ServiceContext> configuration, Int32 order = 0)
             => this.configurations.Add(new ServiceConfiguration(key, configuration, order));
 
         /// <summary>
@@ -95,7 +96,7 @@ namespace Guppy.DependencyInjection
         /// <param name="factory">The factory this builder should be applied to.</param>
         /// <param name="builder">The builder method itself.</param>
         /// <param name="order">The order in which this particular builder should run.</param>
-        public void AddBuilder(Type factory, Action<Object, ServiceProvider> builder, Int32 order = 0)
+        public void AddBuilder(Type factory, Action<Object, GuppyServiceProvider> builder, Int32 order = 0)
             => this.builders.Add(new ServiceBuilder(factory, builder, order));
 
         /// <summary>
@@ -103,8 +104,8 @@ namespace Guppy.DependencyInjection
         /// collection values.
         /// </summary>
         /// <returns></returns>
-        public ServiceProvider BuildServiceProvider()
-            => new ServiceProvider(this);
+        public GuppyServiceProvider BuildServiceProvider()
+            => new GuppyServiceProvider(this);
         #endregion
 
         #region IServiceCollection Implementation

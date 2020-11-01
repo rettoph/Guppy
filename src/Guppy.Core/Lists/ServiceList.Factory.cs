@@ -17,7 +17,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Create Methods
-        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(UInt32 descriptorId, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService
         {
             var instance = this.provider.GetService<T>(descriptorId, (i, p, d) =>
@@ -38,7 +38,7 @@ namespace Guppy.Lists
             return instance;
         }
 
-        public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(Type descriptorType, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService
         {
             try
@@ -51,7 +51,7 @@ namespace Guppy.Lists
             }
         }
 
-        public T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(String descriptorName, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService
         {
             try
@@ -64,20 +64,20 @@ namespace Guppy.Lists
             }
         }
 
-        public T Create<T>(Action <T, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(Action <T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             where T : class, TService
                 => this.Create<T>(typeof(T), setup, id);
 
-        public TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public TService Create(UInt32 descriptorId, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             => this.Create<TService>(descriptorId, setup, id);
 
-        public TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public TService Create(Type descriptorType, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             => this.Create(ServiceContext.GetId(descriptorType), setup, id);
 
-        public TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public TService Create(String descriptorName, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
             => this.Create(ServiceContext.GetId(descriptorName), setup, id);
 
-        public TService Create(Action <TService, ServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public TService Create(Action <TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
              => this.Create(typeof(TService), setup, id);
         #endregion
 

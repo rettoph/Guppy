@@ -13,15 +13,15 @@ namespace Guppy.ServiceLoaders
     [AutoLoad(Int32.MaxValue)]
     internal class ServiceLifecycleServiceLoader : IServiceLoader
     {
-        private ServiceProvider _provider;
+        private GuppyServiceProvider _provider;
 
-        public void ConfigureServices(ServiceCollection services)
+        public void ConfigureServices(GuppyServiceCollection services)
         {
             services.AddBuilder<IService>((s, p) => s.TryCreate(p));
 
             services.AddConfiguration<IService>((s, p, sd) =>
             {
-                s.ServiceDescriptor = sd;
+                s.ServiceContext = sd;
                 s.TryPreInitialize(p);
 
                 s.OnReleased += this.HandleServiceReleased;
@@ -32,7 +32,7 @@ namespace Guppy.ServiceLoaders
             services.AddConfiguration<IService>((s, p, sd) => s.TryPostInitialize(p), 20);
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             _provider = provider;
         }
@@ -47,7 +47,7 @@ namespace Guppy.ServiceLoaders
         {
             sender.OnReleased -= this.HandleServiceReleased;
 
-            sender.ServiceDescriptor.Factory.Return(sender);
+            sender.ServiceContext.Factory.Return(sender);
         }
         #endregion
     }

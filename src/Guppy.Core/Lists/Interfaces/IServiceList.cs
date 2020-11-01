@@ -10,7 +10,7 @@ namespace Guppy.Lists.Interfaces
 {
     public interface IServiceList : IService, IEnumerable
     {
-        ServiceProvider Provider { get; }
+        GuppyServiceProvider Provider { get; }
 
         /// <summary>
         /// The basetype stored within the current list.

@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.DependencyInjection
 {
-    public sealed partial class ServiceProvider : IServiceProvider
+    public sealed partial class GuppyServiceProvider : IServiceProvider
     {
         #region Private Fields
         /// <summary>
@@ -19,7 +19,7 @@ namespace Guppy.DependencyInjection
 
         private ServiceContext _service;
 
-        private ServiceProvider _root;
+        private GuppyServiceProvider _root;
         #endregion
 
         #region Internal Fields
@@ -31,7 +31,7 @@ namespace Guppy.DependencyInjection
         /// </summary>
         internal Dictionary<UInt32, ServiceContext> services;
 
-        internal ServiceProvider root => _root ?? this;
+        internal GuppyServiceProvider root => _root ?? this;
         #endregion
 
         #region Public Fields
@@ -39,7 +39,7 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region Constructors
-        internal ServiceProvider(ServiceCollection collection) : base()
+        internal GuppyServiceProvider(GuppyServiceCollection collection) : base()
         {
             // Create a lookup table of service factories.
             _factories = collection.factories
@@ -66,7 +66,7 @@ namespace Guppy.DependencyInjection
 
             this.AutoBuildServices(ServiceLifetime.Singleton);
         }
-        private ServiceProvider(ServiceProvider root)
+        private GuppyServiceProvider(GuppyServiceProvider root)
         {
             _root = root;
 
@@ -86,7 +86,7 @@ namespace Guppy.DependencyInjection
         /// <param name="id"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetService(UInt32 id, Action<Object, ServiceProvider, ServiceContext> setup = null)
+        public Object GetService(UInt32 id, Action<Object, GuppyServiceProvider, ServiceContext> setup = null)
         {
             this.root.services.TryGetValue(id, out _service);
 
@@ -100,7 +100,7 @@ namespace Guppy.DependencyInjection
         /// <param name="name"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetService(String name, Action<Object, ServiceProvider, ServiceContext> setup = null)
+        public Object GetService(String name, Action<Object, GuppyServiceProvider, ServiceContext> setup = null)
             => this.GetService(ServiceContext.GetId(name), setup);
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Guppy.DependencyInjection
         /// <param name="type"></param>
         /// <param name="setup"></param>
         /// <returns></returns>
-        public Object GetService(Type type, Action<Object, ServiceProvider, ServiceContext> setup)
+        public Object GetService(Type type, Action<Object, GuppyServiceProvider, ServiceContext> setup)
             => this.GetService(ServiceContext.GetId(type), setup);
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Guppy.DependencyInjection
         /// <param name="type"></param>
         /// <returns></returns>
         public Object GetService(Type type)
-            => this.GetService(type.FullName);
+            => this.GetService(type.FullName) ?? (type.IsGenericType ? ActivatorUtilities.CreateInstance(this, this.GetServiceContext(type.GetGenericTypeDefinition()).Factory.Type.MakeGenericType(type.GetGenericArguments())) : default);
         #endregion
 
         #region Helper Methods
@@ -155,25 +155,25 @@ namespace Guppy.DependencyInjection
 
         public ServiceContext GetServiceDescriptor(String name)
             => this.GetServiceDescriptor(ServiceContext.GetId(name));
-        public ServiceContext GetServiceDescriptor(Type type)
+        public ServiceContext GetServiceContext(Type type)
             => this.GetServiceDescriptor(type.FullName);
 
         public ServiceContext GetServiceDescriptor<T>()
-            => this.GetServiceDescriptor(typeof(T));
+            => this.GetServiceContext(typeof(T));
 
         /// <summary>
         /// Create a new scoped service provider instance.
         /// </summary>
         /// <returns></returns>
-        public ServiceProvider CreateScope()
-            => new ServiceProvider(this.root);
+        public GuppyServiceProvider CreateScope()
+            => new GuppyServiceProvider(this.root);
 
         /// <summary>
         /// If this is a scoped provider, return itself
         /// otherwise create and return a new scope.
         /// </summary>
         /// <returns></returns>
-        public ServiceProvider GetScope()
+        public GuppyServiceProvider GetScope()
             => this.root == this ? this.CreateScope() : this;
         #endregion
     }

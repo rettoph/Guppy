@@ -14,7 +14,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class ServiceListServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void ConfigureServices(GuppyServiceCollection services)
         {
             services.AddSingleton<ServiceListService>();
             services.AddSingleton<ServiceList>();
@@ -31,7 +31,7 @@ namespace Guppy.ServiceLoaders
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

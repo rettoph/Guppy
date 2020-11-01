@@ -12,20 +12,20 @@ namespace Guppy
     public abstract class Service : IService, IDisposable
     {
         #region Private Fields
-        private ServiceContext _descriptor;
+        private ServiceContext _context;
         private Guid _id;
         #endregion
 
         #region Public Attributes
-        public ServiceContext ServiceDescriptor
+        public ServiceContext ServiceContext
         {
-            get => _descriptor;
+            get => _context;
             set
             {
                 if (this.InitializationStatus == InitializationStatus.Ready)
                     throw new InvalidOperationException("Unable to update Configuration after initialization.");
 
-                _descriptor = value;
+                _context = value;
             }
         }
         public virtual Guid Id
@@ -48,7 +48,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        void IService.TryCreate(ServiceProvider provider)
+        void IService.TryCreate(GuppyServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.NotCreated)
                 return;
@@ -58,7 +58,7 @@ namespace Guppy
             this.InitializationStatus = InitializationStatus.NotReady;
         }
 
-        void IService.TryPreInitialize(ServiceProvider provider)
+        void IService.TryPreInitialize(GuppyServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.NotReady)
                 return;
@@ -67,7 +67,7 @@ namespace Guppy
             this.PreInitialize(provider);
         }
 
-        void IService.TryInitialize(ServiceProvider provider)
+        void IService.TryInitialize(GuppyServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.PreInitializing)
                 return;
@@ -76,7 +76,7 @@ namespace Guppy
             this.Initialize(provider);
         }
 
-        void IService.TryPostInitialize(ServiceProvider provider)
+        void IService.TryPostInitialize(GuppyServiceProvider provider)
         {
             if (this.InitializationStatus != InitializationStatus.Initializing)
                 return;
@@ -107,22 +107,22 @@ namespace Guppy
             this.Dispose();
         }
 
-        protected virtual void Create(ServiceProvider provider)
+        protected virtual void Create(GuppyServiceProvider provider)
         {
             //
         }
 
-        protected virtual void PreInitialize(ServiceProvider provider)
+        protected virtual void PreInitialize(GuppyServiceProvider provider)
         {
             this.Id = Guid.NewGuid();
         }
 
-        protected virtual void Initialize(ServiceProvider provider)
+        protected virtual void Initialize(GuppyServiceProvider provider)
         {
             //
         }
 
-        protected virtual void PostInitialize(ServiceProvider provider)
+        protected virtual void PostInitialize(GuppyServiceProvider provider)
         {
             //
         }

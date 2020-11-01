@@ -67,7 +67,7 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        public Object Build(ServiceProvider provider)
+        public Object Build(GuppyServiceProvider provider)
         {
             if (_count != 0)
             { // If an instance is in the pool...
@@ -76,7 +76,16 @@ namespace Guppy.DependencyInjection
             }
 
             // Build a new instance...
-            var instance = this.Descriptor.ImplementationFactory?.Invoke(provider) ?? ActivatorUtilities.CreateInstance(provider, this.Type);
+            Object instance;
+            if(this.Descriptor.ImplementationFactory == default)
+            {
+                instance = ActivatorUtilities.CreateInstance(provider, this.Type);
+            }
+            else
+            {
+                instance = this.Descriptor.ImplementationFactory.Invoke(provider);
+            }
+
             this.Builders.ForEach(b => b.Build(instance, provider));
 
             return instance;
