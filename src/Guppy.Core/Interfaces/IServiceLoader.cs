@@ -7,7 +7,7 @@ namespace Guppy.Interfaces
 {
     public interface IServiceLoader
     {
-        void ConfigureServices(GuppyServiceCollection services);
-        void ConfigureProvider(GuppyServiceProvider provider);
+        void ConfigureServices(ServiceCollection services);
+        void ConfigureProvider(ServiceProvider provider);
     }
 }

@@ -19,7 +19,7 @@ namespace Guppy.ServiceLoaders
             services.AddFactory<OrderableList<Entity>>(p => new OrderableList<Entity>());
 
             // Configure services...
-            services.AddScoped<LayerList>(autoBuild: true);
+            services.AddScoped<LayerList>();
             services.AddTransient<OrderableList<Entity>>();
         }
 

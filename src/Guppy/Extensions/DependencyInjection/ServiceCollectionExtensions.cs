@@ -30,8 +30,7 @@ namespace Guppy.Extensions.DependencyInjection
             services.AddFactory(scene, factory);
             services.AddScoped(
                 type: scene, 
-                priority: priority, 
-                cacheType: typeof(Scene));
+                priority: priority);
         }
         public static void AddScene<TScene>(this ServiceCollection services, Func<ServiceProvider, TScene> factory, Int32 priority = 0)
             where TScene : Scene
@@ -67,7 +66,7 @@ namespace Guppy.Extensions.DependencyInjection
         public static void AddDriverFilter(this ServiceCollection services, Type driver, Func<Driven, ServiceProvider, Boolean> filter)
         {
             if(filter != default)
-                services.AddConfiguration<DriverService>((drivers, p, d) => drivers.AddFilter(driver, filter));
+                services.AddSetup<DriverService>((drivers, p, d) => drivers.AddFilter(driver, filter));
         }
 
         /// <summary>
@@ -111,7 +110,7 @@ namespace Guppy.Extensions.DependencyInjection
             ExceptionHelper.ValidateAssignableFrom<Driven>(driven);
             ExceptionHelper.ValidateAssignableFrom<Driver>(driver);
 
-            services.AddConfiguration<DriverService>((drivers, p, d) => drivers.BindDriver(driven, driver));
+            services.AddSetup<DriverService>((drivers, p, d) => drivers.BindDriver(driven, driver));
         }
 
         /// <summary>

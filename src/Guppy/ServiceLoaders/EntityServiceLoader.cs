@@ -15,7 +15,7 @@ namespace Guppy.ServiceLoaders
         public void ConfigureServices(ServiceCollection services)
         {
             services.AddFactory<EntityList>(p => new EntityList());
-            services.AddScoped<EntityList>(autoBuild: true);
+            services.AddScoped<EntityList>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

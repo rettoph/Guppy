@@ -10,19 +10,12 @@ namespace Guppy.Lists.Interfaces
 {
     public interface IServiceList : IService, IEnumerable
     {
-        GuppyServiceProvider Provider { get; }
+        ServiceProvider Provider { get; }
 
         /// <summary>
         /// The basetype stored within the current list.
         /// </summary>
         Type BaseType { get; }
-
-        /// <summary>
-        /// Determins whether or not the current list
-        /// should auto fill when new service instances
-        /// are created from anywhere.
-        /// </summary>
-        Boolean AutoFill { get; }
 
         void TryAdd(Object instance);
 

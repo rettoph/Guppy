@@ -30,17 +30,14 @@ namespace Guppy.Lists
         #endregion
 
         #region Protected Fields
-        protected GuppyServiceProvider provider { get; private set; }
+        protected ServiceProvider provider { get; private set; }
         #endregion
 
         #region Public Properties
         public Int32 Count => _list.Count;
 
-        /// <inheritdoc />
-        public Boolean AutoFill { get; private set; }
-
         Type IServiceList.BaseType => typeof(TService);
-        GuppyServiceProvider IServiceList.Provider => this.provider;
+        ServiceProvider IServiceList.Provider => this.provider;
         #endregion
 
         #region Events
@@ -71,15 +68,8 @@ namespace Guppy.Lists
         public event OnEventDelegate<IServiceList<TService>, TService> OnRemoved;
         #endregion
 
-        #region Constructors
-        public ServiceList(Boolean autoFill = false)
-        {
-            this.AutoFill = autoFill;
-        }
-        #endregion
-
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
+        protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
 
@@ -88,7 +78,7 @@ namespace Guppy.Lists
             _created = new Stack<TService>();
         }
 
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

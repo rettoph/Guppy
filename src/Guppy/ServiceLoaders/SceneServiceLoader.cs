@@ -16,10 +16,10 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class SceneServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void ConfigureServices(DependencyInjection.ServiceCollection services)
         {
             services.AddFactory<SceneList>(p => new SceneList());
-            services.AddSingleton<SceneList>(autoBuild: true);
+            services.AddSingleton<SceneList>();
 
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
             {
@@ -27,7 +27,7 @@ namespace Guppy.ServiceLoaders
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(DependencyInjection.ServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

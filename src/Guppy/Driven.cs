@@ -8,7 +8,6 @@ using Guppy.Utilities;
 using Guppy.DependencyInjection;
 using System.Linq;
 using Guppy.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 using Guppy.Services;
 
 namespace Guppy

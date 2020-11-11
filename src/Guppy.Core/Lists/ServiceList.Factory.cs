@@ -17,7 +17,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Create Methods
-        public T Create<T>(UInt32 descriptorId, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
         {
             var instance = this.provider.GetService<T>(descriptorId, (i, p, d) =>
@@ -32,18 +32,17 @@ namespace Guppy.Lists
             });
 
             _created.Pop();
-            if (!this.AutoFill)
-                this.TryAdd(instance);
+            this.TryAdd(instance);
 
             return instance;
         }
 
-        public T Create<T>(Type descriptorType, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
         {
             try
             {
-                return this.Create<T>(ServiceContext.GetId(descriptorType), setup, id);
+                return this.Create<T>(ServiceConfiguration.GetId(descriptorType), setup, id);
             }
             catch(ServiceIdUnknownException e)
             {
@@ -51,12 +50,12 @@ namespace Guppy.Lists
             }
         }
 
-        public T Create<T>(String descriptorName, Action<T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
         {
             try
             {
-                return this.Create<T>(ServiceContext.GetId(descriptorName), setup, id);
+                return this.Create<T>(ServiceConfiguration.GetId(descriptorName), setup, id);
             }
             catch (ServiceIdUnknownException e)
             {
@@ -64,20 +63,20 @@ namespace Guppy.Lists
             }
         }
 
-        public T Create<T>(Action <T, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public T Create<T>(Action <T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
                 => this.Create<T>(typeof(T), setup, id);
 
-        public TService Create(UInt32 descriptorId, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             => this.Create<TService>(descriptorId, setup, id);
 
-        public TService Create(Type descriptorType, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
-            => this.Create(ServiceContext.GetId(descriptorType), setup, id);
+        public TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => this.Create(ServiceConfiguration.GetId(descriptorType), setup, id);
 
-        public TService Create(String descriptorName, Action<TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
-            => this.Create(ServiceContext.GetId(descriptorName), setup, id);
+        public TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => this.Create(ServiceConfiguration.GetId(descriptorName), setup, id);
 
-        public TService Create(Action <TService, GuppyServiceProvider, ServiceContext> setup = null, Guid? id = null)
+        public TService Create(Action <TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
              => this.Create(typeof(TService), setup, id);
         #endregion
 
@@ -88,11 +87,11 @@ namespace Guppy.Lists
 
         public T GetOrCreateById<T>(Guid id, String descriptorName)
             where T : class, TService
-                => this.GetOrCreateById<T>(id, ServiceContext.GetId(descriptorName));
+                => this.GetOrCreateById<T>(id, ServiceConfiguration.GetId(descriptorName));
 
         public T GetOrCreateById<T>(Guid id, Type descriptorType)
             where T : class, TService
-                => this.GetOrCreateById<T>(id, ServiceContext.GetId(descriptorType));
+                => this.GetOrCreateById<T>(id, ServiceConfiguration.GetId(descriptorType));
 
         public T GetOrCreateById<T>(Guid id)
             where T : class, TService
@@ -102,13 +101,13 @@ namespace Guppy.Lists
             => this.GetOrCreateById<TService>(id, descriptorId);
 
         public TService GetOrCreateById(Guid id, String descriptorName)
-            => this.GetOrCreateById(id, ServiceContext.GetId(descriptorName));
+            => this.GetOrCreateById(id, ServiceConfiguration.GetId(descriptorName));
 
         public TService GetOrCreateById(Guid id, Type descriptorType)
-            => this.GetOrCreateById(id, ServiceContext.GetId(descriptorType));
+            => this.GetOrCreateById(id, ServiceConfiguration.GetId(descriptorType));
 
         public TService GetOrCreateById(Guid id)
-            => this.GetOrCreateById(id, ServiceContext.GetId(typeof(TService)));
+            => this.GetOrCreateById(id, ServiceConfiguration.GetId(typeof(TService)));
         #endregion
     }
 }

@@ -10,7 +10,7 @@ namespace Guppy.Interfaces
     public interface IService
     {
         #region Attributes
-        ServiceContext ServiceContext { get; set; }
+        ServiceConfiguration ServiceConfiguration { get; set; }
         Guid Id { get; set; }
         #endregion
 
@@ -19,10 +19,10 @@ namespace Guppy.Interfaces
         #endregion
 
         #region Methods
-        void TryCreate(GuppyServiceProvider provider);
-        void TryPreInitialize(GuppyServiceProvider provider);
-        void TryInitialize(GuppyServiceProvider provider);
-        void TryPostInitialize(GuppyServiceProvider provider);
+        void TryCreate(ServiceProvider provider);
+        void TryPreInitialize(ServiceProvider provider);
+        void TryInitialize(ServiceProvider provider);
+        void TryPostInitialize(ServiceProvider provider);
         void TryRelease();
         void TryDispose();
         #endregion

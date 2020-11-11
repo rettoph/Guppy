@@ -15,7 +15,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class LoaderServiceServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(GuppyServiceCollection services)
+        public void ConfigureServices(DependencyInjection.ServiceCollection services)
         {
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(s =>
             {
@@ -23,7 +23,7 @@ namespace Guppy.ServiceLoaders
             });
         }
 
-        public void ConfigureProvider(GuppyServiceProvider provider)
+        public void ConfigureProvider(DependencyInjection.ServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

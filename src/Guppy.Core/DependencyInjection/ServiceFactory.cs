@@ -1,6 +1,6 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Structs;
+﻿using Guppy.DependencyInjection.Descriptors;
 using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,100 +10,66 @@ using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public sealed class ServiceFactory
+    public sealed class ServiceFactory : ServiceFactoryDescriptor
     {
-        #region Static Fields
-        public static Int32 MaxServicePoolSize { get; set; } = 512;
-        #endregion
-
         #region Private Fields
-        /// <summary>
-        /// A small collection of pooled item instances to be
-        /// returned over a new instance.
-        /// </summary>
         private Stack<Object> _pool;
-
-        /// <summary>
-        /// The number of items contained within the pool.
-        /// </summary>
-        private Int32 _count;
-        #endregion
-
-        #region Public Fields
-        /// <summary>
-        /// The builders to be excecuted when constructing a new instance.
-        /// </summary>
-        public readonly ServiceBuilder[] Builders;
-
-        /// <summary>
-        /// The primary Microsoft service descriptor linked 
-        /// to this factory.
-        /// </summary>
-        public readonly ServiceDescriptor Descriptor;
+        private UInt16 _poolSize;
+        private Func<ServiceProvider, Object> _factory;
         #endregion
 
         #region Public Properties
-        /// <summary>
-        /// The primary factory type. This is either the descriptor implementation type
-        /// or the descripto service type.
-        /// </summary>
-        public Type Type => this.Descriptor.ImplementationType ?? this.Descriptor.ServiceType;
+        public UInt16 MaxPoolSize { get; set; }
         #endregion
 
-        #region Constructor
-        internal ServiceFactory(ServiceFactoryData data, ServiceBuilder[] builders)
+        #region Constructors
+        public ServiceFactory(
+            ServiceFactoryDescriptor descriptor) : base(descriptor.Type, descriptor.Factory, descriptor.ImplementationType)
         {
-            _count = 0;
-            _pool = new Stack<Object>(ServiceFactory.MaxServicePoolSize);
-
-            this.Descriptor = data.Descriptor;
-            this.Builders = builders;
+            _pool = new Stack<Object>();
+            _poolSize = 0;
+            this.MaxPoolSize = 25;
         }
         #endregion
 
-        #region Public Methods
+        #region Helper Methods
         /// <summary>
-        /// Create or reuse a new service instance.
+        /// Build a new service instance (or pull once from the pool)
         /// </summary>
         /// <param name="provider"></param>
+        /// <param name="cacher">A simple method to run before returning the instance. Useful for caching the scope or singleton values.</param>
+        /// <param name="configuration">The calling configuration instance.</param>
         /// <returns></returns>
-        public Object Build(GuppyServiceProvider provider)
+        public Object Build(ServiceProvider provider, Action<Type, Object> cacher = null, ServiceConfiguration configuration = null)
         {
-            if (_count != 0)
-            { // If an instance is in the pool...
-                _count--;
-                return _pool.Pop();
-            }
+            if (_pool.Any())
+                return _pool.Pop().Then(i => cacher?.Invoke(this.Type, cacher));
 
-            // Build a new instance...
-            Object instance;
-            if(this.Descriptor.ImplementationFactory == default)
+            return _factory(provider).Then(i =>
             {
-                instance = ActivatorUtilities.CreateInstance(provider, this.Type);
-            }
-            else
-            {
-                instance = this.Descriptor.ImplementationFactory.Invoke(provider);
-            }
-
-            this.Builders.ForEach(b => b.Build(instance, provider));
-
-            return instance;
+                cacher?.Invoke(this.Type, cacher);
+                configuration?.Actions[ServiceActionType.Builder].ForEach(b => b.Excecute(i, provider, configuration));
+            });
         }
 
         /// <summary>
-        /// Return a service instance into the internal pool.
+        /// If the internal pool is not yet at max capacity,
+        /// return the recieved instance into the pool.
         /// </summary>
         /// <param name="instance"></param>
-        public void Return(Object instance)
+        /// <returns></returns>
+        public Boolean TryReturn(Object instance)
         {
-            ExceptionHelper.ValidateAssignableFrom(this.Descriptor.ImplementationType, instance.GetType());
+            ExceptionHelper.ValidateAssignableFrom(this.ImplementationType, instance.GetType());
 
-            if(_count < ServiceFactory.MaxServicePoolSize)
-            { // If the pool has smace remaining...
-                _count++;
+            if(_poolSize < this.MaxPoolSize)
+            {
                 _pool.Push(instance);
+                _poolSize++;
+                return true;
             }
+
+            return false;
         }
         #endregion
     }
