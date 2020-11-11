@@ -12,7 +12,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             services.AddFactory<UpdateBuffer>(p => new UpdateBuffer());
             services.AddSingleton<UpdateBuffer>();

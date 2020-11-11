@@ -27,7 +27,7 @@ namespace Guppy.Extensions.DependencyInjection
         {
             ExceptionHelper.ValidateAssignableFrom<Scene>(scene);
 
-            services.AddFactory(scene, factory);
+            services.AddFactory(type: scene, factory: factory, priority: priority);
             services.AddScoped(
                 type: scene, 
                 priority: priority);
@@ -48,7 +48,7 @@ namespace Guppy.Extensions.DependencyInjection
         {
             ExceptionHelper.ValidateAssignableFrom<Driver>(driver);
 
-            services.AddFactory(driver, factory, priority);
+            services.AddFactory(type: driver, factory: factory, priority: priority);
             services.AddTransient(driver);
             services.AddDriverFilter(driver, filter);
         }

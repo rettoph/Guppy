@@ -13,11 +13,23 @@ namespace Guppy.DependencyInjection
     public partial class ServiceCollection
     {
         #region AddFactory Methods
-        private static Func<ServiceProvider, Object> ServiceFactoryFrom<T>(Func<ServiceProvider, T> factory)
-            => p => factory(p);
+        private static Func<ServiceProvider, Type, Object> ServiceFactoryFrom<T>(Func<ServiceProvider, T> factory)
+            => (p, t) => factory(p);
+
+        private static Func<ServiceProvider, Type, Object> ServiceFactoryFrom<T>(Func<ServiceProvider, Type, T> factory)
+            => (p, t) => factory(p, t);
+
+        public void AddFactory(Type type, Func<ServiceProvider, Type, Object> factory, Type implementationType = null, Int32 priority = 0)
+            => this.Add(new ServiceFactoryDescriptor(type, factory, implementationType, priority));
+
+        public void AddFactory<T>(Func<ServiceProvider, Type, T> factory, Type implementationType = null, Int32 priority = 0)
+            => this.AddFactory(typeof(T), ServiceFactoryFrom(factory), implementationType, priority);
+
+        public void AddFactory<T, TImplementation>(Func<ServiceProvider, Type, TImplementation> factory, Int32 priority = 0)
+            => this.AddFactory(typeof(T), ServiceFactoryFrom(factory), typeof(TImplementation), priority);
 
         public void AddFactory(Type type, Func<ServiceProvider, Object> factory, Type implementationType = null, Int32 priority = 0)
-            => this.Add(new ServiceFactoryDescriptor(type, factory, implementationType, priority));
+            => this.Add(new ServiceFactoryDescriptor(type, ServiceFactoryFrom(factory), implementationType, priority));
 
         public void AddFactory<T>(Func<ServiceProvider, T> factory, Type implementationType = null, Int32 priority = 0)
             => this.AddFactory(typeof(T), ServiceFactoryFrom(factory), implementationType, priority);

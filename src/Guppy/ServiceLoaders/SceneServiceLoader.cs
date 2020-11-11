@@ -16,7 +16,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class SceneServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(DependencyInjection.ServiceCollection services)
+        public void RegisterServices(DependencyInjection.ServiceCollection services)
         {
             services.AddFactory<SceneList>(p => new SceneList());
             services.AddSingleton<SceneList>();
@@ -24,6 +24,11 @@ namespace Guppy.ServiceLoaders
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
             {
                 services.AddScene(s, p => ActivatorUtilities.CreateInstance(p, s));
+            });
+
+            services.AddSetup<Scene>((scene, p, c) =>
+            {
+                p.AddLookupRecursive<Scene>(c);
             });
         }
 

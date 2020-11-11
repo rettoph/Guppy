@@ -31,7 +31,7 @@ namespace Guppy.DependencyInjection.Descriptors
         /// The factory method to create a brand new instance
         /// when requested.
         /// </summary>
-        public readonly Func<ServiceProvider, Object> Factory;
+        public readonly Func<ServiceProvider, Type, Object> Factory;
 
         /// <summary>
         /// The priority value for this specific descriptor.
@@ -50,7 +50,7 @@ namespace Guppy.DependencyInjection.Descriptors
         /// <param name="implementationType">An optional type usilized for generating which ServiceSetups apply to the current service. When null, the ServiceType will be used instead.</param>
         public ServiceFactoryDescriptor(
             Type type,
-            Func<ServiceProvider, Object> factory,
+            Func<ServiceProvider, Type, Object> factory,
             Type implementationType = null,
             int priotity = 0)
         {

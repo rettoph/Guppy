@@ -37,32 +37,15 @@ namespace Guppy.Network.Extensions
             where TPeer : Peer
             where TNetPeer : NetPeer
         {
-            Func<ServiceProvider, TNetPeer> netPeer = p =>
-            {
-                var data = p.GetService<PeerData>();
-
-                if (data.NetPeer == null)
-                    data.NetPeer = netPeerFactory(p);
-
-                return data.NetPeer as TNetPeer;
-            };
-
-            Func<ServiceProvider, TPeer> peer = p =>
-            {
-                var data = p.GetService<PeerData>();
-
-                if (data.Peer == null)
-                    data.Peer = peerFactory(p);
-
-                return data.Peer as TPeer;
-            };
-
             // Register related services...
-            guppy.Services.AddFactory(typeof(TNetPeer), netPeer);
-            guppy.Services.AddFactory(typeof(TPeer), peer);
+            guppy.Services.AddFactory(typeof(TNetPeer), netPeerFactory);
+            guppy.Services.AddFactory(typeof(TPeer), peerFactory);
 
-            guppy.Services.AddSingleton<TNetPeer>(cacheType: typeof(NetPeer));
-            guppy.Services.AddSingleton<TPeer>(cacheType: typeof(Peer));
+            guppy.Services.AddSingleton<TNetPeer>();
+            guppy.Services.AddSingleton<TPeer>();
+
+            guppy.Services.AddSetup<TNetPeer>((i, p, c) => p.AddLookupRecursive<NetPeer>(c), -20);
+            guppy.Services.AddSetup<TPeer>((i, p, c) => p.AddLookupRecursive<Peer>(c), -20);
         }
     }
 }

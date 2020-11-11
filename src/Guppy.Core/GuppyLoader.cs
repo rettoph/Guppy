@@ -74,7 +74,7 @@ namespace Guppy
 
             // Iterate through all contained service loaders and configure the services
             foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.ConfigureServices(this.Services);
+                serviceLoader.RegisterServices(this.Services);
 
             this.Initialized = true;
 

@@ -13,13 +13,6 @@ namespace Guppy.Lists
         private LayerList _layers;
         #endregion
 
-        #region Constructor
-        public EntityList() : base(true)
-        {
-
-        }
-        #endregion
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {

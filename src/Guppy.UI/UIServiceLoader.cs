@@ -24,7 +24,7 @@ namespace Guppy.UI
     [AutoLoad]
     internal sealed class UIServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             services.AddFactory<UIService>(p => new UIService());
             services.AddFactory<Stage>(p => new Stage());
@@ -38,7 +38,7 @@ namespace Guppy.UI
             services.AddUIComponent<Element>(p => new Element());
 
             // Register Content
-            services.AddConfiguration<ContentService>((content, p, c) =>
+            services.AddSetup<ContentService>((content, p, c) =>
             {
                 content.TryRegister("ui:font", "UI/Font");
             });

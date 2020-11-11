@@ -9,13 +9,6 @@ namespace Guppy.Lists
 {
     public class LayerList : OrderableList<Layer>
     {
-        #region Constructors
-        public LayerList() : base(true)
-        {
-
-        }
-        #endregion
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {

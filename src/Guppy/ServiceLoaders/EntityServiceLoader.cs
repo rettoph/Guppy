@@ -12,7 +12,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class EntityServiceCollection : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             services.AddFactory<EntityList>(p => new EntityList());
             services.AddScoped<EntityList>();

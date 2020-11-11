@@ -35,13 +35,6 @@ namespace Guppy.Lists
         public IEnumerable<TOrderable> Updates { get { return _updates; } }
         #endregion
 
-        #region COnstructors
-        public OrderableList(Boolean autofill = false) : base(autofill)
-        {
-
-        }
-        #endregion
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {

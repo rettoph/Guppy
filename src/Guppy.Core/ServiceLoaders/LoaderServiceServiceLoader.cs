@@ -15,10 +15,11 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class LoaderServiceServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(DependencyInjection.ServiceCollection services)
+        public void RegisterServices(DependencyInjection.ServiceCollection services)
         {
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(s =>
             {
+                services.AddFactory(s, p => ActivatorUtilities.CreateInstance(p, s));
                 services.AddSingleton(s);
             });
         }

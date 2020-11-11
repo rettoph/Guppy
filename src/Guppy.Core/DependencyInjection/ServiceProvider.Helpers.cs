@@ -6,15 +6,24 @@ namespace Guppy.DependencyInjection
 {
     public partial class ServiceProvider
     {
+
+        #region GetService Methods
+        private ServiceConfiguration _configuration;
         private static Action<Object, ServiceProvider, ServiceConfiguration> SetupFrom<T>(Action<T, ServiceProvider, ServiceConfiguration> setup)
             where T : class
-                => (o, p, c) => setup(o as T, p, c);
-        #region GetService Methods
+                => setup == default ? default : new Action<Object, ServiceProvider, ServiceConfiguration>((o, p, c) => setup(o as T, p, c));
+
         public Object GetService(
             UInt32 id, 
             Action<Object, ServiceProvider, ServiceConfiguration> setup = null,
             Int32 setupOrder = 0)
-                => _services[id].GetInstance(this, setup, setupOrder);
+        {
+            if (!_services.TryGetValue(id, out _configuration))
+                if (!_lookups.TryGetValue(id, out _configuration))
+                    return default;
+
+            return _configuration.GetInstance(this, setup, setupOrder);
+        }
 
         public Object GetService(
             String name,

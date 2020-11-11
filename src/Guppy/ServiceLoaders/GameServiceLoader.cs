@@ -15,7 +15,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class GameServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(DependencyInjection.ServiceCollection services)
+        public void RegisterServices(DependencyInjection.ServiceCollection services)
         {
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(g =>
             {

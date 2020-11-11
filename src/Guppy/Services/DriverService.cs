@@ -74,7 +74,7 @@ namespace Guppy.Services
             drivers.ForEach(d =>
             {
                 d.TryRelease(driven);
-                _provider.GetFactory(d.GetType()).Return(d);
+                _provider.GetServiceFactory(d.GetType()).Pools[d].TryReturn(d);
             });
 
             drivers = default;

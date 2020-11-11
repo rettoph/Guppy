@@ -13,22 +13,18 @@ namespace Guppy.DependencyInjection
     public sealed class ServiceFactory : ServiceFactoryDescriptor
     {
         #region Private Fields
-        private Stack<Object> _pool;
-        private UInt16 _poolSize;
-        private Func<ServiceProvider, Object> _factory;
+        private ServicePool _pool;
         #endregion
 
         #region Public Properties
-        public UInt16 MaxPoolSize { get; set; }
+        public ServicePoolManager Pools { get; set; }
         #endregion
 
         #region Constructors
         public ServiceFactory(
             ServiceFactoryDescriptor descriptor) : base(descriptor.Type, descriptor.Factory, descriptor.ImplementationType)
         {
-            _pool = new Stack<Object>();
-            _poolSize = 0;
-            this.MaxPoolSize = 25;
+            this.Pools = new ServicePoolManager();
         }
         #endregion
 
@@ -39,37 +35,21 @@ namespace Guppy.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="cacher">A simple method to run before returning the instance. Useful for caching the scope or singleton values.</param>
         /// <param name="configuration">The calling configuration instance.</param>
+        /// <param name="type">The specific type to construct (generally used for generic types).</param>
         /// <returns></returns>
-        public Object Build(ServiceProvider provider, Action<Type, Object> cacher = null, ServiceConfiguration configuration = null)
+        public Object Build(ServiceProvider provider, Action<Type, Object> cacher = null, ServiceConfiguration configuration = null, Type type = null)
         {
-            if (_pool.Any())
-                return _pool.Pop().Then(i => cacher?.Invoke(this.Type, cacher));
+            type ??= this.Type;
+            _pool = this.Pools[type];
 
-            return _factory(provider).Then(i =>
+            if (_pool.Any())
+                return _pool.Pull(cacher);
+
+            return this.Factory(provider, type).Then(i =>
             {
-                cacher?.Invoke(this.Type, cacher);
+                cacher?.Invoke(this.Type, i);
                 configuration?.Actions[ServiceActionType.Builder].ForEach(b => b.Excecute(i, provider, configuration));
             });
-        }
-
-        /// <summary>
-        /// If the internal pool is not yet at max capacity,
-        /// return the recieved instance into the pool.
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        public Boolean TryReturn(Object instance)
-        {
-            ExceptionHelper.ValidateAssignableFrom(this.ImplementationType, instance.GetType());
-
-            if(_poolSize < this.MaxPoolSize)
-            {
-                _pool.Push(instance);
-                _poolSize++;
-                return true;
-            }
-
-            return false;
         }
         #endregion
     }

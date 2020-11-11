@@ -9,6 +9,7 @@ using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy;
 using Guppy.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Extensions
 {

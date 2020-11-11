@@ -18,7 +18,7 @@ namespace Guppy.IO.ServiceLoaders
     [AutoLoad]
     internal sealed class OutputServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             // Configure & add log4net services...
             services.AddFactory<ILog>(p => LogManager.GetLogger(typeof(GuppyLoader)));
@@ -29,7 +29,7 @@ namespace Guppy.IO.ServiceLoaders
             services.AddSingleton<ILoggerRepository>();
             services.AddSingleton<Hierarchy>();
 
-            services.AddConfiguration<ILog>((l, p, s) =>
+            services.AddSetup<ILog>((l, p, s) =>
             { // Mark as configured...
                 ((Hierarchy)l.Logger.Repository).Configured = true;
             }, -10);

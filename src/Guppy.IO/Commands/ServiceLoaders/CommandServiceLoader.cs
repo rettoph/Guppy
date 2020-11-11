@@ -13,15 +13,15 @@ namespace Guppy.IO.Commands.ServiceLoaders
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             services.AddFactory<CommandService>(p => new CommandService());
             services.AddFactory<Command>(p => new Command());
 
-            services.AddSingleton<CommandService>(autoBuild: true);
+            services.AddSingleton<CommandService>();
             services.AddTransient<Command>();
 
-            services.AddConfiguration<CommandService>((commands, p, d) =>
+            services.AddSetup<CommandService>((commands, p, d) =>
             {
                 commands.TryAddSubCommand(new CommandContext()
                 {

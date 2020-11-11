@@ -11,7 +11,7 @@ namespace Guppy.IO.Input.ServiceLoaders
 {
     internal sealed class InputServiceLoader : IServiceLoader
     {
-        public void ConfigureServices(ServiceCollection services)
+        public void RegisterServices(ServiceCollection services)
         {
             services.AddFactory<InputService>(p => new InputService());
             services.AddFactory<InputManager>(p => new InputManager());
@@ -22,9 +22,9 @@ namespace Guppy.IO.Input.ServiceLoaders
 
             services.AddSingleton<InputService>();
             services.AddTransient<InputManager>();
-            services.AddSingleton<MouseService>(autoBuild: true);
-            services.AddSingleton<KeyboardService>(autoBuild: true);
-            services.AddSingleton<InputCommandService>(autoBuild: true);
+            services.AddSingleton<MouseService>();
+            services.AddSingleton<KeyboardService>();
+            services.AddSingleton<InputCommandService>();
             services.AddTransient<InputCommand>();
         }
 
