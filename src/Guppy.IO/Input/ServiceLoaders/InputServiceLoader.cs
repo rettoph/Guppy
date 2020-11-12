@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.Attributes;
+using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Input.Services;
@@ -9,6 +10,7 @@ using System.Text;
 
 namespace Guppy.IO.Input.ServiceLoaders
 {
+    [AutoLoad(-1)]
     internal sealed class InputServiceLoader : IServiceLoader
     {
         public void RegisterServices(ServiceCollection services)
@@ -30,7 +32,10 @@ namespace Guppy.IO.Input.ServiceLoaders
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-            // throw new NotImplementedException();
+            // Auto-build required services...
+            provider.GetService<MouseService>();
+            provider.GetService<KeyboardService>();
+            provider.GetService<InputCommandService>();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Guppy.Attributes
         public readonly Int32 Priority;
 
         #region Constructors
-        public AutoLoadAttribute(Int32 priority = 100)
+        public AutoLoadAttribute(Int32 priority = 0)
         {
             this.Priority = priority;
         }

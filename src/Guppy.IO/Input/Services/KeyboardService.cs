@@ -53,10 +53,10 @@ namespace Guppy.IO.Input.Services
 
             var kState = Keyboard.GetState();
             for (Int32 i = 0; i < _keyCount; i++)
-                this.UpdateKey(_keys[i], kState);
+                this.UpdateKey(_keys[i], ref kState);
         }
 
-        private void UpdateKey(InputManager key, KeyboardState kState)
+        private void UpdateKey(InputManager key, ref KeyboardState kState)
             => key.TrySetState(kState.IsKeyDown(key.Which.KeyboardKey) ? ButtonState.Pressed : ButtonState.Released);
         #endregion
 
