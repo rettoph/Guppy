@@ -15,10 +15,6 @@ namespace Guppy
     /// </summary>
     public abstract class Game : Asyncable
     {
-        #region Private Fields
-        private UpdateBuffer _updateBuffer;
-        #endregion
-
         #region Public Attributes
         public SceneList Scenes { get; private set; }
         #endregion
@@ -27,8 +23,6 @@ namespace Guppy
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
-
-            _updateBuffer = provider.GetService<UpdateBuffer>();
 
             this.Scenes = provider.GetService<SceneList>();
         }
@@ -52,8 +46,6 @@ namespace Guppy
         protected override void PostUpdate(GameTime gameTime)
         {
             base.PostUpdate(gameTime);
-
-            _updateBuffer.Flush(gameTime);
         }
         #endregion
     }

@@ -6,11 +6,16 @@ using Guppy.Extensions;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
+using Guppy.Utilities;
 
 namespace Guppy
 {
     public abstract class Scene : Driven
     {
+        #region Private Fields
+        private Synchronizer _synchronizer;
+        #endregion
+
         #region Public Attributes
         public LayerList Layers { get; private set; }
         public EntityList Entities { get; private set; }
@@ -20,6 +25,8 @@ namespace Guppy
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            provider.Service(out _synchronizer);
 
             this.Layers = provider.GetService<LayerList>();
             this.Entities = provider.GetService<EntityList>();
@@ -39,6 +46,13 @@ namespace Guppy
             base.Update(gameTime);
 
             this.Layers.TryUpdate(gameTime);
+        }
+
+        protected override void PostUpdate(GameTime gameTime)
+        {
+            base.PostUpdate(gameTime);
+
+            _synchronizer.Flush(gameTime);
         }
         #endregion
     }

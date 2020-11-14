@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Services;
+using Guppy.Utilities;
 
 namespace Guppy.ServiceLoaders
 {
@@ -14,8 +15,8 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<UpdateBuffer>(p => new UpdateBuffer());
-            services.AddSingleton<UpdateBuffer>();
+            services.AddFactory<Synchronizer>(p => new Synchronizer());
+            services.AddScoped<Synchronizer>();
 
             services.AddFactory<DriverService>(p => new DriverService());
             services.AddSingleton<DriverService>();

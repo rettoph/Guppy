@@ -8,23 +8,21 @@ using Guppy.Attributes;
 using Guppy.Enums;
 using Guppy.DependencyInjection;
 
-namespace Guppy
+namespace Guppy.Utilities
 {
     /// <summary>
     /// Basic "Queue" to contain unplanned/unexpected updates.
     /// 
     /// This queue should be flushed and all contained updates
-    /// excecuted in the owning Game PostUpdate method.
+    /// excecuted in the owning Scene PostUpdate method.
     /// 
     /// Example uses: Multi threaded actions (network updates),
     /// unexpected cleans, ect
     /// </summary>
-    public sealed class UpdateBuffer : Service
+    public sealed class Synchronizer : Service
     {
         #region Private Fields
-        private ConcurrentQueue<Action<GameTime>> _queue;
-        private ConcurrentQueue<Action<GameTime>> _next;
-        private Action<GameTime> _update;
+        private Queue<Action<GameTime>> _queue;
         #endregion
 
         #region Lifecycle Methods
@@ -32,8 +30,7 @@ namespace Guppy
         {
             base.Initialize(provider);
 
-            _queue = new ConcurrentQueue<Action<GameTime>>();
-            _next = new ConcurrentQueue<Action<GameTime>>();
+            _queue = new Queue<Action<GameTime>>();
         }
 
         protected override void Release()
@@ -41,24 +38,18 @@ namespace Guppy
             base.Release();
 
             while (_queue.Any()) // Empty the queue out
-                _queue.TryDequeue(out _update);
+                _queue.Dequeue();
         }
         #endregion
 
         #region Helper Methods
         /// <summary>
-        /// If next is true, the request update will be saved until next
-        /// frame, otherwise the update will run asap
+        /// Enqueue an action to be ran 
         /// </summary>
         /// <param name="update"></param>
         /// <param name="next"></param>
-        public void Enqueue(Action<GameTime> update, Boolean next = false)
-        {
-            if (next)
-                _next.Enqueue(update);
-            else
-                _queue.Enqueue(update);
-        }
+        public void Enqueue(Action<GameTime> update)
+            => _queue.Enqueue(update);
 
         /// <summary>
         /// Excecute all enqueued updates.
@@ -67,12 +58,7 @@ namespace Guppy
         public void Flush(GameTime gameTime)
         {
             while (_queue.Any())
-                if (_queue.TryDequeue(out _update))
-                    _update(gameTime);
-
-            while (_next.Any())
-                if (_next.TryDequeue(out _update))
-                    this.Enqueue(_update);
+                _queue.Dequeue()(gameTime);
         }
         #endregion
     }
