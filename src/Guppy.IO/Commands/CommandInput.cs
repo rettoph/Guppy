@@ -1,4 +1,7 @@
 ﻿using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
+using Guppy.IO.Commands.Delegates;
+using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
@@ -17,17 +20,14 @@ namespace Guppy.IO.Commands
         #region Private Fields
         private String[] _input;
         private Dictionary<String, Object> _args;
-        private static CommandResponse[] _unknownCommandResponse = new CommandResponse[] 
-        {
-            CommandResponse.Warning("Unknown command.")
-        };
+        private List<String> _invalidArgs;
         #endregion
 
         #region Public Properties
         /// <summary>
         /// The command the current arguments are in charge of
         /// </summary>
-        public readonly Command Command;
+        public readonly ICommand Command;
 
         /// <summary>
         /// Grab a specific command by name
@@ -41,51 +41,74 @@ namespace Guppy.IO.Commands
         /// CommandInput instance.
         /// </summary>
         public String Phrase => String.Join(" ", _input);
+
+        /// <summary>
+        /// The status of the current parsed input.
+        /// </summary>
+        public CommandInputStatus Status { get; private set; }
         #endregion
 
         #region Constructors
-        internal CommandInput(String[] input)
+        internal CommandInput(ICommand command, String[] input, Int32 position)
         {
             _input = input;
-
             _args = new Dictionary<String, Object>();
-        }
+            _invalidArgs = new List<String>();
 
-        internal CommandInput(Command command, String[] input, Int32 position) : this(input)
-        {
             this.Command = command;
+            this.Status = CommandInputStatus.Valid;
+
+            if(this.Command == default)
+            { // Ensure that the recieved command value is correct.
+                this.Status = CommandInputStatus.InvalidCommand;
+                return;
+            }
 
             // Build the commands dictionary...
             while (position < input.Length)
-                CommandInput.AddNextArgument(command, input, ref position, ref _args);
+                this.TryParseNextArgument(command, input, ref position);
 
             // Ensure that all required args were recieved...
             if (command.Arguments.Any(ac => ac.Required && !_args.ContainsKey(ac.Identifier)))
             {
                 var missing = command.Arguments.Where(ac => ac.Required && !_args.ContainsKey(ac.Identifier));
-                throw new MissingMemberException($"Missing arguments required: {String.Join(" ", missing.Select(ac => CommandService.ArgumentIdentifier + ac.Identifier).ToArray())}.");
+                throw new MissingMemberException($"Missing required arguments: {String.Join(", ", missing.Select(ac => ac.Identifier))}.");
             }
         }
         private CommandInput(CommandInput from)
         {
             _input = from._input;
             _args = from._args;
+            _invalidArgs = from._invalidArgs;
             this.Command = from.Command;
         }
         #endregion
 
         #region Helper Methods
         /// <summary>
-        /// Self excecute the current CommandInput info
-        /// & return the results.
+        /// Return a lazy IEnumerable instance representing
+        /// the current input's response.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<CommandResponse> Execute()
+        public IEnumerable<CommandResponse> Excecute()
         {
-            if (this.Command == default)
-                return _unknownCommandResponse;
-
-            return this.Command.LazyExecute(this).Where(r => r != default).ToList();
+            switch (this.Status)
+            {
+                case CommandInputStatus.Valid:
+                    return this.Command.LazyExcecute(this).Where(r => r != CommandResponse.Empty).ToList();
+                case CommandInputStatus.InvalidCommand:
+                    return new CommandResponse[]
+                    {
+                        CommandResponse.Error($"Unknown command, type '{this.Command?.Phrase.AddRight(' ') ?? ""}help' for help.")
+                    };
+                case CommandInputStatus.InvalidArgument:
+                    return new CommandResponse[]
+                    {
+                        CommandResponse.Error($"Invalid argument(s) '{String.Join(", ", _invalidArgs)}', Type '{this.Command.Phrase} help' for help.")
+                    };
+                default: // This should never happen. Means missing case.
+                    throw new Exception($"Unknown CommandInputStatus value => {this.Status}");
+            }
         }
 
         public CommandInput Copy()
@@ -126,7 +149,7 @@ namespace Guppy.IO.Commands
         /// <param name="input"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        private static void AddNextArgument(Command command, String[] input, ref Int32 position, ref Dictionary<String, Object> args)
+        private void TryParseNextArgument(ICommand command, String[] input, ref Int32 position)
         {
             if (input[position][0] != CommandService.ArgumentIdentifier)
                 throw new Exception($"Unexpected argument identifier. Please use '{CommandService.ArgumentIdentifier}'");
@@ -161,12 +184,13 @@ namespace Guppy.IO.Commands
             // Identify which argument is being returned & parse the String value
             try
             {
-                var argContext = command.Arguments.First(ac => ac.Identifier == identifier || (identifier.Length == 1 && ac.Aliases.Contains(identifier[0])));
-                args.Add(argContext.Identifier, argContext.Type.Parse(value));
+                var argContext = command.Arguments.First(ac => ac.Identifier == identifier || (identifier.Length == 1 && (ac.Aliases?.Contains(identifier[0]) ?? false)));
+                _args.Add(argContext.Identifier, argContext.Type.Parse(value));
             }
             catch (InvalidOperationException e)
             {
-                throw new ArgumentException($"Unknown argument identifier or aliase '{identifier}'.");
+                _invalidArgs.Add(value);
+                this.Status = CommandInputStatus.InvalidArgument;
             }
 
             position++;

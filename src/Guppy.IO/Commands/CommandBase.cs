@@ -11,6 +11,9 @@ using Guppy.Interfaces;
 using Guppy.IO.Commands.Delegates;
 using Guppy.IO.Commands.Contexts;
 using Guppy.IO.Commands.Interfaces;
+using Guppy.IO.Commands.Services;
+using Guppy.IO.Commands.Extensions;
+using Guppy.Extensions.System;
 
 namespace Guppy.IO.Commands
 {
@@ -19,26 +22,22 @@ namespace Guppy.IO.Commands
     /// object. This will manage sub-commands, parse incoming
     /// command strings, and build CommandArg instances.
     /// </summary>
-    public abstract partial class CommandBase : Service, ICommand
+    public abstract partial class CommandBase : Service, ICommandBase
     {
         #region Private Fields
-        private Dictionary<String, Command> _subCommands;
+        private Dictionary<String, ICommand> _commands;
         private ServiceProvider _provider;
         #endregion
 
         #region Public Properties
         /// <inheritdoc />
+        public IReadOnlyDictionary<String, ICommand> Commands => _commands;
+
+        /// <inheritdoc />
+        public ICommand this[String word] => this.Commands[word];
+
+        /// <inheritdoc />
         public abstract String Phrase { get; }
-
-        /// <inheritdoc />
-        public IReadOnlyDictionary<String, Command> SubCommands => _subCommands;
-
-        /// <inheritdoc />
-        public Command this[String word] => this.SubCommands[word];
-        #endregion
-
-        #region Events
-        public event OnCommandExecuteDelegate OnExcecute;
         #endregion
 
         #region Lifecycle Methods
@@ -47,77 +46,72 @@ namespace Guppy.IO.Commands
             base.PreInitialize(provider);
 
             _provider = provider;
-            _subCommands = new Dictionary<String, Command>();
+            _commands = new Dictionary<String, ICommand>();
         }
 
         protected override void Release()
         {
             base.Release();
 
-            while (_subCommands.Any())
-                this.TryRemove(_subCommands.First().Value);
+            while (_commands.Any())
+                this.TryRemove(_commands.First().Value);
 
-            _subCommands = null;
+            _commands = null;
         }
         #endregion
 
         #region Helper Methods
+        /// <inheritdoc />
+        public ICommand TryAddCommand(CommandContext context)
+            => this.TryAddCommand(_provider.GetService<Command>((s, p, d) =>
+                {
+                    s.Word = context.Word;
+                    s.PrimaryParent = this;
+                    s.Description = context.Description;
 
-        public ICommand TryAddSubCommand(CommandContext context)
+                    context.Arguments?.ForEach(a => s.TryAddArgument(a));
+                    context.Commands?.ForEach(ss => s.TryAddCommand(ss));
+                }));
+
+        /// <inheritdoc />
+        public ICommand TryAddCommand(ICommand command)
         {
-            if (this.SubCommands.ContainsKey(context.Word))
-                throw new DuplicateNameException($"Unable to create SubSegment '{context.Word}' into '{this.Phrase}'. SubSegment alreayd defined.");
+            if (this.Commands.ContainsKey(command.Word))
+                throw new DuplicateNameException($"Unable to add Command '{command.Word}' into '{this.Phrase}'. Command alreayd exists.");
 
-            var sub = _provider.GetService<Command>((s, p, d) =>
-            {
-                s.Word = context.Word;
-                s.Parent = this;
+            _commands.Add(command.Word, command);
+            command.OnReleased += this.HandleSubSegmentReleased;
 
-                context.Arguments?.ForEach(a => s.TryAddArgument(a));
-                context.SubCommands?.ForEach(ss => s.TryAddSubCommand(ss));
-            });
-
-            _subCommands.Add(sub.Word, sub);
-            sub.OnReleased += this.HandleSubSegmentReleased;
-
-            return sub;
+            return command;
         }
 
 
         public void TryRemove(String word)
-            => this.TryRemove(this.SubCommands[word]);
+            => _commands.Remove(word);
 
         public void TryRemove(Command segment)
         {
-            if (_subCommands.Remove(segment.Word))
+            if (_commands.Remove(segment.Word))
             {
                 segment.OnReleased -= this.HandleSubSegmentReleased;
                 segment.TryRelease();
             }
         }
 
-        /// <summary>
-        /// Parse the incoming command array and build
-        /// a new CommandInstance based on the recieved
-        /// data.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        internal abstract CommandInput TryBuild(String[] input, Int32 position);
-
-        /// <summary>
-        /// Attempt to excecute a recieved command instance
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        internal virtual IEnumerable<CommandResponse> LazyExecute(CommandInput input)
+        public virtual String GetHelpText()
         {
-            if (this.OnExcecute == default)
-                yield break;
+            String help = "";
 
-            foreach(OnCommandExecuteDelegate commandDelegate in this.OnExcecute.GetInvocationList())
-                yield return commandDelegate.TryInvoke(this, input);
+            if(this.Commands.Any())
+            {
+                help += "Available Commands:\n";
+                this.Commands.Values.ForEach(c =>
+                {
+                    help += $"  {c.Word}{c.Description?.AddLeft(" - ")}\n";
+                });
+            }
+
+            return help;
         }
         #endregion
 

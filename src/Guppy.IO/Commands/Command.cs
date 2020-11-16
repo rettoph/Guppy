@@ -1,6 +1,9 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
 using Guppy.IO.Commands.Contexts;
 using Guppy.IO.Commands.Delegates;
+using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
@@ -10,27 +13,31 @@ using System.Text;
 
 namespace Guppy.IO.Commands
 {
-    public class Command : CommandBase
+    public class Command : CommandBase, ICommand
     {
         #region Private Fields
         private List<ArgContext> _args;
         #endregion
 
         #region Public Properties
-        /// <summary>
-        /// The owning parent segment base.
-        /// </summary>
-        public CommandBase Parent { get; internal set; }
+        /// <inheritdoc />
+        public ICommandBase PrimaryParent { get; internal set; }
 
         /// <inheritdoc />
-        public override String Phrase => (this.Parent.Phrase + ' ' + this.Word).TrimStart();
+        public override String Phrase => (this.PrimaryParent.Phrase + ' ' + this.Word).TrimStart();
 
-        /// <summary>
-        /// The local segment identifier
-        /// </summary>
+        /// <inheritdoc />
         public String Word { get; internal set; }
 
+        /// <inheritdoc />
         public IReadOnlyCollection<ArgContext> Arguments => _args;
+
+        /// <inheritdoc />
+        public String Description { get; internal set; }
+        #endregion
+
+        #region Events
+        public event OnCommandExecuteDelegate OnExcecute;
         #endregion
 
         #region Lifecycle Methods
@@ -43,11 +50,34 @@ namespace Guppy.IO.Commands
 
         protected override void Release()
         {
-            this.Parent = null;
+            this.PrimaryParent = null;
         }
 
-        internal override IEnumerable<CommandResponse> LazyExecute(CommandInput input)
-            => base.LazyExecute(input).Concat(this.Parent.LazyExecute(input));
+        public override string GetHelpText()
+        {
+            String help = this.Description?.AddRight('\n') + base.GetHelpText();
+
+            if (this.Arguments.Any())
+            {
+                help += "\nArguments:\n";
+                this.Arguments.ForEach(a =>
+                {
+                    help += $"  {a.Identifier} {(a.Required ? "(Required)" : "(Optional)")}{a.Description?.AddLeft(" - ")}\n";
+
+                    if(a.Aliases != default)
+                        help += $"    Aliases: {String.Join(", ", a.Aliases)}\n";
+
+                    help += $"    Type: {a.Type}\n";
+                });
+            }
+
+            return help.TrimStart('\n');
+        }
+        #endregion
+
+        #region ICommand Implementation
+        IEnumerable<CommandResponse> ICommand.LazyExcecute(CommandInput input)
+            => this.OnExcecute.LazyInvoke(this, input);
         #endregion
 
         #region Helper Methods
@@ -58,21 +88,6 @@ namespace Guppy.IO.Commands
 
         public CommandInput BuildInput(String[] input, Int32 position)
             => new CommandInput(this, input, position);
-        #endregion
-
-        #region SegmentBase Implementation
-        internal override CommandInput TryBuild(String[] input, Int32 position)
-        {
-            if (position == input.Length || input[position][0] == CommandService.ArgumentIdentifier)
-            { // We have hit the first argument... attempt to parse them & build the command.
-                return this.BuildInput(input, position);
-            }
-            else
-            { // There is a sub segment requested...
-                return this[input[position]].TryBuild(input, ++position);
-            }
-        }
-
         #endregion
     }
 }

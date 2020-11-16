@@ -23,7 +23,7 @@ namespace Guppy.IO.Commands
 
         #region Public Fields
         public readonly String Name;
-        private readonly String[] Whitelist;
+        public readonly String[] Whitelist;
         public readonly Boolean StrictFilter;
         #endregion
 
@@ -51,6 +51,9 @@ namespace Guppy.IO.Commands
                 throw new ArgumentOutOfRangeException($"Unexpected {this.Name} value.", e);
             }
         }
+
+        public override string ToString()
+            => $"{this.Name}{(this.Whitelist.Length > 0 ? $" => [{System.String.Join(", ", this.Whitelist)}]" : "")}";
 
         static ArgType()
         {

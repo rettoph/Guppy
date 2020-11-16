@@ -10,51 +10,46 @@ namespace Guppy.IO.Commands.Interfaces
     /// <summary>
     /// Primary interface used to define global command functionality
     /// </summary>
-    public interface ICommand : IService
+    public interface ICommand : ICommandBase
     {
         #region Properties
         /// <summary>
-        /// The full identifier for the current segment.
+        /// The primary parent whithin which the 
+        /// current command resides, as commands
+        /// can exist within multiple parents.
+        /// 
+        /// For example, the help command.
         /// </summary>
-        String Phrase { get; }
+        ICommandBase PrimaryParent { get; }
 
         /// <summary>
-        /// A list of all sub segments contained within
+        /// The local segment identifier
         /// </summary>
-        IReadOnlyDictionary<String, Command> SubCommands { get; }
+        String Word { get; }
 
         /// <summary>
-        /// Public sub command getter.
+        /// The arguments configured to the current command.
         /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        Command this[String word] { get; }
+        IReadOnlyCollection<ArgContext> Arguments { get; }
+
+        /// <summary>
+        /// A human readable description of the current commands
+        /// intended functionality.
+        /// </summary>
+        String Description { get; }
         #endregion
 
         #region Events
         event OnCommandExecuteDelegate OnExcecute;
         #endregion
 
-
         #region Methods
         /// <summary>
-        /// Add a new segment context into the current segment.
+        /// Return a lazy IEnumerable instance representing
+        /// the current input's response.
         /// </summary>
-        /// <param name="context"></param>
-        ICommand TryAddSubCommand(CommandContext context);
-
-        /// <summary>
-        /// Remove a subcommand from
-        /// the current command
-        /// </summary>
-        /// <param name="word"></param>
-        void TryRemove(String word);
-
-        /// <summary>
-        /// Remove a subcommand from
-        /// the current command
-        /// </summary>
-        void TryRemove(Command segment);
+        /// <returns></returns>
+        IEnumerable<CommandResponse> LazyExcecute(CommandInput input);
         #endregion
     }
 }

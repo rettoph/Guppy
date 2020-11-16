@@ -1,6 +1,7 @@
 ﻿using Guppy.IO.Commands.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.IO.Commands.Delegates
@@ -25,6 +26,20 @@ namespace Guppy.IO.Commands.Delegates
             {
                 return CommandResponse.Error(exception: e);
             }
+        }
+
+        public static IEnumerable<CommandResponse> LazyInvoke(this OnCommandExecuteDelegate del, ICommand sender, CommandInput input)
+        {
+            if (del == default)
+                return Enumerable.Empty<CommandResponse>();
+            else
+                return del.LazyInvokeIterator(sender, input);
+        }
+
+        private static IEnumerable<CommandResponse> LazyInvokeIterator(this OnCommandExecuteDelegate del, ICommand sender, CommandInput input)
+        {
+            foreach (OnCommandExecuteDelegate commandDelegate in del.GetInvocationList())
+                yield return commandDelegate.TryInvoke(sender, input);
         }
     }
 }

@@ -49,10 +49,10 @@ namespace Guppy.UI
             var commands = provider.GetService<CommandService>();
             var inputs = provider.GetService<InputCommandService>();
 
-            commands.TryAddSubCommand(new CommandContext()
+            commands.TryAddCommand(new CommandContext()
             {
                 Word = "ui",
-                SubCommands = new CommandContext[] {
+                Commands = new CommandContext[] {
                     new CommandContext()
                     {
                         Word = "interact",

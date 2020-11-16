@@ -28,14 +28,14 @@ namespace Guppy.IO.Commands.Contexts
         /// Internal invokable commands that are children
         /// of the current command word.
         /// </summary>
-        public CommandContext[] SubCommands { get; set; }
+        public CommandContext[] Commands { get; set; }
 
         public CommandContext(String word, String description, ArgContext[] arguments, CommandContext[] subCommands)
         {
             this.Word = word;
             this.Description = description;
             this.Arguments = arguments;
-            this.SubCommands = subCommands;
+            this.Commands = subCommands;
         }
     }
 }
