@@ -6,6 +6,7 @@ using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.IO.Commands
@@ -48,12 +49,8 @@ namespace Guppy.IO.Commands
             this.Parent = null;
         }
 
-        internal override void Execute(CommandArguments arguments)
-        {
-            this.Parent.Execute(arguments);
-
-            base.Execute(arguments);
-        }
+        internal override IEnumerable<CommandResponse> LazyExecute(CommandArguments arguments)
+            => base.LazyExecute(arguments).Concat(this.Parent.LazyExecute(arguments));
         #endregion
 
         #region Helper Methods

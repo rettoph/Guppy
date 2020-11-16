@@ -111,9 +111,13 @@ namespace Guppy.IO.Commands
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        internal virtual void Execute(CommandArguments arguments)
+        internal virtual IEnumerable<CommandResponse> LazyExecute(CommandArguments arguments)
         {
-            this.OnExcecute?.Invoke(this, arguments);
+            if (this.OnExcecute == default)
+                yield break;
+
+            foreach(OnCommandExecuteDelegate commandDelegate in this.OnExcecute.GetInvocationList())
+                yield return commandDelegate.TryInvoke(this, arguments);
         }
         #endregion
 

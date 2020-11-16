@@ -71,8 +71,12 @@ namespace Guppy.UI.Services
         #endregion
 
         #region Event Handlers
-        private void HandleUIInteractCommand(ICommand sender, CommandArguments args)
-            => this.Pressed = (ButtonState)args["state"] == ButtonState.Pressed;
+        private CommandResponse HandleUIInteractCommand(ICommand sender, CommandArguments args)
+        {
+            this.Pressed = (ButtonState)args["state"] == ButtonState.Pressed;
+
+            return CommandResponse.Debug($"Set UIService.Pressed state to {this.Pressed}.");
+        }
         #endregion
     }
 }

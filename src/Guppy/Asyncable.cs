@@ -21,6 +21,12 @@ namespace Guppy
         private Int32 _period;
         private Thread _loop;
 
+        /// <summary>
+        /// Whether or not the current Asyncable instance is
+        /// running in another thread.
+        /// </summary>
+        public Boolean Running => _running;
+
         protected override void Release()
         {
             base.Release();

@@ -4,5 +4,5 @@ using System.Text;
 
 namespace Guppy.IO.Commands.Delegates
 {
-    public delegate void OnExecuteDelegate(Command command);
+    public delegate void OnExecutedDelegate(CommandArguments args, IEnumerable<CommandResponse> responses);
 }

@@ -25,5 +25,16 @@ namespace Guppy.Extensions.System
 #endif
             return xxHashSharp.xxHash.CalculateHash(Encoding.UTF8.GetBytes(value));
         }
+
+        public static String AddLeft(this String value, Char add, Int32 count = 1)
+            => value.AddLeft(new String(add, count));
+        public static String AddLeft(this String value, String add)
+            => add + value;
+
+        public static String AddRight(this String value, Char add, Int32 count = 1)
+            => value.AddRight(new String(add, count));
+
+        public static String AddRight(this String value, String add)
+            => value + add;
     }
 }
