@@ -17,6 +17,10 @@ namespace Guppy.IO.Commands
         #region Private Fields
         private String[] _input;
         private Dictionary<String, Object> _args;
+        private static CommandResponse[] _unknownCommandResponse = new CommandResponse[] 
+        {
+            CommandResponse.Warning("Unknown command.")
+        };
         #endregion
 
         #region Public Properties
@@ -40,11 +44,15 @@ namespace Guppy.IO.Commands
         #endregion
 
         #region Constructors
-        internal CommandInput(Command command, String[] input, Int32 position)
+        internal CommandInput(String[] input)
         {
             _input = input;
 
             _args = new Dictionary<String, Object>();
+        }
+
+        internal CommandInput(Command command, String[] input, Int32 position) : this(input)
+        {
             this.Command = command;
 
             // Build the commands dictionary...
@@ -65,6 +73,20 @@ namespace Guppy.IO.Commands
             this.Command = from.Command;
         }
         #endregion
+
+        #region Helper Methods
+        /// <summary>
+        /// Self excecute the current CommandInput info
+        /// & return the results.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<CommandResponse> Execute()
+        {
+            if (this.Command == default)
+                return _unknownCommandResponse;
+
+            return this.Command.LazyExecute(this).Where(r => r != default).ToList();
+        }
 
         public CommandInput Copy()
             => new CommandInput(this);
@@ -94,6 +116,7 @@ namespace Guppy.IO.Commands
 
         public override String ToString()
             => this.Phrase;
+        #endregion
 
         #region Static Helper Methods
         /// <summary>

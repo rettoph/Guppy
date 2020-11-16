@@ -37,14 +37,7 @@ namespace Guppy.IO.Commands.Services
             (CommandInput input, IEnumerable<CommandResponse> responses) response;
             try
             {
-                response = (input, responses: input.Command.LazyExecute(input).Where(r => r != default).ToList());
-            }
-            catch(NullReferenceException e)
-            {
-                response = (input, responses: new CommandResponse[]
-                {
-                    CommandResponse.Error("Unknown command.", e)
-                });
+                response = (input, responses: input.Execute());
             }
             catch(Exception e)
             {
@@ -71,7 +64,7 @@ namespace Guppy.IO.Commands.Services
             => this.TryBuild(input.Split(' '), 0);
 
         internal override CommandInput TryBuild(string[] input, int position)
-            => this.SubCommands.ContainsKey(input[position]) ? this[input[position]].TryBuild(input, ++position) : default;
+            => this.SubCommands.ContainsKey(input[position]) ? this[input[position]].TryBuild(input, ++position) : new CommandInput(input);
         #endregion
     }
 }
