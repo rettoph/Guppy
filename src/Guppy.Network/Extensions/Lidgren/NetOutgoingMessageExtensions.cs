@@ -17,6 +17,12 @@ namespace Guppy.Network.Extensions.Lidgren
         }
         #endregion
 
+        #region Enum Methods
+        public static void Write<T>(this NetOutgoingMessage om, T value)
+            where T : Enum
+                => om.Write(Convert.ToByte(value));
+        #endregion
+
         #region Color Methods
         public static void Write(this NetOutgoingMessage om, Color color)
         {

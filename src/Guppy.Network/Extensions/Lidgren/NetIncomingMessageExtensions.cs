@@ -1,8 +1,10 @@
 ﻿using Guppy.Lists;
+using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.Network.Extensions.Lidgren
@@ -17,6 +19,15 @@ namespace Guppy.Network.Extensions.Lidgren
         public static Guid ReadGuid(this NetIncomingMessage im)
         {
             return new Guid(im.ReadBytes(16));
+        }
+        #endregion
+
+        #region Enum Methods
+        public static T ReadEnum<T>(this NetIncomingMessage im)
+            where T : Enum
+        {
+            var byteVal = im.ReadByte();
+            return EnumHelper.GetValues<T>().First(v => Convert.ToByte(v) == byteVal);
         }
         #endregion
 

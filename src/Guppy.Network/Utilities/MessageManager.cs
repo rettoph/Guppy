@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Lidgren.Network;
@@ -26,6 +27,11 @@ namespace Guppy.Network.Utilities.Messages
         }
         #endregion
 
+        #region Events
+        public OnEventDelegate<MessageManager, NetOutgoingMessage> OnCreated;
+        public ValidateEventDelegate<MessageManager, NetIncomingMessage> ValidateRead;
+        #endregion
+
         #region Helper Methods 
         /// <summary>
         /// Read & process an incoming message
@@ -34,12 +40,13 @@ namespace Guppy.Network.Utilities.Messages
         /// <param name="im"></param>
         public void Read(NetIncomingMessage im)
         {
-            while (im.Position < im.LengthBits)
-            { // Read the entire message...
-                var id = im.ReadUInt32();
-                if (!_messageHandlers[id](im))
-                    break;
-            }
+            if(this.ValidateRead.Validate(this, im, true))
+                while (im.Position < im.LengthBits)
+                { // Read the entire message...
+                    var id = im.ReadUInt32();
+                    if (!_messageHandlers[id](im))
+                        break;
+                }
         }
 
         /// <summary>
