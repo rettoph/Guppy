@@ -11,6 +11,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Commands;
 using System.Linq;
 using Guppy.Extensions.Collections;
+using Guppy.Utilities;
 
 namespace Guppy.IO.Input
 {
@@ -30,6 +31,7 @@ namespace Guppy.IO.Input
         private CommandService _commands;
         private InputService _inputs;
         private InputManager _inputManager;
+        private Synchronizer _synchronizer;
         #endregion
 
         #region Public Properties
@@ -63,6 +65,7 @@ namespace Guppy.IO.Input
 
             provider.Service(out _commands);
             provider.Service(out _inputs);
+            provider.Service(out _synchronizer);
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -114,8 +117,13 @@ namespace Guppy.IO.Input
         #endregion
 
         #region Event Handlers
+        /// <summary>
+        /// Execute the command within a synchronized call.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void HandleInput(InputManager sender, InputArgs args)
-            => _commands.TryExecute(this.CommandArguments[args.State]);
+            => _synchronizer.Enqueue(gt => _commands.TryExecute(this.CommandArguments[args.State]));
         #endregion
     }
 }
