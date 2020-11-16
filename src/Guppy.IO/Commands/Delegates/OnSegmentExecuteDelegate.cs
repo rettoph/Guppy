@@ -10,16 +10,16 @@ namespace Guppy.IO.Commands.Delegates
     /// </summary>
     /// <param name="sender">The Command currently being invoked.</param>
     /// <param name="source">The source command that srtarted the invocation.</param>
-    /// <param name="args">A list of parsed arguments recieved.</param>
-    public delegate CommandResponse OnCommandExecuteDelegate(ICommand sender, CommandArguments args);
+    /// <param name="input">The specific CommandInput instance recieved.</param>
+    public delegate CommandResponse OnCommandExecuteDelegate(ICommand sender, CommandInput input);
 
     public static class OnCommandExecuteDelegateExtensions
     {
-        public static CommandResponse TryInvoke(this OnCommandExecuteDelegate del, ICommand sender, CommandArguments args)
+        public static CommandResponse TryInvoke(this OnCommandExecuteDelegate del, ICommand sender, CommandInput input)
         {
             try
             {
-                return del.Invoke(sender, args);
+                return del.Invoke(sender, input);
             }
             catch (Exception e)
             {

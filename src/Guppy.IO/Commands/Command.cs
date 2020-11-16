@@ -1,7 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.IO.Commands.Contexts;
 using Guppy.IO.Commands.Delegates;
-using Guppy.IO.Commands.Extensions;
 using Guppy.IO.Commands.Services;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,6 @@ namespace Guppy.IO.Commands
     public class Command : CommandBase
     {
         #region Private Fields
-        private CommandArguments _parsedArgs;
         private List<ArgContext> _args;
         #endregion
 
@@ -41,7 +39,6 @@ namespace Guppy.IO.Commands
             base.PreInitialize(provider);
 
             _args = new List<ArgContext>();
-            _parsedArgs = new CommandArguments(this);
         }
 
         protected override void Release()
@@ -49,8 +46,8 @@ namespace Guppy.IO.Commands
             this.Parent = null;
         }
 
-        internal override IEnumerable<CommandResponse> LazyExecute(CommandArguments arguments)
-            => base.LazyExecute(arguments).Concat(this.Parent.LazyExecute(arguments));
+        internal override IEnumerable<CommandResponse> LazyExecute(CommandInput input)
+            => base.LazyExecute(input).Concat(this.Parent.LazyExecute(input));
         #endregion
 
         #region Helper Methods
@@ -58,21 +55,24 @@ namespace Guppy.IO.Commands
             => _args.Add(arg);
         public void TryRemoveArgument(ArgContext arg)
             => _args.Remove(arg);
+
+        public CommandInput BuildInput(String[] input, Int32 position)
+            => new CommandInput(this, input, position);
         #endregion
 
         #region SegmentBase Implementation
-        internal override CommandArguments TryBuild(String[] input, Int32 position)
+        internal override CommandInput TryBuild(String[] input, Int32 position)
         {
             if (position == input.Length || input[position][0] == CommandService.ArgumentIdentifier)
             { // We have hit the first argument... attempt to parse them & build the command.
-                this.ParseArguments(input, position, _parsedArgs.args);
-                return _parsedArgs;
+                return this.BuildInput(input, position);
             }
             else
             { // There is a sub segment requested...
                 return this[input[position]].TryBuild(input, ++position);
             }
         }
+
         #endregion
     }
 }

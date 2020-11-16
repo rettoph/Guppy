@@ -104,20 +104,20 @@ namespace Guppy.IO.Commands
         /// <param name="input"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        internal abstract CommandArguments TryBuild(String[] input, Int32 position);
+        internal abstract CommandInput TryBuild(String[] input, Int32 position);
 
         /// <summary>
         /// Attempt to excecute a recieved command instance
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        internal virtual IEnumerable<CommandResponse> LazyExecute(CommandArguments arguments)
+        internal virtual IEnumerable<CommandResponse> LazyExecute(CommandInput input)
         {
             if (this.OnExcecute == default)
                 yield break;
 
             foreach(OnCommandExecuteDelegate commandDelegate in this.OnExcecute.GetInvocationList())
-                yield return commandDelegate.TryInvoke(this, arguments);
+                yield return commandDelegate.TryInvoke(this, input);
         }
         #endregion
 

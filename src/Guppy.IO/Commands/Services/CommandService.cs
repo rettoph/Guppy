@@ -26,17 +26,39 @@ namespace Guppy.IO.Commands.Services
         /// Attempt to parse a raw string & execute the command.
         /// </summary>
         /// <param name="input"></param>
-        public (CommandArguments input, IEnumerable<CommandResponse> responses) TryExecute(String input)
+        public (CommandInput input, IEnumerable<CommandResponse> responses) TryExecute(String input)
             => this.TryExecute(this.TryBuild(input));
         /// <summary>
         /// Attempt to execute a pre existing command instance.
         /// </summary>
         /// <param name="command"></param>
-        public (CommandArguments input, IEnumerable<CommandResponse> responses) TryExecute(CommandArguments arguments)
-            => (input: arguments, responses: arguments.Command.LazyExecute(arguments).Where(r => r != default).ToList()).Then(response =>
+        public (CommandInput input, IEnumerable<CommandResponse> responses) TryExecute(CommandInput input)
+        {
+            (CommandInput input, IEnumerable<CommandResponse> responses) response;
+            try
             {
-                this.OnExcecuted?.Invoke(response.input, response.responses);
+                response = (input, responses: input.Command.LazyExecute(input).Where(r => r != default).ToList());
+            }
+            catch(NullReferenceException e)
+            {
+                response = (input, responses: new CommandResponse[]
+                {
+                    CommandResponse.Error("Unknown command.", e)
+                });
+            }
+            catch(Exception e)
+            {
+                response = (input, responses: new CommandResponse[]
+                {
+                    CommandResponse.Error("Unable to execute command.", e)
+                });
+            }
+
+            return response.Then(r =>
+            {
+                this.OnExcecuted?.Invoke(r.input, r.responses);
             });
+        }
 
         /// <summary>
         /// Attempt to construct a command instance
@@ -45,10 +67,10 @@ namespace Guppy.IO.Commands.Services
         /// Input args will be confirmed & validated.
         /// </summary>
         /// <param name="input">The command input string</param>
-        public CommandArguments TryBuild(String input)
+        public CommandInput TryBuild(String input)
             => this.TryBuild(input.Split(' '), 0);
 
-        internal override CommandArguments TryBuild(string[] input, int position)
+        internal override CommandInput TryBuild(string[] input, int position)
             => this.SubCommands.ContainsKey(input[position]) ? this[input[position]].TryBuild(input, ++position) : default;
         #endregion
     }

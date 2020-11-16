@@ -49,7 +49,7 @@ namespace Guppy.IO.Input
         /// <summary>
         /// An dictionary of button states and the command to run
         /// </summary>
-        public IReadOnlyDictionary<ButtonState, CommandArguments> CommandArguments { get; private set; }
+        public IReadOnlyDictionary<ButtonState, CommandInput> CommandArguments { get; private set; }
         #endregion
 
         #region Constructor
