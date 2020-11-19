@@ -69,5 +69,29 @@ namespace Guppy.Extensions.System
         public static IEnumerable<Type> GetTypesWithAutoLoadAttribute<T, TAutoLoadAttribute>(this IEnumerable<Type> types, Boolean inherit = true)
             where TAutoLoadAttribute : AutoLoadAttribute
                 => types.GetTypesWithAutoLoadAttribute(typeof(T), inherit, typeof(TAutoLoadAttribute));
+
+        /// <summary>
+        /// https://stackoverflow.com/questions/17480990/get-name-of-generic-class-without-tilde
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static string GetPrettyName(this Type t)
+        {
+            if (!t.IsGenericType)
+                return t.Name;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(t.Name.Substring(0, t.Name.IndexOf('`')));
+            sb.Append('<');
+            bool appendComma = false;
+            foreach (Type arg in t.GetGenericArguments())
+            {
+                if (appendComma) sb.Append(',');
+                sb.Append(GetPrettyName(arg));
+                appendComma = true;
+            }
+            sb.Append('>');
+            return sb.ToString();
+        }
     }
 }

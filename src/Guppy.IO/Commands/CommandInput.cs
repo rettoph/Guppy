@@ -52,7 +52,9 @@ namespace Guppy.IO.Commands
         internal CommandInput(ICommand command, String[] input, Int32 position)
         {
             _input = input;
-            _args = new Dictionary<String, Object>();
+            _args = command.Arguments.Where(ac => ac.DefaultValue != null && !ac.Required).ToDictionary(
+                keySelector: ac => ac.Identifier,
+                elementSelector: ac => ac.DefaultValue?.Invoke());
             _invalidArgs = new List<String>();
 
             this.Command = command;
@@ -128,13 +130,14 @@ namespace Guppy.IO.Commands
         /// it, otherwise return null
         /// </summary>
         /// <param name="identifier"></param>
+        /// <param name="fallback"></param>
         /// <returns></returns>
-        public T GetIfContains<T>(String identifier)
+        public T GetIfContains<T>(String identifier, T fallback = default)
         {
             if (this.Contains(identifier))
                 return (T)this[identifier];
 
-            return default(T);
+            return fallback;
         }
 
         public override String ToString()
@@ -185,7 +188,7 @@ namespace Guppy.IO.Commands
             try
             {
                 var argContext = command.Arguments.First(ac => ac.Identifier == identifier || (identifier.Length == 1 && (ac.Aliases?.Contains(identifier[0]) ?? false)));
-                _args.Add(argContext.Identifier, argContext.Type.Parse(value));
+                _args[argContext.Identifier] = argContext.Type.Parse(value);
             }
             catch (InvalidOperationException e)
             {

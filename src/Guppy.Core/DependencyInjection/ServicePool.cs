@@ -19,6 +19,7 @@ namespace Guppy.DependencyInjection
 
         public ServicePool(Type type, ref UInt16 maxPoolSize)
         {
+            _type = type;
             _maxPoolSize = maxPoolSize;
             _poolSize = 0;
             _pool = new Stack<Object>();

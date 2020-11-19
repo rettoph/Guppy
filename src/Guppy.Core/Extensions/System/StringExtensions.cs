@@ -36,5 +36,14 @@ namespace Guppy.Extensions.System
 
         public static String AddRight(this String value, String add)
             => value + add;
+
+        public static String Duplicate(this String input, Int32 count)
+        {
+            String output = "";
+            for (Int32 i = 0; i < count; i++)
+                output += input;
+
+            return output;
+        }
     }
 }

@@ -32,13 +32,22 @@ namespace Guppy.IO.Commands.Contexts
         /// </summary>
         public bool Required { get; set; }
 
-        public ArgContext(ArgType type, string identifier, string description, Char[] aliases = null, bool required = false)
+        /// <summary>
+        /// The default input value to parse if non
+        /// is recieved.
+        /// 
+        /// This is only applicable if required is false.
+        /// </summary>
+        public Func<Object> DefaultValue { get; set; }
+
+        public ArgContext(ArgType type, string identifier, string description, Char[] aliases = null, bool required = false, Func<Object> defaultValue = null)
         {
             this.Type = type;
             this.Identifier = identifier;
             this.Description = description;
             this.Aliases = aliases;
             this.Required = required;
+            this.DefaultValue = defaultValue;
         }
     }
 }
