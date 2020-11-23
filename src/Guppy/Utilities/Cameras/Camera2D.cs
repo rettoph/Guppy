@@ -25,8 +25,7 @@ namespace Guppy.Utilities.Cameras
         private Single _maxZoom = Single.MaxValue;
         #endregion
 
-        #region Public Attributes
-        #endregion
+        #region Public Properties
         public RectangleF ViewportBounds { get; private set; }
 
         public Vector2 Position
@@ -67,6 +66,7 @@ namespace Guppy.Utilities.Cameras
                 this.Zoom = MathHelper.Clamp(this.Zoom, this.MinZoom, this.MaxZoom);
             }
         }
+        #endregion
 
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)

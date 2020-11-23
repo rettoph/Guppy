@@ -80,6 +80,17 @@ namespace Guppy.Utilities
                 TriangleHelper.AAS(C.Value, B.Value, c.Value, out triangle.A, out triangle.b, out triangle.c);
             #endregion
 
+            #region ASA
+            else if (a != null && C != null && B != null)
+                TriangleHelper.ASA(C.Value, B.Value, a.Value, out triangle.A, out triangle.b, out triangle.c);
+
+            else if (b != null && A != null && C != null)
+                TriangleHelper.ASA(A.Value, C.Value, b.Value, out triangle.B, out triangle.c, out triangle.a);
+
+            else if (c != null && B != null && A != null)
+                TriangleHelper.ASA(B.Value, A.Value, c.Value, out triangle.A, out triangle.a, out triangle.b);
+            #endregion
+
             else
                 throw new Exception("Unsolvable triangle detected.");
 
@@ -92,6 +103,14 @@ namespace Guppy.Utilities
 
             a3 = MathHelper.Pi - a1 - a2;
             s3 = (Single)((s1 * Math.Sin(a3)) / Math.Sin(a1));
+        }
+
+        public static void ASA(Single a1, Single s1, Single a2, out Single a3, out Single s2, out Single s3)
+        {
+            a3 = MathHelper.Pi - a1 - a2;
+
+            s2 = (Single)((s1 / Math.Sin(a3)) * Math.Sin(a1));
+            s3 = (Single)((s1 * Math.Sin(a3)) * Math.Sin(a3));
         }
     }
 }

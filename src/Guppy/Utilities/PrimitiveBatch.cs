@@ -170,6 +170,7 @@ namespace Guppy.Utilities
 
             _effect.View = view;
             _effect.Projection = projection;
+
             _blendState = blendState == default(BlendState) ? BlendState.AlphaBlend : blendState;
             _started = true;
         }
@@ -197,6 +198,10 @@ namespace Guppy.Utilities
                 _triangleVertexBuffer.SetData<VertexPositionColor>(_triangleVertices, 0, _triangleVerticeCount);
                 _graphics.SetVertexBuffer(_triangleVertexBuffer);
                 _graphics.BlendState = _blendState;
+                _graphics.RasterizerState = new RasterizerState()
+                {
+                    MultiSampleAntiAlias = true
+                };
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {

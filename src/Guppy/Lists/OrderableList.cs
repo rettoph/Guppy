@@ -8,21 +8,12 @@ using System.Text;
 
 namespace Guppy.Lists
 {
-    public class OrderableList<TOrderable> : ServiceList<TOrderable>, IFrameable
+    public class OrderableList<TOrderable> : FrameableList<TOrderable>
         where TOrderable : Orderable
     {
         #region Private Attributes
         private List<TOrderable> _draws;
         private List<TOrderable> _updates;
-        #endregion
-
-        #region Events
-        public event Step OnPreDraw;
-        public event Step OnDraw;
-        public event Step OnPostDraw;
-        public event Step OnPreUpdate;
-        public event Step OnUpdate;
-        public event Step OnPostUpdate;
         #endregion
 
         #region Protected Attributes
@@ -39,9 +30,6 @@ namespace Guppy.Lists
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
-
-            this.OnDraw += this.Draw;
-            this.OnUpdate += this.Update;
 
             this.OnAdd += this.AddItem;
             this.OnRemove += this.RemoveItem;
@@ -64,9 +52,6 @@ namespace Guppy.Lists
 
             _draws.Clear();
             _updates.Clear();
-
-            this.OnDraw -= this.Draw;
-            this.OnUpdate -= this.Update;
 
             this.OnAdd -= this.AddItem;
             this.OnRemove -= this.RemoveItem;
@@ -103,28 +88,14 @@ namespace Guppy.Lists
         #endregion
 
         #region Frame Methods
-        public virtual void TryDraw(GameTime gameTime)
-        {
-            this.OnPreDraw?.Invoke(gameTime);
-            this.OnDraw?.Invoke(gameTime);
-            this.OnPostDraw?.Invoke(gameTime);
-        }
-
-        public virtual void TryUpdate(GameTime gameTime)
-        {
-            this.OnPreUpdate?.Invoke(gameTime);
-            this.OnUpdate?.Invoke(gameTime);
-            this.OnPostUpdate?.Invoke(gameTime);
-        }
-
-        protected virtual void Draw(GameTime gameTime)
+        protected override void Draw(GameTime gameTime)
         {
             this.TryCleanDraws();
 
             _draws.ForEach(u => u.TryDraw(gameTime));
         }
 
-        protected virtual void Update(GameTime gameTime)
+        protected override void Update(GameTime gameTime)
         {
             this.TryCleanUpdates();
 

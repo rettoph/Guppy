@@ -169,7 +169,7 @@ namespace Guppy.Lists
             item.OnReleased -= this.HandleItemReleased;
         }
 
-        private void HandleItemReleased(IService sender)
+        protected virtual void HandleItemReleased(IService sender)
         {
             this.TryRemove(sender as TService);
         }

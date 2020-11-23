@@ -21,10 +21,6 @@ namespace Guppy.IO.Commands.Services
         public static readonly Char ArgumentIdentifier = '-';
         #endregion
 
-        #region Private Fields
-        private ILog _log;
-        #endregion
-
         #region Public Attributes
         public override String Phrase { get; } = "";
         #endregion
