@@ -22,7 +22,8 @@ namespace Guppy.Utilities
     public sealed class Synchronizer : Service
     {
         #region Private Fields
-        private Queue<Action<GameTime>> _queue;
+        private Action<GameTime> _action;
+        private ConcurrentQueue<Action<GameTime>> _queue;
         #endregion
 
         #region Lifecycle Methods
@@ -30,7 +31,7 @@ namespace Guppy.Utilities
         {
             base.Initialize(provider);
 
-            _queue = new Queue<Action<GameTime>>();
+            _queue = new ConcurrentQueue<Action<GameTime>>();
         }
 
         protected override void Release()
@@ -38,7 +39,7 @@ namespace Guppy.Utilities
             base.Release();
 
             while (_queue.Any()) // Empty the queue out
-                _queue.Dequeue();
+                _queue.TryDequeue(out _action);
         }
         #endregion
 
@@ -57,8 +58,8 @@ namespace Guppy.Utilities
         /// <param name="gameTime"></param>
         public void Flush(GameTime gameTime)
         {
-            while (_queue.Any())
-                _queue.Dequeue()(gameTime);
+            while (_queue.TryDequeue(out _action))
+                _action(gameTime);
         }
         #endregion
     }

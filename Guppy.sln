@@ -13,7 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.UI", "src\Guppy.UI\Gu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.IO", "src\Guppy.IO\Guppy.IO.csproj", "{F40294D5-B6EE-432A-9F1C-897BBA2BBCA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Core", "src\Guppy.Core\Guppy.Core.csproj", "{CD3EF7D2-26B9-4943-AEAE-8D0BF3E21A25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core", "src\Guppy.Core\Guppy.Core.csproj", "{CD3EF7D2-26B9-4943-AEAE-8D0BF3E21A25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{61F9813E-5013-4F18-B71C-CC5CB79DF497}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lidgren-network-gen3", "lidgren-network-gen3", "{0ECF03C4-8662-4777-9F33-D460903A6247}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lidgren.Network.MultiTarget", "libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj", "{1DBDDD21-CFBC-4652-A768-395F7B1A912A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +47,10 @@ Global
 		{CD3EF7D2-26B9-4943-AEAE-8D0BF3E21A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD3EF7D2-26B9-4943-AEAE-8D0BF3E21A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD3EF7D2-26B9-4943-AEAE-8D0BF3E21A25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DBDDD21-CFBC-4652-A768-395F7B1A912A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DBDDD21-CFBC-4652-A768-395F7B1A912A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DBDDD21-CFBC-4652-A768-395F7B1A912A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DBDDD21-CFBC-4652-A768-395F7B1A912A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +61,8 @@ Global
 		{66E01910-37F6-4D7E-9E6A-3748C14FD524} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 		{F40294D5-B6EE-432A-9F1C-897BBA2BBCA3} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 		{CD3EF7D2-26B9-4943-AEAE-8D0BF3E21A25} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
+		{0ECF03C4-8662-4777-9F33-D460903A6247} = {61F9813E-5013-4F18-B71C-CC5CB79DF497}
+		{1DBDDD21-CFBC-4652-A768-395F7B1A912A} = {0ECF03C4-8662-4777-9F33-D460903A6247}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}

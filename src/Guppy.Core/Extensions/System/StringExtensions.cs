@@ -1,7 +1,7 @@
-﻿using System;
+﻿using K4os.Hash.xxHash;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using xxHashSharp;
 
 namespace Guppy.Extensions.System
 {
@@ -14,7 +14,7 @@ namespace Guppy.Extensions.System
         public static UInt32 xxHash(this String value)
         {
 #if DEBUG
-            var hash = xxHashSharp.xxHash.CalculateHash(Encoding.UTF8.GetBytes(value));
+            var hash = XXH32.DigestOf(Encoding.UTF8.GetBytes(value));
             if (!_cache.ContainsKey(hash))
             {
                 _cache[hash] = value;
@@ -23,7 +23,7 @@ namespace Guppy.Extensions.System
 
             return hash;
 #endif
-            return xxHashSharp.xxHash.CalculateHash(Encoding.UTF8.GetBytes(value));
+            return XXH32.DigestOf(Encoding.UTF8.GetBytes(value));
         }
 
         public static String AddLeft(this String value, Char add, Int32 count = 1)
