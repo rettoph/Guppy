@@ -13,7 +13,7 @@ namespace Guppy.Services
     public sealed class ContentService : LoaderService<String, String, Object>
     {
         #region Private Fields
-        private ContentManager _content;
+        private ContentManager _manager;
         #endregion
 
         #region Lifecycle Methods
@@ -21,7 +21,7 @@ namespace Guppy.Services
         {
             base.Initialize(provider);
 
-            provider.Service(out _content);
+            provider.Service(out _manager);
         }
         #endregion
 
@@ -31,11 +31,14 @@ namespace Guppy.Services
         /// <param name="group"></param>
         /// <returns></returns>
         protected override Object Configure(IGrouping<String, RegisteredValue> group)
-            => _content.Load<Object>(group.OrderBy(rv => rv.Value).First().Value);
+            => _manager.Load<Object>(group.OrderBy(rv => rv.Value).First().Value);
 
         public T Get<T>(String handle)
         {
             return (T)this[handle];
         }
+
+        public static implicit operator ContentManager(ContentService content)
+            => content._manager;
     }
 }
