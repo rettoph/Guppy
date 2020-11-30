@@ -18,7 +18,6 @@ namespace Guppy.Utilities.Cameras
         private GameWindow _window;
         private GraphicsDevice _graphics;
         private Vector2 _position;
-        private Single _zoom;
         private Single _zoomTarget;
         private Vector2 _positionTarget;
         private Single _minZoom = Single.Epsilon;
@@ -223,7 +222,7 @@ namespace Guppy.Utilities.Cameras
 
                 this.dirty = true;
             }
-            else if(!lerp)
+            else if (!lerp)
             {
                 _zoomTarget = MathHelper.Clamp(value, this.MinZoom, this.MaxZoom);
                 this.Zoom = _zoomTarget;

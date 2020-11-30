@@ -20,8 +20,6 @@ namespace Guppy.Extensions.System
                 _cache[hash] = value;
                 Console.WriteLine($"{hash} => {value}");
             }
-
-            return hash;
 #endif
             return XXH32.DigestOf(Encoding.UTF8.GetBytes(value));
         }

@@ -9,9 +9,25 @@ namespace Guppy.Events.Delegates
 
     public static class OnEventDelegateExtensions
     {
-        public static void InvokeIfChanged<TSender, TArgs>(this OnEventDelegate<TSender, TArgs>  eventDelegate, Boolean changed, TSender sender, ref TArgs reference, TArgs value)
+        /// <summary>
+        /// Helper method to automatically invoke an event
+        /// call if the value has changed.
+        /// </summary>
+        /// <typeparam name="TSender"></typeparam>
+        /// <typeparam name="TArgs"></typeparam>
+        /// <param name="eventDelegate"></param>
+        /// <param name="valid">Whether or not the event should be invoked.</param>
+        /// <param name="sender">The sender instance.</param>
+        /// <param name="reference">A reference to be updated with the new value if valid.</param>
+        /// <param name="value">The value to set the reference if valid.</param>
+        public static void InvokeIfChanged<TSender, TArgs>(
+            this OnEventDelegate<TSender, TArgs>  eventDelegate, 
+            Boolean valid, 
+            TSender sender, 
+            ref TArgs reference, 
+            TArgs value)
         {
-            if (changed)
+            if (valid)
             {
                 reference = value;
                 eventDelegate?.Invoke(sender, reference);

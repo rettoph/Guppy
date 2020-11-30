@@ -18,9 +18,14 @@ namespace Guppy.Events.Delegates
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        public static void InvokeIfChanged<TSender, TValue>(this OnChangedEventDelegate<TSender, TValue> deltaDelegate, Boolean changed, TSender sender, ref TValue old, TValue value)
+        public static void InvokeIfChanged<TSender, TValue>(
+            this OnChangedEventDelegate<TSender, TValue> deltaDelegate, 
+            Boolean valid, 
+            TSender sender, 
+            ref TValue old, 
+            TValue value)
         {
-            if (!changed)
+            if (!valid)
                 return;
             else if(deltaDelegate == default(OnChangedEventDelegate<TSender, TValue>))
                 old = value;
