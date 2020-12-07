@@ -66,6 +66,54 @@ namespace Guppy.Utilities
         }
         #endregion
 
+        #region TraceTriangle Methods
+        public void TraceTriangle(
+            Color c1, Single x1, Single y1, Single z1,
+            Color c2, Single x2, Single y2, Single z2,
+            Color c3, Single x3, Single y3, Single z3)
+        {
+            this.AddLineVertice(ref c1, ref x1, ref y1, ref z1);
+            this.AddLineVertice(ref c2, ref x2, ref y2, ref z2);
+            this.TryFlushLineVertices();
+
+            this.AddLineVertice(ref c2, ref x2, ref y2, ref z2);
+            this.AddLineVertice(ref c3, ref x3, ref y3, ref z3);
+            this.TryFlushLineVertices();
+
+            this.AddLineVertice(ref c1, ref x1, ref y1, ref z1);
+            this.AddLineVertice(ref c3, ref x3, ref y3, ref z3);
+            this.TryFlushLineVertices();
+        }
+        public void TraceTriangle(VertexPositionColor v1, VertexPositionColor v2, VertexPositionColor v3)
+            => this.TraceTriangle(
+                c1: v1.Color, x1: v1.Position.X, y1: v1.Position.Y, z1: v1.Position.Z,
+                c2: v2.Color, x2: v2.Position.X, y2: v2.Position.Y, z2: v2.Position.Z,
+                c3: v3.Color, x3: v3.Position.X, y3: v3.Position.Y, z3: v3.Position.Z);
+
+        public void TraceTriangle(Color color, Vector3 p1, Vector3 p2, Vector3 p3)
+            => this.TraceTriangle(
+                c1: color, x1: p1.X, y1: p1.Y, z1: p1.Z,
+                c2: color, x2: p2.X, y2: p2.Y, z2: p2.Z,
+                c3: color, x3: p3.X, y3: p3.Y, z3: p3.Z);
+        public void TraceTriangle(Color c1, Vector3 p1, Color c2, Vector3 p2, Color c3, Vector3 p3)
+            => this.TraceTriangle(
+                c1: c1, x1: p1.X, y1: p1.Y, z1: p1.Z,
+                c2: c2, x2: p2.X, y2: p2.Y, z2: p2.Z,
+                c3: c3, x3: p3.X, y3: p3.Y, z3: p3.Z);
+
+        public void TraceTriangle(Color color, Vector2 p1, Vector2 p2, Vector2 p3)
+            => this.TraceTriangle(
+                c1: color, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
+                c2: color, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
+                c3: color, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
+
+        public void TraceTriangle(Color c1, Vector2 p1, Color c2, Vector2 p2, Color c3, Vector2 p3)
+            => this.TraceTriangle(
+                c1: c1, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
+                c2: c2, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
+                c3: c3, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
+        #endregion
+
         #region DrawTriangle Methods
         public void DrawTriangle(
             Color c1, Single x1, Single y1, Single z1,

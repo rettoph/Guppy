@@ -124,8 +124,8 @@ namespace Guppy.Utilities.Primitives
                 _buffer[2] = Vector2.Transform(this.VerticesBuffer[i + 0], transformation);
                 _buffer[3] = Vector2.Transform(this.VerticesBuffer[i + 1], transformation);
 
-                primitiveBatch.DrawTriangle(color, _buffer[0], _buffer[2], _buffer[3]);
-                primitiveBatch.DrawTriangle(color, _buffer[1], _buffer[0], _buffer[3]);
+                primitiveBatch.DrawTriangle(color, _buffer[0], _buffer[1], _buffer[2]);
+                primitiveBatch.DrawTriangle(color, _buffer[3], _buffer[2], _buffer[1]);
 
                 _buffer[0] = _buffer[2];
                 _buffer[1] = _buffer[3];
