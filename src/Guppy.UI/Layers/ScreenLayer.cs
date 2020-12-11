@@ -17,7 +17,7 @@ namespace Guppy.UI.Layers
     public class ScreenLayer : Layer
     {
         #region Private Fields
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
         private RasterizerState _rasterizerState;

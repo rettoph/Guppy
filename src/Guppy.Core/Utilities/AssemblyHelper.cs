@@ -25,6 +25,7 @@ namespace Guppy.Utilities
         /// List of all unique types loaded
         /// </summary>
         public static HashSet<Type> Types { get; private set; }
+
         #region Constructor
         static AssemblyHelper()
         {
@@ -36,7 +37,7 @@ namespace Guppy.Utilities
 
         #region Helper Methods
         /// <summary>
-        /// Ass a new assembly reference after configuration.
+        /// Add a new assembly reference after configuration.
         /// This is rare but userful for importing external
         /// assemblies.
         /// </summary>

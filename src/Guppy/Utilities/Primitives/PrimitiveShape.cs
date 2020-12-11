@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Extensions.Utilities;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +30,7 @@ namespace Guppy.Utilities.Primitives
         #endregion
 
         #region Primitive Implementation
-        internal override void Draw(Color color, Matrix transformation, PrimitiveBatch primitiveBatch)
+        internal override void Draw(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             // Pre-calculate & cache the first 2 vertices
             _buffer[0] = Vector2.Transform(this.Vertices[0], transformation);

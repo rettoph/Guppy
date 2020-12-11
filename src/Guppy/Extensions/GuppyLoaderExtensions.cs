@@ -10,6 +10,10 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy;
 using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Guppy.Extensions.System;
+using System.Linq;
+using Guppy.Extensions.Collections;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.Extensions
 {
@@ -21,15 +25,7 @@ namespace Guppy.Extensions
             loader.Services.AddSingleton<ContentManager>(content);
             loader.Services.AddSingleton<GameWindow>(window);
             loader.Services.AddSingleton<GraphicsDevice>(graphics.GraphicsDevice);
-
-
-            loader.Services.AddFactory<SpriteBatch>(p => new SpriteBatch(p.GetService<GraphicsDevice>()));
-            loader.Services.AddFactory<PrimitiveBatch>(p => new PrimitiveBatch(p.GetService<GraphicsDevice>()));
-            loader.Services.AddFactory<Camera2D>(p => new Camera2D());
-
-            loader.Services.AddScoped<SpriteBatch>();
-            loader.Services.AddScoped<PrimitiveBatch>();
-            loader.Services.AddScoped<Camera2D>();
+            loader.RegisterServiceLoader(new MonoGameServiceLoader());
 
             return loader;
         }

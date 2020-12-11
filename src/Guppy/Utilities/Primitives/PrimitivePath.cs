@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions.Microsoft.Xna.Framework;
+using Guppy.Extensions.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -114,7 +115,7 @@ namespace Guppy.Utilities.Primitives
         #endregion
 
         #region Frame Methods
-        internal override void Draw(Color color, Matrix transformation, PrimitiveBatch primitiveBatch)
+        internal override void Draw(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor> primitiveBatch)
         {
             _buffer[0] = Vector2.Transform(this.VerticesBuffer[0], transformation);
             _buffer[1] = Vector2.Transform(this.VerticesBuffer[1], transformation);

@@ -1,4 +1,5 @@
-﻿using Guppy.Utilities.Primitives;
+﻿using Guppy.Services;
+using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,203 +9,101 @@ using System.Text;
 
 namespace Guppy.Utilities
 {
-    public sealed class PrimitiveBatch
+    public sealed class PrimitiveBatch<TVertexType>
+        where TVertexType : struct, IVertexType
     {
         #region Static Fields
         public static Int32 BufferSize { get; private set; } = 500;
-        private static Single Zero = 0;
         #endregion
 
         #region Private Fields
-        private VertexPositionColor[] _triangleVertices;
+        private TVertexType[] _triangleVertices;
         private Int32 _triangleVerticeCount;
-        private VertexPositionColor[] _lineVertices;
+        private TVertexType[] _lineVertices;
         private Int32 _lineVerticeCount;
         private GraphicsDevice _graphics;
         private VertexBuffer _triangleVertexBuffer;
         private VertexBuffer _lineVertexBuffer;
-        private BasicEffect _effect;
         private BlendState _blendState;
         private Boolean _started;
+        private RasterizerState _rasterizerState;
+
+        private Effect _effect;
+        private EffectParameter _worldViewProjectionParam;
+        private EffectParameter _inverseResolution;
         #endregion
 
         #region Constructor
-        public PrimitiveBatch(GraphicsDevice graphicsDevice)
+        public PrimitiveBatch(ContentService content, GraphicsDevice graphicsDevice)
         {
             _graphics = graphicsDevice;
-            _effect = new BasicEffect(_graphics);
+            _effect = content.Get<Effect>("effects:primitive-batch-effect");
+            _worldViewProjectionParam = _effect.Parameters["WorldViewProjection"];
+            _inverseResolution = _effect.Parameters["InverseResolution"];
 
-            _triangleVertices = new VertexPositionColor[PrimitiveBatch.BufferSize * 3];
-            _lineVertices = new VertexPositionColor[PrimitiveBatch.BufferSize * 2];
+            _rasterizerState = new RasterizerState()
+            {
+                MultiSampleAntiAlias = true,
+                SlopeScaleDepthBias = 0.5f
+            };
 
-            _triangleVertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _triangleVertices.Length, BufferUsage.WriteOnly);
-            _lineVertexBuffer = new VertexBuffer(_graphics, typeof(VertexPositionColor), _lineVertices.Length, BufferUsage.WriteOnly);
+            _triangleVertices = new TVertexType[PrimitiveBatch<TVertexType>.BufferSize * 3];
+            _lineVertices = new TVertexType[PrimitiveBatch<TVertexType>.BufferSize * 2];
 
-            _effect.VertexColorEnabled = true;
+            _triangleVertexBuffer = new VertexBuffer(_graphics, typeof(TVertexType), _triangleVertices.Length, BufferUsage.WriteOnly);
+            _lineVertexBuffer = new VertexBuffer(_graphics, typeof(TVertexType), _lineVertices.Length, BufferUsage.WriteOnly);
         }
         #endregion
 
         #region Add Methods
-        public void AddTriangleVertice(ref Color color, ref Single x, ref Single y, ref Single z)
+        public void AddTriangleVertice(ref TVertexType vertice)
         {
-            _triangleVertices[_triangleVerticeCount].Color = color;
-            _triangleVertices[_triangleVerticeCount].Position.X = x;
-            _triangleVertices[_triangleVerticeCount].Position.Y = y;
-            _triangleVertices[_triangleVerticeCount].Position.Z = z;
-
+            _triangleVertices[_triangleVerticeCount] = vertice;
             _triangleVerticeCount++;
         }
 
-        public void AddLineVertice(ref Color color, ref Single x, ref Single y, ref Single z)
+        public void AddLineVertice(ref TVertexType vertice)
         {
-            _lineVertices[_lineVerticeCount].Color = color;
-            _lineVertices[_lineVerticeCount].Position.X = x;
-            _lineVertices[_lineVerticeCount].Position.Y = y;
-            _lineVertices[_lineVerticeCount].Position.Z = z;
-
+            _lineVertices[_lineVerticeCount] = vertice;
             _lineVerticeCount++;
         }
         #endregion
 
-        #region TraceTriangle Methods
-        public void TraceTriangle(
-            Color c1, Single x1, Single y1, Single z1,
-            Color c2, Single x2, Single y2, Single z2,
-            Color c3, Single x3, Single y3, Single z3)
+        #region DrawLine Methods
+        public void DrawLine(ref TVertexType v1, ref TVertexType v2)
         {
-            this.AddLineVertice(ref c1, ref x1, ref y1, ref z1);
-            this.AddLineVertice(ref c2, ref x2, ref y2, ref z2);
-            this.TryFlushLineVertices();
+            this.AddLineVertice(ref v1);
+            this.AddLineVertice(ref v2);
 
-            this.AddLineVertice(ref c2, ref x2, ref y2, ref z2);
-            this.AddLineVertice(ref c3, ref x3, ref y3, ref z3);
-            this.TryFlushLineVertices();
-
-            this.AddLineVertice(ref c1, ref x1, ref y1, ref z1);
-            this.AddLineVertice(ref c3, ref x3, ref y3, ref z3);
             this.TryFlushLineVertices();
         }
-        public void TraceTriangle(VertexPositionColor v1, VertexPositionColor v2, VertexPositionColor v3)
-            => this.TraceTriangle(
-                c1: v1.Color, x1: v1.Position.X, y1: v1.Position.Y, z1: v1.Position.Z,
-                c2: v2.Color, x2: v2.Position.X, y2: v2.Position.Y, z2: v2.Position.Z,
-                c3: v3.Color, x3: v3.Position.X, y3: v3.Position.Y, z3: v3.Position.Z);
 
-        public void TraceTriangle(Color color, Vector3 p1, Vector3 p2, Vector3 p3)
-            => this.TraceTriangle(
-                c1: color, x1: p1.X, y1: p1.Y, z1: p1.Z,
-                c2: color, x2: p2.X, y2: p2.Y, z2: p2.Z,
-                c3: color, x3: p3.X, y3: p3.Y, z3: p3.Z);
-        public void TraceTriangle(Color c1, Vector3 p1, Color c2, Vector3 p2, Color c3, Vector3 p3)
-            => this.TraceTriangle(
-                c1: c1, x1: p1.X, y1: p1.Y, z1: p1.Z,
-                c2: c2, x2: p2.X, y2: p2.Y, z2: p2.Z,
-                c3: c3, x3: p3.X, y3: p3.Y, z3: p3.Z);
-
-        public void TraceTriangle(Color color, Vector2 p1, Vector2 p2, Vector2 p3)
-            => this.TraceTriangle(
-                c1: color, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
-                c2: color, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
-                c3: color, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
-
-        public void TraceTriangle(Color c1, Vector2 p1, Color c2, Vector2 p2, Color c3, Vector2 p3)
-            => this.TraceTriangle(
-                c1: c1, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
-                c2: c2, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
-                c3: c3, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
+        public void DrawLine(TVertexType v1, TVertexType v2)
+            => this.DrawLine(ref v1, ref v2);
         #endregion
 
-        #region DrawTriangle Methods
-        public void DrawTriangle(
-            Color c1, Single x1, Single y1, Single z1,
-            Color c2, Single x2, Single y2, Single z2,
-            Color c3, Single x3, Single y3, Single z3)
+        #region DrawDriangle Methods
+        public void DrawTriangle(ref TVertexType v1, ref TVertexType v2, ref TVertexType v3)
         {
-            this.AddTriangleVertice(ref c1, ref x1, ref y1, ref z1);
-            this.AddTriangleVertice(ref c2, ref x2, ref y2, ref z2);
-            this.AddTriangleVertice(ref c3, ref x3, ref y3, ref z3);
+            this.AddTriangleVertice(ref v1);
+            this.AddTriangleVertice(ref v2);
+            this.AddTriangleVertice(ref v3);
 
             this.TryFlushTriangleVertices();
         }
-        public void DrawTriangle(VertexPositionColor v1, VertexPositionColor v2, VertexPositionColor v3)
-            => this.DrawTriangle(
-                c1: v1.Color, x1: v1.Position.X, y1: v1.Position.Y, z1: v1.Position.Z,
-                c2: v2.Color, x2: v2.Position.X, y2: v2.Position.Y, z2: v2.Position.Z,
-                c3: v3.Color, x3: v3.Position.X, y3: v3.Position.Y, z3: v3.Position.Z);
-
-        public void DrawTriangle(Color color, Vector3 p1, Vector3 p2, Vector3 p3)
-            => this.DrawTriangle(
-                c1: color, x1: p1.X, y1: p1.Y, z1: p1.Z,
-                c2: color, x2: p2.X, y2: p2.Y, z2: p2.Z,
-                c3: color, x3: p3.X, y3: p3.Y, z3: p3.Z);
-        public void DrawTriangle(Color c1, Vector3 p1, Color c2, Vector3 p2, Color c3, Vector3 p3)
-            => this.DrawTriangle(
-                c1: c1, x1: p1.X, y1: p1.Y, z1: p1.Z,
-                c2: c2, x2: p2.X, y2: p2.Y, z2: p2.Z,
-                c3: c3, x3: p3.X, y3: p3.Y, z3: p3.Z);
-
-        public void DrawTriangle(Color color, Vector2 p1, Vector2 p2, Vector2 p3)
-            => this.DrawTriangle(
-                c1: color, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
-                c2: color, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
-                c3: color, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
-
-        public void DrawTriangle(Color c1, Vector2 p1, Color c2, Vector2 p2, Color c3, Vector2 p3)
-            => this.DrawTriangle(
-                c1: c1, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
-                c2: c2, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero,
-                c3: c3, x3: p3.X, y3: p3.Y, z3: PrimitiveBatch.Zero);
-
-        /// <summary>
-        /// Draw many triangles in bulk
-        /// </summary>
-        /// <param name="color"></param>
-        /// <param name="vertices"></param>
-        public void DrawTriangles(Color color, params Vector2[] vertices)
-        {
-            Debug.Assert(vertices.Length % 3 == 0);
-
-            for(Int32 i = 0; i<vertices.Length; i++)
-                this.DrawTriangle(color, vertices[i++], vertices[i++], vertices[i++]);
-        }
+        public void DrawTriangle(TVertexType v1, TVertexType v2, TVertexType v3)
+            => this.DrawTriangle(ref v1, ref v2, ref v3);
         #endregion
 
-        #region DrawLine Methods
-        public void DrawLine(
-            Color c1, Single x1, Single y1, Single z1,
-            Color c2, Single x2, Single y2, Single z2)
+        #region TraceTriangle Methods
+        public void TraceTriangle(ref TVertexType v1, ref TVertexType v2, ref TVertexType v3)
         {
-            this.AddLineVertice(ref c1, ref x1, ref y1, ref z1);
-            this.AddLineVertice(ref c2, ref x2, ref y2, ref z2);
-
-            this.TryFlushLineVertices();
+            this.DrawLine(ref v1, ref v2);
+            this.DrawLine(ref v2, ref v3);
+            this.DrawLine(ref v3, ref v1);
         }
-
-        public void DrawLine(Color color, Vector3 p1, Vector3 p2)
-            => this.DrawLine(
-                c1: color, x1: p1.X, y1: p1.Y, z1: p1.Z,
-                c2: color, x2: p2.X, y2: p2.Y, z2: p2.Z);
-        public void DrawLine(Color c1, Vector3 p1, Color c2, Vector3 p2)
-            => this.DrawLine(
-                c1: c1, x1: p1.X, y1: p1.Y, z1: p1.Z,
-                c2: c2, x2: p2.X, y2: p2.Y, z2: p2.Z);
-
-        public void DrawLine(Color color, Vector2 p1, Vector2 p2)
-            => this.DrawLine(
-                c1: color, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
-                c2: color, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero);
-
-        public void DrawLine(Color c1, Vector2 p1, Color c2, Vector2 p2)
-            => this.DrawLine(
-                c1: c1, x1: p1.X, y1: p1.Y, z1: PrimitiveBatch.Zero,
-                c2: c2, x2: p2.X, y2: p2.Y, z2: PrimitiveBatch.Zero);
-        #endregion
-
-        #region DrawPrimitivePath Methods
-        public void DrawPrimitive(Primitive primitive, Color color)
-            => this.DrawPrimitive(primitive, color, Matrix.Identity);
-        public void DrawPrimitive(Primitive primitive, Color color, Matrix transformation)
-            => primitive.Draw(color, transformation, this);
+        public void TraceTriangle(TVertexType v1, TVertexType v2, TVertexType v3)
+            => this.TraceTriangle(ref v1, ref v2, ref v3);
         #endregion
 
         #region Helper Methods
@@ -216,10 +115,12 @@ namespace Guppy.Utilities
             if (_started)
                 throw new Exception("Unable to start PrimitiveBatch, PrimitiveBatch already started.");
 
-            _effect.View = view;
-            _effect.Projection = projection;
+            // https://github.com/labnation/MonoGame/blob/d270be3e800a3955886e817cdd06133743a7e043/MonoGame.Framework/Graphics/Effect/EffectHelpers.cs#L71
+            // Line 81
+            _worldViewProjectionParam.SetValue(Matrix.Multiply(Matrix.Multiply(Matrix.Identity, view), projection));
+            // _inverseResolution.SetValue(new Vector2(1 / _graphics.Viewport.Width, 1 / _graphics.Viewport.Height));
 
-            _blendState = blendState == default(BlendState) ? BlendState.AlphaBlend : blendState;
+            _blendState = blendState ?? BlendState.AlphaBlend;
             _started = true;
         }
 
@@ -243,13 +144,10 @@ namespace Guppy.Utilities
         {
             if (_triangleVerticeCount == _triangleVertices.Length || (_triangleVerticeCount > 0 && force))
             { // Attempt to render the vertices as is...
-                _triangleVertexBuffer.SetData<VertexPositionColor>(_triangleVertices, 0, _triangleVerticeCount);
+                _triangleVertexBuffer.SetData<TVertexType>(_triangleVertices, 0, _triangleVerticeCount);
                 _graphics.SetVertexBuffer(_triangleVertexBuffer);
                 _graphics.BlendState = _blendState;
-                _graphics.RasterizerState = new RasterizerState()
-                {
-                    MultiSampleAntiAlias = true
-                };
+                _graphics.RasterizerState = _rasterizerState;
 
                 foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
                 {
@@ -274,7 +172,7 @@ namespace Guppy.Utilities
         {
             if (_lineVerticeCount == _lineVertices.Length || (_lineVerticeCount > 0 && force))
             { // Attempt to render the vertices as is...
-                _lineVertexBuffer.SetData<VertexPositionColor>(_lineVertices, 0, _lineVerticeCount);
+                _lineVertexBuffer.SetData<TVertexType>(_lineVertices, 0, _lineVerticeCount);
                 _graphics.SetVertexBuffer(_lineVertexBuffer);
                 _graphics.BlendState = _blendState;
 

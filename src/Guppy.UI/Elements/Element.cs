@@ -11,6 +11,7 @@ using Guppy.UI.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Primitives;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace Guppy.UI.Elements
     {
         #region Private Fields
         private UIService _ui;
-        private PrimitiveBatch _primitiveBatch;
+        private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Queue<IDisposable> _stateValues;
         #endregion
 
