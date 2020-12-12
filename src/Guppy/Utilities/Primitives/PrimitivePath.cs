@@ -115,7 +115,7 @@ namespace Guppy.Utilities.Primitives
         #endregion
 
         #region Frame Methods
-        internal override void Draw(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        internal override void Draw<TEffect>(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch)
         {
             _buffer[0] = Vector2.Transform(this.VerticesBuffer[0], transformation);
             _buffer[1] = Vector2.Transform(this.VerticesBuffer[1], transformation);

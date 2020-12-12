@@ -30,7 +30,7 @@ namespace Guppy.Utilities.Primitives
         #endregion
 
         #region Primitive Implementation
-        internal override void Draw(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor> primitiveBatch)
+        internal override void Draw<TEffect>(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch)
         {
             // Pre-calculate & cache the first 2 vertices
             _buffer[0] = Vector2.Transform(this.Vertices[0], transformation);

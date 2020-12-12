@@ -8,6 +8,7 @@ namespace Guppy.Utilities.Primitives
 {
     public abstract class Primitive
     {
-        internal abstract void Draw(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor> primitiveBatch);
+        internal abstract void Draw<TEffect>(Color color, Matrix transformation, PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch)
+            where TEffect : Effect, IEffectMatrices;
     }
 }

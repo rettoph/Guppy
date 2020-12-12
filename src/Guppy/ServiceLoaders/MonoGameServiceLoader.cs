@@ -28,11 +28,6 @@ namespace Guppy.ServiceLoaders
             services.AddScoped<SpriteBatch>();
             services.AddScoped<Camera2D>();
 
-            services.AddSetup<ContentService>((c, p, d) =>
-            {
-                c.TryRegister("effects:primitive-batch-effect", "Effects/PrimitiveBatchEffect");
-            });
-
             AssemblyHelper.AddAssembly(typeof(GraphicsDevice).Assembly);
             AssemblyHelper.Types.GetTypesAssignableFrom<IVertexType>().Where(t => t.IsValueType).ForEach(vt =>
             {
