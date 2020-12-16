@@ -95,7 +95,7 @@ namespace Guppy.Extensions.Utilities
                 where TEffect : Effect, IEffectMatrices
                     => primitiveBatch.DrawLine(
                         new VertexPositionColor(new Vector3(x1, y1, z1), c1),
-                        new VertexPositionColor(new Vector3(x1, y1, z1), c1));
+                        new VertexPositionColor(new Vector3(x2, y2, z2), c1));
 
         public static void DrawLine<TEffect>(
             this PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch,

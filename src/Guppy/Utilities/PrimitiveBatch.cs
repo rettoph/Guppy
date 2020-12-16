@@ -82,21 +82,23 @@ namespace Guppy.Utilities
         /// flushing primitives to the graphics device.
         /// </summary>
         private RasterizerState _rasterizerState;
+        #endregion
 
+        #region Public Properties
         /// <summary>
         /// The <see cref="Effect"/> to be used when flushing 
         /// primitive data. This should implement <see cref="IEffectMatrices"/>
         /// as <see cref="Matrix"/> data is passed into in on a
         /// <see cref="Begin(Matrix, Matrix, BlendState, Matrix?)"/> invocation.
         /// </summary>
-        private TEffect _effect;
+        public TEffect Effect { get; private set; }
         #endregion
 
         #region Constructor
         public PrimitiveBatch(TEffect effect, GraphicsDevice graphicsDevice)
         {
             _graphics = graphicsDevice;
-            _effect = effect;
+            this.Effect = effect;
 
             _rasterizerState = new RasterizerState()
             {
@@ -217,9 +219,9 @@ namespace Guppy.Utilities
                 throw new Exception("Unable to start PrimitiveBatch, PrimitiveBatch already started.");
 
             // Update the effect's world data.
-            _effect.View = view;
-            _effect.Projection = projection;
-            _effect.World = world ?? Matrix.Identity;
+            this.Effect.View = view;
+            this.Effect.Projection = projection;
+            this.Effect.World = world ?? Matrix.Identity;
 
             // https://github.com/labnation/MonoGame/blob/d270be3e800a3955886e817cdd06133743a7e043/MonoGame.Framework/Graphics/Effect/EffectHelpers.cs#L71
             // Line 811
@@ -255,7 +257,7 @@ namespace Guppy.Utilities
                 _graphics.BlendState = _blendState;
                 _graphics.RasterizerState = _rasterizerState;
 
-                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+                foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     _graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, _triangleVerticeCount / 3);
@@ -282,7 +284,7 @@ namespace Guppy.Utilities
                 _graphics.SetVertexBuffer(_lineVertexBuffer);
                 _graphics.BlendState = _blendState;
 
-                foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+                foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     _graphics.DrawPrimitives(PrimitiveType.LineList, 0, _lineVerticeCount / 2);
