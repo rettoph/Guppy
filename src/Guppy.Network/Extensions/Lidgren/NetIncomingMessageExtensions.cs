@@ -75,7 +75,7 @@ namespace Guppy.Network.Extensions.Lidgren
             if (im.ReadExists())
                 return entities.GetById<T>(im.ReadGuid());
 
-            return default(T);
+            return default;
         }
 
         public static T ReadEntity<T>(this NetIncomingMessage im, EntityList entities, Action<NetIncomingMessage, T> ifExists)
@@ -89,7 +89,7 @@ namespace Guppy.Network.Extensions.Lidgren
                 return entity;
             }
 
-            return default(T);
+            return default;
         }
         #endregion
     }
