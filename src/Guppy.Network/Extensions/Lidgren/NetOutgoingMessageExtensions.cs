@@ -64,6 +64,15 @@ namespace Guppy.Network.Extensions.Lidgren
             if (om.WriteExists(entity))
                 om.Write(entity.Id);
         }
+        public static void Write<TEntity>(this NetOutgoingMessage om, TEntity entity, Action<NetOutgoingMessage, TEntity> ifExists)
+            where TEntity : Entity
+        {
+            if (om.WriteExists(entity))
+            {
+                om.Write(entity.Id);
+                ifExists(om, entity);
+            }
+        }
         #endregion
 
         #region IfNull Methods
