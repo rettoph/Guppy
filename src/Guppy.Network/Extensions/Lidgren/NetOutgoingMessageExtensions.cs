@@ -1,4 +1,5 @@
 ﻿using Guppy.Extensions.System;
+using Guppy.Network.Utilities.Messages;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
@@ -41,11 +42,11 @@ namespace Guppy.Network.Extensions.Lidgren
         /// <summary>
         /// Write a signed message with custom data.
         /// 
-        /// This will encode the recieved type then invoke the
-        /// recieved writer.
+        /// This will encode the recieved <paramref name="type"/> then invoke the
+        /// recieved <paramref name="writer"/>.
         /// 
         /// This is used for passing custom data, and can be processed
-        /// by a MessageReader instance.
+        /// by a <see cref="MessageManager"/> instance.
         /// </summary>
         /// <param name="om"></param>
         /// <param name="type"></param>

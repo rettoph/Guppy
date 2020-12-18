@@ -64,5 +64,8 @@ namespace Guppy.DependencyInjection
 
             return false;
         }
+
+        public Int32 Count()
+            => _pool.Count();
     }
 }
