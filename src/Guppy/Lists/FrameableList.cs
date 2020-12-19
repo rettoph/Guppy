@@ -12,10 +12,6 @@ namespace Guppy.Lists
     public class FrameableList<TFrameable> : ServiceList<TFrameable>, IFrameable
         where TFrameable : Frameable
     {
-        #region Private Fields
-        private Queue<TFrameable> _released;
-        #endregion
-
         #region Events
         public event Step OnPreDraw;
         public event Step OnDraw;
@@ -30,11 +26,8 @@ namespace Guppy.Lists
         {
             base.PreInitialize(provider);
 
-            _released = new Queue<TFrameable>();
-
             this.OnDraw += this.Draw;
             this.OnUpdate += this.Update;
-            this.OnPostUpdate += this.PostUpdate;
         }
 
         protected override void Release()
@@ -43,7 +36,6 @@ namespace Guppy.Lists
 
             this.OnDraw -= this.Draw;
             this.OnUpdate -= this.Update;
-            this.OnPostUpdate -= this.PostUpdate;
         }
         #endregion
 
@@ -71,17 +63,6 @@ namespace Guppy.Lists
         {
             this.ForEach(u => u.TryUpdate(gameTime));
         }
-
-        private void PostUpdate(GameTime gameTime)
-        {
-            while (_released.Any())
-                base.HandleItemReleased(_released.Dequeue());
-        }
-        #endregion
-
-        #region Event Handlers
-        protected override void HandleItemReleased(IService sender)
-            => _released.Enqueue(sender as TFrameable);
         #endregion
     }
 }
