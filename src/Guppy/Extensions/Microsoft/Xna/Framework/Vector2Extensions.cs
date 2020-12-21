@@ -27,5 +27,8 @@ namespace Guppy.Extensions.Microsoft.Xna.Framework
                 x: (Single)Math.Cos(target) * l,
                 y: (Single)Math.Sin(target) * l);
         }
+
+        public static String ToString(this Vector2 v, String format)
+            => $"({v.X.ToString(format)}, {v.Y.ToString(format)})";
     }
 }
