@@ -148,9 +148,11 @@ namespace Guppy.Utilities.Cameras
         }
 
         protected virtual RectangleF buildViewportBounds()
-        {
-            return new RectangleF(0, 0, _graphics.Viewport.Width, _graphics.Viewport.Height);
-        }
+            => new RectangleF(
+                x: 0,
+                y: 0,
+                width: _graphics.Viewport.Bounds.Width,
+                height: _graphics.Viewport.Bounds.Height);
         #endregion
 
         #region Utility Methods

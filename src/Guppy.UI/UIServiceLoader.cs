@@ -17,6 +17,7 @@ using Guppy.UI.Extensions.DependencyInjection;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Layers;
 using Guppy.UI.Services;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.UI
@@ -33,6 +34,7 @@ namespace Guppy.UI
             services.AddSingleton<UIService>();
             services.AddTransient<Stage>();
             services.AddScoped<ScreenLayer>();
+            services.AddTransient<Camera2D>("screen-camera");
 
             services.AddUIComponent<Container<IElement>>(p => new Container<IElement>());
             services.AddUIComponent<Element>(p => new Element());

@@ -30,7 +30,7 @@ namespace Guppy.UI.Layers
             base.PreInitialize(provider);
 
             provider.Service(out _graphics);
-            provider.Service(out _camera);
+            provider.Service("screen-camera", out _camera);
             provider.Service(out _primitiveBatch);
             provider.Service(out _spriteBatch);
 
