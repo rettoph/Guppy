@@ -31,7 +31,9 @@ namespace Guppy.Lists
                 setup?.Invoke(i, p, d);
             });
 
-            _created.Pop();
+            if(_created.Peek() == instance)
+                _created.Pop();
+
             this.TryAdd(instance);
 
             return instance;
