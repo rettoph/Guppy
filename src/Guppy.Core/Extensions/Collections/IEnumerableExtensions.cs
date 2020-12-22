@@ -15,6 +15,15 @@ namespace Guppy.Extensions.Collections
             return source;
         }
 
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T, Int32> action)
+        {
+            Int32 index = 0;
+            foreach (T item in source)
+                action(item, index++);
+
+            return source;
+        }
+
         public static TSource MinBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> selector)
         {
             return source.MinBy(selector, null);
