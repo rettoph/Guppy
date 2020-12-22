@@ -28,7 +28,6 @@ namespace Guppy.Network
         #region Private Fields
         private NetPeer _peer;
         private NetOutgoingMessageConfiguration _om;
-        private NetIncomingMessage _im;
         #endregion
 
         #region Public Attributes
@@ -74,9 +73,10 @@ namespace Guppy.Network
                     this.Send(_om);
 
             // Read all inbound messages...
+            NetIncomingMessage im;
             while (this.IncomingMessages.Any())
-                if(this.IncomingMessages.TryDequeue(out _im))
-                    this.Messages.Read(_im);
+                if(this.IncomingMessages.TryDequeue(out im))
+                    this.Messages.Read(im);
         }
         #endregion
 

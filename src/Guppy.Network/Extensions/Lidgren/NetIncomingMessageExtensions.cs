@@ -92,5 +92,10 @@ namespace Guppy.Network.Extensions.Lidgren
             return default;
         }
         #endregion
+
+        #region Recycle Methods
+        public static void Recycle(this NetIncomingMessage im)
+            => im.SenderConnection.Peer.Recycle(im);
+        #endregion
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Lists.Delegates;
 using Guppy.Exceptions;
+using System.Linq;
 
 namespace Guppy.Lists
 {
@@ -31,7 +32,7 @@ namespace Guppy.Lists
                 setup?.Invoke(i, p, d);
             });
 
-            if(_created.Peek() == instance)
+            if(_created.Any() && _created.Peek() == instance)
                 _created.Pop();
 
             this.TryAdd(instance);

@@ -19,7 +19,6 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetPeer _peer;
-        private NetIncomingMessage _im;
         #endregion
 
         #region Public Attributes
@@ -102,8 +101,9 @@ namespace Guppy.Network.Peers
 
         protected override void Update(GameTime gameTime)
         {
-            while ((_im = _peer.ReadMessage()) != null)
-                this.MessageTypeDelegates[_im.MessageType]?.Invoke(_im);
+            NetIncomingMessage im;
+            while ((im = _peer.ReadMessage()) != null)
+                this.MessageTypeDelegates[im.MessageType]?.Invoke(im);
 
             base.Update(gameTime);
         }
