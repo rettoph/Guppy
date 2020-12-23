@@ -40,18 +40,17 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public Object Build(ServiceProvider provider, Type cacheType, Action<Type, Object> cacher = null, ServiceConfiguration configuration = null, Type[] generics = null)
         {
-            if (generics != default && generics.Any())
-            {
-                _pool = this.Pools[this.Type.MakeGenericType(generics)];
-                cacheType = cacheType.MakeGenericType(generics);
-            }
-            else
-                _pool = this.Pools[this.Type];
+            Type type = this.Type;
 
+            if (generics != default && generics.Any())
+                type = cacheType = this.Type.MakeGenericType(generics);
+
+
+            _pool = this.Pools[type];
             if (_pool.Any())
                 return _pool.Pull(cacher);
 
-            return this.Factory(provider, this.Type).Then(i =>
+            return this.Factory(provider, type).Then(i =>
             {
                 cacher?.Invoke(cacheType, i);
                 configuration?.Actions[ServiceActionType.Builder].ForEach(b => b.Excecute(i, provider, configuration));

@@ -164,37 +164,7 @@ namespace Guppy.DependencyInjection
 
         #region IServiceProvider Implementation
         Object IServiceProvider.GetService(Type serviceType)
-        {
-            // Implement some backwards compatibility with Microsoft's DI 
-            // For more info visit: https://github.com/aspnet/DependencyInjection/blob/d77b090567a1e6ad9a5bb5fd05f4bdcf281d4185/src/DI/ServiceLookup/CallSiteFactory.cs
-            // Line 95
-            return this.GetService(serviceType) ??
-                this.TryCreateGeneric(serviceType) ??
-                this.TryCreateEnumerable(serviceType);
-        }
-
-        private Object TryCreateGeneric(Type serviceType)
-        {
-            ServiceConfiguration configuration;
-            if (serviceType.IsConstructedGenericType 
-                && _services.TryGetValue(ServiceConfiguration.GetId(serviceType.GetGenericTypeDefinition()), out configuration))
-            {
-                return configuration.BuildInstance(provider: this, generics: serviceType.GetGenericArguments());
-            }
-
-            return null;
-        }
-
-        private Object TryCreateEnumerable(Type serviceType)
-        {
-            if (serviceType.IsConstructedGenericType &&
-                serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                return _services.Values
-                    .Where(sd => sd.Factory.Type.IsAssignableFrom(serviceType.GenericTypeArguments[0]))
-                    .Select(sd => sd.BuildInstance(this));
-
-            return null;
-        }
+            => this.GetService(serviceType);
         #endregion
 
         #region IDisposable Implementation
