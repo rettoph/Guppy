@@ -27,7 +27,6 @@ namespace Guppy.Network
     {
         #region Private Fields
         private NetPeer _peer;
-        private NetOutgoingMessageConfiguration _om;
         #endregion
 
         #region Public Attributes
@@ -68,15 +67,35 @@ namespace Guppy.Network
             base.Update(gameTime);
 
             // Send all outbound messages...
+            NetOutgoingMessageConfiguration om;
             while (this.OutgoingMessages.Any())
-                if(this.OutgoingMessages.TryDequeue(out _om))
-                    this.Send(_om);
+                if(this.OutgoingMessages.TryDequeue(out om))
+                    this.Send(om);
 
             // Read all inbound messages...
             NetIncomingMessage im;
             while (this.IncomingMessages.Any())
                 if(this.IncomingMessages.TryDequeue(out im))
                     this.Messages.Read(im);
+        }
+        #endregion
+
+        #region Helper Messages
+        /// <summary>
+        /// Remove all contained incoming and outgoing messages
+        /// without sending or reading them at all.
+        /// </summary>
+        public void Clear()
+        {
+            // Clear all outbound messages...
+            NetOutgoingMessageConfiguration om;
+            while (this.OutgoingMessages.Any())
+                this.OutgoingMessages.TryDequeue(out om);
+
+            // Clear all inbound messages...
+            NetIncomingMessage im;
+            while (this.IncomingMessages.Any())
+                this.IncomingMessages.TryDequeue(out im);
         }
         #endregion
 

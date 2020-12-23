@@ -23,7 +23,6 @@ namespace Guppy.Network.Groups
         }
         #endregion
 
-
         #region Messageable Implementation
         protected override MessageTarget TargetType()
             => MessageTarget.Group;
