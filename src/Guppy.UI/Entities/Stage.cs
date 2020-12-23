@@ -51,6 +51,7 @@ namespace Guppy.UI.Entities
                 e.BackgroundColor[ElementState.Hovered] = Color.Red;
                 e.BackgroundColor[ElementState.Pressed] = Color.Blue;
                 e.BorderColor[ElementState.Default] = Color.Green;
+                e.BorderWidth[ElementState.Default] = 4f;
             });
 
             this.Content.TryCleanBounds(this.GetBounds());

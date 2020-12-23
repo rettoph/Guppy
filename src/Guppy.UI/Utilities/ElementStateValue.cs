@@ -82,5 +82,10 @@ namespace Guppy.UI.Utilities
         private void HandleOwnerStateChanged(IElement sender, ElementState which, bool value)
             => this.Current = this[_owner.State];
         #endregion
+
+        #region Operators
+        public static implicit operator T(ElementStateValue<T> elementStateValue)
+            => elementStateValue.Current;
+        #endregion
     }
 }

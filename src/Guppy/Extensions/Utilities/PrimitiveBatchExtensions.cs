@@ -41,9 +41,9 @@ namespace Guppy.Extensions.Utilities
             Color c3, Single x3, Single y3, Single z3)
                 where TEffect : Effect, IEffectMatrices
                     => primitiveBatch.DrawTriangle(
+                        new VertexPositionColor(new Vector3(x1, y1, z1), c1),
                         new VertexPositionColor(new Vector3(x2, y2, z2), c2),
-                        new VertexPositionColor(new Vector3(x2, y2, z2), c2),
-                        new VertexPositionColor(new Vector3(x2, y2, z2), c2));
+                        new VertexPositionColor(new Vector3(x3, y3, z3), c3));
 
         public static void DrawTriangle<TEffect>(
             this PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch,

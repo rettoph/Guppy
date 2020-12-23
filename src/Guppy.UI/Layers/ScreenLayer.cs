@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
@@ -61,7 +62,7 @@ namespace Guppy.UI.Layers
         {
             _graphics.ScissorRectangle = _graphics.Viewport.Bounds;
             _spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointWrap, rasterizerState: _rasterizerState);
-            _primitiveBatch.Begin(_camera.View, _camera.Projection, BlendState.AlphaBlend);
+            _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
 
             base.Draw(gameTime);
 

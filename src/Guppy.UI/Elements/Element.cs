@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.IO.Enums;
@@ -29,6 +30,7 @@ namespace Guppy.UI.Elements
         private UIService _ui;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Queue<IDisposable> _stateValues;
+        private PrimitivePath _border;
         #endregion
 
         #region Public Properties
@@ -56,6 +58,11 @@ namespace Guppy.UI.Elements
         /// The current border color, if any
         /// </summary>
         public ElementStateValue<Color> BorderColor { get; private set; }
+
+        /// <summary>
+        /// The current border width, if any.
+        /// </summary>
+        public ElementStateValue<Single> BorderWidth { get; private set; }
         #endregion
 
         #region Events
@@ -64,6 +71,8 @@ namespace Guppy.UI.Elements
 
         /// <inheritdoc />
         public Dictionary<ElementState, OnStateChangedDelegate> OnState { get; private set; }
+
+        public OnEventDelegate<Element> OnBoundsCleaned;
         #endregion
 
         #region Lifecycle Methods
@@ -74,6 +83,8 @@ namespace Guppy.UI.Elements
             _stateValues = new Queue<IDisposable>();
 
             this.OnState = DictionaryHelper.BuildEnumDictionary<ElementState, OnStateChangedDelegate>();
+
+            this.OnBoundsCleaned += this.HandleBoundsCleaned;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -94,6 +105,7 @@ namespace Guppy.UI.Elements
 
             this.BackgroundColor = this.BuildStateValue<Color>();
             this.BorderColor = this.BuildStateValue<Color>();
+            this.BorderWidth = this.BuildStateValue<Single>();
         }
 
         protected override void Release()
@@ -105,6 +117,13 @@ namespace Guppy.UI.Elements
             while (_stateValues.Any())
                 _stateValues.Dequeue().Dispose();
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.OnBoundsCleaned -= this.HandleBoundsCleaned;
+        }
         #endregion
 
         #region Frame Methods
@@ -112,14 +131,17 @@ namespace Guppy.UI.Elements
         {
             base.Draw(gameTime);
 
-            // if (this.BackgroundColor.Current != default(Color))
-            //     _primitiveBatch.FillRectangle(this.OuterBounds, this.BackgroundColor.Current);
-            // 
-            // if (this.BorderColor.Current != default(Color))
-            //     _primitiveBatch.DrawRectangle(this.OuterBounds, this.BorderColor.Current);
+            if (this.BackgroundColor != default(Color))
+                _primitiveBatch.DrawRectangle(this.BackgroundColor, this.OuterBounds);
 
-            // _primitiveBatch.DrawRectangle(this.InnerBounds, Color.Blue);
-            // _primitiveBatch.DrawRectangle(this.OuterBounds, Color.Red);
+            if (this.BorderColor != default(Color) && this.BorderWidth > 0)
+            {
+                _border.Width = this.BorderWidth;
+                _primitiveBatch.DrawPrimitive(_border, this.BorderColor);
+            }
+
+            _primitiveBatch.TraceRectangle(Color.Blue, this.InnerBounds);
+            _primitiveBatch.TraceRectangle(Color.Red, this.OuterBounds);
         }
 
         protected override void Update(GameTime gameTime)
@@ -134,6 +156,8 @@ namespace Guppy.UI.Elements
         {
             this.TryCleanOuterBounds(container);
             this.TryCleanInnerBounds();
+
+            this.OnBoundsCleaned?.Invoke(this);
         }
 
         /// <summary>
@@ -247,6 +271,21 @@ namespace Guppy.UI.Elements
             }
             else
                 this.TrySetState(ElementState.Pressed, false);
+        }
+
+        /// <summary>
+        /// When the bounds are cleaned we should just recalculate
+        /// the border primitives.
+        /// </summary>
+        /// <param name="sender"></param>
+        private void HandleBoundsCleaned(Element sender)
+        {
+            _border = PrimitivePath.Create(
+                1f,
+                new Vector2(this.OuterBounds.Left, this.OuterBounds.Top),
+                new Vector2(this.OuterBounds.Right, this.OuterBounds.Top),
+                new Vector2(this.OuterBounds.Right, this.OuterBounds.Bottom),
+                new Vector2(this.OuterBounds.Left, this.OuterBounds.Bottom));
         }
 
         protected ElementStateValue<T> BuildStateValue<T>(T defaultValue = default(T))
