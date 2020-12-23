@@ -13,11 +13,14 @@ using Guppy.Lists;
 using Guppy.Services;
 using Guppy.UI.Elements;
 using Guppy.UI.Entities;
+using Guppy.UI.Enums;
 using Guppy.UI.Extensions.DependencyInjection;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Layers;
 using Guppy.UI.Services;
 using Guppy.Utilities.Cameras;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.UI
@@ -38,12 +41,19 @@ namespace Guppy.UI
 
             services.AddUIComponent<Container<IElement>>(p => new Container<IElement>());
             services.AddUIComponent<Element>(p => new Element());
+            services.AddUIComponent<TextElement>(p => new TextElement());
 
             // Register Content
             services.AddSetup<ContentService>((content, p, c) =>
             {
                 content.TryRegister("ui:font", "UI/Font");
             });
+
+            services.AddSetup<TextElement>((text, p, c) =>
+            {
+                text.Font = p.GetContent<SpriteFont>("ui:font");
+                text.Alignment = Alignment.CenterLeft;
+            }, -1);
         }
 
         public void ConfigureProvider(ServiceProvider provider)

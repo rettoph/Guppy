@@ -44,7 +44,7 @@ namespace Guppy.UI.Entities
                 content.Bounds.Height = 1f;
             });
 
-            this.Content.Children.Create<Element>((e, p, d) =>
+            this.Content.Children.Create<TextElement>((e, p, d) =>
             {
                 e.Bounds.Width = 0.5f;
                 e.Bounds.X = 100;
@@ -52,6 +52,8 @@ namespace Guppy.UI.Entities
                 e.BackgroundColor[ElementState.Pressed] = Color.Blue;
                 e.BorderColor[ElementState.Default] = Color.Green;
                 e.BorderWidth[ElementState.Default] = 4f;
+                e.Color[ElementState.Default] = Color.White;
+                e.Value = "Hello World";
             });
 
             this.Content.TryCleanBounds(this.GetBounds());
