@@ -39,37 +39,37 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region AddConfiguration Methods
-        public void AddConfiguration(String name, ServiceLifetime lifetime, Type factory, Int32 priority = 0)
-            => this.Add(new ServiceConfigurationDescriptor(name, lifetime, factory, priority));
-        public void AddConfiguration<TFactory>(String name, ServiceLifetime lifetime, Int32 priority = 0)
-            => this.Add(new ServiceConfigurationDescriptor(name, lifetime, typeof(TFactory), priority));
+        public void AddConfiguration(String name, ServiceLifetime lifetime, Type factory, Int32 priority = 0, Type cacheType = null)
+            => this.Add(new ServiceConfigurationDescriptor(name, lifetime, factory, priority, cacheType));
+        public void AddConfiguration<TFactory>(String name, ServiceLifetime lifetime, Int32 priority = 0, Type cacheType = null)
+            => this.Add(new ServiceConfigurationDescriptor(name, lifetime, typeof(TFactory), priority, cacheType));
 
         #region Singleton Methods
-        public void AddSingleton(String name, Type factory, Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Singleton(name, factory, priority));
+        public void AddSingleton(String name, Type factory, Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Singleton(name, factory, priority, cacheType));
 
-        public void AddSingleton(Type type, Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Singleton(type.FullName, type, priority));
+        public void AddSingleton(Type type, Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Singleton(type.FullName, type, priority, cacheType));
 
-        public void AddSingleton<TFactory>(String name, Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Singleton<TFactory>(name, priority));
+        public void AddSingleton<TFactory>(String name, Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Singleton<TFactory>(name, priority, cacheType));
 
-        public void AddSingleton<TFactory>(Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Singleton<TFactory>(priority));
+        public void AddSingleton<TFactory>(Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Singleton<TFactory>(priority, cacheType));
         #endregion
 
         #region Scoped Methods
-        public void AddScoped(String name, Type factory, Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Scoped(name, factory, priority));
+        public void AddScoped(String name, Type factory, Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Scoped(name, factory, priority, cacheType));
 
-        public void AddScoped(Type type, Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Scoped(type.FullName, type, priority));
+        public void AddScoped(Type type, Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Scoped(type.FullName, type, priority, cacheType));
 
-        public void AddScoped<TFactory>(String name, Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Scoped<TFactory>(name, priority));
+        public void AddScoped<TFactory>(String name, Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Scoped<TFactory>(name, priority, cacheType));
 
-        public void AddScoped<TFactory>(Int32 priority = 0)
-            => this.Add(ServiceConfigurationDescriptor.Scoped<TFactory>(priority));
+        public void AddScoped<TFactory>(Int32 priority = 0, Type cacheType = null)
+            => this.Add(ServiceConfigurationDescriptor.Scoped<TFactory>(priority, cacheType));
         #endregion
 
         #region Transient Methods

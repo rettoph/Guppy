@@ -15,7 +15,10 @@ namespace Guppy.Extensions.DependencyInjection
             ExceptionHelper.ValidateAssignableFrom<Game>(game);
 
             services.AddFactory(game, factory);
-            services.AddSingleton(type: game, priority: priority);
+            services.AddSingleton(
+                type: game, 
+                priority: priority,
+                cacheType: typeof(Game));
         }
         public static void AddGame<TGame>(this ServiceCollection services, Func<ServiceProvider, TGame> factory, Int32 priority = 0)
             where TGame : Game
@@ -30,7 +33,8 @@ namespace Guppy.Extensions.DependencyInjection
             services.AddFactory(type: scene, factory: factory, priority: priority);
             services.AddScoped(
                 type: scene, 
-                priority: priority);
+                priority: priority,
+                cacheType: typeof(Scene));
         }
         public static void AddScene<TScene>(this ServiceCollection services, Func<ServiceProvider, TScene> factory, Int32 priority = 0)
             where TScene : Scene

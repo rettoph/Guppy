@@ -34,7 +34,7 @@ namespace Guppy.DependencyInjection
         public ServiceConfiguration(
             ServiceConfigurationDescriptor descriptor,
             ServiceFactory factory,
-            IEnumerable<ServiceAction> actions) : base(descriptor.Name, descriptor.Lifetime, descriptor.Factory, descriptor.Priority)
+            IEnumerable<ServiceAction> actions) : base(descriptor.Name, descriptor.Lifetime, descriptor.Factory, descriptor.Priority, descriptor.CacheType)
         {
             this.Factory = factory;
             this.Actions = this.Actions = DictionaryHelper.BuildEnumDictionary<ServiceActionType, ServiceAction[]>(
@@ -53,27 +53,27 @@ namespace Guppy.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="setup">A custom setup action to preform.</param>
         /// <param name="setupOrder">The order in which to preform the custom setup method.</param>
-        /// <param name="type">The specific type to construct. This is generally only used for creating generic types.</param>
+        /// <param name="generics">Generic type arguments to be passed into the factory.</param>
         public Object GetInstance(
             ServiceProvider provider,
             Action<Object, ServiceProvider, ServiceConfiguration> setup = null,
             Int32 setupOrder = 0,
-            Type type = null)
+            Type[] generics = null)
         {
             switch (this.Lifetime)
             {
                 case ServiceLifetime.Singleton:
-                    if (provider.TryGetSingletonInstance(this.Factory.Type, out _instance))
+                    if (provider.TryGetSingletonInstance(this.CacheType, out _instance))
                         return _instance;
 
-                    return this.BuildInstance(provider, setup, setupOrder, provider.CacheSingletonInstance, type);
+                    return this.BuildInstance(provider, setup, setupOrder, provider.CacheSingletonInstance, generics);
                 case ServiceLifetime.Scoped:
-                    if (provider.TryGetScopedInstance(this.Factory.Type, out _instance))
+                    if (provider.TryGetScopedInstance(this.CacheType, out _instance))
                         return _instance;
 
-                    return this.BuildInstance(provider, setup, setupOrder, provider.CacheScopedInstance, type);
+                    return this.BuildInstance(provider, setup, setupOrder, provider.CacheScopedInstance, generics);
                 case ServiceLifetime.Transient:
-                    return this.BuildInstance(provider, setup, setupOrder, null, type);
+                    return this.BuildInstance(provider, setup, setupOrder, null, generics);
             }
 
             throw new Exception("This shouldn't happen...");
@@ -87,14 +87,14 @@ namespace Guppy.DependencyInjection
         /// <param name="setup">A custom setup action to preform.</param>
         /// <param name="setupOrder">The order in which to preform the custom setup method.</param>
         /// <param name="cacher">An automatic cache method excecuted immidiately after an instance is created or pulled from the pool.</param>
-        /// <param name="type">The specific type to construct. This is generally only used for creating generic types.</param>
+        /// <param name="generics">Generic type arguments to be passed into the factory.</param>
         public Object BuildInstance(
             ServiceProvider provider,
             Action<Object, ServiceProvider, ServiceConfiguration> setup = null,
             Int32 setupOrder = 0,
             Action<Type, Object> cacher = null,
-            Type type = null
-        ) => this.Factory.Build(provider, cacher, this, type).Then(i =>
+            Type[] generics = null
+        ) => this.Factory.Build(provider, this.CacheType, cacher, this, generics).Then(i =>
             {
                 var ranCustom = setup == default;
 

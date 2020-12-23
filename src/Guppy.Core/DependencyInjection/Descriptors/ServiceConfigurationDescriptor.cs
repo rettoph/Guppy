@@ -40,35 +40,44 @@ namespace Guppy.DependencyInjection.Descriptors
         /// saved and used within the ServiceProvider.
         /// </summary>
         public readonly Int32 Priority;
+
+        /// <summary>
+        /// The type with which the described service will be cached
+        /// when <see cref="Lifetime"/> is <see cref="ServiceLifetime.Scoped"/>
+        /// or <see cref="ServiceLifetime.Singleton"/>. By default this will
+        /// be set to the <see cref="Factory"/> type.
+        /// </summary>
+        public readonly Type CacheType;
         #endregion
 
         #region Constructor
-        public ServiceConfigurationDescriptor(string name, ServiceLifetime lifetime, Type factory, int priority = 0)
+        public ServiceConfigurationDescriptor(string name, ServiceLifetime lifetime, Type factory, int priority = 0, Type cacheType = null)
         {
             this.Id = name.xxHash();
             this.Name = name;
             this.Lifetime = lifetime;
             this.Factory = factory;
             this.Priority = priority;
+            this.CacheType = cacheType ?? factory;
         }
         #endregion
 
         #region Static Helper Methods
-        public static ServiceConfigurationDescriptor Singleton(String name, Type factory, int priority = 0)
-            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Singleton, factory, priority);
-        public static ServiceConfigurationDescriptor Singleton<TFactory>(String name, int priority = 0)
-            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Singleton, typeof(TFactory), priority);
+        public static ServiceConfigurationDescriptor Singleton(String name, Type factory, int priority = 0, Type cacheType = null)
+            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Singleton, factory, priority, cacheType);
+        public static ServiceConfigurationDescriptor Singleton<TFactory>(String name, int priority = 0, Type cacheType = null)
+            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Singleton, typeof(TFactory), priority, cacheType);
 
-        public static ServiceConfigurationDescriptor Singleton<TFactory>(int priority = 0)
-            => new ServiceConfigurationDescriptor(typeof(TFactory).FullName, ServiceLifetime.Singleton, typeof(TFactory), priority);
+        public static ServiceConfigurationDescriptor Singleton<TFactory>(int priority = 0, Type cacheType = null)
+            => new ServiceConfigurationDescriptor(typeof(TFactory).FullName, ServiceLifetime.Singleton, typeof(TFactory), priority, cacheType);
 
-        public static ServiceConfigurationDescriptor Scoped(String name, Type factory, int priority = 0)
-            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Scoped, factory, priority);
-        public static ServiceConfigurationDescriptor Scoped<TFactory>(String name, int priority = 0)
-            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Scoped, typeof(TFactory), priority);
+        public static ServiceConfigurationDescriptor Scoped(String name, Type factory, int priority = 0, Type cacheType = null)
+            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Scoped, factory, priority, cacheType);
+        public static ServiceConfigurationDescriptor Scoped<TFactory>(String name, int priority = 0, Type cacheType = null)
+            => new ServiceConfigurationDescriptor(name, ServiceLifetime.Scoped, typeof(TFactory), priority, cacheType);
 
-        public static ServiceConfigurationDescriptor Scoped<TFactory>(int priority = 0)
-            => new ServiceConfigurationDescriptor(typeof(TFactory).FullName, ServiceLifetime.Scoped, typeof(TFactory), priority);
+        public static ServiceConfigurationDescriptor Scoped<TFactory>(int priority = 0, Type cacheType = null)
+            => new ServiceConfigurationDescriptor(typeof(TFactory).FullName, ServiceLifetime.Scoped, typeof(TFactory), priority, cacheType);
 
         public static ServiceConfigurationDescriptor Transient(String name, Type factory, int priority = 0)
             => new ServiceConfigurationDescriptor(name, ServiceLifetime.Transient, factory, priority);

@@ -179,7 +179,7 @@ namespace Guppy.DependencyInjection
             if (serviceType.IsConstructedGenericType 
                 && _services.TryGetValue(ServiceConfiguration.GetId(serviceType.GetGenericTypeDefinition()), out configuration))
             {
-                return configuration.BuildInstance(provider: this, type: serviceType);
+                return configuration.BuildInstance(provider: this, generics: serviceType.GetGenericArguments());
             }
 
             return null;
