@@ -34,6 +34,7 @@ namespace Guppy.UI.Elements
         private PrimitivePath _border;
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
+        private Texture2D _background;
         #endregion
 
         #region Public Properties
@@ -104,6 +105,9 @@ namespace Guppy.UI.Elements
             provider.Service(out _spriteBatch);
             provider.Service(out _graphics);
 
+            _background = new Texture2D(_graphics, 1, 1);
+            _background.SetData<Color>(new Color[] { Color.White });
+
             this.Padding = new Padding(this);
             this.Bounds = new Bounds(this);
 
@@ -149,8 +153,11 @@ namespace Guppy.UI.Elements
         {
             base.Draw(gameTime);
 
-            if (this.BackgroundColor != default(Color))
-                _primitiveBatch.DrawRectangle(this.BackgroundColor, this.OuterBounds);
+            if (this.BackgroundColor != default(Color)) 
+            {
+                _spriteBatch.Draw(_background, this.OuterBounds, this.BackgroundColor);
+            }
+                
 
             if (this.BorderColor != default(Color) && this.BorderWidth > 0)
             {
