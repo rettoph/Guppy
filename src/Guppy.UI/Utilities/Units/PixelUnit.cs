@@ -29,6 +29,14 @@ namespace Guppy.UI.Utilities.Units
         /// <inheritdoc />
         public override int ToPixel(int parent)
             => _value;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PixelUnit p)
+                return p._value == this._value;
+
+            return false;
+        }
         #endregion
     }
 }

@@ -50,11 +50,11 @@ namespace Guppy.UI.Enums
             }
             else if ((alignment & Alignment.HorizontalCenter) != 0)
             {
-                position.X = (container.Width - item.X) / 2;
+                position.X = container.Left + (container.Width - item.X) / 2;
             }
             else if ((alignment & Alignment.Right) != 0)
             {
-                position.X = container.Width - item.X;
+                position.X = container.Left + container.Width - item.X;
             }
 
             /*
@@ -66,11 +66,11 @@ namespace Guppy.UI.Enums
             }
             else if ((alignment & Alignment.VerticalCenter) != 0)
             {
-                position.Y = (container.Height - item.Y) / 2;
+                position.Y = container.Top + (container.Height - item.Y) / 2;
             }
             else if ((alignment & Alignment.Bottom) != 0)
             {
-                position.Y = container.Height - item.Y;
+                position.Y = container.Top + container.Height - item.Y;
             }
 
             return position;

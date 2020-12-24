@@ -29,6 +29,14 @@ namespace Guppy.UI.Utilities.Units
         /// <inheritdoc />
         public override int ToPixel(int parent)
             => (Int32)(parent * _percent);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PercentUnit p)
+                return p._percent == this._percent;
+
+            return false;
+        }
         #endregion
     }
 }

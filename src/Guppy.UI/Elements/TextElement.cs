@@ -2,6 +2,7 @@
 using Guppy.UI.Enums;
 using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Utilities;
+using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -19,6 +20,9 @@ namespace Guppy.UI.Elements
         #region Private Fields
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
+
+        private String _value;
+        private SpriteFont _font;
         #endregion
 
         #region Public Properties
@@ -35,12 +39,41 @@ namespace Guppy.UI.Elements
         /// <summary>
         /// The font to render text. Stateless.
         /// </summary>
-        public SpriteFont Font;
+        public SpriteFont Font
+        {
+            get => _font;
+            set
+            {
+                if(value != _font)
+                {
+                    _font = value;
+                    this.CleanInlineBounds();
+                }
+            }
+        }
 
         /// <summary>
         /// The text to be rendered. Stateless.
         /// </summary>
-        public String Value;
+        public String Value
+        {
+            get => _value;
+            set
+            {
+                if(value != _value)
+                {
+                    _value = value;
+                    this.CleanInlineBounds();
+                }
+            }
+        }
+
+        /// <summary>
+        /// When true, the bounds of the internal element
+        /// will automatically be adjusted based on the size
+        /// of the current <see cref="Value"/>.
+        /// </summary>
+        public Boolean Inline { get; set; } = true;
         #endregion
 
         #region Lifecycle Methods
@@ -71,6 +104,17 @@ namespace Guppy.UI.Elements
                 this.Color);
 
             _graphics.PopScissorRectangle();
+        }
+        #endregion
+
+        #region Helper Methods
+        private void CleanInlineBounds()
+        {
+            if (this.Inline) // Recalculate size...
+            {
+                this.Bounds.Height = new CustomUnit(i => this.Padding.Top.ToPixel(i) + this.Padding.Bottom.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).Y);
+                this.Bounds.Width = new CustomUnit(i => this.Padding.Left.ToPixel(i) + this.Padding.Right.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).X);
+            }
         }
         #endregion
     }

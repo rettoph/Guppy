@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Guppy.DependencyInjection
             // For more info visit: https://github.com/aspnet/DependencyInjection/blob/d77b090567a1e6ad9a5bb5fd05f4bdcf281d4185/src/DI/ServiceLookup/CallSiteFactory.cs#L95
             if (!_services.TryGetValue(id, out _configuration))
                 if (!_lookups.TryGetValue(id, out _configuration))
-                    return type == default ? default : this.TryCreateGeneric(type) ?? this.TryCreateEnumerable(type);
+                    return type == default ? default : this.TryCreateGeneric(type, setup, setupOrder) ?? this.TryCreateEnumerable(type);
 
             return _configuration.GetInstance(this, setup, setupOrder);
         }
@@ -93,12 +94,16 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <param name="serviceType"></param>
         /// <returns></returns>
-        private Object TryCreateGeneric(Type serviceType)
+        private Object TryCreateGeneric(Type serviceType, Action<Object, ServiceProvider, ServiceConfiguration> setup = null, Int32 setupOrder = 0)
         {
             ServiceConfiguration configuration;
             if (serviceType.IsConstructedGenericType
                 && _services.TryGetValue(ServiceConfiguration.GetId(serviceType.GetGenericTypeDefinition()), out configuration))
-                    return configuration.BuildInstance(provider: this, generics: serviceType.GetGenericArguments());
+                    return configuration.BuildInstance(
+                        provider: this, 
+                        generics: serviceType.GetGenericArguments(), 
+                        setup: setup, 
+                        setupOrder: setupOrder);
 
             return null;
         }
@@ -109,13 +114,13 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <param name="serviceType"></param>
         /// <returns></returns>
-        private Object TryCreateEnumerable(Type serviceType)
+        private Object TryCreateEnumerable(Type serviceType, Action<Object, ServiceProvider, ServiceConfiguration> setup = null, Int32 setupOrder = 0)
         {
             if (serviceType.IsConstructedGenericType &&
                 serviceType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                     return _services.Values
                         .Where(sd => sd.Factory.Type.IsAssignableFrom(serviceType.GenericTypeArguments[0]))
-                        .Select(sd => sd.BuildInstance(this));
+                        .Select(sd => sd.BuildInstance(this, setup, setupOrder));
 
             return null;
         }

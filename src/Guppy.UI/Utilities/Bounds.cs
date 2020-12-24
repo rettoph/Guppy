@@ -27,8 +27,12 @@ namespace Guppy.UI.Utilities
             get => _x;
             set
             {
-                _x = value;
-                this.OnChanged?.Invoke(_parent, this);
+                if (!_x.Equals(value))
+                {
+                    _x = value;
+                    this.OnChanged?.Invoke(_parent, this);
+                    this.OnPositionChanged?.Invoke(_parent, this);
+                }
             }
         }
 
@@ -41,8 +45,12 @@ namespace Guppy.UI.Utilities
             get => _y;
             set
             {
-                _y = value;
-                this.OnChanged?.Invoke(_parent, this);
+                if (!_y.Equals(value))
+                {
+                    _y = value;
+                    this.OnChanged?.Invoke(_parent, this);
+                    this.OnPositionChanged?.Invoke(_parent, this);
+                }
             }
         }
 
@@ -55,8 +63,12 @@ namespace Guppy.UI.Utilities
             get => _width;
             set
             {
-                _width = value;
-                this.OnChanged?.Invoke(_parent, this);
+                if (!_width.Equals(value))
+                {
+                    _width = value;
+                    this.OnChanged?.Invoke(_parent, this);
+                    this.OnSizeChanged?.Invoke(_parent, this);
+                }
             }
         }
 
@@ -69,8 +81,12 @@ namespace Guppy.UI.Utilities
             get => _height;
             set
             {
-                _height = value;
-                this.OnChanged?.Invoke(_parent, this);
+                if (!_height.Equals(value))
+                {
+                    _height = value;
+                    this.OnChanged?.Invoke(_parent, this);
+                    this.OnSizeChanged?.Invoke(_parent, this);
+                }
             }
         }
         #endregion
@@ -80,6 +96,16 @@ namespace Guppy.UI.Utilities
         /// Invoked when the Width/Height or X/Y changes.
         /// </summary>
         public event OnBoundsChangedDelegate OnChanged;
+
+        /// <summary>
+        /// Invoked when the X/Y changes.
+        /// </summary>
+        public event OnBoundsChangedDelegate OnPositionChanged;
+
+        /// <summary>
+        /// Invoked when the Width/Height changes.
+        /// </summary>
+        public event OnBoundsChangedDelegate OnSizeChanged;
         #endregion
 
         #region Constructor

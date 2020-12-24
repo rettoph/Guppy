@@ -27,7 +27,7 @@ namespace Guppy.UI.Entities
         /// <summary>
         /// The primary root level element container within the stage.
         /// </summary>
-        public Container<Element> Content { get; private set; }
+        public Container<IElement> Content { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -38,22 +38,10 @@ namespace Guppy.UI.Entities
             provider.Service(out _window);
             provider.Service(out _graphics);
 
-            this.Content = provider.GetService<Container<Element>>((content, p, d) =>
+            this.Content = provider.GetService<Container>((content, p, d) =>
             {
                 content.Bounds.Width = 1f;
                 content.Bounds.Height = 1f;
-            });
-
-            this.Content.Children.Create<TextElement>((e, p, d) =>
-            {
-                e.Bounds.Width = 0.5f;
-                e.Bounds.X = 100;
-                e.BackgroundColor[ElementState.Hovered] = Color.Red;
-                e.BackgroundColor[ElementState.Pressed] = Color.Blue;
-                e.BorderColor[ElementState.Default] = Color.Green;
-                e.BorderWidth[ElementState.Default] = 4f;
-                e.Color[ElementState.Default] = Color.White;
-                e.Value = "Hello World";
             });
 
             this.Content.TryCleanBounds(this.GetBounds());

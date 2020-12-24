@@ -8,6 +8,7 @@ using Guppy.Lists;
 using Guppy.Lists.Interfaces;
 using Guppy.UI.Enums;
 using Guppy.UI.Interfaces;
+using Guppy.UI.Lists;
 using Guppy.UI.Utilities;
 using Microsoft.Xna.Framework;
 using System;
@@ -21,7 +22,7 @@ namespace Guppy.UI.Elements
         where TChildren : class, IElement
     {
         #region Public Properties
-        public ServiceList<TChildren> Children { get; private set; }
+        public ElementList<TChildren> Children { get; private set; }
         #endregion
 
         #region Events
@@ -34,7 +35,7 @@ namespace Guppy.UI.Elements
             base.PreInitialize(provider);
 
             // Create & setup a new children list.
-            this.Children = provider.GetService<ServiceList<TChildren>>();
+            this.Children = provider.GetService<ElementList<TChildren>>();
             this.Children.OnAdded += this.HandleChildAdded;
             this.Children.OnRemoved += this.HandleChildRemoved;
 
@@ -78,13 +79,24 @@ namespace Guppy.UI.Elements
             if(base.TryCleanInnerBounds())
             {
                 // Recursively clean all children.
-                this.Children.ForEach(c => c.TryCleanBounds(this.InnerBounds));
+                this.Children.ForEach(c => c.TryCleanBounds(this.GetInnerBoundsForChildren()));
 
                 return true;
             }
 
             return false;
         }
+
+        /// <summary>
+        /// Retrieve the bounds to pass into the current containers
+        /// children when recalculating child bounds.
+        /// 
+        /// (This is overriden by containers with dynamic sizes based on children size
+        /// such as the stack container.)
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Rectangle GetInnerBoundsForChildren()
+            => this.InnerBounds;
         #endregion
 
         #region Child Update Methods
@@ -98,6 +110,7 @@ namespace Guppy.UI.Elements
         #region Event Handlers
         private void HandleChildAdded(IServiceList<TChildren> sender, TChildren child)
         {
+            child.TryCleanBounds(this.GetInnerBoundsForChildren());
             child.Bounds.OnChanged += this.HandleChildBoundsChanged;
         }
 
@@ -117,5 +130,9 @@ namespace Guppy.UI.Elements
                 this.OnUpdateChild -= this.TryCleanChildHovered;
         }
         #endregion
+    }
+
+    public class Container : Container<IElement>
+    { 
     }
 }

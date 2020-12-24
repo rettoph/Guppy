@@ -49,7 +49,7 @@ namespace Guppy.Services
             base.PostInitialize(provider);
 
             // In the post initialze phase we must configure the reigstered values by Handle.
-            _values = _registeredValues.GroupBy(rv => rv.Handle)
+            _values = _registeredValues.OrderBy(i => i.Priority).GroupBy(rv => rv.Handle)
                 .ToDictionary(
                     keySelector: g => g.Key,
                     elementSelector: g => this.Configure(g));
@@ -79,7 +79,9 @@ namespace Guppy.Services
         #endregion
     }
 
-    public abstract class LoaderService<THandle, TValue> : LoaderService<THandle, TValue, TValue> { 
-    
+    public abstract class LoaderService<THandle, TValue> : LoaderService<THandle, TValue, TValue>
+    {
+        protected override TValue Configure(IGrouping<THandle, RegisteredValue> group)
+            => group.First().Value;
     }
 }

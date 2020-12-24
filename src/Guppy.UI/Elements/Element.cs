@@ -6,6 +6,7 @@ using Guppy.IO.Enums;
 using Guppy.IO.Services;
 using Guppy.UI.Delegates;
 using Guppy.UI.Enums;
+using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Services;
 using Guppy.UI.Utilities;
@@ -31,6 +32,8 @@ namespace Guppy.UI.Elements
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
         private Queue<IDisposable> _stateValues;
         private PrimitivePath _border;
+        private GraphicsDevice _graphics;
+        private SpriteBatch _spriteBatch;
         #endregion
 
         #region Public Properties
@@ -63,6 +66,11 @@ namespace Guppy.UI.Elements
         /// The current border width, if any.
         /// </summary>
         public ElementStateValue<Single> BorderWidth { get; private set; }
+
+        /// <summary>
+        /// The current border width, if any.
+        /// </summary>
+        public ElementStateValue<Texture2D> BackgroundImage { get; private set; }
         #endregion
 
         #region Events
@@ -93,6 +101,8 @@ namespace Guppy.UI.Elements
 
             provider.Service(out _ui);
             provider.Service(out _primitiveBatch);
+            provider.Service(out _spriteBatch);
+            provider.Service(out _graphics);
 
             this.Padding = new Padding(this);
             this.Bounds = new Bounds(this);
@@ -106,6 +116,7 @@ namespace Guppy.UI.Elements
             this.BackgroundColor = this.BuildStateValue<Color>();
             this.BorderColor = this.BuildStateValue<Color>();
             this.BorderWidth = this.BuildStateValue<Single>();
+            this.BackgroundImage = this.BuildStateValue<Texture2D>();
         }
 
         protected override void Release()
@@ -127,6 +138,13 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Frame Methods
+        protected override void PreDraw(GameTime gameTime)
+        {
+            base.PreDraw(gameTime);
+
+            _graphics.PushScissorRectangle(this.OuterBounds);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
@@ -140,8 +158,20 @@ namespace Guppy.UI.Elements
                 _primitiveBatch.DrawPrimitive(_border, this.BorderColor);
             }
 
-            _primitiveBatch.TraceRectangle(Color.Blue, this.InnerBounds);
-            _primitiveBatch.TraceRectangle(Color.Red, this.OuterBounds);
+            if(this.BackgroundImage.Current != default(Texture2D))
+            {
+                _spriteBatch.Draw(this.BackgroundImage, this.OuterBounds, Color.White);
+            }
+
+            // _primitiveBatch.TraceRectangle(Color.Blue, this.InnerBounds);
+            // _primitiveBatch.TraceRectangle(Color.Red, this.OuterBounds);
+        }
+
+        protected override void PostDraw(GameTime gameTime)
+        {
+            base.PostDraw(gameTime);
+
+            _graphics.PopScissorRectangle();
         }
 
         protected override void Update(GameTime gameTime)
