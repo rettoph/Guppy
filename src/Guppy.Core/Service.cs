@@ -14,6 +14,7 @@ namespace Guppy
         #region Private Fields
         private ServiceConfiguration _configuration;
         private Guid _id;
+        private ServiceStatus _initializationStatus;
         #endregion
 
         #region Public Attributes
@@ -22,7 +23,7 @@ namespace Guppy
             get => _configuration;
             set
             {
-                if (this.InitializationStatus == InitializationStatus.Ready)
+                if (this.Status == ServiceStatus.Ready)
                     throw new InvalidOperationException("Unable to update Configuration after initialization.");
 
                 _configuration = value;
@@ -33,81 +34,136 @@ namespace Guppy
             get => _id;
             set
             {
-                if (this.InitializationStatus == InitializationStatus.Ready)
+                if (this.Status == ServiceStatus.Ready)
                     throw new InvalidOperationException("Unable to update Id after initialization.");
 
                 _id = value;
             }
         }
 
-        public InitializationStatus InitializationStatus { get; private set; }
+        public ServiceStatus Status
+        {
+            get => _initializationStatus;
+            set
+            {
+                if(value != _initializationStatus)
+                {
+                    _initializationStatus = value;
+                    this.OnStatus[value]?.Invoke(this);
+                }
+            }
+        }
         #endregion
 
         #region Events
-        public event OnEventDelegate<IService> OnReleased;
+        public Dictionary<ServiceStatus, OnEventDelegate<IService>> OnStatus { get; private set; }
         #endregion
 
         #region Lifecycle Methods
+        void IService.TryPreCreate(ServiceProvider provider)
+        {
+            this.OnStatus = DictionaryHelper.BuildEnumDictionary<ServiceStatus, OnEventDelegate<IService>>();
+
+            this.ValidateStatus(ServiceStatus.NotCreated);
+
+            this.Status = ServiceStatus.PreCreating;
+            this.PreCreate(provider);
+        }
+
         void IService.TryCreate(ServiceProvider provider)
         {
-            if (this.InitializationStatus != InitializationStatus.NotCreated)
-                return;
+            this.ValidateStatus(ServiceStatus.PreCreating);
 
-            this.InitializationStatus = InitializationStatus.Creating;
+            this.Status = ServiceStatus.Creating;
             this.Create(provider);
-            this.InitializationStatus = InitializationStatus.NotReady;
+        }
+
+        void IService.TryPostCreate(ServiceProvider provider)
+        {
+            this.ValidateStatus(ServiceStatus.Creating);
+
+            this.Status = ServiceStatus.PostCreating;
+            this.PostCreate(provider);
+
+            this.Status = ServiceStatus.NotReady;
         }
 
         void IService.TryPreInitialize(ServiceProvider provider)
         {
-            if (this.InitializationStatus != InitializationStatus.NotReady)
-                return;
+            this.ValidateStatus(ServiceStatus.NotReady);
 
-            this.InitializationStatus = InitializationStatus.PreInitializing;
+            this.Status = ServiceStatus.PreInitializing;
             this.PreInitialize(provider);
         }
 
         void IService.TryInitialize(ServiceProvider provider)
         {
-            if (this.InitializationStatus != InitializationStatus.PreInitializing)
-                return;
+            this.ValidateStatus(ServiceStatus.PreInitializing);
 
-            this.InitializationStatus = InitializationStatus.Initializing;
+            this.Status = ServiceStatus.Initializing;
             this.Initialize(provider);
         }
 
         void IService.TryPostInitialize(ServiceProvider provider)
         {
-            if (this.InitializationStatus != InitializationStatus.Initializing)
-                return;
+            this.ValidateStatus(ServiceStatus.Initializing);
 
-            this.InitializationStatus = InitializationStatus.PostInitializing;
+            this.Status = ServiceStatus.PostInitializing;
             this.PostInitialize(provider);
-            this.InitializationStatus = InitializationStatus.Ready;
+
+            this.Status = ServiceStatus.Ready;
         }
 
         public void TryRelease()
         {
-            if (this.InitializationStatus != InitializationStatus.Ready && this.InitializationStatus != InitializationStatus.Disposing)
-                return;
+            if(this.ValidateStatus(status: ServiceStatus.Ready, required: false))
+            {
+                this.Status = ServiceStatus.PreReleasing;
+                this.PreRelease();
 
-            this.InitializationStatus = InitializationStatus.Releasing;
+                this.Status = ServiceStatus.Releasing;
+                this.Release();
 
-            this.Release();
-            this.OnReleased?.Invoke(this);
+                this.Status = ServiceStatus.PostReleasing;
+                this.PostRelease();
 
-            this.InitializationStatus = InitializationStatus.NotReady;
+                this.Status = ServiceStatus.NotReady;
+            }
         }
 
         public void TryDispose()
         {
-            this.TryRelease();
+            if (this.Status == ServiceStatus.Ready)
+                this.TryRelease();
 
-            this.InitializationStatus = InitializationStatus.Disposing;
-            this.Dispose();
+            if(this.ValidateStatus(status: ServiceStatus.NotReady, required: false))
+            {
+                this.Status = ServiceStatus.PreDisposing;
+                this.PreDispose();
+
+                this.Status = ServiceStatus.Disposing;
+                this.Dispose();
+
+                this.Status = ServiceStatus.PostDisposing;
+                this.PostDispose();
+
+                this.Status = ServiceStatus.NotCreated;
+
+                this.OnStatus.Clear();
+            }
+        }
+
+        protected virtual void PreCreate(ServiceProvider provider)
+        {
+            //
         }
 
         protected virtual void Create(ServiceProvider provider)
+        {
+            //
+        }
+
+        protected virtual void PostCreate(ServiceProvider provider)
         {
             //
         }
@@ -127,7 +183,22 @@ namespace Guppy
             //
         }
 
+        protected virtual void PreRelease()
+        {
+            //
+        }
+
         protected virtual void Release()
+        {
+            //
+        }
+
+        protected virtual void PostRelease()
+        {
+            //
+        }
+
+        protected virtual void PreDispose()
         {
             //
         }
@@ -136,11 +207,26 @@ namespace Guppy
         {
             //
         }
+
+        protected virtual void PostDispose()
+        {
+            //
+        }
         #endregion
 
         #region IDisposable Implementation
         void IDisposable.Dispose()
             => this.TryDispose();
+        #endregion
+
+        #region Helper Methods
+        private Boolean ValidateStatus(ServiceStatus status, Boolean required = true)
+        {
+            if (this.Status != status)
+                return required ? throw new Exception($"Invalid Status, expected '{status}' but got '{this.Status}'.") : false;
+
+            return true;
+        }
         #endregion
     }
 }

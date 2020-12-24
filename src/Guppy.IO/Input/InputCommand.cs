@@ -86,7 +86,7 @@ namespace Guppy.IO.Input
         #region Helper Methods
         internal void SetContext(InputCommandContext context)
         {
-            if (this.InitializationStatus >= InitializationStatus.Initializing)
+            if (this.Status >= ServiceStatus.Initializing)
                 throw new Exception("Unable to set context after initialization has begin");
 
             this.Handle = context.Handle;

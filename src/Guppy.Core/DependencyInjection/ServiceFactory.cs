@@ -48,7 +48,7 @@ namespace Guppy.DependencyInjection
 
             _pool = this.Pools[type];
             if (_pool.Any())
-                return _pool.Pull(cacher);
+                _pool.Pull(cacher);
 
             return this.Factory(provider, type).Then(i =>
             {

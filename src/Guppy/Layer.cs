@@ -25,7 +25,7 @@ namespace Guppy
             get => _group;
             set
             {
-                if (this.InitializationStatus == Enums.InitializationStatus.Ready)
+                if (this.Status == Enums.ServiceStatus.Ready)
                     throw new Exception("Unable to update Layer Group post initializtion.");
 
                 _group = value;

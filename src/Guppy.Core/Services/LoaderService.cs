@@ -59,7 +59,7 @@ namespace Guppy.Services
         #region Helper Methods
         public void TryRegister(THandle handle, TInValue value, Int32 priority = 0)
         {
-            if (this.InitializationStatus >= InitializationStatus.PreInitializing && this.InitializationStatus < InitializationStatus.PostInitializing)
+            if (this.Status >= ServiceStatus.PreInitializing && this.Status < ServiceStatus.PostInitializing)
                 _registeredValues.Add(new RegisteredValue()
                 {
                     Handle = handle,

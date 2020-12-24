@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Enums;
 
 namespace Guppy.ServiceLoaders
 {
@@ -15,14 +16,16 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddBuilder<IService>((s, p, c) => s.TryCreate(p));
+            services.AddBuilder<IService>((s, p, c) => s.TryPreCreate(p), -10);
+            services.AddBuilder<IService>((s, p, c) => s.TryCreate(p), 0);
+            services.AddBuilder<IService>((s, p, c) => s.TryPostCreate(p), 10);
 
             services.AddSetup<IService>((s, p, sd) =>
             {
                 s.ServiceConfiguration = sd;
                 s.TryPreInitialize(p);
 
-                s.OnReleased += this.HandleServiceReleased;
+                s.OnStatus[ServiceStatus.Releasing] += this.HandleServiceReleasing;
             }, -10);
 
             services.AddSetup<IService>((s, p, sd) => s.TryInitialize(p), 10);
@@ -41,9 +44,9 @@ namespace Guppy.ServiceLoaders
         /// return the instance to the ServiceTypeDescriptor pool.
         /// </summary>
         /// <param name="sender"></param>
-        private void HandleServiceReleased(IService sender)
+        private void HandleServiceReleasing(IService sender)
         {
-            sender.OnReleased -= this.HandleServiceReleased;
+            sender.OnStatus[ServiceStatus.Releasing] -= this.HandleServiceReleasing;
 
             sender.ServiceConfiguration.Factory.Pools[sender].TryReturn(sender);
         }

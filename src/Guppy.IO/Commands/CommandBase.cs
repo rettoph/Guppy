@@ -14,6 +14,7 @@ using Guppy.IO.Commands.Interfaces;
 using Guppy.IO.Commands.Services;
 using Guppy.IO.Commands.Extensions;
 using Guppy.Extensions.System;
+using Guppy.Enums;
 
 namespace Guppy.IO.Commands
 {
@@ -80,7 +81,7 @@ namespace Guppy.IO.Commands
                 throw new DuplicateNameException($"Unable to add Command '{command.Word}' into '{this.Phrase}'. Command alreayd exists.");
 
             _commands.Add(command.Word, command);
-            command.OnReleased += this.HandleSubSegmentReleased;
+            command.OnStatus[ServiceStatus.Releasing] += this.HandleSubSegmentReleasing;
 
             return command;
         }
@@ -93,7 +94,7 @@ namespace Guppy.IO.Commands
         {
             if (_commands.Remove(segment.Word))
             {
-                segment.OnReleased -= this.HandleSubSegmentReleased;
+                segment.OnStatus[ServiceStatus.Releasing] -= this.HandleSubSegmentReleasing;
                 segment.TryRelease();
             }
         }
@@ -116,7 +117,7 @@ namespace Guppy.IO.Commands
         #endregion
 
         #region Event Handlers
-        private void HandleSubSegmentReleased(IService sender)
+        private void HandleSubSegmentReleasing(IService sender)
             => this.TryRemove(sender as Command);
         #endregion
     }

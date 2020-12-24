@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
+using Guppy.Enums;
+using Guppy.Extensions.System;
 
 namespace Guppy.Lists
 {
@@ -148,14 +150,14 @@ namespace Guppy.Lists
 
         #region Event Handlers
         private Boolean HandleCanAdd(IServiceList<TService> sender, TService item)
-            => !_dictionary.ContainsKey(item.Id);
+            => item.Status != ServiceStatus.NotReady && !_dictionary.ContainsKey(item.Id);
 
         private void HandleAdd(TService item)
         {
             _list.Add(item);
             _dictionary.Add(item.Id, item);
 
-            item.OnReleased += this.HandleItemReleased;
+            item.OnStatus[ServiceStatus.Releasing] += this.HandleItemReleasing;
         }
 
         private Boolean HandleCanRemove(IServiceList<TService> sender, TService item)
@@ -166,10 +168,10 @@ namespace Guppy.Lists
             _list.Remove(item);
             _dictionary.Remove(item.Id);
 
-            item.OnReleased -= this.HandleItemReleased;
+            item.OnStatus[ServiceStatus.Releasing] -= this.HandleItemReleasing;
         }
 
-        protected virtual void HandleItemReleased(IService sender)
+        protected virtual void HandleItemReleasing(IService sender)
         {
             this.TryRemove(sender as TService);
         }

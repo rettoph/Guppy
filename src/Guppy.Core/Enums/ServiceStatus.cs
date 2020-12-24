@@ -4,16 +4,22 @@ using System.Text;
 
 namespace Guppy.Enums
 {
-    public enum InitializationStatus
+    public enum ServiceStatus
     {
         NotCreated,
+        PreCreating,
         Creating,
+        PostCreating,
         NotReady,
         PreInitializing,
         Initializing,
         PostInitializing,
+        Ready,
+        PreReleasing,
         Releasing,
+        PostReleasing,
+        PreDisposing,
         Disposing,
-        Ready
+        PostDisposing,
     }
 }
