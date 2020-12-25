@@ -5,6 +5,7 @@ using Guppy.UI.Enums;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Lists;
 using Guppy.UI.Utilities;
+using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -21,70 +22,34 @@ namespace Guppy.UI.Elements
     /// container.
     /// </summary>
     /// <typeparam name="TChildren"></typeparam>
-    public class StackContainer<TChildren> : Element, IContainer<TChildren>
+    public class StackContainer<TChildren> : SecretContainer<TChildren, InnerStackContainer<TChildren>>, IContainer<TChildren>
         where TChildren : class, IElement
     {
-        #region Private Fields
-        private InnerStackContainer<TChildren> _inner;
-        #endregion
-
         #region Public Properties
-        public ElementList<TChildren> Children => _inner.Children;
+        public ElementList<TChildren> Children => this.inner.Children;
 
         /// <summary>
         /// The current alignment of all internal children.
         /// </summary>
         public StackAlignment Alignment
         {
-            get => _inner.Alignment;
-            set => _inner.Alignment = value;
+            get => this.inner.Alignment;
+            set => this.inner.Alignment = value;
+        }
+
+        public InlineType Inline
+        {
+            get => this.inline;
+            set => this.inline = value;
         }
         #endregion
 
-        #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
-        {
-            base.Create(provider);
-
-            this.OnBoundsCleaned += this.HandleBoundsCleaned;
-        }
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            provider.Service(out _inner, (inner, p, c) =>
+        #region Helper Methods
+        protected override InnerStackContainer<TChildren> BuildContainer(ServiceProvider provider)
+            => provider.GetService<InnerStackContainer<TChildren>>((inner, p, c) =>
             {
                 inner.Parent = this;
             });
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            this.OnBoundsCleaned -= this.HandleBoundsCleaned;
-        }
-        #endregion
-
-        #region Frame Methods
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            _inner.TryDraw(gameTime);
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            _inner.TryUpdate(gameTime);
-        }
-        #endregion
-
-        #region Events
-        private void HandleBoundsCleaned(Element sender)
-            => _inner.TryCleanBounds(this.InnerBounds);
         #endregion
     }
 
@@ -96,7 +61,7 @@ namespace Guppy.UI.Elements
     /// This is used to contain & render items, but its size is always changing.
     /// </summary>
     /// <typeparam name="TChildren"></typeparam>
-    internal class InnerStackContainer<TChildren> : Container<TChildren>
+    public class InnerStackContainer<TChildren> : Container<TChildren>
         where TChildren : class, IElement
     {
         #region Public Properties
@@ -123,6 +88,10 @@ namespace Guppy.UI.Elements
         {
             base.Initialize(provider);
 
+            this.Inline = InlineType.Both;
+            this.Bounds.Width = 1f;
+            this.Bounds.Height = 1f;
+
             this.Children.OnAdded += this.HandleChildAdded;
             this.Children.OnRemoved += this.HandleChildRemoved;
 
@@ -146,10 +115,6 @@ namespace Guppy.UI.Elements
         #endregion
 
         #region Methods
-        /// <inheritdoc />
-        protected override Rectangle GetInnerBoundsForChildren()
-            => this.Parent.InnerBounds;
-
         /// <summary>
         /// Re-align all contained children within the
         /// stack container.
@@ -160,31 +125,21 @@ namespace Guppy.UI.Elements
             {
                 case StackAlignment.Vertical:
                     Int32 y = 0;
-                    Int32 width = 0;
 
                     this.Children.ForEach(c =>
                     {
                         c.Bounds.Y = y;
                         y += c.OuterBounds.Height;
-                        width = Math.Max(c.OuterBounds.Width, width);
                     });
-
-                    this.Parent.Bounds.Height = y;
-                    this.Parent.Bounds.Width = width;
                     break;
                 case StackAlignment.Horizontal:
                     Int32 x = 0;
-                    Int32 height = 0;
 
                     this.Children.ForEach(c =>
                     {
                         c.Bounds.X = x;
                         x += c.OuterBounds.Width;
-                        height = Math.Max(c.OuterBounds.Height, height);
                     });
-
-                    this.Parent.Bounds.Width = x;
-                    this.Parent.Bounds.Height = height;
                     break;
             }
         }

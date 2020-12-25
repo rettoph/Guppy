@@ -38,6 +38,13 @@ namespace Guppy.UI.Interfaces
         /// Calculated with the OuterBounds and Padding.
         /// </summary>
         Rectangle InnerBounds { get; }
+
+        /// <summary>
+        /// The current container.
+        /// This is used to calculate the
+        /// current bounding box.
+        /// </summary>
+        IContainer Container { get; set; }
         #endregion
 
         #region Events
@@ -56,11 +63,11 @@ namespace Guppy.UI.Interfaces
         /// <summary>
         /// Attempt to clean the current element.
         /// 
-        /// This will refresh the inner & outer
-        /// bounds.
+        /// This will refresh the inner & outer based on the recieved
+        /// <paramref name="bounds"/> value.
         /// </summary>
-        /// <param name="container"></param>
-        void TryCleanBounds(Rectangle container);
+        /// <param name="bounds"></param>
+        void TryCleanBounds();
 
         /// <summary>
         /// Check & update the hovered value of the element specifically.

@@ -16,7 +16,7 @@ namespace Guppy.UI.Entities
     /// A simple entity designed to contain
     /// & manage elements.
     /// </summary>
-    public class Stage : Entity
+    public class Stage : Entity, IContainer
     {
         #region Private Fields
         private GameWindow _window;
@@ -42,9 +42,10 @@ namespace Guppy.UI.Entities
             {
                 content.Bounds.Width = 1f;
                 content.Bounds.Height = 1f;
+                content.Container = this;
             });
 
-            this.Content.TryCleanBounds(this.GetBounds());
+            this.Content.TryCleanBounds();
 
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
@@ -67,16 +68,18 @@ namespace Guppy.UI.Entities
         }
         #endregion
 
-        #region Event Handlers
-        private void HandleClientSizeChanged(object sender, EventArgs e)
-            => this.Content.TryCleanBounds(this.GetBounds());
-
-        private Rectangle GetBounds()
+        #region IContainer Implementation
+        Rectangle IContainer.GetInnerBoundsForChildren()
             => new Rectangle(
                 1,
                 0,
                 _graphics.Viewport.Bounds.Width - 2,
                 _graphics.Viewport.Bounds.Height - 1);
+        #endregion
+
+        #region Event Handlers
+        private void HandleClientSizeChanged(object sender, EventArgs e)
+            => this.Content.TryCleanBounds();
         #endregion
     }
 }

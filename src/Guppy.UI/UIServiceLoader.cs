@@ -51,6 +51,7 @@ namespace Guppy.UI
             services.AddFactory<StackContainer>(p => new StackContainer());
             services.AddFactory<Element>(p => new Element());
             services.AddFactory<TextElement>(p => new TextElement());
+            services.AddFactory<TextInput>(p => new TextInput());
 
             services.AddTransient(typeof(ElementList<>));
             services.AddTransient(typeof(Container<>));
@@ -60,6 +61,7 @@ namespace Guppy.UI
             services.AddTransient<StackContainer>();
             services.AddTransient<Element>();
             services.AddTransient<TextElement>();
+            services.AddTransient<TextInput>();
 
             // Register Content
             services.AddSetup<ContentService>((content, p, c) =>

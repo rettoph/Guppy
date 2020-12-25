@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.System;
 using Guppy.Extensions.Utilities;
 using Guppy.IO.Enums;
 using Guppy.IO.Services;
@@ -35,6 +36,8 @@ namespace Guppy.UI.Elements
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
         private Texture2D _background;
+        private SpriteFont _font;
+        private IContainer _container;
         #endregion
 
         #region Public Properties
@@ -52,6 +55,13 @@ namespace Guppy.UI.Elements
 
         /// <inheritdoc />
         public Rectangle InnerBounds { get; private set; }
+
+        /// <inheritdoc />
+        public IContainer Container
+        {
+            get => _container;
+            set => this.OnContainerChanged.InvokeIfChanged(value != _container, this, ref _container, value);
+        }
 
         /// <summary>
         /// The current background color, if any
@@ -82,12 +92,29 @@ namespace Guppy.UI.Elements
         public Dictionary<ElementState, OnStateChangedDelegate> OnState { get; private set; }
 
         public OnEventDelegate<Element> OnBoundsCleaned;
+
+        /// <summary>
+        /// Invoked when the mouse is released while
+        /// the element is hovered.
+        /// </summary>
+        public event OnEventDelegate<Element> OnClicked;
+
+        /// <summary>
+        /// Invoked when the parent is updated. When created,
+        /// this process automatically takes place after pre-initialization but
+        /// before initialization. Unfortunately that means this should 
+        /// be used when setting up any automated internal fields.
+        /// </summary>
+
+        public event OnChangedEventDelegate<Element, IContainer> OnContainerChanged;
         #endregion
 
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
+
+            _font = provider.GetContent<SpriteFont>("ui:font");
 
             _stateValues = new Queue<IDisposable>();
 
@@ -105,8 +132,7 @@ namespace Guppy.UI.Elements
             provider.Service(out _spriteBatch);
             provider.Service(out _graphics);
 
-            _background = new Texture2D(_graphics, 1, 1);
-            _background.SetData<Color>(new Color[] { Color.White });
+            _background = _graphics.BuildPixel();
 
             this.Padding = new Padding(this);
             this.Bounds = new Bounds(this);
@@ -131,6 +157,9 @@ namespace Guppy.UI.Elements
 
             while (_stateValues.Any())
                 _stateValues.Dequeue().Dispose();
+
+            // Remove the container reference.
+            this.Container = null;
         }
 
         protected override void Dispose()
@@ -172,6 +201,7 @@ namespace Guppy.UI.Elements
 
             // _primitiveBatch.TraceRectangle(Color.Blue, this.InnerBounds);
             // _primitiveBatch.TraceRectangle(Color.Red, this.OuterBounds);
+            // _spriteBatch.DrawString(_font, $"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id})", this.OuterBounds.Location.ToVector2(), Color.White);
         }
 
         protected override void PostDraw(GameTime gameTime)
@@ -189,9 +219,9 @@ namespace Guppy.UI.Elements
 
         #region Methods
         /// <inheritdoc />
-        public void TryCleanBounds(Rectangle container)
+        public void TryCleanBounds()
         {
-            this.TryCleanOuterBounds(container);
+            this.TryCleanOuterBounds(this.Container.GetInnerBoundsForChildren());
             this.TryCleanInnerBounds();
 
             this.OnBoundsCleaned?.Invoke(this);
@@ -281,7 +311,10 @@ namespace Guppy.UI.Elements
             if (value && !this.State.HasFlag(ElementState.Hovered))
                 this.TrySetState(ElementState.Focused, false);
             else if (!value && this.State.HasFlag(ElementState.Hovered))
+            {
                 this.TrySetState(ElementState.Focused, true);
+                this.OnClicked?.Invoke(this);
+            }
         }
 
         private void HandleStateChanged(IElement sender, ElementState which, bool value)

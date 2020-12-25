@@ -44,7 +44,11 @@ namespace Guppy.UI.Enums
             /*
              * Horizontal Alignment Logic
              */
-            if ((alignment & Alignment.Left) != 0)
+            if(item.X > container.Width)
+            { // If the bounds overextend we hsould right align
+                position.X = container.Left + container.Width - item.X;
+            }
+            else if ((alignment & Alignment.Left) != 0)
             {
                 position.X = container.Left;
             }

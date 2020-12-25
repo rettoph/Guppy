@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Guppy.UI.Elements
 {
@@ -57,10 +58,10 @@ namespace Guppy.UI.Elements
         /// </summary>
         public String Value
         {
-            get => _value;
+            get => _value ?? "";
             set
             {
-                if(value != _value)
+                if(value != _value && this.Filter.IsMatch(value))
                 {
                     _value = value;
                     this.CleanInlineBounds();
@@ -68,12 +69,14 @@ namespace Guppy.UI.Elements
             }
         }
 
+        public Regex Filter { get; set; }
+
         /// <summary>
         /// When true, the bounds of the internal element
         /// will automatically be adjusted based on the size
         /// of the current <see cref="Value"/>.
         /// </summary>
-        public Boolean Inline { get; set; } = true;
+        public InlineType Inline { get; set; } = InlineType.Both;
         #endregion
 
         #region Lifecycle Methods
@@ -85,6 +88,7 @@ namespace Guppy.UI.Elements
             provider.Service(out _spriteBatch);
 
             this.Color = this.BuildStateValue<Color>();
+            this.Filter = new Regex("^.{0,50}$");
         }
         #endregion
 
@@ -110,11 +114,10 @@ namespace Guppy.UI.Elements
         #region Helper Methods
         private void CleanInlineBounds()
         {
-            if (this.Inline) // Recalculate size...
-            {
+            if((this.Inline & InlineType.Horizontal) != 0)
                 this.Bounds.Height = new CustomUnit(i => this.Padding.Top.ToPixel(i) + this.Padding.Bottom.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).Y);
+            if ((this.Inline & InlineType.Vertical) != 0) 
                 this.Bounds.Width = new CustomUnit(i => this.Padding.Left.ToPixel(i) + this.Padding.Right.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).X);
-            }
         }
         #endregion
     }

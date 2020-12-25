@@ -23,6 +23,7 @@ namespace Guppy.UI.Layers
         private Camera2D _camera;
         private RasterizerState _rasterizerState;
         private GraphicsDevice _graphics;
+        private BasicEffect _effect;
         #endregion
 
         #region Lifecycle Methods
@@ -35,6 +36,12 @@ namespace Guppy.UI.Layers
             provider.Service(out _primitiveBatch);
             provider.Service(out _spriteBatch);
 
+            _effect = new BasicEffect(_graphics)
+            {
+                TextureEnabled = true,
+                VertexColorEnabled = true
+            };
+
             _rasterizerState = new RasterizerState()
             {
                 ScissorTestEnable = true,
@@ -46,7 +53,15 @@ namespace Guppy.UI.Layers
         {
             base.Initialize(provider);
 
+            _camera.MoveBy(Vector2.One / 2);
             _camera.Center = false;
+
+        }
+
+        protected override void PostInitialize(ServiceProvider provider)
+        {
+            base.PostInitialize(provider);
+
         }
         #endregion
 
@@ -60,8 +75,12 @@ namespace Guppy.UI.Layers
 
         protected override void Draw(GameTime gameTime)
         {
+            _effect.World = _camera.World;
+            _effect.View = _camera.View;
+            _effect.Projection = _camera.Projection;
+
             _graphics.ScissorRectangle = _graphics.Viewport.Bounds;
-            _spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointWrap, rasterizerState: _rasterizerState);
+            _spriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointWrap, rasterizerState: _rasterizerState, effect: _effect);
             _primitiveBatch.Begin(_camera, BlendState.AlphaBlend);
 
             base.Draw(gameTime);
