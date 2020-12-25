@@ -14,6 +14,7 @@ namespace Guppy.DependencyInjection
     {
         #region Private Fields
         private ServicePool _pool;
+        private UInt32 _created;
         #endregion
 
         #region Public Properties
@@ -48,12 +49,17 @@ namespace Guppy.DependencyInjection
 
             _pool = this.Pools[type];
             if (_pool.Any())
-                _pool.Pull(cacher);
+                return _pool.Pull(cacher);
 
+            _created++;
+#if DEBUG_VERBOSE
+            Console.WriteLine($"Created => {type.GetPrettyName()} ({_created})");
+#endif
             return this.Factory(provider, type).Then(i =>
             {
                 cacher?.Invoke(cacheType, i);
-                configuration?.Actions[ServiceActionType.Builder].ForEach(b => b.Excecute(i, provider, configuration));
+                foreach (ServiceAction action in configuration?.Actions[ServiceActionType.Builder])
+                    action.Excecute(i, provider, configuration);
             });
         }
         #endregion

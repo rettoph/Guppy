@@ -1,7 +1,10 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Guppy
 {
@@ -34,6 +37,20 @@ namespace Guppy
             this.OnPreUpdate += this.PreUpdate;
             this.OnUpdate += this.Update;
             this.OnPostUpdate += this.PostUpdate;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+#if DEBUG_VERBOSE
+            this.OnPreDraw.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPreDraw");
+            this.OnDraw.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnDraw");
+            this.OnPostDraw.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPostDraw");
+            this.OnPreUpdate.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPreUpdate");
+            this.OnUpdate.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnUpdate");
+            this.OnPostUpdate.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPostUpdate");
+#endif
         }
 
         protected override void Release()

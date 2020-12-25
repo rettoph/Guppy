@@ -9,9 +9,15 @@ namespace Guppy.Extensions.Collections
     public static class IEnumerableFrameableExtensions
     {
         public static void TryDrawAll(this IEnumerable<IFrameable> list, GameTime gameTime)
-            => list.ForEach(f => f.TryDraw(gameTime));
+        {
+            foreach (IFrameable frameable in list)
+                frameable.TryDraw(gameTime);
+        }
 
         public static void TryUpdateAll(this IEnumerable<IFrameable> list, GameTime gameTime)
-            => list.ForEach(f => f.TryUpdate(gameTime));
+        {
+            foreach (IFrameable frameable in list)
+                frameable.TryUpdate(gameTime);
+        }
     }
 }

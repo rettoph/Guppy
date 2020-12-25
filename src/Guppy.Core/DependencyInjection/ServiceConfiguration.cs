@@ -98,15 +98,15 @@ namespace Guppy.DependencyInjection
             {
                 var ranCustom = setup == default;
 
-                this.Actions[ServiceActionType.Setup].ForEach(s =>
+                foreach(ServiceAction action in this.Actions[ServiceActionType.Setup])
                 {
                     // Invoke the custom setup if neccessary...
-                    if (!ranCustom && s.Order > setupOrder && (ranCustom = true))
+                    if (!ranCustom && action.Order > setupOrder && (ranCustom = true))
                         setup.Invoke(i, provider, this);
 
                     // Invoke the internal setup method
-                    s.Excecute(i, provider, this);
-                });
+                    action.Excecute(i, provider, this);
+                }
 
                 if (!ranCustom) // Invoke the custom setup if neccessary...
                     setup.Invoke(i, provider, this);

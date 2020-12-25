@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,18 @@ namespace Guppy
 
             this.Enabled = true;
             this.Visible = true;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+#if DEBUG_VERBOSE
+            this.OnDrawOrderChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnDrawOrderChanged");
+            this.OnUpdateOrderChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnUpdateOrderChanged");
+            this.OnVisibleChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnVisibleChanged");
+            this.OnEnabledChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnEnabledChanged");
+#endif
         }
         #endregion
     }

@@ -17,12 +17,12 @@ namespace Guppy
         public Layer Layer
         {
             get => _layer;
-            internal set => this.OnLayerChanged.InvokeIfChanged(value != _layer, this, ref _layer, value);
+            internal set => this.OnLayerChanged.InvokeIf(value != _layer, this, ref _layer, value);
         }
         public Int32 LayerGroup
         {
             get => _layerGroup;
-            set => this.OnLayerGroupChanged.InvokeIfChanged(value != _layerGroup, this, ref _layerGroup, value);
+            set => this.OnLayerGroupChanged.InvokeIf(value != _layerGroup, this, ref _layerGroup, value);
         }
         #endregion
 

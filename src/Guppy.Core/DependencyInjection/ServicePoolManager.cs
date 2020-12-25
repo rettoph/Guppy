@@ -44,7 +44,7 @@ namespace Guppy.DependencyInjection
         public ServicePoolManager()
         {
             _pools = new Dictionary<Type, ServicePool>();
-            _maxPoolSize = 25;
+            _maxPoolSize = 5000;
         }
         #endregion
     }

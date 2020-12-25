@@ -11,16 +11,16 @@ namespace Guppy.Extensions.Collections
         {
             foreach (T item in source)
                 action(item);
-
+        
             return source;
         }
-
+        
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T, Int32> action)
         {
             Int32 index = 0;
             foreach (T item in source)
                 action(item, index++);
-
+        
             return source;
         }
 

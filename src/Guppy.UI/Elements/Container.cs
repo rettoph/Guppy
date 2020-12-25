@@ -62,7 +62,10 @@ namespace Guppy.UI.Elements
         {
             base.Release();
 
-            this.Children.ForEach(c => c.TryRelease());
+            // Release all internal children.
+            foreach (TChildren child in this.Children)
+                child.TryRelease();
+
             this.Children.OnAdded -= this.HandleChildAdded;
             this.Children.OnRemoved -= this.HandleChildRemoved;
             this.Children.OnCreated -= this.HandleChildCreated;
@@ -92,7 +95,8 @@ namespace Guppy.UI.Elements
         {
             base.Update(gameTime);
 
-            this.Children.ForEach(c => this.OnUpdateChild.Invoke(c, gameTime));
+            foreach (TChildren child in this.Children)
+                this.OnUpdateChild.Invoke(child, gameTime);
         }
         #endregion
 
@@ -102,7 +106,8 @@ namespace Guppy.UI.Elements
             if(base.TryCleanInnerBounds() || this.Inline != 0)
             {
                 // Recursively clean all children.
-                this.Children.ForEach(c => c.TryCleanBounds());
+                foreach (TChildren child in this.Children)
+                    child.TryCleanBounds();
 
                 return true;
             }
@@ -196,7 +201,8 @@ namespace Guppy.UI.Elements
             else
             {
                 // Update all children hovered states one last time.
-                this.Children.ForEach(c => c.TryCleanHovered());
+                foreach (TChildren child in this.Children)
+                    child.TryCleanHovered();
 
                 this.OnUpdateChild -= this.TryCleanChildHovered;
             }

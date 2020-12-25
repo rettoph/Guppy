@@ -46,20 +46,13 @@ namespace Guppy.DependencyInjection
         /// <returns></returns>
         public Boolean TryReturn(Object instance)
         {
-            try
-            {
-                ExceptionHelper.ValidateAssignableFrom(_type, instance.GetType());
+            ExceptionHelper.ValidateAssignableFrom(_type, instance.GetType());
 
-                if (_poolSize < _maxPoolSize)
-                {
-                    _pool.Push(instance);
-                    _poolSize++;
-                    return true;
-                }
-            }
-            catch (Exception e)
+            if (_poolSize < _maxPoolSize)
             {
-                // 
+                _pool.Push(instance);
+                _poolSize++;
+                return true;
             }
 
             return false;

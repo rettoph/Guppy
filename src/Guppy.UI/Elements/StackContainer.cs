@@ -126,20 +126,20 @@ namespace Guppy.UI.Elements
                 case StackAlignment.Vertical:
                     Int32 y = 0;
 
-                    this.Children.ForEach(c =>
+                    foreach(TChildren child in this.Children)
                     {
-                        c.Bounds.Y = y;
-                        y += c.OuterBounds.Height;
-                    });
+                        child.Bounds.Y = y;
+                        y += child.OuterBounds.Height;
+                    }
                     break;
                 case StackAlignment.Horizontal:
                     Int32 x = 0;
 
-                    this.Children.ForEach(c =>
+                    foreach (TChildren child in this.Children)
                     {
-                        c.Bounds.X = x;
-                        x += c.OuterBounds.Width;
-                    });
+                        child.Bounds.X = x;
+                        x += child.OuterBounds.Width;
+                    }
                     break;
             }
         }

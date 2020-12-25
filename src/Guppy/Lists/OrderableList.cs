@@ -92,14 +92,16 @@ namespace Guppy.Lists
         {
             this.TryCleanDraws();
 
-            _draws.ForEach(u => u.TryDraw(gameTime));
+            foreach (TOrderable item in _draws)
+                item.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
             this.TryCleanUpdates();
 
-            _updates.ForEach(u => u.TryUpdate(gameTime));
+            foreach (TOrderable item in _updates)
+                item.TryUpdate(gameTime);
         }
 
         public virtual void TryCleanDraws()

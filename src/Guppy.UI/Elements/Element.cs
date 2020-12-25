@@ -60,7 +60,7 @@ namespace Guppy.UI.Elements
         public IContainer Container
         {
             get => _container;
-            set => this.OnContainerChanged.InvokeIfChanged(value != _container, this, ref _container, value);
+            set => this.OnContainerChanged.InvokeIf(value != _container, this, ref _container, value);
         }
 
         /// <summary>

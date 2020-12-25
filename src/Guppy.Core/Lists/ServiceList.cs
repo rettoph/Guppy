@@ -97,14 +97,13 @@ namespace Guppy.Lists
         {
             base.Release();
 
+            this.Clear();
+
             this.CanAdd -= this.HandleCanAdd;
             this.OnAdd -= this.HandleAdd;
 
             this.CanRemove -= this.HandleCanRemove;
             this.OnRemove -= this.HandleRemove;
-
-            _dictionary.Clear();
-            _list.Clear();
         }
         #endregion
 
@@ -141,7 +140,7 @@ namespace Guppy.Lists
             where T : class, TService
                 => (_dictionary.ContainsKey(id) ? _dictionary[id] : _created.FirstOrDefault(i => i.Id == id)) as T;
 
-        protected void Clear()
+        public void Clear()
         {
             while (this.Any()) // Auto remove all elements
                 this.TryRemove(_list.First());

@@ -1,10 +1,13 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
 using Guppy.Events.Delegates;
+using Guppy.Extensions.Collections;
+using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy
@@ -128,6 +131,10 @@ namespace Guppy
                 this.PostRelease();
 
                 this.Status = ServiceStatus.NotReady;
+
+#if DEBUG_VERBOSE
+                this.OnStatus.Where(kvp => kvp.Value != default).ForEach(kvp => kvp.Value.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).{kvp.Key}"));
+#endif
             }
         }
 
@@ -212,14 +219,14 @@ namespace Guppy
         {
             //
         }
-        #endregion
+#endregion
 
-        #region IDisposable Implementation
+#region IDisposable Implementation
         void IDisposable.Dispose()
             => this.TryDispose();
-        #endregion
+#endregion
 
-        #region Helper Methods
+#region Helper Methods
         private Boolean ValidateStatus(ServiceStatus status, Boolean required = true)
         {
             if (this.Status != status)
@@ -227,6 +234,6 @@ namespace Guppy
 
             return true;
         }
-        #endregion
+#endregion
     }
 }

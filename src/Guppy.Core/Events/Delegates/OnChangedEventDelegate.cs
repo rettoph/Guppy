@@ -18,7 +18,7 @@ namespace Guppy.Events.Delegates
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        public static void InvokeIfChanged<TSender, TValue>(
+        public static void InvokeIf<TSender, TValue>(
             this OnChangedEventDelegate<TSender, TValue> deltaDelegate, 
             Boolean valid, 
             TSender sender, 
