@@ -77,6 +77,7 @@ namespace Guppy.UI.Enums
                 position.Y = container.Top + container.Height - item.Y;
             }
 
+            position.Round();
             return position;
         }
     }
