@@ -33,6 +33,14 @@ namespace Guppy.Lists
 
         #region Protected Fields
         protected ServiceProvider provider { get; private set; }
+
+        /// <summary>
+        /// When true, then all self contained items
+        /// will be released with the invocation of
+        /// <see cref="Release"/>. Otherwise, the list
+        /// will only be cleared.
+        /// </summary>
+        protected Boolean releasedChildren { get; set; } = false;
         #endregion
 
         #region Public Properties
@@ -85,6 +93,7 @@ namespace Guppy.Lists
             base.PreInitialize(provider);
 
             this.provider = provider;
+            this.releasedChildren = false;
 
             this.CanAdd += this.HandleCanAdd;
             this.OnAdd += this.HandleAdd;
@@ -97,13 +106,29 @@ namespace Guppy.Lists
         {
             base.Release();
 
-            this.Clear();
+            if(this.releasedChildren)
+            { // Auto release all children.
+                while (this.Any())
+                    this.First().TryRelease();
+            }
+            else
+            { // Simply clear all children.
+                this.Clear();
+            }
+
 
             this.CanAdd -= this.HandleCanAdd;
             this.OnAdd -= this.HandleAdd;
 
             this.CanRemove -= this.HandleCanRemove;
             this.OnRemove -= this.HandleRemove;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            this.provider = null;
         }
         #endregion
 

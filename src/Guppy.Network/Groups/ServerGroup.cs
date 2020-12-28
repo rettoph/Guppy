@@ -43,6 +43,14 @@ namespace Guppy.Network.Groups
             this.Users.OnAdded += this.HandleUserJoined;
             this.Users.OnRemoved += this.HandleUserLeft;
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _userConnections = null;
+            _server = null;
+        }
         #endregion
 
         #region Frame Methods

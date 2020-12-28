@@ -54,6 +54,9 @@ namespace Guppy.Network.Peers
             base.Release();
 
             this.MessageTypeDelegates[NetIncomingMessageType.StatusChanged] -= this.HandleSatusChangedMessageType;
+
+            _server = null;
+            _userConnections = null;
         }
         #endregion
 

@@ -48,6 +48,13 @@ namespace Guppy
 
             _driverService.ReleaseDrivers(this, ref _drivers);
         }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _driverService = null;
+        }
         #endregion
     }
 }

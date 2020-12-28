@@ -23,6 +23,13 @@ namespace Guppy.Services
 
             provider.Service(out _manager);
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _manager = null;
+        }
         #endregion
 
         /// <summary>

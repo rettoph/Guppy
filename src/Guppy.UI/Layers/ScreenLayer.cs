@@ -55,13 +55,16 @@ namespace Guppy.UI.Layers
 
             _camera.MoveBy(Vector2.One / 2);
             _camera.Center = false;
-
         }
 
-        protected override void PostInitialize(ServiceProvider provider)
+        protected override void Release()
         {
-            base.PostInitialize(provider);
+            base.Release();
 
+            _graphics = null;
+            _camera = null;
+            _primitiveBatch = null;
+            _spriteBatch = null;
         }
         #endregion
 

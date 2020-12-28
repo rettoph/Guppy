@@ -68,6 +68,14 @@ namespace Guppy.UI.Services
 
             _commands["ui"]["interact"].OnExcecute += this.HandleUIInteractCommand;
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _mouse = null;
+            _commands = null;
+        }
         #endregion
 
         #region Event Handlers

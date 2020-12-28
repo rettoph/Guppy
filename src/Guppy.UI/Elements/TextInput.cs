@@ -46,6 +46,10 @@ namespace Guppy.UI.Elements
 
             _window.TextInput -= this.HandleTextInput;
             this.OnDraw -= this.DrawCarret;
+
+            _graphics = null;
+            _window = null;
+            _spriteBatch = null;
         }
         #endregion
 

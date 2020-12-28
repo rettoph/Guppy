@@ -133,6 +133,7 @@ namespace Guppy
                 this.Status = ServiceStatus.NotReady;
 
 #if DEBUG_VERBOSE
+                Console.WriteLine($"Releasing {this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id})...");
                 this.OnStatus.Where(kvp => kvp.Value != default).ForEach(kvp => kvp.Value.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).{kvp.Key}"));
 #endif
             }
@@ -155,7 +156,6 @@ namespace Guppy
                 this.PostDispose();
 
                 this.Status = ServiceStatus.NotCreated;
-
                 this.OnStatus.Clear();
             }
         }
@@ -219,14 +219,14 @@ namespace Guppy
         {
             //
         }
-#endregion
+        #endregion
 
-#region IDisposable Implementation
+        #region IDisposable Implementation
         void IDisposable.Dispose()
-            => this.TryDispose();
-#endregion
+            => this.TryRelease();
+        #endregion
 
-#region Helper Methods
+        #region Helper Methods
         private Boolean ValidateStatus(ServiceStatus status, Boolean required = true)
         {
             if (this.Status != status)
@@ -234,6 +234,6 @@ namespace Guppy
 
             return true;
         }
-#endregion
+        #endregion
     }
 }

@@ -8,6 +8,7 @@ using Guppy.Network.Groups;
 using Guppy.Network.Structs;
 using Lidgren.Network;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Events.Delegates;
 
 namespace Guppy.Network.Peers
 {
@@ -15,6 +16,19 @@ namespace Guppy.Network.Peers
     {
         #region Private Fields
         private NetClient _client;
+        private NetConnectionStatus _connectionStatus;
+        #endregion
+
+        #region Public Properties
+        public NetConnectionStatus ConnectionStatus
+        {
+            get => _connectionStatus;
+            set => this.OnConnectionStatusChanged.InvokeIf(value != _connectionStatus, this, ref _connectionStatus, value);
+        }
+        #endregion
+
+        #region Events
+        public event OnChangedEventDelegate<ClientPeer, NetConnectionStatus> OnConnectionStatusChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -24,14 +38,23 @@ namespace Guppy.Network.Peers
             
             base.PreInitialize(provider);
 
+            this.ConnectionStatus = _client.ConnectionStatus;
+
             this.MessageTypeDelegates[NetIncomingMessageType.StatusChanged] += this.HandleSatusChangedMessageType;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _client = null;
         }
         #endregion
 
         #region Connect Methods
         public void TryConnect(String host, Int32 port, User user)
         {
-            if(_client.ConnectionStatus == NetConnectionStatus.Disconnected)
+            if(this.ConnectionStatus == NetConnectionStatus.Disconnected)
             {
                 var hail = _client.CreateMessage();
                 user.TryWrite(hail);
@@ -46,7 +69,9 @@ namespace Guppy.Network.Peers
         private void HandleSatusChangedMessageType(NetIncomingMessage im)
         {
             im.Position = 0;
-            switch ((NetConnectionStatus)im.ReadByte())
+            var status = (NetConnectionStatus)im.ReadByte();
+            this.ConnectionStatus = status;
+            switch (status)
             {
                 case NetConnectionStatus.None:
                     break;

@@ -42,6 +42,14 @@ namespace Guppy.IO.Input.Services
             _provider = provider;
             _inputs = new Dictionary<InputType, InputManager>();
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _provider = null;
+            _inputs.Clear();
+        }
         #endregion
 
         #region Helper Methods

@@ -47,6 +47,7 @@ namespace Guppy
             base.Release();
 
             this.Entities.OnCreated -= this.handleEntityCreated;
+            this.Entities.TryRelease();
         }
         #endregion
 

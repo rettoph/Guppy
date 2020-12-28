@@ -35,6 +35,15 @@ namespace Guppy.Network.Groups
             this.Messages.Set("user:joined", this.HandleUserJoinedMessage);
             this.Messages.Set("user:left", this.HandleUserLeftMessage);
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _provider = null;
+            _client = null;
+            _clientPeer = null;
+        }
         #endregion
 
         #region Messageable Implementation

@@ -57,6 +57,7 @@ namespace Guppy.IO.Commands
             while (_commands.Any())
                 this.TryRemove(_commands.First().Value);
 
+            _provider = null;
             _commands = null;
         }
         #endregion

@@ -25,7 +25,7 @@ namespace Guppy.ServiceLoaders
                 s.ServiceConfiguration = sd;
                 s.TryPreInitialize(p);
 
-                s.OnStatus[ServiceStatus.Releasing] += this.HandleServiceReleasing;
+                s.OnStatus[ServiceStatus.NotReady] += this.HandleServiceNotReady;
             }, -10);
 
             services.AddSetup<IService>((s, p, sd) => s.TryInitialize(p), 10);
@@ -40,13 +40,13 @@ namespace Guppy.ServiceLoaders
 
         #region Event Handlers
         /// <summary>
-        /// When an IService instance is disposed, we should automatically
+        /// When an IService instance is marked not ready, we should automatically
         /// return the instance to the ServiceTypeDescriptor pool.
         /// </summary>
         /// <param name="sender"></param>
-        private void HandleServiceReleasing(IService sender)
+        private void HandleServiceNotReady(IService sender)
         {
-            sender.OnStatus[ServiceStatus.Releasing] -= this.HandleServiceReleasing;
+            sender.OnStatus[ServiceStatus.NotReady] -= this.HandleServiceNotReady;
 
             sender.ServiceConfiguration.Factory.Pools[sender].TryReturn(sender);
         }

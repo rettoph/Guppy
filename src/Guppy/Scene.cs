@@ -13,6 +13,7 @@ namespace Guppy
     public abstract class Scene : Driven
     {
         #region Private Fields
+        private ServiceProvider _provider;
         private Synchronizer _synchronizer;
         #endregion
 
@@ -26,10 +27,30 @@ namespace Guppy
         {
             base.PreInitialize(provider);
 
+            _provider = provider;
             provider.Service(out _synchronizer);
 
             this.Layers = provider.GetService<LayerList>();
             this.Entities = provider.GetService<EntityList>();
+        }
+
+
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+
+            // When a scene is released lets just dispose the entire ServiceProvider instance.
+            _provider.Dispose();
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _provider = null;
+            _synchronizer = null;
+            this.Entities.TryRelease();
+            this.Layers.TryRelease();
         }
         #endregion
 

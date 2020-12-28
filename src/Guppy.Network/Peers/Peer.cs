@@ -82,6 +82,7 @@ namespace Guppy.Network.Peers
         {
             base.Release();
 
+            this.provider = null;
             this.MessageTypeDelegates[NetIncomingMessageType.Data] -= this.HandleDataMessageType;
         }
         #endregion

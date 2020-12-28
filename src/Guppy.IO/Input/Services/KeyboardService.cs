@@ -44,6 +44,13 @@ namespace Guppy.IO.Input.Services
 
             this.TryStart();
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _inputs = null;
+        }
         #endregion
 
         #region Frame Methods

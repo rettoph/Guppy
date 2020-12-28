@@ -170,6 +170,12 @@ namespace Guppy.DependencyInjection
         #region IDisposable Implementation
         public void Dispose()
         {
+            _scopedInstances.Values.ForEach(s =>
+            {
+                // Auto dispose all scoped instances.
+                if (s is IDisposable d)
+                    d.Dispose();
+            });
             _scopedInstances.Clear();
         }
         #endregion

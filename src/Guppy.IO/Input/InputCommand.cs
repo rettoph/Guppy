@@ -79,6 +79,10 @@ namespace Guppy.IO.Input
         {
             base.Release();
 
+            _commands = null;
+            _inputs = null;
+            _synchronizer = null;
+
             this.ConfigureInput(null);
         }
         #endregion

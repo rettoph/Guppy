@@ -59,6 +59,13 @@ namespace Guppy.Network
 
             provider.Service<NetPeer>(out _peer);
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _peer = null;
+        }
         #endregion
 
         #region Frame Methods

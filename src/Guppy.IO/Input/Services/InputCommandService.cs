@@ -47,6 +47,7 @@ namespace Guppy.IO.Input.Services
         {
             base.Release();
 
+            _provider = null;
             _inputCommands.ForEach(ic => ic.Value.TryRelease());
             _inputCommands.Clear();
         }

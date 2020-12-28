@@ -21,6 +21,8 @@ namespace Guppy.Lists
         {
             base.Release();
 
+            this.releasedChildren = true;
+
             this.CanAdd -= this.CanAddLayer;
         }
         #endregion
@@ -46,7 +48,7 @@ namespace Guppy.Lists
 
         #region Helper Methods
         public Layer GetByGroup(Int32 group)
-            => this.First(l => l.Group.Contains(group));
+            => this.FirstOrDefault(l => l.Group.Contains(group));
 
         public T GetByGroup<T>(Int32 group)
             where T : Layer

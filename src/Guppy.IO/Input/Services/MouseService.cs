@@ -87,6 +87,8 @@ namespace Guppy.IO.Services
         {
             base.Release();
 
+            _input = null;
+
             _inputs.Values.ForEach(i =>
             {
                 i.OnStateChanged -= this.HandleInputChanged;

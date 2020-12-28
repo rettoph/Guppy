@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace Guppy.Lists
 {
@@ -17,6 +18,8 @@ namespace Guppy.Lists
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            this.releasedChildren = true;
 
             _layers = provider.GetService<LayerList>();
 
@@ -54,7 +57,7 @@ namespace Guppy.Lists
         private void RemoveEntity(Entity entity)
         {
             entity.OnLayerGroupChanged -= this.HandleItemLayerGroupChanged;
-            entity.Layer.Entities.TryRemove(entity);
+            entity.Layer?.Entities.TryRemove(entity);
             entity.Layer = null;
         }
         #endregion
@@ -71,7 +74,7 @@ namespace Guppy.Lists
 
             // Add into the new layer...
             item.Layer = _layers.GetByGroup(item.LayerGroup);
-            item.Layer.Entities.TryAdd(item);
+            item.Layer?.Entities.TryAdd(item);
         }
         #endregion
 

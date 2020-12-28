@@ -153,6 +153,11 @@ namespace Guppy.UI.Elements
         {
             base.Release();
 
+            _ui = null;
+            _primitiveBatch = null;
+            _spriteBatch = null;
+            _graphics = null;
+
             this.Padding.OnChanged -= this.HandlePaddingChanged;
 
             while (_stateValues.Any())

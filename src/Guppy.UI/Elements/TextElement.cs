@@ -90,6 +90,16 @@ namespace Guppy.UI.Elements
             this.Color = this.BuildStateValue<Color>();
             this.Filter = new Regex("^.{0,50}$");
         }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            _graphics = null;
+            _spriteBatch = null;
+            _font = null;
+            _value = null;
+        }
         #endregion
 
         #region Frame Methods
