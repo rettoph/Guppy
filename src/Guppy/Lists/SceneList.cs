@@ -1,10 +1,12 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Lists.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
 
 namespace Guppy.Lists
 {
@@ -36,7 +38,7 @@ namespace Guppy.Lists
 
             this.OnDraw += this.Draw;
             this.OnUpdate += this.Update;
-            this.OnAdd += this.AddScene;
+            this.OnAdd += this.HandleSceneAdded;
         }
 
         protected override void Release()
@@ -45,7 +47,7 @@ namespace Guppy.Lists
 
             this.OnDraw -= this.Draw;
             this.OnUpdate -= this.Update;
-            this.OnAdd -= this.AddScene;
+            this.OnAdd -= this.HandleSceneAdded;
         }
         #endregion
 
@@ -86,8 +88,13 @@ namespace Guppy.Lists
         }
         #endregion
 
-        #region Collection Methods
-        private void AddScene(Scene scene)
+        #region Frame Methods
+        protected override T Create<T>(ServiceProvider provider, uint descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => base.Create(provider.CreateScope().ServiceProvider as ServiceProvider, descriptorId, setup, id);
+        #endregion
+
+        #region Events
+        private void HandleSceneAdded(Scene scene)
         {
             if (this.Scene == null)
                 this.SetScene(scene);

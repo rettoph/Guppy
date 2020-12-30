@@ -18,6 +18,7 @@ namespace Guppy.DependencyInjection
         private Dictionary<UInt32, ServiceConfiguration> _lookups;
         private Dictionary<Type, Object> _singletonInstances;
         private Dictionary<Type, Object> _scopedInstances;
+        private Boolean _disposing;
         #endregion
 
         #region Constructors
@@ -71,9 +72,10 @@ namespace Guppy.DependencyInjection
         {
             _factories = parent._factories;
             _services = parent._services;
-            _lookups = new Dictionary<UInt32, ServiceConfiguration>();
+
             _singletonInstances = parent._singletonInstances;
             _scopedInstances = new Dictionary<Type, Object>();
+            _lookups = new Dictionary<UInt32, ServiceConfiguration>(parent._lookups);
         }
         #endregion
 
@@ -170,6 +172,10 @@ namespace Guppy.DependencyInjection
         #region IDisposable Implementation
         public void Dispose()
         {
+            if (_disposing)
+                return;
+
+            _disposing = true;
             _scopedInstances.Values.ForEach(s =>
             {
                 // Auto dispose all scoped instances.
@@ -177,6 +183,7 @@ namespace Guppy.DependencyInjection
                     d.Dispose();
             });
             _scopedInstances.Clear();
+            _disposing = false;
         }
         #endregion
     }

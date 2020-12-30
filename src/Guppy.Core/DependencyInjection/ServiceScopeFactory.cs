@@ -12,7 +12,12 @@ namespace Guppy.DependencyInjection
         internal ServiceScopeFactory(ServiceProvider parent)
             => _parent = parent;
 
-        public IServiceScope CreateScope()
+        public ServiceScope CreateScope()
             => new ServiceScope(_parent);
+
+        #region IServiceScopeFactory Implementation
+        IServiceScope IServiceScopeFactory.CreateScope()
+            => this.CreateScope();
+        #endregion
     }
 }

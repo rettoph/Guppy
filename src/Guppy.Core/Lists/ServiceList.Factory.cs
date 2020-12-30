@@ -18,10 +18,10 @@ namespace Guppy.Lists
         #endregion
 
         #region Create Methods
-        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+        protected virtual T Create<T>(ServiceProvider provider, UInt32 descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
         {
-            var instance = this.provider.GetService<T>(descriptorId, (i, p, d) =>
+            var instance = provider.GetService<T>(descriptorId, (i, p, d) =>
             {
                 if (id != null)
                     i.Id = id.Value;
@@ -32,13 +32,17 @@ namespace Guppy.Lists
                 setup?.Invoke(i, p, d);
             });
 
-            if(_created.Any() && _created.Peek() == instance)
+            if (_created.Any() && _created.Peek() == instance)
                 _created.Pop();
 
             this.TryAdd(instance);
 
             return instance;
         }
+
+        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            where T : class, TService
+                => this.Create<T>(this.provider, descriptorId, setup, id);
 
         public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
