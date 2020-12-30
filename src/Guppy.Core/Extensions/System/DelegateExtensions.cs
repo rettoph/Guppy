@@ -13,7 +13,12 @@ namespace Guppy.Extensions.System
         public static void LogInvocationList(this Delegate d, String name, Int32 skip = 0)
         {
             if(d != default)
-                d.GetInvocationList().Skip(skip).ForEach(d => DelegateExtensions.LogInvocation($"{name} => {d.Target.GetType().GetPrettyName()}.{d.Method.Name}"));
+            {
+                var c = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                d.GetInvocationList().Skip(skip).ForEach(d => DelegateExtensions.LogInvocation($"{name} => {d.Method.DeclaringType.GetPrettyName()}.{d.Method.Name}"));
+                Console.ForegroundColor = c;
+            } 
         }
     }
 }
