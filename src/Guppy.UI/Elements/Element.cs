@@ -7,7 +7,7 @@ using Guppy.IO.Enums;
 using Guppy.IO.Services;
 using Guppy.UI.Delegates;
 using Guppy.UI.Enums;
-using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
+using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Interfaces;
 using Guppy.UI.Services;
 using Guppy.UI.Utilities;

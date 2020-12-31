@@ -22,5 +22,13 @@ namespace Guppy.IO.Input.Contexts
         /// An array of button states and their command to run
         /// </summary>
         public (ButtonState state, String command)[] Commands { get; set; }
+
+        /// <summary>
+        /// When true, then the command input will 
+        /// not excecute if <see cref="InputCommandService.Locked"/>
+        /// is true. This generally only happens when the terminal 
+        /// is opened.
+        /// </summary>
+        public Boolean Lockable { get; set; }
     }
 }

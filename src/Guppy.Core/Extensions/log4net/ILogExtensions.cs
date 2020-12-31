@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions.Collections;
+﻿using Guppy.Extensions.System.Collections;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
@@ -7,9 +7,10 @@ using log4net.Layout;
 using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
-namespace Guppy.IO.Extensions.log4net
+namespace Guppy.Extensions.log4net
 {
     public static class ILogExtensions
     {
@@ -84,7 +85,7 @@ namespace Guppy.IO.Extensions.log4net
         #region Trace
         public static void Verbose(this ILog log, String message)
             => log.Logger.Log(
-                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                MethodBase.GetCurrentMethod().DeclaringType,
                 Level.Verbose,
                 message,
                 null);
@@ -93,7 +94,7 @@ namespace Guppy.IO.Extensions.log4net
         {
             if(log.GetLevel() <= Level.Verbose)
                 log.Logger.Log(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                    MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Verbose,
                     message(),
                     null);
@@ -105,7 +106,7 @@ namespace Guppy.IO.Extensions.log4net
         {
             if (log.GetLevel() <= Level.Debug)
                 log.Logger.Log(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                    MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Debug,
                     message(),
                     null);
@@ -117,7 +118,7 @@ namespace Guppy.IO.Extensions.log4net
         {
             if (log.GetLevel() <= Level.Info)
                 log.Logger.Log(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                    MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Info,
                     message(),
                     null);
@@ -129,7 +130,7 @@ namespace Guppy.IO.Extensions.log4net
         {
             if (log.GetLevel() <= Level.Warn)
                 log.Logger.Log(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                    MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Warn,
                     message(),
                     null);
@@ -141,7 +142,7 @@ namespace Guppy.IO.Extensions.log4net
         {
             if (log.GetLevel() <= Level.Error)
                 log.Logger.Log(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                    MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Error,
                     message(),
                     null);
@@ -153,7 +154,7 @@ namespace Guppy.IO.Extensions.log4net
         {
             if (log.GetLevel() <= Level.Fatal)
                 log.Logger.Log(
-                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType,
+                    MethodBase.GetCurrentMethod().DeclaringType,
                     Level.Fatal,
                     message(),
                     null);

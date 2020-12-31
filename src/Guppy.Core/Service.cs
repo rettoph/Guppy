@@ -1,7 +1,7 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
 using Guppy.Events.Delegates;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using log4net.Core;
+using log4net;
+using Guppy.Extensions.log4net;
 
 namespace Guppy
 {
@@ -18,6 +21,10 @@ namespace Guppy
         private ServiceConfiguration _configuration;
         private Guid _id;
         private ServiceStatus _initializationStatus;
+        #endregion
+
+        #region Protected Properties
+        protected internal ILog logger { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -65,6 +72,7 @@ namespace Guppy
         #region Lifecycle Methods
         void IService.TryPreCreate(ServiceProvider provider)
         {
+            this.logger = provider.GetService<ILog>();
             this.OnStatus = DictionaryHelper.BuildEnumDictionary<ServiceStatus, OnEventDelegate<IService>>();
 
             this.ValidateStatus(ServiceStatus.NotCreated);
@@ -133,8 +141,8 @@ namespace Guppy
                 this.Status = ServiceStatus.NotReady;
 
 #if DEBUG_VERBOSE
-                Console.WriteLine($"Releasing {this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id})...");
-                this.OnStatus.Where(kvp => kvp.Value != default).ForEach(kvp => kvp.Value.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).{kvp.Key}"));
+                this.logger.Verbose($"Releasing {this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id})...");
+                this.OnStatus.Where(kvp => kvp.Value != default).ForEach(kvp => kvp.Value.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).{kvp.Key}", this.logger));
 #endif
             }
         }
@@ -156,7 +164,11 @@ namespace Guppy
                 this.PostDispose();
 
                 this.Status = ServiceStatus.NotCreated;
+
                 this.OnStatus.Clear();
+
+                this.OnStatus = null;
+                this.logger = null;
             }
         }
 

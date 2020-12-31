@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.IO.Commands.Contexts;
 using Guppy.IO.Commands.Delegates;

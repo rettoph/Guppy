@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions.Collections;
+﻿using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.IO.Commands.Delegates;
 using Guppy.IO.Commands.Interfaces;
@@ -192,7 +192,7 @@ namespace Guppy.IO.Commands
             }
             catch (InvalidOperationException e)
             {
-                _invalidArgs.Add(value);
+                _invalidArgs.Add(identifier);
                 this.Status = CommandInputStatus.InvalidArgument;
             }
 

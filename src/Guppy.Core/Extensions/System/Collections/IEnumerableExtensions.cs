@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Extensions.Collections
+namespace Guppy.Extensions.System.Collections
 {
     public static class IEnumerableExtensions
     {

@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection.Descriptors;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Extensions.log4net;
 
 namespace Guppy.DependencyInjection
 {
@@ -53,7 +54,7 @@ namespace Guppy.DependencyInjection
 
             _created++;
 #if DEBUG_VERBOSE
-            Console.WriteLine($"Created => {type.GetPrettyName()} ({_created})");
+            provider.logger?.Verbose($"Created => {type.GetPrettyName()} ({_created})");
 #endif
             return this.Factory(provider, type).Then(i =>
             {

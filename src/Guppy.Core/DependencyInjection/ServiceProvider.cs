@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection.Descriptors;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using log4net;
 
 namespace Guppy.DependencyInjection
 {
@@ -19,6 +20,10 @@ namespace Guppy.DependencyInjection
         private Dictionary<Type, Object> _singletonInstances;
         private Dictionary<Type, Object> _scopedInstances;
         private Boolean _disposing;
+        #endregion
+
+        #region Internal Properties
+        internal ILog logger { get; private set; }
         #endregion
 
         #region Constructors
@@ -67,6 +72,8 @@ namespace Guppy.DependencyInjection
                             factory: factory,
                             actions: services.Actions.Where(sa => sa.Key.Includes(factory.ImplementationType, cd.Name)).OrderBy(sa => sa.Order));
                     }));
+
+            this.logger = this.GetService<ILog>();
         }
         internal ServiceProvider(ServiceProvider parent)
         {
@@ -76,6 +83,8 @@ namespace Guppy.DependencyInjection
             _singletonInstances = parent._singletonInstances;
             _scopedInstances = new Dictionary<Type, Object>();
             _lookups = new Dictionary<UInt32, ServiceConfiguration>(parent._lookups);
+
+            this.logger = this.GetService<ILog>();
         }
         #endregion
 

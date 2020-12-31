@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Guppy.Network.Interfaces;
 using Lidgren.Network;

@@ -68,10 +68,10 @@ namespace Guppy
             base.PostRelease();
 
 #if DEBUG_VERBOSE
-            this.OnDrawOrderChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnDrawOrderChanged");
-            this.OnUpdateOrderChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnUpdateOrderChanged");
-            this.OnVisibleChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnVisibleChanged");
-            this.OnEnabledChanged.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnEnabledChanged");
+            this.OnDrawOrderChanged.LogInvocationList($"OnDrawOrderChanged", this);
+            this.OnUpdateOrderChanged.LogInvocationList($"OnUpdateOrderChanged", this);
+            this.OnVisibleChanged.LogInvocationList($"OnVisibleChanged", this);
+            this.OnEnabledChanged.LogInvocationList($"OnEnabledChanged", this);
 #endif
         }
         #endregion

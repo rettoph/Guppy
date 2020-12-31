@@ -1,6 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.UI.Enums;
-using Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics;
+using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.UI.Utilities;
 using Guppy.UI.Utilities.Units;
 using Microsoft.Xna.Framework;

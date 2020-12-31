@@ -1,0 +1,231 @@
+﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
+using Guppy.IO.Commands.Services;
+using Guppy.IO.Input.Services;
+using Guppy.Utilities;
+using log4net.Appender;
+using log4net.Core;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Guppy.IO.Output.Services
+{
+    public sealed class TerminalService : Frameable, IAppender
+    {
+        #region Static Fields
+        public static Int32 MaxMessages { get; set; } = 250;
+        #endregion
+
+        #region Private Fields
+        private Queue<(Color color, String text)> _messages;
+        private Int32 _messageCount;
+
+        private Synchronizer _synchronizer;
+        private SpriteBatch _spriteBatch;
+        private GraphicsDevice _graphics;
+        private GameWindow _window;
+        private CommandService _commands;
+        private InputCommandService _inputCommands;
+
+        private Texture2D _background;
+        private Texture2D _inputBackground;
+        private Texture2D _carretBackground;
+        private SpriteFont _font;
+
+        private Vector2 _size;
+
+        private Boolean _renderCarret;
+
+        private String _input;
+        private ActionTimer _carretActionTimer;
+        #endregion
+
+        #region Public Properties
+        public String Name { get; set; }
+
+        /// <summary>
+        /// The <see cref="Color"/> to render a <see cref="LoggingEvent"/>
+        /// based on the <see cref="LoggingEvent.Level"/> value.
+        /// 
+        /// Defaults are defined, but may be overwritten.
+        /// </summary>
+        public Dictionary<Level, Color> LevelColor { get; private set; }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            _messageCount = 0;
+            _messages = new Queue<(Color color, String text)>();
+            _carretActionTimer = new ActionTimer(750);
+
+            this.LevelColor = new Dictionary<Level, Color>();
+            this.LevelColor[Level.Verbose] = Color.Cyan;
+            this.LevelColor[Level.Debug] = Color.Magenta;
+            this.LevelColor[Level.Info] = Color.White;
+            this.LevelColor[Level.Warn] = Color.Yellow;
+            this.LevelColor[Level.Error] = Color.Red;
+            this.LevelColor[Level.Critical] = Color.DarkRed;
+
+            provider.Service(out _synchronizer);
+            provider.Service(out _spriteBatch);
+            provider.Service(out _graphics);
+            provider.Service(out _window);
+            provider.Service(out _commands);
+            provider.Service(out _inputCommands);
+
+            _font = provider.GetContent<SpriteFont>("font:terminal");
+            _background = _graphics.BuildPixel(new Color(Color.Black, 0.5f));
+            _inputBackground = _graphics.BuildPixel(new Color(Color.Gray, 0.5f));
+            _carretBackground = _graphics.BuildPixel(Color.White);
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.Close();
+
+            _messages.Clear();
+            _background.Dispose();
+            _inputBackground.Dispose();
+
+            _spriteBatch = null;
+            _graphics = null;
+            _window = null;
+            _commands = null;
+            _inputCommands = null;
+        }
+        #endregion
+
+        #region Frame Methods
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            // Toggle _renderCarret at our desired interval.
+            _carretActionTimer.Update(gameTime, gt => _renderCarret = !_renderCarret);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+
+            _spriteBatch.Draw(_background, _graphics.Viewport.Bounds, Color.White);
+
+            Vector2 position = Vector2.Zero;
+            position.X = 15;
+            position.Y -= _size.Y;
+            position.Y += _graphics.Viewport.Height;
+            position.Y -= 15;
+            position.Y -= 30;
+
+            foreach(var message in _messages)
+            {
+                _spriteBatch.DrawString(_font, message.text, position, message.color);
+
+                if (message.text.StartsWith(Environment.NewLine))
+                {
+                    position.X = 15;
+                    position.Y += Math.Max(_font.LineSpacing, _font.MeasureString(message.text).Y - _font.LineSpacing);
+                }
+                else
+                {
+                    position.X += _font.MeasureString(message.text).X;
+                }
+            }
+
+            var inputPosition = new Rectangle(0, _graphics.Viewport.Height - 30, _graphics.Viewport.Width, 30);
+            _spriteBatch.Draw(_inputBackground, inputPosition, Color.White);
+
+            var inputSize = _font.MeasureString(_input ?? "");
+
+            if (_renderCarret)
+                _spriteBatch.Draw(_carretBackground, new Rectangle((Int32)inputSize.X + 15, inputPosition.Top + ((inputPosition.Height - _font.LineSpacing) / 2), 1, _font.LineSpacing), Color.White);
+
+            _spriteBatch.DrawString(_font, _input ?? "", new Vector2(15f, inputPosition.Top + ((inputPosition.Height - _font.LineSpacing) / 2)), Color.White);
+
+            _spriteBatch.End();
+        }
+        #endregion
+
+        #region Helper Methods
+        public void Open()
+        {
+            _inputCommands.Locked = true;
+            _input = "";
+            _window.TextInput += this.HandleTextInput;
+        }
+
+        public void Close()
+        {
+            _inputCommands.Locked = false;
+            _window.TextInput -= this.HandleTextInput;
+        }
+
+        public void AddMessage(Color color, String text)
+        {
+            _synchronizer.Enqueue(gt =>
+            {
+                _messages.Enqueue((color, text));
+
+                // Ensure that only N number of messages are rendered per frame.
+                if (_messageCount < TerminalService.MaxMessages)
+                    _messageCount++;
+                else
+                    _messages.Dequeue();
+
+                // Measure the current size of the full log output...
+                _size = _font.MeasureString(_messages.Select(m => m.text).Aggregate((t1, t2) => t1 + t2));
+            });
+        }
+        #endregion
+
+        #region IAppender Implementation
+        void IAppender.DoAppend(LoggingEvent loggingEvent)
+        {
+            Color color;
+
+            if (this.LevelColor.TryGetValue(loggingEvent.Level, out color))
+                this.AddMessage(color, Environment.NewLine + loggingEvent.RenderedMessage);
+            else
+                this.AddMessage(Color.White, Environment.NewLine + loggingEvent.RenderedMessage);
+        }
+
+        void IAppender.Close()
+            => this.TryRelease();
+        #endregion
+
+        #region Event Handlers
+        private void HandleTextInput(object sender, TextInputEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Keys.Back:
+                    if (_input.Length > 0)
+                        _input = _input.Substring(0, _input.Length - 1);
+                    break;
+                case Keys.Enter:
+                    this.AddMessage(Color.White, Environment.NewLine + _input);
+                    _commands.TryExecute(_input);
+                    _input = "";
+                    break;
+                default:
+                    if (_font.Characters.Contains(e.Character))
+                        _input += e.Character;
+                    break;
+            }
+        }
+        #endregion
+    }
+}

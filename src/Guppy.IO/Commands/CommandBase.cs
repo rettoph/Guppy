@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
 using System.Data;
 using System.Linq;
 using Guppy.Interfaces;
@@ -15,6 +14,7 @@ using Guppy.IO.Commands.Services;
 using Guppy.IO.Commands.Extensions;
 using Guppy.Extensions.System;
 using Guppy.Enums;
+using Guppy.Extensions.System.Collections;
 
 namespace Guppy.IO.Commands
 {

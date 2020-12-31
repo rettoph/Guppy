@@ -50,8 +50,8 @@ namespace Guppy.IO.Commands.Services
                     },
                     new ArgContext()
                     {
-                        Identifier = "message",
-                        Aliases = "m".ToCharArray(),
+                        Identifier = "error",
+                        Aliases = "e".ToCharArray(),
                         Required = false,
                         Type = ArgType.String
                     }
@@ -60,7 +60,17 @@ namespace Guppy.IO.Commands.Services
 
             this["help"].OnExcecute += (c, i) =>
             {
-                return CommandResponse.Success(i.GetIfContains<String>("message")?.AddRight("\n") + (i.GetIfContains<ICommandBase>("command") ?? this).GetHelpText());
+                var command = i.GetIfContains<ICommandBase>("command");
+                var error = i.GetIfContains<String>("error");
+
+                if(error == default)
+                {
+                    return CommandResponse.Success((command ?? this).GetHelpText());
+                }
+                else
+                {
+                    return CommandResponse.Error(i.GetIfContains<String>("error"));
+                }
             };
         }
         #endregion
@@ -115,8 +125,10 @@ namespace Guppy.IO.Commands.Services
                 {
                     switch (match.Type)
                     {
-                        case CommandMatchType.Incomplete:
+                        case CommandMatchType.Help:
                             return this.TryBuild($"help -command=\"{match.Command?.Phrase}\"");
+                        case CommandMatchType.Incomplete:
+                            return this.TryBuild($"help -command=\"{match.Command?.Phrase}\" -error=\"Unknown command '{input}', type '{match.Command?.Phrase.AddRight(" ")}help' for more info.\"");
                         case CommandMatchType.Complete:
                             try
                             {
@@ -124,7 +136,7 @@ namespace Guppy.IO.Commands.Services
                             }
                             catch(Exception e)
                             {
-                                return this.TryBuild($"help -command=\"{match.Command?.Phrase}\" -message=\"{e.Message}\"");
+                                return this.TryBuild($"help -command=\"{match.Command?.Phrase}\" -error=\"{e.Message}\"");
                             }
                         default: // This should never happen...
                             throw new NotImplementedException();

@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
@@ -44,12 +44,12 @@ namespace Guppy
             base.PostRelease();
 
 #if DEBUG_VERBOSE
-            this.OnPreDraw.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPreDraw");
-            this.OnDraw.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnDraw");
-            this.OnPostDraw.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPostDraw");
-            this.OnPreUpdate.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPreUpdate");
-            this.OnUpdate.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnUpdate");
-            this.OnPostUpdate.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).OnPostUpdate");
+            this.OnPreDraw.LogInvocationList($"OnPreDraw", this);
+            this.OnDraw.LogInvocationList("OnDraw", this);
+            this.OnPostDraw.LogInvocationList("OnPostDraw", this);
+            this.OnPreUpdate.LogInvocationList("OnPreUpdate", this);
+            this.OnUpdate.LogInvocationList("OnUpdate", this);
+            this.OnPostUpdate.LogInvocationList("OnPostUpdate", this);
 #endif
         }
 

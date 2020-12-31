@@ -10,7 +10,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Commands;
 using System.Linq;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Utilities;
 
 namespace Guppy.IO.Input
@@ -50,6 +50,20 @@ namespace Guppy.IO.Input
         /// An dictionary of button states and the command to run
         /// </summary>
         public IReadOnlyDictionary<ButtonState, CommandInput> CommandArguments { get; private set; }
+
+        /// <summary>
+        /// The owning <see cref="InputCommandService"/>. This will
+        /// automatically be defined upon construction.
+        /// </summary>
+        public InputCommandService InputCommandService { get; internal set; }
+
+        /// <summary>
+        /// When true, then the command input will 
+        /// not excecute if <see cref="InputCommandService.Locked"/>
+        /// is true. This generally only happens when the terminal 
+        /// is opened.
+        /// </summary>
+        public Boolean Lockable { get; set; }
         #endregion
 
         #region Constructor
@@ -98,6 +112,7 @@ namespace Guppy.IO.Input
             this.CommandArguments = context.Commands.ToDictionary(
                 keySelector: bsc => bsc.state,
                 elementSelector: bsc => _commands.TryBuild(bsc.command).Copy());
+            this.Lockable = context.Lockable;
         }
 
         /// <summary>
@@ -127,7 +142,12 @@ namespace Guppy.IO.Input
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void HandleInput(InputManager sender, InputArgs args)
-            => _synchronizer.Enqueue(gt => _commands.TryExecute(this.CommandArguments[args.State]));
+        {
+            if (this.Lockable && this.InputCommandService.Locked)
+                return;
+
+            _synchronizer.Enqueue(gt => _commands.TryExecute(this.CommandArguments[args.State]));
+        }
         #endregion
     }
 }

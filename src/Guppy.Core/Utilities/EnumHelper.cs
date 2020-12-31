@@ -1,4 +1,4 @@
-﻿using Guppy.Extensions.Collections;
+﻿using Guppy.Extensions.System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Text;

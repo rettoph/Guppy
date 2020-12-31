@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using System.Collections;
 
 namespace Guppy.IO.Input.Services
@@ -26,6 +26,12 @@ namespace Guppy.IO.Input.Services
 
         #region Public Properties
         public InputCommand this[String handle] => _inputCommands[handle];
+
+        /// <summary>
+        /// When locked, inputs will no longer activate commands.
+        /// This may be used when user inputs should be halted.
+        /// </summary>
+        public Boolean Locked { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -61,7 +67,11 @@ namespace Guppy.IO.Input.Services
                 throw new DuplicateNameException($"Duplicate InputCommand handle detected '{context.Handle}'. Please use a unique identifier.");
 
             // Create a new InputCommand instance...
-            var inputCommand = _provider.GetService<InputCommand>((i, s, c) => i.SetContext(context));
+            var inputCommand = _provider.GetService<InputCommand>((i, s, c) =>
+            {
+                i.SetContext(context);
+                i.InputCommandService = this;
+            });
 
             _inputCommands.Add(inputCommand.Handle, inputCommand);
 

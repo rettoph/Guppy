@@ -22,5 +22,8 @@ namespace Guppy.IO.Commands.Structs
 
         public static CommandMatch Incomplete(ICommand command = default)
             => new CommandMatch(CommandMatchType.Incomplete, command);
+
+        public static CommandMatch Help(ICommand command = default)
+            => new CommandMatch(CommandMatchType.Help, command);
     }
 }

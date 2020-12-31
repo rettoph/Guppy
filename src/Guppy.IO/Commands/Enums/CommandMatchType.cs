@@ -16,6 +16,12 @@ namespace Guppy.IO.Commands.Enums
         /// Indicates that the resiceved command is
         /// the command requested.
         /// </summary>
-        Complete
+        Complete,
+
+        /// <summary>
+        /// Used to indicate that the help command was
+        /// requested.
+        /// </summary>
+        Help
     }
 }

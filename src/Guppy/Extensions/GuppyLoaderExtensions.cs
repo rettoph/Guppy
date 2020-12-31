@@ -12,7 +12,7 @@ using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Extensions.System;
 using System.Linq;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.ServiceLoaders;
 
 namespace Guppy.Extensions

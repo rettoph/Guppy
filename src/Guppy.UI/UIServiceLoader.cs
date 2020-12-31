@@ -106,6 +106,7 @@ namespace Guppy.UI
             {
                 Handle = "guppy_ui_interact",
                 DefaultInput = new InputType(MouseButton.Left),
+                Lockable = true,
                 Commands = new[]
                 {
                     (state: ButtonState.Pressed, command: "ui interact -s=pressed"),

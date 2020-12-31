@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Lists.Interfaces;
 
 namespace Guppy

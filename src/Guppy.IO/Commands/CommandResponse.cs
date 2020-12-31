@@ -26,7 +26,7 @@ namespace Guppy.IO.Commands
         #endregion
 
         public override string ToString()
-            => $"{this.Type}:{this.Message?.AddLeft(' ')}{(this.Exception?.ToString().AddLeft('\n'))}";
+            => $"{this.Message}{(this.Exception?.ToString().AddLeft('\n'))}";
 
         #region Static Helper Methods
         public static CommandResponse Success(String message = null)

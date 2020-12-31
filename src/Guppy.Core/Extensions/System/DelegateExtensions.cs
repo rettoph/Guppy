@@ -1,4 +1,5 @@
-﻿using Guppy.Extensions.Collections;
+﻿using Guppy.Extensions.System.Collections;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +9,14 @@ namespace Guppy.Extensions.System
 {
     public static class DelegateExtensions
     {
-        public static Action<String> LogInvocation { get; set; } = s => Console.WriteLine(s);
+        public static void LogInvocationList(this Delegate d, String name, Service service, Int32 skip = 0)
+            => d.LogInvocationList($"{service.GetType().GetPrettyName()}<{service.ServiceConfiguration.Name}>({service.Id}).{name}", service.logger, skip);
 
-        public static void LogInvocationList(this Delegate d, String name, Int32 skip = 0)
+        public static void LogInvocationList(this Delegate d, String name, ILog logger, Int32 skip = 0)
         {
             if(d != default)
             {
-                var c = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Red;
-                d.GetInvocationList().Skip(skip).ForEach(d => DelegateExtensions.LogInvocation($"{name} => {d.Method.DeclaringType.GetPrettyName()}.{d.Method.Name}"));
-                Console.ForegroundColor = c;
+                d.GetInvocationList().Skip(skip).ForEach(d => logger.Warn($"{name} => {d.Method.DeclaringType.GetPrettyName()}.{d.Method.Name}"));
             } 
         }
     }

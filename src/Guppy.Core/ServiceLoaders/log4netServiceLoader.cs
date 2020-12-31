@@ -1,22 +1,17 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.IO.Extensions.log4net;
 using log4net;
-using log4net.Appender;
-using log4net.Core;
-using log4net.Layout;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.IO.ServiceLoaders
+namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class OutputServiceLoader : IServiceLoader
+    internal sealed class log4netServiceLoader : IServiceLoader
     {
         public void RegisterServices(ServiceCollection services)
         {
@@ -37,7 +32,7 @@ namespace Guppy.IO.ServiceLoaders
 
         public void ConfigureProvider(ServiceProvider provider)
         {
-
+            // throw new NotImplementedException();
         }
     }
 }

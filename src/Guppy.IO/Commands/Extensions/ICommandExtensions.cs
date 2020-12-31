@@ -17,16 +17,27 @@ namespace Guppy.IO.Commands.Extensions
         {
             position++;
 
-            if (position == input.Length || input[position][0] == CommandService.ArgumentIdentifier)
-            { // We have hit the first argument... return the current command.
-                return CommandMatch.Complete(command);
+            try
+            {
+                if (position == input.Length || input[position][0] == CommandService.ArgumentIdentifier)
+                { // We have hit the first argument... return the current command.
+                    return CommandMatch.Complete(command);
+                }
+                else if (command.Commands.ContainsKey(input[position]))
+                { // There is a sub segment requested...
+                    return command[input[position]].TryFindMatch(input, ref position);
+                }
+                else if (input[position] == "help" && input.Length == position + 1)
+                { // This is a help command request, compile a new command instance...
+                    return CommandMatch.Help(command);
+                }
             }
-            else if(command.Commands.ContainsKey(input[position]))
-            { // There is a sub segment requested...
-                return command[input[position]].TryFindMatch(input, ref position);
+            catch(Exception e)
+            {
+
             }
-            else
-                return CommandMatch.Incomplete(command);
+
+            return CommandMatch.Incomplete(command);
         }
     }
 }

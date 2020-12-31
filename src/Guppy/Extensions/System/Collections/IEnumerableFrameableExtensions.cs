@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Extensions.Collections
+namespace Guppy.Extensions.System.Collections
 {
     public static class IEnumerableFrameableExtensions
     {

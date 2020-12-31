@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection.Descriptors;
-using Guppy.Extensions.Collections;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;

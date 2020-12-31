@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.UI.Extensions.Microsoft.Xna.Framework.Graphics
+namespace Guppy.Extensions.Microsoft.Xna.Framework.Graphics
 {
     public static class GraphicsDeviceExtensions
     {
