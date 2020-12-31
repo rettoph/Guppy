@@ -59,7 +59,7 @@ namespace Guppy.Network.Peers
                 var hail = _client.CreateMessage();
                 user.TryWrite(hail);
 
-                _client.Connect(host, port, hail);
+                _client.Connect(host == "localhost" ? "127.0.0.1" : host, port, hail);
             }
                 
         }
