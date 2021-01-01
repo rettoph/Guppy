@@ -2,6 +2,7 @@
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.IO.Commands.Services;
+using Guppy.IO.Input;
 using Guppy.IO.Input.Services;
 using Guppy.Utilities;
 using log4net.Appender;
@@ -20,6 +21,7 @@ namespace Guppy.IO.Output.Services
     {
         #region Static Fields
         public static Int32 MaxMessages { get; set; } = 250;
+        public static Int32 MaxInputBuffer { get; set; } = 25;
         #endregion
 
         #region Private Fields
@@ -32,10 +34,9 @@ namespace Guppy.IO.Output.Services
         private GameWindow _window;
         private CommandService _commands;
         private InputCommandService _inputCommands;
+        private KeyboardService _keyboard;
 
         private Texture2D _background;
-        private Texture2D _inputBackground;
-        private Texture2D _carretBackground;
         private SpriteFont _font;
 
         private Vector2 _size;
@@ -44,6 +45,10 @@ namespace Guppy.IO.Output.Services
 
         private String _input;
         private ActionTimer _carretActionTimer;
+
+        private Queue<String> _inputBuffer;
+        private Int32 _inputBufferOffset;
+        public Int32 _inputBufferLength;
         #endregion
 
         #region Public Properties
@@ -56,6 +61,21 @@ namespace Guppy.IO.Output.Services
         /// Defaults are defined, but may be overwritten.
         /// </summary>
         public Dictionary<Level, Color> LevelColor { get; private set; }
+
+        /// <summary>
+        /// The color input text should be.
+        /// </summary>
+        public Color InputColor { get; set; }
+
+        /// <summary>
+        /// The background color overlay.
+        /// </summary>
+        public Color BackgroundColor { get; set; }
+
+        /// <summary>
+        /// The color to make the input bar background.
+        /// </summary>
+        public Color InputBackgroundColor { get; set; }
         #endregion
 
         #region Lifecycle Methods
@@ -63,9 +83,16 @@ namespace Guppy.IO.Output.Services
         {
             base.PreInitialize(provider);
 
+            _inputBuffer = new Queue<String>();
+            _inputBufferLength = 0;
+            _inputBufferOffset = 0;
             _messageCount = 0;
             _messages = new Queue<(Color color, String text)>();
             _carretActionTimer = new ActionTimer(750);
+
+            this.InputColor = Color.White;
+            this.InputBackgroundColor = new Color(Color.Gray, 0.5f);
+            this.BackgroundColor = new Color(Color.Black, 0.5f);
 
             this.LevelColor = new Dictionary<Level, Color>();
             this.LevelColor[Level.Verbose] = Color.Cyan;
@@ -81,11 +108,10 @@ namespace Guppy.IO.Output.Services
             provider.Service(out _window);
             provider.Service(out _commands);
             provider.Service(out _inputCommands);
+            provider.Service(out _keyboard);
 
             _font = provider.GetContent<SpriteFont>("font:terminal");
-            _background = _graphics.BuildPixel(new Color(Color.Black, 0.5f));
-            _inputBackground = _graphics.BuildPixel(new Color(Color.Gray, 0.5f));
-            _carretBackground = _graphics.BuildPixel(Color.White);
+            _background = _graphics.BuildPixel(Color.White);
         }
 
         protected override void Release()
@@ -94,15 +120,16 @@ namespace Guppy.IO.Output.Services
 
             this.Close();
 
+            _inputBuffer.Clear();
             _messages.Clear();
             _background.Dispose();
-            _inputBackground.Dispose();
 
             _spriteBatch = null;
             _graphics = null;
             _window = null;
             _commands = null;
             _inputCommands = null;
+            _keyboard = null;
         }
         #endregion
 
@@ -121,7 +148,7 @@ namespace Guppy.IO.Output.Services
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
 
-            _spriteBatch.Draw(_background, _graphics.Viewport.Bounds, Color.White);
+            _spriteBatch.Draw(_background, _graphics.Viewport.Bounds, this.BackgroundColor);
 
             Vector2 position = Vector2.Zero;
             position.X = 15;
@@ -146,14 +173,14 @@ namespace Guppy.IO.Output.Services
             }
 
             var inputPosition = new Rectangle(0, _graphics.Viewport.Height - 30, _graphics.Viewport.Width, 30);
-            _spriteBatch.Draw(_inputBackground, inputPosition, Color.White);
+            _spriteBatch.Draw(_background, inputPosition, this.InputBackgroundColor);
 
             var inputSize = _font.MeasureString(_input ?? "");
 
             if (_renderCarret)
-                _spriteBatch.Draw(_carretBackground, new Rectangle((Int32)inputSize.X + 15, inputPosition.Top + ((inputPosition.Height - _font.LineSpacing) / 2), 1, _font.LineSpacing), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle((Int32)inputSize.X + 15, inputPosition.Top + ((inputPosition.Height - _font.LineSpacing) / 2), 1, _font.LineSpacing), this.InputColor);
 
-            _spriteBatch.DrawString(_font, _input ?? "", new Vector2(15f, inputPosition.Top + ((inputPosition.Height - _font.LineSpacing) / 2)), Color.White);
+            _spriteBatch.DrawString(_font, _input ?? "", new Vector2(15f, inputPosition.Top + ((inputPosition.Height - _font.LineSpacing) / 2)), this.InputColor);
 
             _spriteBatch.End();
         }
@@ -165,12 +192,16 @@ namespace Guppy.IO.Output.Services
             _inputCommands.Locked = true;
             _input = "";
             _window.TextInput += this.HandleTextInput;
+            _keyboard[Keys.Up].OnState[ButtonState.Released] += this.HandleArrowReleased;
+            _keyboard[Keys.Down].OnState[ButtonState.Released] += this.HandleArrowReleased;
         }
 
         public void Close()
         {
             _inputCommands.Locked = false;
             _window.TextInput -= this.HandleTextInput;
+            _keyboard[Keys.Up].OnState[ButtonState.Released] -= this.HandleArrowReleased;
+            _keyboard[Keys.Down].OnState[ButtonState.Released] -= this.HandleArrowReleased;
         }
 
         public void AddMessage(Color color, String text)
@@ -188,6 +219,18 @@ namespace Guppy.IO.Output.Services
                 // Measure the current size of the full log output...
                 _size = _font.MeasureString(_messages.Select(m => m.text).Aggregate((t1, t2) => t1 + t2));
             });
+        }
+
+        private void ChangeInputBuffer(Int32 delta)
+        {
+            _inputBufferOffset = (_inputBufferOffset + delta) % (_inputBufferLength + 1);
+            if (_inputBufferOffset < 0)
+                _inputBufferOffset = _inputBufferLength;
+
+            if (_inputBufferOffset == _inputBufferLength)
+                _input = "";
+            else
+                _input = _inputBuffer.ElementAt(_inputBufferOffset);
         }
         #endregion
 
@@ -216,13 +259,42 @@ namespace Guppy.IO.Output.Services
                         _input = _input.Substring(0, _input.Length - 1);
                     break;
                 case Keys.Enter:
+                    if (_input == "")
+                        return; // Do nothing with no input
+
                     this.AddMessage(Color.White, Environment.NewLine + _input);
                     _commands.TryExecute(_input);
+
+                    _inputBuffer.Enqueue(_input);
+
+                    if (_inputBufferLength < TerminalService.MaxInputBuffer)
+                    {
+                        _inputBufferLength++;
+                    }
+                    else
+                    {
+                        _inputBuffer.Dequeue();
+                    }
+
                     _input = "";
+                    _inputBufferOffset = _inputBufferLength;
                     break;
                 default:
                     if (_font.Characters.Contains(e.Character))
                         _input += e.Character;
+                    break;
+            }
+        }
+
+        private void HandleArrowReleased(InputManager sender, InputArgs args)
+        {
+            switch(args.Which.KeyboardKey)
+            {
+                case Keys.Up:
+                    this.ChangeInputBuffer(-1);
+                    break;
+                case Keys.Down:
+                    this.ChangeInputBuffer(1);
                     break;
             }
         }
