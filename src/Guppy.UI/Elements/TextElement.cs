@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Guppy.Events.Delegates;
 
 namespace Guppy.UI.Elements
 {
@@ -65,6 +66,7 @@ namespace Guppy.UI.Elements
                 {
                     _value = value;
                     this.CleanInlineBounds();
+                    this.OnValueChanged?.Invoke(this, _value);
                 }
             }
         }
@@ -77,6 +79,10 @@ namespace Guppy.UI.Elements
         /// of the current <see cref="Value"/>.
         /// </summary>
         public InlineType Inline { get; set; } = InlineType.Both;
+        #endregion
+
+        #region Events
+        public OnEventDelegate<TextElement, String> OnValueChanged;
         #endregion
 
         #region Lifecycle Methods

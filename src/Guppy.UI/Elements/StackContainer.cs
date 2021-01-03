@@ -154,6 +154,7 @@ namespace Guppy.UI.Elements
             item.Bounds.OnSizeChanged += this.HandleChildSizeChanged;
 
             this.AlignChildren();
+            this.TryCleanBounds();
         }
 
         private void HandleChildRemoved(IServiceList<TChildren> sender, TChildren item)
@@ -164,7 +165,10 @@ namespace Guppy.UI.Elements
         }
 
         private void HandleChildSizeChanged(IElement sender, Bounds bounds)
-            => this.AlignChildren();
+        {
+            this.AlignChildren();
+            this.TryCleanBounds();
+        }
         #endregion
     }
 }

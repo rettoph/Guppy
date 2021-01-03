@@ -103,7 +103,7 @@ namespace Guppy.UI.Elements
         #region Methods
         protected override bool TryCleanInnerBounds()
         {
-            if(base.TryCleanInnerBounds() || this.Inline != 0)
+            if(base.TryCleanInnerBounds() || this.Inline != InlineType.None)
             {
                 // Recursively clean all children.
                 foreach (TChildren child in this.Children)
@@ -151,9 +151,9 @@ namespace Guppy.UI.Elements
         /// </summary>
         protected void TryCleanInline()
         {
-            if ((this.Inline & InlineType.Vertical) != 0)
+            if ((this.Inline & InlineType.Vertical) != 0 && this.Children.Any())
                 this.Bounds.Height = new PixelUnit(this.Children.Max(c => c.OuterBounds.Bottom) - this.Children.Min(c => c.OuterBounds.Top), this.Padding.Top, this.Padding.Bottom);
-            if((this.Inline & InlineType.Horizontal) != 0)
+            if((this.Inline & InlineType.Horizontal) != 0 && this.Children.Any())
                 this.Bounds.Width = new PixelUnit(this.Children.Max(c => c.OuterBounds.Right) - this.Children.Min(c => c.OuterBounds.Left), this.Padding.Left, this.Padding.Right);
         }
         #endregion
@@ -180,6 +180,8 @@ namespace Guppy.UI.Elements
             child.Container = this;
             child.TryCleanBounds();
             child.Bounds.OnChanged += this.HandleChildBoundsChanged;
+
+            this.TryCleanInline();
         }
 
         private void HandleChildRemoved(IServiceList<TChildren> sender, TChildren child)
