@@ -20,6 +20,7 @@ namespace Guppy.DependencyInjection
         private Dictionary<Type, Object> _singletonInstances;
         private Dictionary<Type, Object> _scopedInstances;
         private Boolean _disposing;
+        private List<ServiceProvider> _children;
         #endregion
 
         #region Internal Properties
@@ -179,21 +180,35 @@ namespace Guppy.DependencyInjection
         #endregion
 
         #region IDisposable Implementation
-        public void Dispose()
+        public void Dispose(Boolean singletons)
         {
             if (_disposing)
                 return;
 
             _disposing = true;
+
             _scopedInstances.Values.ForEach(s =>
             {
                 // Auto dispose all scoped instances.
                 if (s is IDisposable d)
                     d.Dispose();
             });
+
+            if (singletons)
+            {
+                _singletonInstances.Values.ForEach(s =>
+                {
+                    // Auto dispose all scoped instances.
+                    if (s is IDisposable d)
+                        d.Dispose();
+                });
+                _singletonInstances.Clear();
+            }
             _scopedInstances.Clear();
             _disposing = false;
         }
+        public void Dispose()
+            => this.Dispose(false);
         #endregion
     }
 }

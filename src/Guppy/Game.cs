@@ -18,6 +18,7 @@ namespace Guppy
     {
         #region Private Fields
         private Synchronizer _synchronizer;
+        private ServiceProvider _provider;
         #endregion
 
         #region Public Attributes
@@ -29,6 +30,7 @@ namespace Guppy
         {
             base.Initialize(provider);
 
+            _provider = provider;
             provider.Service(out _synchronizer);
 
             this.Scenes = provider.GetService<SceneList>();
@@ -40,6 +42,7 @@ namespace Guppy
 
             _synchronizer.TryRelease();
             _synchronizer = null;
+            _provider.Dispose(true);
         }
         #endregion
 
