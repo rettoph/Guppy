@@ -23,7 +23,7 @@ namespace Guppy
     public class Driven : Frameable
     {
         #region Private Fields
-        private Driver[] _drivers;
+        private List<Driver> _drivers;
         private DriverService _driverService;
         #endregion
 
@@ -33,13 +33,15 @@ namespace Guppy
             base.Create(provider);
 
             provider.Service(out _driverService);
+
+            _drivers = new List<Driver>();
         }
 
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
-            _drivers = _driverService.BuildDrivers(this, provider);
+            _driverService.BuildDrivers(this, provider, ref _drivers);
         }
 
         protected override void Release()

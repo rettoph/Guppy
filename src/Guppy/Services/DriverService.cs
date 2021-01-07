@@ -52,24 +52,18 @@ namespace Guppy.Services
         internal void BindDriver(Type driven, Type driver)
             => _drivenTypes.GetTypesAssignableFrom(driven).ForEach(drivenType => _drivenDrivers[drivenType].Add(driver));
 
-        internal Driver[] BuildDrivers(Driven driven, ServiceProvider provider)
+        internal void BuildDrivers(Driven driven, ServiceProvider provider, ref List<Driver> drivers)
         {
-            var drivers = new List<Driver>();
-
-            _drivenDrivers[driven.GetType()].ForEach(driverType =>
-            {
+            foreach(Type driverType in _drivenDrivers[driven.GetType()])
                 if (_driverFilters[driverType].Validate(driven, provider, true))
                 {
                     var driver = (Driver)provider.GetService(driverType);
                     driver.TryInitialize(driven, provider);
                     drivers.Add(driver);
                 }
-            });
-
-            return drivers.ToArray();
         }
 
-        internal void ReleaseDrivers(Driven driven, ref Driver[] drivers)
+        internal void ReleaseDrivers(Driven driven, ref List<Driver> drivers)
         {
             drivers.ForEach(d =>
             {
@@ -77,7 +71,7 @@ namespace Guppy.Services
                 _provider.GetServiceFactory(d.GetType()).Pools[d].TryReturn(d);
             });
 
-            drivers = default;
+            drivers.Clear();
         }
         #endregion
     }
