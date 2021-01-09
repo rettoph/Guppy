@@ -94,7 +94,7 @@ namespace Guppy.UI.Elements
             provider.Service(out _spriteBatch);
 
             this.Color = this.BuildStateValue<Color>();
-            this.Filter = new Regex("^.{0,50}$");
+            this.Filter = new Regex("^.{0,500}$");
         }
 
         protected override void Release()

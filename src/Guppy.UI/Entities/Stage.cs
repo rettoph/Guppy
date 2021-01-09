@@ -27,7 +27,7 @@ namespace Guppy.UI.Entities
         /// <summary>
         /// The primary root level element container within the stage.
         /// </summary>
-        public Container<IElement> Content { get; private set; }
+        public Container Content { get; private set; }
         #endregion
 
         #region Lifecycle Methods

@@ -63,8 +63,8 @@ namespace Guppy.UI.Elements
             base.Release();
 
             // Release all internal children.
-            foreach (TChildren child in this.Children)
-                child.TryRelease();
+            while (this.Children.Any())
+                this.Children.First().TryRelease();
 
             this.Children.OnAdded -= this.HandleChildAdded;
             this.Children.OnRemoved -= this.HandleChildRemoved;

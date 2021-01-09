@@ -78,7 +78,7 @@ namespace Guppy.UI.Enums
             }
 
             position.Round();
-            return position;
+            return position + (Vector2.One / 2);
         }
     }
 }
