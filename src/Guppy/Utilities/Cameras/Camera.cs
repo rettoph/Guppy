@@ -6,6 +6,7 @@ using System.Text;
 using Guppy.Extensions;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace Guppy.Utilities.Cameras
 {
@@ -79,15 +80,14 @@ namespace Guppy.Utilities.Cameras
         #endregion
 
         #region Utility Methods
-
+        public Vector2 Project(Vector2 source)
+            => _graphics.Viewport.Project(source.ToVector3(), this.Projection, this.View, this.World).ToVector2();
+        public Vector2 Unproject(Vector2 source)
+            => _graphics.Viewport.Unproject(source.ToVector3(), this.Projection, this.View, this.World).ToVector2();
         public Vector3 Project(Vector3 source)
-        {
-            return _graphics.Viewport.Project(source, this.Projection, this.View, this.World);
-        }
+            => _graphics.Viewport.Project(source, this.Projection, this.View, this.World);
         public Vector3 Unproject(Vector3 source)
-        {
-            return _graphics.Viewport.Unproject(source, this.Projection, this.View, this.World);
-        }
+            => _graphics.Viewport.Unproject(source, this.Projection, this.View, this.World);
         #endregion
     }
 }

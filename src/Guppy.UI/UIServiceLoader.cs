@@ -46,6 +46,7 @@ namespace Guppy.UI
             services.AddFactory(typeof(ElementList<>), (p, t) => ActivatorUtilities.CreateInstance(p, t));
             services.AddFactory(typeof(Container<>), (p, t) => ActivatorUtilities.CreateInstance(p, t));
             services.AddFactory<Container>(p => new Container());
+            services.AddFactory<PageContainer>(p => new PageContainer());
             services.AddFactory(typeof(StackContainer<>), (p, t) => ActivatorUtilities.CreateInstance(p, t));
             services.AddFactory(typeof(InnerStackContainer<>), (p, t) => ActivatorUtilities.CreateInstance(p, t));
             services.AddFactory<StackContainer>(p => new StackContainer());
@@ -56,6 +57,7 @@ namespace Guppy.UI
             services.AddTransient(typeof(ElementList<>));
             services.AddTransient(typeof(Container<>));
             services.AddTransient<Container>();
+            services.AddTransient<PageContainer>();
             services.AddTransient(typeof(StackContainer<>));
             services.AddTransient(typeof(InnerStackContainer<>));
             services.AddTransient<StackContainer>();

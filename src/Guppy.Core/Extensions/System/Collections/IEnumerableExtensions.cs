@@ -57,10 +57,21 @@ namespace Guppy.Extensions.System.Collections
             }
         }
 
-        public static T TryAggregate<T>(this IEnumerable<T> source, Func<T, T, T> aggregater, T fallback = default)
+        /// <summary>
+        /// Attempt to run <paramref name="func"/> within
+        /// the LINQ <see cref="IEnumerable{T}.Aggregate"/>
+        /// method. If no items exist within the recieved <paramref name="source"/>
+        /// then simply return the <paramref name="fallback"/> value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="func"></param>
+        /// <param name="fallback"></param>
+        /// <returns></returns>
+        public static T TryAggregate<T>(this IEnumerable<T> source, Func<T, T, T> func, T fallback = default)
         {
             if (source.Any())
-                return source.Aggregate(aggregater);
+                return source.Aggregate(func);
             else
                 return fallback;
         }

@@ -27,7 +27,7 @@ namespace Guppy.UI.Entities
         /// <summary>
         /// The primary root level element container within the stage.
         /// </summary>
-        public Container Content { get; private set; }
+        public PageContainer Content { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -38,7 +38,7 @@ namespace Guppy.UI.Entities
             provider.Service(out _window);
             provider.Service(out _graphics);
 
-            this.Content = provider.GetService<Container>((content, p, d) =>
+            this.Content = provider.GetService<PageContainer>((content, p, d) =>
             {
                 content.Bounds.Width = 1f;
                 content.Bounds.Height = 1f;

@@ -30,5 +30,8 @@ namespace Guppy.Extensions.Microsoft.Xna.Framework
 
         public static String ToString(this Vector2 v, String format)
             => $"({v.X.ToString(format)}, {v.Y.ToString(format)})";
+
+        public static Vector3 ToVector3(this Vector2 vector2, Single z = 0)
+            => new Vector3(vector2.X, vector2.Y, z);
     }
 }

@@ -88,14 +88,14 @@ namespace Guppy.UI.Elements
         {
             base.Draw(gameTime);
 
-            this.Children.TryDrawAll(gameTime);
+            this.GetActiveChildren().TryDrawAll(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            foreach (TChildren child in this.Children)
+            foreach (TChildren child in this.GetActiveChildren())
                 this.OnUpdateChild.Invoke(child, gameTime);
         }
         #endregion
@@ -106,7 +106,7 @@ namespace Guppy.UI.Elements
             if(base.TryCleanInnerBounds() || this.Inline != InlineType.None)
             {
                 // Recursively clean all children.
-                foreach (TChildren child in this.Children)
+                foreach (TChildren child in this.GetActiveChildren())
                     child.TryCleanBounds();
 
                 return true;
@@ -156,6 +156,14 @@ namespace Guppy.UI.Elements
             if((this.Inline & InlineType.Horizontal) != 0 && this.Children.Any())
                 this.Bounds.Width = new PixelUnit(this.Children.Max(c => c.OuterBounds.Right) - this.Children.Min(c => c.OuterBounds.Left), this.Padding.Left, this.Padding.Right);
         }
+
+        /// <summary>
+        /// Return an IEnumerable of <see cref="TChildren"/> that are currently
+        /// active. This is used when updating, drawing, or resizing embedded children.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IEnumerable<TChildren> GetActiveChildren()
+            => this.Children;
         #endregion
 
         #region Child Update Methods

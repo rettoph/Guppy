@@ -20,7 +20,7 @@ namespace Guppy.Events.Delegates
         /// <param name="sender">The sender instance.</param>
         /// <param name="reference">A reference to be updated with the new value if valid.</param>
         /// <param name="value">The value to set the reference if valid.</param>
-        public static void InvokeIfChanged<TSender, TArgs>(
+        public static Boolean InvokeIf<TSender, TArgs>(
             this OnEventDelegate<TSender, TArgs>  eventDelegate, 
             Boolean valid, 
             TSender sender, 
@@ -31,7 +31,11 @@ namespace Guppy.Events.Delegates
             {
                 reference = value;
                 eventDelegate?.Invoke(sender, reference);
+
+                return true;
             }
+
+            return false;
         }
     }
 }

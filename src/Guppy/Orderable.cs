@@ -27,23 +27,23 @@ namespace Guppy
         public Boolean Visible
         {
             get => _visible;
-            set => this.OnVisibleChanged.InvokeIfChanged(value != _visible, this, ref _visible, value);
+            set => this.OnVisibleChanged.InvokeIf(value != _visible, this, ref _visible, value);
         }
         public Boolean Enabled
         {
             get => _enabled;
-            set => this.OnEnabledChanged.InvokeIfChanged(value != _enabled, this, ref _enabled, value);
+            set => this.OnEnabledChanged.InvokeIf(value != _enabled, this, ref _enabled, value);
         }
 
         public Int32 DrawOrder
         {
             get => _drawOrder;
-            set => this.OnDrawOrderChanged.InvokeIfChanged(value != _drawOrder, this, ref _drawOrder, value);
+            set => this.OnDrawOrderChanged.InvokeIf(value != _drawOrder, this, ref _drawOrder, value);
         }
         public Int32 UpdateOrder
         {
             get => _updateOrder;
-            set => this.OnUpdateOrderChanged.InvokeIfChanged(value != _updateOrder, this, ref _updateOrder, value);
+            set => this.OnUpdateOrderChanged.InvokeIf(value != _updateOrder, this, ref _updateOrder, value);
         }
         #endregion
 
