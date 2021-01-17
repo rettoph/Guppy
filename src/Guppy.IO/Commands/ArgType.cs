@@ -46,11 +46,11 @@ namespace Guppy.IO.Commands
                 if(!this.Whitelist.Any() || this.Whitelist.Contains(value, this.StrictFilter ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase))
                     return _parser(value);
                 else
-                    throw new ArgumentOutOfRangeException($"Unexpected {this.Name} value.");
+                    throw new ArgumentOutOfRangeException($"Unexpected {this.Name} value, '{value}'.");
             }
             catch (Exception e)
             {
-                throw new ArgumentOutOfRangeException($"Unexpected {this.Name} value.", e);
+                throw new ArgumentOutOfRangeException($"Unexpected {this.Name} value, '{value}'.", e);
             }
         }
 
