@@ -164,6 +164,14 @@ namespace Guppy.UI.Elements
         /// <returns></returns>
         protected virtual IEnumerable<TChildren> GetActiveChildren()
             => this.Children;
+
+        /// <inheritdoc />
+        protected override void Refresh()
+        {
+            base.Refresh();
+
+            this.Children.ForEach(c => c.Refresh());
+        }
         #endregion
 
         #region Child Update Methods

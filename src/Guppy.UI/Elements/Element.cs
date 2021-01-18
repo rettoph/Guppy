@@ -297,6 +297,19 @@ namespace Guppy.UI.Elements
         /// <inheritdoc />
         public void TryCleanHovered()
             => this.TrySetState(ElementState.Hovered, this.OuterBounds.Contains(_ui.Target));
+
+        /// <inheritdoc />
+        void IElement.Refresh()
+            => this.Refresh();
+
+        protected virtual void Refresh()
+        {
+            this.TrySetState(ElementState.Hovered, false);
+            this.TrySetState(ElementState.Pressed, false);
+            this.TrySetState(ElementState.Focused, false);
+
+            this.TryCleanBounds();
+        }
         #endregion
 
         #region Event Handlers

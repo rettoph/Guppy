@@ -50,9 +50,11 @@ namespace Guppy.UI.Elements
         /// <param name="page"></param>
         public void Open(IPage page)
         {
+            var oldPage = _activePage;
             if(this.OnActivePageChanged.InvokeIf(_activePage != page, this, ref _activePage, page))
             {
-                this.Close();
+                this.ActivePage.Refresh();
+                this.Close(oldPage);
                 this.TryCleanBounds();
             }
         }
@@ -60,9 +62,9 @@ namespace Guppy.UI.Elements
         /// <summary>
         /// Close the current page...
         /// </summary>
-        public void Close()
+        public void Close(IPage page)
         {
-
+            page?.Refresh();
         }
         #endregion
 

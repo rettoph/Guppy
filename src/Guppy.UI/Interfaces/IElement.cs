@@ -73,6 +73,11 @@ namespace Guppy.UI.Interfaces
         /// Check & update the hovered value of the element specifically.
         /// </summary>
         void TryCleanHovered();
+
+        /// <summary>
+        /// Clear the current state.
+        /// </summary>
+        void Refresh();
         #endregion
     }
 }

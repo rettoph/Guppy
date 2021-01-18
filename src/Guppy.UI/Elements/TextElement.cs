@@ -130,9 +130,9 @@ namespace Guppy.UI.Elements
         #region Helper Methods
         private void CleanInlineBounds()
         {
-            if((this.Inline & InlineType.Horizontal) != 0)
+            if((this.Inline & InlineType.Vertical) != 0)
                 this.Bounds.Height = new CustomUnit(i => this.Padding.Top.ToPixel(i) + this.Padding.Bottom.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).Y);
-            if ((this.Inline & InlineType.Vertical) != 0) 
+            if ((this.Inline & InlineType.Horizontal) != 0) 
                 this.Bounds.Width = new CustomUnit(i => this.Padding.Left.ToPixel(i) + this.Padding.Right.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).X);
         }
         #endregion

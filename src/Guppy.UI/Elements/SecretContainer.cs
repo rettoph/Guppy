@@ -99,6 +99,14 @@ namespace Guppy.UI.Elements
                 return this.InnerBounds;
             }
         }
+
+        /// <inheritdoc />
+        protected override void Refresh()
+        {
+            base.Refresh();
+
+            this.inner.Refresh();
+        }
         #endregion
 
         #region Helper Methods
