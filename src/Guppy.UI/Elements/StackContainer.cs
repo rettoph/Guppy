@@ -121,6 +121,9 @@ namespace Guppy.UI.Elements
         /// </summary>
         private void AlignChildren()
         {
+            if (this.Status != Guppy.Enums.ServiceStatus.Ready)
+                return;
+
             switch (this.Alignment)
             {
                 case StackAlignment.Vertical:
@@ -142,6 +145,13 @@ namespace Guppy.UI.Elements
                     }
                     break;
             }
+        }
+
+        protected override void Refresh()
+        {
+            base.Refresh();
+
+            this.AlignChildren();
         }
         #endregion
 

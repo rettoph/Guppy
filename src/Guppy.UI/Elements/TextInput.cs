@@ -44,6 +44,7 @@ namespace Guppy.UI.Elements
         {
             base.Release();
 
+            this.OnState[ElementState.Focused] -= this.HandleFocused;
             _window.TextInput -= this.HandleTextInput;
             this.OnDraw -= this.DrawCarret;
 

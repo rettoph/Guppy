@@ -226,6 +226,9 @@ namespace Guppy.UI.Elements
         /// <inheritdoc />
         public void TryCleanBounds()
         {
+            if (this.Status != Guppy.Enums.ServiceStatus.Ready)
+                return;
+
             this.TryCleanOuterBounds(this.Container.GetInnerBoundsForChildren());
             this.TryCleanInnerBounds();
 
