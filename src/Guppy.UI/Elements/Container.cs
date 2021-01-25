@@ -171,6 +171,7 @@ namespace Guppy.UI.Elements
             base.Refresh();
 
             this.Children.ForEach(c => c.Refresh());
+            this.TryCleanInline();
         }
         #endregion
 
@@ -204,6 +205,8 @@ namespace Guppy.UI.Elements
         {
             child.Container = null;
             child.Bounds.OnChanged -= this.HandleChildBoundsChanged;
+
+            this.TryCleanInline();
         }
 
         private void HandleChildBoundsChanged(IElement child, Bounds bounds)
@@ -224,7 +227,6 @@ namespace Guppy.UI.Elements
 
                 this.OnUpdateChild -= this.TryCleanChildHovered;
             }
-                
         }
 
         /// <summary>

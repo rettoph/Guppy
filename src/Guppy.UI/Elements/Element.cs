@@ -138,7 +138,7 @@ namespace Guppy.UI.Elements
             this.Bounds = new Bounds(this);
 
             this.Padding.OnChanged += this.HandlePaddingChanged;
-
+            this.OnContainerChanged += this.HandleContainerChanged;
             this.OnStateChanged += this.HandleStateChanged;
             this.OnState[ElementState.Hovered] += this.HandleHoveredStateChanged;
             this.OnState[ElementState.Pressed] += this.HandlePressedStateChanged;
@@ -159,6 +159,10 @@ namespace Guppy.UI.Elements
             _graphics = null;
 
             this.Padding.OnChanged -= this.HandlePaddingChanged;
+            this.OnContainerChanged -= this.HandleContainerChanged;
+            this.OnStateChanged -= this.HandleStateChanged;
+            this.OnState[ElementState.Hovered] -= this.HandleHoveredStateChanged;
+            this.OnState[ElementState.Pressed] -= this.HandlePressedStateChanged;
 
             while (_stateValues.Any())
                 _stateValues.Dequeue().Dispose();
@@ -378,6 +382,9 @@ namespace Guppy.UI.Elements
                 new Vector2(this.OuterBounds.Right, this.OuterBounds.Bottom),
                 new Vector2(this.OuterBounds.Left, this.OuterBounds.Bottom));
         }
+
+        private void HandleContainerChanged(Element sender, IContainer old, IContainer value)
+            => this.Refresh();
 
         protected ElementStateValue<T> BuildStateValue<T>(T defaultValue = default(T))
         {
