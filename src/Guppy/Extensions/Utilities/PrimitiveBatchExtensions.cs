@@ -278,6 +278,96 @@ namespace Guppy.Extensions.Utilities
                 where TEffect : Effect, IEffectMatrices
                     => primitive.Draw(color, transformation, primitiveBatch);
         #endregion
+
+        #region DrawCircle Methods
+        public static void DrawCircle<TEffect>(
+            this PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch,
+            Color color,
+            Single x,
+            Single y,
+            Single radius,
+            Int32 segments = 15)
+                where TEffect : Effect, IEffectMatrices
+                    => primitiveBatch.DrawCircle(
+                        color: color,
+                        position: new Vector2(x, y),
+                        radius: radius,
+                        segments);
+        public static void DrawCircle<TEffect>(
+            this PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch,
+            Color color,
+            Vector2 position,
+            Single radius,
+            Int32 segments = 15)
+                where TEffect : Effect, IEffectMatrices
+        {
+            Single step = MathHelper.TwoPi / segments;
+            Single angle = 0;
+            Vector2 start;
+            Vector2 end = new Vector2(radius, 0);
+
+            for (var i = 0; i < segments; i++)
+            {
+                angle += step;
+                start = end;
+
+                end = new Vector2(
+                    x: (Single)Math.Cos(angle) * radius,
+                    y: (Single)Math.Sin(angle) * radius);
+
+                primitiveBatch.DrawTriangle(
+                    color: color,
+                    p1: position,
+                    p2: position + start,
+                    p3: position + end);
+            }
+        }
+        #endregion
+
+        #region TraceCircle Methods
+        public static void TraceCircle<TEffect>(
+            this PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch,
+            Color color,
+            Single x,
+            Single y,
+            Single radius,
+            Int32 segments = 15)
+                where TEffect : Effect, IEffectMatrices
+                    => primitiveBatch.TraceCircle(
+                        color: color,
+                        position: new Vector2(x, y),
+                        radius: radius,
+                        segments);
+
+        public static void TraceCircle<TEffect>(
+            this PrimitiveBatch<VertexPositionColor, TEffect> primitiveBatch,
+            Color color,
+            Vector2 position,
+            Single radius,
+            Int32 segments = 15)
+                where TEffect : Effect, IEffectMatrices
+        {
+            Single step = MathHelper.TwoPi / segments;
+            Single angle = 0;
+            Vector2 start;
+            Vector2 end = new Vector2(radius, 0);
+
+            for(var i=0; i< segments; i++)
+            {
+                angle += step;
+                start = end;
+
+                end = new Vector2(
+                    x: (Single)Math.Cos(angle) * radius, 
+                    y: (Single)Math.Sin(angle) * radius);
+
+                primitiveBatch.DrawLine(
+                    color: color, 
+                    p1: position + start, 
+                    p2: position + end);
+            }
+        }
+        #endregion
         #endregion
     }
 }
