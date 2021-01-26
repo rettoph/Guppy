@@ -128,7 +128,7 @@ namespace Guppy.UI.Elements
         {
             if(this.Inline != 0)
             { // Calculate bounds based on padding...
-                var container = this.Container.GetInnerBoundsForChildren();
+                var container = this.Container?.GetInnerBoundsForChildren() ?? new Rectangle();
                 var width = ((this.Inline & InlineType.Horizontal) == 0) ? this.InnerBounds.Width : container.Width - this.Padding.Left.ToPixel(container.Width) - this.Padding.Right.ToPixel(container.Width);
                 var height = ((this.Inline & InlineType.Vertical) == 0) ? this.InnerBounds.Width : container.Height - this.Padding.Top.ToPixel(container.Height) - this.Padding.Bottom.ToPixel(container.Height);
 
