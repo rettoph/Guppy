@@ -333,6 +333,9 @@ namespace Guppy.UI.Elements
 
         private void HandlePressedStateChanged(IElement sender, ElementState which, bool value)
         {
+            // Ensure that the hovered value is up to date...
+            this.TryCleanHovered();
+
             if (value && !this.State.HasFlag(ElementState.Hovered))
                 this.TrySetState(ElementState.Focused, false);
             else if (!value && this.State.HasFlag(ElementState.Hovered))
