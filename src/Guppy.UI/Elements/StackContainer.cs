@@ -163,21 +163,19 @@ namespace Guppy.UI.Elements
         {
             item.Bounds.OnSizeChanged += this.HandleChildSizeChanged;
 
-            this.AlignChildren();
-            this.TryCleanBounds();
+            this.Refresh();
         }
 
         private void HandleChildRemoved(IServiceList<TChildren> sender, TChildren item)
         {
             item.Bounds.OnSizeChanged -= this.HandleChildSizeChanged;
 
-            this.AlignChildren();
+            this.Refresh();
         }
 
         private void HandleChildSizeChanged(IElement sender, Bounds bounds)
         {
-            this.AlignChildren();
-            this.TryCleanBounds();
+            this.Refresh();
         }
         #endregion
     }
