@@ -25,6 +25,7 @@ namespace Guppy.UI.Elements
 
         private String _value;
         private SpriteFont _font;
+        private InlineType _inlineType;
         #endregion
 
         #region Public Properties
@@ -78,7 +79,14 @@ namespace Guppy.UI.Elements
         /// will automatically be adjusted based on the size
         /// of the current <see cref="Value"/>.
         /// </summary>
-        public InlineType Inline { get; set; } = InlineType.Both;
+        public InlineType Inline
+        {
+            get => _inlineType;
+            set {
+                _inlineType = value;
+                this.CleanInlineBounds();
+            }
+        }
         #endregion
 
         #region Events
@@ -134,6 +142,11 @@ namespace Guppy.UI.Elements
                 this.Bounds.Height = new CustomUnit(i => this.Padding.Top.ToPixel(i) + this.Padding.Bottom.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).Y);
             if ((this.Inline & InlineType.Horizontal) != 0) 
                 this.Bounds.Width = new CustomUnit(i => this.Padding.Left.ToPixel(i) + this.Padding.Right.ToPixel(i) + (Int32)this.Font.MeasureString(this.Value).X);
+        }
+
+        protected override void Refresh()
+        {
+            base.Refresh();
         }
         #endregion
     }
