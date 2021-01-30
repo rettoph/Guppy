@@ -18,13 +18,13 @@ namespace Guppy.IO.Input
         public readonly Keys KeyboardKey;
 
         [FieldOffset(1)]
-        public readonly MouseButton CursorButton;
+        public readonly MouseButton MouseButton;
 
 
         public InputType(Keys keyboardKey)
         {
             this.Type = InputTypeType.Keyboard;
-            this.CursorButton = default(MouseButton);
+            this.MouseButton = default(MouseButton);
             this.KeyboardKey = keyboardKey;
         }
 
@@ -32,7 +32,22 @@ namespace Guppy.IO.Input
         {
             this.Type = InputTypeType.MouseButton;
             this.KeyboardKey = default(Keys);
-            this.CursorButton = cursorButton;
+            this.MouseButton = cursorButton;
         }
+
+        #region ToString Methods
+        public override string ToString()
+        {
+            switch (this.Type)
+            {
+                case InputTypeType.MouseButton:
+                    return this.MouseButton.ToString();
+                case InputTypeType.Keyboard:
+                    return this.KeyboardKey.ToString();
+                default:
+                    return base.ToString();
+            }
+        }
+        #endregion
     }
 }
