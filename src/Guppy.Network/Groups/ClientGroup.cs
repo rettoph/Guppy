@@ -32,13 +32,16 @@ namespace Guppy.Network.Groups
         {
             base.Initialize(provider);
 
-            this.Messages.Set("user:joined", this.HandleUserJoinedMessage);
-            this.Messages.Set("user:left", this.HandleUserLeftMessage);
+            this.Messages.Set(GuppyNetworkConstants.MessageTypes.UserJoined, this.HandleUserJoinedMessage);
+            this.Messages.Set(GuppyNetworkConstants.MessageTypes.UserLeft, this.HandleUserLeftMessage);
         }
 
         protected override void Release()
         {
             base.Release();
+
+            this.Messages.Remove(GuppyNetworkConstants.MessageTypes.UserJoined);
+            this.Messages.Remove(GuppyNetworkConstants.MessageTypes.UserLeft);
 
             _provider = null;
             _client = null;

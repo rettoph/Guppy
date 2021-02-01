@@ -55,7 +55,7 @@ namespace Guppy.Network.Utilities.Messages
         /// </summary>
         /// <param name="type"></param>
         /// <param name="reader"></param>
-        public void Set(String type, Action<NetIncomingMessage> reader)
+        public void Set(UInt32 type, Action<NetIncomingMessage> reader)
             => this.Set(type, im =>
             {
                 reader(im);
@@ -73,8 +73,8 @@ namespace Guppy.Network.Utilities.Messages
         /// </summary>
         /// <param name="type"></param>
         /// <param name="reader"></param>
-        public void Set(String type, Func<NetIncomingMessage, Boolean> reader)
-            => _messageHandlers[type.xxHash()] = reader;
+        public void Set(UInt32 type, Func<NetIncomingMessage, Boolean> reader)
+            => _messageHandlers[type] = reader;
 
         /// <summary>
         /// Remove a reader delegate previously bound to the 
@@ -82,8 +82,8 @@ namespace Guppy.Network.Utilities.Messages
         /// </summary>
         /// <param name="type"></param>
         /// <param name="reader"></param>
-        public void Remove(String type)
-            => _messageHandlers.Remove(type.xxHash());
+        public void Remove(UInt32 type)
+            => _messageHandlers.Remove(type);
 
         /// <summary>
         /// Build a brand new message specifically designed to

@@ -51,9 +51,9 @@ namespace Guppy.Network.Extensions.Lidgren
         /// <param name="om"></param>
         /// <param name="type"></param>
         /// <param name="writer"></param>
-        public static NetOutgoingMessage Write(this NetOutgoingMessage om, String type, Action<NetOutgoingMessage> writer)
+        public static NetOutgoingMessage Write(this NetOutgoingMessage om, UInt32 type, Action<NetOutgoingMessage> writer)
         {
-            om.Write(type.xxHash());
+            om.Write(type);
             writer(om);
             return om;
         }

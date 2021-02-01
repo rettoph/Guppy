@@ -84,7 +84,7 @@ namespace Guppy.DependencyInjection.Descriptors
         public static ServiceConfigurationDescriptor Transient<TFactory>(String name, int priority = 0)
             => new ServiceConfigurationDescriptor(name, ServiceLifetime.Transient, typeof(TFactory), priority);
 
-        public static ServiceConfigurationDescriptor Transient<TFactory>( int priority = 0)
+        public static ServiceConfigurationDescriptor Transient<TFactory>(int priority = 0)
             => new ServiceConfigurationDescriptor(typeof(TFactory).FullName, ServiceLifetime.Transient, typeof(TFactory), priority);
         #endregion
     }

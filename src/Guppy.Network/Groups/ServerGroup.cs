@@ -96,7 +96,7 @@ namespace Guppy.Network.Groups
             _joinedUsers.Enqueue(user);
 
             // Notify all connected users about the new in group user...
-            this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write("user:joined", om =>
+            this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write(GuppyNetworkConstants.MessageTypes.UserJoined, om =>
             {
                 om.Write(user.Id);
                 user.TryWrite(om);
@@ -112,7 +112,7 @@ namespace Guppy.Network.Groups
             _leftConnection.Enqueue(_userConnections.Connections[user]);
 
             // Alert all remaining users if any about the user leaving
-            this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write("user:left", om =>
+            this.Messages.Create(NetDeliveryMethod.ReliableOrdered, 0).Write(GuppyNetworkConstants.MessageTypes.UserLeft, om =>
             {
                 om.Write(user.Id);
             });            
