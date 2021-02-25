@@ -9,7 +9,7 @@ using System.Text;
 namespace Guppy.Lists
 {
     public class OrderableList<TOrderable> : FrameableList<TOrderable>
-        where TOrderable : Orderable
+        where TOrderable : class, IOrderable
     {
         #region Private Attributes
         private List<TOrderable> _draws;

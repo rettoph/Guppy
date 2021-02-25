@@ -39,7 +39,7 @@ namespace Guppy.UI
 
             services.AddSingleton<UIService>();
             services.AddTransient<Stage>();
-            services.AddScoped<ScreenLayer>();
+            services.AddTransient<ScreenLayer>();
             services.AddTransient<Camera2D>("screen-camera");
 
             // Register default elements

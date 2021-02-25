@@ -29,6 +29,6 @@ namespace Guppy.LayerGroups
         /// directly into a Layer's EntityList.
         /// </summary>
         /// <returns></returns>
-        internal abstract Int32 GetValue();
+        public abstract Int32 GetValue();
     }
 }

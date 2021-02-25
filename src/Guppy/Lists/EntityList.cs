@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using System.Linq;
+using Guppy.Interfaces;
 
 namespace Guppy.Lists
 {
-    public class EntityList : OrderableList<Entity>
+    public class EntityList : OrderableList<IEntity>
     {
         #region Private Fields
         private LayerList _layers;
@@ -42,7 +43,7 @@ namespace Guppy.Lists
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="entity"></param>
-        private void AddEntity(Entity entity)
+        private void AddEntity(IEntity entity)
         {
             entity.OnLayerGroupChanged += this.HandleItemLayerGroupChanged;
             this.UpdateItemLayer(entity);
@@ -54,7 +55,7 @@ namespace Guppy.Lists
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="entity"></param>
-        private void RemoveEntity(Entity entity)
+        private void RemoveEntity(IEntity entity)
         {
             entity.OnLayerGroupChanged -= this.HandleItemLayerGroupChanged;
             entity.Layer?.Entities.TryRemove(entity);
@@ -67,7 +68,7 @@ namespace Guppy.Lists
         /// Automatically update a recieved entity's layer.
         /// </summary>
         /// <param name="item"></param>
-        private void UpdateItemLayer(Entity item)
+        private void UpdateItemLayer(IEntity item)
         {
             // Remove from old layer...
             item.Layer?.Entities.TryRemove(item);
@@ -86,7 +87,7 @@ namespace Guppy.Lists
         /// <param name="old"></param>
         /// <param name="value"></param>
         private void HandleItemLayerGroupChanged(object sender, Int32 old, Int32 value)
-            => this.UpdateItemLayer(sender as Entity);
+            => this.UpdateItemLayer(sender as IEntity);
         #endregion
     }
 }

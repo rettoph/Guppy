@@ -24,7 +24,7 @@ namespace Guppy.Lists.Interfaces
     }
 
     public interface IServiceList<TService> : IServiceList, IEnumerable<TService>
-        where TService : class, IService
+        where TService : IService
     {
         #region Events
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Interfaces;
 using Guppy.Lists.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Lists
 {
-    public class LayerList : OrderableList<Layer>
+    public class LayerList : OrderableList<ILayer>
     {
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
@@ -34,7 +35,7 @@ namespace Guppy.Lists
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private bool CanAddLayer(IServiceList<Layer> list, Layer item)
+        private bool CanAddLayer(IServiceList<ILayer> list, ILayer item)
         {
             foreach (Layer layer in this)
                 if (item.Id == layer.Id)
@@ -47,11 +48,11 @@ namespace Guppy.Lists
         #endregion
 
         #region Helper Methods
-        public Layer GetByGroup(Int32 group)
+        public ILayer GetByGroup(Int32 group)
             => this.FirstOrDefault(l => l.Group.Contains(group));
 
         public T GetByGroup<T>(Int32 group)
-            where T : Layer
+            where T : class, ILayer
                 => this.GetByGroup(group) as T;
         #endregion
     }

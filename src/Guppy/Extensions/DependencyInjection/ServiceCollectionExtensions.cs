@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Interfaces;
 using Guppy.Services;
 using Guppy.Utilities;
 using System;
@@ -28,16 +29,16 @@ namespace Guppy.Extensions.DependencyInjection
         #region Scene Methods
         public static void AddScene(this ServiceCollection services, Type scene, Func<ServiceProvider, Object> factory, Int32 priority = 0)
         {
-            ExceptionHelper.ValidateAssignableFrom<Scene>(scene);
+            ExceptionHelper.ValidateAssignableFrom<IScene>(scene);
 
             services.AddFactory(type: scene, factory: factory, priority: priority);
             services.AddScoped(
                 type: scene, 
                 priority: priority,
-                cacheType: typeof(Scene));
+                cacheType: typeof(IScene));
         }
         public static void AddScene<TScene>(this ServiceCollection services, Func<ServiceProvider, TScene> factory, Int32 priority = 0)
-            where TScene : Scene
+            where TScene : class, IScene
                 => services.AddScene(typeof(TScene), p => factory(p), priority);
         #endregion
 

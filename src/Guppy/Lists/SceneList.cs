@@ -10,10 +10,10 @@ using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
 
 namespace Guppy.Lists
 {
-    public class SceneList : ServiceList<Scene>
+    public class SceneList : ServiceList<IScene>
     {
         #region Public Attributes
-        public Scene Scene { get; private set; }
+        public IScene Scene { get; private set; }
         #endregion
 
         #region Events
@@ -52,7 +52,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Helper Methods
-        public void SetScene(Scene scene)
+        public void SetScene(IScene scene)
         {
             if (!this.Contains(scene))
                 throw new Exception("Unable to render non-child theme.");
@@ -94,7 +94,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Events
-        private void HandleSceneAdded(Scene scene)
+        private void HandleSceneAdded(IScene scene)
         {
             if (this.Scene == null)
                 this.SetScene(scene);

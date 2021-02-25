@@ -6,15 +6,17 @@ using System.Text;
 
 namespace Guppy
 {
-    public class Entity : Orderable
+    public class Entity : Orderable, IEntity
     {
         #region Private Fields
-        private Layer _layer;
+        private ILayer _layer;
         private Int32 _layerGroup;
         #endregion
 
         #region Public Attributes
-        public Layer Layer
+        ILayer IEntity.Layer { get => this.Layer; set => this.Layer = value; }
+
+        public ILayer Layer
         {
             get => _layer;
             internal set => this.OnLayerChanged.InvokeIf(value != _layer, this, ref _layer, value);
@@ -31,13 +33,13 @@ namespace Guppy
         /// Indicates that the current entity has been succesfully added to 
         /// the current LayerGroup value.
         /// </summary>
-        public event OnChangedEventDelegate<Entity, Layer> OnLayerChanged;
+        public event OnChangedEventDelegate<IEntity, ILayer> OnLayerChanged;
 
         /// <summary>
         /// Indicates that the current entity wishes to change to another layer.
         /// This will trigger automated processes to update the layer.
         /// </summary>
-        public event OnChangedEventDelegate<Entity, Int32> OnLayerGroupChanged;
+        public event OnChangedEventDelegate<IEntity, Int32> OnLayerGroupChanged;
         #endregion
     }
 }

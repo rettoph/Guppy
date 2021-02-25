@@ -160,13 +160,28 @@ namespace Guppy.DependencyInjection
             var type = target.Factory.ImplementationType;
             ExceptionHelper.ValidateAssignableFrom(lookupType, type);
 
-            while(type != lookupType)
-            {
-                this.AddLookup(type, target);
-                type = type.BaseType;
-            }
+            if(lookupType.IsInterface)
+            { // Recersively add types until the interface is no longer implemented...
+                while (type.GetInterfaces().Contains(lookupType))
+                {
+                    this.AddLookup(type, target);
+                    type = type.BaseType;
+                }
 
-            this.AddLookup(type, target);
+                // Add the recived interface...
+                this.AddLookup(lookupType, target);
+            }
+            else
+            { // Add types until the base type is hit...
+                while (type != lookupType)
+                {
+                    this.AddLookup(type, target);
+                    type = type.BaseType;
+                }
+
+                // Add the final lookup type...
+                this.AddLookup(type, target);
+            }
         }
 
         public void AddLookupRecursive<TLookup>(ServiceConfiguration target)

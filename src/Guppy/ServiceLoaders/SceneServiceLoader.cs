@@ -21,14 +21,14 @@ namespace Guppy.ServiceLoaders
             services.AddFactory<SceneList>(p => new SceneList());
             services.AddSingleton<SceneList>();
 
-            AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
+            AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IScene>(false).ForEach(s =>
             {
                 services.AddScene(s, p => ActivatorUtilities.CreateInstance(p, s));
             });
 
-            services.AddSetup<Scene>((scene, p, c) =>
+            services.AddSetup<IScene>((scene, p, c) =>
             {
-                p.AddLookupRecursive<Scene>(c);
+                p.AddLookupRecursive<IScene>(c);
             });
         }
 

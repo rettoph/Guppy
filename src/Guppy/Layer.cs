@@ -9,17 +9,19 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Extensions.System.Collections;
 using Guppy.Lists.Interfaces;
+using Guppy.Interfaces;
+using Guppy.Contexts;
 
 namespace Guppy
 {
-    public class Layer : Orderable
+    public class Layer : Orderable, ILayer
     {
         #region Private Fields
         private LayerGroup _group;
         #endregion
 
         #region Public Attributes
-        public OrderableList<Entity> Entities { get; private set; }
+        public OrderableList<IEntity> Entities { get; private set; }
         public LayerGroup Group
         {
             get => _group;
@@ -38,7 +40,7 @@ namespace Guppy
         {
             base.PreInitialize(provider);
 
-            this.Entities = provider.GetService<OrderableList<Entity>>();
+            this.Entities = provider.GetService<OrderableList<IEntity>>();
             this.Entities.OnCreated += this.handleEntityCreated;
         }
 
@@ -76,10 +78,19 @@ namespace Guppy
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="item"></param>
-        private void handleEntityCreated(Entity item)
+        private void handleEntityCreated(IEntity item)
         {
             if(!this.Group.Contains(item.LayerGroup))
                 item.LayerGroup = this.Group.GetValue();
+        }
+        #endregion
+
+        #region ILayer Methods
+        public void SetContext(LayerContext context)
+        {
+            this.Group = context.Group;
+
+            base.SetContext(context);
         }
         #endregion
     }

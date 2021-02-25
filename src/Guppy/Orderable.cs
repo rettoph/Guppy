@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.Contexts;
+using Guppy.DependencyInjection;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.System;
 using Guppy.Interfaces;
@@ -13,7 +14,7 @@ namespace Guppy
     /// 
     /// Mostly used via entities and layers.
     /// </summary>
-    public abstract class Orderable : Driven
+    public abstract class Orderable : Driven, IOrderable
     {
         #region Private Fields
         private Boolean _visible;
@@ -48,10 +49,10 @@ namespace Guppy
         #endregion
 
         #region Events
-        public event OnEventDelegate<Orderable, Int32> OnDrawOrderChanged;
-        public event OnEventDelegate<Orderable, Int32> OnUpdateOrderChanged;
-        public event OnEventDelegate<Orderable, Boolean> OnVisibleChanged;
-        public event OnEventDelegate<Orderable, Boolean> OnEnabledChanged;
+        public event OnEventDelegate<IOrderable, Int32> OnDrawOrderChanged;
+        public event OnEventDelegate<IOrderable, Int32> OnUpdateOrderChanged;
+        public event OnEventDelegate<IOrderable, Boolean> OnVisibleChanged;
+        public event OnEventDelegate<IOrderable, Boolean> OnEnabledChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -73,6 +74,17 @@ namespace Guppy
             this.OnVisibleChanged.LogInvocationList($"OnVisibleChanged", this);
             this.OnEnabledChanged.LogInvocationList($"OnEnabledChanged", this);
 #endif
+        }
+        #endregion
+
+        #region IOrderable Methods
+        public void SetContext(OrderableContext context)
+        {
+            this.Enabled = context.Enabled;
+            this.UpdateOrder = context.UpdateOrder;
+
+            this.Visible = context.Visible;
+            this.DrawOrder = context.DrawOrder;
         }
         #endregion
     }

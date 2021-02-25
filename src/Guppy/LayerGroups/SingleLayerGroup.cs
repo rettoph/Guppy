@@ -23,7 +23,7 @@ namespace Guppy.LayerGroups
             return group.Contains(this.Value);
         }
 
-        internal override Int32 GetValue()
+        public override Int32 GetValue()
         {
             return this.Value;
         }

@@ -7,7 +7,7 @@ namespace Guppy.Interfaces
 {
     public delegate void Step(GameTime gameTime);
 
-    public interface IFrameable
+    public interface IFrameable : IService
     {
         /// <summary>
         /// Delegate invoked each frame immidiately before OnDraw.

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Lists
 {
     public class FrameableList<TFrameable> : ServiceList<TFrameable>, IFrameable
-        where TFrameable : Frameable
+        where TFrameable : class, IFrameable
     {
         #region Events
         public event Step OnPreDraw;

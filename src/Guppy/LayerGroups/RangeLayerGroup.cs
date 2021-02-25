@@ -28,7 +28,7 @@ namespace Guppy.LayerGroups
             return group.Contains(this.Min) || group.Contains(this.Max);
         }
 
-        internal override Int32 GetValue()
+        public override Int32 GetValue()
         {
             return this.Min;
         }

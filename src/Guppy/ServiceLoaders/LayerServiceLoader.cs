@@ -16,11 +16,11 @@ namespace Guppy.ServiceLoaders
         {
             // Configure factories...
             services.AddFactory<LayerList>(p => new LayerList());
-            services.AddFactory<OrderableList<Entity>>(p => new OrderableList<Entity>());
+            services.AddFactory<OrderableList<IEntity>>(p => new OrderableList<IEntity>());
 
             // Configure services...
             services.AddScoped<LayerList>();
-            services.AddTransient<OrderableList<Entity>>();
+            services.AddTransient<OrderableList<IEntity>>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

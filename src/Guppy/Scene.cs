@@ -7,17 +7,18 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Utilities;
+using Guppy.Interfaces;
 
 namespace Guppy
 {
-    public abstract class Scene : Driven
+    public abstract class Scene : Driven, IScene
     {
         #region Private Fields
         private ServiceProvider _provider;
         private Synchronizer _synchronizer;
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         public LayerList Layers { get; private set; }
         public EntityList Entities { get; private set; }
         #endregion
