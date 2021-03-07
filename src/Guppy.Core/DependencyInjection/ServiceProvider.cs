@@ -202,7 +202,7 @@ namespace Guppy.DependencyInjection
 
             _disposing = true;
 
-            _scopedInstances.Values.ForEach(s =>
+            _scopedInstances.Values.ToArray().ForEach(s =>
             {
                 // Auto dispose all scoped instances.
                 if (s is IDisposable d)
