@@ -36,7 +36,10 @@ namespace Guppy
         }
 
         internal override void TryRelease(Driven driven)
-            => this.Release(this.driven);
+        {
+            this.Release(this.driven);
+            this.driven = null;
+        }
 
         protected virtual void Release(T driven)
         {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Events
+namespace Guppy.Events.Delegates
 {
     public delegate void OnGameTimeEventDelegate<TSender>(TSender sender, GameTime gameTime);
     public delegate void OnGameTimeEventDelegate<TSender, TArgs>(TSender sender, GameTime gameTime, TArgs args);
