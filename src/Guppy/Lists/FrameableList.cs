@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Lists
 {
-    public class FrameableList<TFrameable> : ServiceList<TFrameable>, IFrameable
+    public class FrameableList<TFrameable> : FactoryServiceList<TFrameable>, IFrameable
         where TFrameable : class, IFrameable
     {
         #region Events

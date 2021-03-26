@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Core\Guppy.Core.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Network.Core\Guppy.Network.Core.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Network\Guppy.Network.csproj" />
+    <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />
+  </ItemGroup>
+
+</Project>

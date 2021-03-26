@@ -1,0 +1,74 @@
+﻿using Guppy.DependencyInjection;
+using Guppy.Network.Extensions.Lidgren;
+using Guppy.Network.Extensions.Security;
+using Guppy.Network.Lists;
+using Guppy.Network.Utilities;
+using Lidgren.Network;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Guppy.Network.Channels
+{
+    public class ClientChannel : Channel
+    {
+        #region Private Fields
+        /// <summary>
+        /// A list of all users.
+        /// </summary>
+        private UserList _allUsers;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserJoined].OnRead += this.ReadUserJoinedMessage;
+            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserLeft].OnRead += this.ReadUserLeftMessage;
+        }
+
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            provider.Service(out _allUsers);
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            _allUsers = null;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserJoined].OnRead -= this.ReadUserJoinedMessage;
+            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserLeft].OnRead -= this.ReadUserLeftMessage;
+        }
+        #endregion
+
+        #region Message Handlers
+        private void ReadUserJoinedMessage(MessageTypeManager sender, NetIncomingMessage im)
+        {
+            var user = _allUsers.GetOrCreate(im.ReadGuid());
+            user.TryRead(im);
+
+            this.Users.TryAdd(user);
+
+            Console.WriteLine($"Users: {this.Users.Count}");
+        }
+
+        private void ReadUserLeftMessage(MessageTypeManager sender, NetIncomingMessage im)
+        {
+            var user = this.Users.GetById(im.ReadGuid());
+            this.Users.TryRemove(user);
+
+            Console.WriteLine($"Users: {this.Users.Count}");
+        }
+        #endregion
+    }
+}

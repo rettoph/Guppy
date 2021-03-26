@@ -28,7 +28,6 @@ namespace Guppy.Lists
         #region Private Fields
         private Dictionary<Guid, TService> _dictionary;
         private List<TService> _list;
-        private Stack<TService> _created;
         #endregion
 
         #region Protected Fields
@@ -85,7 +84,6 @@ namespace Guppy.Lists
 
             _dictionary = new Dictionary<Guid, TService>();
             _list = new List<TService>();
-            _created = new Stack<TService>();
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -163,7 +161,7 @@ namespace Guppy.Lists
 
         public virtual T GetById<T>(Guid id)
             where T : class, TService
-                => (_dictionary.ContainsKey(id) ? _dictionary[id] : _created.FirstOrDefault(i => i.Id == id)) as T;
+                => (_dictionary.ContainsKey(id) ? _dictionary[id] : default) as T;
 
         public void Clear()
         {

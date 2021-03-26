@@ -1,0 +1,160 @@
+﻿using Guppy.DependencyInjection;
+using Guppy.Exceptions;
+using Guppy.Interfaces;
+using Guppy.Lists.Delegates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Guppy.Lists
+{
+    public class FactoryServiceList<TService> : ServiceList<TService>
+        where TService : class, IService
+    {
+        #region Private Fields
+        private Stack<TService> _created;
+        #endregion
+
+        #region Events
+        public event ItemDelegate<TService> OnCreated;
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void Create(ServiceProvider provider)
+        {
+            base.Create(provider);
+
+            _created = new Stack<TService>();
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            if (this.releasedChildren)
+            { // Auto release all children.
+                while (_created.Any())
+                    _created.Pop().TryRelease();
+            }
+            else
+            { // Simply clear all children.
+                _created.Clear();
+            }
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            _created.Clear();
+            _created = null;
+        }
+        #endregion
+
+        #region Helper Methods
+        public override T GetById<T>(Guid id)
+            => base.GetById<T>(id) ?? _created.FirstOrDefault(i => i.Id == id) as T;
+        #endregion
+
+        #region Create Methods
+        protected virtual T Create<T>(ServiceProvider provider, UInt32 descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            where T : class, TService
+        {
+            var instance = provider.GetService<T>(descriptorId, (i, p, d) =>
+            {
+                if (id != null)
+                    i.Id = id.Value;
+
+                _created.Push(i);
+                this.OnCreated?.Invoke(i);
+
+                setup?.Invoke(i, p, d);
+            });
+
+            if (_created.Any() && _created.Peek() == instance)
+                _created.Pop();
+
+            this.TryAdd(instance);
+
+            return instance;
+        }
+
+        public T Create<T>(UInt32 descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            where T : class, TService
+                => this.Create<T>(this.provider, descriptorId, setup, id);
+
+        public T Create<T>(Type descriptorType, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            where T : class, TService
+        {
+            try
+            {
+                return this.Create<T>(ServiceConfiguration.GetId(descriptorType), setup, id);
+            }
+            catch (ServiceIdUnknownException e)
+            {
+                throw new ServiceTypeUnknown(descriptorType, e);
+            }
+        }
+
+        public T Create<T>(String descriptorName, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            where T : class, TService
+        {
+            try
+            {
+                return this.Create<T>(ServiceConfiguration.GetId(descriptorName), setup, id);
+            }
+            catch (ServiceIdUnknownException e)
+            {
+                throw new ServiceNameUnknown(descriptorName, e);
+            }
+        }
+
+        public T Create<T>(Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            where T : class, TService
+                => this.Create<T>(typeof(T), setup, id);
+
+        public TService Create(UInt32 descriptorId, Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => this.Create<TService>(descriptorId, setup, id);
+
+        public TService Create(Type descriptorType, Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => this.Create(ServiceConfiguration.GetId(descriptorType), setup, id);
+
+        public TService Create(String descriptorName, Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => this.Create(ServiceConfiguration.GetId(descriptorName), setup, id);
+
+        public TService Create(Action<TService, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+             => this.Create(typeof(TService), setup, id);
+        #endregion
+
+        #region GetOrCreateById Methods
+        public T GetOrCreateById<T>(Guid id, UInt32 descriptorId)
+            where T : class, TService
+                => this.GetById<T>(id) ?? this.Create<T>(descriptorId, null, id);
+
+        public T GetOrCreateById<T>(Guid id, String descriptorName)
+            where T : class, TService
+                => this.GetOrCreateById<T>(id, ServiceConfiguration.GetId(descriptorName));
+
+        public T GetOrCreateById<T>(Guid id, Type descriptorType)
+            where T : class, TService
+                => this.GetOrCreateById<T>(id, ServiceConfiguration.GetId(descriptorType));
+
+        public T GetOrCreateById<T>(Guid id)
+            where T : class, TService
+                => this.GetOrCreateById<T>(id, typeof(TService));
+
+        public TService GetOrCreateById(Guid id, UInt32 descriptorId)
+            => this.GetOrCreateById<TService>(id, descriptorId);
+
+        public TService GetOrCreateById(Guid id, String descriptorName)
+            => this.GetOrCreateById(id, ServiceConfiguration.GetId(descriptorName));
+
+        public TService GetOrCreateById(Guid id, Type descriptorType)
+            => this.GetOrCreateById(id, ServiceConfiguration.GetId(descriptorType));
+
+        public TService GetOrCreateById(Guid id)
+            => this.GetOrCreateById(id, ServiceConfiguration.GetId(typeof(TService)));
+        #endregion
+    }
+}

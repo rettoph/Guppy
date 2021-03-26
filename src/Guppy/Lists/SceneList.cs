@@ -10,7 +10,7 @@ using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
 
 namespace Guppy.Lists
 {
-    public class SceneList : ServiceList<IScene>
+    public class SceneList : FactoryServiceList<IScene>
     {
         #region Public Attributes
         public IScene Scene { get; private set; }

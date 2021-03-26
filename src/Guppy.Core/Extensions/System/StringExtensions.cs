@@ -18,7 +18,6 @@ namespace Guppy.Extensions.System
             if (!_cache.ContainsKey(hash))
             {
                 _cache[hash] = value;
-                Console.WriteLine($"{hash} => {value}");
             }
 #endif
             return XXH32.DigestOf(Encoding.UTF8.GetBytes(value));

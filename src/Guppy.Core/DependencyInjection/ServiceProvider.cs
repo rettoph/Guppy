@@ -27,6 +27,10 @@ namespace Guppy.DependencyInjection
         internal ILog logger { get; private set; }
         #endregion
 
+        #region Public Properties
+        public Settings Settings { get; private set; }
+        #endregion
+
         #region Constructors
         internal ServiceProvider(ServiceCollection services)
         {
@@ -75,6 +79,7 @@ namespace Guppy.DependencyInjection
                     }));
 
             this.logger = this.GetService<ILog>();
+            this.Settings = this.GetService<Settings>();
         }
         internal ServiceProvider(ServiceProvider parent)
         {
@@ -86,6 +91,10 @@ namespace Guppy.DependencyInjection
             _lookups = new Dictionary<UInt32, ServiceConfiguration>(parent._lookups);
 
             this.logger = this.GetService<ILog>();
+            this.Settings = this.GetService<Settings>((settings, p, c) =>
+            {
+                settings.Import(parent.Settings);
+            });
         }
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace Guppy.ServiceLoaders
         {
             services.AddFactory<IServiceScopeFactory>(p => new ServiceScopeFactory(p));
             services.AddScoped<IServiceScopeFactory>();
+
+            services.AddFactory<Settings>(p => new Settings());
+            services.AddScoped<Settings>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

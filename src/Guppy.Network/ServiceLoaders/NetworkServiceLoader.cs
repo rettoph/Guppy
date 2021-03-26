@@ -1,16 +1,15 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Network.Groups;
+using Guppy.Lists;
+using Guppy.Network.Drivers;
+using Guppy.Network.Enums;
 using Guppy.Network.Peers;
-using Guppy.Network.Utilities;
-using Guppy.Network.Utilities.Messages;
-using Lidgren.Network;
+using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.Lists;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -19,33 +18,32 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            // Configure service factories...
-            services.AddFactory<User>(p => new User());
-            services.AddFactory<ServiceList<User>>(p => new ServiceList<User>());
-            services.AddFactory<ServiceList<Group>>(p => new ServiceList<Group>());
-            services.AddFactory<Group>(p => p.GetService<Peer>().GroupFactory());
-            services.AddFactory<NetClient>(p => new NetClient(p.GetService<NetPeerConfiguration>()));
-            services.AddFactory<NetServer>(p => new NetServer(p.GetService<NetPeerConfiguration>()));
-            services.AddFactory<ClientPeer>(p => new ClientPeer());
-            services.AddFactory<ServerPeer>(p => new ServerPeer());
-            services.AddFactory<NetPeerConfiguration>(p => new NetPeerConfiguration("guppy"));
-            services.AddFactory<UserNetConnectionDictionary>(p => new UserNetConnectionDictionary());
+            services.AddFactory<ServiceList<NetworkEntity>>(p => new ServiceList<NetworkEntity>());
+            services.AddScoped<ServiceList<NetworkEntity>>();
 
-            // Setup service scopes...
-            services.AddTransient<User>();
-            services.AddTransient<ServiceList<User>>();
-            services.AddSingleton<ServiceList<Group>>();
-            services.AddSingleton<Group>();
-            services.AddSingleton<NetClient>();
-            services.AddSingleton<NetServer>();
-            services.AddSingleton<ClientPeer>();
-            services.AddSingleton<ServerPeer>();
-            services.AddSingleton<NetPeerConfiguration>();
-            services.AddSingleton<UserNetConnectionDictionary>();
 
-            // Configure services...
-            services.AddSetup<NetPeer>((i, p, c) => p.AddLookupRecursive<NetPeer>(c), -20);
-            services.AddSetup<Peer>((i, p, c) => p.AddLookupRecursive<Peer>(c), -20);
+            #region Settings Setup
+            services.AddSetup<Settings>((s, p, c) =>
+            { // Configure the default settings...
+                s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
+                s.Set<HostType>(HostType.Remote);
+            }, -10);
+
+            services.AddSetup<ServerPeer>((server, p, c) =>
+            {
+                p.Settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
+            });
+            #endregion
+
+            #region Default Driver Filters
+            services.AddDriverFilter(
+                typeof(MasterNetworkAuthorizationDriver<>),
+                (d, p) => p.Settings.Get<NetworkAuthorization>() == NetworkAuthorization.Master);
+
+            services.AddDriverFilter(
+                typeof(SlaveNetworkAuthorizationDriver<>),
+                (d, p) => p.Settings.Get<NetworkAuthorization>() == NetworkAuthorization.Slave);
+            #endregion
         }
 
         public void ConfigureProvider(ServiceProvider provider)
