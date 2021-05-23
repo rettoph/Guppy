@@ -8,7 +8,7 @@ using System;
 
 namespace Guppy
 {
-    public abstract class Frameable : Service, IFrameable
+    public abstract class Frameable : Entity, IFrameable
     {
         #region Events
         /// <inheritdoc/>

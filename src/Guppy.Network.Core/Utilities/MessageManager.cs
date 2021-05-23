@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Contexts;
+using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,12 @@ namespace Guppy.Network.Utilities
     public class MessageManager : IDisposable
     {
         #region Private Fields
-        private Action<NetOutgoingMessage> _signer;
-        private Func<NetOutgoingMessageContext, NetConnection, Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>>, NetOutgoingMessage> _defaultFactory;
         private Dictionary<UInt32, MessageTypeManager> _messageTypes;
+        #endregion
+
+        #region Public Properties
+        public Action<NetOutgoingMessage> Signer { get; set; }
+        public Func<NetOutgoingMessageContext, IEnumerable<NetConnection>, NetOutgoingMessage> DefaultFactory { get; set; }
         #endregion
 
         #region Public Properties
@@ -19,10 +23,8 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Constructors
-        public MessageManager(Action<NetOutgoingMessage> signer, Func<NetOutgoingMessageContext, NetConnection, Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>>, NetOutgoingMessage> defaultFactory = null)
+        public MessageManager()
         {
-            _signer = signer;
-            _defaultFactory = defaultFactory;
             _messageTypes = new Dictionary<uint, MessageTypeManager>();
         }
 
@@ -34,9 +36,9 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Helper Methods
-        public void Add(UInt32 messageType, NetOutgoingMessageContext defaultContext = null, Func<NetOutgoingMessageContext, NetConnection, Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>>, NetOutgoingMessage> factory = null)
+        public void Add(UInt32 messageType, NetOutgoingMessageContext defaultContext = null, Func<NetOutgoingMessageContext, IEnumerable<NetConnection>, NetOutgoingMessage> factory = null)
         {
-            _messageTypes.Add(messageType, new MessageTypeManager(messageType, factory ?? _defaultFactory, _signer, defaultContext));
+            _messageTypes.Add(messageType, new MessageTypeManager(messageType, factory ?? this.DefaultFactory, this.Signer, defaultContext));
         }
 
         public void Remove(UInt32 messageType)

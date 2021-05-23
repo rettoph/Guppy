@@ -14,8 +14,8 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<EntityList>(p => new EntityList());
-            services.AddScoped<EntityList>();
+            services.RegisterTypeFactory<LayerableList>(p => new LayerableList());
+            services.RegisterScoped<LayerableList>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

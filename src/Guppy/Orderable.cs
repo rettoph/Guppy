@@ -14,7 +14,7 @@ namespace Guppy
     /// 
     /// Mostly used via entities and layers.
     /// </summary>
-    public abstract class Orderable : Driven, IOrderable
+    public abstract class Orderable : Frameable, IOrderable
     {
         #region Private Fields
         private Boolean _visible;

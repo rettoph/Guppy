@@ -18,17 +18,12 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(DependencyInjection.ServiceCollection services)
         {
-            services.AddFactory<SceneList>(p => new SceneList());
-            services.AddSingleton<SceneList>();
+            services.RegisterTypeFactory<SceneList>(p => new SceneList());
+            services.RegisterSingleton<SceneList>();
 
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IScene>(false).ForEach(s =>
             {
-                services.AddScene(s, p => ActivatorUtilities.CreateInstance(p, s));
-            });
-
-            services.AddSetup<IScene>((scene, p, c) =>
-            {
-                p.AddLookupRecursive<IScene>(c);
+                services.RegisterScene(s);
             });
         }
 

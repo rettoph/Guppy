@@ -1,23 +1,15 @@
-﻿using Guppy.IO.Input.ServiceLoaders;
-using Guppy.IO.Output.ServiceLoaders;
+﻿using Guppy.IO.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Extensions
+namespace Guppy.IO.Extensions
 {
     public static class GuppyLoaderExtensions
     {
-        public static GuppyLoader ConfigureTerminal(this GuppyLoader loader, String defaultTerminalFontPath)
+        public static GuppyLoader ConfigureTerminal(this GuppyLoader guppy)
         {
-            loader.RegisterServiceLoader(new TerminalServiceLoader(defaultTerminalFontPath));
-
-            return loader;
-        }
-
-        public static GuppyLoader ConfigureInput(this GuppyLoader guppy)
-        {
-            guppy.RegisterServiceLoader(new InputServiceLoader());
+            guppy.RegisterServiceLoader(new TerminalServiceLoader());
 
             return guppy;
         }

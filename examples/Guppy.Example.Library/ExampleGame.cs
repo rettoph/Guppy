@@ -1,4 +1,6 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Example.Library.Scenes;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Network.Peers;
 using System;
 
@@ -16,6 +18,8 @@ namespace Guppy.Example.Library
             base.Initialize(provider);
 
             provider.Service(out _peer);
+
+            this.Scenes.Create<ExampleScene>();
         }
         #endregion
 

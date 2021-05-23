@@ -19,7 +19,7 @@ namespace Guppy.ServiceLoaders
         {
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(g =>
             {
-                services.AddGame(g, p => ActivatorUtilities.CreateInstance(p, g));
+                services.RegisterGame(game: g);
             });
         }
 

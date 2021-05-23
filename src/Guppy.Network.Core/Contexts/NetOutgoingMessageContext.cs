@@ -8,7 +8,7 @@ namespace Guppy.Network.Contexts
 {
     /// <summary>
     /// Defines simple reusable values for <see cref="NetOutgoingMessage"/>s.
-    /// <see cref="IPipe.CreateMessage"/> consumes this value.
+    /// <see cref="IChannel.CreateMessage"/> consumes this value.
     /// </summary>
     public class NetOutgoingMessageContext
     {

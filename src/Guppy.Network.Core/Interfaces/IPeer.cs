@@ -41,27 +41,26 @@ namespace Guppy.Network.Interfaces
         event OnEventDelegate<IPeer, NetIncomingMessage> OnIncomingMessageRecieved;
 
         /// <summary>
-        /// The <see cref="ServiceConfigurationDescriptor.Id"/> to be used when creating a new
+        /// The <see cref="ServiceConfigurationDescriptor.Key"/> to be used when creating a new
         /// <see cref="IChannel"/> instance.
         /// </summary>
-        UInt32 ChannelServiceConfigurationId { get; }
+        ServiceConfigurationKey ChannelServiceConfigurationKey { get; }
         #endregion
 
         #region Methods
         /// <summary>
         /// Start the current <see cref="IPeer"/> & its underlying <see cref="NetPeer"/>.
+        /// This will automatically update the peer asynchronously. Note, IChannel instances
+        /// must be manually updated still.
         /// </summary>
         void Start();
 
         /// <summary>
-        /// Create a new unattached user with the inputed claims.
+        /// Create a new unattached user with the recieved claims.
         /// </summary>
         /// <param name="claims"></param>
         /// <returns></returns>
         IUser CreateUser(params Claim[] claims);
-
-        void TryUpdate();
-
         #endregion
     }
 }

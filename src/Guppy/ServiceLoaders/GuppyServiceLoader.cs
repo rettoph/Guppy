@@ -15,11 +15,8 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<Synchronizer>(p => new Synchronizer());
-            services.AddScoped<Synchronizer>();
-
-            services.AddFactory<DriverService>(p => new DriverService());
-            services.AddSingleton<DriverService>();
+            services.RegisterTypeFactory<Synchronizer>(p => new Synchronizer());
+            services.RegisterScoped<Synchronizer>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

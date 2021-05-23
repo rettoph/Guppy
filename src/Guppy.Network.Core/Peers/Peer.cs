@@ -14,6 +14,7 @@ using log4net;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Peers
 {
@@ -36,10 +37,10 @@ namespace Guppy.Network.Peers
 
         #region Protected Properties
         /// <summary>
-        /// The <see cref="ServiceConfigurationDescriptor.Id"/> to be used when creating a new
+        /// The <see cref="ServiceConfigurationDescriptor.Key"/> to be used when creating a new
         /// <see cref="IChannel"/> instance.
         /// </summary>
-        protected abstract UInt32 channelServiceConfigurationId { get; }
+        protected abstract ServiceConfigurationKey channelServiceConfigurationkey { get; }
         #endregion
 
         #region IPeer Implementation
@@ -59,7 +60,7 @@ namespace Guppy.Network.Peers
         public event OnEventDelegate<IPeer, NetIncomingMessage> OnIncomingMessageRecieved;
 
         /// <inheritdoc />
-        UInt32 IPeer.ChannelServiceConfigurationId => this.channelServiceConfigurationId;
+        ServiceConfigurationKey IPeer.ChannelServiceConfigurationKey => this.channelServiceConfigurationkey;
         #endregion
 
         #region Lifecycle Methods
@@ -79,7 +80,7 @@ namespace Guppy.Network.Peers
             this.Users = provider.GetService<UserList>();
             this.Channels = provider.GetService<ChannelList>((channels, p, c) =>
             {
-                channels.serviceConfigurationId = this.channelServiceConfigurationId;
+                channels.channelServiceConfigurationKey = this.channelServiceConfigurationkey;
             });
         }
 
@@ -169,7 +170,7 @@ namespace Guppy.Network.Peers
             // There is a global agreement that all custom messages are handled by a recieving
             // channel, as signed by their prefix value.
             var channelId = im.ReadInt16();
-            this.Channels.GetOrCreate(channelId).Messages.Read(im);
+            this.Channels.GetById(channelId).Messages.Read(im);
         }
 
         private void HandleDebugMessage(IPeer sender, NetIncomingMessage im)

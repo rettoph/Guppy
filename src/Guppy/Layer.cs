@@ -21,7 +21,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public OrderableList<IEntity> Entities { get; private set; }
+        public OrderableList<ILayerable> Items { get; private set; }
         public LayerGroup Group
         {
             get => _group;
@@ -40,16 +40,16 @@ namespace Guppy
         {
             base.PreInitialize(provider);
 
-            this.Entities = provider.GetService<OrderableList<IEntity>>();
-            this.Entities.OnCreated += this.handleEntityCreated;
+            this.Items = provider.GetService<OrderableList<ILayerable>>();
+            this.Items.OnCreated += this.HandleEntityCreated;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Entities.OnCreated -= this.handleEntityCreated;
-            this.Entities.TryRelease();
+            this.Items.OnCreated -= this.HandleEntityCreated;
+            this.Items.TryRelease();
         }
         #endregion
 
@@ -59,7 +59,7 @@ namespace Guppy
             base.Draw(gameTime);
 
             // Auto draw all entities within layer
-            this.Entities.TryDraw(gameTime);
+            this.Items.TryDraw(gameTime);
         }
 
         protected override void Update(GameTime gameTime)
@@ -67,7 +67,7 @@ namespace Guppy
             base.Update(gameTime);
 
             // Auto update all entities within layer
-            this.Entities.TryUpdate(gameTime);
+            this.Items.TryUpdate(gameTime);
         }
         #endregion
 
@@ -76,9 +76,8 @@ namespace Guppy
         /// Automatically update the entities layer to match the current
         /// Layer's group as needed.
         /// </summary>
-        /// <param name="sender"></param>
         /// <param name="item"></param>
-        private void handleEntityCreated(IEntity item)
+        private void HandleEntityCreated(ILayerable item)
         {
             if(!this.Group.Contains(item.LayerGroup))
                 item.LayerGroup = this.Group.GetValue();

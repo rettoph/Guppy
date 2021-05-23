@@ -7,6 +7,7 @@ namespace Guppy.Extensions.System.Collections
 {
     public static class IEnumerableExtensions
     {
+
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (T item in source)

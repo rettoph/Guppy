@@ -9,7 +9,7 @@ namespace Guppy.Interfaces
     {
         #region Public Properties
         public LayerList Layers { get; }
-        public EntityList Entities { get; }
+        public LayerableList Entities { get; }
         #endregion
     }
 }

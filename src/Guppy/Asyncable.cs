@@ -10,7 +10,7 @@ namespace Guppy
     /// <summary>
     /// Represents a service than can self update (but doesnt neccessarily)
     /// </summary>
-    public class Asyncable : Driven
+    public class Asyncable : Frameable
     {
         private Boolean _draw;
         private Boolean _running;

@@ -11,7 +11,7 @@ using Guppy.Interfaces;
 
 namespace Guppy
 {
-    public abstract class Scene : Driven, IScene
+    public abstract class Scene : Frameable, IScene
     {
         #region Private Fields
         private ServiceProvider _provider;
@@ -20,7 +20,7 @@ namespace Guppy
 
         #region Public Properties
         public LayerList Layers { get; private set; }
-        public EntityList Entities { get; private set; }
+        public LayerableList Entities { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -32,7 +32,7 @@ namespace Guppy
             provider.Service(out _synchronizer);
 
             this.Layers = provider.GetService<LayerList>();
-            this.Entities = provider.GetService<EntityList>();
+            this.Entities = provider.GetService<LayerableList>();
         }
 
 

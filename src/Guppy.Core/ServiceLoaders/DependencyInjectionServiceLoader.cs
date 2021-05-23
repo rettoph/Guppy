@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +17,14 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<IServiceScopeFactory>(p => new ServiceScopeFactory(p));
-            services.AddScoped<IServiceScopeFactory>();
+            services.RegisterTypeFactory<IServiceScopeFactory>(p => new ServiceScopeFactory(p));
+            services.RegisterScoped<IServiceScopeFactory>();
 
-            services.AddFactory<Settings>(p => new Settings());
-            services.AddScoped<Settings>();
+            services.RegisterTypeFactory<ServiceScope>(p => new ServiceScope(p));
+            services.RegisterScoped<ServiceScope>();
+
+            services.RegisterTypeFactory<Settings>(p => new Settings());
+            services.RegisterSingleton<Settings>();
         }
 
         public void ConfigureProvider(ServiceProvider provider)

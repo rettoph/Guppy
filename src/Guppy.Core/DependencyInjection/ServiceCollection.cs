@@ -1,37 +1,41 @@
 ﻿using Guppy.DependencyInjection.Descriptors;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public partial class ServiceCollection : IServiceCollection, IList<ServiceFactoryDescriptor>, IList<ServiceConfigurationDescriptor>, IList<ServiceAction>
+    public partial class ServiceCollection : IServiceCollection, IList<TypeFactoryDescriptor>, IList<ServiceAction>, IList<ServiceConfigurationDescriptor>, IList<ComponentConfigurationDescriptor>, IList<ComponentFilter>
     {
         #region Private Fields
-        private List<ServiceDescriptor> _descriptors;
-        private List<ServiceFactoryDescriptor> _factories;
-        private List<ServiceConfigurationDescriptor> _configurations;
-        private List<ServiceAction> _actions;
+        private List<ServiceDescriptor> _serviceDescriptors;
+        private List<TypeFactoryDescriptor> _typeFactoryDescriptors;
+        private List<ServiceConfigurationDescriptor> _serviceConfigurationDescriptors;
+        private List<ServiceAction> _serviceActions;
+        private List<ComponentConfigurationDescriptor> _componentConfigurationDescriptor;
+        private List<ComponentFilter> _componentFilters;
         #endregion
 
         #region Public Properties
-        public IReadOnlyCollection<ServiceDescriptor> Descriptors => _descriptors;
-        public IReadOnlyCollection<ServiceFactoryDescriptor> Factories => _factories;
-        public IReadOnlyCollection<ServiceConfigurationDescriptor> Configurations => _configurations;
-        public IReadOnlyCollection<ServiceAction> Actions => _actions;
+        public IReadOnlyCollection<ServiceDescriptor> ServiceDescriptors => _serviceDescriptors;
+        public IReadOnlyCollection<TypeFactoryDescriptor> TypeFactories => _typeFactoryDescriptors;
+        public IReadOnlyCollection<ServiceConfigurationDescriptor> ServiceConfigurations => _serviceConfigurationDescriptors;
+        public IReadOnlyCollection<ServiceAction> ServiceActions => _serviceActions;
+        public IReadOnlyCollection<ComponentConfigurationDescriptor> ComponentConfigurationDescriptors => _componentConfigurationDescriptor;
+        public IReadOnlyCollection<ComponentFilter> ComponentFilters => _componentFilters;
         #endregion
 
         #region Constrcutors
         public ServiceCollection()
         {
-            _descriptors = new List<ServiceDescriptor>();
-            _factories = new List<ServiceFactoryDescriptor>();
-            _configurations = new List<ServiceConfigurationDescriptor>();
-            _actions = new List<ServiceAction>();
+            _serviceDescriptors = new List<ServiceDescriptor>();
+            _typeFactoryDescriptors = new List<TypeFactoryDescriptor>();
+            _serviceConfigurationDescriptors = new List<ServiceConfigurationDescriptor>();
+            _serviceActions = new List<ServiceAction>();
+            _componentConfigurationDescriptor = new List<ComponentConfigurationDescriptor>();
+            _componentFilters = new List<ComponentFilter>();
         }
         #endregion
 
@@ -45,144 +49,214 @@ namespace Guppy.DependencyInjection
             => throw new NotImplementedException();
         #endregion
 
-        #region ICollection<ServiceFactory> Implementation
-        ServiceFactoryDescriptor IList<ServiceFactoryDescriptor>.this[int index] { get => _factories[index]; set => _factories[index] = value; }
-
-        int ICollection<ServiceFactoryDescriptor>.Count => _factories.Count;
-
-        bool ICollection<ServiceFactoryDescriptor>.IsReadOnly => false;
-
-        public void Add(ServiceFactoryDescriptor item)
-            => _factories.Add(item);
-
-        void ICollection<ServiceFactoryDescriptor>.Clear()
-            => _factories.Clear();
-
-        bool ICollection<ServiceFactoryDescriptor>.Contains(ServiceFactoryDescriptor item)
-            => _factories.Contains(item);
-
-        void ICollection<ServiceFactoryDescriptor>.CopyTo(ServiceFactoryDescriptor[] array, int arrayIndex)
-            => _factories.CopyTo(array, arrayIndex);
-
-        IEnumerator<ServiceFactoryDescriptor> IEnumerable<ServiceFactoryDescriptor>.GetEnumerator()
-            => _factories.GetEnumerator();
-
-        int IList<ServiceFactoryDescriptor>.IndexOf(ServiceFactoryDescriptor item)
-            => _factories.IndexOf(item);
-
-        void IList<ServiceFactoryDescriptor>.Insert(int index, ServiceFactoryDescriptor item)
-            => _factories.Insert(index, item);
-
-        bool ICollection<ServiceFactoryDescriptor>.Remove(ServiceFactoryDescriptor item)
-            => _factories.Remove(item);
-
-        void IList<ServiceFactoryDescriptor>.RemoveAt(int index)
-            => _factories.RemoveAt(index);
-        #endregion
-
-        #region ICollection<ServiceConfigurationDescriptor> Implementation
-        ServiceConfigurationDescriptor IList<ServiceConfigurationDescriptor>.this[int index] { get => _configurations[index]; set => _configurations[index] = value; }
-
-        int ICollection<ServiceConfigurationDescriptor>.Count => _configurations.Count;
-
-        bool ICollection<ServiceConfigurationDescriptor>.IsReadOnly => false;
-
-        public void Add(ServiceConfigurationDescriptor item)
-            => _configurations.Add(item);
-
-        void ICollection<ServiceConfigurationDescriptor>.Clear()
-            => _configurations.Clear();
-
-        bool ICollection<ServiceConfigurationDescriptor>.Contains(ServiceConfigurationDescriptor item)
-            => _configurations.Contains(item);
-
-        void ICollection<ServiceConfigurationDescriptor>.CopyTo(ServiceConfigurationDescriptor[] array, int arrayIndex)
-            => _configurations.CopyTo(array, arrayIndex);
-
-        IEnumerator<ServiceConfigurationDescriptor> IEnumerable<ServiceConfigurationDescriptor>.GetEnumerator()
-            => _configurations.GetEnumerator();
-
-        int IList<ServiceConfigurationDescriptor>.IndexOf(ServiceConfigurationDescriptor item)
-            => _configurations.IndexOf(item);
-
-        void IList<ServiceConfigurationDescriptor>.Insert(int index, ServiceConfigurationDescriptor item)
-            => _configurations.Insert(index, item);
-
-        bool ICollection<ServiceConfigurationDescriptor>.Remove(ServiceConfigurationDescriptor item)
-            => _configurations.Remove(item);
-
-        void IList<ServiceConfigurationDescriptor>.RemoveAt(int index)
-            => _configurations.RemoveAt(index);
-        #endregion
-
-        #region ICollection<ServiceAction> Implementation
-        ServiceAction IList<ServiceAction>.this[int index] { get => _actions[index]; set => _actions[index] = value; }
-
-        int ICollection<ServiceAction>.Count => _actions.Count;
-
-        bool ICollection<ServiceAction>.IsReadOnly => false;
-
-        public void Add(ServiceAction item)
-            => _actions.Add(item);
-
-        void ICollection<ServiceAction>.Clear()
-            => _actions.Clear();
-
-        bool ICollection<ServiceAction>.Contains(ServiceAction item)
-            => _actions.Contains(item);
-
-        void ICollection<ServiceAction>.CopyTo(ServiceAction[] array, int arrayIndex)
-            => _actions.CopyTo(array, arrayIndex);
-
-        IEnumerator<ServiceAction> IEnumerable<ServiceAction>.GetEnumerator()
-            => _actions.GetEnumerator();
-
-        int IList<ServiceAction>.IndexOf(ServiceAction item)
-            => _actions.IndexOf(item);
-
-        void IList<ServiceAction>.Insert(int index, ServiceAction item)
-            => _actions.Insert(index, item);
-
-        bool ICollection<ServiceAction>.Remove(ServiceAction item)
-            => _actions.Remove(item);
-
-        void IList<ServiceAction>.RemoveAt(int index)
-            => _actions.RemoveAt(index);
-        #endregion
-
         #region IServiceCollection Implementation
-        ServiceDescriptor IList<ServiceDescriptor>.this[int index] { get => _descriptors[index]; set => _descriptors[index] = value; }
+        ServiceDescriptor IList<ServiceDescriptor>.this[int index] { get => _serviceDescriptors[index]; set => _serviceDescriptors[index] = value; }
 
-        int ICollection<ServiceDescriptor>.Count => _descriptors.Count;
+        int ICollection<ServiceDescriptor>.Count => _serviceDescriptors.Count;
 
         bool ICollection<ServiceDescriptor>.IsReadOnly => false;
 
         void ICollection<ServiceDescriptor>.Add(ServiceDescriptor item)
-            => _descriptors.Add(item);
+            => _serviceDescriptors.Add(item);
 
         void ICollection<ServiceDescriptor>.Clear()
-            => _descriptors.Clear();
+            => _serviceDescriptors.Clear();
 
         bool ICollection<ServiceDescriptor>.Contains(ServiceDescriptor item)
-            => _descriptors.Contains(item);
+            => _serviceDescriptors.Contains(item);
 
         void ICollection<ServiceDescriptor>.CopyTo(ServiceDescriptor[] array, int arrayIndex)
-            => _descriptors.CopyTo(array, arrayIndex);
+            => _serviceDescriptors.CopyTo(array, arrayIndex);
 
         IEnumerator<ServiceDescriptor> IEnumerable<ServiceDescriptor>.GetEnumerator()
-            => _descriptors.GetEnumerator();
+            => _serviceDescriptors.GetEnumerator();
 
         int IList<ServiceDescriptor>.IndexOf(ServiceDescriptor item)
-            => _descriptors.IndexOf(item);
+            => _serviceDescriptors.IndexOf(item);
 
         void IList<ServiceDescriptor>.Insert(int index, ServiceDescriptor item)
-            => _descriptors.Insert(index, item);
+            => _serviceDescriptors.Insert(index, item);
 
         bool ICollection<ServiceDescriptor>.Remove(ServiceDescriptor item)
-            => _descriptors.Remove(item);
+            => _serviceDescriptors.Remove(item);
 
         void IList<ServiceDescriptor>.RemoveAt(int index)
-            => _descriptors.RemoveAt(index);
+            => _serviceDescriptors.RemoveAt(index);
+        #endregion
+
+        #region ICollection<TypeFactoryDescriptor> Implementation
+        TypeFactoryDescriptor IList<TypeFactoryDescriptor>.this[int index] { get => _typeFactoryDescriptors[index]; set => _typeFactoryDescriptors[index] = value; }
+
+        int ICollection<TypeFactoryDescriptor>.Count => _typeFactoryDescriptors.Count;
+
+        bool ICollection<TypeFactoryDescriptor>.IsReadOnly => false;
+
+        public void Add(TypeFactoryDescriptor item)
+            => _typeFactoryDescriptors.Add(item);
+
+        void ICollection<TypeFactoryDescriptor>.Clear()
+            => _typeFactoryDescriptors.Clear();
+
+        bool ICollection<TypeFactoryDescriptor>.Contains(TypeFactoryDescriptor item)
+            => _typeFactoryDescriptors.Contains(item);
+
+        void ICollection<TypeFactoryDescriptor>.CopyTo(TypeFactoryDescriptor[] array, int arrayIndex)
+            => _typeFactoryDescriptors.CopyTo(array, arrayIndex);
+
+        IEnumerator<TypeFactoryDescriptor> IEnumerable<TypeFactoryDescriptor>.GetEnumerator()
+            => _typeFactoryDescriptors.GetEnumerator();
+
+        int IList<TypeFactoryDescriptor>.IndexOf(TypeFactoryDescriptor item)
+            => _typeFactoryDescriptors.IndexOf(item);
+
+        void IList<TypeFactoryDescriptor>.Insert(int index, TypeFactoryDescriptor item)
+            => _typeFactoryDescriptors.Insert(index, item);
+
+        bool ICollection<TypeFactoryDescriptor>.Remove(TypeFactoryDescriptor item)
+            => _typeFactoryDescriptors.Remove(item);
+
+        void IList<TypeFactoryDescriptor>.RemoveAt(int index)
+            => _typeFactoryDescriptors.RemoveAt(index);
+        #endregion
+
+        #region ICollection<ServiceAction> Implementation
+        ServiceAction IList<ServiceAction>.this[int index] { get => _serviceActions[index]; set => _serviceActions[index] = value; }
+
+        int ICollection<ServiceAction>.Count => _serviceActions.Count;
+
+        bool ICollection<ServiceAction>.IsReadOnly => false;
+
+        public void Add(ServiceAction item)
+            => _serviceActions.Add(item);
+
+        void ICollection<ServiceAction>.Clear()
+            => _serviceActions.Clear();
+
+        bool ICollection<ServiceAction>.Contains(ServiceAction item)
+            => _serviceActions.Contains(item);
+
+        void ICollection<ServiceAction>.CopyTo(ServiceAction[] array, int arrayIndex)
+            => _serviceActions.CopyTo(array, arrayIndex);
+
+        IEnumerator<ServiceAction> IEnumerable<ServiceAction>.GetEnumerator()
+            => _serviceActions.GetEnumerator();
+
+        int IList<ServiceAction>.IndexOf(ServiceAction item)
+            => _serviceActions.IndexOf(item);
+
+        void IList<ServiceAction>.Insert(int index, ServiceAction item)
+            => _serviceActions.Insert(index, item);
+
+        bool ICollection<ServiceAction>.Remove(ServiceAction item)
+            => _serviceActions.Remove(item);
+
+        void IList<ServiceAction>.RemoveAt(int index)
+            => _serviceActions.RemoveAt(index);
+        #endregion
+
+        #region ICollection<ServiceConfigurationDescriptor> Implementation
+        ServiceConfigurationDescriptor IList<ServiceConfigurationDescriptor>.this[int index] { get => _serviceConfigurationDescriptors[index]; set => _serviceConfigurationDescriptors[index] = value; }
+
+        int ICollection<ServiceConfigurationDescriptor>.Count => _serviceConfigurationDescriptors.Count;
+
+        bool ICollection<ServiceConfigurationDescriptor>.IsReadOnly => false;
+
+        public void Add(ServiceConfigurationDescriptor item)
+            => _serviceConfigurationDescriptors.Add(item);
+
+        void ICollection<ServiceConfigurationDescriptor>.Clear()
+            => _serviceConfigurationDescriptors.Clear();
+
+        bool ICollection<ServiceConfigurationDescriptor>.Contains(ServiceConfigurationDescriptor item)
+            => _serviceConfigurationDescriptors.Contains(item);
+
+        void ICollection<ServiceConfigurationDescriptor>.CopyTo(ServiceConfigurationDescriptor[] array, int arrayIndex)
+            => _serviceConfigurationDescriptors.CopyTo(array, arrayIndex);
+
+        IEnumerator<ServiceConfigurationDescriptor> IEnumerable<ServiceConfigurationDescriptor>.GetEnumerator()
+            => _serviceConfigurationDescriptors.GetEnumerator();
+
+        int IList<ServiceConfigurationDescriptor>.IndexOf(ServiceConfigurationDescriptor item)
+            => _serviceConfigurationDescriptors.IndexOf(item);
+
+        void IList<ServiceConfigurationDescriptor>.Insert(int index, ServiceConfigurationDescriptor item)
+            => _serviceConfigurationDescriptors.Insert(index, item);
+
+        bool ICollection<ServiceConfigurationDescriptor>.Remove(ServiceConfigurationDescriptor item)
+            => _serviceConfigurationDescriptors.Remove(item);
+
+        void IList<ServiceConfigurationDescriptor>.RemoveAt(int index)
+            => _serviceConfigurationDescriptors.RemoveAt(index);
+        #endregion
+
+        #region ICollection<ComponentConfigurationDescriptor> Implementation
+        ComponentConfigurationDescriptor IList<ComponentConfigurationDescriptor>.this[int index] { get => _componentConfigurationDescriptor[index]; set => _componentConfigurationDescriptor[index] = value; }
+
+        int ICollection<ComponentConfigurationDescriptor>.Count => _componentConfigurationDescriptor.Count;
+
+        bool ICollection<ComponentConfigurationDescriptor>.IsReadOnly => false;
+
+        public void Add(ComponentConfigurationDescriptor item)
+            => _componentConfigurationDescriptor.Add(item);
+
+        void ICollection<ComponentConfigurationDescriptor>.Clear()
+            => _componentConfigurationDescriptor.Clear();
+
+        bool ICollection<ComponentConfigurationDescriptor>.Contains(ComponentConfigurationDescriptor item)
+            => _componentConfigurationDescriptor.Contains(item);
+
+        void ICollection<ComponentConfigurationDescriptor>.CopyTo(ComponentConfigurationDescriptor[] array, int arrayIndex)
+            => _componentConfigurationDescriptor.CopyTo(array, arrayIndex);
+
+        IEnumerator<ComponentConfigurationDescriptor> IEnumerable<ComponentConfigurationDescriptor>.GetEnumerator()
+            => _componentConfigurationDescriptor.GetEnumerator();
+
+        int IList<ComponentConfigurationDescriptor>.IndexOf(ComponentConfigurationDescriptor item)
+            => _componentConfigurationDescriptor.IndexOf(item);
+
+        void IList<ComponentConfigurationDescriptor>.Insert(int index, ComponentConfigurationDescriptor item)
+            => _componentConfigurationDescriptor.Insert(index, item);
+
+        bool ICollection<ComponentConfigurationDescriptor>.Remove(ComponentConfigurationDescriptor item)
+            => _componentConfigurationDescriptor.Remove(item);
+
+        void IList<ComponentConfigurationDescriptor>.RemoveAt(int index)
+            => _componentConfigurationDescriptor.RemoveAt(index);
+        #endregion
+
+        #region ICollection<ComponentFilter> Implementation
+        ComponentFilter IList<ComponentFilter>.this[int index] { get => _componentFilters[index]; set => _componentFilters[index] = value; }
+
+        int ICollection<ComponentFilter>.Count => _componentFilters.Count;
+
+        bool ICollection<ComponentFilter>.IsReadOnly => false;
+
+        public void Add(ComponentFilter item)
+            => _componentFilters.Add(item);
+
+        void ICollection<ComponentFilter>.Clear()
+            => _componentFilters.Clear();
+
+        bool ICollection<ComponentFilter>.Contains(ComponentFilter item)
+            => _componentFilters.Contains(item);
+
+        void ICollection<ComponentFilter>.CopyTo(ComponentFilter[] array, int arrayIndex)
+            => _componentFilters.CopyTo(array, arrayIndex);
+
+        IEnumerator<ComponentFilter> IEnumerable<ComponentFilter>.GetEnumerator()
+            => _componentFilters.GetEnumerator();
+
+        int IList<ComponentFilter>.IndexOf(ComponentFilter item)
+            => _componentFilters.IndexOf(item);
+
+        void IList<ComponentFilter>.Insert(int index, ComponentFilter item)
+            => _componentFilters.Insert(index, item);
+
+        bool ICollection<ComponentFilter>.Remove(ComponentFilter item)
+            => _componentFilters.Remove(item);
+
+        void IList<ComponentFilter>.RemoveAt(int index)
+            => _componentFilters.RemoveAt(index);
         #endregion
     }
 }

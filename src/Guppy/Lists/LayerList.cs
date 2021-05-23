@@ -22,7 +22,7 @@ namespace Guppy.Lists
         {
             base.Release();
 
-            this.releasedChildren = true;
+            this.releaseChildren = true;
 
             this.CanAdd -= this.CanAddLayer;
         }

@@ -1,17 +1,25 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Lists;
+using Guppy.Network.Attributes;
 using Guppy.Network.Channels;
+using Guppy.Network.Components;
+using Guppy.Network.Components.Channels;
+using Guppy.Network.Components.Scenes;
+using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Lists;
 using Guppy.Network.Peers;
 using Guppy.Network.Pipes;
 using Guppy.Network.Security;
 using Guppy.Network.Services;
+using Guppy.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Guppy.Network.ServiceLoaders
@@ -21,50 +29,87 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<NetOutgoingMessageService>(p => new NetOutgoingMessageService());
-            services.AddFactory<ChannelList>(p => new ChannelList());
-            services.AddFactory<PipeList>(p => new PipeList());
-            services.AddFactory<UserList>(p => new UserList());
-            services.AddFactory<ServiceList<INetworkService>>(p => new ServiceList<INetworkService>());
-            services.AddFactory<ServerPeer>(p => new ServerPeer());
-            services.AddFactory<NetServer>(p => new NetServer(p.GetService<NetPeerConfiguration>()));
-            services.AddFactory<ClientPeer>(p => new ClientPeer());
-            services.AddFactory<NetClient>(p => new NetClient(p.GetService<NetPeerConfiguration>()));
-            services.AddFactory<NetPeerConfiguration>(p => new NetPeerConfiguration("guppy"));
-            services.AddFactory<ServerChannel>(p => new ServerChannel());
-            services.AddFactory<ClientChannel>(p => new ClientChannel());
-            services.AddFactory<IPipe>(p => new Pipe());
-            services.AddFactory<IUser>(p => new User());
+            #region Settings Setup
+            services.RegisterSetup<Settings>((s, p, c) =>
+            { // Configure the default settings...
+                s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
+                s.Set<HostType>(HostType.Remote);
+            }, -10);
 
-            services.AddSingleton<NetOutgoingMessageService>();
-            services.AddSingleton<ChannelList>();
-            services.AddScoped<PipeList>();
-            services.AddSingleton<UserList>();
-            services.AddTransient<UserList>(GuppyNetworkCoreConstants.ServiceConfigurations.TransientUserList);
-            services.AddScoped<ServiceList<INetworkService>>();
-            services.AddSingleton<ServerPeer>();
-            services.AddSingleton<NetServer>();
-            services.AddSingleton<ClientPeer>();
-            services.AddSingleton<NetClient>();
-            services.AddSingleton<NetPeerConfiguration>();
-            services.AddScoped<ServerChannel>();
-            services.AddScoped<ClientChannel>();
-            services.AddTransient<IPipe>();
-            services.AddTransient<IUser>();
+            services.RegisterSetup<ServerPeer>((server, p, c) =>
+            {
+                var settings = p.GetService<Settings>();
+                settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
+            });
+            #endregion
 
-            // Generate some lookups when default instances get created.
-            services.AddSetup<IPeer>((peer, p, c) => p.AddLookupRecursive<IPeer>(c));
-            services.AddSetup<NetPeer>((peer, p, c) => p.AddLookupRecursive<NetPeer>(c));
+            services.RegisterTypeFactory<NetOutgoingMessageService>(p => new NetOutgoingMessageService());
+            services.RegisterTypeFactory<ChannelList>(p => new ChannelList());
+            services.RegisterTypeFactory<PipeList>(p => new PipeList());
+            services.RegisterTypeFactory<UserList>(p => new UserList());
+            services.RegisterTypeFactory<ServiceList<INetworkEntity>>(p => new ServiceList<INetworkEntity>());
+            services.RegisterTypeFactory<NetworkEntityList>(p => new NetworkEntityList());
+            services.RegisterTypeFactory<ServerPeer>(p => new ServerPeer());
+            services.RegisterTypeFactory<NetServer>(p => new NetServer(p.GetService<NetPeerConfiguration>()));
+            services.RegisterTypeFactory<ClientPeer>(p => new ClientPeer());
+            services.RegisterTypeFactory<NetClient>(p => new NetClient(p.GetService<NetPeerConfiguration>()));
+            services.RegisterTypeFactory<NetPeerConfiguration>(p => new NetPeerConfiguration("guppy"));
+            services.RegisterTypeFactory<ServerChannel>(p => new ServerChannel());
+            services.RegisterTypeFactory<ClientChannel>(p => new ClientChannel());
+            services.RegisterTypeFactory<IPipe>(p => new Pipe());
+            services.RegisterTypeFactory<IUser>(p => new User());
 
-            services.AddSetup<UserList>(GuppyNetworkCoreConstants.ServiceConfigurations.TransientUserList, (users, p, c) =>
-            { // Automatically try to add the current user when connecting to a new client. 
+            services.RegisterSingleton<NetOutgoingMessageService>();
+            services.RegisterSingleton<ChannelList>();
+            services.RegisterScoped<PipeList>();
+            services.RegisterSingleton<UserList>();
+            services.RegisterTransient(Constants.ServiceConfigurations.TransientUserList);
+            services.RegisterTransient<ServiceList<INetworkEntity>>();
+            services.RegisterScoped<NetworkEntityList>();
+            services.RegisterSingleton<ServerPeer>(baseLookupType: typeof(IPeer));
+            services.RegisterSingleton<NetServer>(baseLookupType: typeof(NetPeer));
+            services.RegisterSingleton<ClientPeer>(baseLookupType: typeof(IPeer));
+            services.RegisterSingleton<NetClient>(baseLookupType: typeof(NetPeer));
+            services.RegisterSingleton<NetPeerConfiguration>();
+            services.RegisterScoped<ServerChannel>();
+            services.RegisterScoped<ClientChannel>();
+            services.RegisterTransient<IPipe>();
+            services.RegisterTransient<IUser>();
+
+            services.RegisterSetup<UserList>(Constants.ServiceConfigurations.TransientUserList, (users, p, c) =>
+            { // Automatically try to add the current user when connecting to a new client.
+                // TODO: Investigate what happens if CurrentUser is not yet defined?
                 users.TryAdd(p.GetService<IPeer>().CurrentUser);
-            }, GuppyCoreConstants.Priorities.Initialize + 1);
+            }, Guppy.Core.Constants.Priorities.Initialize + 1);
 
-            services.AddSetup<INetworkService>((service, p, c) =>
+            services.RegisterSetup<INetworkEntity>((service, p, c) =>
             { // Automatically add any network services into the scoped service list. 
-                p.GetService<ServiceList<INetworkService>>().TryAdd(service);
-            }, GuppyCoreConstants.Priorities.Initialize + 1);
+                p.GetService<NetworkEntityList>().TryAdd(service);
+            }, Guppy.Core.Constants.Priorities.Initialize + 1);
+
+            #region Components
+            services.RegisterTypeFactory<ChannelBaseCRUDComponent>(p => new ChannelBaseCRUDComponent());
+            services.RegisterTypeFactory<PipeMasterCRUDComponent>(p => new PipeMasterCRUDComponent());
+
+            services.RegisterTransient<ChannelBaseCRUDComponent>();
+            services.RegisterTransient<PipeMasterCRUDComponent>();
+
+            services.RegisterComponent<ChannelBaseCRUDComponent, IChannel>();
+            services.RegisterComponent<PipeMasterCRUDComponent, IPipe>();
+
+            services.RegisterComponentFilter(
+                ServiceConfigurationKey.From(type: typeof(RemoteHostComponent<>)),
+                (e, p, t) =>
+                {
+                    return t.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>().NetworkAuthorization
+                        == p.GetService<Settings>().Get<NetworkAuthorization>();
+                },
+                (cc, ec) =>
+                {
+                    var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>() != default;
+                    return hasAttribute;
+                });
+            #endregion
         }
 
         public void ConfigureProvider(ServiceProvider provider)

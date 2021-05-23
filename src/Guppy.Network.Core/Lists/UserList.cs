@@ -14,10 +14,10 @@ namespace Guppy.Network.Lists
     /// <summary>
     /// A global list of all known users.
     /// </summary>
-    public class UserList : BaseNetworkList<IUser>
+    public class UserList : FactoryServiceList<IUser>
     {
         #region Public Properties
-        public IList<NetConnection> Connections { get; private set; }
+        public List<NetConnection> Connections { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -53,8 +53,8 @@ namespace Guppy.Network.Lists
         /// <returns></returns>
         public IUser GetOrCreate(Guid id, params Claim[] claims)
         {
-            var user = this.FirstOrDefault(c => c.Id == id);
-            user ??= this.Create<IUser>(this.provider, (channel, p, c) =>
+            IUser user = this.FirstOrDefault(c => c.Id == id);
+            user ??= this.Create((channel, p, c) =>
             {
                 channel.Id = id;
             });
@@ -78,6 +78,10 @@ namespace Guppy.Network.Lists
             if (user.Connection != default && this.Connections.Contains(user.Connection))
                 this.Connections.Remove(user.Connection);
         }
+        #endregion
+
+        #region Implicit Operators
+        public static implicit operator List<NetConnection>(UserList users) => users.Connections;
         #endregion
     }
 }

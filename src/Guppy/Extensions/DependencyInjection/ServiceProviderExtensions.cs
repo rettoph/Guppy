@@ -19,7 +19,8 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static T GetContent<T>(this ServiceProvider provider, String handle)
-            => provider.GetService<ContentService>().Get<T>(handle);
+            => provider.GetService<Content>().Get<T>(handle);
+
         /// <summary>
         /// Automatically load content from the internal ContentLoader
         /// and set the value to the recieved instance.
@@ -41,7 +42,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static Color GetColor(this ServiceProvider provider, String handle)
-            => provider.GetService<ColorService>()[handle];
+            => provider.GetService<Colors>()[handle];
         /// <summary>
         /// Automatically load a color from the internal ColorService
         /// and set the value to the recieved instance.
@@ -50,7 +51,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <param name="_out"></param>
-        public static void Color(this ServiceProvider provider, String handle, out Color _out)
+        public static void Color(this ServiceProvider provider, String handle, out global::Microsoft.Xna.Framework.Color _out)
             => _out = provider.GetColor(handle);
         #endregion
 
@@ -63,7 +64,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static String GetString(this ServiceProvider provider, String handle)
-            => provider.GetService<StringService>()[handle];
+            => provider.GetService<Strings>()[handle];
         /// <summary>
         /// Automatically load a string from the internal StringService
         /// and set the value to the recieved instance.

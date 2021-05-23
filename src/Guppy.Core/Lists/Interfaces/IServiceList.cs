@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Lists.Interfaces
 {
-    public interface IServiceList : IService, IEnumerable
+    public interface IServiceList : IEntity, IEnumerable
     {
         ServiceProvider Provider { get; }
 

@@ -1,28 +1,24 @@
-﻿using Guppy.Network.Interfaces;
+﻿using Guppy.DependencyInjection;
+using Guppy.Lists;
+using Guppy.Network.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.Network.Lists
 {
-    public class PipeList : BaseNetworkList<IPipe>
+    public class PipeList : FactoryServiceList<IPipe>
     {
-        #region Create Methods
-        /// <summary>
-        /// Get or create a new <see cref="IPipe"/> with the given <paramref name="id"/>.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public IPipe GetOrCreate(Guid id)
-        {
-            var lane = this.GetById(id);
-            lane ??= this.Create<IPipe>(this.provider, (lane, p, c) =>
-            {
-                lane.Id = id;
-            });
+        internal IChannel channel;
 
-            return lane;
+        protected override T Create<T>(ServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+        {
+            return base.Create<T>(provider, configurationKey, (pipe, p, c) =>
+            {
+                pipe.Channel = this.channel;
+
+                setup?.Invoke(pipe, p, c);
+            }, id);
         }
-        #endregion
     }
 }

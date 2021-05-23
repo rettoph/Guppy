@@ -15,26 +15,20 @@ namespace Guppy.Network.Utilities
     internal sealed class NetOutgoingMessageContainer
     {
         #region Public Fields
-        public IPipe Pipe;
-        public NetConnection Recipient;
         public NetOutgoingMessageContext Context;
         public NetOutgoingMessage Message;
-        public Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>> Filter;
+        public IEnumerable<NetConnection> Recipients;
         #endregion
 
         #region Constructors
         public NetOutgoingMessageContainer(
-            IPipe pipe,
             NetOutgoingMessageContext context, 
             NetOutgoingMessage message,
-            NetConnection recipient,
-            Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>> filter)
+            IEnumerable<NetConnection> recipients)
         {
-            this.Pipe = pipe;
             this.Context = context;
             this.Message = message;
-            this.Recipient = recipient;
-            this.Filter = filter;
+            this.Recipients = recipients;
         }
         #endregion
     }

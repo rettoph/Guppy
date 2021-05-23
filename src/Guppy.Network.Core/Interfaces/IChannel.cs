@@ -1,5 +1,7 @@
 ﻿using Guppy.Interfaces;
+using Guppy.Network.Contexts;
 using Guppy.Network.Lists;
+using Guppy.Network.Utilities;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Network.Interfaces
 {
-    public interface IChannel : IPipe
+    public interface IChannel : IEntity
     {
         #region Properties
         /// <summary>
@@ -20,13 +22,17 @@ namespace Guppy.Network.Interfaces
         /// The current user pipe.
         /// </summary>
         PipeList Pipes { get; }
-        #endregion
 
-        #region Methods
         /// <summary>
-        /// Update the current <see cref="IChannel"/> 
+        /// List of all users within the current channel.
         /// </summary>
-        void TryUpdate();
+        UserList Users { get; }
+
+        /// <summary>
+        /// The primary message manager, responsible for creating 
+        /// messages to be sent and recieved by varius network services.
+        /// </summary>
+        MessageManager Messages { get; }
         #endregion
     }
 }

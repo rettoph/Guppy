@@ -12,6 +12,7 @@ using System.Text;
 using log4net.Core;
 using log4net;
 using Guppy.Extensions.log4net;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy
 {
@@ -20,11 +21,11 @@ namespace Guppy
         #region Private Fields
         private ServiceConfiguration _configuration;
         private Guid _id;
-        private ServiceStatus _initializationStatus;
+        private ServiceStatus _serviceStatus;
         #endregion
 
         #region Protected Properties
-        protected internal ILog logger { get; private set; }
+        protected internal ILog log { get; private set; }
         #endregion
 
         #region Public Attributes
@@ -53,76 +54,74 @@ namespace Guppy
 
         public ServiceStatus Status
         {
-            get => _initializationStatus;
-            set
-            {
-                if(value != _initializationStatus)
-                {
-                    _initializationStatus = value;
-                    this.OnStatus[value]?.Invoke(this);
-                }
-            }
+            get => _serviceStatus;
+            set => this.OnStatus[value].InvokeIf(value != _serviceStatus, this, ref _serviceStatus, value);
         }
         #endregion
 
         #region Events
-        public Dictionary<ServiceStatus, OnEventDelegate<IService>> OnStatus { get; private set; }
+        public Dictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>> OnStatus { get; private set; }
         #endregion
 
         #region Lifecycle Methods
         void IService.TryPreCreate(ServiceProvider provider)
         {
-            this.logger = provider.GetService<ILog>();
-            this.OnStatus = DictionaryHelper.BuildEnumDictionary<ServiceStatus, OnEventDelegate<IService>>();
+            this.log = provider.GetService<ILog>(Guppy.Core.Constants.ServiceConfigurationKeys.ILog);
+            this.OnStatus = DictionaryHelper.BuildEnumDictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>>();
 
-            this.ValidateStatus(ServiceStatus.NotCreated);
-
-            this.Status = ServiceStatus.PreCreating;
-            this.PreCreate(provider);
+            if (this.ValidateStatus(ServiceStatus.NotCreated))
+            {
+                this.Status = ServiceStatus.PreCreating;
+                this.PreCreate(provider);
+            }
         }
-
         void IService.TryCreate(ServiceProvider provider)
         {
-            this.ValidateStatus(ServiceStatus.PreCreating);
-
-            this.Status = ServiceStatus.Creating;
-            this.Create(provider);
+            if (this.ValidateStatus(ServiceStatus.PreCreating))
+            {
+                this.Status = ServiceStatus.Creating;
+                this.Create(provider);
+            }
         }
 
         void IService.TryPostCreate(ServiceProvider provider)
         {
-            this.ValidateStatus(ServiceStatus.Creating);
+            if (this.ValidateStatus(ServiceStatus.Creating))
+            {
+                this.Status = ServiceStatus.PostCreating;
+                this.PostCreate(provider);
 
-            this.Status = ServiceStatus.PostCreating;
-            this.PostCreate(provider);
-
-            this.Status = ServiceStatus.NotReady;
+                this.Status = ServiceStatus.NotInitialized;
+            }
         }
 
         void IService.TryPreInitialize(ServiceProvider provider)
         {
-            this.ValidateStatus(ServiceStatus.NotReady);
-
-            this.Status = ServiceStatus.PreInitializing;
-            this.PreInitialize(provider);
+            if (this.ValidateStatus(ServiceStatus.NotInitialized))
+            {
+                this.Status = ServiceStatus.PreInitializing;
+                this.PreInitialize(provider);
+            }
         }
 
         void IService.TryInitialize(ServiceProvider provider)
         {
-            this.ValidateStatus(ServiceStatus.PreInitializing);
-
-            this.Status = ServiceStatus.Initializing;
-            this.Initialize(provider);
+            if (this.ValidateStatus(ServiceStatus.PreInitializing))
+            {
+                this.Status = ServiceStatus.Initializing;
+                this.Initialize(provider);
+            }
         }
 
         void IService.TryPostInitialize(ServiceProvider provider)
         {
-            this.ValidateStatus(ServiceStatus.Initializing);
+            if(this.ValidateStatus(ServiceStatus.Initializing))
+            {
+                this.Status = ServiceStatus.PostInitializing;
+                this.PostInitialize(provider);
 
-            this.Status = ServiceStatus.PostInitializing;
-            this.PostInitialize(provider);
-
-            this.Status = ServiceStatus.Ready;
+                this.Status = ServiceStatus.Ready;
+            }
         }
 
         public void TryRelease()
@@ -138,21 +137,15 @@ namespace Guppy
                 this.Status = ServiceStatus.PostReleasing;
                 this.PostRelease();
 
-                this.Status = ServiceStatus.NotReady;
-
-#if DEBUG_VERBOSE
-                this.logger.Verbose($"Releasing {this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id})...");
-                this.OnStatus.Where(kvp => kvp.Value != default).ForEach(kvp => kvp.Value.LogInvocationList($"{this.GetType().GetPrettyName()}<{this.ServiceConfiguration.Name}>({this.Id}).{kvp.Key}", this.logger));
-#endif
+                this.Status = ServiceStatus.NotInitialized;
             }
         }
 
         public void TryDispose()
         {
-            if (this.Status == ServiceStatus.Ready)
-                this.TryRelease();
+            this.TryRelease();
 
-            if(this.ValidateStatus(status: ServiceStatus.NotReady, required: false))
+            if (this.ValidateStatus(status: ServiceStatus.NotInitialized, required: false))
             {
                 this.Status = ServiceStatus.PreDisposing;
                 this.PreDispose();
@@ -168,7 +161,7 @@ namespace Guppy
                 this.OnStatus.Clear();
 
                 this.OnStatus = null;
-                this.logger = null;
+                this.log = null;
             }
         }
 

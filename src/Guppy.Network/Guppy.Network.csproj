@@ -16,8 +16,4 @@
     <ProjectReference Include="..\Guppy.Network.Core\Guppy.Network.Core.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Drivers\Pipes\" />
-  </ItemGroup>
-</Project> 
+</Project>

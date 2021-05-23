@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.log4net;
+using Guppy.IO.Extensions.log4net;
 using Guppy.Interfaces;
 using Lidgren.Network;
 using log4net;
@@ -9,6 +11,7 @@ using log4net.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Example.Library.Scenes;
 
 namespace Guppy.Example.Library.ServiceLoaders
 {
@@ -17,40 +20,18 @@ namespace Guppy.Example.Library.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<ExampleGame>(p => new ExampleGame());
+            services.RegisterTypeFactory<ExampleGame>(p => new ExampleGame());
+            services.RegisterTypeFactory<ExampleScene>(p => new ExampleScene());
+            services.RegisterTypeFactory<Ball>(p => new Ball());
 
-            services.AddSingleton<ExampleGame>();
+            services.RegisterGame<ExampleGame>();
+            services.RegisterScene<ExampleScene>();
+            services.RegisterTransient<Ball>();
 
-            services.AddSetup<ILog>((l, p, s) =>
+            services.RegisterSetup<ILog>((l, p, s) =>
             {
                 l.SetLevel(Level.Verbose);
-                l.ConfigureFileAppender($"logs\\{DateTime.Now.ToString("yyy-MM-dd")}.txt")
-                    .ConfigureManagedColoredConsoleAppender(new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        BackColor = ConsoleColor.Red,
-                        ForeColor = ConsoleColor.White,
-                        Level = Level.Fatal
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Red,
-                        Level = Level.Error
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Yellow,
-                        Level = Level.Warn
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.White,
-                        Level = Level.Info
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Magenta,
-                        Level = Level.Debug
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Cyan,
-                        Level = Level.Verbose
-                    });
+                l.ConfigureFileAppender($"logs\\{DateTime.Now.ToString("yyy-MM-dd")}.txt");
             });
         }
 

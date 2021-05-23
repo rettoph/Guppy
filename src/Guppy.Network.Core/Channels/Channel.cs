@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Network.Contexts;
 using Guppy.Network.Extensions;
@@ -13,7 +14,7 @@ using System.Text;
 
 namespace Guppy.Network.Channels
 {
-    public abstract class Channel : NetworkService, IChannel
+    public abstract class Channel : Entity, IChannel
     {
         #region Private Fields
         private NetOutgoingMessageService _outgoingMessages;
@@ -21,16 +22,7 @@ namespace Guppy.Network.Channels
 
         #region Public Properties
         public new Int16 Id { get; internal set; }
-        #endregion
-
-        #region IPipe Implementation
-        IChannel IPipe.Channel
-        {
-            get => this;
-            set => throw new NotImplementedException();
-        }
-
-        public UserList Users { get; private set; }
+        public MessageManager Messages { get; private set; }
         #endregion
 
         #region IChannel Implementation
@@ -41,6 +33,8 @@ namespace Guppy.Network.Channels
         }
 
         public PipeList Pipes { get; private set; }
+
+        public UserList Users { get; private set; }
         #endregion
 
         #region Lifeycycle Methods
@@ -48,8 +42,11 @@ namespace Guppy.Network.Channels
         {
             base.Create(provider);
 
-            this.Messages.Add(GuppyNetworkCoreConstants.Messages.Channel.UserJoined, GuppyNetworkCoreConstants.MessageContexts.InternalReliableDefault);
-            this.Messages.Add(GuppyNetworkCoreConstants.Messages.Channel.UserLeft  , GuppyNetworkCoreConstants.MessageContexts.InternalReliableDefault);
+            this.Messages = new MessageManager();
+            this.Messages.Signer = this.DefaultMessageSigner;
+            this.Messages.DefaultFactory = this.DefaultMessageFactory;
+            this.Messages.Add(Constants.Messages.Channel.UserJoined, Constants.MessageContexts.InternalReliableDefault);
+            this.Messages.Add(Constants.Messages.Channel.UserLeft  , Constants.MessageContexts.InternalReliableDefault);
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -58,8 +55,11 @@ namespace Guppy.Network.Channels
 
             provider.Service(out _outgoingMessages);
 
-            this.Users = provider.GetService<UserList>(GuppyNetworkCoreConstants.ServiceConfigurations.TransientUserList);
-            this.Pipes = provider.GetService<PipeList>();
+            this.Users = provider.GetService<UserList>(Constants.ServiceConfigurations.TransientUserList);
+            this.Pipes = provider.GetService<PipeList>((pipes, p, c) =>
+            {
+                pipes.channel = this;
+            });
         }
 
         protected override void PostRelease()
@@ -73,6 +73,16 @@ namespace Guppy.Network.Channels
 
             this.Users = null;
             this.Pipes = null;
+        }
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+
+            this.Messages.Remove(Constants.Messages.Channel.UserJoined);
+            this.Messages.Remove(Constants.Messages.Channel.UserLeft);
+
+            this.Messages = null;
         }
         #endregion
 
@@ -89,15 +99,11 @@ namespace Guppy.Network.Channels
         #endregion
 
         #region Helper Methods
-        protected override void SignMessage(NetOutgoingMessage om)
+        protected virtual void DefaultMessageSigner(NetOutgoingMessage om)
             => (this as IChannel).SignMessage(om);
 
-        protected override NetOutgoingMessage DefaultMessageFactory(NetOutgoingMessageContext context, NetConnection recipient, Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>> filter)
-            => this.CreateMessage(context, recipient, filter);
-
-        /// <inheritdoc />
-        public NetOutgoingMessage CreateMessage(NetOutgoingMessageContext context, NetConnection recipient = null, Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>> filter = null)
-            => _outgoingMessages.CreateMessage(this, context, recipient, filter);
+        protected virtual NetOutgoingMessage DefaultMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+            => _outgoingMessages.CreateMessage(context, recipients);
         #endregion
     }
 }

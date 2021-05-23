@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Extensions.Security;
 using Guppy.Network.Lists;
@@ -24,8 +25,8 @@ namespace Guppy.Network.Channels
         {
             base.Create(provider);
 
-            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserJoined].OnRead += this.ReadUserJoinedMessage;
-            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserLeft].OnRead += this.ReadUserLeftMessage;
+            this.Messages[Constants.Messages.Channel.UserJoined].OnRead += this.ReadUserJoinedMessage;
+            this.Messages[Constants.Messages.Channel.UserLeft].OnRead += this.ReadUserLeftMessage;
         }
 
         protected override void PreInitialize(ServiceProvider provider)
@@ -46,8 +47,8 @@ namespace Guppy.Network.Channels
         {
             base.Dispose();
 
-            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserJoined].OnRead -= this.ReadUserJoinedMessage;
-            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserLeft].OnRead -= this.ReadUserLeftMessage;
+            this.Messages[Constants.Messages.Channel.UserJoined].OnRead -= this.ReadUserJoinedMessage;
+            this.Messages[Constants.Messages.Channel.UserLeft].OnRead -= this.ReadUserLeftMessage;
         }
         #endregion
 
@@ -59,7 +60,7 @@ namespace Guppy.Network.Channels
 
             this.Users.TryAdd(user);
 
-            Console.WriteLine($"Users: {this.Users.Count}");
+            Console.WriteLine($"Added Users: {this.Users.Count}");
         }
 
         private void ReadUserLeftMessage(MessageTypeManager sender, NetIncomingMessage im)
@@ -67,7 +68,7 @@ namespace Guppy.Network.Channels
             var user = this.Users.GetById(im.ReadGuid());
             this.Users.TryRemove(user);
 
-            Console.WriteLine($"Users: {this.Users.Count}");
+            Console.WriteLine($"Removed Users: {this.Users.Count}");
         }
         #endregion
     }

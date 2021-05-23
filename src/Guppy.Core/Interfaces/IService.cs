@@ -17,17 +17,16 @@ namespace Guppy.Interfaces
         #endregion
 
         #region Events
-        Dictionary<ServiceStatus, OnEventDelegate<IService>> OnStatus { get; }
+        Dictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>> OnStatus { get; }
         #endregion
 
-        #region Methods
+        #region Lifecycle Methods
         void TryPreCreate(ServiceProvider provider);
         void TryCreate(ServiceProvider provider);
         void TryPostCreate(ServiceProvider provider);
         void TryPreInitialize(ServiceProvider provider);
         void TryInitialize(ServiceProvider provider);
         void TryPostInitialize(ServiceProvider provider);
-
         void TryRelease();
         void TryDispose();
         #endregion

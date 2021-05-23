@@ -7,6 +7,7 @@ using Guppy.DependencyInjection;
 using Guppy.Network.Contexts;
 using Guppy.Network.Interfaces;
 using System.Linq;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Services
 {
@@ -52,9 +53,9 @@ namespace Guppy.Network.Services
         #endregion
 
         #region Helper Methods
-        public NetOutgoingMessage CreateMessage(IPipe pipe, NetOutgoingMessageContext context, NetConnection recipient = null, Func<IEnumerable<NetConnection>, IEnumerable<NetConnection>> filter = null)
+        public NetOutgoingMessage CreateMessage(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
         {
-            var container = new NetOutgoingMessageContainer(pipe, context, _peer.CreateMessage(), recipient, filter);
+            var container = new NetOutgoingMessageContainer(context, _peer.CreateMessage(), recipients);
             _containers.Enqueue(container);
 
             return container.Message;
@@ -65,39 +66,15 @@ namespace Guppy.Network.Services
             while(_containers.Any())
             {
                 _container = _containers.Dequeue();
+                _users.Clear();
+                _users.AddRange(_container.Recipients);
 
-                
-                
-                if (_container.Recipient != default)
-                { // Broadcast to recipient...
+                if(_users.Any())
                     _peer.SendMessage(
                         msg: _container.Message,
-                        recipient: _container.Recipient,
+                        recipients: _users,
                         method: _container.Context.Method,
                         sequenceChannel: _container.Context.SequenceChannel);
-                }
-                else if(_container.Pipe.Users.Connections.Any())
-                { // Broadcast to channel...
-                    _users.Clear();
-
-                    if(_container.Filter == default)
-                    { // Broadcast to all...
-                        _users.AddRange(_container.Pipe.Users.Connections);
-                    }
-                    else
-                    { // Brodcast to filtered users...
-                        _users.AddRange(_container.Filter(_container.Pipe.Users.Connections));
-
-                        if (!_users.Any())
-                            return;
-                    }
-
-                    _peer.SendMessage(
-                        msg: _container.Message,
-                        recipients: _container.Pipe.Users.Connections,
-                        method: _container.Context.Method,
-                        sequenceChannel: _container.Context.SequenceChannel);
-                }
             }
         }
         #endregion

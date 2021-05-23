@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
     <ProjectReference Include="..\..\src\Guppy.Core\Guppy.Core.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.IO\Guppy.IO.csproj" />
     <ProjectReference Include="..\..\src\Guppy.Network.Core\Guppy.Network.Core.csproj" />
     <ProjectReference Include="..\..\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />

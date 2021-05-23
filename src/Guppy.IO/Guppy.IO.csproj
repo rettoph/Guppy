@@ -5,6 +5,7 @@
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Guppy.CommandLine\Guppy.CommandLine.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 </Project>

@@ -42,7 +42,14 @@ namespace Guppy
 
             _synchronizer.TryRelease();
             _synchronizer = null;
+        }
+
+        protected override void PostDispose()
+        {
+            base.PostDispose();
+
             _provider.Dispose(true);
+            _provider = null;
         }
         #endregion
 

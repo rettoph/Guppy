@@ -25,11 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Network.Core", "src\G
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{9D54D7A8-5CC6-4B7B-8305-191334648FD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Example.Server", "examples\Guppy.Example.Server\Guppy.Example.Server.csproj", "{5A96D3A0-8B51-4913-BC36-6F0F2F586B5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Example.Server", "examples\Guppy.Example.Server\Guppy.Example.Server.csproj", "{5A96D3A0-8B51-4913-BC36-6F0F2F586B5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Examples.Client", "examples\Guppy.Examples.Client\Guppy.Examples.Client.csproj", "{03678D60-1B2B-4A63-B891-4C549A447B1B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Examples.Client", "examples\Guppy.Examples.Client\Guppy.Examples.Client.csproj", "{03678D60-1B2B-4A63-B891-4C549A447B1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Example.Library", "examples\Guppy.Example.Library\Guppy.Example.Library.csproj", "{562EB3EA-DF3A-4205-912C-88B133B35852}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Example.Library", "examples\Guppy.Example.Library\Guppy.Example.Library.csproj", "{562EB3EA-DF3A-4205-912C-88B133B35852}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.CommandLine", "src\Guppy.CommandLine\Guppy.CommandLine.csproj", "{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{562EB3EA-DF3A-4205-912C-88B133B35852}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{562EB3EA-DF3A-4205-912C-88B133B35852}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{562EB3EA-DF3A-4205-912C-88B133B35852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,6 +99,7 @@ Global
 		{5A96D3A0-8B51-4913-BC36-6F0F2F586B5B} = {9D54D7A8-5CC6-4B7B-8305-191334648FD7}
 		{03678D60-1B2B-4A63-B891-4C549A447B1B} = {9D54D7A8-5CC6-4B7B-8305-191334648FD7}
 		{562EB3EA-DF3A-4205-912C-88B133B35852} = {9D54D7A8-5CC6-4B7B-8305-191334648FD7}
+		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}

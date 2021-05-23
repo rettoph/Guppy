@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Enums;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
@@ -16,21 +17,23 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddBuilder<IService>((s, p, c) => s.TryPreCreate(p), GuppyCoreConstants.Priorities.PreCreate);
-            services.AddBuilder<IService>((s, p, c) => s.TryCreate(p), GuppyCoreConstants.Priorities.Create);
-            services.AddBuilder<IService>((s, p, c) => s.TryPostCreate(p), GuppyCoreConstants.Priorities.PostCreate);
+            services.RegisterSetup<IService>((s, p, sd) =>
+            {
+                s.OnStatus[ServiceStatus.NotInitialized] += this.HandleServiceNotReady;
+            }, Guppy.Core.Constants.Priorities.PreCreate - 1);
 
-            services.AddSetup<IService>((s, p, sd) =>
+            services.RegisterBuilder<IService>((s, p, sd) => s.TryPreCreate(p) , Guppy.Core.Constants.Priorities.PreCreate);
+            services.RegisterBuilder<IService>((s, p, sd) => s.TryCreate(p)    , Guppy.Core.Constants.Priorities.Create);
+            services.RegisterBuilder<IService>((s, p, sd) => s.TryPostCreate(p), Guppy.Core.Constants.Priorities.PostCreate);
+
+            services.RegisterSetup<IService>((s, p, sd) =>
             {
                 s.ServiceConfiguration = sd;
-                s.TryPreInitialize(p);
+            }, Int32.MinValue);
 
-                s.OnStatus[ServiceStatus.NotReady] += this.HandleServiceNotReady;
-            }, GuppyCoreConstants.Priorities.PreInitialize);
-
-            services.AddSetup<IService>((s, p, sd) => s.TryInitialize(p), GuppyCoreConstants.Priorities.Initialize);
-
-            services.AddSetup<IService>((s, p, sd) => s.TryPostInitialize(p), GuppyCoreConstants.Priorities.PostInitialize);
+            services.RegisterSetup<IService>((s, p, sd) => s.TryPreInitialize(p) , Guppy.Core.Constants.Priorities.PreInitialize);
+            services.RegisterSetup<IService>((s, p, sd) => s.TryInitialize(p)    , Guppy.Core.Constants.Priorities.Initialize);
+            services.RegisterSetup<IService>((s, p, sd) => s.TryPostInitialize(p), Guppy.Core.Constants.Priorities.PostInitialize);
         }
 
         public void ConfigureProvider(ServiceProvider provider)
@@ -44,11 +47,12 @@ namespace Guppy.ServiceLoaders
         /// return the instance to the ServiceTypeDescriptor pool.
         /// </summary>
         /// <param name="sender"></param>
-        private void HandleServiceNotReady(IService sender)
+        /// <param name="old"></param>
+        /// <param name="value"></param>
+        private void HandleServiceNotReady(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            sender.OnStatus[ServiceStatus.NotReady] -= this.HandleServiceNotReady;
-
-            sender.ServiceConfiguration.Factory.Pools[sender].TryReturn(sender);
+            if(old == ServiceStatus.PostReleasing)
+                sender.ServiceConfiguration.TypeFactory.Pools[sender].TryReturn(sender);
         }
         #endregion
     }

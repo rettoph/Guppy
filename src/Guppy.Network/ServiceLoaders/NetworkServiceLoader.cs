@@ -3,12 +3,21 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Lists;
-using Guppy.Network.Drivers;
+using Guppy.Network.Attributes;
+using Guppy.Network.Components;
+using Guppy.Network.Components.Lists;
+using Guppy.Network.Components.Scenes;
 using Guppy.Network.Enums;
+using Guppy.Network.Interfaces;
+using Guppy.Network.Lists;
 using Guppy.Network.Peers;
+using Guppy.Network.Pipes;
+using Guppy.Network.Scenes;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace Guppy.Network.ServiceLoaders
@@ -18,31 +27,22 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<ServiceList<NetworkEntity>>(p => new ServiceList<NetworkEntity>());
-            services.AddScoped<ServiceList<NetworkEntity>>();
+            #region Components
 
+            services.RegisterTypeFactory<NetworkServiceListLayerableComponent>(p => new NetworkServiceListLayerableComponent());
+            services.RegisterTypeFactory<NetworkSceneMasterCRUDComponent>(p => new NetworkSceneMasterCRUDComponent());
+            services.RegisterTypeFactory<NetworkSceneSlaveCRUDComponent>(p => new NetworkSceneSlaveCRUDComponent());
+            services.RegisterTypeFactory<NetworkEntityCRUDComponent>(p => new NetworkEntityCRUDComponent());
 
-            #region Settings Setup
-            services.AddSetup<Settings>((s, p, c) =>
-            { // Configure the default settings...
-                s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
-                s.Set<HostType>(HostType.Remote);
-            }, -10);
+            services.RegisterTransient<NetworkServiceListLayerableComponent>();
+            services.RegisterTransient<NetworkSceneMasterCRUDComponent>();
+            services.RegisterTransient<NetworkSceneSlaveCRUDComponent>();
+            services.RegisterTransient<NetworkEntityCRUDComponent>();
 
-            services.AddSetup<ServerPeer>((server, p, c) =>
-            {
-                p.Settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
-            });
-            #endregion
-
-            #region Default Driver Filters
-            services.AddDriverFilter(
-                typeof(MasterNetworkAuthorizationDriver<>),
-                (d, p) => p.Settings.Get<NetworkAuthorization>() == NetworkAuthorization.Master);
-
-            services.AddDriverFilter(
-                typeof(SlaveNetworkAuthorizationDriver<>),
-                (d, p) => p.Settings.Get<NetworkAuthorization>() == NetworkAuthorization.Slave);
+            services.RegisterComponent<NetworkServiceListLayerableComponent, NetworkEntityList>();
+            services.RegisterComponent<NetworkSceneMasterCRUDComponent, NetworkScene>();
+            services.RegisterComponent<NetworkSceneSlaveCRUDComponent, NetworkScene>();
+            services.RegisterComponent<NetworkEntityCRUDComponent, INetworkEntity>();
             #endregion
         }
 

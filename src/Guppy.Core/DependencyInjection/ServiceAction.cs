@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Guppy.DependencyInjection.Enums;
+using System;
 
 namespace Guppy.DependencyInjection
 {
-    /// <summary>
-    /// Represents an aaction to be preformed on an action
-    /// during runtime. This will generally either be for setup
-    /// or building.
-    /// </summary>
-    public sealed class ServiceAction
+    public class ServiceAction
     {
-        #region Private Fields
-        private readonly Action<Object, ServiceProvider, ServiceConfiguration> _action;
-        #endregion
-
         #region Public Properties
         /// <summary>
         /// A custom identifier that allows for mass
         /// action application to inherited services.
         /// </summary>
-        public readonly ServiceActionKey Key;
+        public readonly ServiceConfigurationKey Key;
 
         /// <summary>
         /// The action type, telling the service provider
@@ -30,39 +20,30 @@ namespace Guppy.DependencyInjection
         public readonly ServiceActionType Type;
 
         /// <summary>
+        /// The actual action to be invoked
+        /// </summary>
+        public readonly Action<Object, ServiceProvider, ServiceConfiguration> Method;
+
+        /// <summary>
         /// The order in which the current action should be
-        /// preformed compared to other actions.
+        /// preformed compared to other actions of the same
+        /// type.
         /// </summary>
         public readonly Int32 Order;
         #endregion
 
         #region Constructor
-        public ServiceAction(ServiceActionKey key, ServiceActionType type, Action<Object, ServiceProvider, ServiceConfiguration> action, Int32 order)
+        public ServiceAction(
+            ServiceConfigurationKey key,
+            ServiceActionType type,
+            Action<Object, ServiceProvider, ServiceConfiguration> method,
+            Int32 order = 0)
         {
-            _action = action;
             this.Key = key;
             this.Type = type;
+            this.Method = method;
             this.Order = order;
         }
-        #endregion
-
-        #region Helper Methods
-        /// <summary>
-        /// Preform the current action on the recieved
-        /// service instance.
-        /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="instance"></param>
-        public void Excecute(Object instance, ServiceProvider provider, ServiceConfiguration configuration)
-            => _action.Invoke(instance, provider, configuration);
-        #endregion
-
-        #region Static Helper Methods
-        public static ServiceAction Builder(ServiceActionKey key, Action<Object, ServiceProvider, ServiceConfiguration> action, Int32 order)
-            => new ServiceAction(key, ServiceActionType.Builder, action, order);
-
-        public static ServiceAction Setup(ServiceActionKey key, Action<Object, ServiceProvider, ServiceConfiguration> action, Int32 order)
-            => new ServiceAction(key, ServiceActionType.Setup, action, order);
         #endregion
     }
 }

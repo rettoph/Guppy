@@ -10,7 +10,7 @@ namespace Guppy.Interfaces
     public interface ILayer : IOrderable
     {
         #region Properties
-        OrderableList<IEntity> Entities { get; }
+        OrderableList<ILayerable> Items { get; }
         LayerGroup Group { get; set; }
         #endregion
 

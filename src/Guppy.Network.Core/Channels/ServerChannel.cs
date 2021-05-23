@@ -6,6 +6,7 @@ using Guppy.Network.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.System;
 
 namespace Guppy.Network.Channels
 {
@@ -28,26 +29,26 @@ namespace Guppy.Network.Channels
             foreach(IUser user in this.Users)
             {
                 if(user != newUser)
-                    this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserJoined].Create(om =>
+                    this.Messages[Constants.Messages.Channel.UserJoined].Create(om =>
                     {
                         user.TryWrite(om);
-                    }, newUser.Connection);
+                    }, newUser.Connection.Yield());
             }
 
             // Broadcast the new users to all connected users.
-            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserJoined].Create(om =>
+            this.Messages[Constants.Messages.Channel.UserJoined].Create(om =>
             {
                 newUser.TryWrite(om);
-            });
+            }, this.Users.Connections);
         }
 
         private void HandleUserLeft(IServiceList<IUser> sender, IUser oldUser)
         {
             // Broadcast the disconnected user id to all connected peers...
-            this.Messages[GuppyNetworkCoreConstants.Messages.Channel.UserLeft].Create(om =>
+            this.Messages[Constants.Messages.Channel.UserLeft].Create(om =>
             {
                 om.Write(oldUser.Id);
-            });
+            }, this.Users.Connections);
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Network.Channels;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Extensions.Security;
@@ -12,7 +13,7 @@ namespace Guppy.Network.Peers
     public sealed class ClientPeer : Peer
     {
         #region Static Fields
-        private static UInt32 ChannelServiceConfigurationId = ServiceConfiguration.GetId<ClientChannel>();
+        private static ServiceConfigurationKey ChannelServiceConfigurationId = ServiceConfigurationKey.From<ClientChannel>();
         #endregion
 
         #region Private Fields
@@ -20,7 +21,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Peer Implementation
-        protected override UInt32 channelServiceConfigurationId => ClientPeer.ChannelServiceConfigurationId;
+        protected override ServiceConfigurationKey channelServiceConfigurationkey => ClientPeer.ChannelServiceConfigurationId;
         #endregion
 
         #region Lifecycle Methods

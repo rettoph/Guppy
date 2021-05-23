@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using log4net;
 using log4net.Repository;
@@ -16,15 +17,15 @@ namespace Guppy.ServiceLoaders
         public void RegisterServices(ServiceCollection services)
         {
             // Configure & add log4net services...
-            services.AddFactory<ILog>(p => LogManager.GetLogger(typeof(GuppyLoader)));
-            services.AddFactory<ILoggerRepository>(p => p.GetService<ILog>().Logger.Repository);
-            services.AddFactory<Hierarchy>(p => (Hierarchy)p.GetService<ILoggerRepository>());
+            services.RegisterTypeFactory<ILog>(p => LogManager.GetLogger(typeof(GuppyLoader)));
+            services.RegisterTypeFactory<ILoggerRepository>(p => p.GetService<ILog>(Guppy.Core.Constants.ServiceConfigurationKeys.ILog).Logger.Repository);
+            services.RegisterTypeFactory<Hierarchy>(p => (Hierarchy)p.GetService<ILoggerRepository>());
 
-            services.AddSingleton<ILog>();
-            services.AddSingleton<ILoggerRepository>();
-            services.AddSingleton<Hierarchy>();
+            services.RegisterSingleton<ILog>();
+            services.RegisterSingleton<ILoggerRepository>();
+            services.RegisterSingleton<Hierarchy>();
 
-            services.AddSetup<ILog>((l, p, s) =>
+            services.RegisterSetup<ILog>((l, p, s) =>
             { // Mark as configured...
                 ((Hierarchy)l.Logger.Repository).Configured = true;
             }, -10);

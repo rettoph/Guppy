@@ -7,7 +7,7 @@ namespace Guppy.Utilities
     public static class ExceptionHelper
     {
         /// <summary>
-        /// Verify that the target type is assignable from the given base type.
+        /// Verify that the base type is assignable from the given target type.
         /// 
         /// If it is not, throw an exception.
         /// </summary>

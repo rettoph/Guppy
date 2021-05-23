@@ -89,8 +89,8 @@ namespace Guppy.Lists
         #endregion
 
         #region Frame Methods
-        protected override T Create<T>(ServiceProvider provider, uint descriptorId, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
-            => base.Create(provider.CreateScope().ServiceProvider as ServiceProvider, descriptorId, setup, id);
+        protected override T Create<T>(ServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+            => base.Create(provider.CreateScope().ServiceProvider as ServiceProvider, configurationKey, setup, id);
         #endregion
 
         #region Events

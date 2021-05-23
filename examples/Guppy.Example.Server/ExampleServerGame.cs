@@ -7,6 +7,7 @@ using Guppy.Network.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Example.Server
 {
@@ -26,15 +27,6 @@ namespace Guppy.Example.Server
             _server.CurrentUser.AddClaim(new Claim("name", "Server"));
 
             _server.Start();
-
-            _server.Users.OnAdded += this.HandleUserJoined;
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandleUserJoined(IServiceList<IUser> sender, IUser user)
-        {
-            _server.Channels.GetOrCreate(0).Users.TryAdd(user);
         }
         #endregion
     }

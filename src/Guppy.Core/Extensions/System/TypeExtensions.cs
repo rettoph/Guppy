@@ -93,5 +93,45 @@ namespace Guppy.Extensions.System
             sb.Append('>');
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Recursively return all <see cref="Type"/> ancestors
+        /// between a given child and parent type (inclusive)
+        /// </summary>
+        /// <param name="child"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static IEnumerable<Type> GetAncestors(this Type child, Type parent)
+        {
+            var type = child;
+            ExceptionHelper.ValidateAssignableFrom(parent, child);
+
+            if(child == parent)
+            {
+                yield return child;
+            }
+            else if (parent.IsInterface)
+            { // Recersively add types until the interface is no longer implemented...
+                while (type.GetInterfaces().Contains(parent))
+                {
+                    yield return type;
+                    type = type.BaseType;
+                }
+
+                yield return parent;
+            }
+            else
+            { // Add types until the base type is hit...
+                while (type != parent)
+                {
+                    yield return type;
+                    type = type.BaseType;
+                }
+
+                yield return parent;
+            }
+        }
+        public static IEnumerable<Type> GetAncestors<TParent>(this Type child)
+            => child.GetAncestors(typeof(TParent));
     }
 }

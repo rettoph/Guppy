@@ -6,6 +6,13 @@ using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Extensions.DependencyInjection;
+using log4net;
+using log4net.Core;
+using Guppy.Extensions.log4net;
+using log4net.Appender;
+using Guppy.Example.Library.Scenes;
+using Guppy.Example.Server.Scenes;
 
 namespace Guppy.Example.Server.ServiceLoaders
 {
@@ -14,13 +21,45 @@ namespace Guppy.Example.Server.ServiceLoaders
     {
         public void RegisterServices(ServiceCollection services)
         {
-            services.AddFactory<ExampleGame>(factory: p => new ExampleServerGame(), priority: 1);
+            services.RegisterTypeFactory<ExampleGame>(method: p => new ExampleServerGame(), priority: 1);
+            services.RegisterTypeFactory<ExampleScene>(method: p => new ExampleServerScene(), priority: 1);
 
-            services.AddSetup<NetPeerConfiguration>((config, p, c) =>
+            services.RegisterSetup<NetPeerConfiguration>((config, p, c) =>
             {
                 config.Port = 1337;
                 config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
+            });
+
+            services.RegisterSetup<ILog>((l, p, s) =>
+            {
+                l.SetLevel(Level.Verbose);
+                l.ConfigureManagedColoredConsoleAppender(new ManagedColoredConsoleAppender.LevelColors()
+                    {
+                        BackColor = ConsoleColor.Red,
+                        ForeColor = ConsoleColor.White,
+                        Level = Level.Fatal
+                    }, new ManagedColoredConsoleAppender.LevelColors()
+                    {
+                        ForeColor = ConsoleColor.Red,
+                        Level = Level.Error
+                    }, new ManagedColoredConsoleAppender.LevelColors()
+                    {
+                        ForeColor = ConsoleColor.Yellow,
+                        Level = Level.Warn
+                    }, new ManagedColoredConsoleAppender.LevelColors()
+                    {
+                        ForeColor = ConsoleColor.White,
+                        Level = Level.Info
+                    }, new ManagedColoredConsoleAppender.LevelColors()
+                    {
+                        ForeColor = ConsoleColor.Magenta,
+                        Level = Level.Debug
+                    }, new ManagedColoredConsoleAppender.LevelColors()
+                    {
+                        ForeColor = ConsoleColor.Cyan,
+                        Level = Level.Verbose
+                    });
             });
         }
 

@@ -12,6 +12,7 @@ using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
 using Guppy.Enums;
 using Guppy.Extensions.System;
+using Guppy.Extensions.DependencyInjection;
 
 namespace Guppy.Lists
 {
@@ -22,7 +23,7 @@ namespace Guppy.Lists
     /// the current collection.
     /// </summary>
     /// <typeparam name="TService"></typeparam>
-    public partial class ServiceList<TService> : Service, IServiceList<TService>
+    public partial class ServiceList<TService> : Entity, IServiceList<TService>
         where TService : class, IService
     {
         #region Private Fields
@@ -39,7 +40,7 @@ namespace Guppy.Lists
         /// <see cref="Release"/>. Otherwise, the list
         /// will only be cleared.
         /// </summary>
-        protected Boolean releasedChildren { get; set; } = false;
+        protected Boolean releaseChildren { get; set; } = false;
         #endregion
 
         #region Public Properties
@@ -75,6 +76,8 @@ namespace Guppy.Lists
 
         /// <inheritdoc />
         public event OnEventDelegate<IServiceList<TService>, TService> OnRemoved;
+
+        protected event ItemDelegate<TService> OnCreated;
         #endregion
 
         #region Lifecycle Methods
@@ -91,7 +94,7 @@ namespace Guppy.Lists
             base.PreInitialize(provider);
 
             this.provider = provider;
-            this.releasedChildren = false;
+            this.releaseChildren = false;
 
             this.CanAdd += this.HandleCanAdd;
             this.OnAdd += this.HandleAdd;
@@ -104,7 +107,7 @@ namespace Guppy.Lists
         {
             base.Release();
 
-            if(this.releasedChildren)
+            if(this.releaseChildren)
             { // Auto release all children.
                 while (this.Any())
                     this.First().TryRelease();
@@ -168,11 +171,33 @@ namespace Guppy.Lists
             while (this.Any()) // Auto remove all elements
                 this.TryRemove(_list.First());
         }
+
+        protected virtual T Create<T>(
+            ServiceProvider provider,
+            ServiceConfigurationKey configurationKey,
+            Action<T, ServiceProvider, ServiceConfiguration> setup = null,
+            Guid? id = null)
+            where T : class, TService
+        {
+            var instance = provider.GetService<T>(configurationKey, (i, p, d) =>
+            {
+                if (id != null)
+                    i.Id = id.Value;
+
+                this.OnCreated?.Invoke(i);
+
+                this.TryAdd(i);
+
+                setup?.Invoke(i, p, d);
+            });
+
+            return instance;
+        }
         #endregion
 
         #region Event Handlers
         private Boolean HandleCanAdd(IServiceList<TService> sender, TService item)
-            => item.Status != ServiceStatus.NotReady && !_dictionary.ContainsKey(item.Id);
+            => item != default && item.Status != ServiceStatus.NotInitialized && !_dictionary.ContainsKey(item.Id);
 
         private void HandleAdd(TService item)
         {
@@ -193,7 +218,7 @@ namespace Guppy.Lists
             item.OnStatus[ServiceStatus.Releasing] -= this.HandleItemReleasing;
         }
 
-        protected virtual void HandleItemReleasing(IService sender)
+        protected virtual void HandleItemReleasing(IService sender, ServiceStatus old, ServiceStatus value)
         {
             this.TryRemove(sender as TService);
         }
