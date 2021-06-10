@@ -1,11 +1,10 @@
-﻿using Guppy.Extensions.System;
-using Guppy.Utilities;
+﻿using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.DependencyInjection
+namespace Guppy.DependencyInjection.TypePools
 {
     /// <summary>
     /// Represents a pool of services.

@@ -97,10 +97,15 @@ namespace Guppy.DependencyInjection
         /// </summary>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public IEnumerable<ServiceConfigurationKey> GetAncestors(Type parent)
+        public IEnumerable<ServiceConfigurationKey> GetAncestors(ServiceConfigurationKey parent)
         {
-            foreach(Type ancestor in this.Type.GetAncestors(parent))
-                yield return new ServiceConfigurationKey(ancestor, this.Name);
+            if(this.Inherits(parent))
+                foreach (Type ancestor in this.Type.GetAncestors(parent.Type))
+                {
+                    yield return new ServiceConfigurationKey(ancestor, this.Name);
+                };
+
+            yield return this;
         }
 
         public ServiceConfigurationKey TryGetGenericKey(out Type[] generics)
@@ -117,13 +122,21 @@ namespace Guppy.DependencyInjection
             }
         }
 
+        public ServiceConfigurationKey TryConstructGenericKey(Type[] generics)
+        {
+            if(this.Type.IsGenericType && !this.Type.IsConstructedGenericType && generics != default)
+                return new ServiceConfigurationKey(this.Type.MakeGenericType(generics), this.Name);
+
+            return this;
+        }
+
         public override string ToString()
-            => $"{this.Type.FullName}({this.Name})";
+            => $"{this.Type.GetPrettyName()}({this.Name})";
         #endregion
 
         #region Explicit Overloading
         public static bool operator ==(ServiceConfigurationKey k1, ServiceConfigurationKey k2)
-            => k1.Type == k2.Type && k1.Name == k2.Name;
+            => k1.Id == k2.Id;
 
         public static bool operator !=(ServiceConfigurationKey k1, ServiceConfigurationKey k2) => !(k1 == k2);
 

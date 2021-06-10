@@ -52,7 +52,7 @@ namespace Guppy.ServiceLoaders
         private void HandleServiceNotReady(IService sender, ServiceStatus old, ServiceStatus value)
         {
             if(old == ServiceStatus.PostReleasing)
-                sender.ServiceConfiguration.TypeFactory.Pools[sender].TryReturn(sender);
+                sender.ServiceConfiguration.TypeFactory.TryReturnToPool(sender);
         }
         #endregion
     }

@@ -28,6 +28,7 @@ namespace Guppy.Extensions.System
             while (type != null && type != typeof(object))
             {
                 var cur = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+
                 if (generic == cur)
                 {
                     return true;
@@ -110,6 +111,14 @@ namespace Guppy.Extensions.System
             {
                 yield return child;
             }
+            else if(parent.IsGenericType && !parent.IsConstructedGenericType)
+            {
+                while (type.IsSubclassOfRawGeneric(parent))
+                {
+                    yield return type;
+                    type = type.BaseType;
+                }
+            }
             else if (parent.IsInterface)
             { // Recersively add types until the interface is no longer implemented...
                 while (type.GetInterfaces().Contains(parent))
@@ -122,13 +131,11 @@ namespace Guppy.Extensions.System
             }
             else
             { // Add types until the base type is hit...
-                while (type != parent)
+                while (parent.IsAssignableFrom(type))
                 {
                     yield return type;
                     type = type.BaseType;
                 }
-
-                yield return parent;
             }
         }
         public static IEnumerable<Type> GetAncestors<TParent>(this Type child)

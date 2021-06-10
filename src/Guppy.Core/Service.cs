@@ -13,13 +13,14 @@ using log4net.Core;
 using log4net;
 using Guppy.Extensions.log4net;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 
 namespace Guppy
 {
     public abstract class Service : IService, IDisposable
     {
         #region Private Fields
-        private ServiceConfiguration _configuration;
+        private IServiceConfiguration _configuration;
         private Guid _id;
         private ServiceStatus _serviceStatus;
         #endregion
@@ -29,7 +30,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
-        public ServiceConfiguration ServiceConfiguration
+        public IServiceConfiguration ServiceConfiguration
         {
             get => _configuration;
             set

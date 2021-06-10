@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Guppy.Extensions.DependencyInjection
                 .Where(conf => conf.Validate(entity, provider))
                 .Select(conf => conf.ComponentServiceConfiguration.GetInstance(
                         provider: provider, 
+                        generics: default,
                         setup: (i, p, c) => (i as IComponent).Entity = entity,
                         setupOrder: Guppy.Core.Constants.Priorities.PreInitialize - 1
                     ) as IComponent

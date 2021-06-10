@@ -13,6 +13,7 @@ using Guppy.Lists.Delegates;
 using Guppy.Enums;
 using Guppy.Extensions.System;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 
 namespace Guppy.Lists
 {
@@ -175,7 +176,7 @@ namespace Guppy.Lists
         protected virtual T Create<T>(
             ServiceProvider provider,
             ServiceConfigurationKey configurationKey,
-            Action<T, ServiceProvider, ServiceConfiguration> setup = null,
+            Action<T, ServiceProvider, IServiceConfiguration> setup = null,
             Guid? id = null)
             where T : class, TService
         {

@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection.Descriptors;
+﻿using Guppy.DependencyInjection.Contexts;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,19 +8,23 @@ using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public class ComponentConfiguration : ComponentConfigurationDescriptor
+    public class ComponentConfiguration
     {
-        public readonly ServiceConfiguration ComponentServiceConfiguration;
+        public readonly ServiceConfigurationKey EntityServiceConfigurationKey;
+        public readonly IServiceConfiguration ComponentServiceConfiguration;
         public readonly ComponentFilter[] ComponentFilters;
 
-        public ComponentConfiguration(
-            ComponentConfigurationDescriptor descriptor,
-            ServiceConfiguration componentServiceConfiguration,
-            IEnumerable<ComponentFilter> componentFilters
-        ) : base(descriptor.ComponentServiceConfigurationKey, descriptor.EntityServiceConfigurationKey)
+        internal ComponentConfiguration(
+            ComponentConfigurationContext context,
+            Dictionary<ServiceConfigurationKey, IServiceConfiguration[]> serviceConfigurations,
+            IEnumerable<ComponentFilter> componentFilters)
         {
-            this.ComponentServiceConfiguration = componentServiceConfiguration;
-            this.ComponentFilters = componentFilters.OrderBy(f => f.Order).ToArray();
+            this.EntityServiceConfigurationKey = context.EntityServiceConfigurationKey;
+            this.ComponentServiceConfiguration = serviceConfigurations[context.ComponentServiceConfigurationKey][0];
+            this.ComponentFilters = componentFilters
+                .Where(f => context.ComponentServiceConfigurationKey.Inherits(f.ComponentServiceConfigurationKey))
+                .OrderBy(f => f.Order)
+                .ToArray();
         }
 
         public Boolean Validate(IEntity instance, ServiceProvider provider)

@@ -20,8 +20,12 @@ namespace Guppy.ServiceLoaders
             services.RegisterTypeFactory<IServiceScopeFactory>(p => new ServiceScopeFactory(p));
             services.RegisterScoped<IServiceScopeFactory>();
 
-            services.RegisterTypeFactory<ServiceScope>(p => new ServiceScope(p));
-            services.RegisterScoped<ServiceScope>();
+            services.RegisterTypeFactory<IServiceScope>(p => new ServiceScope(p));
+            services.RegisterScoped<IServiceScope>();
+
+            services.RegisterTypeFactory<ServiceProvider>(p => p);
+            services.RegisterScoped<IServiceProvider>(typeof(ServiceProvider));
+            services.RegisterScoped<ServiceProvider>(typeof(ServiceProvider));
 
             services.RegisterTypeFactory<Settings>(p => new Settings());
             services.RegisterSingleton<Settings>();

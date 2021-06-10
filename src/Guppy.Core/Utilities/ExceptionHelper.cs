@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Extensions.System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,7 +16,7 @@ namespace Guppy.Utilities
         /// <param name="targetType"></param>
         public static void ValidateAssignableFrom(Type baseType, Type targetType)
         {
-            if (!baseType.IsAssignableFrom(targetType))
+            if (!baseType.IsAssignableFrom(targetType) && !targetType.IsSubclassOfRawGeneric(baseType))
                 throw new ArgumentException($"Unable to assign Type<{targetType.Name}> to Type<{baseType}>.");
         }
 

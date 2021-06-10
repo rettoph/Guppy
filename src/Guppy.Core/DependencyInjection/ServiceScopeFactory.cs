@@ -5,35 +5,30 @@ using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public sealed class ServiceScopeFactory : IServiceScopeFactory, IDisposable
+    internal sealed class ServiceScopeFactory : IServiceScopeFactory, IDisposable
     {
         private ServiceProvider _parent;
-        private List<ServiceScope> _scopes;
+        private List<IServiceScope> _scopes;
 
-        internal ServiceScopeFactory(ServiceProvider parent)
+        public ServiceScopeFactory(ServiceProvider parent)
         {
             _parent = parent;
-            _scopes = new List<ServiceScope>();
+            _scopes = new List<IServiceScope>();
         }
 
-        public ServiceScope CreateScope()
+        public IServiceScope CreateScope()
         {
-            var scope = new ServiceScope(_parent);
+            var scope = _parent.GetService<IServiceScope>();
             _scopes.Add(scope);
             return scope;
         }
 
-        #region IServiceScopeFactory Implementation
-        IServiceScope IServiceScopeFactory.CreateScope()
-            => this.CreateScope();
-        #endregion
-
-        #region IDisposeable Implementation
         public void Dispose()
         {
-            _scopes.ForEach(s => s.Dispose());
+            foreach (IServiceScope scope in _scopes)
+                scope.Dispose();
+
             _scopes.Clear();
         }
-        #endregion
     }
 }

@@ -76,5 +76,10 @@ namespace Guppy.Extensions.System.Collections
             else
                 return fallback;
         }
+
+        public static T TryGetElementAt<T>(this IEnumerable<T> source, Int32 index, Int32 fallback = 0)
+        {
+            return source.ElementAtOrDefault(index) ?? source.ElementAt(fallback);
+        }
     }
 }

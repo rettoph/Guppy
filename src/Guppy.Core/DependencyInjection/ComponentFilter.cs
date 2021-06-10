@@ -1,4 +1,5 @@
-﻿using Guppy.Interfaces;
+﻿using Guppy.DependencyInjection.ServiceConfigurations;
+using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,13 @@ namespace Guppy.DependencyInjection
     {
         public readonly ServiceConfigurationKey ComponentServiceConfigurationKey;
         public readonly Func<IEntity, ServiceProvider, Type, Boolean> Method;
-        public readonly Func<ServiceConfiguration, ServiceConfiguration, Boolean> Validator;
+        public readonly Func<IServiceConfiguration, IServiceConfiguration, Boolean> Validator;
         public readonly Int32 Order;
 
         public ComponentFilter(
             ServiceConfigurationKey componentServiceConfigurationKey,
             Func<IEntity, ServiceProvider, Type, Boolean> method,
-            Func<ServiceConfiguration, ServiceConfiguration, Boolean> validator,
+            Func<IServiceConfiguration, IServiceConfiguration, Boolean> validator,
             Int32 order)
         {
             ExceptionHelper.ValidateAssignableFrom<IComponent>(componentServiceConfigurationKey.Type);
@@ -26,8 +27,14 @@ namespace Guppy.DependencyInjection
             this.Validator = validator ?? DefaultValidator;
             this.Order = order;
         }
+        public ComponentFilter(
+            ServiceConfigurationKey componentServiceConfigurationKey,
+            Func<IEntity, ServiceProvider, Type, Boolean> method,
+            Int32 order) : this(componentServiceConfigurationKey, method, ComponentFilter.DefaultValidator, order)
+        {
+        }
 
-        private static Boolean DefaultValidator(ServiceConfiguration component, ServiceConfiguration entity)
+        private static Boolean DefaultValidator(IServiceConfiguration component, IServiceConfiguration entity)
             => true;
     }
 }

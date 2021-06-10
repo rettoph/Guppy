@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -30,6 +31,20 @@ namespace Guppy.Extensions.System
         public static TOut As<TOut>(this Object instance)
             where TOut : class
                 => instance as TOut;
+
+        /// <summary>
+        /// Dynamically preform the cast via reflection
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static dynamic As(this object o, Type type)
+        {
+            var methodInfo = typeof(ObjectExtensions).GetMethod(nameof(As), BindingFlags.Static | BindingFlags.Public);
+            var genericArguments = new[] { type };
+            var genericMethodInfo = methodInfo?.MakeGenericMethod(genericArguments);
+            return genericMethodInfo?.Invoke(null, new[] { o });
+        }
 
         /// <summary>
         /// Manually run a type converter.

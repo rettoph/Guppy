@@ -1,12 +1,11 @@
-﻿using Guppy.Extensions.System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public sealed class ServiceScope : IServiceScope
+    internal sealed class ServiceScope : IServiceScope
     {
         #region Public Properties
         public ServiceProvider ServiceProvider { get; private set; }
@@ -15,11 +14,8 @@ namespace Guppy.DependencyInjection
         #region Constructors
         public ServiceScope(ServiceProvider parent)
         {
-            var key = ServiceConfigurationKey.From<ServiceScope>();
-
             // Create a new service provider
             this.ServiceProvider = new ServiceProvider(parent);
-            this.ServiceProvider.CacheScopedInstance(this.ServiceProvider.ServiceConfigurations[key], this, key.Yield());
         }
         #endregion
 
