@@ -13,6 +13,8 @@ namespace Guppy.DependencyInjection.Actions
 
         internal BaseAction(TKey key, Action<Object, ServiceProvider, TArgs> method, Int32 order = 0)
         {
+            _method = method;
+
             this.Key = key;
             this.Order = order;
         }

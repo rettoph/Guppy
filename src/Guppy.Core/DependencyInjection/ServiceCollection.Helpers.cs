@@ -697,10 +697,11 @@ namespace Guppy.DependencyInjection
         public void RegisterBuilder<T>(
             Action<T, ServiceProvider, ITypeFactory> method,
             Int32 order = 0)
-                => this.Add(new BuilderAction(typeof(T), method as Action<Object, ServiceProvider, ITypeFactory>, order));
+                where T : class
+                    => this.Add(new BuilderAction(typeof(T), (i, p, f) => method(i as T, p, f), order));
         #endregion
 
-        #region RegisterBuilder Methods
+        #region RegisterSetup Methods
         public void RegisterSetup(
             ServiceConfigurationKey key,
             Action<Object, ServiceProvider, IServiceConfiguration> method,
@@ -710,12 +711,14 @@ namespace Guppy.DependencyInjection
             String keyName,
             Action<TKeyType, ServiceProvider, IServiceConfiguration> method,
             Int32 order = 0)
-                => this.Add(new SetupAction(ServiceConfigurationKey.From<TKeyType>(keyName), method as Action<Object, ServiceProvider, IServiceConfiguration>, order));
+                where TKeyType : class
+                    => this.Add(new SetupAction(ServiceConfigurationKey.From<TKeyType>(keyName), (i, p, c) => method(i as TKeyType, p, c), order));
 
         public void RegisterSetup<TKey>(
             Action<TKey, ServiceProvider, IServiceConfiguration> method,
             Int32 order = 0)
-                => this.Add(new SetupAction(ServiceConfigurationKey.From<TKey>(), method as Action<Object, ServiceProvider, IServiceConfiguration>, order));
+                where TKey : class
+                    => this.Add(new SetupAction(ServiceConfigurationKey.From<TKey>(), (i, p, c) => method(i as TKey, p, c), order));
         #endregion
     }
 }

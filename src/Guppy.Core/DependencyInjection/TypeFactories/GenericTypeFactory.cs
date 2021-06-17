@@ -58,7 +58,14 @@ namespace Guppy.DependencyInjection.TypeFactories
 
         /// <inheritdoc />
         public object BuildInstance(ServiceProvider provider, Type[] generics)
-            => _context.Method(provider, this.ImplementationType.MakeGenericType(generics));
+        {
+            var instance = _context.Method(provider, this.ImplementationType.MakeGenericType(generics));
+
+            foreach (BuilderAction action in this.BuilderActions)
+                action.Invoke(instance, provider, this);
+
+            return instance;
+        }
 
         /// <inheritdoc />
         public void TryReturnToPool(Object instance)
