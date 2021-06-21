@@ -50,7 +50,7 @@ namespace Guppy.DependencyInjection.TypeFactories
                 return b.Key.IsAssignableFrom(this.Type)
                     || this.Type.IsSubclassOf(b.Key)
                     || this.Type.IsSubclassOfRawGeneric(b.Key);
-            }).ToArray();
+            }).OrderBy(b => b.Order).ToArray();
 
             this.MaxPoolSize = _context.MaxPoolSize;
         }

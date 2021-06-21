@@ -2,6 +2,7 @@
 using Guppy.DependencyInjection.ServiceManagers;
 using Guppy.DependencyInjection.TypeFactories;
 using Guppy.Events.Delegates;
+using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,11 @@ namespace Guppy.DependencyInjection
                 .Select(c => c.CreateComponentConfiguration(_registeredServices, services.ComponentFilters))
                 .GroupBy(c => c.EntityServiceConfigurationKey)
                 .ToDictionary(g => g.Key, g => g.ToArray());
+
+            // Add placeholders for every registered service type with no configurations
+            foreach(ServiceConfigurationKey key in _registeredServices.Keys.Where(k => k.Inherits(ServiceConfigurationKey.From<IEntity>())))
+                if (!_componentConfigurations.ContainsKey(key))
+                    _componentConfigurations[key] = new ComponentConfiguration[0];
 
             _primaryActiveService = new Dictionary<ServiceConfigurationKey, IServiceManager>();
             _activeServices = new Dictionary<ServiceConfigurationServiceConfigurationKey, IServiceManager>();
@@ -114,6 +120,11 @@ namespace Guppy.DependencyInjection
         #region IDisposable Implementation
         public void Dispose()
         {
+            if (_disposing)
+                return;
+
+            _disposing = true;
+
             foreach (IServiceManager manager in _activeServices.Values)
                 manager.Dispose();
 

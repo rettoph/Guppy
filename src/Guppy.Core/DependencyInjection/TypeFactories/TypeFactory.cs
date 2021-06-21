@@ -50,7 +50,7 @@ namespace Guppy.DependencyInjection.TypeFactories
             {
                 return b.Key.IsAssignableFrom(this.Type)
                     || this.Type.IsSubclassOf(b.Key);
-            }).ToArray();
+            }).OrderBy(b => b.Order).ToArray();
         }
         #endregion
 

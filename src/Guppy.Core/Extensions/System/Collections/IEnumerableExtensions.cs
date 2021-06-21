@@ -81,5 +81,12 @@ namespace Guppy.Extensions.System.Collections
         {
             return source.ElementAtOrDefault(index) ?? source.ElementAt(fallback);
         }
+
+        public static T Random<T>(this IEnumerable<T> source, Random rand = default)
+        {
+            rand ??= new Random();
+            var skip = (int)(rand.NextDouble() * source.Count());
+            return source.Skip(skip).Take(1).First();
+        }
     }
 }
