@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Lists;
 using Guppy.Network.Interfaces;
 using System;
@@ -11,7 +12,7 @@ namespace Guppy.Network.Lists
     {
         internal IChannel channel;
 
-        protected override T Create<T>(ServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
+        protected override T Create<T>(GuppyServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
         {
             return base.Create<T>(provider, configurationKey, (pipe, p, c) =>
             {

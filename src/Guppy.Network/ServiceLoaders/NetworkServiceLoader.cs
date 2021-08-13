@@ -13,6 +13,8 @@ using Guppy.Network.Lists;
 using Guppy.Network.Peers;
 using Guppy.Network.Pipes;
 using Guppy.Network.Scenes;
+using Guppy.Network.Services;
+using Guppy.Network.Utilities;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -25,8 +27,14 @@ namespace Guppy.Network.ServiceLoaders
     [AutoLoad]
     internal sealed class NetworkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
+            services.RegisterTypeFactory<Broadcasts>(_ => new Broadcasts());
+            services.RegisterTypeFactory<Broadcast>(_ => new Broadcast());
+
+            services.RegisterScoped<Broadcasts>();
+            services.RegisterTransient<Broadcast>();
+
             #region Components
 
             services.RegisterTypeFactory<NetworkServiceListLayerableComponent>(p => new NetworkServiceListLayerableComponent());
@@ -46,7 +54,7 @@ namespace Guppy.Network.ServiceLoaders
             #endregion
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

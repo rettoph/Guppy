@@ -12,7 +12,7 @@ namespace Guppy.IO.ServiceLoaders
     [AutoLoad(-1)]
     internal sealed class InputButtonsServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<InputButtons>(p => new InputButtons());
             services.RegisterTypeFactory<InputButtonManager>(p => new InputButtonManager());
@@ -25,11 +25,9 @@ namespace Guppy.IO.ServiceLoaders
             services.RegisterSingleton<Keyboard>();
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
-            // Auto-build required services...
-            provider.GetService<Mouse>();
-            provider.GetService<Keyboard>();
+            // throw new NotImplementedException();
         }
     }
 }

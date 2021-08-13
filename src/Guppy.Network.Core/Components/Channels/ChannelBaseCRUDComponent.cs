@@ -20,20 +20,28 @@ namespace Guppy.Network.Components.Channels
     class ChannelBaseCRUDComponent : Component<IChannel>
     {
         #region Lifecycle Methods
-        protected override void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
+        protected override void Initialize(GuppyServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
+        }
+
+        protected override void Release()
+        {
+            base.Release();
+
+            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
+        }
+        #endregion
+
+        #region
+        private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
         {
             this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
             this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.UpdateNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
             this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.PingNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
             this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
-        }
-
-        protected override void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity);
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.Channel.UpdateNetworkEntity);
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.Channel.PingNetworkEntity);
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity);
         }
         #endregion
     }

@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using Guppy.Lists.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
+using GuppyServiceProvider = Guppy.DependencyInjection.GuppyServiceProvider;
 
 namespace Guppy.Lists
 {
@@ -32,7 +33,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -89,8 +90,8 @@ namespace Guppy.Lists
         #endregion
 
         #region Frame Methods
-        protected override T Create<T>(ServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, ServiceProvider, ServiceConfiguration> setup = null, Guid? id = null)
-            => base.Create(provider.CreateScope().ServiceProvider as ServiceProvider, configurationKey, setup, id);
+        protected override T Create<T>(GuppyServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
+            => base.Create(provider.CreateScope(), configurationKey, setup, id);
         #endregion
 
         #region Events

@@ -239,6 +239,7 @@ namespace Guppy.Utilities
 
             this.TryFlushTriangleVertices(true);
             this.TryFlushLineVertices(true);
+
             _started = false;
         }
         #endregion

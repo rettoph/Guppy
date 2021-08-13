@@ -18,7 +18,7 @@ namespace Guppy
     {
         #region Private Fields
         private Synchronizer _synchronizer;
-        private ServiceProvider _provider;
+        private GuppyServiceProvider _provider;
         #endregion
 
         #region Public Attributes
@@ -26,7 +26,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -48,7 +48,7 @@ namespace Guppy
         {
             base.PostDispose();
 
-            _provider.Dispose(true);
+            _provider.Dispose();
             _provider = null;
         }
         #endregion

@@ -1,5 +1,5 @@
 ﻿using Guppy.DependencyInjection.Actions;
-using Guppy.DependencyInjection.Contexts;
+using Guppy.DependencyInjection.Dtos;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using System;
 using System.Collections.Generic;
@@ -52,7 +52,7 @@ namespace Guppy.DependencyInjection.TypeFactories
         /// <param name="generics"></param>
         /// <param name="cacher"></param>
         /// <returns></returns>
-        Object BuildInstance(ServiceProvider provider, Type[] generics);
+        Object BuildInstance(GuppyServiceProvider provider, Type[] generics);
 
         /// <summary>
         /// Mutate some input keys to fulfil the generic type, if needed.

@@ -14,7 +14,6 @@ namespace Guppy.Enums
         PreInitializing,
         Initializing,
         PostInitializing,
-        PostInitialized,
         Ready,
         PreReleasing,
         Releasing,

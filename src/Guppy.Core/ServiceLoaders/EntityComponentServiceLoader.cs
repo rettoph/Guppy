@@ -14,11 +14,11 @@ namespace Guppy.ServiceLoaders
     {
         private static readonly IComponent[] EmptyComponentArray = new IComponent[0];
 
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterBuilder<IEntity>((e, p, c) =>
             {
-                e.OnStatus[ServiceStatus.PreReleasing] += EntityComponentServiceLoader.HandleEntityPreReleasing;
+                e.OnStatus[ServiceStatus.PostReleasing] += EntityComponentServiceLoader.HandleEntityPostReleasing;
                 e.OnStatus[ServiceStatus.Disposing] += EntityComponentServiceLoader.HandleEntityDisposing;
             });
 
@@ -28,13 +28,13 @@ namespace Guppy.ServiceLoaders
             }, Guppy.Core.Constants.Priorities.PreInitialize - 1);
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }
 
         #region Event Handlers
-        private static void HandleEntityPreReleasing(IService sender, ServiceStatus old, ServiceStatus value)
+        private static void HandleEntityPostReleasing(IService sender, ServiceStatus old, ServiceStatus value)
         {
             if (sender is IEntity entity)
             {
@@ -47,7 +47,7 @@ namespace Guppy.ServiceLoaders
 
         private static void HandleEntityDisposing(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            sender.OnStatus[ServiceStatus.PreReleasing] -= EntityComponentServiceLoader.HandleEntityPreReleasing;
+            sender.OnStatus[ServiceStatus.PreReleasing] -= EntityComponentServiceLoader.HandleEntityPostReleasing;
             sender.OnStatus[ServiceStatus.Disposing] -= EntityComponentServiceLoader.HandleEntityDisposing;
         }
         #endregion

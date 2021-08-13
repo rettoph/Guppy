@@ -18,7 +18,7 @@ namespace Guppy.IO.Services
         /// should be watched.
         /// </summary>
         private Dictionary<InputButton, InputButtonManager> _inputs;
-        private ServiceProvider _provider;
+        private GuppyServiceProvider _provider;
         #endregion
 
         #region Public Properties
@@ -35,7 +35,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 

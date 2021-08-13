@@ -22,12 +22,9 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
-
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
-            this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
         }
         #endregion
 
@@ -38,18 +35,6 @@ namespace Guppy
                 throw new InvalidOperationException("Unable to update Entity after initialization has begun.");
 
             this.Entity = value;
-        }
-        #endregion
-
-        #region Event Handlers
-        protected virtual void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
-        }
-
-        protected virtual void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
         }
         #endregion
     }

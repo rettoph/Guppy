@@ -22,25 +22,38 @@ namespace Guppy.Network
         #region INetworkService Implementation
         public MessageManager Messages { get; private set; }
 
-        public IPipe Pipe
+        public virtual IPipe Pipe
         {
             get => _pipe;
-            set => this.OnPipeChanged.InvokeIf(value != _pipe, this, ref _pipe, value);
+            protected set => this.OnPipeChanged.InvokeIf(value != _pipe, this, ref _pipe, value);
+        }
+
+        IPipe INetworkEntity.Pipe
+        {
+            get => this.Pipe;
+            set => this.Pipe = value;
         }
         #endregion
 
         #region Events
-        public event OnChangedEventDelegate<INetworkEntity, IPipe> OnPipeChanged;
+        public virtual event OnChangedEventDelegate<INetworkEntity, IPipe> OnPipeChanged;
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
             this.Messages = new MessageManager();
             this.Messages.Signer = this.DefaultMessageSigner;
             this.Messages.DefaultFactory = this.DefaultMessageFactory;
+        }
+
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            this.Messages.Clear();
         }
 
         protected override void Dispose()

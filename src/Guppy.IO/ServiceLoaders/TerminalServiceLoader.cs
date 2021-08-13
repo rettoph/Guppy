@@ -7,13 +7,14 @@ using Guppy.IO.Services;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.IO;
 using System.Text;
 
 namespace Guppy.IO.ServiceLoaders
 {
     internal sealed class TerminalServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<Terminal>(p => new Terminal());
             services.RegisterTypeFactory<IConsole>(p => p.GetService<Terminal>());
@@ -30,7 +31,7 @@ namespace Guppy.IO.ServiceLoaders
             }, Guppy.Core.Constants.Priorities.PreCreate);
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

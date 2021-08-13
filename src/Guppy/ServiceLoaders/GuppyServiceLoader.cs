@@ -13,13 +13,16 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<Synchronizer>(p => new Synchronizer());
             services.RegisterScoped<Synchronizer>();
+
+            services.RegisterTypeFactory<IntervalInvoker>(p => new IntervalInvoker());
+            services.RegisterScoped<IntervalInvoker>();
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

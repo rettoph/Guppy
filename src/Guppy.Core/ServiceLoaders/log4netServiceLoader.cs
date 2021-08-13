@@ -14,7 +14,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class log4netServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             // Configure & add log4net services...
             services.RegisterTypeFactory<ILog>(p => LogManager.GetLogger(typeof(GuppyLoader)));
@@ -31,7 +31,7 @@ namespace Guppy.ServiceLoaders
             }, -10);
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

@@ -10,6 +10,6 @@ namespace Guppy.DependencyInjection.Actions
 
         public Int32 Order { get; }
 
-        void Invoke(Object instance, ServiceProvider provider, TArgs args);
+        void Invoke(Object instance, GuppyServiceProvider provider, TArgs args);
     }
 }

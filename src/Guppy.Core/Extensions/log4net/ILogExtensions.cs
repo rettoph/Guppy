@@ -82,7 +82,7 @@ namespace Guppy.Extensions.log4net
         }
         #endregion
 
-        #region Trace
+        #region Verbose
         public static void Verbose(this ILog log, String message)
             => log.Logger.Log(
                 MethodBase.GetCurrentMethod().DeclaringType,

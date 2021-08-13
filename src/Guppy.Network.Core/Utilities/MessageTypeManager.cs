@@ -40,9 +40,6 @@ namespace Guppy.Network.Utilities
         #region Helper Methods
         public void TryWrite(NetOutgoingMessage om)
         {
-            _signer(om);
-            om.Write(this.Id);
-
             this.OnWrite?.Invoke(this, om);
         }
 
@@ -53,7 +50,7 @@ namespace Guppy.Network.Utilities
 
         /// <summary>
         /// Create & return a new <see cref="NetOutgoingMessage"/> instance configured 
-        /// for the current message type & enqueue to be sent.
+        /// for the current message type, signed, and enqueue to be sent.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
@@ -61,6 +58,9 @@ namespace Guppy.Network.Utilities
         public NetOutgoingMessage Create(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
         {
             var message = _factory(context, recipients);
+            _signer(message);
+            message.Write(this.Id);
+
             this.TryWrite(message);
 
             return message;

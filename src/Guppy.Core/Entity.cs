@@ -18,7 +18,7 @@ namespace Guppy
             get => _components;
             set
             {
-                if (this.Status != ServiceStatus.NotInitialized && this.Status != ServiceStatus.PreReleasing)
+                if (this.Status != ServiceStatus.NotInitialized && this.Status != ServiceStatus.PostReleasing)
                     throw new InvalidOperationException("Unable to update Components after initialization has begun.");
 
                 _components = value;

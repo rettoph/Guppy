@@ -9,7 +9,6 @@ using System.Text;
 
 namespace Guppy.Services
 {
-    [AutoLoad]
     public sealed class Content : LoaderService<String, String, Object>
     {
         #region Private Fields
@@ -17,7 +16,7 @@ namespace Guppy.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 

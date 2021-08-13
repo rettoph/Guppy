@@ -27,7 +27,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -36,18 +36,18 @@ namespace Guppy.Lists
         #endregion
 
         #region Create Methods
-        public T Create<T>(ServiceConfigurationKey configurationKey, Action<T, ServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
+        public T Create<T>(ServiceConfigurationKey configurationKey, Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
                 => this.Create<T>(this.provider, configurationKey, setup, id);
 
-        public TService Create(ServiceConfigurationKey configurationKey, Action<TService, ServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
+        public TService Create(ServiceConfigurationKey configurationKey, Action<TService, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
                 => this.Create<TService>(this.provider, configurationKey, setup, id);
 
-        public T Create<T>(Action<T, ServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
+        public T Create<T>(Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
             where T : class, TService
                 => this.Create<T>(this.provider, ServiceConfigurationKey.From<T>(), setup, id);
 
-        public TService Create(Action<TService, ServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
+        public TService Create(Action<TService, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
                 => this.Create<TService>(this.provider, this.DefaultChildServiceConfigurationKey, setup, id);
         #endregion
 

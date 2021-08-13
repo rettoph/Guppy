@@ -65,7 +65,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        void IService.TryPreCreate(ServiceProvider provider)
+        void IService.TryPreCreate(GuppyServiceProvider provider)
         {
             this.log = provider.GetService<ILog>(Guppy.Core.Constants.ServiceConfigurationKeys.ILog);
             this.OnStatus = DictionaryHelper.BuildEnumDictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>>();
@@ -76,7 +76,7 @@ namespace Guppy
                 this.PreCreate(provider);
             }
         }
-        void IService.TryCreate(ServiceProvider provider)
+        void IService.TryCreate(GuppyServiceProvider provider)
         {
             if (this.ValidateStatus(ServiceStatus.PreCreating))
             {
@@ -85,7 +85,7 @@ namespace Guppy
             }
         }
 
-        void IService.TryPostCreate(ServiceProvider provider)
+        void IService.TryPostCreate(GuppyServiceProvider provider)
         {
             if (this.ValidateStatus(ServiceStatus.Creating))
             {
@@ -96,7 +96,7 @@ namespace Guppy
             }
         }
 
-        void IService.TryPreInitialize(ServiceProvider provider)
+        void IService.TryPreInitialize(GuppyServiceProvider provider)
         {
             if (this.ValidateStatus(ServiceStatus.NotInitialized))
             {
@@ -105,7 +105,7 @@ namespace Guppy
             }
         }
 
-        void IService.TryInitialize(ServiceProvider provider)
+        void IService.TryInitialize(GuppyServiceProvider provider)
         {
             if (this.ValidateStatus(ServiceStatus.PreInitializing))
             {
@@ -114,7 +114,7 @@ namespace Guppy
             }
         }
 
-        void IService.TryPostInitialize(ServiceProvider provider)
+        void IService.TryPostInitialize(GuppyServiceProvider provider)
         {
             if(this.ValidateStatus(ServiceStatus.Initializing))
             {
@@ -166,32 +166,32 @@ namespace Guppy
             }
         }
 
-        protected virtual void PreCreate(ServiceProvider provider)
+        protected virtual void PreCreate(GuppyServiceProvider provider)
         {
             //
         }
 
-        protected virtual void Create(ServiceProvider provider)
+        protected virtual void Create(GuppyServiceProvider provider)
         {
             //
         }
 
-        protected virtual void PostCreate(ServiceProvider provider)
+        protected virtual void PostCreate(GuppyServiceProvider provider)
         {
             //
         }
 
-        protected virtual void PreInitialize(ServiceProvider provider)
+        protected virtual void PreInitialize(GuppyServiceProvider provider)
         {
             this.Id = Guid.NewGuid();
         }
 
-        protected virtual void Initialize(ServiceProvider provider)
+        protected virtual void Initialize(GuppyServiceProvider provider)
         {
             //
         }
 
-        protected virtual void PostInitialize(ServiceProvider provider)
+        protected virtual void PostInitialize(GuppyServiceProvider provider)
         {
             //
         }

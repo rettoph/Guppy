@@ -37,7 +37,7 @@ namespace Guppy.Network.Security
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 

@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Network.Enums;
@@ -33,7 +34,7 @@ namespace Guppy.Network.Components
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -43,7 +44,7 @@ namespace Guppy.Network.Components
             _initialNetworkAuthorization = this.settings.Get<NetworkAuthorization>();
         }
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -51,9 +52,9 @@ namespace Guppy.Network.Components
                 this.InitializeRemote(provider, _initialNetworkAuthorization);
         }
 
-        protected virtual void InitializeRemote(ServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected virtual void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            // 
+            //
         }
 
         protected override void Release()

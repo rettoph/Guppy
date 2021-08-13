@@ -93,9 +93,13 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreCreate(ServiceProvider provider)
+        protected override void PreCreate(GuppyServiceProvider provider)
         {
             base.PreCreate(provider);
+
+            // Override Console output
+            Console.SetOut(new ConsoleTerminalTextWriter(this));
+            Console.SetError(new ConsoleTerminalTextWriter(this));
 
             _font = provider.GetContent<SpriteFont>("guppy:font:debug");
 
@@ -105,8 +109,8 @@ namespace Guppy.IO.Services
             provider.Service(out _primitiveBatch);
             provider.Service(out _mouse);
             provider.Service(out _keyboard);
-            provider.Service(out _spriteBatch, Guppy.Constants.ServiceConfigurationKeys.TransientSpritebatch);
-            provider.Service(out _camera, Guppy.Constants.ServiceConfigurationKeys.TransientCamera);
+            provider.Service(Guppy.Constants.ServiceConfigurationKeys.TransientSpritebatch, out _spriteBatch);
+            provider.Service(Guppy.Constants.ServiceConfigurationKeys.TransientCamera, out _camera);
 
             _lines = new TerminalString[256];
             _lineIndex = -1;
@@ -127,10 +131,6 @@ namespace Guppy.IO.Services
             _camera.Center = false;
 
             this.InputColor = Color.Gray;
-
-            // Override Console output
-            Console.SetOut(new ConsoleTerminalTextWriter(this));
-            Console.SetError(new ConsoleTerminalTextWriter(this));
 
             this.Clean();
         }

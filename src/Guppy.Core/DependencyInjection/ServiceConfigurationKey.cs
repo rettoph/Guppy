@@ -151,6 +151,23 @@ namespace Guppy.DependencyInjection
 
         public static ServiceConfigurationKey From(Type type, String name = "")
             => new ServiceConfigurationKey(type, name);
+
+        public override bool Equals(object obj)
+        {
+            return obj is ServiceConfigurationKey key &&
+                   Id == key.Id &&
+                   EqualityComparer<Type>.Default.Equals(Type, key.Type) &&
+                   Name == key.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1880411771;
+            hashCode = hashCode * -1521134295 + Id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(Type);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            return hashCode;
+        }
         #endregion
     }
 }

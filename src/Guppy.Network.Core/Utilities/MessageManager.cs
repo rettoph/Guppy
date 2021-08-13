@@ -41,9 +41,9 @@ namespace Guppy.Network.Utilities
             _messageTypes.Add(messageType, new MessageTypeManager(messageType, factory ?? this.DefaultFactory, this.Signer, defaultContext));
         }
 
-        public void Remove(UInt32 messageType)
+        public void Clear()
         {
-            _messageTypes.Remove(messageType);
+            _messageTypes.Clear();
         }
 
         /// <summary>

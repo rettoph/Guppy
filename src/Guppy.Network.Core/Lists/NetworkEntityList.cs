@@ -11,7 +11,7 @@ namespace Guppy.Network.Lists
     public class NetworkEntityList : FactoryServiceList<INetworkEntity>
     {
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 

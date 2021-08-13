@@ -65,35 +65,83 @@ namespace Guppy.Utilities.Primitives
         #region Constructor
         private PrimitivePath(Single width, params Vector2[] vertices)
         {
-            _buffer = new Vector2[4];
-            this.Source = new Vector2[vertices.Length + 1];
-            vertices.CopyTo(this.Source, 0);
-            this.Source[this.Source.Length - 1] = this.Source[0];
+            // Detect if the recieved path is a closed loop using an arbitrarily choosen epsilon threshold. 
+            Boolean closed = Vector2.Distance(vertices.First(), vertices.Last()) < 1e-5;
 
+            _buffer = new Vector2[4];
+            this.Source = vertices;
             this.VerticesBuffer = new Vector2[2 * this.Source.Length];
-            this.VerticeBounds = new Matrix[vertices.Length + 1][];
-            this.SetVerticeBounds(out this.VerticeBounds[0], this.Source[0], this.Source[1], this.Source[this.Source.Length - 2]);
-            this.SetVerticeBounds(out this.VerticeBounds[this.VerticeBounds.Length - 1], this.Source[this.Source.Length - 1], this.Source[1], this.Source[this.Source.Length - 2]);
-            for (Int32 i = 1; i < this.Source.Length - 1; i++)
+            this.VerticeBounds = new Matrix[this.Source.Length][];
+
+            if(closed)
+            {
+                this.SetVerticeBounds(
+                    buffer: out this.VerticeBounds[0],
+                    point: this.Source[0],
+                    prev: this.Source[this.Source.Length - 2],
+                    next: this.Source[1]);
+            }
+            else
+            {
+                this.SetVerticeBounds(
+                    buffer: out this.VerticeBounds[0],
+                    point: this.Source[0],
+                    prev: default,
+                    next: this.Source[1]);
+            }
+
+            for(Int32 i = 1; i < this.Source.Length - 1; i++)
+            {
                 this.SetVerticeBounds(
                     buffer: out this.VerticeBounds[i],
                     point: this.Source[i],
-                    next: this.Source[i + 1],
-                    prev: this.Source[i - 1]);
+                    prev: this.Source[i - 1],
+                    next: this.Source[i + 1]);
+            }
 
-            // Set the width to default.
+            if (closed)
+            {
+                this.SetVerticeBounds(
+                    buffer: out this.VerticeBounds[this.Source.Length - 1],
+                    point: this.Source[this.Source.Length - 1],
+                    prev: this.Source[this.Source.Length - 2],
+                    next: this.Source[1]);
+            }
+            else
+            {
+                this.SetVerticeBounds(
+                    buffer: out this.VerticeBounds[this.Source.Length - 1],
+                    point: this.Source[this.Source.Length - 1],
+                    prev: this.Source[this.Source.Length - 2],
+                    next: default);
+            }
+
             this.Width = width;
         }
         #endregion
 
         #region Methods
-        private void SetVerticeBounds(out Matrix[] buffer, Vector2 point, Vector2 next, Vector2? prev = null)
+        private void SetVerticeBounds(out Matrix[] buffer, Vector2 point, Vector2? prev = default, Vector2? next = default)
         {
-            var angle = point.Angle(next);
-            var delta = prev == null ? MathHelper.Pi : point.Angle(prev.Value, next);
-            var average = angle - (delta / 2);
+            if (prev == default && next == default)
+                throw new Exception("Error in PrimitivePath.SetVerticeBounds: Either prev or next must be defined.");
 
-            var triangle1 = TriangleHelper.Solve(A: delta / 2, B: MathHelper.PiOver2, a: 1f);
+            if (prev == default)
+            { // Calculate a virtual prev value as if its a straight line from the next through point.
+                var ang = next.Value.Angle(point);
+                prev = Vector2.UnitX.Rotate(ang + MathHelper.Pi);
+            }
+            else if (next == default)
+            { // Calculate a virtual prev value as if its a straight line from the next through point.
+                var ang = prev.Value.Angle(point);
+                next = Vector2.UnitX.Rotate(ang + MathHelper.Pi);
+            }
+
+            Single angle = point.Angle(next.Value);
+            Single delta = point.Angle(prev.Value, next.Value);
+            Single average = angle - (delta / 2);
+
+            Triangle triangle1 = TriangleHelper.Solve(A: delta / 2, B: MathHelper.PiOver2, a: 1f);
 
             buffer = new Matrix[]
             {

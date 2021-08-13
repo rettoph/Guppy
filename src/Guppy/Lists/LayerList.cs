@@ -11,7 +11,7 @@ namespace Guppy.Lists
     public class LayerList : OrderableList<ILayer>
     {
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 

@@ -10,7 +10,7 @@ namespace Guppy.Network.Interfaces
     public interface INetworkEntity : IEntity
     {
         #region Properties
-        IPipe Pipe { get; }
+        IPipe Pipe { get; set; }
         MessageManager Messages { get; }
         #endregion
 

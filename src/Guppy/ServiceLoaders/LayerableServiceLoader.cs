@@ -10,15 +10,20 @@ using Guppy.Lists;
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class EntityServiceCollection : IServiceLoader
+    internal sealed class LayerableServiceCollection : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<LayerableList>(p => new LayerableList());
             services.RegisterScoped<LayerableList>();
+
+            services.RegisterSetup<ILayerable>((l, p, c) =>
+            {
+                p.GetService<LayerableList>().TryAdd(l);
+            });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

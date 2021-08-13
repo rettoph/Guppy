@@ -13,11 +13,11 @@ namespace Guppy.Extensions.DependencyInjection
         public static IComponent[] Create(
             this ComponentConfiguration[] configurations,
             IEntity entity,
-            ServiceProvider provider)
+            GuppyServiceProvider provider)
         {
             // TODO: Find way to make filter more efficient
             return configurations
-                .Where(conf => conf.Validate(entity, provider))
+                .Where(conf => conf.CheckFilters(entity, provider))
                 .Select(conf => conf.ComponentServiceConfiguration.GetInstance(
                         provider: provider, 
                         generics: default,

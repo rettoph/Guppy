@@ -88,5 +88,13 @@ namespace Guppy.Extensions.System.Collections
             var skip = (int)(rand.NextDouble() * source.Count());
             return source.Skip(skip).Take(1).First();
         }
+
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> source, params T[] items)
+            => source.Concat(items.AsEnumerable());
+
+        public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> kvps)
+            => kvps.ToDictionary(
+                keySelector: kvp => kvp.Key,
+                elementSelector: kvp => kvp.Value);
     }
 }

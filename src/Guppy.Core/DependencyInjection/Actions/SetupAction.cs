@@ -15,7 +15,7 @@ namespace Guppy.DependencyInjection.Actions
     {
         public SetupAction(
             ServiceConfigurationKey key, 
-            Action<Object, ServiceProvider, IServiceConfiguration> method,
+            Action<Object, GuppyServiceProvider, IServiceConfiguration> method,
             Int32 order = 0) : base(key, method, order)
         {
         }

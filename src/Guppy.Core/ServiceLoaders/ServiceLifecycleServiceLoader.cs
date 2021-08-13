@@ -15,12 +15,12 @@ namespace Guppy.ServiceLoaders
     [AutoLoad(Int32.MaxValue)]
     internal class ServiceLifecycleServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterSetup<IService>((s, p, sd) =>
+            services.RegisterBuilder<IService>((s, p, sd) =>
             {
                 s.OnStatus[ServiceStatus.NotInitialized] += this.HandleServiceNotReady;
-            }, Guppy.Core.Constants.Priorities.PreCreate - 1);
+            }, Guppy.Core.Constants.Priorities.Create);
 
             services.RegisterBuilder<IService>((s, p, sd) => s.TryPreCreate(p) , Guppy.Core.Constants.Priorities.PreCreate);
             services.RegisterBuilder<IService>((s, p, sd) => s.TryCreate(p)    , Guppy.Core.Constants.Priorities.Create);
@@ -36,7 +36,7 @@ namespace Guppy.ServiceLoaders
             services.RegisterSetup<IService>((s, p, sd) => s.TryPostInitialize(p), Guppy.Core.Constants.Priorities.PostInitialize);
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // 
         }

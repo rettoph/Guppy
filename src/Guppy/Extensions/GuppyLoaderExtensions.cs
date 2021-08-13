@@ -27,6 +27,7 @@ namespace Guppy.Extensions
             loader.Services.RegisterSingleton<GameWindow>(window);
             loader.Services.RegisterSingleton<GraphicsDevice>(graphics.GraphicsDevice);
             loader.RegisterServiceLoader(new MonoGameServiceLoader());
+            loader.RegisterServiceLoader(new ContentServiceLoader());
 
             return loader;
         }

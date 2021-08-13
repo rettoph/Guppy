@@ -14,7 +14,7 @@ namespace Guppy.CommandLine.ServiceLoaders
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<Commands>(p => new Services.Commands());
             services.RegisterTypeFactory<RootCommand>(p => new RootCommand()
@@ -28,7 +28,7 @@ namespace Guppy.CommandLine.ServiceLoaders
             services.RegisterSingleton<IConsole>();
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

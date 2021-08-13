@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.DependencyInjection.Descriptors;
 using Guppy.DependencyInjection;
 using Guppy.Network.Lists;
 using Guppy.Events.Delegates;
@@ -61,6 +60,11 @@ namespace Guppy.Network.Interfaces
         /// <param name="claims"></param>
         /// <returns></returns>
         IUser CreateUser(params Claim[] claims);
+
+        /// <summary>
+        /// Attempt to update the internal peer.
+        /// </summary>
+        void TryUpdate();
         #endregion
     }
 }

@@ -9,8 +9,9 @@ namespace Guppy.Events.Delegates
     public static class OnChangedEventDelegateExtensions
     {
         /// <summary>
-        /// Attempt to update the reference value & then
-        /// invoke the event if possible.
+        /// If <paramref name="changed"/> is true, update the
+        /// <paramref name="old"/> reference to <paramref name="value"/>
+        /// and invoke the <paramref name="deltaDelegate"/> event.
         /// </summary>
         /// <typeparam name="TSender"></typeparam>
         /// <typeparam name="TValue"></typeparam>
@@ -20,16 +21,16 @@ namespace Guppy.Events.Delegates
         /// <param name="value"></param>
         public static Boolean InvokeIf<TSender, TValue>(
             this OnChangedEventDelegate<TSender, TValue> deltaDelegate, 
-            Boolean valid, 
+            Boolean changed, 
             TSender sender, 
             ref TValue old, 
             TValue value)
         {
-            if (!valid)
+            if (!changed) // Do nothing
                 return false;
-            else if(deltaDelegate == default(OnChangedEventDelegate<TSender, TValue>))
+            else if(deltaDelegate == default) // Just update the reference
                 old = value;
-            else
+            else // Invoke event and update reference
                 deltaDelegate.Invoke(sender, old, old = value);
             return true;
         }

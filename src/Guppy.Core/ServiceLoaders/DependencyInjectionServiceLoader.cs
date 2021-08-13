@@ -7,31 +7,24 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ServiceCollection = Guppy.DependencyInjection.ServiceCollection;
-using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
+using GuppyServiceCollection = Guppy.DependencyInjection.GuppyServiceCollection;
+using GuppyServiceProvider = Guppy.DependencyInjection.GuppyServiceProvider;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class DependencyInjectionServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<IServiceScopeFactory>(p => new ServiceScopeFactory(p));
-            services.RegisterScoped<IServiceScopeFactory>();
-
-            services.RegisterTypeFactory<IServiceScope>(p => new ServiceScope(p));
-            services.RegisterScoped<IServiceScope>();
-
-            services.RegisterTypeFactory<ServiceProvider>(p => p);
-            services.RegisterScoped<IServiceProvider>(typeof(ServiceProvider));
-            services.RegisterScoped<ServiceProvider>(typeof(ServiceProvider));
+            services.RegisterTypeFactory<GuppyServiceProvider>(p => p);
+            services.RegisterScoped<GuppyServiceProvider>();
 
             services.RegisterTypeFactory<Settings>(p => new Settings());
             services.RegisterSingleton<Settings>();
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

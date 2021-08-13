@@ -21,7 +21,7 @@ namespace Guppy.Network.Peers
     public abstract class Peer : Service, IPeer
     {
         #region Private Fields
-        private ServiceProvider _provider;
+        private GuppyServiceProvider _provider;
         private ILog _log;
         private NetOutgoingMessageService _outgoing;
         private NetPeer _peer;
@@ -64,7 +64,7 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
@@ -73,7 +73,7 @@ namespace Guppy.Network.Peers
             this.OnIncomingMessageRecieved += this.HandleIncomingMessageRecieved;
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -84,7 +84,7 @@ namespace Guppy.Network.Peers
             });
         }
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 

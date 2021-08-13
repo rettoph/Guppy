@@ -17,13 +17,13 @@ namespace Guppy
     public sealed class GuppyLoader
     {
         #region Private Fields
-        private ServiceCollection _services;
+        private GuppyServiceCollection _services;
         private HashSet<IServiceLoader> _serviceLoaders;
         #endregion
 
         #region Public Attributes
         public Boolean Initialized { get; private set; }
-        public ServiceCollection Services
+        public GuppyServiceCollection Services
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Guppy
         {
             this.Initialized = false;
 
-            _services = new ServiceCollection();
+            _services = new GuppyServiceCollection();
 
             _serviceLoaders = new HashSet<IServiceLoader>();
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
@@ -86,7 +86,7 @@ namespace Guppy
         /// run any service loader configurations to it.
         /// </summary>
         /// <returns></returns>
-        public ServiceProvider BuildServiceProvider()
+        public GuppyServiceProvider BuildServiceProvider()
         {
             var provider = _services.BuildServiceProvider();
 

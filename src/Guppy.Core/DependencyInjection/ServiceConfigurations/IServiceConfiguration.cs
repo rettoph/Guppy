@@ -43,7 +43,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
         #endregion
 
         #region Methods
-        IServiceManager BuildServiceManager(ServiceProvider provider, Type[] generics);
+        IServiceManager BuildServiceManager(GuppyServiceProvider provider, Type[] generics);
         #endregion
     }
 
@@ -51,7 +51,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
     {
         public static void BuildInstance(
             this IServiceConfiguration configuration, 
-            ServiceProvider provider, 
+            GuppyServiceProvider provider, 
             Type[] generics, 
             out Object instance)
         {
@@ -62,7 +62,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
         }
         public static Object BuildInstance(
             this IServiceConfiguration configuration, 
-            ServiceProvider provider, 
+            GuppyServiceProvider provider, 
             Type[] generics)
         {
             Object instance;
@@ -74,14 +74,14 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
 
         public static void BuildInstance(
             this IServiceConfiguration configuration,
-            ServiceProvider provider,
+            GuppyServiceProvider provider,
             Type[] generics,
-            Action<Object, ServiceProvider, IServiceConfiguration> setup,
+            Action<Object, GuppyServiceProvider, IServiceConfiguration> setup,
             Int32 setupOrder,
             out Object instance)
         {
             instance = configuration.TypeFactory.BuildInstance(provider.Root, generics);
-            Boolean ranSetup = false;
+            Boolean ranSetup = setup == default;
 
             foreach (SetupAction action in configuration.SetupActions)
             {
@@ -99,9 +99,9 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
         }
         public static Object BuildInstance(
             this IServiceConfiguration configuration,
-            ServiceProvider provider,
+            GuppyServiceProvider provider,
             Type[] generics,
-            Action<Object, ServiceProvider, IServiceConfiguration> setup,
+            Action<Object, GuppyServiceProvider, IServiceConfiguration> setup,
             Int32 setupOrder)
         {
             Object instance;
@@ -113,15 +113,15 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
 
         public static Object GetInstance(
             this IServiceConfiguration configuration, 
-            ServiceProvider provider, 
+            GuppyServiceProvider provider, 
             Type[] generics)
                 => provider.GetServiceManager(configuration, generics).GetInstance();
 
         public static Object GetInstance(
             this IServiceConfiguration configuration, 
-            ServiceProvider provider, 
+            GuppyServiceProvider provider, 
             Type[] generics, 
-            Action<Object, ServiceProvider, IServiceConfiguration> setup,
+            Action<Object, GuppyServiceProvider, IServiceConfiguration> setup,
             Int32 setupOrder)
                 => provider.GetServiceManager(configuration, generics).GetInstance(setup, setupOrder);
     }

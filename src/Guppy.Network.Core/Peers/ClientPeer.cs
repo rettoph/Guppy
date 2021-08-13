@@ -25,14 +25,14 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
             this.OnIncomingMessageTypeRecieved[NetIncomingMessageType.StatusChanged] += this.HandleIncomingStatusChangedMessageTypeRecieved;
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 

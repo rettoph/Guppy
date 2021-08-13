@@ -21,19 +21,27 @@ namespace Guppy.Network.Channels
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.Create(provider);
+            base.PreInitialize(provider);
+
+            provider.Service(out _allUsers);
+        }
+
+        protected override void Initialize(GuppyServiceProvider provider)
+        {
+            base.Initialize(provider);
 
             this.Messages[Constants.Messages.Channel.UserJoined].OnRead += this.ReadUserJoinedMessage;
             this.Messages[Constants.Messages.Channel.UserLeft].OnRead += this.ReadUserLeftMessage;
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void Release()
         {
-            base.PreInitialize(provider);
+            base.Release();
 
-            provider.Service(out _allUsers);
+            this.Messages[Constants.Messages.Channel.UserJoined].OnRead -= this.ReadUserJoinedMessage;
+            this.Messages[Constants.Messages.Channel.UserLeft].OnRead -= this.ReadUserLeftMessage;
         }
 
         protected override void PostRelease()
@@ -41,14 +49,6 @@ namespace Guppy.Network.Channels
             base.PostRelease();
 
             _allUsers = null;
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            this.Messages[Constants.Messages.Channel.UserJoined].OnRead -= this.ReadUserJoinedMessage;
-            this.Messages[Constants.Messages.Channel.UserLeft].OnRead -= this.ReadUserLeftMessage;
         }
         #endregion
 

@@ -38,8 +38,12 @@ namespace Guppy.Network.Pipes
         public ServiceList<INetworkEntity> NetworkEntities { get; private set; }
         #endregion
 
+        #region Events
+        public event IPipe.NetworkEnityAddedToPipeDelegate OnNetworkEnityAddedToPipe;
+        #endregion
+
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
@@ -47,23 +51,21 @@ namespace Guppy.Network.Pipes
             this.Messages.Signer = _channel.SignMessage;
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             this.Users = provider.GetService<UserList>(Guppy.Network.Constants.ServiceConfigurations.TransientUserList);
             this.NetworkEntities = provider.GetService<ServiceList<INetworkEntity>>();
 
-            this.Users.OnRemoved += this.HandleUserRemoved;
-            this.NetworkEntities.OnRemoved += this.HandleNetworkEntityRemoved;
+            this.NetworkEntities.OnAdded += this.HandleNetworkEntityAdded;
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.Users.OnRemoved -= this.HandleUserRemoved;
-            this.NetworkEntities.OnRemoved -= this.HandleNetworkEntityRemoved;
+            this.NetworkEntities.OnAdded -= this.HandleNetworkEntityAdded;
 
             this.Users.TryRelease();
             this.NetworkEntities.TryRelease();
@@ -81,29 +83,17 @@ namespace Guppy.Network.Pipes
         }
         #endregion
 
-        #region Helper Methods
-        /// <summary>
-        /// Automatically release the current pipe if
-        /// no one or entity is residing within any longer.
-        /// </summary>
-        private void CheckPipe()
-        {
-            if (this.Users.Skip(1).Any())
-                return;
-
-            if (this.NetworkEntities.Any())
-                return;
-
-            this.TryRelease();
-        }
-        #endregion
-
         #region Event Handlers
-        private void HandleUserRemoved(IServiceList<IUser> sender, IUser args)
-            => this.CheckPipe();
+        private void HandleNetworkEntityAdded(IServiceList<INetworkEntity> sender, INetworkEntity entity)
+        {
+            // Remove the entity from its old pipe
+            entity.Pipe?.NetworkEntities.TryRemove(entity);
 
-        private void HandleNetworkEntityRemoved(IServiceList<INetworkEntity> sender, INetworkEntity args)
-            => this.CheckPipe();
+            IPipe oldPipe = entity.Pipe;
+            entity.Pipe = this;
+
+            this.OnNetworkEnityAddedToPipe?.Invoke(this, entity, oldPipe);
+        }
         #endregion
     }
 }

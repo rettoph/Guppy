@@ -18,13 +18,14 @@ using Guppy.IO.Extensions.log4net;
 using log4net.Core;
 using Microsoft.Xna.Framework;
 using Guppy.CommandLine.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.ServiceConfigurations;
 
 namespace Guppy.Examples.Client.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ClientServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ExampleGame>(method: p => new ExampleClientGame(), priority: 1);
 
@@ -33,7 +34,7 @@ namespace Guppy.Examples.Client.ServiceLoaders
                 config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
             });
 
-            services.RegisterSetup((Commands commands, ServiceProvider p, ServiceConfiguration c) =>
+            services.RegisterSetup((Commands commands, GuppyServiceProvider p, IServiceConfiguration c) =>
             {
                 var hello = new Command("hello", "This is the base hello command")
                 {
@@ -71,7 +72,7 @@ namespace Guppy.Examples.Client.ServiceLoaders
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
 

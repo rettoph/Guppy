@@ -19,13 +19,14 @@ namespace Guppy.Example.Library
         private IChannel _channel;
         public Vector2 Position;
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
             _channel = provider.GetService<NetworkScene>().Channel;
             this.Pipe = _channel.Pipes.GetOrCreateById(Guid.Empty);
 
+            this.Messages.Add(Guppy.Network.Constants.Messages.NetworkEntity.Create);
             this.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnWrite += this.WriteCreateMessage;
             this.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].OnRead += this.ReadCreateMessage;
         }

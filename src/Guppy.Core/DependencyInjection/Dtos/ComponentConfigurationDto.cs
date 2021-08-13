@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.DependencyInjection.Contexts
+namespace Guppy.DependencyInjection.Dtos
 {
-    public class ComponentConfigurationContext
+    public class ComponentConfigurationDto
     {
         public readonly ServiceConfigurationKey ComponentServiceConfigurationKey;
         public readonly ServiceConfigurationKey EntityServiceConfigurationKey;
 
-        public ComponentConfigurationContext(
+        public ComponentConfigurationDto(
             ServiceConfigurationKey componentServiceConfigurationKey,
             ServiceConfigurationKey entityServicConfigurationeKey)
         {
@@ -24,7 +24,7 @@ namespace Guppy.DependencyInjection.Contexts
         }
 
         public ComponentConfiguration CreateComponentConfiguration(
-            Dictionary<ServiceConfigurationKey, IServiceConfiguration[]> serviceConfigurations,
+            Dictionary<ServiceConfigurationKey, IServiceConfiguration> serviceConfigurations,
             IEnumerable<ComponentFilter> componentFilters)
                 => new ComponentConfiguration(this, serviceConfigurations, componentFilters);
     }

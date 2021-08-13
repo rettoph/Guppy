@@ -12,14 +12,14 @@ namespace Guppy.Example.Server.Scenes
     public class ExampleServerScene : ExampleScene
     {
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
             this.peer.Users.OnAdded += this.HandleUserConnected;
             this.Channel.Users.OnAdded += this.HandleUserJoined;
 
-            this.Entities.Create<Ball>();
+            this.Layerables.Create<Ball>();
         }
         #endregion
 

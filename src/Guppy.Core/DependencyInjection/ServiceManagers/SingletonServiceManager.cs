@@ -10,7 +10,7 @@ namespace Guppy.DependencyInjection.ServiceManagers
         #region Constructors
         internal SingletonServiceManager(
             IServiceConfiguration configuration,
-            ServiceProvider provider, 
+            GuppyServiceProvider provider, 
             Type[] generics) : base(configuration, provider, generics)
         {
             if (!provider.IsRoot)

@@ -28,7 +28,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecyle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -38,7 +38,7 @@ namespace Guppy.IO.Services
             _keys = new InputButtonManager[((Keys[])Enum.GetValues(typeof(Keys))).Length];
         }
 
-        protected override void PostInitialize(ServiceProvider provider)
+        protected override void PostInitialize(GuppyServiceProvider provider)
         {
             base.PostInitialize(provider);
 

@@ -12,7 +12,7 @@ namespace Guppy.Example.Library.Scenes
 {
     public class ExampleScene : NetworkScene
     {
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
         }

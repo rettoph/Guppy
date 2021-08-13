@@ -15,7 +15,7 @@ namespace Guppy.DependencyInjection.Actions
     {
         public BuilderAction(
             Type key, 
-            Action<Object, ServiceProvider, ITypeFactory> method,
+            Action<Object, GuppyServiceProvider, ITypeFactory> method,
             Int32 order = 0) : base(key, method, order)
         {
         }

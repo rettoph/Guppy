@@ -19,7 +19,7 @@ namespace Guppy.Example.Server.ServiceLoaders
     [AutoLoad]
     internal sealed class ServerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ExampleGame>(method: p => new ExampleServerGame(), priority: 1);
             services.RegisterTypeFactory<ExampleScene>(method: p => new ExampleServerScene(), priority: 1);
@@ -63,7 +63,7 @@ namespace Guppy.Example.Server.ServiceLoaders
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

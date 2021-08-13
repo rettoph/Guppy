@@ -14,25 +14,27 @@ namespace Guppy
     public abstract class Scene : Frameable, IScene
     {
         #region Private Fields
-        private ServiceProvider _provider;
+        private GuppyServiceProvider _provider;
         private Synchronizer _synchronizer;
+        private IntervalInvoker _intervals;
         #endregion
 
         #region Public Properties
         public LayerList Layers { get; private set; }
-        public LayerableList Entities { get; private set; }
+        public LayerableList Layerables { get; private set; }
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _provider = provider;
             provider.Service(out _synchronizer);
+            provider.Service(out _intervals);
 
             this.Layers = provider.GetService<LayerList>();
-            this.Entities = provider.GetService<LayerableList>();
+            this.Layerables = provider.GetService<LayerableList>();
         }
 
 
@@ -50,7 +52,7 @@ namespace Guppy
 
             _provider = null;
             _synchronizer = null;
-            this.Entities.TryRelease();
+            this.Layerables.TryRelease();
             this.Layers.TryRelease();
         }
         #endregion
@@ -68,6 +70,8 @@ namespace Guppy
             base.Update(gameTime);
 
             this.Layers.TryUpdate(gameTime);
+
+            _intervals.Update(gameTime);
         }
 
         protected override void PostUpdate(GameTime gameTime)

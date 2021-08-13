@@ -10,13 +10,13 @@ namespace Guppy.DependencyInjection.ServiceManagers
         #region Private Fields
         private Object _instance;
         public Func<Object> _getInstance;
-        public Func<Action<Object, ServiceProvider, IServiceConfiguration>, Int32, Object> _getInstanceWithSetup;
+        public Func<Action<Object, GuppyServiceProvider, IServiceConfiguration>, Int32, Object> _getInstanceWithSetup;
         #endregion
 
         #region Constructors
         internal ScopedServiceManager(
             IServiceConfiguration configuration,
-            ServiceProvider provider,
+            GuppyServiceProvider provider,
             Type[] generics) : base(configuration, provider, generics)
         {
             _getInstance = this.BuildInstance;
@@ -28,7 +28,7 @@ namespace Guppy.DependencyInjection.ServiceManagers
         public override Object GetInstance()
             => _getInstance();
 
-        public override object GetInstance(Action<Object, ServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
+        public override object GetInstance(Action<Object, GuppyServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
             => _getInstanceWithSetup(setup, setupOrder);
 
         private Object BuildInstance()
@@ -40,7 +40,7 @@ namespace Guppy.DependencyInjection.ServiceManagers
             return this.ReturnInstance();
         }
 
-        private Object BuildInstance(Action<Object, ServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
+        private Object BuildInstance(Action<Object, GuppyServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
         {
             _getInstance = this.ReturnInstance;
             _getInstanceWithSetup = this.ReturnInstance;
@@ -53,7 +53,7 @@ namespace Guppy.DependencyInjection.ServiceManagers
         private Object ReturnInstance()
             => _instance;
 
-        private Object ReturnInstance(Action<Object, ServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
+        private Object ReturnInstance(Action<Object, GuppyServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
             => _instance;
         #endregion
 

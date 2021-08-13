@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection.Contexts;
+﻿using Guppy.DependencyInjection.Dtos;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using System;
@@ -15,19 +15,20 @@ namespace Guppy.DependencyInjection
         public readonly ComponentFilter[] ComponentFilters;
 
         internal ComponentConfiguration(
-            ComponentConfigurationContext context,
-            Dictionary<ServiceConfigurationKey, IServiceConfiguration[]> serviceConfigurations,
+            ComponentConfigurationDto context,
+            Dictionary<ServiceConfigurationKey, IServiceConfiguration> serviceConfigurations,
             IEnumerable<ComponentFilter> componentFilters)
         {
             this.EntityServiceConfigurationKey = context.EntityServiceConfigurationKey;
-            this.ComponentServiceConfiguration = serviceConfigurations[context.ComponentServiceConfigurationKey][0];
+            this.ComponentServiceConfiguration = serviceConfigurations[context.ComponentServiceConfigurationKey];
             this.ComponentFilters = componentFilters
                 .Where(f => context.ComponentServiceConfigurationKey.Inherits(f.ComponentServiceConfigurationKey))
+                .Where(f => f.Validator(this.ComponentServiceConfiguration))
                 .OrderBy(f => f.Order)
                 .ToArray();
         }
 
-        public Boolean Validate(IEntity instance, ServiceProvider provider)
+        public Boolean CheckFilters(IEntity instance, GuppyServiceProvider provider)
         {
             foreach (ComponentFilter filter in this.ComponentFilters)
                 if (!filter.Method(instance, provider, this.ComponentServiceConfiguration.TypeFactory.Type))

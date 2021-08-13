@@ -33,7 +33,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Protected Fields
-        protected ServiceProvider provider { get; private set; }
+        protected GuppyServiceProvider provider { get; private set; }
 
         /// <summary>
         /// When true, then all self contained items
@@ -48,7 +48,7 @@ namespace Guppy.Lists
         public Int32 Count => _list.Count;
 
         Type IServiceList.BaseType => typeof(TService);
-        ServiceProvider IServiceList.Provider => this.provider;
+        GuppyServiceProvider IServiceList.Provider => this.provider;
         #endregion
 
         #region Events
@@ -82,7 +82,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
@@ -90,7 +90,7 @@ namespace Guppy.Lists
             _list = new List<TService>();
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -174,22 +174,21 @@ namespace Guppy.Lists
         }
 
         protected virtual T Create<T>(
-            ServiceProvider provider,
+            GuppyServiceProvider provider,
             ServiceConfigurationKey configurationKey,
-            Action<T, ServiceProvider, IServiceConfiguration> setup = null,
+            Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null,
             Guid? id = null)
             where T : class, TService
         {
             var instance = provider.GetService<T>(configurationKey, (i, p, d) =>
             {
-                if (id != null)
+                if (id.HasValue)
                     i.Id = id.Value;
 
-                this.OnCreated?.Invoke(i);
-
-                this.TryAdd(i);
-
                 setup?.Invoke(i, p, d);
+
+                this.OnCreated?.Invoke(i);
+                this.TryAdd(i);
             });
 
             return instance;
@@ -205,7 +204,7 @@ namespace Guppy.Lists
             _list.Add(item);
             _dictionary.Add(item.Id, item);
 
-            item.OnStatus[ServiceStatus.Releasing] += this.HandleItemReleasing;
+            item.OnStatus[ServiceStatus.PreReleasing] += this.HandleItemPreReleasing;
         }
 
         private Boolean HandleCanRemove(IServiceList<TService> sender, TService item)
@@ -216,10 +215,10 @@ namespace Guppy.Lists
             _list.Remove(item);
             _dictionary.Remove(item.Id);
 
-            item.OnStatus[ServiceStatus.Releasing] -= this.HandleItemReleasing;
+            item.OnStatus[ServiceStatus.PreReleasing] -= this.HandleItemPreReleasing;
         }
 
-        protected virtual void HandleItemReleasing(IService sender, ServiceStatus old, ServiceStatus value)
+        protected virtual void HandleItemPreReleasing(IService sender, ServiceStatus old, ServiceStatus value)
         {
             this.TryRemove(sender as TService);
         }

@@ -38,6 +38,25 @@ namespace Guppy.DependencyInjection.TypePools
             return this.TryReturn(instance);
         }
 
+        public Boolean Any(Type type)
+        {
+            if (_pools.TryGetValue(type, out _pool))
+                return _pool.Any();
+
+            return false;
+        }
+
+        public Boolean TryPull(Type type, out Object instance)
+        {
+            if (_pools.TryGetValue(type, out _pool))
+            {
+                return _pool.TryPull(out instance);
+            }
+
+            instance = default;
+            return false;
+        }
+
         public Int32 Count()
             => _pool.Count();
     }

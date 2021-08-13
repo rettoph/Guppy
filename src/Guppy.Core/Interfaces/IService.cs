@@ -22,12 +22,12 @@ namespace Guppy.Interfaces
         #endregion
 
         #region Lifecycle Methods
-        void TryPreCreate(ServiceProvider provider);
-        void TryCreate(ServiceProvider provider);
-        void TryPostCreate(ServiceProvider provider);
-        void TryPreInitialize(ServiceProvider provider);
-        void TryInitialize(ServiceProvider provider);
-        void TryPostInitialize(ServiceProvider provider);
+        void TryPreCreate(GuppyServiceProvider provider);
+        void TryCreate(GuppyServiceProvider provider);
+        void TryPostCreate(GuppyServiceProvider provider);
+        void TryPreInitialize(GuppyServiceProvider provider);
+        void TryInitialize(GuppyServiceProvider provider);
+        void TryPostInitialize(GuppyServiceProvider provider);
         void TryRelease();
         void TryDispose();
         #endregion

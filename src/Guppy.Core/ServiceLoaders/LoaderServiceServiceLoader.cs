@@ -16,16 +16,16 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class LoaderServiceServiceLoader : IServiceLoader
     {
-        public void RegisterServices(DependencyInjection.ServiceCollection services)
+        public void RegisterServices(DependencyInjection.GuppyServiceCollection services)
         {
             AssemblyHelper.Types.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(s =>
             {
-                services.RegisterTypeFactory(s, p => ActivatorUtilities.CreateInstance(p, s));
+                services.RegisterTypeFactory(s, p => Activator.CreateInstance(s));
                 services.RegisterSingleton(ServiceConfigurationKey.From(s));
             });
         }
 
-        public void ConfigureProvider(DependencyInjection.ServiceProvider provider)
+        public void ConfigureProvider(DependencyInjection.GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

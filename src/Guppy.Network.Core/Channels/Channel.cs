@@ -38,22 +38,23 @@ namespace Guppy.Network.Channels
         #endregion
 
         #region Lifeycycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Create(GuppyServiceProvider provider)
         {
             base.Create(provider);
 
             this.Messages = new MessageManager();
             this.Messages.Signer = this.DefaultMessageSigner;
             this.Messages.DefaultFactory = this.DefaultMessageFactory;
-            this.Messages.Add(Constants.Messages.Channel.UserJoined, Constants.MessageContexts.InternalReliableDefault);
-            this.Messages.Add(Constants.Messages.Channel.UserLeft  , Constants.MessageContexts.InternalReliableDefault);
         }
 
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             provider.Service(out _outgoingMessages);
+
+            this.Messages.Add(Constants.Messages.Channel.UserJoined, Constants.MessageContexts.InternalReliableDefault);
+            this.Messages.Add(Constants.Messages.Channel.UserLeft, Constants.MessageContexts.InternalReliableDefault);
 
             this.Users = provider.GetService<UserList>(Constants.ServiceConfigurations.TransientUserList);
             this.Pipes = provider.GetService<PipeList>((pipes, p, c) =>
@@ -62,9 +63,12 @@ namespace Guppy.Network.Channels
             });
         }
 
+
         protected override void PostRelease()
         {
             base.PostRelease();
+
+            this.Messages.Clear();
 
             _outgoingMessages = null;
 
@@ -78,9 +82,6 @@ namespace Guppy.Network.Channels
         protected override void Dispose()
         {
             base.Dispose();
-
-            this.Messages.Remove(Constants.Messages.Channel.UserJoined);
-            this.Messages.Remove(Constants.Messages.Channel.UserLeft);
 
             this.Messages = null;
         }

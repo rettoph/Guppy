@@ -1,6 +1,7 @@
 ﻿using Guppy.DependencyInjection.Actions;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.DependencyInjection.TypeFactories;
+using Guppy.Extensions.System.Collections;
 using Guppy.Extensions.System;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -8,9 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.DependencyInjection.Contexts
+namespace Guppy.DependencyInjection.Dtos
 {
-    public struct ServiceConfigurationContext
+    public struct ServiceConfigurationDto
     {
         #region Public Fields
         /// <summary>
@@ -46,7 +47,7 @@ namespace Guppy.DependencyInjection.Contexts
         #endregion
 
         #region Constructors
-        public ServiceConfigurationContext(
+        public ServiceConfigurationDto(
             ServiceConfigurationKey key,
             ServiceLifetime lifetime,
             Type typeFactory,
@@ -56,11 +57,11 @@ namespace Guppy.DependencyInjection.Contexts
             this.Key = key;
             this.Lifetime = lifetime;
             this.TypeFactory = typeFactory ?? key.Type;
-            this.CacheKeys = cacheKeys.Where(k => k != key).ToArray();
+            this.CacheKeys = cacheKeys.Concat(this.Key).Distinct().ToArray();
             this.Priority = priority;
         }
 
-        public ServiceConfigurationContext(
+        public ServiceConfigurationDto(
             ServiceConfigurationKey key,
             ServiceLifetime lifetime,
             Type typeFactory,
@@ -69,7 +70,7 @@ namespace Guppy.DependencyInjection.Contexts
         {
         }
 
-        public ServiceConfigurationContext(
+        public ServiceConfigurationDto(
             ServiceConfigurationKey key,
             ServiceLifetime lifetime,
             Type typeFactory,

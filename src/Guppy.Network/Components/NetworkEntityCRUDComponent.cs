@@ -18,7 +18,7 @@ namespace Guppy.Network.Components
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -45,16 +45,6 @@ namespace Guppy.Network.Components
                 messageType: Guppy.Network.Constants.Messages.NetworkEntity.Delete,
                 defaultContext: Guppy.Network.Constants.MessageContexts.InternalReliableDefault,
                 factory: this.DeleteMessageFactory);
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.NetworkEntity.Create);
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.NetworkEntity.Update);
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.NetworkEntity.Ping);
-            this.Entity.Messages.Remove(Guppy.Network.Constants.Messages.NetworkEntity.Delete);
         }
         #endregion
 

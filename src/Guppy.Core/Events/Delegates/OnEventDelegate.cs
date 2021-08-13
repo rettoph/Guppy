@@ -6,6 +6,9 @@ namespace Guppy.Events.Delegates
 {
     public delegate void OnEventDelegate<TSender>(TSender sender);
     public delegate void OnEventDelegate<TSender, TArgs>(TSender sender, TArgs args);
+    public delegate void OnEventDelegate<TSender, TArg1, TArg2>(TSender sender, TArg1 arg1, TArg2 arg2);
+    public delegate void OnEventDelegate<TSender, TArg1, TArg2, TArg3>(TSender sender, TArg1 arg1, TArg2 arg2, TArg3 arg3);
+    public delegate void OnEventDelegate<TSender, TArg1, TArg2, TArg3, TArg4>(TSender sender, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4);
 
     public static class OnEventDelegateExtensions
     {

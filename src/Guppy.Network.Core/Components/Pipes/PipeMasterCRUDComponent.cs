@@ -18,26 +18,36 @@ namespace Guppy.Network.Components.Scenes
     internal sealed class PipeMasterCRUDComponent : RemoteHostComponent<IPipe>
     {
         #region Lifecycle Methods
-        protected override void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
-            base.HandleEntityInitializing(sender, old, value);
+            base.Initialize(provider);
 
-            this.Entity.Users.OnAdded += this.HandleUserAddedToPipe;
-            this.Entity.NetworkEntities.OnAdded += this.HandleNetworkEntityAddedToPipe;
-            this.Entity.NetworkEntities.OnRemoved += this.HandleNetworkEntityRemovedFromPipe;
+            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
+            this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
         }
 
-        protected override void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
+        protected override void Release()
         {
-            base.HandleEntityReleasing(sender, old, value);
+            base.Release();
 
-            this.Entity.Users.OnAdded -= this.HandleUserAddedToPipe;
-            this.Entity.NetworkEntities.OnAdded -= this.HandleNetworkEntityAddedToPipe;
-            this.Entity.NetworkEntities.OnRemoved -= this.HandleNetworkEntityRemovedFromPipe;
+            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
+            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
         }
         #endregion
 
         #region Event Handlers
+        private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
+        {
+            this.Entity.Users.OnAdded += this.HandleUserAddedToPipe;
+            this.Entity.OnNetworkEnityAddedToPipe += this.HandleNetworkEnityAddedToPipe;
+        }
+
+        private void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
+        {
+            this.Entity.Users.OnAdded -= this.HandleUserAddedToPipe;
+            this.Entity.OnNetworkEnityAddedToPipe -= this.HandleNetworkEnityAddedToPipe;
+        }
+
         private void HandleUserAddedToPipe(IServiceList<IUser> sender, IUser args)
         {
             // Broadcast every single networkEntity within the pipe to the new user.
@@ -45,17 +55,24 @@ namespace Guppy.Network.Components.Scenes
                 networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(args.Connection.Yield());
         }
 
-        private void HandleNetworkEntityAddedToPipe(IServiceList<INetworkEntity> sender, INetworkEntity networkEntity)
+        private void HandleNetworkEnityAddedToPipe(IPipe sender, INetworkEntity networkEntity, IPipe oldPipe)
         {
-            // Broadcast create message through the pipe...
-            networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(this.Entity);
-        }
+            if (oldPipe != default)
+            { // If the entity was in another pipe...
+                // Broadcast delete message through the old pipe to users who are not also in the new pipe...
+                networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Delete].Create(
+                    oldPipe.Users.Connections.Except(this.Entity.Users.Connections));
 
-        private void HandleNetworkEntityRemovedFromPipe(IServiceList<INetworkEntity> sender, INetworkEntity networkEntity)
-        {
-            // Broadcast the delete message to all users who are not also in the new NE's pipe.
-            networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Delete].Create(
-                this.Entity.Users.Connections.Except(networkEntity.Pipe?.Users.Connections ?? Enumerable.Empty<NetConnection>()));
+                // Broadcast create message through the pipe to users who were not also in the old pipe...
+                networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(
+                    this.Entity.Users.Connections.Except(oldPipe.Users.Connections));
+            }
+            else
+            { // If this is the first pipe the entity has  been put in...
+                // Broadcast create message through the pipe to all users
+                networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(this.Entity);
+            }
+
         }
         #endregion
     }

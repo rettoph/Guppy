@@ -27,7 +27,7 @@ namespace Guppy.Network.ServiceLoaders
     [AutoLoad]
     public class NetworkServiceLoaders : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             #region Settings Setup
             services.RegisterSetup<Settings>((s, p, c) =>
@@ -66,10 +66,10 @@ namespace Guppy.Network.ServiceLoaders
             services.RegisterTransient(Constants.ServiceConfigurations.TransientUserList);
             services.RegisterTransient<ServiceList<INetworkEntity>>();
             services.RegisterScoped<NetworkEntityList>();
-            services.RegisterSingleton<ServerPeer>(baseLookupType: typeof(IPeer));
-            services.RegisterSingleton<NetServer>(baseLookupType: typeof(NetPeer));
-            services.RegisterSingleton<ClientPeer>(baseLookupType: typeof(IPeer));
-            services.RegisterSingleton<NetClient>(baseLookupType: typeof(NetPeer));
+            services.RegisterSingleton<ServerPeer>(baseCacheKey: ServiceConfigurationKey.From<IPeer>());
+            services.RegisterSingleton<NetServer>(baseCacheKey: ServiceConfigurationKey.From<NetPeer>());
+            services.RegisterSingleton<ClientPeer>(baseCacheKey: ServiceConfigurationKey.From<IPeer>());
+            services.RegisterSingleton<NetClient>(baseCacheKey: ServiceConfigurationKey.From<NetPeer>());
             services.RegisterSingleton<NetPeerConfiguration>();
             services.RegisterScoped<ServerChannel>();
             services.RegisterScoped<ClientChannel>();
@@ -104,7 +104,7 @@ namespace Guppy.Network.ServiceLoaders
                     return t.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>().NetworkAuthorization
                         == p.GetService<Settings>().Get<NetworkAuthorization>();
                 },
-                (cc, ec) =>
+                (cc) =>
                 {
                     var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>() != default;
                     return hasAttribute;
@@ -112,7 +112,7 @@ namespace Guppy.Network.ServiceLoaders
             #endregion
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

@@ -4,9 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.DependencyInjection.Contexts
+namespace Guppy.DependencyInjection.Dtos
+
 {
-    public struct TypeFactoryContext
+    public struct TypeFactoryDto
     {
         #region Public Fields
         /// <summary>
@@ -27,7 +28,7 @@ namespace Guppy.DependencyInjection.Contexts
         /// The factory method to create a brand new instance
         /// when requested.
         /// </summary>
-        public Func<ServiceProvider, Type, Object> Method;
+        public Func<GuppyServiceProvider, Type, Object> Method;
 
         /// <summary>
         /// The maximum size of the factory's internal pool.
@@ -43,10 +44,10 @@ namespace Guppy.DependencyInjection.Contexts
         #endregion
 
         #region Constructors
-        public TypeFactoryContext(
+        public TypeFactoryDto(
             Type type,
             Type typeImplementation,
-            Func<ServiceProvider, Type, Object> method,
+            Func<GuppyServiceProvider, Type, Object> method,
             UInt16 maxPoolSize = 500,
             Int32 priority = 0)
         {
@@ -56,9 +57,9 @@ namespace Guppy.DependencyInjection.Contexts
             this.MaxPoolSize = maxPoolSize;
             this.Priority = priority;
         }
-        public TypeFactoryContext(
+        public TypeFactoryDto(
             Type type,
-            Func<ServiceProvider, Type, Object> method,
+            Func<GuppyServiceProvider, Type, Object> method,
             UInt16 maxPoolSize = 500,
             Int32 priority = 0) : this(type, type, method, maxPoolSize, priority)
         {

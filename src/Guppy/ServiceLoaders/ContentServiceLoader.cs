@@ -9,18 +9,21 @@ using System.Text;
 
 namespace Guppy.ServiceLoaders
 {
-    [AutoLoad]
     internal sealed class ContentServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
+            services.RegisterTypeFactory<Content>(p => new Content());
+
+            services.RegisterSingleton<Content>();
+
             services.RegisterSetup<Content>((content, p, c) =>
             {
                 content.TryRegister("guppy:font:debug", "Fonts/DiagnosticsFont");
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

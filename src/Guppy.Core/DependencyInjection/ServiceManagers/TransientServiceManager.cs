@@ -9,14 +9,19 @@ namespace Guppy.DependencyInjection.ServiceManagers
     {
         #region Private Fields
         protected readonly IServiceConfiguration configuration;
-        protected readonly ServiceProvider provider;
+        protected readonly GuppyServiceProvider provider;
         protected readonly Type[] generics;
+        #endregion
+
+        #region Public Properties
+        /// <inheritdoc />
+        public IServiceConfiguration Configuration => this.configuration;
         #endregion
 
         #region Constructors
         internal TransientServiceManager(
             IServiceConfiguration configuration,
-            ServiceProvider provider, 
+            GuppyServiceProvider provider, 
             Type[] generics)
         {
             this.configuration = configuration;
@@ -31,7 +36,7 @@ namespace Guppy.DependencyInjection.ServiceManagers
             => this.configuration.BuildInstance(this.provider, this.generics);
 
         /// <inheritdoc />
-        public virtual Object GetInstance(Action<Object, ServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
+        public virtual Object GetInstance(Action<Object, GuppyServiceProvider, IServiceConfiguration> setup, Int32 setupOrder)
             => this.configuration.BuildInstance(this.provider, this.generics, setup, setupOrder);
         #endregion
 

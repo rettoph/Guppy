@@ -8,6 +8,11 @@ namespace Guppy.DependencyInjection.ServiceManagers
     public interface IServiceManager : IDisposable
     {
         /// <summary>
+        /// The service configuration linked to the current manager.
+        /// </summary>
+        IServiceConfiguration Configuration { get; }
+
+        /// <summary>
         /// Return a service instance for the currently
         /// described ServiceConfiguration.
         /// </summary>
@@ -21,6 +26,6 @@ namespace Guppy.DependencyInjection.ServiceManagers
         /// is initialized.
         /// </summary>
         /// <returns></returns>
-        Object GetInstance(Action<Object, ServiceProvider, IServiceConfiguration> setup, Int32 setupOrder);
+        Object GetInstance(Action<Object, GuppyServiceProvider, IServiceConfiguration> setup, Int32 setupOrder);
     }
 }

@@ -13,7 +13,7 @@ namespace Guppy.Network.Channels
     public class ServerChannel : Channel
     {
         #region Lifecycle Methods
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
 

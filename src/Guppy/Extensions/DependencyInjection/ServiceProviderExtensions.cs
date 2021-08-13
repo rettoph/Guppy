@@ -18,7 +18,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static T GetContent<T>(this ServiceProvider provider, String handle)
+        public static T GetContent<T>(this GuppyServiceProvider provider, String handle)
             => provider.GetService<Content>().Get<T>(handle);
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <param name="_out"></param>
-        public static void Content<T>(this ServiceProvider provider, String handle, out T _out)
+        public static void Content<T>(this GuppyServiceProvider provider, String handle, out T _out)
             => _out = provider.GetContent<T>(handle);
         #endregion
 
@@ -41,7 +41,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static Color GetColor(this ServiceProvider provider, String handle)
+        public static Color GetColor(this GuppyServiceProvider provider, String handle)
             => provider.GetService<Colors>()[handle];
         /// <summary>
         /// Automatically load a color from the internal ColorService
@@ -51,11 +51,11 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <param name="_out"></param>
-        public static void Color(this ServiceProvider provider, String handle, out global::Microsoft.Xna.Framework.Color _out)
+        public static void Color(this GuppyServiceProvider provider, String handle, out global::Microsoft.Xna.Framework.Color _out)
             => _out = provider.GetColor(handle);
         #endregion
 
-        #region Color Methods
+        #region String Methods
         /// <summary>
         /// Automatically return a string directly from the
         /// ServiceProvider's StringService.
@@ -63,8 +63,9 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static String GetString(this ServiceProvider provider, String handle)
+        public static String GetString(this GuppyServiceProvider provider, String handle)
             => provider.GetService<Strings>()[handle];
+
         /// <summary>
         /// Automatically load a string from the internal StringService
         /// and set the value to the recieved instance.
@@ -73,7 +74,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <param name="_out"></param>
-        public static void String(this ServiceProvider provider, String handle, out String _out)
+        public static void String(this GuppyServiceProvider provider, String handle, out String _out)
             => _out = provider.GetString(handle);
         #endregion
     }

@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ServiceCollection = Guppy.DependencyInjection.ServiceCollection;
-using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
+using GuppyServiceCollection = Guppy.DependencyInjection.GuppyServiceCollection;
+using GuppyServiceProvider = Guppy.DependencyInjection.GuppyServiceProvider;
 
 namespace Guppy.Extensions.DependencyInjection
 {
@@ -15,29 +15,30 @@ namespace Guppy.Extensions.DependencyInjection
     {
         #region Game Methods
         public static void RegisterGame(
-            this ServiceCollection services, 
+            this GuppyServiceCollection services, 
             Type game, 
             ServiceConfigurationKey? key = default, 
-            Func<ServiceProvider, Object> factory = default, 
-            Int32 priority = 0)
+            Func<GuppyServiceProvider, Object> factory = default, 
+            Int32 priority = -1)
         {
             ExceptionHelper.ValidateAssignableFrom<Game>(game);
 
-            factory ??= p => ActivatorUtilities.CreateInstance(p, game);
+            factory ??= p => Activator.CreateInstance(game);
             services.RegisterTypeFactory(
                 type: game, 
                 method: factory,
                 priority: priority);
             services.RegisterSingleton(
                 key: key ?? ServiceConfigurationKey.From(type: game), 
-                priority: priority,
-                baseLookupType: typeof(Game));
+                typeFactory: game,
+                baseCacheKey: Guppy.Constants.ServiceConfigurationKeys.GameBaseCacheKey,
+                priority: priority);
         }
         public static void RegisterGame<TGame>(
-            this ServiceCollection services, 
+            this GuppyServiceCollection services, 
             ServiceConfigurationKey? key = default, 
-            Func<ServiceProvider, TGame> factory = default, 
-            Int32 priority = 0)
+            Func<GuppyServiceProvider, TGame> factory = default, 
+            Int32 priority = -1)
                 where TGame : Game
                     => services.RegisterGame(
                         game: typeof(TGame), 
@@ -48,29 +49,30 @@ namespace Guppy.Extensions.DependencyInjection
 
         #region Scene Methods
         public static void RegisterScene(
-            this ServiceCollection services, 
+            this GuppyServiceCollection services, 
             Type scene, 
             ServiceConfigurationKey? key = default, 
-            Func<ServiceProvider, Object> factory = default, 
-            Int32 priority = 0)
+            Func<GuppyServiceProvider, Object> factory = default, 
+            Int32 priority = -1)
         {
             ExceptionHelper.ValidateAssignableFrom<IScene>(scene);
 
-            factory ??= p => ActivatorUtilities.CreateInstance(p, scene);
+            factory ??= p => Activator.CreateInstance(scene);
             services.RegisterTypeFactory(
                 type: scene, 
                 method: factory, 
                 priority: priority);
             services.RegisterScoped(
-                key: key  ?? ServiceConfigurationKey.From(type: scene), 
-                priority: priority,
-                baseLookupType: typeof(IScene));
+                key: key ?? ServiceConfigurationKey.From(type: scene),
+                typeFactory: scene,
+                baseCacheKey: Guppy.Constants.ServiceConfigurationKeys.SceneBaseCacheKey,
+                priority: priority);
         }
         public static void RegisterScene<TScene>(
-            this ServiceCollection services, 
+            this GuppyServiceCollection services, 
             ServiceConfigurationKey? key = default, 
-            Func<ServiceProvider, TScene> factory = null, 
-            Int32 priority = 0)
+            Func<GuppyServiceProvider, TScene> factory = null, 
+            Int32 priority = -1)
                 where TScene : class, IScene
                     => services.RegisterScene(
                         scene: typeof(TScene), 

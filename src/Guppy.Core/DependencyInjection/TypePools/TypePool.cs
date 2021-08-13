@@ -27,11 +27,19 @@ namespace Guppy.DependencyInjection.TypePools
         public Boolean Any()
             => _pool.Any();
 
-        public Object Pull()
+        public Boolean TryPull(out Object instance)
         {
-            _poolSize--;
+            if (this.Any())
+            {
+                instance = _pool.Pop();
 
-            return _pool.Pop();
+                _poolSize--;
+
+                return true;
+            }
+
+            instance = default;
+            return false;
         }
 
         /// <summary>

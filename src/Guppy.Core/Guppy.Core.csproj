@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Guppy.Core</AssemblyName>
     <RootNamespace>Guppy</RootNamespace>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
   </PropertyGroup>
   

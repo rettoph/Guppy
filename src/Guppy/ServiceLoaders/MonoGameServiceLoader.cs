@@ -13,9 +13,6 @@ using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-using ServiceProvider = Guppy.DependencyInjection.ServiceProvider;
-using ServiceCollection = Guppy.DependencyInjection.ServiceCollection;
-
 namespace Guppy.ServiceLoaders
 {
     /// <summary>
@@ -25,7 +22,7 @@ namespace Guppy.ServiceLoaders
     /// </summary>
     internal class MonoGameServiceLoader : IServiceLoader
     {
-        public void RegisterServices(ServiceCollection services)
+        public void RegisterServices(GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<SpriteBatch>(p => new SpriteBatch(p.GetService<GraphicsDevice>()));
             services.RegisterTypeFactory<Camera2D>(p => new Camera2D());
@@ -39,12 +36,12 @@ namespace Guppy.ServiceLoaders
             AssemblyHelper.Types.GetTypesAssignableFrom<IVertexType>().Where(t => t.IsValueType).ForEach(vt =>
             {
                 var primitiveBatchType = typeof(PrimitiveBatch<>).MakeGenericType(vt);
-                services.RegisterTypeFactory(primitiveBatchType, (p, t) => ActivatorUtilities.CreateInstance(p, t));
+                services.RegisterTypeFactory(primitiveBatchType, (p, t) => Activator.CreateInstance(t, p.GetService<GraphicsDevice>()));
                 services.RegisterSingleton(ServiceConfigurationKey.From(type: primitiveBatchType));
             });
         }
 
-        public void ConfigureProvider(ServiceProvider provider)
+        public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

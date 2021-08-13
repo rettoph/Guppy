@@ -18,7 +18,7 @@ namespace Guppy.Extensions.System
         /// <returns></returns>
         static public Single SafeDivision(this Single numerator, Single denominator, Single? fallback = null)
         {
-            return (denominator == 0) ? numerator : numerator / denominator;
+            return (denominator == 0) ? fallback ?? numerator : numerator / denominator;
         }
     }
 }
