@@ -90,12 +90,15 @@ namespace Guppy.Network.ServiceLoaders
             #region Components
             services.RegisterTypeFactory<ChannelBaseCRUDComponent>(p => new ChannelBaseCRUDComponent());
             services.RegisterTypeFactory<PipeMasterCRUDComponent>(p => new PipeMasterCRUDComponent());
+            services.RegisterTypeFactory<NetworkEntityPipeComponent>(p => new NetworkEntityPipeComponent());
 
             services.RegisterTransient<ChannelBaseCRUDComponent>();
             services.RegisterTransient<PipeMasterCRUDComponent>();
+            services.RegisterTransient<NetworkEntityPipeComponent>();
 
             services.RegisterComponent<ChannelBaseCRUDComponent, IChannel>();
             services.RegisterComponent<PipeMasterCRUDComponent, IPipe>();
+            services.RegisterComponent<NetworkEntityPipeComponent, INetworkEntity>();
 
             services.RegisterComponentFilter(
                 ServiceConfigurationKey.From(type: typeof(RemoteHostComponent<>)),

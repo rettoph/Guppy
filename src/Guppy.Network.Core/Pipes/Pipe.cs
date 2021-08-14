@@ -19,6 +19,8 @@ namespace Guppy.Network.Pipes
     {
         #region Private Fields
         private IChannel _channel;
+
+        private ServiceList<INetworkEntity> _networkEntities;
         #endregion
 
         #region INetworkService Implementation
@@ -35,7 +37,7 @@ namespace Guppy.Network.Pipes
 
         public UserList Users { get; private set; }
 
-        public ServiceList<INetworkEntity> NetworkEntities { get; private set; }
+        public IEnumerable<INetworkEntity> NetworkEntities => _networkEntities;
         #endregion
 
         #region Events
@@ -56,22 +58,19 @@ namespace Guppy.Network.Pipes
             base.PreInitialize(provider);
 
             this.Users = provider.GetService<UserList>(Guppy.Network.Constants.ServiceConfigurations.TransientUserList);
-            this.NetworkEntities = provider.GetService<ServiceList<INetworkEntity>>();
 
-            this.NetworkEntities.OnAdded += this.HandleNetworkEntityAdded;
+            provider.Service(out _networkEntities);
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.NetworkEntities.OnAdded -= this.HandleNetworkEntityAdded;
-
             this.Users.TryRelease();
-            this.NetworkEntities.TryRelease();
+            _networkEntities.TryRelease();
 
             this.Users = default;
-            this.NetworkEntities = default;
+            _networkEntities = default;
         }
 
         protected override void Dispose()
@@ -83,17 +82,17 @@ namespace Guppy.Network.Pipes
         }
         #endregion
 
-        #region Event Handlers
-        private void HandleNetworkEntityAdded(IServiceList<INetworkEntity> sender, INetworkEntity entity)
+        #region IPipe Implementation
+        void IPipe.TryAdd(INetworkEntity entity, IPipe oldPipe)
         {
-            // Remove the entity from its old pipe
-            entity.Pipe?.NetworkEntities.TryRemove(entity);
-
-            IPipe oldPipe = entity.Pipe;
-            entity.Pipe = this;
-
-            this.OnNetworkEnityAddedToPipe?.Invoke(this, entity, oldPipe);
+            if(_networkEntities.TryAdd(entity))
+            {
+                this.OnNetworkEnityAddedToPipe?.Invoke(this, entity, oldPipe);
+            }
         }
+
+        void IPipe.TryRemove(INetworkEntity entity)
+            => _networkEntities.TryRemove(entity);
         #endregion
     }
 }

@@ -20,13 +20,18 @@ namespace Guppy.Network.Interfaces
         IChannel Channel { get; internal set; }
 
         UserList Users { get; }
-        ServiceList<INetworkEntity> NetworkEntities { get; }
+        IEnumerable<INetworkEntity> NetworkEntities { get; }
         #endregion
 
         #region Events
         public delegate void NetworkEnityAddedToPipeDelegate(IPipe sender, INetworkEntity networkEntity, IPipe oldPipe);
 
         event NetworkEnityAddedToPipeDelegate OnNetworkEnityAddedToPipe;
+        #endregion
+
+        #region Methods
+        internal void TryAdd(INetworkEntity entity, IPipe oldPipe);
+        internal void TryRemove(INetworkEntity entity);
         #endregion
     }
 }
