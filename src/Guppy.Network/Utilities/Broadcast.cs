@@ -18,9 +18,39 @@ namespace Guppy.Network.Utilities
     /// </summary>
     public sealed class Broadcast : Service
     {
+        #region Classes
+        private class Broadcaster
+        {
+            public Guid Id;
+            public INetworkEntity Entity;
+            public Action<NetOutgoingMessage> Cleaner;
+
+            public Boolean ShouldBroadcast()
+                => this.Entity.Status == ServiceStatus.Ready && this.Id == this.Entity.Id;
+
+            public Boolean TryBroadcast(UInt32 messageType)
+            {
+                if (this.ShouldBroadcast())
+                {
+                    NetOutgoingMessage om = this.Entity.Messages[messageType].Create(this.Entity.Pipe);
+                    this.Cleaner(om);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        #endregion
+
+        #region Static Fields
+        private static Queue<Broadcaster> BroadcastPool = new Queue<Broadcaster>();
+        #endregion
+
         #region Private Fields
-        private Queue<INetworkEntity> _dirtyEntities;
-        private Queue<Action<NetOutgoingMessage>> _cleaners;
+        private Queue<Broadcaster> _dirtyBroadcasters;
         private IntervalInvoker _intervals;
         #endregion
 
@@ -41,8 +71,7 @@ namespace Guppy.Network.Utilities
         {
             base.Initialize(provider);
 
-            _dirtyEntities = new Queue<INetworkEntity>();
-            _cleaners = new Queue<Action<NetOutgoingMessage>>();
+            _dirtyBroadcasters = new Queue<Broadcaster>();
 
             _intervals[this.Milliseconds].OnInterval += this.Flush;
         }
@@ -71,27 +100,44 @@ namespace Guppy.Network.Utilities
         /// <param name="cleaner"></param>
         public void Enqueue(INetworkEntity dirtyEntity, Action<NetOutgoingMessage> cleaner)
         {
-            _dirtyEntities.Enqueue(dirtyEntity);
-            _cleaners.Enqueue(cleaner);
+            _dirtyBroadcasters.Enqueue(Broadcast.GetBroadcaster(dirtyEntity, cleaner));
         }
 
         private void Flush(GameTime gameTime)
         {
-            while(_dirtyEntities.Any())
+            while(_dirtyBroadcasters.Any())
             {
-                INetworkEntity dirtyEntity = _dirtyEntities.Dequeue();
-                Action<NetOutgoingMessage> cleaner = _cleaners.Dequeue();
+                Broadcaster dirtyBroadcaster = _dirtyBroadcasters.Dequeue();
 
-                if(dirtyEntity.Status == ServiceStatus.Ready)
+                if(!dirtyBroadcaster.TryBroadcast(this.MessageType))
                 {
-                    NetOutgoingMessage om = dirtyEntity.Messages[this.MessageType].Create(dirtyEntity.Pipe);
-                    cleaner(om);
+                    this.log.Warn($"Attempted to broadcast message for irrelevant entity.");
                 }
-                else
-                {
-                    this.log.Warn($"Attempted to clean non ready dirty entity.");
-                }
+
+                Broadcast.BroadcastPool.Enqueue(dirtyBroadcaster);
             }
+        }
+        #endregion
+
+        #region Static Methods
+        private static Broadcaster GetBroadcaster(INetworkEntity entity, Action<NetOutgoingMessage> cleaner)
+        {
+            if(Broadcast.BroadcastPool.Any())
+            {
+                Broadcaster broadcaster = Broadcast.BroadcastPool.Dequeue();
+                broadcaster.Id = entity.Id;
+                broadcaster.Entity = entity;
+                broadcaster.Cleaner = cleaner;
+
+                return broadcaster;
+            }
+
+            return new Broadcaster()
+            {
+                Id = entity.Id,
+                Entity = entity,
+                Cleaner = cleaner
+            };
         }
         #endregion
     }
