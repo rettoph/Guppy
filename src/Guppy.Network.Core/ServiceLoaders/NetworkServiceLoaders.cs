@@ -38,8 +38,7 @@ namespace Guppy.Network.ServiceLoaders
 
             services.RegisterSetup<ServerPeer>((server, p, c) =>
             {
-                var settings = p.GetService<Settings>();
-                settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
+                p.Settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
             });
             #endregion
 
@@ -105,7 +104,7 @@ namespace Guppy.Network.ServiceLoaders
                 (e, p, t) =>
                 {
                     return t.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>().NetworkAuthorization
-                        == p.GetService<Settings>().Get<NetworkAuthorization>();
+                        == p.Settings.Get<NetworkAuthorization>();
                 },
                 (cc) =>
                 {

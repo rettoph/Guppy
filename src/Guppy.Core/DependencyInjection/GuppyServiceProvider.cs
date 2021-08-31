@@ -4,6 +4,7 @@ using Guppy.DependencyInjection.TypeFactories;
 using Guppy.Events.Delegates;
 using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
+using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,8 @@ namespace Guppy.DependencyInjection
         public Dictionary<ServiceConfigurationKey, IServiceManager> ActiveServices => _activeServices;
         public Dictionary<ServiceConfigurationKey, ComponentConfiguration[]> ComponentConfigurations => _componentConfigurations;
         public Dictionary<UInt32, ServiceConfigurationKey> ServiceConfigurationKeys => _serviceConfigurationKeys;
+
+        public Settings Settings { get; private set; }
         #endregion
 
         #region Events
@@ -93,6 +96,8 @@ namespace Guppy.DependencyInjection
             this.IsRoot = true;
             this.Root = this;
             _children = new List<GuppyServiceProvider>();
+
+            this.Settings = this.GetService<Settings>();
         }
         internal GuppyServiceProvider(GuppyServiceProvider parent)
         {
@@ -108,6 +113,8 @@ namespace Guppy.DependencyInjection
             _activeServices = this.Root.ActiveServices
                 .Where(kvp => kvp.Value.Configuration.Lifetime == ServiceLifetime.Singleton)
                 .ToDictionary();
+
+            this.Settings = this.GetService<Settings>();
         }
         #endregion
 

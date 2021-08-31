@@ -20,15 +20,11 @@ namespace Guppy.Network.Components
         where TEntity : class, IEntity
     {
         #region Private Fields
-        private Settings _settings;
-
         private HostType _initialHostType;
         private NetworkAuthorization _initialNetworkAuthorization;
         #endregion
 
         #region Protected Fields 
-        protected Settings settings => _settings;
-
         protected HostType initialHostType => _initialHostType;
         protected NetworkAuthorization initialNetworkAuthorization => _initialNetworkAuthorization;
         #endregion
@@ -38,10 +34,8 @@ namespace Guppy.Network.Components
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _settings);
-
-            _initialHostType = this.settings.Get<HostType>();
-            _initialNetworkAuthorization = this.settings.Get<NetworkAuthorization>();
+            _initialHostType = provider.Settings.Get<HostType>();
+            _initialNetworkAuthorization = provider.Settings.Get<NetworkAuthorization>();
         }
 
         protected override void Initialize(GuppyServiceProvider provider)
@@ -63,8 +57,6 @@ namespace Guppy.Network.Components
 
             if (_initialHostType == HostType.Remote)
                 this.ReleaseRemote(_initialNetworkAuthorization);
-
-            _settings = null;
         }
 
         protected virtual void ReleaseRemote(NetworkAuthorization networkAuthorization)

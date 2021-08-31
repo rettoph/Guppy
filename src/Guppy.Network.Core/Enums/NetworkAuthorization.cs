@@ -15,7 +15,7 @@ namespace Guppy.Network.Enums
     /// </summary>
     public enum NetworkAuthorization
     {
-        Slave,
-        Master
+        Slave = 0,
+        Master = 1
     }
 }
