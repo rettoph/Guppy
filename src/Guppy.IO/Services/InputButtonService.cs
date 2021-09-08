@@ -7,10 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.IO.Structs;
 
 namespace Guppy.IO.Services
 {
-    public sealed class InputButtons : Service
+    public sealed class InputButtonService : Service
     {
         #region Private Fields
         /// <summary>
@@ -31,7 +32,7 @@ namespace Guppy.IO.Services
         /// <summary>
         /// Invoked when a new input manager is created.
         /// </summary>
-        public event OnEventDelegate<InputButtons, InputButtonManager> OnInputManagerCreated;
+        public event OnEventDelegate<InputButtonService, InputButtonManager> OnInputManagerCreated;
         #endregion
 
         #region Lifecycle Methods

@@ -2,8 +2,8 @@
 using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.System.Collections;
-using Guppy.IO.Args;
 using Guppy.IO.Enums;
+using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework;
@@ -19,10 +19,10 @@ namespace Guppy.IO.Services
     /// Static service instance that will track the 
     /// current mouse activity and manage mouse events.
     /// </summary>
-    public sealed class Mouse : Asyncable
+    public sealed class MouseService : Asyncable
     {
         #region Private Fields
-        private InputButtons _buttons;
+        private InputButtonService _buttons;
         private Dictionary<InputButton, InputButtonManager> _mButtons;
         private Single _oldScrollWheelValue;
         #endregion
@@ -48,7 +48,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Events
-        public event OnEventDelegate<Mouse, ScrollWheelArgs> OnScrollWheelValueChanged;
+        public event OnEventDelegate<MouseService, ScrollWheelArgs> OnScrollWheelValueChanged;
 
         public event OnEventDelegate<InputButtonManager, InputButtonArgs> OnButtonStateChanged;
         public Dictionary<ButtonState, OnEventDelegate<InputButtonManager, InputButtonArgs>> OnButtonState { get; private set; }

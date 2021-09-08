@@ -10,7 +10,7 @@ namespace Guppy.Extensions.DependencyInjection
 {
     public static class ComponentConfigurationExtensions
     {
-        public static IComponent[] Create(
+        public static IEnumerable<IComponent> Create(
             this ComponentConfiguration[] configurations,
             IEntity entity,
             GuppyServiceProvider provider)
@@ -24,8 +24,7 @@ namespace Guppy.Extensions.DependencyInjection
                         setup: (i, p, c) => (i as IComponent).Entity = entity,
                         setupOrder: Guppy.Core.Constants.Priorities.PreInitialize - 1
                     ) as IComponent
-                )
-                .ToArray();
+                );
         }
     }
 }

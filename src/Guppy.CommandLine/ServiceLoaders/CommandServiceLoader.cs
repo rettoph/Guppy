@@ -16,14 +16,14 @@ namespace Guppy.CommandLine.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<Commands>(p => new Services.Commands());
+            services.RegisterTypeFactory<CommandService>(p => new Services.CommandService());
             services.RegisterTypeFactory<RootCommand>(p => new RootCommand()
             {
                 Name = ">‎"
             });
             services.RegisterTypeFactory<IConsole>(p => new SystemConsole());
 
-            services.RegisterSingleton<Commands>();
+            services.RegisterSingleton<CommandService>();
             services.RegisterSingleton<RootCommand>();
             services.RegisterSingleton<IConsole>();
         }

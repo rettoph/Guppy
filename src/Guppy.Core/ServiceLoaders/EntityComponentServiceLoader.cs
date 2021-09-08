@@ -3,8 +3,10 @@ using Guppy.DependencyInjection;
 using Guppy.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.ServiceLoaders
@@ -16,15 +18,23 @@ namespace Guppy.ServiceLoaders
 
         public void RegisterServices(GuppyServiceCollection services)
         {
+            services.RegisterTypeFactory<ComponentManager>(p => new ComponentManager());
+
+            services.RegisterTransient<ComponentManager>();
+
             services.RegisterBuilder<IEntity>((e, p, c) =>
             {
                 e.OnStatus[ServiceStatus.PostReleasing] += EntityComponentServiceLoader.HandleEntityPostReleasing;
                 e.OnStatus[ServiceStatus.Disposing] += EntityComponentServiceLoader.HandleEntityDisposing;
             });
 
-            services.RegisterSetup<IEntity>((e, p, c) =>
+            services.RegisterSetup<IEntity>((e, p, _) =>
             {
-                e.Components = p.ComponentConfigurations[e.ServiceConfiguration.Key].Create(e, p) ?? EntityComponentServiceLoader.EmptyComponentArray;
+                e.Components = p.GetService<ComponentManager>((manager, _, _) =>
+                {
+                    IEnumerable<IComponent> components = p.ComponentConfigurations[e.ServiceConfiguration.Key].Create(e, p) ?? Enumerable.Empty<IComponent>();
+                    manager.BuildDictionary(components);
+                });
             }, Guppy.Core.Constants.Priorities.PreInitialize - 1);
         }
 
@@ -38,10 +48,7 @@ namespace Guppy.ServiceLoaders
         {
             if (sender is IEntity entity)
             {
-                foreach (IComponent component in entity.Components)
-                    component.TryRelease();
-
-                entity.Components = EntityComponentServiceLoader.EmptyComponentArray;
+                entity.Components.TryRelease();
             }
         }
 

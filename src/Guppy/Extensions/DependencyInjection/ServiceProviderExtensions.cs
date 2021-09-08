@@ -19,7 +19,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static T GetContent<T>(this GuppyServiceProvider provider, String handle)
-            => provider.GetService<Content>().Get<T>(handle);
+            => provider.GetService<ContentService>().Get<T>(handle);
 
         /// <summary>
         /// Automatically load content from the internal ContentLoader
@@ -42,7 +42,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static Color GetColor(this GuppyServiceProvider provider, String handle)
-            => provider.GetService<Colors>()[handle];
+            => provider.GetService<ColorService>()[handle];
         /// <summary>
         /// Automatically load a color from the internal ColorService
         /// and set the value to the recieved instance.
@@ -64,7 +64,7 @@ namespace Guppy.Extensions.DependencyInjection
         /// <param name="handle"></param>
         /// <returns></returns>
         public static String GetString(this GuppyServiceProvider provider, String handle)
-            => provider.GetService<Strings>()[handle];
+            => provider.GetService<StringService>()[handle];
 
         /// <summary>
         /// Automatically load a string from the internal StringService

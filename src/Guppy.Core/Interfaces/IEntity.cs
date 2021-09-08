@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +11,6 @@ namespace Guppy.Interfaces
     /// </summary>
     public interface IEntity : IService
     {
-        IComponent[] Components { get; set; }
+        ComponentManager Components { get; set; }
     }
 }

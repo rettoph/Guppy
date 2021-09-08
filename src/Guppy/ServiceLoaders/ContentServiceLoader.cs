@@ -13,11 +13,11 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<Content>(p => new Content());
+            services.RegisterTypeFactory<ContentService>(p => new ContentService());
 
-            services.RegisterSingleton<Content>();
+            services.RegisterSingleton<ContentService>();
 
-            services.RegisterSetup<Content>((content, p, c) =>
+            services.RegisterSetup<ContentService>((content, p, c) =>
             {
                 content.TryRegister("guppy:font:debug", "Fonts/DiagnosticsFont");
             });

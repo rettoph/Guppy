@@ -3,7 +3,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.Extensions.Utilities;
-using Guppy.IO.Args;
+using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -21,17 +21,18 @@ using System.Text;
 
 namespace Guppy.IO.Services
 {
-    public class Terminal : Frameable, IConsole
+    public class TerminalService : Frameable, IConsole
     {
         #region Private Fields
         private SpriteFont _font;
-        private Commands _commands;
+        private CommandService _commands;
         private GameWindow _window;
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
-        private Mouse _mouse;
-        private Keyboard _keyboard;
+        private MouseService _mouse;
+        private KeyboardService _keyboard;
+        private InputCommandService _inputCommands;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
 
         private Color _outColor = Color.White;
@@ -93,9 +94,9 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreCreate(GuppyServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.PreCreate(provider);
+            base.PreInitialize(provider);
 
             // Override Console output
             Console.SetOut(new ConsoleTerminalTextWriter(this));
@@ -109,6 +110,7 @@ namespace Guppy.IO.Services
             provider.Service(out _primitiveBatch);
             provider.Service(out _mouse);
             provider.Service(out _keyboard);
+            provider.Service(out _inputCommands);
             provider.Service(Guppy.Constants.ServiceConfigurationKeys.TransientSpritebatch, out _spriteBatch);
             provider.Service(Guppy.Constants.ServiceConfigurationKeys.TransientCamera, out _camera);
 
@@ -135,9 +137,9 @@ namespace Guppy.IO.Services
             this.Clean();
         }
 
-        protected override void PostDispose()
+        protected override void PostRelease()
         {
-            base.PostDispose();
+            base.PostRelease();
 
             this.Close();
 
@@ -246,6 +248,8 @@ namespace Guppy.IO.Services
             _window.TextInput += this.HandleTextInput;
             _keyboard[Keys.Up].OnState[ButtonState.Released] += this.HandleArrowReleased;
             _keyboard[Keys.Down].OnState[ButtonState.Released] += this.HandleArrowReleased;
+
+            _inputCommands.Locked = true;
         }
 
         public void Close(Game game = default)
@@ -258,6 +262,8 @@ namespace Guppy.IO.Services
             _window.TextInput -= this.HandleTextInput;
             _keyboard[Keys.Up].OnState[ButtonState.Released] -= this.HandleArrowReleased;
             _keyboard[Keys.Down].OnState[ButtonState.Released] -= this.HandleArrowReleased;
+
+            _inputCommands.Locked = false;
         }
 
         private void Clean()
@@ -310,7 +316,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Events
-        private void HandleScrollWheelValueChanged(Mouse sender, ScrollWheelArgs args)
+        private void HandleScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
         {
             _scrollPosition += (args.Delta / 120) * _font.LineSpacing;
             _scrollPosition = MathHelper.Clamp(_scrollPosition, 0, (_lineCount * _font.LineSpacing) - _consoleBounds.Height);
@@ -343,9 +349,19 @@ namespace Guppy.IO.Services
                         _inputBuffer.Dequeue();
                     }
 
-                    _commands.Invoke(_input);
-                    _input = String.Empty;
-                    _inputBufferOffset = _inputBufferLength;
+                    try
+                    {
+                        _commands.Invoke(_input);
+                    }
+                    catch(Exception err)
+                    {
+                        this.log.Error(err.Message);
+                    }
+                    finally
+                    {
+                        _input = String.Empty;
+                        _inputBufferOffset = _inputBufferLength;
+                    }
                     break;
                 default:
                     if (_font.Characters.Contains(e.Character))

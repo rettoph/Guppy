@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Guppy.IO.Utilities
+namespace Guppy.IO.Structs
 {
     [StructLayout(LayoutKind.Explicit)]
     public struct InputButton

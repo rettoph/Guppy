@@ -14,15 +14,19 @@ namespace Guppy.IO.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<InputButtons>(p => new InputButtons());
+            services.RegisterTypeFactory<InputButtonService>(p => new InputButtonService());
             services.RegisterTypeFactory<InputButtonManager>(p => new InputButtonManager());
-            services.RegisterTypeFactory<Mouse>(p => new Mouse());
-            services.RegisterTypeFactory<Keyboard>(p => new Keyboard());
+            services.RegisterTypeFactory<MouseService>(p => new MouseService());
+            services.RegisterTypeFactory<KeyboardService>(p => new KeyboardService());
+            services.RegisterTypeFactory<InputCommandService>(p => new InputCommandService());
+            services.RegisterTypeFactory<InputCommand>(p => new InputCommand());
 
-            services.RegisterSingleton<InputButtons>();
+            services.RegisterSingleton<InputButtonService>();
             services.RegisterTransient<InputButtonManager>();
-            services.RegisterSingleton<Mouse>();
-            services.RegisterSingleton<Keyboard>();
+            services.RegisterSingleton<MouseService>();
+            services.RegisterSingleton<KeyboardService>();
+            services.RegisterSingleton<InputCommandService>();
+            services.RegisterTransient<InputCommand>();
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

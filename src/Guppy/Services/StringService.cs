@@ -8,7 +8,7 @@ using System.Text;
 namespace Guppy.Services
 {
     [AutoLoad]
-    public class Colors : LoaderService<String, Color>
+    public class StringService : LoaderService<String, String>
     {
     }
 }

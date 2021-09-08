@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.IO.Args
+namespace Guppy.IO.Structs
 {
     public struct ScrollWheelArgs
     {

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Services
 {
-    public sealed class Content : LoaderService<String, String, Object>
+    public sealed class ContentService : LoaderService<String, String, Object>
     {
         #region Private Fields
         private ContentManager _manager;
@@ -44,7 +44,7 @@ namespace Guppy.Services
             return (T)this[handle];
         }
 
-        public static implicit operator ContentManager(Content content)
+        public static implicit operator ContentManager(ContentService content)
             => content._manager;
     }
 }

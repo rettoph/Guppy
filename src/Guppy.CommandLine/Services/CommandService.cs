@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Guppy.CommandLine.Services
 {
-    public class Commands : Service
+    public class CommandService : Service
     {
         #region Private Fields
         private RootCommand _root;

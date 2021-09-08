@@ -15,10 +15,10 @@ namespace Guppy.IO.Services
     /// and maintain KeyBoard related InputManager
     /// instances.
     /// </summary>
-    public class Keyboard : Asyncable
+    public class KeyboardService : Asyncable
     {
         #region Private Fields
-        private InputButtons _inputButtons;
+        private InputButtonService _inputButtons;
         private InputButtonManager[] _keys;
         private Int32 _keyCount;
         #endregion
@@ -68,7 +68,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Event Handlers
-        private void HandleInputManagerCreated(InputButtons sender, InputButtonManager input)
+        private void HandleInputManagerCreated(InputButtonService sender, InputButtonManager input)
         {
             if (input.Which.Type == InputButtonType.Keyboard)
             { // Track all created keyboard events...

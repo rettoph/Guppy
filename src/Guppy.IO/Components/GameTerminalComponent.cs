@@ -1,12 +1,12 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.IO.Args;
 using Guppy.IO.Services;
+using Guppy.IO.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Keyboard = Guppy.IO.Services.Keyboard;
+using KeyboardService = Guppy.IO.Services.KeyboardService;
 
 namespace Guppy.IO.Components
 {
@@ -14,8 +14,8 @@ namespace Guppy.IO.Components
     {
         #region Private Fields
         private Game _game;
-        private Terminal _terminal;
-        private Keyboard _keyboard;
+        private TerminalService _terminal;
+        private KeyboardService _keyboard;
         private Boolean _terminalState;
         #endregion
 

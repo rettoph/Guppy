@@ -9,12 +9,12 @@ namespace Guppy.IO.Utilities
 {
     internal class ConsoleTerminalTextWriter : TextWriter
     {
-        private Terminal _terminal;
+        private TerminalService _terminal;
         private String _string;
 
         public override Encoding Encoding => Encoding.Default;
 
-        internal ConsoleTerminalTextWriter(Terminal terminal)
+        internal ConsoleTerminalTextWriter(TerminalService terminal)
         {
             _terminal = terminal;
             _string = String.Empty;

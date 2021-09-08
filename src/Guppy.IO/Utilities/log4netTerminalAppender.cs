@@ -12,7 +12,7 @@ namespace Guppy.IO.Utilities
 {
     public class log4netTerminalAppender : IAppender
     {
-        private Terminal _terminal;
+        private TerminalService _terminal;
 
         public Dictionary<Level, Color> Colors { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Guppy.IO.Utilities
 
         public String Name { get; set; }
 
-        public log4netTerminalAppender(Terminal terminal, PatternLayout layout, params (Level, Color)[] colors)
+        public log4netTerminalAppender(TerminalService terminal, PatternLayout layout, params (Level, Color)[] colors)
         {
             _terminal = terminal;
 

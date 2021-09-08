@@ -9,13 +9,13 @@ namespace Guppy.IO.Utilities
 {
     internal class CommandTerminalTextWriter : TextWriter
     {
-        private Terminal _terminal;
+        private TerminalService _terminal;
         private Color _color;
         private String _string;
 
         public override Encoding Encoding => Encoding.Default;
 
-        internal CommandTerminalTextWriter(Terminal terminal, ref Color color)
+        internal CommandTerminalTextWriter(TerminalService terminal, ref Color color)
         {
             _terminal = terminal;
             _color = color;

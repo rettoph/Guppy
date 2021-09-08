@@ -16,18 +16,18 @@ namespace Guppy.IO.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<Terminal>(p => new Terminal());
-            services.RegisterTypeFactory<IConsole>(p => p.GetService<Terminal>());
+            services.RegisterTypeFactory<TerminalService>(p => new TerminalService());
+            services.RegisterTypeFactory<IConsole>(p => p.GetService<TerminalService>(), 0, 1);
             services.RegisterTypeFactory<GameTerminalComponent>(p => new GameTerminalComponent());
 
-            services.RegisterSingleton<Terminal>();
+            services.RegisterSingleton<TerminalService>();
             services.RegisterTransient<GameTerminalComponent>();
 
             services.RegisterComponent<GameTerminalComponent, Game>();
 
             services.RegisterBuilder<Game>((g, p, c) =>
             {
-                p.GetService<Terminal>();
+                p.GetService<TerminalService>();
             }, Guppy.Core.Constants.Priorities.PreCreate);
         }
 

@@ -18,7 +18,7 @@ namespace Guppy.IO.Extensions.log4net
         public static ILog ConfigureTerminalAppender(this ILog log, GuppyServiceProvider provider, PatternLayout layout, params (Level, Color)[] colors)
         {
             var appender = new log4netTerminalAppender(
-                terminal: provider.GetService<Terminal>(),
+                terminal: provider.GetService<TerminalService>(),
                 layout: layout,
                 colors: colors);
 

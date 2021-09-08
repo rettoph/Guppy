@@ -1,5 +1,6 @@
 ﻿using Guppy.Enums;
 using Guppy.Interfaces;
+using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,11 +10,11 @@ namespace Guppy
     public class Entity : Service, IEntity
     {
         #region Private Fields
-        private IComponent[] _components;
+        private ComponentManager _components;
         #endregion
 
         #region IEntity Implementation
-        public IComponent[] Components
+        public ComponentManager Components
         {
             get => _components;
             set
