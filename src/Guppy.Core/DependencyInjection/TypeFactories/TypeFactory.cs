@@ -46,11 +46,10 @@ namespace Guppy.DependencyInjection.TypeFactories
 
             this.MaxPoolSize = _context.MaxPoolSize;
 
-            this.BuilderActions = builders.Where(b =>
-            {
-                return b.Key.IsAssignableFrom(this.Type)
-                    || this.Type.IsSubclassOf(b.Key);
-            }).OrderBy(b => b.Order).ToArray();
+            this.BuilderActions = builders
+                .Where(b => b.Filter(this.Type))
+                .OrderBy(b => b.Order)
+                .ToArray();
         }
         #endregion
 
@@ -69,7 +68,7 @@ namespace Guppy.DependencyInjection.TypeFactories
         }
 
         /// <inheritdoc />
-        public void TryReturnToPool(Object instance)
+        public Boolean TryReturnToPool(Object instance)
             => _pool.TryReturn(instance);
 
         /// <inheritdoc />

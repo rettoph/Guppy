@@ -16,8 +16,14 @@ namespace Guppy.DependencyInjection.Actions
         public SetupAction(
             ServiceConfigurationKey key, 
             Action<Object, GuppyServiceProvider, IServiceConfiguration> method,
-            Int32 order = 0) : base(key, method, order)
+            Int32 order = 0,
+            Func<IAction<ServiceConfigurationKey, IServiceConfiguration>, ServiceConfigurationKey, Boolean> filter = default) : base(key, method, order, filter)
         {
+        }
+
+        public override bool Filter(ServiceConfigurationKey key)
+        {
+            return key.Inherits(this.Key) && base.Filter(key);
         }
     }
 }

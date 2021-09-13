@@ -31,6 +31,12 @@ namespace Guppy.Utilities
                 keySelector: c => c.ServiceConfiguration.Key,
                 elementSelector: c => c);
         }
+
+        internal void Do(Action<IComponent> action)
+        {
+            foreach (IComponent component in _components.Values)
+                action(component);
+        }
         #endregion
 
         #region Get Methods

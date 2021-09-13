@@ -45,12 +45,10 @@ namespace Guppy.DependencyInjection.TypeFactories
             _maxPoolSize = context.MaxPoolSize;
             _pool = new GenericTypePool(_context.ImplementationType, ref _maxPoolSize);
 
-            this.BuilderActions = builders.Where(b =>
-            {
-                return b.Key.IsAssignableFrom(this.Type)
-                    || this.Type.IsSubclassOf(b.Key)
-                    || this.Type.IsSubclassOfRawGeneric(b.Key);
-            }).OrderBy(b => b.Order).ToArray();
+            this.BuilderActions = builders
+                .Where(b => b.Filter(this.Type))
+                .OrderBy(b => b.Order)
+                .ToArray();
 
             this.MaxPoolSize = _context.MaxPoolSize;
         }
@@ -73,7 +71,7 @@ namespace Guppy.DependencyInjection.TypeFactories
         }
 
         /// <inheritdoc />
-        public void TryReturnToPool(Object instance)
+        public Boolean TryReturnToPool(Object instance)
             => _pool.TryReturn(instance);
 
         /// <inheritdoc />

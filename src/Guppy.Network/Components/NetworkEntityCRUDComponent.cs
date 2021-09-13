@@ -18,9 +18,9 @@ namespace Guppy.Network.Components
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
             provider.Service(out _scene);
 

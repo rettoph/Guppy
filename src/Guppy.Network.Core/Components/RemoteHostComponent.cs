@@ -36,6 +36,9 @@ namespace Guppy.Network.Components
 
             _initialHostType = provider.Settings.Get<HostType>();
             _initialNetworkAuthorization = provider.Settings.Get<NetworkAuthorization>();
+
+            if (_initialHostType == HostType.Remote)
+                this.PreInitializeRemote(provider, _initialNetworkAuthorization);
         }
 
         protected override void Initialize(GuppyServiceProvider provider)
@@ -46,9 +49,21 @@ namespace Guppy.Network.Components
                 this.InitializeRemote(provider, _initialNetworkAuthorization);
         }
 
-        protected virtual void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PostInitialize(GuppyServiceProvider provider)
         {
-            //
+            base.PostInitialize(provider);
+
+            if (_initialHostType == HostType.Remote)
+                this.PostInitializeRemote(provider, _initialNetworkAuthorization);
+        }
+
+
+        protected override void PreRelease()
+        {
+            base.PreRelease();
+
+            if (_initialHostType == HostType.Remote)
+                this.PreReleaseRemote(_initialNetworkAuthorization);
         }
 
         protected override void Release()
@@ -59,7 +74,40 @@ namespace Guppy.Network.Components
                 this.ReleaseRemote(_initialNetworkAuthorization);
         }
 
+        protected override void PostRelease()
+        {
+            base.PostRelease();
+
+            if (_initialHostType == HostType.Remote)
+                this.PostReleaseRemote(_initialNetworkAuthorization);
+        }
+
+        protected virtual void PreInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            //
+        }
+
+        protected virtual void InitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            //
+        }
+
+        protected virtual void PostInitializeRemote(GuppyServiceProvider provider, NetworkAuthorization networkAuthorization)
+        {
+            //
+        }
+
+        protected virtual void PreReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            // 
+        }
+
         protected virtual void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        {
+            // 
+        }
+
+        protected virtual void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
             // 
         }

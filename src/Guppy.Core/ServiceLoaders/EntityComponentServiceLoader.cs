@@ -24,8 +24,7 @@ namespace Guppy.ServiceLoaders
 
             services.RegisterBuilder<IEntity>((e, p, c) =>
             {
-                e.OnStatus[ServiceStatus.PostReleasing] += EntityComponentServiceLoader.HandleEntityPostReleasing;
-                e.OnStatus[ServiceStatus.Disposing] += EntityComponentServiceLoader.HandleEntityDisposing;
+                e.OnStatusChanged += this.HandleEntityStatusChanged;
             });
 
             services.RegisterSetup<IEntity>((e, p, _) =>
@@ -35,7 +34,19 @@ namespace Guppy.ServiceLoaders
                     IEnumerable<IComponent> components = p.ComponentConfigurations[e.ServiceConfiguration.Key].Create(e, p) ?? Enumerable.Empty<IComponent>();
                     manager.BuildDictionary(components);
                 });
-            }, Guppy.Core.Constants.Priorities.PreInitialize - 1);
+
+                e.Components.Do(component => component.TryPreInitialize(p));
+            }, Guppy.Core.Constants.Priorities.PreInitialize);
+
+            services.RegisterSetup<IEntity>((e, p, _) =>
+            {
+                e.Components.Do(component => component.TryInitialize(p));
+            }, Guppy.Core.Constants.Priorities.Initialize);
+
+            services.RegisterSetup<IEntity>((e, p, _) =>
+            {
+                e.Components.Do(component => component.TryPostInitialize(p));
+            }, Guppy.Core.Constants.Priorities.PostInitialize);
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)
@@ -44,18 +55,20 @@ namespace Guppy.ServiceLoaders
         }
 
         #region Event Handlers
-        private static void HandleEntityPostReleasing(IService sender, ServiceStatus old, ServiceStatus value)
+        private void HandleEntityStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            if (sender is IEntity entity)
+            if(sender is IEntity entity)
             {
-                entity.Components.TryRelease();
+                switch (value)
+                {
+                    case ServiceStatus.PreReleasing:
+                        entity.Components.TryRelease();
+                        break;
+                    case ServiceStatus.Disposing:
+                        entity.OnStatusChanged -= this.HandleEntityStatusChanged;
+                        break;
+                };
             }
-        }
-
-        private static void HandleEntityDisposing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            sender.OnStatus[ServiceStatus.PreReleasing] -= EntityComponentServiceLoader.HandleEntityPostReleasing;
-            sender.OnStatus[ServiceStatus.Disposing] -= EntityComponentServiceLoader.HandleEntityDisposing;
         }
         #endregion
     }

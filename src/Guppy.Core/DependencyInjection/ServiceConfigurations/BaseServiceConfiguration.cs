@@ -43,7 +43,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
             this.context = context;
             this.TypeFactory = factories[this.context.TypeFactory];
             this.SetupActions = actions
-                .Where(action => this.Key.Inherits(action.Key))
+                .Where(action => action.Filter(this.Key))
                 .OrderBy(action => action.Order)
                 .ToArray();
         }

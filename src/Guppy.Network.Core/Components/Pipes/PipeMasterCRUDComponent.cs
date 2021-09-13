@@ -22,32 +22,20 @@ namespace Guppy.Network.Components.Scenes
         {
             base.Initialize(provider);
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
-            this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
+            this.Entity.Users.OnAdded += this.HandleUserAddedToPipe;
+            this.Entity.OnNetworkEnityAddedToPipe += this.HandleNetworkEnityAddedToPipe;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
-            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
+            this.Entity.Users.OnAdded -= this.HandleUserAddedToPipe;
+            this.Entity.OnNetworkEnityAddedToPipe -= this.HandleNetworkEnityAddedToPipe;
         }
         #endregion
 
         #region Event Handlers
-        private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Users.OnAdded += this.HandleUserAddedToPipe;
-            this.Entity.OnNetworkEnityAddedToPipe += this.HandleNetworkEnityAddedToPipe;
-        }
-
-        private void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Users.OnAdded -= this.HandleUserAddedToPipe;
-            this.Entity.OnNetworkEnityAddedToPipe -= this.HandleNetworkEnityAddedToPipe;
-        }
-
         private void HandleUserAddedToPipe(IServiceList<IUser> sender, IUser args)
         {
             // Broadcast every single networkEntity within the pipe to the new user.

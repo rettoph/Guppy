@@ -204,7 +204,7 @@ namespace Guppy.Lists
             _list.Add(item);
             _dictionary.Add(item.Id, item);
 
-            item.OnStatus[ServiceStatus.PreReleasing] += this.HandleItemPreReleasing;
+            item.OnStatusChanged += this.HandleItemStatusChanged;
         }
 
         private Boolean HandleCanRemove(IServiceList<TService> sender, TService item)
@@ -215,12 +215,13 @@ namespace Guppy.Lists
             _list.Remove(item);
             _dictionary.Remove(item.Id);
 
-            item.OnStatus[ServiceStatus.PreReleasing] -= this.HandleItemPreReleasing;
+            item.OnStatusChanged -= this.HandleItemStatusChanged;
         }
 
-        protected virtual void HandleItemPreReleasing(IService sender, ServiceStatus old, ServiceStatus value)
+        protected virtual void HandleItemStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            this.TryRemove(sender as TService);
+            if(value == ServiceStatus.PreReleasing)
+                this.TryRemove(sender as TService);
         }
         #endregion
 

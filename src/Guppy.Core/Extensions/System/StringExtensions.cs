@@ -7,8 +7,23 @@ namespace Guppy.Extensions.System
 {
     public static class StringExtensions
     {
+#if DEBUG
+        public static Dictionary<String, UInt32> _lookup = new Dictionary<String, UInt32>();
+#endif
         public static UInt32 xxHash(this String value)
         {
+#if DEBUG
+            if(!_lookup.ContainsKey(value))
+            {
+                UInt32 hash = XXH32.DigestOf(Encoding.UTF8.GetBytes(value));
+
+                _lookup.Add(value, hash);
+
+                Console.WriteLine($"{hash} => {value}");
+
+                return hash;
+            }
+#endif
             return XXH32.DigestOf(Encoding.UTF8.GetBytes(value));
         }
 

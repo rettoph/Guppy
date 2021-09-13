@@ -751,41 +751,47 @@ namespace Guppy.DependencyInjection
         public void RegisterBuilder(
             Type type,
             Action<Object, GuppyServiceProvider, ITypeFactory> method,
-            Int32 order = 0)
-                => this.Add(new BuilderAction(type, method, order));
+            Int32 order = 0,
+            Func<IAction<Type, ITypeFactory>, Type, Boolean> filter = default)
+                => this.Add(new BuilderAction(type, method, order, filter));
         public void RegisterBuilder<T>(
             Action<T, GuppyServiceProvider, ITypeFactory> method,
-            Int32 order = 0)
+            Int32 order = 0,
+            Func<IAction<Type, ITypeFactory>, Type, Boolean> filter = default)
                 where T : class
-                    => this.Add(new BuilderAction(typeof(T), (i, p, f) => method(i as T, p, f), order));
+                    => this.Add(new BuilderAction(typeof(T), (i, p, f) => method(i as T, p, f), order, filter));
         #endregion
 
         #region RegisterSetup Methods
         public void RegisterSetup(
             ServiceConfigurationKey key,
             Action<Object, GuppyServiceProvider, IServiceConfiguration> method,
-            Int32 order = 0)
-                => this.Add(new SetupAction(key, method, order));
+            Int32 order = 0,
+            Func<IAction<ServiceConfigurationKey, IServiceConfiguration>, ServiceConfigurationKey, Boolean> filter = default)
+                => this.Add(new SetupAction(key, method, order, filter));
 
         public void RegisterSetup<T>(
             ServiceConfigurationKey key,
             Action<T, GuppyServiceProvider, IServiceConfiguration> method,
-            Int32 order = 0)
+            Int32 order = 0,
+            Func<IAction<ServiceConfigurationKey, IServiceConfiguration>, ServiceConfigurationKey, Boolean> filter = default)
                 where T : class
-                    => this.Add(new SetupAction(key, (i, p, c) => method(i as T, p, c), order));
+                    => this.Add(new SetupAction(key, (i, p, c) => method(i as T, p, c), order, filter));
 
         public void RegisterSetup<TKeyType>(
             String keyName,
             Action<TKeyType, GuppyServiceProvider, IServiceConfiguration> method,
-            Int32 order = 0)
+            Int32 order = 0,
+            Func<IAction<ServiceConfigurationKey, IServiceConfiguration>, ServiceConfigurationKey, Boolean> filter = default)
                 where TKeyType : class
-                    => this.Add(new SetupAction(ServiceConfigurationKey.From<TKeyType>(keyName), (i, p, c) => method(i as TKeyType, p, c), order));
+                    => this.Add(new SetupAction(ServiceConfigurationKey.From<TKeyType>(keyName), (i, p, c) => method(i as TKeyType, p, c), order, filter));
 
         public void RegisterSetup<TKey>(
             Action<TKey, GuppyServiceProvider, IServiceConfiguration> method,
-            Int32 order = 0)
+            Int32 order = 0,
+            Func<IAction<ServiceConfigurationKey, IServiceConfiguration>, ServiceConfigurationKey, Boolean> filter = default)
                 where TKey : class
-                    => this.Add(new SetupAction(ServiceConfigurationKey.From<TKey>(), (i, p, c) => method(i as TKey, p, c), order));
+                    => this.Add(new SetupAction(ServiceConfigurationKey.From<TKey>(), (i, p, c) => method(i as TKey, p, c), order, filter));
         #endregion
     }
 }

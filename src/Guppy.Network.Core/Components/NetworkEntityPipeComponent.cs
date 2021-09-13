@@ -22,14 +22,15 @@ namespace Guppy.Network.Components
 
             _setPipe = false;
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleNetworkEntityInitializing;
+            this.Entity.OnPipeChanged += this.HandleNetworkEntityPipeChanged;
+
+            this.CleanNetworkEntityPipe(default, this.Entity.Pipe);
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleNetworkEntityInitializing;
             this.Entity.OnPipeChanged -= this.HandleNetworkEntityPipeChanged;
         }
         #endregion
@@ -49,13 +50,6 @@ namespace Guppy.Network.Components
         private void HandleNetworkEntityPipeChanged(INetworkEntity sender, IPipe old, IPipe value)
         {
             this.CleanNetworkEntityPipe(old, value);
-        }
-
-        private void HandleNetworkEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.OnPipeChanged += this.HandleNetworkEntityPipeChanged;
-
-            this.CleanNetworkEntityPipe(default, this.Entity.Pipe);
         }
         #endregion
     }

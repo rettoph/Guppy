@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection.TypeFactories;
+using Guppy.Extensions.System;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,8 +17,17 @@ namespace Guppy.DependencyInjection.Actions
         public BuilderAction(
             Type key, 
             Action<Object, GuppyServiceProvider, ITypeFactory> method,
-            Int32 order = 0) : base(key, method, order)
+            Int32 order = 0,
+            Func<IAction<Type, ITypeFactory>, Type, Boolean> filter = default) : base(key, method, order, filter)
         {
+        }
+
+        public override bool Filter(Type key)
+        {
+            return (this.Key.IsAssignableFrom(key)
+                    || key.IsSubclassOf(this.Key)
+                    || key.IsSubclassOfRawGeneric(this.Key)
+                ) && base.Filter(key);
         }
     }
 }

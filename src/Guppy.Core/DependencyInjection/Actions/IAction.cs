@@ -11,5 +11,7 @@ namespace Guppy.DependencyInjection.Actions
         public Int32 Order { get; }
 
         void Invoke(Object instance, GuppyServiceProvider provider, TArgs args);
+
+        Boolean Filter(TKey key);
     }
 }

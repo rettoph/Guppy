@@ -22,7 +22,7 @@ namespace Guppy
         #region Private Fields
         private IServiceConfiguration _configuration;
         private Guid _id;
-        private ServiceStatus _serviceStatus;
+        private ServiceStatus _status;
         #endregion
 
         #region Protected Properties
@@ -55,20 +55,19 @@ namespace Guppy
 
         public ServiceStatus Status
         {
-            get => _serviceStatus;
-            set => this.OnStatus[value].InvokeIf(value != _serviceStatus, this, ref _serviceStatus, value);
+            get => _status;
+            set => this.OnStatusChanged.InvokeIf(value != _status, this, ref _status, value);
         }
         #endregion
 
         #region Events
-        public Dictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>> OnStatus { get; private set; }
+        public event OnChangedEventDelegate<IService, ServiceStatus> OnStatusChanged;
         #endregion
 
         #region Lifecycle Methods
         void IService.TryPreCreate(GuppyServiceProvider provider)
         {
             this.log = provider.GetService<ILog>(Guppy.Core.Constants.ServiceConfigurationKeys.ILog);
-            this.OnStatus = DictionaryHelper.BuildEnumDictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>>();
 
             if (this.ValidateStatus(ServiceStatus.NotCreated))
             {
@@ -159,10 +158,7 @@ namespace Guppy
 
                 this.Status = ServiceStatus.NotCreated;
 
-                this.OnStatus.Clear();
-
-                this.OnStatus = null;
-                this.log = null;
+                this.log = default;
             }
         }
 

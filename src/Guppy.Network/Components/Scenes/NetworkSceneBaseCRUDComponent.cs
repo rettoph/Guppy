@@ -24,37 +24,25 @@ namespace Guppy.Network.Components.Scenes
         #region Lifecycle Methods
         protected override void Initialize(GuppyServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
             this.provider = provider;
             this.networkEntities = provider.GetService<NetworkEntityList>();
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
-            this.Entity.OnStatus[ServiceStatus.Releasing] += this.HandleEntityReleasing;
+            this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity].OnRead += this.ReadCreateNetworkEntityMessage;
+            this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.PingNetworkEntity].OnRead += this.ReadPingNetworkEntityMessage;
+            this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity].OnRead += this.ReadDeleteNetworkEntityMessage;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
-            this.Entity.OnStatus[ServiceStatus.Releasing] -= this.HandleEntityReleasing;
-
-            this.provider = default;
-        }
-
-        private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity].OnRead += this.ReadCreateNetworkEntityMessage;
-            this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.PingNetworkEntity].OnRead += this.ReadPingNetworkEntityMessage;
-            this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity].OnRead += this.ReadDeleteNetworkEntityMessage;
-        }
-
-        private void HandleEntityReleasing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
             this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity].OnRead -= this.ReadCreateNetworkEntityMessage;
             this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.PingNetworkEntity].OnRead -= this.ReadPingNetworkEntityMessage;
             this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity].OnRead -= this.ReadDeleteNetworkEntityMessage;
+
+            this.provider = default;
         }
         #endregion
 

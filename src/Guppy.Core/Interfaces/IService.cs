@@ -18,7 +18,7 @@ namespace Guppy.Interfaces
         #endregion
 
         #region Events
-        Dictionary<ServiceStatus, OnChangedEventDelegate<IService, ServiceStatus>> OnStatus { get; }
+        event OnChangedEventDelegate<IService, ServiceStatus> OnStatusChanged;
         #endregion
 
         #region Lifecycle Methods

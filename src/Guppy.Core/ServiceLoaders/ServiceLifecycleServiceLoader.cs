@@ -9,6 +9,9 @@ using System.Linq;
 using System.Text;
 using Guppy.Enums;
 using Guppy.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.Actions;
+using Guppy.DependencyInjection.ServiceConfigurations;
+using System.Reflection;
 
 namespace Guppy.ServiceLoaders
 {
@@ -19,7 +22,7 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterBuilder<IService>((s, p, sd) =>
             {
-                s.OnStatus[ServiceStatus.NotInitialized] += this.HandleServiceNotReady;
+                s.OnStatusChanged += this.HandleServiceStatusChanged;
             }, Guppy.Core.Constants.Priorities.Create);
 
             services.RegisterBuilder<IService>((s, p, sd) => s.TryPreCreate(p) , Guppy.Core.Constants.Priorities.PreCreate);
@@ -31,15 +34,26 @@ namespace Guppy.ServiceLoaders
                 s.ServiceConfiguration = sd;
             }, Int32.MinValue);
 
-            services.RegisterSetup<IService>((s, p, sd) => s.TryPreInitialize(p) , Guppy.Core.Constants.Priorities.PreInitialize);
-            services.RegisterSetup<IService>((s, p, sd) => s.TryInitialize(p)    , Guppy.Core.Constants.Priorities.Initialize);
-            services.RegisterSetup<IService>((s, p, sd) => s.TryPostInitialize(p), Guppy.Core.Constants.Priorities.PostInitialize);
+            services.RegisterSetup<IService>((s, p, sd) => s.TryPreInitialize(p) , Guppy.Core.Constants.Priorities.PreInitialize, this.SkipInitializationFilter);
+            services.RegisterSetup<IService>((s, p, sd) => s.TryInitialize(p)    , Guppy.Core.Constants.Priorities.Initialize, this.SkipInitializationFilter);
+            services.RegisterSetup<IService>((s, p, sd) => s.TryPostInitialize(p), Guppy.Core.Constants.Priorities.PostInitialize, this.SkipInitializationFilter);
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)
         {
             // 
         }
+
+        #region Filters
+        private bool SkipInitializationFilter(IAction<ServiceConfigurationKey, IServiceConfiguration> action, ServiceConfigurationKey key)
+        {
+            foreach (Type type in key.Type.GetInterfaces().Concat(key.Type))
+                if (type.GetCustomAttribute<ManualInitializationAttribute>(inherit: true)?.Value ?? false)
+                    return false;
+
+            return true;
+        }
+        #endregion
 
         #region Event Handlers
         /// <summary>
@@ -49,10 +63,19 @@ namespace Guppy.ServiceLoaders
         /// <param name="sender"></param>
         /// <param name="old"></param>
         /// <param name="value"></param>
-        private void HandleServiceNotReady(IService sender, ServiceStatus old, ServiceStatus value)
+        private void HandleServiceStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            if(old == ServiceStatus.PostReleasing)
-                sender.ServiceConfiguration.TypeFactory.TryReturnToPool(sender);
+            switch(value)
+            {
+                case ServiceStatus.NotInitialized:
+                    if (old == ServiceStatus.PostReleasing)
+                        if (!sender.ServiceConfiguration.TypeFactory.TryReturnToPool(sender))
+                            sender.TryDispose();
+                    break;
+                case ServiceStatus.Disposing:
+                    sender.OnStatusChanged -= this.HandleServiceStatusChanged;
+                    break;
+            }
         }
         #endregion
     }

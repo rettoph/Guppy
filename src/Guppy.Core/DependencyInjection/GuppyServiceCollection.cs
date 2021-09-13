@@ -18,7 +18,6 @@ namespace Guppy.DependencyInjection
         IList<ComponentFilter>
     {
         #region Private Fields
-        private List<ServiceDescriptor> _serviceDescriptors;
         private List<TypeFactoryDto> _typeFactoryDescriptors;
         private List<BuilderAction> _builderActions;
         private List<ServiceConfigurationDto> _serviceConfigurationDescriptors;
@@ -39,7 +38,6 @@ namespace Guppy.DependencyInjection
         #region Constrcutors
         internal GuppyServiceCollection()
         {
-            _serviceDescriptors = new List<ServiceDescriptor>();
             _typeFactoryDescriptors = new List<TypeFactoryDto>();
             _builderActions = new List<BuilderAction>();
             _serviceConfigurationDescriptors = new List<ServiceConfigurationDto>();

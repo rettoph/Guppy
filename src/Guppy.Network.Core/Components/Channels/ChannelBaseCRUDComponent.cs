@@ -20,28 +20,19 @@ namespace Guppy.Network.Components.Channels
     class ChannelBaseCRUDComponent : Component<IChannel>
     {
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
-            this.Entity.OnStatus[ServiceStatus.Initializing] += this.HandleEntityInitializing;
+            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
+            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.UpdateNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
+            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.PingNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
+            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
         }
 
         protected override void Release()
         {
             base.Release();
-
-            this.Entity.OnStatus[ServiceStatus.Initializing] -= this.HandleEntityInitializing;
-        }
-        #endregion
-
-        #region
-        private void HandleEntityInitializing(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
-            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.UpdateNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
-            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.PingNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalUnreliableDefault);
-            this.Entity.Messages.Add(Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity, Guppy.Network.Constants.MessageContexts.InternalReliableDefault);
         }
         #endregion
     }

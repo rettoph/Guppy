@@ -42,7 +42,7 @@ namespace Guppy.DependencyInjection.TypeFactories
         /// its relevant pool.
         /// </summary>
         /// <param name="instance"></param>
-        void TryReturnToPool(Object instance);
+        Boolean TryReturnToPool(Object instance);
 
         /// <summary>
         /// Construct a new instance of current type. Optionally use

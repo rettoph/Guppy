@@ -21,18 +21,18 @@ namespace Guppy.Network.Components.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(GuppyServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PreInitialize(provider);
 
             provider.Service(out _layerables);
 
             this.Entity.OnCreated += this.HandleItemCreated;
         }
 
-        protected override void Release()
+        protected override void PostRelease()
         {
-            base.Release();
+            base.PostRelease();
 
             this.Entity.OnCreated -= this.HandleItemCreated;
         }
