@@ -61,7 +61,7 @@ namespace Guppy.ServiceLoaders
             {
                 switch (value)
                 {
-                    case ServiceStatus.PreReleasing:
+                    case ServiceStatus.Releasing:
                         entity.Components.TryRelease();
                         break;
                     case ServiceStatus.Disposing:

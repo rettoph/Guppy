@@ -686,6 +686,17 @@ namespace Guppy.DependencyInjection
         /// Registers a new transient ServiceConfiguration.
         /// </summary>
         /// <typeparam name="TKey">The primary lookup key type for the current service configuration.</typeparam>
+        /// <param name="baseCacheKey">The minimum cache key. All ancestors between <paramref name="baseCacheKey"/> and <paramref name="key"/> will be used as <see cref="ServiceConfigurationDto.CacheKeys"/>.</param>
+        /// <param name="priority">The priority value for this specific descriptor. All services will be sorted by priority when their the service provider is created.</param>
+        public void RegisterTransient<TKey>(
+            ServiceConfigurationKey baseCacheKey,
+            Int32 priority = 0)
+                => this.RegisterServiceConfiguration<TKey>(ServiceLifetime.Transient, default, baseCacheKey, priority);
+
+        /// <summary>
+        /// Registers a new transient ServiceConfiguration.
+        /// </summary>
+        /// <typeparam name="TKey">The primary lookup key type for the current service configuration.</typeparam>
         /// <param name="typeFactory">The <see cref="ITypeFactory.Type"/> to be used when building a new instance of this service.</param>
         /// <param name="priority">The priority value for this specific descriptor. All services will be sorted by priority when their the service provider is created.</param>
         public void RegisterTransient<TKey>(

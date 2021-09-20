@@ -27,14 +27,16 @@ namespace Guppy.Utilities
         #region Helper Methods
         internal void BuildDictionary(IEnumerable<IComponent> components)
         {
-            _components = components.ToDictionary(
-                keySelector: c => c.ServiceConfiguration.Key,
-                elementSelector: c => c);
+            _components = new Dictionary<ServiceConfigurationKey, IComponent>(
+                components.SelectMany(static component => component.ServiceConfiguration.DefaultCacheKeys
+                    .Select(key => new KeyValuePair<ServiceConfigurationKey, IComponent>(key, component))
+                )
+            );
         }
 
         internal void Do(Action<IComponent> action)
         {
-            foreach (IComponent component in _components.Values)
+            foreach (IComponent component in _components.Values.Distinct())
                 action(component);
         }
         #endregion
