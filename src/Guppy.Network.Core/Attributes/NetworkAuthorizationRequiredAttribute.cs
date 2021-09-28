@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.Network.Attributes
 {
-    public class NetworkAuthorizationRequiredAttribute : Attribute
+    public sealed class NetworkAuthorizationRequiredAttribute : Attribute
     {
         public readonly NetworkAuthorization NetworkAuthorization;
 

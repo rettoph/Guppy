@@ -16,7 +16,7 @@ namespace Guppy.Network.Components
     /// when the driven item connects to a remote peer
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class RemoteHostComponent<TEntity> : Component<TEntity>
+    public class NetworkComponent<TEntity> : Component<TEntity>
         where TEntity : class, IEntity
     {
         #region Private Fields
@@ -25,8 +25,8 @@ namespace Guppy.Network.Components
         #endregion
 
         #region Protected Fields 
-        protected HostType initialHostType => _initialHostType;
-        protected NetworkAuthorization initialNetworkAuthorization => _initialNetworkAuthorization;
+        protected HostType hostType => _initialHostType;
+        protected NetworkAuthorization networkAuthorization => _initialNetworkAuthorization;
         #endregion
 
         #region Lifecycle Methods

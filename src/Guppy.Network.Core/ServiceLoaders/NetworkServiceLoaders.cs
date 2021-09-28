@@ -32,13 +32,18 @@ namespace Guppy.Network.ServiceLoaders
             #region Settings Setup
             services.RegisterSetup<Settings>((s, p, c) =>
             { // Configure the default settings...
-                s.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
-                s.Set<HostType>(HostType.Remote);
+                s.Set<NetworkAuthorization>(NetworkAuthorization.Master);
+                s.Set<HostType>(HostType.Local);
             }, -10);
 
-            services.RegisterSetup<ServerPeer>((server, p, c) =>
+            services.RegisterSetup<IPeer>((server, p, c) =>
             {
-                p.Settings.Set<NetworkAuthorization>(NetworkAuthorization.Master);
+                p.Settings.Set<HostType>(HostType.Remote);
+            });
+
+            services.RegisterSetup<ClientPeer>((server, p, c) =>
+            {
+                p.Settings.Set<NetworkAuthorization>(NetworkAuthorization.Slave);
             });
             #endregion
 
@@ -100,7 +105,7 @@ namespace Guppy.Network.ServiceLoaders
             services.RegisterComponent<NetworkEntityPipeComponent, INetworkEntity>();
 
             services.RegisterComponentFilter(
-                ServiceConfigurationKey.From(type: typeof(RemoteHostComponent<>)),
+                ServiceConfigurationKey.From(type: typeof(NetworkComponent<>)),
                 (e, p, t) =>
                 {
                     return t.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>().NetworkAuthorization
@@ -109,6 +114,19 @@ namespace Guppy.Network.ServiceLoaders
                 (cc) =>
                 {
                     var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>() != default;
+                    return hasAttribute;
+                });
+
+            services.RegisterComponentFilter(
+                ServiceConfigurationKey.From(type: typeof(NetworkComponent<>)),
+                (e, p, t) =>
+                {
+                    return t.GetCustomAttribute<HostTypeRequiredAttribute>().HostType
+                        == p.Settings.Get<HostType>();
+                },
+                (cc) =>
+                {
+                    var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<HostTypeRequiredAttribute>() != default;
                     return hasAttribute;
                 });
             #endregion

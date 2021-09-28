@@ -14,7 +14,7 @@ using Guppy.Network.Interfaces;
 
 namespace Guppy.Network.Components.Scenes
 {
-    internal class NetworkSceneBaseCRUDComponent : RemoteHostComponent<NetworkScene>
+    internal class NetworkSceneBaseCRUDComponent : NetworkComponent<NetworkScene>
     {
         #region Protected Fields
         protected GuppyServiceProvider provider { get; private set; }

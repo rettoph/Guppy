@@ -38,7 +38,7 @@ namespace Guppy.Network.Extensions.Lidgren
         }
         public static Boolean WriteExists(this NetOutgoingMessage om, Object value)
         {
-            if (value == null)
+            if (value is null)
             {
                 om.Write(false);
                 return false;

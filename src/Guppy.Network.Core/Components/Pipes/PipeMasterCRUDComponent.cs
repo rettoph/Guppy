@@ -15,7 +15,7 @@ using System.Text;
 namespace Guppy.Network.Components.Scenes
 {
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal sealed class PipeMasterCRUDComponent : RemoteHostComponent<IPipe>
+    internal sealed class PipeMasterCRUDComponent : NetworkComponent<IPipe>
     {
         #region Lifecycle Methods
         protected override void Initialize(GuppyServiceProvider provider)

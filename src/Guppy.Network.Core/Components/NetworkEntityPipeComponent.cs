@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Network.Components
 {
-    internal sealed class NetworkEntityPipeComponent : RemoteHostComponent<INetworkEntity>
+    internal sealed class NetworkEntityPipeComponent : NetworkComponent<INetworkEntity>
     {
         #region Private Fields
         private Boolean _setPipe;

@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Guppy.Network.Components
 {
-    internal sealed class NetworkEntityCRUDComponent : RemoteHostComponent<INetworkEntity>
+    internal sealed class NetworkEntityCRUDComponent : NetworkComponent<INetworkEntity>
     {
         #region Private Fields
         private NetworkScene _scene;
