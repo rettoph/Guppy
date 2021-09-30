@@ -32,8 +32,7 @@ namespace Guppy.Network.Utilities
             {
                 if (this.ShouldBroadcast())
                 {
-                    NetOutgoingMessage om = this.Entity.Messages[messageType].Create(this.Entity.Pipe);
-                    this.Cleaner(om);
+                    this.Entity.Messages[messageType].Create(this.Cleaner, this.Entity.Pipe);
 
                     return true;
                 }

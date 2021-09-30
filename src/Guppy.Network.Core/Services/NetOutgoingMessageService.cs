@@ -53,12 +53,13 @@ namespace Guppy.Network.Services
         #endregion
 
         #region Helper Methods
-        public NetOutgoingMessage CreateMessage(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+        public void CreateMessage(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
         {
             var container = new NetOutgoingMessageContainer(context, _peer.CreateMessage(), recipients);
-            _containers.Enqueue(container);
 
-            return container.Message;
+            writer(container.Message);
+
+            _containers.Enqueue(container);
         }
 
         public void Flush()

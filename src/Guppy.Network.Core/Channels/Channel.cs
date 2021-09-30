@@ -103,8 +103,8 @@ namespace Guppy.Network.Channels
         protected virtual void DefaultMessageSigner(NetOutgoingMessage om)
             => (this as IChannel).SignMessage(om);
 
-        protected virtual NetOutgoingMessage DefaultMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
-            => _outgoingMessages.CreateMessage(context, recipients);
+        protected virtual void DefaultMessageFactory(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+            => _outgoingMessages.CreateMessage(writer, context, recipients);
         #endregion
     }
 }

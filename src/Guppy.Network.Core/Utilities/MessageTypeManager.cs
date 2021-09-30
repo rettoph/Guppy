@@ -1,5 +1,6 @@
 ﻿using Guppy.Events.Delegates;
 using Guppy.Network.Contexts;
+using Guppy.Network.Delegates;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Lists;
 using Lidgren.Network;
@@ -12,7 +13,7 @@ namespace Guppy.Network.Utilities
     public sealed class MessageTypeManager
     {
         #region Private Fields
-        private Func<NetOutgoingMessageContext, IEnumerable<NetConnection>, NetOutgoingMessage> _factory;
+        private MessageFactoryDelegate _factory;
         private Action<NetOutgoingMessage> _signer;
         #endregion
 
@@ -27,7 +28,7 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Constructors
-        public MessageTypeManager(UInt32 id, Func<NetOutgoingMessageContext, IEnumerable<NetConnection>, NetOutgoingMessage> factory, Action<NetOutgoingMessage> signer, NetOutgoingMessageContext defaultContext = null)
+        public MessageTypeManager(UInt32 id, MessageFactoryDelegate factory, Action<NetOutgoingMessage> signer, NetOutgoingMessageContext defaultContext = null)
         {
             this.Id = id;
             this.DefaultContext = defaultContext;
@@ -48,47 +49,56 @@ namespace Guppy.Network.Utilities
             this.OnRead?.Invoke(this, im);
         }
 
+
         /// <summary>
-        /// Create & return a new <see cref="NetOutgoingMessage"/> instance configured 
+        /// Create and write a new <see cref="NetOutgoingMessage"/> instance configured 
+        /// for the current message type, signed, and enqueue to be sent.
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="context"></param>
+        /// <param name="recipients">A list of connections who should be reciving the current message.</param>
+        public void Create(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+        {
+            void SignAndWrite(NetOutgoingMessage om)
+            {
+                _signer(om);
+                om.Write(this.Id);
+
+                this.TryWrite(om);
+
+                writer(om);
+            }
+
+            _factory(SignAndWrite, context, recipients);
+        }
+
+        /// <summary>
+        /// Create and write a new <see cref="NetOutgoingMessage"/> instance configured 
         /// for the current message type, signed, and enqueue to be sent.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
-        /// <returns></returns>
-        public NetOutgoingMessage Create(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+        public void Create(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
         {
-            var message = _factory(context, recipients);
-            _signer(message);
-            message.Write(this.Id);
+            void SignAndWrite(NetOutgoingMessage om)
+            {
+                _signer(om);
+                om.Write(this.Id);
 
-            this.TryWrite(message);
+                this.TryWrite(om);
+            }
 
-            return message;
+            _factory(SignAndWrite, context, recipients);
         }
+
         /// <summary>
         /// Create & return a new <see cref="NetOutgoingMessage"/> instance configured 
         /// for the current message type & enqueue to be sent.
         /// </summary>
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
         /// <returns></returns>
-        public NetOutgoingMessage Create(IEnumerable<NetConnection> recipients)
+        public void Create(IEnumerable<NetConnection> recipients)
             => this.Create(this.DefaultContext, recipients);
-
-
-        /// <summary>
-        /// <para>Create a new <see cref="NetOutgoingMessage"/> instance configured 
-        /// for the current message type, invoke the custom writer, then
-        /// enqueue to be sent.</para>
-        /// 
-        /// <para>Note, the recieving <see cref="MessageTypeManager"/> must still be configured to process
-        /// the incoming message.</para>
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="writer"></param>
-        /// <param name="recipients">A list of connections who should be reciving the current message.</param>
-        /// <returns></returns>
-        public void Create(NetOutgoingMessageContext context, Action<NetOutgoingMessage> writer, IEnumerable<NetConnection> recipients)
-            => writer(this.Create(context, recipients));
 
         /// <summary>
         /// <para>Create a new <see cref="NetOutgoingMessage"/> instance configured 
@@ -102,7 +112,7 @@ namespace Guppy.Network.Utilities
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
         /// <returns></returns>
         public void Create(Action<NetOutgoingMessage> writer, IEnumerable<NetConnection> recipients)
-            => this.Create(this.DefaultContext, writer, recipients);
+            => this.Create(writer, this.DefaultContext, recipients);
 
         /// <summary>
         /// Create & return a new <see cref="NetOutgoingMessage"/> instance configured 
@@ -111,8 +121,8 @@ namespace Guppy.Network.Utilities
         /// <param name="context"></param>
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
         /// <returns></returns>
-        public NetOutgoingMessage Create(NetOutgoingMessageContext context, IPipe recipients)
-            => Create(context, recipients.Users.Connections);
+        public void Create(NetOutgoingMessageContext context, IPipe recipients)
+            => this.Create(context, recipients.Users.Connections);
 
         /// <summary>
         /// Create & return a new <see cref="NetOutgoingMessage"/> instance configured 
@@ -120,7 +130,7 @@ namespace Guppy.Network.Utilities
         /// </summary>
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
         /// <returns></returns>
-        public NetOutgoingMessage Create(IPipe recipients)
+        public void Create(IPipe recipients)
             => this.Create(this.DefaultContext, recipients.Users.Connections);
 
 
@@ -136,8 +146,8 @@ namespace Guppy.Network.Utilities
         /// <param name="writer"></param>
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
         /// <returns></returns>
-        public void Create(NetOutgoingMessageContext context, Action<NetOutgoingMessage> writer, IPipe recipients)
-            => writer(this.Create(context, recipients.Users.Connections));
+        public void Create(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IPipe recipients)
+            => this.Create(writer, context, recipients.Users.Connections);
 
         /// <summary>
         /// <para>Create a new <see cref="NetOutgoingMessage"/> instance configured 
@@ -151,7 +161,7 @@ namespace Guppy.Network.Utilities
         /// <param name="recipients">A list of connections who should be reciving the current message.</param>
         /// <returns></returns>
         public void Create(Action<NetOutgoingMessage> writer, IPipe recipients)
-            => this.Create(this.DefaultContext, writer, recipients.Users.Connections);
+            => this.Create(writer, this.DefaultContext, recipients.Users.Connections);
         #endregion
     }
 }

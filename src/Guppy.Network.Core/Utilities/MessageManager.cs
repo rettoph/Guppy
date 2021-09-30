@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Contexts;
+using Guppy.Network.Delegates;
 using Guppy.Network.Interfaces;
 using Lidgren.Network;
 using System;
@@ -15,7 +16,7 @@ namespace Guppy.Network.Utilities
 
         #region Public Properties
         public Action<NetOutgoingMessage> Signer { get; set; }
-        public Func<NetOutgoingMessageContext, IEnumerable<NetConnection>, NetOutgoingMessage> DefaultFactory { get; set; }
+        public MessageFactoryDelegate DefaultFactory { get; set; }
         #endregion
 
         #region Public Properties
@@ -36,7 +37,7 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Helper Methods
-        public void Add(UInt32 messageType, NetOutgoingMessageContext defaultContext = null, Func<NetOutgoingMessageContext, IEnumerable<NetConnection>, NetOutgoingMessage> factory = null)
+        public void Add(UInt32 messageType, NetOutgoingMessageContext defaultContext = null, MessageFactoryDelegate factory = null)
         {
             _messageTypes.Add(messageType, new MessageTypeManager(messageType, factory ?? this.DefaultFactory, this.Signer, defaultContext));
         }

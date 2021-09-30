@@ -78,10 +78,11 @@ namespace Guppy.Network
         /// Defines a default implementation for all messages created through the
         /// <see cref="INetworkService"/> instance's <see cref="Messages"/>.
         /// </summary>
+        /// <param name="writer"></param>
         /// <param name="context"></param>
         /// <param name="recipients"></param>
         /// <returns></returns>
-        protected virtual NetOutgoingMessage DefaultMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+        protected virtual void DefaultMessageFactory(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
         {
             throw new NotImplementedException();
         }

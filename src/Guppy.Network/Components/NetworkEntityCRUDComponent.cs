@@ -49,20 +49,21 @@ namespace Guppy.Network.Components
         #endregion
 
         #region Message Factories
-        private NetOutgoingMessage CreateMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
-            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity].Create(context, recipients).Then(om =>
+        private void CreateMessageFactory(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity].Create(om =>
             {
                 om.Write(this.Entity.ServiceConfiguration.Key.Id);
-            });
-        
-        private NetOutgoingMessage UpdateMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
-            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.UpdateNetworkEntity].Create(context, recipients);
-        
-        private NetOutgoingMessage PingMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
-            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.PingNetworkEntity].Create(context, recipients);
-        
-        private NetOutgoingMessage DeleteMessageFactory(NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
-            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity].Create(context, recipients);
+                writer(om);
+            }, context, recipients);
+
+        private void UpdateMessageFactory(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.UpdateNetworkEntity].Create(writer, context, recipients);
+
+        private void PingMessageFactory(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.PingNetworkEntity].Create(writer, context, recipients);
+
+        private void DeleteMessageFactory(Action<NetOutgoingMessage> writer, NetOutgoingMessageContext context, IEnumerable<NetConnection> recipients)
+            => _scene.Channel.Messages[Guppy.Network.Constants.Messages.Channel.DeleteNetworkEntity].Create(writer, context, recipients);
         #endregion
     }
 }
