@@ -42,7 +42,7 @@ namespace Guppy.IO.Services
         {
             base.PostInitialize(provider);
 
-            this.TryStart();
+            this.TryStartAsync();
         }
 
         protected override void Release()

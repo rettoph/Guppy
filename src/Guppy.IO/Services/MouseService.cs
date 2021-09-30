@@ -80,7 +80,7 @@ namespace Guppy.IO.Services
             base.PostInitialize(provider);
 
             // Start the async mouse updater...
-            this.TryStart();
+            this.TryStartAsync();
         }
 
         protected override void Release()

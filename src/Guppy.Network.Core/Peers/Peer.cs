@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Guppy.Network.Peers
 {
@@ -25,7 +27,8 @@ namespace Guppy.Network.Peers
         private ILog _log;
         private NetOutgoingMessageService _outgoing;
         private NetPeer _peer;
-        private NetIncomingMessage _im;        
+        private NetIncomingMessage _im;
+        private CancellationTokenSource _tokenSource;
         #endregion
 
         #region Public Properties
@@ -131,9 +134,44 @@ namespace Guppy.Network.Peers
 
         #region Helper Methods
         /// <inheritdoc />
-        public void Start()
+        public void Start(Int32? updateIntervalMilliseconds = null)
         {
             _peer.Start();
+
+            if(updateIntervalMilliseconds is not null)
+            {
+                _tokenSource = new CancellationTokenSource();
+                CancellationToken token = _tokenSource.Token;
+
+                Task task = new Task(() =>
+                {
+                    this.log.Verbose($"{nameof(Peer)}::{nameof(Start)} - Starting Auto Incrememnt loop.");
+
+                    while(true)
+                    {
+                        this.TryUpdate();
+
+                        Task.Delay(updateIntervalMilliseconds.Value);
+
+                        if(token.IsCancellationRequested)
+                        {
+                            this.log.Verbose($"{nameof(Peer)}::{nameof(Start)} - Cancelation requested. Attempting to stop.");
+
+                            break;
+                        }
+                    }
+
+                    this.log.Verbose($"{nameof(Peer)}::{nameof(Start)} - Cancelation successful. Loop broken.");
+                }, token);
+
+                task.Start();
+            }
+        }
+
+        /// <inheritdoc />
+        public virtual void Stop()
+        {
+            _tokenSource.Cancel();
         }
 
         /// <inheritdoc />

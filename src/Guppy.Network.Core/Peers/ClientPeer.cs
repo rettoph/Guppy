@@ -55,6 +55,13 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Methods
+        public override void Stop()
+        {
+            base.Stop();
+
+            _client.Disconnect("Goodbye.");
+        }
+
         public void TryConnect(String host, Int32 port, params Claim[] claims)
         {
             var user = this.CreateUser(claims);

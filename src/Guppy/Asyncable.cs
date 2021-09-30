@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Utilities;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Guppy
 {
@@ -13,79 +15,60 @@ namespace Guppy
     public class Asyncable : Frameable
     {
         private Boolean _draw;
-        private Boolean _running;
-        private DateTime _last;
-        private DateTime _now;
-        private DateTime _start;
-        private GameTime _gameTime;
-        private Int32 _period;
-        private Thread _loop;
+        private CancellationTokenSource _cancelation;
+        private Task _loop;
 
         /// <summary>
         /// Whether or not the current Asyncable instance is
         /// running in another thread.
         /// </summary>
-        public Boolean Running => _running;
+        public Boolean Running => !_cancelation.IsCancellationRequested;
 
         protected override void Release()
         {
             base.Release();
 
-            if (_running)
-                this.TryStop();
+            if (!_cancelation.IsCancellationRequested)
+                this.TryStopAsync();
         }
 
-        public void TryStart(Boolean draw = false, Int32 period = 10)
+        public async Task TryStartAsync(Boolean draw = false, Int32 period = 10)
         {
-            if (_running)
+            if (_cancelation?.IsCancellationRequested ?? false)
                 throw new Exception("Unable to start Asyncable, already running.");
 
-            this.Start(draw, period);
+            await this.StartAsync(draw, period);
         }
 
-        protected virtual void Start(Boolean draw, Int32 period)
+        protected virtual async Task StartAsync(Boolean draw, Int32 period)
         {
-            _draw = draw;
-            _period = period;
+            _loop = TaskHelper.CreateLoop(this.Frame, period, out _cancelation);
 
-            _loop = new Thread(new ThreadStart(this.Loop));
-            _loop.Start();
+            await _loop;
         }
 
-        public void TryStop()
+        public async Task TryStopAsync()
         {
-            if (!_running)
-                throw new Exception("Unable to stop Asyncable, not running.");
+            if (_cancelation.IsCancellationRequested)
+                throw new Exception("Unable to stop Asyncable, cancelation has already been requested.");
 
-            this.Stop();
+            await this.StopAsync();
         }
 
-        protected virtual void Stop()
+        protected virtual async Task StopAsync()
         {
-            _running = false;
+            _cancelation.Cancel();
+
+            await _loop;
         }
 
-        private void Loop()
+        private void Frame(GameTime gameTime)
         {
-            _running = true;
-            _start = DateTime.Now;
-            _now = DateTime.Now;
-
-            while(_running)
-            {
-                Thread.Sleep(_period);
-
-                _last = _now;
-                _now = DateTime.Now;
-
-                _gameTime = new GameTime(_now - _start, _now - _last);
-
-                this.TryUpdate(_gameTime);
+            this.TryUpdate(gameTime);
 
 
-                if (_draw)
-                    this.TryDraw(_gameTime);
-            }
+            if (_draw)
+                this.TryDraw(gameTime);
         }
     }
 }

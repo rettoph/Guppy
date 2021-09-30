@@ -48,11 +48,17 @@ namespace Guppy.Network.Interfaces
 
         #region Methods
         /// <summary>
-        /// Start the current <see cref="IPeer"/> & its underlying <see cref="NetPeer"/>.
+        /// <para>Start the current <see cref="IPeer"/> & its underlying <see cref="NetPeer"/>.
         /// This will automatically update the peer asynchronously. Note, IChannel instances
-        /// must be manually updated still.
+        /// must be manually updated still.</para>
         /// </summary>
-        void Start();
+        /// <param name="updateIntervalMilliseconds">If you want to asyncronously update the peer, input a value here. This will automatically start a task to auto update the peer.</param>
+        void Start(Int32? updateIntervalMilliseconds = null);
+
+        /// <summary>
+        /// Stop the current peer. If applicable the async update loop will be stopped as well.
+        /// </summary>
+        void Stop();
 
         /// <summary>
         /// Create a new unattached user with the recieved claims.
