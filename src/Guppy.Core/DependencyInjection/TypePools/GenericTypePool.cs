@@ -58,6 +58,6 @@ namespace Guppy.DependencyInjection.TypePools
         }
 
         public Int32 Count()
-            => _pool.Count();
+            => throw new InvalidOperationException();
     }
 }

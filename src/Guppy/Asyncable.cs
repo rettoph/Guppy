@@ -1,4 +1,5 @@
 ﻿using Guppy.Utilities;
+using Guppy.Utilities.Threading;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,9 @@ namespace Guppy
 
         protected virtual async Task StartAsync(Boolean draw, Int32 period)
         {
-            _loop = TaskHelper.CreateLoop(this.Frame, period, out _cancelation);
+            _cancelation = new CancellationTokenSource();
+
+            _loop = TaskHelper.CreateLoop(this.Frame, period, _cancelation.Token);
 
             await _loop;
         }

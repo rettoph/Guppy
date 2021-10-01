@@ -17,6 +17,7 @@ using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using System.Threading;
 using System.Threading.Tasks;
+using Guppy.Utilities.Threading;
 
 namespace Guppy.Network.Peers
 {
@@ -28,7 +29,9 @@ namespace Guppy.Network.Peers
         private NetOutgoingMessageService _outgoing;
         private NetPeer _peer;
         private NetIncomingMessage _im;
+
         private CancellationTokenSource _tokenSource;
+        private Task _loop;
         #endregion
 
         #region Public Properties
@@ -134,44 +137,29 @@ namespace Guppy.Network.Peers
 
         #region Helper Methods
         /// <inheritdoc />
-        public void Start(Int32? updateIntervalMilliseconds = null)
+        public async Task StartAsync(Int32? updateIntervalMilliseconds = null)
         {
             _peer.Start();
 
             if(updateIntervalMilliseconds is not null)
             {
                 _tokenSource = new CancellationTokenSource();
-                CancellationToken token = _tokenSource.Token;
 
-                Task task = new Task(() =>
+                _loop = TaskHelper.CreateLoop(gt =>
                 {
-                    this.log.Verbose($"{nameof(Peer)}::{nameof(Start)} - Starting Auto Incrememnt loop.");
+                    this.TryUpdate();
+                }, updateIntervalMilliseconds.Value, _tokenSource.Token);
 
-                    while(true)
-                    {
-                        this.TryUpdate();
-
-                        Task.Delay(updateIntervalMilliseconds.Value);
-
-                        if(token.IsCancellationRequested)
-                        {
-                            this.log.Verbose($"{nameof(Peer)}::{nameof(Start)} - Cancelation requested. Attempting to stop.");
-
-                            break;
-                        }
-                    }
-
-                    this.log.Verbose($"{nameof(Peer)}::{nameof(Start)} - Cancelation successful. Loop broken.");
-                }, token);
-
-                task.Start();
+                await _loop;
             }
         }
 
         /// <inheritdoc />
-        public virtual void Stop()
+        public virtual async Task StopAsync()
         {
             _tokenSource.Cancel();
+
+            await _loop;
         }
 
         /// <inheritdoc />

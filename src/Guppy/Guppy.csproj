@@ -13,6 +13,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
+    <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
   </ItemGroup>
 
   <ItemGroup>

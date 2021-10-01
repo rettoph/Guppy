@@ -8,6 +8,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Utilities;
+using Guppy.Threading.Utilities;
 
 namespace Guppy
 {
@@ -17,7 +18,7 @@ namespace Guppy
     public abstract class Game : Asyncable
     {
         #region Private Fields
-        private Synchronizer _synchronizer;
+        private ThreadQueue _threadQueue;
         private GuppyServiceProvider _provider;
         #endregion
 
@@ -31,7 +32,7 @@ namespace Guppy
             base.Initialize(provider);
 
             _provider = provider;
-            provider.Service(out _synchronizer);
+            provider.Service(Constants.ServiceConfigurationKeys.GameUpdateThreadQueue, out _threadQueue);
 
             this.Scenes = provider.GetService<SceneList>();
         }
@@ -40,8 +41,8 @@ namespace Guppy
         {
             base.Release();
 
-            _synchronizer.TryRelease();
-            _synchronizer = null;
+            _threadQueue.TryRelease();
+            _threadQueue = null;
         }
 
         protected override void PostDispose()
@@ -72,7 +73,7 @@ namespace Guppy
         {
             base.PostUpdate(gameTime);
 
-            _synchronizer.Flush(gameTime);
+            _threadQueue.Flush(gameTime);
         }
         #endregion
     }

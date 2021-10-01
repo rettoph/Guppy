@@ -30,6 +30,7 @@ namespace Guppy.Lists
         #region Private Fields
         private Dictionary<Guid, TService> _dictionary;
         private List<TService> _list;
+        private List<TService> _creating;
         #endregion
 
         #region Protected Fields
@@ -88,6 +89,7 @@ namespace Guppy.Lists
 
             _dictionary = new Dictionary<Guid, TService>();
             _list = new List<TService>();
+            _creating = new List<TService>();
         }
 
         protected override void PreInitialize(GuppyServiceProvider provider)
@@ -185,11 +187,15 @@ namespace Guppy.Lists
                 if (id.HasValue)
                     i.Id = id.Value;
 
+                // TODO: REMOVE NULL CHECK
                 setup?.Invoke(i, p, d);
+                _creating.Add(i);
 
                 this.OnCreated?.Invoke(i);
-                this.TryAdd(i);
             });
+
+            this.TryAdd(instance);
+            _creating.Remove(instance);
 
             return instance;
         }
@@ -246,7 +252,7 @@ namespace Guppy.Lists
             if (_dictionary.ContainsKey(id))
                 return _dictionary[id] as T;
 
-            return default(T);
+            return _creating.FirstOrDefault(i => i.Id == id) as T;
         }
         #endregion
     }

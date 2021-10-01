@@ -8,6 +8,9 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Utilities;
 using Guppy.Interfaces;
+using Guppy.Threading.Utilities;
+using Guppy.Utilities.Threading;
+using System.Threading;
 
 namespace Guppy
 {
@@ -15,7 +18,7 @@ namespace Guppy
     {
         #region Private Fields
         private GuppyServiceProvider _provider;
-        private Synchronizer _synchronizer;
+        private ThreadQueue _threadQueue;
         private IntervalInvoker _intervals;
         #endregion
 
@@ -30,13 +33,20 @@ namespace Guppy
             base.PreInitialize(provider);
 
             _provider = provider;
-            provider.Service(out _synchronizer);
+            provider.Service(Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue, out _threadQueue);
             provider.Service(out _intervals);
 
             this.Layers = provider.GetService<LayerList>();
             this.Layerables = provider.GetService<LayerableList>();
         }
 
+        protected override void PostInitialize(GuppyServiceProvider provider)
+        {
+            base.PostInitialize(provider);
+
+            var source = new CancellationTokenSource();
+            // TaskHelper.CreateLoop(this.TryUpdate, 16, source.Token);
+        }
 
         protected override void PreRelease()
         {
@@ -51,7 +61,7 @@ namespace Guppy
             base.Release();
 
             _provider = null;
-            _synchronizer = null;
+            _threadQueue = null;
             this.Layerables.TryRelease();
             this.Layers.TryRelease();
         }
@@ -78,7 +88,7 @@ namespace Guppy
         {
             base.PostUpdate(gameTime);
 
-            _synchronizer.Flush(gameTime);
+            _threadQueue.Flush(gameTime);
         }
         #endregion
     }

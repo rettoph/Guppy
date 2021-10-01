@@ -8,6 +8,7 @@ using Lidgren.Network;
 using Guppy.Network.Contexts;
 using Guppy.Network.Security;
 using Guppy.Interfaces;
+using System.Threading.Tasks;
 
 namespace Guppy.Network.Interfaces
 {
@@ -53,12 +54,12 @@ namespace Guppy.Network.Interfaces
         /// must be manually updated still.</para>
         /// </summary>
         /// <param name="updateIntervalMilliseconds">If you want to asyncronously update the peer, input a value here. This will automatically start a task to auto update the peer.</param>
-        void Start(Int32? updateIntervalMilliseconds = null);
+        Task StartAsync(Int32? updateIntervalMilliseconds = null);
 
         /// <summary>
         /// Stop the current peer. If applicable the async update loop will be stopped as well.
         /// </summary>
-        void Stop();
+        Task StopAsync();
 
         /// <summary>
         /// Create a new unattached user with the recieved claims.

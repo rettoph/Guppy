@@ -11,6 +11,7 @@ using Guppy.Network.Utilities;
 using Lidgren.Network;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Interfaces;
+using Guppy.Threading.Utilities;
 
 namespace Guppy.Network.Components.Scenes
 {
@@ -19,6 +20,7 @@ namespace Guppy.Network.Components.Scenes
         #region Protected Fields
         protected GuppyServiceProvider provider { get; private set; }
         protected NetworkEntityList networkEntities { get; private set; }
+        protected ThreadQueue sceneThread { get; private set; }
         #endregion
 
         #region Lifecycle Methods
@@ -28,6 +30,7 @@ namespace Guppy.Network.Components.Scenes
 
             this.provider = provider;
             this.networkEntities = provider.GetService<NetworkEntityList>();
+            this.sceneThread = provider.GetService<ThreadQueue>(Guppy.Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue);
 
             this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.CreateNetworkEntity].OnRead += this.ReadCreateNetworkEntityMessage;
             this.Entity.Channel.Messages[Guppy.Network.Constants.Messages.Channel.PingNetworkEntity].OnRead += this.ReadPingNetworkEntityMessage;
@@ -49,36 +52,45 @@ namespace Guppy.Network.Components.Scenes
         #region Message Handlers
         protected virtual void ReadCreateNetworkEntityMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            UInt32 keyId = im.ReadUInt32();
-            ServiceConfigurationKey key = this.provider.ServiceConfigurationKeys[keyId];
-            Guid entityId = im.ReadGuid();
-            INetworkEntity entity = this.networkEntities.GetById(entityId) ?? this.networkEntities.Create<INetworkEntity>(
-                key, 
-                (networkEntity, _, _) => 
-                {
-                    networkEntity.Messages.Read(im);
-                }, 
-                entityId);
+            this.sceneThread.Enqueue(_ =>
+            {
+                UInt32 keyId = im.ReadUInt32();
+                ServiceConfigurationKey key = this.provider.ServiceConfigurationKeys[keyId];
+                Guid entityId = im.ReadGuid();
+                INetworkEntity entity = this.networkEntities.GetById(entityId) ?? this.networkEntities.Create<INetworkEntity>(
+                    key,
+                    (networkEntity, _, _) =>
+                    {
+                        networkEntity.Messages.Read(im);
+                    },
+                    entityId);
+            });
         }
 
         private void ReadPingNetworkEntityMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            Guid entityId = im.ReadGuid();
-            INetworkEntity entity = this.networkEntities.GetById(entityId);
+            this.sceneThread.Enqueue(_ =>
+            {
+                Guid entityId = im.ReadGuid();
+                INetworkEntity entity = this.networkEntities.GetById(entityId);
 
-            entity?.Messages.Read(im);
+                entity?.Messages.Read(im);
+            });
         }
 
         private void ReadDeleteNetworkEntityMessage(MessageTypeManager sender, NetIncomingMessage im)
         {
-            Guid entityId = im.ReadGuid();
-            INetworkEntity entity = this.networkEntities.GetById(entityId);
+            this.sceneThread.Enqueue(_ =>
+            {
+                Guid entityId = im.ReadGuid();
+                INetworkEntity entity = this.networkEntities.GetById(entityId);
 
-            if (entity == default)
-                return;
+                if (entity == default)
+                    return;
 
-            entity.Messages.Read(im);
-            entity.TryRelease();
+                entity.Messages.Read(im);
+                entity.TryRelease();
+            });
         }
         #endregion
     }

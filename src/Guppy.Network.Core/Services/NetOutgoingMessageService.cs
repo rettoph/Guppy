@@ -64,9 +64,8 @@ namespace Guppy.Network.Services
 
         public void Flush()
         {
-            while(_containers.Any())
+            while(_containers.TryDequeue(out _container))
             {
-                _container = _containers.Dequeue();
                 _users.Clear();
                 _users.AddRange(_container.Recipients);
 

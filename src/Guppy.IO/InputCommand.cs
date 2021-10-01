@@ -6,6 +6,7 @@ using Guppy.IO.Contexts;
 using Guppy.IO.Services;
 using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
+using Guppy.Threading.Utilities;
 using Guppy.Utilities;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -31,7 +32,7 @@ namespace Guppy.IO
         private CommandService _commands;
         private InputButtonService _inputs;
         private InputButtonManager _inputManager;
-        private Synchronizer _synchronizer;
+        private ThreadQueue _threadQueue;
         #endregion
 
         #region Public Properties
@@ -79,7 +80,7 @@ namespace Guppy.IO
 
             provider.Service(out _commands);
             provider.Service(out _inputs);
-            provider.Service(out _synchronizer);
+            provider.Service(Constants.ServiceConfigurationKeys.GameUpdateThreadQueue, out _threadQueue);
         }
 
         protected override void Initialize(GuppyServiceProvider provider)
@@ -95,7 +96,7 @@ namespace Guppy.IO
 
             _commands = null;
             _inputs = null;
-            _synchronizer = null;
+            _threadQueue = null;
 
             this.ConfigureInput(null);
         }
@@ -146,7 +147,7 @@ namespace Guppy.IO
             if (this.Lockable && this.InputCommandService.Locked)
                 return;
 
-            _synchronizer.Enqueue(gt => _commands.Invoke(this.Commands[args.State]));
+            _threadQueue.Enqueue(gt => _commands.Invoke(this.Commands[args.State]));
         }
         #endregion
     }

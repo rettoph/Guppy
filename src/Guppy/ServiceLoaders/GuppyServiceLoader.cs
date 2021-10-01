@@ -7,6 +7,7 @@ using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Services;
 using Guppy.Utilities;
+using Guppy.Threading.Utilities;
 
 namespace Guppy.ServiceLoaders
 {
@@ -15,8 +16,9 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<Synchronizer>(p => new Synchronizer());
-            services.RegisterScoped<Synchronizer>();
+            services.RegisterTypeFactory<ThreadQueue>(p => new ThreadQueue());
+            services.RegisterSingleton(Constants.ServiceConfigurationKeys.GameUpdateThreadQueue, typeof(ThreadQueue));
+            services.RegisterScoped(Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue, typeof(ThreadQueue));
 
             services.RegisterTypeFactory<IntervalInvoker>(p => new IntervalInvoker());
             services.RegisterScoped<IntervalInvoker>();

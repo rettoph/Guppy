@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.Threading.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -15,6 +16,9 @@ namespace Guppy
             public static readonly ServiceConfigurationKey SceneBaseCacheKey = ServiceConfigurationKey.From<Scene>();
             public static readonly ServiceConfigurationKey TransientSpritebatch = ServiceConfigurationKey.From<SpriteBatch>("service:spritebatch:transient");
             public static readonly ServiceConfigurationKey TransientCamera = ServiceConfigurationKey.From<Camera2D>("service:camera:transient");
+
+            public static readonly ServiceConfigurationKey GameUpdateThreadQueue = ServiceConfigurationKey.From<ThreadQueue>(nameof(Game));
+            public static readonly ServiceConfigurationKey SceneUpdateThreadQueue = ServiceConfigurationKey.From<ThreadQueue>();
         }
     }
 }

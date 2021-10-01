@@ -9,60 +9,20 @@ namespace Guppy.DependencyInjection.TypePools
     /// <summary>
     /// Represents a pool of services.
     /// </summary>
-    public sealed class TypePool
+    public sealed class TypePool : Pool<Object>
     {
-        private Stack<Object> _pool;
-        private UInt16 _poolSize;
-        private UInt16 _maxPoolSize;
         private Type _type;
 
-        public TypePool(Type type, ref UInt16 maxPoolSize)
+        public TypePool(Type type, ref UInt16 maxPoolSize) : base(ref maxPoolSize)
         {
             _type = type;
-            _maxPoolSize = maxPoolSize;
-            _poolSize = 0;
-            _pool = new Stack<Object>();
         }
 
-        public Boolean Any()
-            => _pool.Any();
-
-        public Boolean TryPull(out Object instance)
-        {
-            if (this.Any())
-            {
-                instance = _pool.Pop();
-
-                _poolSize--;
-
-                return true;
-            }
-
-            instance = default;
-            return false;
-        }
-
-        /// <summary>
-        /// If the internal pool is not yet at max capacity,
-        /// return the recieved instance into the pool.
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        public Boolean TryReturn(Object instance)
+        public override Boolean TryReturn(Object instance)
         {
             ExceptionHelper.ValidateAssignableFrom(_type, instance.GetType());
 
-            if (_poolSize < _maxPoolSize)
-            {
-                _pool.Push(instance);
-                _poolSize++;
-                return true;
-            }
-
-            return false;
+            return base.TryReturn(instance);
         }
-
-        public Int32 Count()
-            => _pool.Count();
     }
 }

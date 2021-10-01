@@ -7,6 +7,7 @@ using Guppy.Network.Interfaces;
 using Guppy.Network.Security;
 using Lidgren.Network;
 using System;
+using System.Threading.Tasks;
 
 namespace Guppy.Network.Peers
 {
@@ -55,9 +56,9 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Methods
-        public override void Stop()
+        public override async Task StopAsync()
         {
-            base.Stop();
+            await base.StopAsync();
 
             _client.Disconnect("Goodbye.");
         }
