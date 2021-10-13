@@ -11,7 +11,7 @@ namespace Guppy.Threading.Utilities
     public class ThreadQueue : Service
     {
         #region Private Fields
-        private Queue<Action<GameTime>> _queue;
+        private ConcurrentQueue<Action<GameTime>> _queue;
         private Int32 _flushingThreadId;
         private GameTime _gameTime;
         #endregion
@@ -21,7 +21,7 @@ namespace Guppy.Threading.Utilities
         {
             base.PreInitialize(provider);
 
-            _queue = new Queue<Action<GameTime>>();
+            _queue = new ConcurrentQueue<Action<GameTime>>();
         }
         #endregion
 
@@ -36,6 +36,10 @@ namespace Guppy.Threading.Utilities
             if(Thread.CurrentThread.ManagedThreadId == _flushingThreadId)
             {
                 action(_gameTime);
+            }
+            else if (action is null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(action));
             }
             else
             {

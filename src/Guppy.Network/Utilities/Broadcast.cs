@@ -6,6 +6,7 @@ using Guppy.Utilities;
 using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,7 +46,7 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Static Fields
-        private static Queue<Broadcaster> BroadcastPool = new Queue<Broadcaster>();
+        private static ConcurrentQueue<Broadcaster> BroadcastPool = new ConcurrentQueue<Broadcaster>();
         #endregion
 
         #region Private Fields
@@ -121,9 +122,8 @@ namespace Guppy.Network.Utilities
         #region Static Methods
         private static Broadcaster GetBroadcaster(INetworkEntity entity, Action<NetOutgoingMessage> cleaner)
         {
-            if(Broadcast.BroadcastPool.Any())
+            if(Broadcast.BroadcastPool.TryDequeue(out Broadcaster broadcaster))
             {
-                Broadcaster broadcaster = Broadcast.BroadcastPool.Dequeue();
                 broadcaster.Id = entity.Id;
                 broadcaster.Entity = entity;
                 broadcaster.Cleaner = cleaner;

@@ -46,7 +46,7 @@ namespace Guppy.Utilities.Threading
                 }
                 catch (Exception e)
                 {
-                    Console.Error.WriteLine(e.StackTraceEx());
+                    Console.Error.WriteLine($"{e.Message}\n{e.StackTraceEx()}");
                 }
             }, token).Log();
         }
