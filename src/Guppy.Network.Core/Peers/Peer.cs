@@ -18,6 +18,8 @@ using Guppy.Extensions.DependencyInjection;
 using System.Threading;
 using System.Threading.Tasks;
 using Guppy.Utilities.Threading;
+using Microsoft.Xna.Framework;
+using Guppy.Network.Structs;
 
 namespace Guppy.Network.Peers
 {
@@ -32,6 +34,13 @@ namespace Guppy.Network.Peers
 
         private CancellationTokenSource _tokenSource;
         private Task _loop;
+
+        private Action<GameTime> _update;
+        private Double _diagnosticInterval;
+        private ActionTimer _diagnosticTimer;
+        private UInt32 _flushed;
+        private UInt32 _sent;
+        private UInt32 _recieved;
         #endregion
 
         #region Public Properties
@@ -39,6 +48,24 @@ namespace Guppy.Network.Peers
         /// By default all <see cref="Peer"/> id's are set to <see cref="Int16.MinValue"/>.
         /// </summary>
         public new Int16 Id => Int16.MinValue;
+
+        public Double DiagnosticInterval
+        {
+            get => _diagnosticInterval;
+            set
+            {
+                _diagnosticInterval = value;
+
+                if (_diagnosticInterval > 0)
+                {
+                    _update = this.UpdateDiagnostics;
+                }
+                else
+                {
+                    _update = this.Update;
+                }
+            }
+        }
         #endregion
 
         #region Protected Properties
@@ -47,6 +74,10 @@ namespace Guppy.Network.Peers
         /// <see cref="IChannel"/> instance.
         /// </summary>
         protected abstract ServiceConfigurationKey channelServiceConfigurationkey { get; }
+        #endregion
+
+        #region Events
+        public event OnEventDelegate<IPeer, DiagnosticIntervalData> OnDiagnosticInterval;
         #endregion
 
         #region IPeer Implementation
@@ -83,6 +114,7 @@ namespace Guppy.Network.Peers
         {
             base.PreInitialize(provider);
 
+            this.DiagnosticInterval = 0;
             this.Users = provider.GetService<UserList>();
             this.Channels = provider.GetService<ChannelList>((channels, p, c) =>
             {
@@ -99,6 +131,8 @@ namespace Guppy.Network.Peers
             provider.Service(out _peer);
             provider.Service(out _log);
             provider.Service(out _outgoing);
+
+            _diagnosticTimer = new ActionTimer(1000);
 
             this.OnIncomingMessageTypeRecieved[NetIncomingMessageType.Data] += this.HandleDataMessage;
             this.OnIncomingMessageTypeRecieved[NetIncomingMessageType.DebugMessage] += this.HandleDebugMessage;
@@ -147,7 +181,7 @@ namespace Guppy.Network.Peers
 
                 _loop = TaskHelper.CreateLoop(gt =>
                 {
-                    this.TryUpdate();
+                    this.TryUpdate(gt);
                 }, updateIntervalMilliseconds.Value, _tokenSource.Token);
 
                 await _loop;
@@ -171,17 +205,45 @@ namespace Guppy.Network.Peers
         #endregion
 
         #region Frame Methods
-        public virtual void TryUpdate()
+        public virtual void TryUpdate(GameTime gameTime)
         {
-            this.Update();
+            _update(gameTime);
         }
 
-        protected virtual void Update()
+        protected virtual void Update(GameTime gameTime)
         {
             while ((_im = _peer.ReadMessage()) != default)
                 this.OnIncomingMessageRecieved.Invoke(this, _im);
 
-            _outgoing.Flush();
+            _outgoing.Flush(out _, out _);
+        }
+
+        protected virtual void UpdateDiagnostics(GameTime gameTime)
+        {
+            UInt32 flushed = 0, sent = 0, recieved= 0;
+
+            while ((_im = _peer.ReadMessage()) != default)
+            {
+                this.OnIncomingMessageRecieved.Invoke(this, _im);
+                recieved++;
+            }
+                
+            _outgoing.Flush(out flushed, out sent);
+
+            _flushed += flushed;
+            _sent += sent;
+            _recieved += recieved;
+
+            _diagnosticTimer.Update(gameTime, this.TrackDiagnosticsSecond);
+        }
+
+        protected virtual void TrackDiagnosticsSecond(GameTime gameTime)
+        {
+            this.OnDiagnosticInterval?.Invoke(this, new DiagnosticIntervalData(_flushed, _sent, _recieved));
+
+            _flushed = 0;
+            _sent = 0;
+            _recieved = 0;
         }
         #endregion
 

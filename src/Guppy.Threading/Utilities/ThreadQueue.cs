@@ -60,6 +60,8 @@ namespace Guppy.Threading.Utilities
             {
                 action(gameTime);
             }
+
+            _flushingThreadId = Int32.MinValue;
         }
         #endregion
     }

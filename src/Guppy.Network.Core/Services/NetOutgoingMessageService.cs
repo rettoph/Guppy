@@ -8,6 +8,7 @@ using Guppy.Network.Contexts;
 using Guppy.Network.Interfaces;
 using System.Linq;
 using Guppy.Extensions.DependencyInjection;
+using System.Collections.Concurrent;
 
 namespace Guppy.Network.Services
 {
@@ -19,8 +20,7 @@ namespace Guppy.Network.Services
     {
         #region Private Fields
         private NetPeer _peer;
-        private Queue<NetOutgoingMessageContainer> _containers;
-        private NetOutgoingMessageContainer _container;
+        private ConcurrentQueue<NetOutgoingMessageContainer> _containers;
         private List<NetConnection> _users;
         #endregion
 
@@ -34,7 +34,7 @@ namespace Guppy.Network.Services
             base.PreInitialize(provider);
 
             _users = new List<NetConnection>();
-            _containers = new Queue<NetOutgoingMessageContainer>();
+            _containers = new ConcurrentQueue<NetOutgoingMessageContainer>();
 
             provider.Service(out _peer);
         }
@@ -62,19 +62,28 @@ namespace Guppy.Network.Services
             _containers.Enqueue(container);
         }
 
-        public void Flush()
+        public void Flush(out UInt32 flushed, out UInt32 sent)
         {
-            while(_containers.TryDequeue(out _container))
-            {
-                _users.Clear();
-                _users.AddRange(_container.Recipients);
+            flushed = 0;
+            sent = 0;
 
-                if(_users.Any())
+            while(_containers.TryDequeue(out NetOutgoingMessageContainer container))
+            {
+                flushed++;
+
+                _users.Clear();
+                _users.AddRange(container.Recipients);
+
+                if(_users.Count > 0)
+                {
                     _peer.SendMessage(
-                        msg: _container.Message,
-                        recipients: _users,
-                        method: _container.Context.Method,
-                        sequenceChannel: _container.Context.SequenceChannel);
+                           msg: container.Message,
+                           recipients: _users,
+                           method: container.Context.Method,
+                           sequenceChannel: container.Context.SequenceChannel);
+
+                    sent++;
+                }
             }
         }
         #endregion

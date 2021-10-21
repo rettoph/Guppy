@@ -9,6 +9,8 @@ using Guppy.Network.Contexts;
 using Guppy.Network.Security;
 using Guppy.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Guppy.Network.Structs;
 
 namespace Guppy.Network.Interfaces
 {
@@ -45,6 +47,16 @@ namespace Guppy.Network.Interfaces
         /// <see cref="IChannel"/> instance.
         /// </summary>
         ServiceConfigurationKey ChannelServiceConfigurationKey { get; }
+
+        /// <summary>
+        /// The interval at which diagnostics should be tracked in milliseconds. When this is 0 (by default)
+        /// No diagnostic data will be tracked.
+        /// </summary>
+        Double DiagnosticInterval { get; set; }
+        #endregion
+
+        #region Events
+        event OnEventDelegate<IPeer, DiagnosticIntervalData> OnDiagnosticInterval;
         #endregion
 
         #region Methods
@@ -71,7 +83,7 @@ namespace Guppy.Network.Interfaces
         /// <summary>
         /// Attempt to update the internal peer.
         /// </summary>
-        void TryUpdate();
+        void TryUpdate(GameTime gameTime);
         #endregion
     }
 }
