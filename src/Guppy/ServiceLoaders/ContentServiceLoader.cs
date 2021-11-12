@@ -19,7 +19,7 @@ namespace Guppy.ServiceLoaders
 
             services.RegisterSetup<ContentService>((content, p, c) =>
             {
-                content.TryRegister("guppy:font:debug", "Fonts/DiagnosticsFont");
+                content.TryRegister(Constants.Content.DebugFont, "Fonts/DiagnosticsFont");
             });
         }
 

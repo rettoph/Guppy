@@ -20,5 +20,10 @@ namespace Guppy
             public static readonly ServiceConfigurationKey GameUpdateThreadQueue = ServiceConfigurationKey.From<ThreadQueue>(nameof(Game));
             public static readonly ServiceConfigurationKey SceneUpdateThreadQueue = ServiceConfigurationKey.From<ThreadQueue>();
         }
+
+        public static class Content
+        {
+            public const String DebugFont = "guppy:font:debug";
+        }
     }
 }

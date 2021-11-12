@@ -27,6 +27,6 @@ namespace Guppy.IO.Extensions.log4net
             return log;
         }
         public static ILog ConfigureTerminalAppender(this ILog log, GuppyServiceProvider provider, params (Level, Color)[] colors)
-            => log.ConfigureTerminalAppender(provider, new PatternLayout() { ConversionPattern = "[%d{HH:mm:ss}] [%level] %message%n" }, colors);
+            => log.ConfigureTerminalAppender(provider, new PatternLayout() { ConversionPattern = "[%d{HH:mm:ss,fff}] [%level] %message%n" }, colors);
     }
 }

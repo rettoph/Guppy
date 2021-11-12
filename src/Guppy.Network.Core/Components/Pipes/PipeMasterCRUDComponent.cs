@@ -45,7 +45,12 @@ namespace Guppy.Network.Components.Scenes
 
         private void HandleNetworkEnityAddedToPipe(IPipe sender, INetworkEntity networkEntity, IPipe oldPipe)
         {
-            if (oldPipe != default)
+            if (oldPipe is null)
+            { // If this is the first pipe the entity has been put in...
+                // Broadcast create message through the pipe to all users
+                networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(this.Entity);
+            }
+            else 
             { // If the entity was in another pipe...
                 // Broadcast delete message through the old pipe to users who are not also in the new pipe...
                 networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Delete].Create(
@@ -55,12 +60,6 @@ namespace Guppy.Network.Components.Scenes
                 networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(
                     this.Entity.Users.Connections.Except(oldPipe.Users.Connections));
             }
-            else
-            { // If this is the first pipe the entity has  been put in...
-                // Broadcast create message through the pipe to all users
-                networkEntity.Messages[Guppy.Network.Constants.Messages.NetworkEntity.Create].Create(this.Entity);
-            }
-
         }
         #endregion
     }
