@@ -1,11 +1,11 @@
-﻿using Guppy.Extensions.System.Collections;
+﻿using Guppy;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Extensions.System
+namespace System
 {
     public static class DelegateExtensions
     {

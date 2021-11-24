@@ -1,7 +1,6 @@
 ﻿using Guppy.CommandLine.Services;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.Microsoft.Xna.Framework.Graphics;
 using Guppy.Extensions.Utilities;
 using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
@@ -94,13 +93,14 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
+        public TerminalService()
+        {
+
+        }
+
         protected override void PreInitialize(GuppyServiceProvider provider)
         {
             base.PreInitialize(provider);
-
-            // Override Console output
-            Console.SetOut(new ConsoleTerminalTextWriter(this));
-            Console.SetError(new ConsoleTerminalTextWriter(this));
 
             _font = provider.GetContent<SpriteFont>("guppy:font:debug");
 
@@ -135,6 +135,15 @@ namespace Guppy.IO.Services
             this.InputColor = Color.Gray;
 
             this.Clean();
+        }
+
+        protected override void Initialize(GuppyServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            // Override Console output
+            Console.SetOut(new ConsoleTerminalTextWriter(this));
+            Console.SetError(new ConsoleTerminalTextWriter(this));
         }
 
         protected override void PostRelease()

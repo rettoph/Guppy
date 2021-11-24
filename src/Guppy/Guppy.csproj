@@ -12,6 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.MonoGame.Extensions\DotNetUtils.MonoGame.Extensions.csproj" />
     <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
   </ItemGroup>

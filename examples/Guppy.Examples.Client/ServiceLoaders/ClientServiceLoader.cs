@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.CommandLine;
-using Guppy.Extensions.System;
 using System.CommandLine.Invocation;
 using Guppy.CommandLine;
 using Guppy.CommandLine.Services;

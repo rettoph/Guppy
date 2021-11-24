@@ -1,5 +1,4 @@
-﻿using Guppy.Events.Delegates;
-using Guppy.Network.Contexts;
+﻿using Guppy.Network.Contexts;
 using Guppy.Network.Delegates;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Lists;

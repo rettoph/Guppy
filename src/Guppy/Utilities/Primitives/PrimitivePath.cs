@@ -1,5 +1,4 @@
-﻿using Guppy.Extensions.Microsoft.Xna.Framework;
-using Guppy.Extensions.Utilities;
+﻿using Guppy.Extensions.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

@@ -1,5 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Guppy.DependencyInjection;
@@ -7,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Guppy.Extensions.System;
+using System.Reflection;
 
 namespace Guppy
 {
     /// <summary>
     /// The main Guppy object manager.
     /// </summary>
-    public sealed class GuppyLoader
+    public sealed class GuppyLoader : IDisposable
     {
         #region Private Fields
         private GuppyServiceCollection _services;
@@ -22,6 +21,7 @@ namespace Guppy
         #endregion
 
         #region Public Attributes
+        public AssemblyHelper AssemblyHelper { get; private set; }
         public Boolean Initialized { get; private set; }
         public GuppyServiceCollection Services
         {
@@ -36,14 +36,22 @@ namespace Guppy
         #endregion
 
         #region Constructor
-        public GuppyLoader()
+        /// <summary>
+        /// Create a new GuppyLoader instance.
+        /// </summary>
+        /// <param name="entry">This will default to <see cref="Assembly.GetEntryAssembly()"/>.</param>
+        /// <param name="withAssembliesReferencing">On startup, all assemblies will be recursively checked. Any that matches or references one of these will be tracked for Guppy creation.</param>
+        public GuppyLoader(Assembly entry = null, IEnumerable<Assembly> withAssembliesReferencing = default)
         {
             this.Initialized = false;
+            this.AssemblyHelper = new AssemblyHelper(
+                entry, 
+                (withAssembliesReferencing ?? Enumerable.Empty<Assembly>()).Concat(typeof(GuppyLoader).Assembly).ToArray());
 
             _services = new GuppyServiceCollection();
 
             _serviceLoaders = new HashSet<IServiceLoader>();
-            AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
+            this.AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
                     .Select(t => Activator.CreateInstance(t) as IServiceLoader)
                     .ForEach(sl => this.RegisterServiceLoader(sl));
         }
@@ -74,7 +82,7 @@ namespace Guppy
 
             // Iterate through all contained service loaders and configure the services
             foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.RegisterServices(this.Services);
+                serviceLoader.RegisterServices(this.AssemblyHelper, this.Services);
 
             this.Initialized = true;
 
@@ -95,6 +103,11 @@ namespace Guppy
                 serviceLoader.ConfigureProvider(provider);
 
             return provider;
+        }
+
+        public void Dispose()
+        {
+            this.AssemblyHelper.Dispose();
         }
         #endregion
     }

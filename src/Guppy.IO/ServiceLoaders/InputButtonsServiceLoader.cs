@@ -12,7 +12,7 @@ namespace Guppy.IO.ServiceLoaders
     [AutoLoad(-1)]
     internal sealed class InputButtonsServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<InputButtonService>(p => new InputButtonService());
             services.RegisterTypeFactory<InputButtonManager>(p => new InputButtonManager());

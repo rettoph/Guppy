@@ -9,7 +9,6 @@ using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Scenes;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Events.Delegates;
 
 namespace Guppy.Network
 {

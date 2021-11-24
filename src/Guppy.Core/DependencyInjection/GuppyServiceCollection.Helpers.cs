@@ -715,18 +715,19 @@ namespace Guppy.DependencyInjection
         /// <param name="entityServiceConfigurationKey">The entity's key</param>
         public void RegisterComponent(
             ServiceConfigurationKey componentServiceConfigurationKey,
-            ServiceConfigurationKey entityServiceConfigurationKey)
-                => this.Add(new ComponentConfigurationDto(componentServiceConfigurationKey, entityServiceConfigurationKey));
+            ServiceConfigurationKey entityServiceConfigurationKey,
+            Int32 order = 0)
+                => this.Add(new ComponentConfigurationDto(componentServiceConfigurationKey, entityServiceConfigurationKey, order));
 
         /// <summary>
         /// Register a new component to an entity.
         /// </summary>
         /// <typeparam name="TComponentKey">The component's key</typeparam>
         /// <typeparam name="TEntityKey">The entity's key</typeparam>
-        public void RegisterComponent<TComponentKey, TEntityKey>()
+        public void RegisterComponent<TComponentKey, TEntityKey>(Int32 order = 0)
             where TComponentKey : class, IComponent
             where TEntityKey : class, IEntity
-                => this.RegisterComponent(ServiceConfigurationKey.From<TComponentKey>(), ServiceConfigurationKey.From<TEntityKey>());
+                => this.RegisterComponent(ServiceConfigurationKey.From<TComponentKey>(), ServiceConfigurationKey.From<TEntityKey>(), order);
 
         /// <summary>
         /// Register a new component to an entity.
@@ -737,10 +738,11 @@ namespace Guppy.DependencyInjection
         /// <param name="entityKeyName">The entity's key name</param>
         public void RegisterComponent<TComponentKeyType, TEntityKeyType>(
             String componentKeyName,
-            String entityKeyName)
+            String entityKeyName,
+            Int32 order = 0)
                 where TComponentKeyType : class, IComponent
                 where TEntityKeyType : class, IEntity
-                    => this.RegisterComponent(ServiceConfigurationKey.From<TComponentKeyType>(componentKeyName), ServiceConfigurationKey.From<TEntityKeyType>(entityKeyName));
+                    => this.RegisterComponent(ServiceConfigurationKey.From<TComponentKeyType>(componentKeyName), ServiceConfigurationKey.From<TEntityKeyType>(entityKeyName), order);
         #endregion
 
         #region RegisterComponentFilter Methods

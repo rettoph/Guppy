@@ -10,9 +10,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy;
 using Guppy.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using Guppy.Extensions.System;
 using System.Linq;
-using Guppy.Extensions.System.Collections;
 using Guppy.ServiceLoaders;
 using Guppy.DependencyInjection;
 

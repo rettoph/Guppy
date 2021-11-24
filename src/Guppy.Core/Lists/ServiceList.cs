@@ -1,6 +1,4 @@
-﻿using Guppy.Events;
-using Guppy.Events.Delegates;
-using Guppy.DependencyInjection;
+﻿using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -11,7 +9,6 @@ using System.Text;
 using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
 using Guppy.Enums;
-using Guppy.Extensions.System;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
 
@@ -242,9 +239,10 @@ namespace Guppy.Lists
         #region IServiceList Implementation
         void IServiceList.TryAdd(Object instance)
         {
-            ExceptionHelper.ValidateAssignableFrom<TService>(instance.GetType());
-
-            this.TryAdd(instance as TService);
+            if(typeof(TService).ValidateAssignableFrom(instance.GetType()))
+            {
+                this.TryAdd(instance as TService);
+            }
         }
 
         T IServiceList.GetById<T>(Guid id)

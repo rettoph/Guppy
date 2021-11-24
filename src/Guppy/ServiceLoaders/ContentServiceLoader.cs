@@ -11,7 +11,7 @@ namespace Guppy.ServiceLoaders
 {
     internal sealed class ContentServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ContentService>(p => new ContentService());
 

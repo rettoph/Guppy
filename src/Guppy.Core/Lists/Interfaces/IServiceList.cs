@@ -1,5 +1,4 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
 using Guppy.Interfaces;
 using System;
 using System.Collections;

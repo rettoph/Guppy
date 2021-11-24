@@ -1,5 +1,4 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists.Interfaces;
 using Guppy.Network.Channels;

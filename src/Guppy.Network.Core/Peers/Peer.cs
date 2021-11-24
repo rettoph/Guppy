@@ -1,7 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
 using Guppy.Extensions.log4net;
-using Guppy.Extensions.System.Collections;
 using Guppy.Network.Channels;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Interfaces;
@@ -114,7 +112,7 @@ namespace Guppy.Network.Peers
         {
             base.PreInitialize(provider);
 
-            this.DiagnosticInterval = 0;
+            this.DiagnosticInterval = 1000;
             this.Users = provider.GetService<UserList>();
             this.Channels = provider.GetService<ChannelList>((channels, p, c) =>
             {
@@ -216,6 +214,7 @@ namespace Guppy.Network.Peers
                 this.OnIncomingMessageRecieved.Invoke(this, _im);
 
             _outgoing.Flush(out _, out _);
+            
         }
 
         protected virtual void UpdateDiagnostics(GameTime gameTime)

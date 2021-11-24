@@ -14,7 +14,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ThreadQueue>(p => new ThreadQueue());
             services.RegisterSingleton(Constants.ServiceConfigurationKeys.GameUpdateThreadQueue, typeof(ThreadQueue));

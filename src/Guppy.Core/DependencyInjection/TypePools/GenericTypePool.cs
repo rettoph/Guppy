@@ -32,7 +32,7 @@ namespace Guppy.DependencyInjection.TypePools
             if(_pools.TryGetValue(instance.GetType(), out _pool))
                 return _pool.TryReturn(instance);
 
-            ExceptionHelper.ValidateAssignableFrom(_genericType, instance.GetType());
+            _genericType.ValidateAssignableFrom(instance.GetType());
 
             _pools.Add(instance.GetType(), new TypePool(instance.GetType(), ref _maxPoolSize));
             return this.TryReturn(instance);

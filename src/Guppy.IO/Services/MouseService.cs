@@ -1,7 +1,5 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.System.Collections;
 using Guppy.IO.Enums;
 using Guppy.IO.Structs;
 using Guppy.IO.Utilities;

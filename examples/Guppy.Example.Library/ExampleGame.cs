@@ -28,7 +28,7 @@ namespace Guppy.Example.Library
         {
             base.Update(gameTime);
 
-            _peer?.TryUpdate();
+            _peer?.TryUpdate(gameTime);
         }
         #endregion
     }

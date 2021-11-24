@@ -20,7 +20,7 @@ namespace Guppy.DependencyInjection.TypePools
 
         public override Boolean TryReturn(Object instance)
         {
-            ExceptionHelper.ValidateAssignableFrom(_type, instance.GetType());
+            _type.ValidateAssignableFrom(instance.GetType());
 
             return base.TryReturn(instance);
         }

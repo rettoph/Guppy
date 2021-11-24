@@ -15,7 +15,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class DependencyInjectionServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<GuppyServiceProvider>(p => p);
             services.RegisterScoped<GuppyServiceProvider>();

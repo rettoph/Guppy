@@ -1,8 +1,6 @@
 ﻿using Guppy.DependencyInjection.Actions;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.DependencyInjection.TypeFactories;
-using Guppy.Extensions.System.Collections;
-using Guppy.Extensions.System;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

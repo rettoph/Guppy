@@ -6,7 +6,6 @@ using Guppy.Network.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.System;
 
 namespace Guppy.Network.Channels
 {

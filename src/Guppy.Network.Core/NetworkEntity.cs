@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
-using Guppy.Events.Delegates;
 
 namespace Guppy.Network
 {

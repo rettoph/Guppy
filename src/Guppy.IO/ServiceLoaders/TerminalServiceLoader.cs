@@ -14,7 +14,7 @@ namespace Guppy.IO.ServiceLoaders
 {
     internal sealed class TerminalServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<TerminalService>(p => new TerminalService());
             services.RegisterTypeFactory<IConsole>(p => p.GetService<TerminalService>(), 0, 1);
@@ -23,7 +23,7 @@ namespace Guppy.IO.ServiceLoaders
             services.RegisterSingleton<TerminalService>();
             services.RegisterTransient<GameTerminalComponent>();
 
-            services.RegisterComponent<GameTerminalComponent, Game>();
+            services.RegisterComponent<GameTerminalComponent, Game>(Guppy.Core.Constants.Orders.ComponentOrder);
 
             services.RegisterBuilder<Game>((g, p, c) =>
             {

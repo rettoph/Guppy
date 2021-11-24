@@ -27,7 +27,7 @@ namespace Guppy.Network.ServiceLoaders
     [AutoLoad]
     public class NetworkServiceLoaders : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             #region Settings Setup
             services.RegisterSetup<Settings>((s, p, c) =>
@@ -100,9 +100,9 @@ namespace Guppy.Network.ServiceLoaders
             services.RegisterTransient<PipeMasterCRUDComponent>();
             services.RegisterTransient<NetworkEntityPipeComponent>();
 
-            services.RegisterComponent<ChannelBaseCRUDComponent, IChannel>();
-            services.RegisterComponent<PipeMasterCRUDComponent, IPipe>();
-            services.RegisterComponent<NetworkEntityPipeComponent, INetworkEntity>();
+            services.RegisterComponent<ChannelBaseCRUDComponent, IChannel>(Core.Constants.Orders.ComponentOrder);
+            services.RegisterComponent<PipeMasterCRUDComponent, IPipe>(Core.Constants.Orders.ComponentOrder);
+            services.RegisterComponent<NetworkEntityPipeComponent, INetworkEntity>(Core.Constants.Orders.ComponentOrder);
 
             services.RegisterComponentFilter(
                 ServiceConfigurationKey.From(type: typeof(NetworkComponent<>)),

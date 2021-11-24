@@ -21,7 +21,7 @@ namespace Guppy.Extensions.DependencyInjection
             Func<GuppyServiceProvider, Object> factory = default, 
             Int32 priority = -1)
         {
-            ExceptionHelper.ValidateAssignableFrom<Game>(game);
+            typeof(Game).ValidateAssignableFrom(game);
 
             factory ??= p => Activator.CreateInstance(game);
             services.RegisterTypeFactory(
@@ -55,7 +55,7 @@ namespace Guppy.Extensions.DependencyInjection
             Func<GuppyServiceProvider, Object> factory = default, 
             Int32 priority = -1)
         {
-            ExceptionHelper.ValidateAssignableFrom<IScene>(scene);
+            typeof(IScene).ValidateAssignableFrom(scene);
 
             factory ??= p => Activator.CreateInstance(scene);
             services.RegisterTypeFactory(

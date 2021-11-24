@@ -20,7 +20,7 @@ namespace Guppy.DependencyInjection
             Func<IServiceConfiguration, Boolean> validator,
             Int32 order)
         {
-            ExceptionHelper.ValidateAssignableFrom<IComponent>(componentServiceConfigurationKey.Type);
+            typeof(IComponent).ValidateAssignableFrom(componentServiceConfigurationKey.Type);
 
             this.ComponentServiceConfigurationKey = componentServiceConfigurationKey;
             this.Method = method;

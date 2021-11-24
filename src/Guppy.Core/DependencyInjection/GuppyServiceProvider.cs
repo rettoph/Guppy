@@ -1,8 +1,6 @@
 ﻿using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.DependencyInjection.ServiceManagers;
 using Guppy.DependencyInjection.TypeFactories;
-using Guppy.Events.Delegates;
-using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +72,7 @@ namespace Guppy.DependencyInjection
             foreach (ServiceConfigurationKey key in _registeredServices.Keys.Where(k => k.Inherits(ServiceConfigurationKey.From<IEntity>())))
                 _componentConfigurations[key] = componentConfigurations
                     .Where(c => key.Inherits(c.EntityServiceConfigurationKey))
+                    .OrderBy(c => c.Order)
                     .ToArray();
 
             // // Construct all ComponentConfiguration instances.

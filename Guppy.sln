@@ -33,6 +33,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Example.Library", "ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.CommandLine", "src\Guppy.CommandLine\Guppy.CommandLine.csproj", "{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNetUtils", "DotNetUtils", "{FAFD718C-2B8E-4229-8514-C61841D9C6D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetUtils.Delegates", "libraries\DotNetUtils\src\DotNetUtils.Delegates\DotNetUtils.Delegates.csproj", "{962F423B-457C-4DBD-AA49-D628BDBD981B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetUtils.System.Extensions", "libraries\DotNetUtils\src\DotNetUtils.System.Extensions\DotNetUtils.System.Extensions.csproj", "{56535E0D-1CD4-4B4D-9A48-A33B86678680}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetUtils.System.Helpers", "libraries\DotNetUtils\src\DotNetUtils.System.Helpers\DotNetUtils.System.Helpers.csproj", "{C469719C-045D-48CC-8002-15BDC51351FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetUtils.MonoGame.Extensions", "libraries\DotNetUtils\src\DotNetUtils.MonoGame.Extensions\DotNetUtils.MonoGame.Extensions.csproj", "{3D6EE6D0-B9D4-4FCC-9D9B-11BC09D15944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +93,22 @@ Global
 		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{962F423B-457C-4DBD-AA49-D628BDBD981B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{962F423B-457C-4DBD-AA49-D628BDBD981B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{962F423B-457C-4DBD-AA49-D628BDBD981B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{962F423B-457C-4DBD-AA49-D628BDBD981B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56535E0D-1CD4-4B4D-9A48-A33B86678680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56535E0D-1CD4-4B4D-9A48-A33B86678680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56535E0D-1CD4-4B4D-9A48-A33B86678680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56535E0D-1CD4-4B4D-9A48-A33B86678680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C469719C-045D-48CC-8002-15BDC51351FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C469719C-045D-48CC-8002-15BDC51351FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C469719C-045D-48CC-8002-15BDC51351FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C469719C-045D-48CC-8002-15BDC51351FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D6EE6D0-B9D4-4FCC-9D9B-11BC09D15944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D6EE6D0-B9D4-4FCC-9D9B-11BC09D15944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D6EE6D0-B9D4-4FCC-9D9B-11BC09D15944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D6EE6D0-B9D4-4FCC-9D9B-11BC09D15944}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +126,11 @@ Global
 		{03678D60-1B2B-4A63-B891-4C549A447B1B} = {9D54D7A8-5CC6-4B7B-8305-191334648FD7}
 		{562EB3EA-DF3A-4205-912C-88B133B35852} = {9D54D7A8-5CC6-4B7B-8305-191334648FD7}
 		{B38E4A05-CC1F-4DDD-B21E-CF941AF037A8} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
+		{FAFD718C-2B8E-4229-8514-C61841D9C6D3} = {61F9813E-5013-4F18-B71C-CC5CB79DF497}
+		{962F423B-457C-4DBD-AA49-D628BDBD981B} = {FAFD718C-2B8E-4229-8514-C61841D9C6D3}
+		{56535E0D-1CD4-4B4D-9A48-A33B86678680} = {FAFD718C-2B8E-4229-8514-C61841D9C6D3}
+		{C469719C-045D-48CC-8002-15BDC51351FF} = {FAFD718C-2B8E-4229-8514-C61841D9C6D3}
+		{3D6EE6D0-B9D4-4FCC-9D9B-11BC09D15944} = {FAFD718C-2B8E-4229-8514-C61841D9C6D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}

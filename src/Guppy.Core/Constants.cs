@@ -25,5 +25,10 @@ namespace Guppy.Core
             public const Int32 Initialize = 10;
             public const Int32 PostInitialize = 20;
         }
+
+        public static class Orders
+        {
+            public const Int32 ComponentOrder = -10;
+        }
     }
 }

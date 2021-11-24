@@ -27,7 +27,7 @@ namespace Guppy.Network.ServiceLoaders
     [AutoLoad]
     internal sealed class NetworkServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<Broadcasts>(_ => new Broadcasts());
             services.RegisterTypeFactory<Broadcast>(_ => new Broadcast());
@@ -47,10 +47,10 @@ namespace Guppy.Network.ServiceLoaders
             services.RegisterTransient<NetworkSceneSlaveCRUDComponent>();
             services.RegisterTransient<NetworkEntityCRUDComponent>();
 
-            services.RegisterComponent<NetworkServiceListLayerableComponent, NetworkEntityList>();
-            services.RegisterComponent<NetworkSceneMasterCRUDComponent, NetworkScene>();
-            services.RegisterComponent<NetworkSceneSlaveCRUDComponent, NetworkScene>();
-            services.RegisterComponent<NetworkEntityCRUDComponent, INetworkEntity>();
+            services.RegisterComponent<NetworkServiceListLayerableComponent, NetworkEntityList>(Guppy.Core.Constants.Orders.ComponentOrder);
+            services.RegisterComponent<NetworkSceneMasterCRUDComponent, NetworkScene>(Guppy.Core.Constants.Orders.ComponentOrder);
+            services.RegisterComponent<NetworkSceneSlaveCRUDComponent, NetworkScene>(Guppy.Core.Constants.Orders.ComponentOrder);
+            services.RegisterComponent<NetworkEntityCRUDComponent, INetworkEntity>(Guppy.Core.Constants.Orders.ComponentOrder);
             #endregion
         }
 

@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
-using Guppy.Extensions.System.Collections;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -18,7 +17,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad(Int32.MaxValue)]
     internal class ServiceLifecycleServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterBuilder<IService>((s, p, sd) =>
             {

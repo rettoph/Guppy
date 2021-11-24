@@ -12,7 +12,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class LayerableServiceCollection : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<LayerableList>(p => new LayerableList());
             services.RegisterScoped<LayerableList>();

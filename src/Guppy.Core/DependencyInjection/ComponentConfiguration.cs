@@ -13,6 +13,7 @@ namespace Guppy.DependencyInjection
         public readonly ServiceConfigurationKey EntityServiceConfigurationKey;
         public readonly IServiceConfiguration ComponentServiceConfiguration;
         public readonly ComponentFilter[] ComponentFilters;
+        public readonly Int32 Order;
 
         internal ComponentConfiguration(
             ComponentConfigurationDto context,
@@ -21,6 +22,7 @@ namespace Guppy.DependencyInjection
         {
             this.EntityServiceConfigurationKey = context.EntityServiceConfigurationKey;
             this.ComponentServiceConfiguration = serviceConfigurations[context.ComponentServiceConfigurationKey];
+            this.Order = context.Order;
             this.ComponentFilters = componentFilters
                 .Where(f => context.ComponentServiceConfigurationKey.Inherits(f.ComponentServiceConfigurationKey))
                 .Where(f => f.Validator(this.ComponentServiceConfiguration))

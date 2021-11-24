@@ -15,16 +15,23 @@ namespace Guppy.Extensions.DependencyInjection
             IEntity entity,
             GuppyServiceProvider provider)
         {
-            // TODO: Find way to make filter more efficient
-            return configurations
-                .Where(conf => conf.CheckFilters(entity, provider))
-                .Select(conf => conf.ComponentServiceConfiguration.GetInstance(
-                        provider: provider, 
-                        generics: default,
-                        setup: (i, p, c) => (i as IComponent).Entity = entity,
-                        setupOrder: Guppy.Core.Constants.Priorities.PreInitialize - 1
-                    ) as IComponent
-                );
+            try
+            {
+                // TODO: Find way to make filter more efficient
+                return configurations
+                    .Where(conf => conf.CheckFilters(entity, provider))
+                    .Select(conf => conf.ComponentServiceConfiguration.GetInstance(
+                            provider: provider,
+                            generics: default,
+                            setup: (i, p, c) => (i as IComponent).Entity = entity,
+                            setupOrder: Guppy.Core.Constants.Priorities.PreInitialize - 1
+                        ) as IComponent
+                    );
+            }
+            catch
+            {
+                return default;
+            }
         }
     }
 }

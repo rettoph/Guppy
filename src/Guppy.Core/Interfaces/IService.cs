@@ -1,7 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Enums;
-using Guppy.Events.Delegates;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Guppy.Interfaces
 {
     public interface IService
     {
-        #region Attributes
+        #region Properties
         ServiceStatus Status { get; }
         IServiceConfiguration ServiceConfiguration { get; set; }
         Guid Id { get; set; }

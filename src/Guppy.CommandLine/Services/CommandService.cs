@@ -1,6 +1,5 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.System;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;

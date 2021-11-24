@@ -1,5 +1,4 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.Events.Delegates;
 using Guppy.IO.Enums;
 using Guppy.IO.Utilities;
 using Microsoft.Xna.Framework.Input;

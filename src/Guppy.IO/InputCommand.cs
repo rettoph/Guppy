@@ -1,7 +1,6 @@
 ﻿using Guppy.CommandLine.Services;
 using Guppy.DependencyInjection;
 using Guppy.Enums;
-using Guppy.Extensions.System.Collections;
 using Guppy.IO.Contexts;
 using Guppy.IO.Services;
 using Guppy.IO.Structs;

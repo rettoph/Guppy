@@ -6,6 +6,7 @@ using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -16,7 +17,7 @@ namespace Guppy.ServiceLoaders
     {
         private static readonly IComponent[] EmptyComponentArray = new IComponent[0];
 
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ComponentManager>(p => new ComponentManager());
 
@@ -29,6 +30,7 @@ namespace Guppy.ServiceLoaders
 
             services.RegisterSetup<IEntity>((e, p, _) =>
             {
+                Debug.WriteLine(e.ServiceConfiguration.Key);
                 e.Components = p.GetService<ComponentManager>((manager, _, _) =>
                 {
                     IEnumerable<IComponent> components = p.ComponentConfigurations[e.ServiceConfiguration.Key].Create(e, p) ?? Enumerable.Empty<IComponent>();

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.DependencyInjection;
 using Guppy.Network.Lists;
-using Guppy.Events.Delegates;
 using Lidgren.Network;
 using Guppy.Network.Contexts;
 using Guppy.Network.Security;

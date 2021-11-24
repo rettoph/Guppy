@@ -1,6 +1,5 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
-using Guppy.Events.Delegates;
 using Guppy.Interfaces;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Peers;

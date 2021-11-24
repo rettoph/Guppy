@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Network.Extensions.Lidgren;
 using Guppy.Network.Security;
-using Guppy.Extensions.System.Collections;
 
 namespace Guppy.Network.Extensions.Security
 {

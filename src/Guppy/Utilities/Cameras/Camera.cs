@@ -6,7 +6,6 @@ using System.Text;
 using Guppy.Extensions;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Extensions.Microsoft.Xna.Framework;
 
 namespace Guppy.Utilities.Cameras
 {

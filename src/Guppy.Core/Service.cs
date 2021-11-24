@@ -1,8 +1,5 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Enums;
-using Guppy.Events.Delegates;
-using Guppy.Extensions.System.Collections;
-using Guppy.Extensions.System;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -29,7 +26,7 @@ namespace Guppy
         protected internal ILog log { get; private set; }
         #endregion
 
-        #region Public Attributes
+        #region Public Properties
         public IServiceConfiguration ServiceConfiguration
         {
             get => _configuration;
@@ -58,7 +55,12 @@ namespace Guppy
             get => _status;
             set => this.OnStatusChanged.InvokeIf(value != _status, this, ref _status, value);
         }
-        #endregion
+
+#if DEBUG
+        public UInt32 HistoricInitializedCount { get; private set; } = 0;
+#endif
+
+#endregion
 
         #region Events
         public event OnChangedEventDelegate<IService, ServiceStatus> OnStatusChanged;
@@ -108,6 +110,9 @@ namespace Guppy
         {
             if (this.ValidateStatus(ServiceStatus.PreInitializing))
             {
+#if DEBUG
+                this.HistoricInitializedCount++;
+#endif
                 this.Status = ServiceStatus.Initializing;
                 this.Initialize(provider);
             }

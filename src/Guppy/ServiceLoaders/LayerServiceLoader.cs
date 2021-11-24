@@ -12,7 +12,7 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class LayerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             // Configure factories...
             services.RegisterTypeFactory<Layer>(p => new Layer());

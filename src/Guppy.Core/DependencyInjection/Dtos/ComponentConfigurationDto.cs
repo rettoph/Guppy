@@ -12,15 +12,24 @@ namespace Guppy.DependencyInjection.Dtos
         public readonly ServiceConfigurationKey ComponentServiceConfigurationKey;
         public readonly ServiceConfigurationKey EntityServiceConfigurationKey;
 
+        /// <summary>
+        /// The priority value for this specific descriptor.
+        /// All components will be sorted by priority when created
+        /// for an entity.
+        /// </summary>
+        public readonly Int32 Order;
+
         public ComponentConfigurationDto(
             ServiceConfigurationKey componentServiceConfigurationKey,
-            ServiceConfigurationKey entityServicConfigurationeKey)
+            ServiceConfigurationKey entityServicConfigurationeKey,
+            Int32 order = 0)
         {
-            ExceptionHelper.ValidateAssignableFrom<IComponent>(componentServiceConfigurationKey.Type);
-            ExceptionHelper.ValidateAssignableFrom<IEntity>(entityServicConfigurationeKey.Type);
+            typeof(IComponent).ValidateAssignableFrom(componentServiceConfigurationKey.Type);
+            typeof(IEntity).ValidateAssignableFrom(entityServicConfigurationeKey.Type);
 
             this.ComponentServiceConfigurationKey = componentServiceConfigurationKey;
             this.EntityServiceConfigurationKey = entityServicConfigurationeKey;
+            this.Order = order;
         }
 
         public ComponentConfiguration CreateComponentConfiguration(
