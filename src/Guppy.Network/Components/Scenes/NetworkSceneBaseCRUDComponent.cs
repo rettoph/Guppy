@@ -50,7 +50,7 @@ namespace Guppy.Network.Components.Scenes
         #endregion
 
         #region Message Handlers
-        protected virtual void ReadCreateNetworkEntityMessage(MessageTypeManager sender, NetIncomingMessage im)
+        protected virtual void ReadCreateNetworkEntityMessage(MessageTypeManager<Byte> sender, NetIncomingMessage im)
         {
             this.sceneThread.Enqueue(_ =>
             {
@@ -67,7 +67,7 @@ namespace Guppy.Network.Components.Scenes
             });
         }
 
-        private void ReadPingNetworkEntityMessage(MessageTypeManager sender, NetIncomingMessage im)
+        private void ReadPingNetworkEntityMessage(MessageTypeManager<Byte> sender, NetIncomingMessage im)
         {
             this.sceneThread.Enqueue(_ =>
             {
@@ -78,7 +78,7 @@ namespace Guppy.Network.Components.Scenes
             });
         }
 
-        private void ReadDeleteNetworkEntityMessage(MessageTypeManager sender, NetIncomingMessage im)
+        private void ReadDeleteNetworkEntityMessage(MessageTypeManager<Byte> sender, NetIncomingMessage im)
         {
             this.sceneThread.Enqueue(_ =>
             {

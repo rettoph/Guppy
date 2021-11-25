@@ -39,6 +39,9 @@ namespace Guppy.Network.Peers
         private UInt32 _flushed;
         private UInt32 _sent;
         private UInt32 _recieved;
+        private UInt32 _totalFlushed;
+        private UInt32 _totalSent;
+        private UInt32 _totalRecieved;
         #endregion
 
         #region Public Properties
@@ -233,12 +236,16 @@ namespace Guppy.Network.Peers
             _sent += sent;
             _recieved += recieved;
 
+            _totalFlushed += flushed;
+            _totalSent += sent;
+            _totalRecieved += recieved;
+
             _diagnosticTimer.Update(gameTime, this.TrackDiagnosticsSecond);
         }
 
         protected virtual void TrackDiagnosticsSecond(GameTime gameTime)
         {
-            this.OnDiagnosticInterval?.Invoke(this, new DiagnosticIntervalData(_flushed, _sent, _recieved));
+            this.OnDiagnosticInterval?.Invoke(this, new DiagnosticIntervalData(_flushed, _sent, _recieved, _totalFlushed, _totalSent, _totalRecieved));
 
             _flushed = 0;
             _sent = 0;

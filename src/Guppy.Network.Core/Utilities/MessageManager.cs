@@ -8,25 +8,55 @@ using System.Text;
 
 namespace Guppy.Network.Utilities
 {
-    public class MessageManager : IDisposable
+    public class ByteMessageManager : MessageManager<Byte>
+    {
+        protected override Byte ReadMessageTypeId(NetIncomingMessage im)
+        {
+            return im.ReadByte();
+        }
+
+        protected override void WriteMessageTypeId(NetOutgoingMessage om, Byte id)
+        {
+            om.Write(id);
+        }
+    }
+
+    public class MessageManager : MessageManager<UInt32>
+    {
+        protected override UInt32 ReadMessageTypeId(NetIncomingMessage im)
+        {
+            return im.ReadUInt32();
+        }
+
+        protected override void WriteMessageTypeId(NetOutgoingMessage om, UInt32 id)
+        {
+            om.Write(id);
+        }
+    }
+
+    public abstract class MessageManager<TMessageTypeId> : IDisposable
     {
         #region Private Fields
-        private Dictionary<UInt32, MessageTypeManager> _messageTypes;
+        private Dictionary<TMessageTypeId, MessageTypeManager<TMessageTypeId>> _messageTypes;
         #endregion
 
         #region Public Properties
-        public Action<NetOutgoingMessage> Signer { get; set; }
+        /// <summary>
+        /// Used to write a custom signature to the start of the message. This is traditionally used
+        /// for writting the <see cref="MessageManager{TMessageTypeId}"/>'s owner's Id.
+        /// </summary>
+        public Action<NetOutgoingMessage> CustomSigner { get; set; }
         public MessageFactoryDelegate DefaultFactory { get; set; }
         #endregion
 
         #region Public Properties
-        public MessageTypeManager this[UInt32 messageTypeId] => _messageTypes[messageTypeId];
+        public MessageTypeManager<TMessageTypeId> this[TMessageTypeId messageTypeId] => _messageTypes[messageTypeId];
         #endregion
 
         #region Constructors
         public MessageManager()
         {
-            _messageTypes = new Dictionary<uint, MessageTypeManager>();
+            _messageTypes = new Dictionary<TMessageTypeId, MessageTypeManager<TMessageTypeId>>();
         }
 
         public void Dispose()
@@ -37,9 +67,9 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Helper Methods
-        public void Add(UInt32 messageType, NetOutgoingMessageContext defaultContext = null, MessageFactoryDelegate factory = null)
+        public void Add(TMessageTypeId messageType, NetOutgoingMessageContext defaultContext = null, MessageFactoryDelegate factory = null)
         {
-            _messageTypes.Add(messageType, new MessageTypeManager(messageType, factory ?? this.DefaultFactory, this.Signer, defaultContext));
+            _messageTypes.Add(messageType, new MessageTypeManager<TMessageTypeId>(messageType, factory ?? this.DefaultFactory, this.Sign, defaultContext));
         }
 
         public void Clear()
@@ -53,7 +83,33 @@ namespace Guppy.Network.Utilities
         /// </summary>
         /// <param name="im"></param>
         public void Read(NetIncomingMessage im)
-            => _messageTypes[im.ReadUInt32()].TryRead(im);
+            => _messageTypes[this.ReadMessageTypeId(im)].TryRead(im);
+
+        /// <summary>
+        /// Used to appropriately sign a message.
+        /// </summary>
+        /// <param name="om"></param>
+        /// <param name="messageTypeId"></param>
+        private void Sign(NetOutgoingMessage om, TMessageTypeId messageTypeId)
+        {
+            this.CustomSigner(om);
+
+            this.WriteMessageTypeId(om, messageTypeId);
+        }
+        #endregion
+
+        #region Static Methods
+        /// <summary>
+        /// Read the current MessageTypeManager id
+        /// </summary>
+        /// <param name="om"></param>
+        protected abstract TMessageTypeId ReadMessageTypeId(NetIncomingMessage im);
+
+        /// <summary>
+        /// Write the current MessageTypeManager id
+        /// </summary>
+        /// <param name="om"></param>
+        protected abstract void WriteMessageTypeId(NetOutgoingMessage om, TMessageTypeId messageTypeId);
         #endregion
     }
 }

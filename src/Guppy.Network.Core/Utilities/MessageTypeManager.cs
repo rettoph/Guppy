@@ -9,25 +9,25 @@ using System.Text;
 
 namespace Guppy.Network.Utilities
 {
-    public sealed class MessageTypeManager
+    public class MessageTypeManager<TMessageTypeId>
     {
         #region Private Fields
         private MessageFactoryDelegate _factory;
-        private Action<NetOutgoingMessage> _signer;
+        private Action<NetOutgoingMessage, TMessageTypeId> _signer;
         #endregion
 
         #region Public Properties
-        public UInt32 Id { get; private set; }
+        public TMessageTypeId Id { get; private set; }
         public NetOutgoingMessageContext DefaultContext { get; private set; }
         #endregion
 
         #region Events
-        public event OnEventDelegate<MessageTypeManager, NetIncomingMessage> OnRead;
-        public event OnEventDelegate<MessageTypeManager, NetOutgoingMessage> OnWrite;
+        public event OnEventDelegate<MessageTypeManager<TMessageTypeId>, NetIncomingMessage> OnRead;
+        public event OnEventDelegate<MessageTypeManager<TMessageTypeId>, NetOutgoingMessage> OnWrite;
         #endregion
 
         #region Constructors
-        public MessageTypeManager(UInt32 id, MessageFactoryDelegate factory, Action<NetOutgoingMessage> signer, NetOutgoingMessageContext defaultContext = null)
+        public MessageTypeManager(TMessageTypeId id, MessageFactoryDelegate factory, Action<NetOutgoingMessage, TMessageTypeId> signer, NetOutgoingMessageContext defaultContext = null)
         {
             this.Id = id;
             this.DefaultContext = defaultContext;
@@ -60,8 +60,7 @@ namespace Guppy.Network.Utilities
         {
             void SignAndWrite(NetOutgoingMessage om)
             {
-                _signer(om);
-                om.Write(this.Id);
+                _signer(om, this.Id);
 
                 this.TryWrite(om);
 
@@ -81,8 +80,7 @@ namespace Guppy.Network.Utilities
         {
             void SignAndWrite(NetOutgoingMessage om)
             {
-                _signer(om);
-                om.Write(this.Id);
+                _signer(om, this.Id);
 
                 this.TryWrite(om);
             }

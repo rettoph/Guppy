@@ -22,7 +22,7 @@ namespace Guppy.Network.Channels
 
         #region Public Properties
         public new Int16 Id { get; internal set; }
-        public MessageManager Messages { get; private set; }
+        public MessageManager<Byte> Messages { get; private set; }
         #endregion
 
         #region IChannel Implementation
@@ -42,8 +42,8 @@ namespace Guppy.Network.Channels
         {
             base.Create(provider);
 
-            this.Messages = new MessageManager();
-            this.Messages.Signer = this.DefaultMessageSigner;
+            this.Messages = new ByteMessageManager();
+            this.Messages.CustomSigner = this.DefaultMessageSigner;
             this.Messages.DefaultFactory = this.DefaultMessageFactory;
         }
 

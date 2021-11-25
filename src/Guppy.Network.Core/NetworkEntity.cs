@@ -42,7 +42,7 @@ namespace Guppy.Network
             base.Create(provider);
 
             this.Messages = new MessageManager();
-            this.Messages.Signer = this.DefaultMessageSigner;
+            this.Messages.CustomSigner = this.DefaultMessageSigner;
             this.Messages.DefaultFactory = this.DefaultMessageFactory;
         }
 

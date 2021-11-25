@@ -41,13 +41,13 @@ namespace Guppy.Network
         {
             public static class Channel
             {
-                public static readonly UInt32 UserJoined = "user:joined".xxHash();
-                public static readonly UInt32 UserLeft = "user:left".xxHash();
+                public static readonly Byte UserJoined = 0x0;
+                public static readonly Byte UserLeft   = 0x1;
 
-                public static readonly UInt32 CreateNetworkEntity = "network-scene:network-entity:create".xxHash();
-                public static readonly UInt32 UpdateNetworkEntity = "network-scene:network-entity:update".xxHash();
-                public static readonly UInt32 PingNetworkEntity = "network-scene:network-entity:ping".xxHash();
-                public static readonly UInt32 DeleteNetworkEntity = "network-scene:network-entity:delete".xxHash();
+                public static readonly Byte CreateNetworkEntity = 0x2;
+                public static readonly Byte UpdateNetworkEntity = 0x3;
+                public static readonly Byte PingNetworkEntity   = 0x4;
+                public static readonly Byte DeleteNetworkEntity = 0x5;
             }
 
             public static class NetworkEntity

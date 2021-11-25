@@ -53,7 +53,7 @@ namespace Guppy.Network.Channels
         #endregion
 
         #region Message Handlers
-        private void ReadUserJoinedMessage(MessageTypeManager sender, NetIncomingMessage im)
+        private void ReadUserJoinedMessage(MessageTypeManager<Byte> sender, NetIncomingMessage im)
         {
             var user = _allUsers.GetOrCreate(im.ReadGuid());
             user.TryRead(im);
@@ -63,7 +63,7 @@ namespace Guppy.Network.Channels
             Console.WriteLine($"Added Users: {this.Users.Count}");
         }
 
-        private void ReadUserLeftMessage(MessageTypeManager sender, NetIncomingMessage im)
+        private void ReadUserLeftMessage(MessageTypeManager<Byte> sender, NetIncomingMessage im)
         {
             var user = this.Users.GetById(im.ReadGuid());
             this.Users.TryRemove(user);

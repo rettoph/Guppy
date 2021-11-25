@@ -32,7 +32,7 @@ namespace Guppy.Network.Interfaces
         /// The primary message manager, responsible for creating 
         /// messages to be sent and recieved by varius network services.
         /// </summary>
-        MessageManager Messages { get; }
+        MessageManager<Byte> Messages { get; }
         #endregion
     }
 }

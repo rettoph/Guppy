@@ -50,7 +50,7 @@ namespace Guppy.Network.Pipes
             base.Create(provider);
 
             this.Messages = new MessageManager();
-            this.Messages.Signer = _channel.SignMessage;
+            this.Messages.CustomSigner = _channel.SignMessage;
         }
 
         protected override void PreInitialize(GuppyServiceProvider provider)
