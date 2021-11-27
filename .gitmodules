@@ -4,3 +4,6 @@
 [submodule "libraries/DotNetUtils"]
 	path = libraries/DotNetUtils
 	url = https://github.com/rettoph/DotNetUtils
+[submodule "libraries\\LiteNetLib"]
+	path = libraries\\LiteNetLib
+	url = https://github.com/RevenantX/LiteNetLib
