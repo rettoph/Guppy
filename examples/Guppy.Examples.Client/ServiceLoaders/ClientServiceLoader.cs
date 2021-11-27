@@ -18,22 +18,25 @@ using log4net.Core;
 using Microsoft.Xna.Framework;
 using Guppy.CommandLine.Extensions.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
+using DotNetUtils.General.Interfaces;
+using Guppy.DependencyInjection.Interfaces;
 
 namespace Guppy.Examples.Client.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ClientServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assmelbyHelper, GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<ExampleGame>(method: p => new ExampleClientGame(), priority: 1);
+            services.RegisterTypeFactory<ExampleGame>((p, t) => new ExampleClientGame())
+                .SetPriority(1);
 
             services.RegisterSetup<NetPeerConfiguration>((config, p, c) =>
             {
                 config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
             });
 
-            services.RegisterSetup((Commands commands, GuppyServiceProvider p, IServiceConfiguration c) =>
+            services.RegisterSetup((CommandService commands, GuppyServiceProvider p, IServiceConfiguration c) =>
             {
                 var hello = new Command("hello", "This is the base hello command")
                 {

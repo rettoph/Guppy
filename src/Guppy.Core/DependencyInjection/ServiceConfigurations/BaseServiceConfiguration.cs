@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection.Actions;
-using Guppy.DependencyInjection.Dtos;
+using Guppy.DependencyInjection.Builders;
+using Guppy.DependencyInjection.Interfaces;
 using Guppy.DependencyInjection.ServiceManagers;
 using Guppy.DependencyInjection.TypeFactories;
 using Guppy.Utilities;
@@ -14,7 +15,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
     internal abstract class BaseServiceConfiguration : IServiceConfiguration
     {
         #region Protected Fields
-        protected readonly ServiceConfigurationDto context;
+        protected readonly ServiceConfigurationBuilder context;
         #endregion
 
         #region Public Properties
@@ -36,7 +37,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
 
         #region Constructors
         internal BaseServiceConfiguration(
-            ServiceConfigurationDto context,
+            ServiceConfigurationBuilder context,
             Dictionary<Type, ITypeFactory> factories,
             IEnumerable<SetupAction> actions)
         {

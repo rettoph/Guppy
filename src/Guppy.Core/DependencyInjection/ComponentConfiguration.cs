@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection.Dtos;
+﻿using Guppy.DependencyInjection.Builders;
+using Guppy.DependencyInjection.Interfaces;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using System;
@@ -16,7 +17,7 @@ namespace Guppy.DependencyInjection
         public readonly Int32 Order;
 
         internal ComponentConfiguration(
-            ComponentConfigurationDto context,
+            ComponentConfigurationBuilder context,
             Dictionary<ServiceConfigurationKey, IServiceConfiguration> serviceConfigurations,
             IEnumerable<ComponentFilter> componentFilters)
         {
@@ -26,7 +27,6 @@ namespace Guppy.DependencyInjection
             this.ComponentFilters = componentFilters
                 .Where(f => context.ComponentServiceConfigurationKey.Inherits(f.ComponentServiceConfigurationKey))
                 .Where(f => f.Validator(this.ComponentServiceConfiguration))
-                .OrderBy(f => f.Order)
                 .ToArray();
         }
 

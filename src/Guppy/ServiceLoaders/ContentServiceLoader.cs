@@ -3,6 +3,7 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterTypeFactory<ContentService>(p => new ContentService());
 
-            services.RegisterSingleton<ContentService>();
+            services.RegisterService<ContentService>().SetLifetime(ServiceLifetime.Singleton);
 
             services.RegisterSetup<ContentService>((content, p, c) =>
             {

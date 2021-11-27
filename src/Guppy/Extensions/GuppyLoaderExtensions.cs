@@ -20,10 +20,16 @@ namespace Guppy.Extensions
     {
         public static GuppyLoader ConfigureMonoGame(this GuppyLoader loader, GraphicsDeviceManager graphics, ContentManager content, GameWindow window)
         {
-            loader.Services.RegisterSingleton<GraphicsDeviceManager>(graphics);
-            loader.Services.RegisterSingleton<ContentManager>(content);
-            loader.Services.RegisterSingleton<GameWindow>(window);
-            loader.Services.RegisterSingleton<GraphicsDevice>(graphics.GraphicsDevice);
+            loader.Services.RegisterTypeFactory<GraphicsDeviceManager>(p => graphics);
+            loader.Services.RegisterTypeFactory<ContentManager>(p => content);
+            loader.Services.RegisterTypeFactory<GameWindow>(p => window);
+            loader.Services.RegisterTypeFactory<GraphicsDevice>(p => graphics.GraphicsDevice);
+
+            loader.Services.RegisterService<GraphicsDeviceManager>().SetLifetime(ServiceLifetime.Singleton);
+            loader.Services.RegisterService<ContentManager>().SetLifetime(ServiceLifetime.Singleton);
+            loader.Services.RegisterService<GameWindow>().SetLifetime(ServiceLifetime.Singleton);
+            loader.Services.RegisterService<GraphicsDevice>().SetLifetime(ServiceLifetime.Singleton);
+
             loader.RegisterServiceLoader(new MonoGameServiceLoader());
             loader.RegisterServiceLoader(new ContentServiceLoader());
 

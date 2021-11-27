@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DotNetUtils.General.Interfaces;
+
 using GuppyServiceCollection = Guppy.DependencyInjection.GuppyServiceCollection;
 using GuppyServiceProvider = Guppy.DependencyInjection.GuppyServiceProvider;
 
@@ -24,15 +26,14 @@ namespace Guppy.Extensions.DependencyInjection
             typeof(Game).ValidateAssignableFrom(game);
 
             factory ??= p => Activator.CreateInstance(game);
-            services.RegisterTypeFactory(
-                type: game, 
-                method: factory,
-                priority: priority);
-            services.RegisterSingleton(
-                key: key ?? ServiceConfigurationKey.From(type: game), 
-                typeFactory: game,
-                baseCacheKey: Guppy.Constants.ServiceConfigurationKeys.GameBaseCacheKey,
-                priority: priority);
+            services.RegisterTypeFactory(game, factory)
+                .SetPriority(priority);
+
+            services.RegisterService(key ?? ServiceConfigurationKey.From(type: game))
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(game)
+                .SetBaseCacheKey(Guppy.Constants.ServiceConfigurationKeys.GameBaseCacheKey)
+                .SetPriority(priority);
         }
         public static void RegisterGame<TGame>(
             this GuppyServiceCollection services, 
@@ -58,15 +59,15 @@ namespace Guppy.Extensions.DependencyInjection
             typeof(IScene).ValidateAssignableFrom(scene);
 
             factory ??= p => Activator.CreateInstance(scene);
-            services.RegisterTypeFactory(
-                type: scene, 
-                method: factory, 
-                priority: priority);
-            services.RegisterScoped(
-                key: key ?? ServiceConfigurationKey.From(type: scene),
-                typeFactory: scene,
-                baseCacheKey: Guppy.Constants.ServiceConfigurationKeys.SceneBaseCacheKey,
-                priority: priority);
+
+            services.RegisterTypeFactory(scene, factory)
+                .SetPriority(priority);
+
+            services.RegisterService(key ?? ServiceConfigurationKey.From(type: scene))
+                .SetLifetime(ServiceLifetime.Scoped)
+                .SetTypeFactory(scene)
+                .SetBaseCacheKey(Guppy.Constants.ServiceConfigurationKeys.SceneBaseCacheKey)
+                .SetPriority(priority);
         }
         public static void RegisterScene<TScene>(
             this GuppyServiceCollection services, 

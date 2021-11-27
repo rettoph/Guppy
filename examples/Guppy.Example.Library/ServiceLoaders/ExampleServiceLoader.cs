@@ -18,7 +18,7 @@ namespace Guppy.Example.Library.ServiceLoaders
     [AutoLoad]
     internal sealed class ExampleServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<ExampleGame>(p => new ExampleGame());
             services.RegisterTypeFactory<ExampleScene>(p => new ExampleScene());
@@ -26,7 +26,7 @@ namespace Guppy.Example.Library.ServiceLoaders
 
             services.RegisterGame<ExampleGame>();
             services.RegisterScene<ExampleScene>();
-            services.RegisterTransient<Ball>();
+            services.RegisterService<Ball>();
 
             services.RegisterSetup<ILog>((l, p, s) =>
             {

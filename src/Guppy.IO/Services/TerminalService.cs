@@ -24,7 +24,7 @@ namespace Guppy.IO.Services
     {
         #region Private Fields
         private SpriteFont _font;
-        private CommandService _commands;
+        private Lazy<CommandService> _commands;
         private GameWindow _window;
         private GraphicsDevice _graphics;
         private SpriteBatch _spriteBatch;
@@ -104,7 +104,7 @@ namespace Guppy.IO.Services
 
             _font = provider.GetContent<SpriteFont>("guppy:font:debug");
 
-            provider.Service(out _commands);
+            provider.ServiceLazy(out _commands);
             provider.Service(out _window);
             provider.Service(out _graphics);
             provider.Service(out _primitiveBatch);
@@ -360,7 +360,7 @@ namespace Guppy.IO.Services
 
                     try
                     {
-                        _commands.Invoke(_input);
+                        _commands.Value.Invoke(_input);
                     }
                     catch(Exception err)
                     {

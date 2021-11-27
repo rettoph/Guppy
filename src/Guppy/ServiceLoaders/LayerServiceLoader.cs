@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
@@ -20,9 +21,14 @@ namespace Guppy.ServiceLoaders
             services.RegisterTypeFactory<OrderableList<ILayerable>>(p => new OrderableList<ILayerable>());
 
             // Configure services...
-            services.RegisterTransient<Layer>();
-            services.RegisterScoped<LayerList>();
-            services.RegisterTransient<OrderableList<ILayerable>>();
+            services.RegisterService<Layer>()
+                .SetLifetime(ServiceLifetime.Transient);
+
+            services.RegisterService<LayerList>()
+                .SetLifetime(ServiceLifetime.Scoped);
+
+            services.RegisterService<OrderableList<ILayerable>>()
+                .SetLifetime(ServiceLifetime.Transient);
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

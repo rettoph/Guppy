@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using Guppy.DependencyInjection.Interfaces;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
@@ -24,17 +25,8 @@ namespace Guppy.DependencyInjection
 
             this.ComponentServiceConfigurationKey = componentServiceConfigurationKey;
             this.Method = method;
-            this.Validator = validator ?? DefaultValidator;
+            this.Validator = validator;
             this.Order = order;
         }
-        public ComponentFilter(
-            ServiceConfigurationKey componentServiceConfigurationKey,
-            Func<IEntity, GuppyServiceProvider, Type, Boolean> method,
-            Int32 order) : this(componentServiceConfigurationKey, method, ComponentFilter.DefaultValidator, order)
-        {
-        }
-
-        private static Boolean DefaultValidator(IServiceConfiguration component)
-            => true;
     }
 }

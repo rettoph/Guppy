@@ -5,6 +5,7 @@ using Guppy.Interfaces;
 using log4net;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,9 +22,14 @@ namespace Guppy.ServiceLoaders
             services.RegisterTypeFactory<ILoggerRepository>(p => p.GetService<ILog>(Guppy.Core.Constants.ServiceConfigurationKeys.ILog).Logger.Repository);
             services.RegisterTypeFactory<Hierarchy>(p => (Hierarchy)p.GetService<ILoggerRepository>());
 
-            services.RegisterSingleton<ILog>();
-            services.RegisterSingleton<ILoggerRepository>();
-            services.RegisterSingleton<Hierarchy>();
+            services.RegisterService<ILog>()
+                .SetLifetime(ServiceLifetime.Singleton);
+
+            services.RegisterService<ILoggerRepository>()
+                .SetLifetime(ServiceLifetime.Singleton);
+
+            services.RegisterService<Hierarchy>()
+                .SetLifetime(ServiceLifetime.Singleton);
 
             services.RegisterSetup<ILog>((l, p, s) =>
             { // Mark as configured...

@@ -11,6 +11,7 @@ using log4net;
 using Guppy.Extensions.log4net;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
+using Guppy.DependencyInjection.Interfaces;
 
 namespace Guppy
 {

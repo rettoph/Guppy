@@ -20,6 +20,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.Delegates\DotNetUtils.Delegates.csproj" />
+    <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.General\DotNetUtils.General.csproj" />
     <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.System.Extensions\DotNetUtils.System.Extensions.csproj" />
     <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.System.Helpers\DotNetUtils.System.Helpers.csproj" />
   </ItemGroup>

@@ -17,7 +17,7 @@ namespace Guppy.ServiceLoaders
         public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<SceneList>(p => new SceneList());
-            services.RegisterSingleton<SceneList>();
+            services.RegisterService<SceneList>().SetLifetime(ServiceLifetime.Singleton);
 
             assemblyHelper.Types.GetTypesWithAutoLoadAttribute<IScene>(false).ForEach(s =>
             {

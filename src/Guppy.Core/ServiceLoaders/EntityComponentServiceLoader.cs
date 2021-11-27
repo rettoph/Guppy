@@ -21,7 +21,7 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterTypeFactory<ComponentManager>(p => new ComponentManager());
 
-            services.RegisterTransient<ComponentManager>();
+            services.RegisterService<ComponentManager>();
 
             services.RegisterBuilder<IEntity>((e, p, c) =>
             {

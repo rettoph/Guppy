@@ -12,9 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.General\DotNetUtils.General.csproj" />
     <ProjectReference Include="..\..\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
+    <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
     <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>

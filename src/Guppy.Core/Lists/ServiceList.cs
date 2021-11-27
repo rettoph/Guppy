@@ -11,6 +11,7 @@ using Guppy.Lists.Delegates;
 using Guppy.Enums;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
+using Guppy.DependencyInjection.Interfaces;
 
 namespace Guppy.Lists
 {

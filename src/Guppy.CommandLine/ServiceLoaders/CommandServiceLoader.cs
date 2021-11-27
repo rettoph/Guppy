@@ -3,6 +3,7 @@ using Guppy.CommandLine.Services;
 using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -16,16 +17,16 @@ namespace Guppy.CommandLine.ServiceLoaders
     {
         public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<CommandService>(p => new Services.CommandService());
+            services.RegisterTypeFactory<CommandService>(p => new CommandService());
             services.RegisterTypeFactory<RootCommand>(p => new RootCommand()
             {
                 Name = ">‎"
             });
             services.RegisterTypeFactory<IConsole>(p => new SystemConsole());
 
-            services.RegisterSingleton<CommandService>();
-            services.RegisterSingleton<RootCommand>();
-            services.RegisterSingleton<IConsole>();
+            services.RegisterService<CommandService>().SetLifetime(ServiceLifetime.Singleton);
+            services.RegisterService<RootCommand>().SetLifetime(ServiceLifetime.Singleton);
+            services.RegisterService<IConsole>().SetLifetime(ServiceLifetime.Singleton);
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

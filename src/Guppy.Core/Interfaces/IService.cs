@@ -1,4 +1,5 @@
 ﻿using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Interfaces;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Enums;
 using Guppy.Utilities;

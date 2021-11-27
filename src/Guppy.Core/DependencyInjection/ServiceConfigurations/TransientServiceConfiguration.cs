@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection.Actions;
-using Guppy.DependencyInjection.Dtos;
+using Guppy.DependencyInjection.Builders;
+using Guppy.DependencyInjection.Interfaces;
 using Guppy.DependencyInjection.ServiceManagers;
 using Guppy.DependencyInjection.TypeFactories;
 using System;
@@ -12,7 +13,7 @@ namespace Guppy.DependencyInjection.ServiceConfigurations
     {
         #region Constructors
         public TransientServiceConfiguration(
-            ServiceConfigurationDto context, 
+            ServiceConfigurationBuilder context, 
             Dictionary<Type, ITypeFactory> factories, 
             IEnumerable<SetupAction> actions) : base(context, factories, actions)
         {

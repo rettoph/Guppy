@@ -18,10 +18,12 @@ namespace Guppy.ServiceLoaders
         public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
             services.RegisterTypeFactory<GuppyServiceProvider>(p => p);
-            services.RegisterScoped<GuppyServiceProvider>();
+            services.RegisterService<GuppyServiceProvider>()
+                .SetLifetime(ServiceLifetime.Scoped);
 
             services.RegisterTypeFactory<Settings>(p => new Settings());
-            services.RegisterSingleton<Settings>();
+            services.RegisterService<Settings>()
+                .SetLifetime(ServiceLifetime.Singleton);
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

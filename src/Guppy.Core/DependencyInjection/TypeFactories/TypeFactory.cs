@@ -1,5 +1,6 @@
 ﻿using Guppy.DependencyInjection.Actions;
-using Guppy.DependencyInjection.Dtos;
+using Guppy.DependencyInjection.Builders;
+using Guppy.DependencyInjection.Interfaces;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.DependencyInjection.TypePools;
 using System;
@@ -12,7 +13,7 @@ namespace Guppy.DependencyInjection.TypeFactories
     internal class TypeFactory : ITypeFactory
     {
         #region Private Fields
-        private TypeFactoryDto _context;
+        private TypeFactoryBuilder _context;
         private TypePool _pool;
         private UInt16 _maxPoolSize;
         #endregion
@@ -37,7 +38,7 @@ namespace Guppy.DependencyInjection.TypeFactories
 
         #region Constructor
         internal TypeFactory(
-            TypeFactoryDto context,
+            TypeFactoryBuilder context,
             IEnumerable<BuilderAction> builders)
         {
             _context = context;

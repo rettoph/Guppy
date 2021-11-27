@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using Guppy.DependencyInjection.Interfaces;
+using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.DependencyInjection.ServiceManagers;
 using Guppy.DependencyInjection.TypeFactories;
 using Guppy.Interfaces;
@@ -53,19 +54,20 @@ namespace Guppy.DependencyInjection
             _typeFactories = services.TypeFactories
                 .GroupBy(tf => tf.Type)
                 .Select(g => g.OrderByDescending(tf => tf.Priority).First())
-                .Select(tf => tf.CreateTypeFactory(services.BuilderActions))
+                .Select(tf => tf.Build(services.BuilderActions))
                 .ToDictionary(tf => tf.Type, tf => tf);
 
             // Construct all IServiceConfiguration instances.
             _registeredServices = services.ServiceConfigurations
                 .OrderByDescending(sc => sc.Priority)
-                .Select(sc => sc.CreateServiceConfiguration(_typeFactories, services.SetupActions))
+                .Select(sc => sc.Build(_typeFactories, services.SetupActions))
                 .GroupBy(sc => sc.Key)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            // Convert the internal ComponentConfigurationDtos into live ComponentConfigurations
+            // Convert the internal ComponentConfigurationBuilders into live ComponentConfigurations
+            var componentFilters = services.ComponentFilters.Order().Select(cfb => cfb.Build()).ToList();
             var componentConfigurations = services.ComponentConfigurations
-                .Select(c => c.CreateComponentConfiguration(_registeredServices, services.ComponentFilters));
+                .Select(c => c.Build(_registeredServices, componentFilters));
 
             // Cache all relevant component configurations for each registered service
             _componentConfigurations = new Dictionary<ServiceConfigurationKey, ComponentConfiguration[]>();

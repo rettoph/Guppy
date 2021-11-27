@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.DependencyInjection.ServiceConfigurations;
+using Guppy.DependencyInjection.Interfaces;
 
 namespace Guppy.Lists
 {

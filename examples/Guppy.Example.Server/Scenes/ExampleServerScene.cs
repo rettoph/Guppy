@@ -15,24 +15,6 @@ namespace Guppy.Example.Server.Scenes
         protected override void Initialize(GuppyServiceProvider provider)
         {
             base.Initialize(provider);
-
-            this.peer.Users.OnAdded += this.HandleUserConnected;
-            this.Channel.Users.OnAdded += this.HandleUserJoined;
-
-            this.Layerables.Create<Ball>();
-        }
-        #endregion
-
-        #region Event Handlers
-        private void HandleUserConnected(IServiceList<IUser> sender, IUser args)
-        {
-            this.Channel.Users.TryAdd(args);
-            this.Channel.Pipes.GetOrCreateById(Guid.Empty).Users.TryAdd(args);
-        }
-
-        private void HandleUserJoined(IServiceList<IUser> sender, IUser args)
-        {
-            // throw new NotImplementedException();
         }
         #endregion
     }

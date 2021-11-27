@@ -12,7 +12,7 @@ namespace Guppy.Example.Server
                 .Initialize()
                 .BuildGame<ExampleGame>();
 
-            game.TryStart(false);
+            game.TryStartAsync(false).GetAwaiter().GetResult();
         }
     }
 }

@@ -13,23 +13,20 @@ using Guppy.Extensions.log4net;
 using log4net.Appender;
 using Guppy.Example.Library.Scenes;
 using Guppy.Example.Server.Scenes;
+using DotNetUtils.General.Interfaces;
 
 namespace Guppy.Example.Server.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ServerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
         {
-            services.RegisterTypeFactory<ExampleGame>(method: p => new ExampleServerGame(), priority: 1);
-            services.RegisterTypeFactory<ExampleScene>(method: p => new ExampleServerScene(), priority: 1);
+            services.RegisterTypeFactory<ExampleGame>(p => new ExampleServerGame())
+                .SetPriority(1);
 
-            services.RegisterSetup<NetPeerConfiguration>((config, p, c) =>
-            {
-                config.Port = 1337;
-                config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-                config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
-            });
+            services.RegisterTypeFactory<ExampleScene>(p => new ExampleServerScene())
+                .SetPriority(1);
 
             services.RegisterSetup<ILog>((l, p, s) =>
             {

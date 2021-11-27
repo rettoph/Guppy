@@ -19,7 +19,8 @@ namespace Guppy.ServiceLoaders
             assemblyHelper.Types.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(s =>
             {
                 services.RegisterTypeFactory(s, p => Activator.CreateInstance(s));
-                services.RegisterSingleton(ServiceConfigurationKey.From(s));
+                services.RegisterService(ServiceConfigurationKey.From(s))
+                    .SetLifetime(ServiceLifetime.Singleton);
             });
         }
 

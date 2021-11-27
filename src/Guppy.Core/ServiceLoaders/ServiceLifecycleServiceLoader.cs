@@ -11,6 +11,7 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.DependencyInjection.Actions;
 using Guppy.DependencyInjection.ServiceConfigurations;
 using System.Reflection;
+using Guppy.DependencyInjection.Interfaces;
 
 namespace Guppy.ServiceLoaders
 {
