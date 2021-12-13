@@ -20,7 +20,7 @@ namespace Guppy.Network.Services
             _messages = new Factory<Message>(() => new Message());
         }
 
-        public void SendMessage(UInt16 channelId, IData data, IEnumerable<IData> packets)
+        public void SendMessage(UInt16 channelId, IPacket data, IEnumerable<IPacket> packets)
         {
             Message message =_messages.Create();
 
@@ -37,7 +37,7 @@ namespace Guppy.Network.Services
 
             message.Configuration.DataWriter(om, message.Data);
 
-            foreach(IData packet in message.Packets)
+            foreach(IPacket packet in message.Packets)
             {
                 PacketConfiguration pConfiguration = _packets.GetConfiguration(packet);
 
@@ -50,7 +50,7 @@ namespace Guppy.Network.Services
         {
             Message message = _messages.Create();
 
-            message.ChannelId = im.GetUShort();
+            message.ChannelId = im.GetByte();
             message.Configuration = this.ReadConfiguration(im);
             message.Data = message.Configuration.DataReader(im);
 

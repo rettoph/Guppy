@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.DependencyInjection.ServiceConfigurations;
-using Guppy.DependencyInjection.Interfaces;
+using DotNetUtils.DependencyInjection;
 
 namespace Guppy.Lists
 {
@@ -16,14 +15,14 @@ namespace Guppy.Lists
         where TService : class, IService
     {
         #region Public Properties
-        public ServiceConfigurationKey DefaultChildServiceConfigurationKey { get; set; }
+        public String DefaultChildServiceName { get; set; }
         #endregion
 
         #region Events
-        public new event ItemDelegate<TService> OnCreated
+        public new event ItemDelegate<TService> OnItemCreated
         {
-            add => base.OnCreated += value;
-            remove => base.OnCreated -= value;
+            add => base.OnItemCreated += value;
+            remove => base.OnItemCreated -= value;
         }
         #endregion
 
@@ -32,37 +31,126 @@ namespace Guppy.Lists
         {
             base.PreInitialize(provider);
 
-            this.DefaultChildServiceConfigurationKey = ServiceConfigurationKey.From<TService>();
+            this.DefaultChildServiceName = typeof(TService).FullName;
         }
         #endregion
 
-        #region Create Methods
-        public T Create<T>(ServiceConfigurationKey configurationKey, Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
-            where T : class, TService
-                => this.Create<T>(this.provider, configurationKey, setup, id);
+        #region CreateItem Methods
+        public T CreateItem<T>(
+            String serviceName,
+            Action<T, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, serviceName, customSetup, id);
+        }
+        public virtual TService CreateItem(
+            String serviceName,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+        {
+            return base.CreateItem(this.provider, serviceName, customSetup, id);
+        }
+        public virtual TService CreateItem(
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+        {
+            return base.CreateItem(this.provider, customSetup, id);
+        }
 
-        public TService Create(ServiceConfigurationKey configurationKey, Action<TService, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
-                => this.Create<TService>(this.provider, configurationKey, setup, id);
+        public virtual T CreateItem<T>(
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, customSetup, id);
+        }
+        public virtual T CreateItem<T>(
+            String serviceName,
+            Guid id)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, serviceName, id);
+        }
+        public virtual TService CreateItem(
+            String serviceName,
+            Guid id)
+        {
+            return base.CreateItem(this.provider, serviceName, id);
+        }
+        public virtual TService CreateItem(
+            Guid id)
+        {
+            return base.CreateItem<TService>(this.provider, id);
+        }
 
-        public T Create<T>(Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
-            where T : class, TService
-                => this.Create<T>(this.provider, ServiceConfigurationKey.From<T>(), setup, id);
+        public virtual T CreateItem<T>(
+            Guid id)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, id);
+        }
 
-        public TService Create(Action<TService, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
-                => this.Create<TService>(this.provider, this.DefaultChildServiceConfigurationKey, setup, id);
+        public virtual T CreateItem<T>(
+            String serviceName,
+            Action<T, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, serviceName, customSetup);
+        }
+        public virtual TService CreateItem(
+            String serviceName,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+        {
+            return base.CreateItem(this.provider, serviceName, customSetup);
+        }
+        public virtual TService CreateItem(
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+        {
+            return base.CreateItem(this.provider, customSetup);
+        }
+
+        public virtual T CreateItem<T>(
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, customSetup);
+        }
+
+        public virtual T CreateItem<T>(
+            String serviceName)
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider, serviceName);
+        }
+        public virtual TService CreateItem(
+            String serviceName)
+        {
+            return base.CreateItem(this.provider, serviceName);
+        }
+        public virtual TService CreateItem()
+        {
+            return base.CreateItem(this.provider);
+        }
+
+        public virtual T CreateItem<T>()
+                where T : class, TService
+        {
+            return base.CreateItem<T>(this.provider);
+        }
         #endregion
 
         #region GetOrCreateById Methods
-        public T GetOrCreateById<T>(Guid id, ServiceConfigurationKey configurationKey)
+        public T GetOrCreateItemById<T>(Guid id, String serviceName)
             where T : class, TService
-                => this.GetById<T>(id) ?? this.Create<T>(configurationKey, null, id);
+                => this.GetById<T>(id) ?? this.CreateItem<T>(serviceName, id);
 
-        public TService GetOrCreateById(Guid id, ServiceConfigurationKey configurationKey)
-            => this.GetOrCreateById<TService>(id, configurationKey);
+        public TService GetOrCreateById(Guid id, String serviceName)
+            => this.GetOrCreateItemById<TService>(id, serviceName);
 
         public T GetOrCreateById<T>(Guid id)
             where T : class, TService
-                => this.GetById<T>(id) ?? this.Create<T>(null, id);
+                => this.GetById<T>(id) ?? this.CreateItem<T>(id);
 
         public TService GetOrCreateById(Guid id)
             => this.GetOrCreateById<TService>(id);

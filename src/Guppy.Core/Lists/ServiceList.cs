@@ -10,8 +10,7 @@ using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
 using Guppy.Enums;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.DependencyInjection.ServiceConfigurations;
-using Guppy.DependencyInjection.Interfaces;
+using DotNetUtils.DependencyInjection;
 
 namespace Guppy.Lists
 {
@@ -77,7 +76,10 @@ namespace Guppy.Lists
         /// <inheritdoc />
         public event OnEventDelegate<IServiceList<TService>, TService> OnRemoved;
 
-        protected event ItemDelegate<TService> OnCreated;
+        /// <summary>
+        /// Simple event invoked when an item is created.
+        /// </summary>
+        protected event ItemDelegate<TService> OnItemCreated;
         #endregion
 
         #region Lifecycle Methods
@@ -172,30 +174,172 @@ namespace Guppy.Lists
             while (this.Any()) // Auto remove all elements
                 this.TryRemove(_list.First());
         }
+        #endregion
 
-        protected virtual T Create<T>(
+        #region CreateItem Methods
+        protected virtual T CreateItem<T>(
             GuppyServiceProvider provider,
-            ServiceConfigurationKey configurationKey,
-            Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null,
-            Guid? id = null)
-            where T : class, TService
+            String serviceName,
+            Action<T, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+                where T : class, TService
         {
-            var instance = provider.GetService<T>(configurationKey, (i, p, d) =>
+            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
             {
-                if (id.HasValue)
-                    i.Id = id.Value;
+                i.Id = id;
 
-                // TODO: REMOVE NULL CHECK
-                setup?.Invoke(i, p, d);
+                customSetup.Invoke(i, p, d);
                 _creating.Add(i);
 
-                this.OnCreated?.Invoke(i);
+                this.OnItemCreated?.Invoke(i);
             });
 
             this.TryAdd(instance);
             _creating.Remove(instance);
 
             return instance;
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            String serviceName,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+        {
+            return this.CreateItem<TService>(provider, serviceName, customSetup, id);
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+        {
+            return this.CreateItem<TService>(provider, typeof(TService).FullName, customSetup, id);
+        }
+
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Guid id)
+                where T : class, TService
+        {
+            return this.CreateItem<T>(provider, typeof(T).FullName, customSetup, id);
+        }
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider,
+            String serviceName,
+            Guid id)
+                where T : class, TService
+        {
+            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
+            {
+                i.Id = id;
+
+                _creating.Add(i);
+
+                this.OnItemCreated?.Invoke(i);
+            });
+
+            this.TryAdd(instance);
+            _creating.Remove(instance);
+
+            return instance;
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            String serviceName,
+            Guid id)
+        {
+            return this.CreateItem<TService>(provider, serviceName, id);
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            Guid id)
+        {
+            return this.CreateItem<TService>(provider, typeof(TService).FullName, id);
+        }
+
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider,
+            Guid id)
+                where T : class, TService
+        {
+            return this.CreateItem<T>(provider, typeof(T).FullName, id);
+        }
+
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider,
+            String serviceName,
+            Action<T, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+                where T : class, TService
+        {
+            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
+            {
+                customSetup.Invoke(i, p, d);
+                _creating.Add(i);
+
+                this.OnItemCreated?.Invoke(i);
+            });
+
+            this.TryAdd(instance);
+            _creating.Remove(instance);
+
+            return instance;
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            String serviceName,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+        {
+            return this.CreateItem<TService>(provider, serviceName, customSetup);
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+        {
+            return this.CreateItem<TService>(provider, typeof(TService).FullName, customSetup);
+        }
+
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider,
+            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+                where T : class, TService
+        {
+            return this.CreateItem<T>(provider, typeof(T).FullName, customSetup);
+        }
+
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider,
+            String serviceName)
+                where T : class, TService
+        {
+            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
+            {
+                _creating.Add(i);
+
+                this.OnItemCreated?.Invoke(i);
+            });
+
+            this.TryAdd(instance);
+            _creating.Remove(instance);
+
+            return instance;
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider,
+            String serviceName)
+        {
+            return this.CreateItem<TService>(provider, serviceName);
+        }
+        protected virtual TService CreateItem(
+            GuppyServiceProvider provider)
+        {
+            return this.CreateItem<TService>(provider, typeof(TService).FullName);
+        }
+
+        protected virtual T CreateItem<T>(
+            GuppyServiceProvider provider)
+                where T : class, TService
+        {
+            return this.CreateItem<T>(provider, typeof(T).FullName);
         }
         #endregion
 

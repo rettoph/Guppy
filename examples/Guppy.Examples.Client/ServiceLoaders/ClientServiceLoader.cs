@@ -3,7 +3,6 @@ using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Example.Library;
 using Guppy.Interfaces;
-using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,61 +16,58 @@ using Guppy.IO.Extensions.log4net;
 using log4net.Core;
 using Microsoft.Xna.Framework;
 using Guppy.CommandLine.Extensions.DependencyInjection;
-using Guppy.DependencyInjection.ServiceConfigurations;
 using DotNetUtils.General.Interfaces;
-using Guppy.DependencyInjection.Interfaces;
+using Guppy.DependencyInjection.Builders;
 
 namespace Guppy.Examples.Client.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ClientServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assmelbyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assmelbyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ExampleGame>((p, t) => new ExampleClientGame())
+            services.RegisterTypeFactory<ExampleGame>()
+                .SetDefaultConstructor<ExampleClientGame>()
                 .SetPriority(1);
 
-            services.RegisterSetup<NetPeerConfiguration>((config, p, c) =>
-            {
-                config.EnableMessageType(NetIncomingMessageType.VerboseDebugMessage);
-            });
-
-            services.RegisterSetup((CommandService commands, GuppyServiceProvider p, IServiceConfiguration c) =>
-            {
-                var hello = new Command("hello", "This is the base hello command")
+            services.RegisterSetup<CommandService>()
+                .SetMethod((commands, _, _) =>
                 {
-                };
+                    var hello = new Command("hello", "This is the base hello command")
+                    {
+                    };
 
-                var world = new Command("world", "Hello World!")
-                {
-                };
+                    var world = new Command("world", "Hello World!")
+                    {
+                    };
 
-                var dolly = new Command("dolly", "Hello, Dolly.")
-                {
-                };
+                    var dolly = new Command("dolly", "Hello, Dolly.")
+                    {
+                    };
 
-                hello.AddCommand(world);
-                hello.AddCommand(dolly);
+                    hello.AddCommand(world);
+                    hello.AddCommand(dolly);
 
-                commands.Get().Add(hello);
-                commands.Get().Add(new Command("test", "This is a test command")
-                {
-                    new Argument<string>("input", "This is a test argument"),
+                    commands.Get().Add(hello);
+                    commands.Get().Add(new Command("test", "This is a test command")
+                    {
+                        new Argument<string>("input", "This is a test argument"),
+                    });
                 });
-            });
 
-            services.RegisterSetup<ILog>((l, p, s) =>
-            {
-                l.ConfigureTerminalAppender(
-                    p, 
-                    (Level.Fatal, Color.Red),
-                    (Level.Error, Color.Red),
-                    (Level.Warn, Color.Yellow),
-                    (Level.Info, Color.White),
-                    (Level.Debug, Color.Magenta),
-                    (Level.Verbose, Color.Cyan)
-                );
-            });
+            services.RegisterSetup<ILog>()
+                .SetMethod((l, p, _) =>
+                {
+                    l.ConfigureTerminalAppender(
+                        p,
+                        (Level.Fatal, Color.Red),
+                        (Level.Error, Color.Red),
+                        (Level.Warn, Color.Yellow),
+                        (Level.Info, Color.White),
+                        (Level.Debug, Color.Magenta),
+                        (Level.Verbose, Color.Cyan)
+                    );
+                });
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

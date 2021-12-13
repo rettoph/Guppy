@@ -111,8 +111,8 @@ namespace Guppy.IO.Services
             provider.Service(out _mouse);
             provider.Service(out _keyboard);
             provider.Service(out _inputCommands);
-            provider.Service(Guppy.Constants.ServiceConfigurationKeys.TransientSpritebatch, out _spriteBatch);
-            provider.Service(Guppy.Constants.ServiceConfigurationKeys.TransientCamera, out _camera);
+            provider.Service(Guppy.Constants.ServiceNames.TransientSpritebatch, out _spriteBatch);
+            provider.Service(Guppy.Constants.ServiceNames.TransientCamera, out _camera);
 
             _lines = new TerminalString[256];
             _lineIndex = -1;

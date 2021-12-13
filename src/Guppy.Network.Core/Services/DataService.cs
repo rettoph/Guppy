@@ -21,8 +21,8 @@ namespace Guppy.Network.Services
         {
             this.Configurations = configurations;
 
-            _idsConfigurations = this.Configurations.ToValueDictionary(c => c.Id);
-            _typesConfigurations = this.Configurations.ToValueDictionary(c => c.DataType);
+            _idsConfigurations = this.Configurations.ToDictionaryByValue(c => c.Id);
+            _typesConfigurations = this.Configurations.ToDictionaryByValue(c => c.DataType);
         }
 
         public TDataConfiguration ReadConfiguration(NetDataReader im)
@@ -47,7 +47,7 @@ namespace Guppy.Network.Services
             return _typesConfigurations[dataType];
         }
 
-        public TDataConfiguration GetConfiguration(IData data)
+        public TDataConfiguration GetConfiguration(IPacket data)
         {
             return _typesConfigurations[data.GetType()];
         }

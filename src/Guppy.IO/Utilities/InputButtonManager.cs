@@ -22,7 +22,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Constructors
-        internal InputButtonManager()
+        public InputButtonManager()
         {
         }
         #endregion

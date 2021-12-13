@@ -1,7 +1,6 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Example.Library.Scenes;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Network;
 using System;
 
 namespace Guppy.Example.Library
@@ -9,7 +8,7 @@ namespace Guppy.Example.Library
     public class ExampleGame : Game
     {
         #region Private Fields
-        private Peer _peer;
+        //private Peer _peer;
         #endregion
 
         #region Lifecycle Methods
@@ -17,7 +16,7 @@ namespace Guppy.Example.Library
         {
             base.Initialize(provider);
 
-            provider.Service(out _peer);
+            //provider.Service(out _peer);
         }
         #endregion
 

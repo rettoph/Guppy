@@ -14,50 +14,54 @@ using log4net.Appender;
 using Guppy.Example.Library.Scenes;
 using Guppy.Example.Server.Scenes;
 using DotNetUtils.General.Interfaces;
+using Guppy.DependencyInjection.Builders;
 
 namespace Guppy.Example.Server.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ServerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ExampleGame>(p => new ExampleServerGame())
+            services.RegisterTypeFactory<ExampleGame>()
+                .SetDefaultConstructor<ExampleServerGame>()
                 .SetPriority(1);
 
-            services.RegisterTypeFactory<ExampleScene>(p => new ExampleServerScene())
+            services.RegisterTypeFactory<ExampleScene>()
+                .SetDefaultConstructor<ExampleServerScene>()
                 .SetPriority(1);
 
-            services.RegisterSetup<ILog>((l, p, s) =>
-            {
-                l.SetLevel(Level.Verbose);
-                l.ConfigureManagedColoredConsoleAppender(new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        BackColor = ConsoleColor.Red,
-                        ForeColor = ConsoleColor.White,
-                        Level = Level.Fatal
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Red,
-                        Level = Level.Error
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Yellow,
-                        Level = Level.Warn
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.White,
-                        Level = Level.Info
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Magenta,
-                        Level = Level.Debug
-                    }, new ManagedColoredConsoleAppender.LevelColors()
-                    {
-                        ForeColor = ConsoleColor.Cyan,
-                        Level = Level.Verbose
-                    });
-            });
+            services.RegisterSetup<ILog>()
+                .SetMethod((l, p, s) =>
+                {
+                    l.SetLevel(Level.Verbose);
+                    l.ConfigureManagedColoredConsoleAppender(new ManagedColoredConsoleAppender.LevelColors()
+                        {
+                            BackColor = ConsoleColor.Red,
+                            ForeColor = ConsoleColor.White,
+                            Level = Level.Fatal
+                        }, new ManagedColoredConsoleAppender.LevelColors()
+                        {
+                            ForeColor = ConsoleColor.Red,
+                            Level = Level.Error
+                        }, new ManagedColoredConsoleAppender.LevelColors()
+                        {
+                            ForeColor = ConsoleColor.Yellow,
+                            Level = Level.Warn
+                        }, new ManagedColoredConsoleAppender.LevelColors()
+                        {
+                            ForeColor = ConsoleColor.White,
+                            Level = Level.Info
+                        }, new ManagedColoredConsoleAppender.LevelColors()
+                        {
+                            ForeColor = ConsoleColor.Magenta,
+                            Level = Level.Debug
+                        }, new ManagedColoredConsoleAppender.LevelColors()
+                        {
+                            ForeColor = ConsoleColor.Cyan,
+                            Level = Level.Verbose
+                        });
+                });
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

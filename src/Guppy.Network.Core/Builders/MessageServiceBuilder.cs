@@ -10,14 +10,14 @@ using System.Text;
 
 namespace Guppy.Network.Builders
 {
-    public class MessageServiceBuilder : DataServiceBuilder<MessageService, MessageConfigurationBuilder, MessageConfiguration>
+    public class MessageServiceBuilder : DataServiceBuilder<MessageService, MessageConfiguration>
     {
         public override MessageService Build()
         {
             // Mutate the registered configurations as needed...
             var configurations = this.configurations
                 .PrioritizeBy(p => p.Name)
-                .PrioritizeBy(p => p.DataType)
+                .PrioritizeBy(p => p.Type)
                 .AutoIncrementIds()
                 .PrioritizeBy(p => p.Id)
                 .ToList();

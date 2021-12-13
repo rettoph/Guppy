@@ -1,9 +1,9 @@
 ﻿using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Utilities;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,11 +13,15 @@ namespace Guppy.ServiceLoaders
     [AutoLoad]
     internal sealed class GameServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            assemblyHelper.Types.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(g =>
+            assemblyHelper.Types.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(gameType =>
             {
-                services.RegisterGame(game: g);
+                services.RegisterGame(game: gameType)
+                    .SetTypeFactory(factory =>
+                    {
+                        factory.SetMethod(p => Activator.CreateInstance(gameType) as Game);
+                    });
             });
         }
 

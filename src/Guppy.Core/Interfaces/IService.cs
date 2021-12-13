@@ -1,6 +1,5 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Interfaces;
-using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using DotNetUtils.DependencyInjection;
+using Guppy.DependencyInjection;
 using Guppy.Enums;
 using Guppy.Utilities;
 using System;
@@ -13,7 +12,7 @@ namespace Guppy.Interfaces
     {
         #region Properties
         ServiceStatus Status { get; }
-        IServiceConfiguration ServiceConfiguration { get; set; }
+        ServiceConfiguration<GuppyServiceProvider> ServiceConfiguration { get; set; }
         Guid Id { get; set; }
         #endregion
 

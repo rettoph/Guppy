@@ -6,22 +6,28 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
-using Microsoft.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
+using DotNetUtils.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class LayerableServiceCollection : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<LayerableList>(p => new LayerableList());
-            services.RegisterService<LayerableList>().SetLifetime(ServiceLifetime.Scoped);
+            services.RegisterService<LayerableList>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<LayerableList>();
+                });
 
-            services.RegisterSetup<ILayerable>((l, p, c) =>
-            {
-                p.GetService<LayerableList>().TryAdd(l);
-            });
+            services.RegisterSetup<ILayerable>()
+                .SetMethod((l, p, c) =>
+                {
+                    p.GetService<LayerableList>().TryAdd(l);
+                });
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

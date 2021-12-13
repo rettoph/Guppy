@@ -23,6 +23,8 @@ namespace Guppy.Network
 
             provider.Service(out _listener);
             provider.Service(out _manager);
+
+            _listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
         #endregion
 
@@ -51,6 +53,13 @@ namespace Guppy.Network
         public void Start(Int32 port)
         {
             _manager.Start(port);
+        }
+        #endregion
+
+        #region Event Methods
+        private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

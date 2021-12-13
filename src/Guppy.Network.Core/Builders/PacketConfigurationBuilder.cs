@@ -18,9 +18,9 @@ namespace Guppy.Network.Builders
             return new PacketConfiguration(
                 this.Id.Value,
                 idBytes,
-                this.DataType,
-                this.DataWriter,
-                this.DataReader);
+                this.Type,
+                this.Writer,
+                this.Reader);
         }
         #endregion
     }

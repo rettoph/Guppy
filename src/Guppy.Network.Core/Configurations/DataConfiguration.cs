@@ -10,16 +10,16 @@ namespace Guppy.Network.Configurations
     {
         public readonly Type DataType;
 
-        public readonly Action<NetDataWriter, IData> DataWriter;
+        public readonly Action<NetDataWriter, IPacket> DataWriter;
 
-        public readonly Func<NetDataReader, IData> DataReader;
+        public readonly Func<NetDataReader, IPacket> DataReader;
 
         internal DataConfiguration(
             UInt16 id,
             Byte[] idBytes,
             Type type,
-            Action<NetDataWriter, IData> writer,
-            Func<NetDataReader, IData> reader) : base(id, idBytes)
+            Action<NetDataWriter, IPacket> writer,
+            Func<NetDataReader, IPacket> reader) : base(id, idBytes)
         {
             this.DataType = type;
             this.DataWriter = writer;

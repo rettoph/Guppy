@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.Extensions.DependencyInjection
 {
-    public static class ServiceProviderExtensions
+    public static class GuppyServiceProviderExtensions
     {
         #region Content Methods
         /// <summary>

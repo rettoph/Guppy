@@ -12,8 +12,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\..\src\Guppy.IO\Guppy.IO.csproj" />
-    <ProjectReference Include="..\..\src\Guppy.Network.Core\Guppy.Network.Core.csproj" />
-    <ProjectReference Include="..\..\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\Guppy.Example.Library\Guppy.Example.Library.csproj" />
   </ItemGroup>

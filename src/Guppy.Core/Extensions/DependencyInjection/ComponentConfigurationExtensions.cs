@@ -1,6 +1,4 @@
 ﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Interfaces;
-using Guppy.DependencyInjection.ServiceConfigurations;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,22 +14,18 @@ namespace Guppy.Extensions.DependencyInjection
             IEntity entity,
             GuppyServiceProvider provider)
         {
-            try
+            foreach(ComponentConfiguration configuration in configurations)
             {
-                // TODO: Find way to make filter more efficient
-                return configurations
-                    .Where(conf => conf.CheckFilters(entity, provider))
-                    .Select(conf => conf.ComponentServiceConfiguration.GetInstance(
-                            provider: provider,
-                            generics: default,
-                            setup: (i, p, c) => (i as IComponent).Entity = entity,
-                            setupOrder: Guppy.Core.Constants.Priorities.PreInitialize - 1
-                        ) as IComponent
-                    );
-            }
-            catch
-            {
-                return default;
+                if(configuration.CheckFilters(entity, provider))
+                {
+                    IComponent component = configuration.ComponentServiceConfiguration.GetInstance(
+                        provider: provider,
+                        customSetup: (i, p, c) => (i as IComponent).Entity = entity,
+                        customSetupOrder: Guppy.Core.Constants.Priorities.PreInitialize - 1
+                    ) as IComponent;
+
+                    yield return component;
+                }
             }
         }
     }

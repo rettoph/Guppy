@@ -1,9 +1,11 @@
-﻿using Guppy.Attributes;
+﻿using DotNetUtils.DependencyInjection;
+using DotNetUtils.General.Interfaces;
+using Guppy.Attributes;
 using Guppy.CommandLine.Services;
 using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -15,18 +17,31 @@ namespace Guppy.CommandLine.ServiceLoaders
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<CommandService>(p => new CommandService());
-            services.RegisterTypeFactory<RootCommand>(p => new RootCommand()
-            {
-                Name = ">‎"
-            });
-            services.RegisterTypeFactory<IConsole>(p => new SystemConsole());
+            services.RegisterTypeFactory<IConsole>()
+                .SetDefaultConstructor<SystemConsole>()
+                .SetPriority(0);
 
-            services.RegisterService<CommandService>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<RootCommand>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<IConsole>().SetLifetime(ServiceLifetime.Singleton);
+            services.RegisterService<CommandService>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<CommandService>();
+                });
+
+            services.RegisterService<RootCommand>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetMethod(_ => new RootCommand()
+                    {
+                        Name = ">‎"
+                    });
+                });
+
+            services.RegisterService<IConsole>()
+                .SetLifetime(ServiceLifetime.Singleton);
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

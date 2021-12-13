@@ -14,8 +14,8 @@ namespace Guppy.Network.Configurations
             UInt16 id, 
             Byte[] idBytes, 
             Type type, 
-            Action<NetDataWriter, IData> writer, 
-            Func<NetDataReader, IData> reader) : base(id, idBytes, type, writer, reader)
+            Action<NetDataWriter, IPacket> writer, 
+            Func<NetDataReader, IPacket> reader) : base(id, idBytes, type, writer, reader)
         {
         }
     }

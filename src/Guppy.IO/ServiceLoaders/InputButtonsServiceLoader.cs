@@ -1,9 +1,10 @@
-﻿using Guppy.Attributes;
+﻿using DotNetUtils.DependencyInjection;
+using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,21 +14,50 @@ namespace Guppy.IO.ServiceLoaders
     [AutoLoad(-1)]
     internal sealed class InputButtonsServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<InputButtonService>(p => new InputButtonService());
-            services.RegisterTypeFactory<InputButtonManager>(p => new InputButtonManager());
-            services.RegisterTypeFactory<MouseService>(p => new MouseService());
-            services.RegisterTypeFactory<KeyboardService>(p => new KeyboardService());
-            services.RegisterTypeFactory<InputCommandService>(p => new InputCommandService());
-            services.RegisterTypeFactory<InputCommand>(p => new InputCommand());
+            services.RegisterService<InputButtonService>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<InputButtonService>();
+                });
 
-            services.RegisterService<InputButtonService>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<InputButtonManager>().SetLifetime(ServiceLifetime.Transient);
-            services.RegisterService<MouseService>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<KeyboardService>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<InputCommandService>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<InputCommand>().SetLifetime(ServiceLifetime.Transient);
+            services.RegisterService<InputButtonManager>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<InputButtonManager>();
+                });
+
+            services.RegisterService<MouseService>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<MouseService>();
+                });
+
+            services.RegisterService<KeyboardService>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<KeyboardService>();
+                });
+
+            services.RegisterService<InputCommandService>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<InputCommandService>();
+                });
+
+            services.RegisterService<InputCommand>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<InputCommand>();
+                });
+
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

@@ -16,7 +16,7 @@ namespace Guppy.Network.Builders
         {
             // Mutate the registered configurations as needed...
             var configurations = this.configurations
-                .PrioritizeBy(p => p.DataType)
+                .PrioritizeBy(p => p.Type)
                 .AutoIncrementIds()
                 .PrioritizeBy(p => p.Id)
                 .ToList();

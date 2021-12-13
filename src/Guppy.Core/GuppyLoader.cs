@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using Guppy.DependencyInjection.Builders;
 
 namespace Guppy
 {
@@ -16,14 +17,14 @@ namespace Guppy
     public sealed class GuppyLoader : IDisposable
     {
         #region Private Fields
-        private GuppyServiceCollection _services;
+        private GuppyServiceProviderBuilder _services;
         private HashSet<IServiceLoader> _serviceLoaders;
         #endregion
 
         #region Public Attributes
         public AssemblyHelper AssemblyHelper { get; private set; }
         public Boolean Initialized { get; private set; }
-        public GuppyServiceCollection Services
+        public GuppyServiceProviderBuilder Services
         {
             get
             {
@@ -48,7 +49,7 @@ namespace Guppy
                 entry, 
                 (withAssembliesReferencing ?? Enumerable.Empty<Assembly>()).Concat(typeof(GuppyLoader).Assembly).ToArray());
 
-            _services = new GuppyServiceCollection();
+            _services = new GuppyServiceProviderBuilder();
 
             _serviceLoaders = new HashSet<IServiceLoader>();
             this.AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
@@ -96,7 +97,7 @@ namespace Guppy
         /// <returns></returns>
         public GuppyServiceProvider BuildServiceProvider()
         {
-            var provider = _services.BuildServiceProvider();
+            var provider = _services.Build();
 
             // Iterate through all contained service loaders and configure the provider
             foreach (IServiceLoader serviceLoader in _serviceLoaders)

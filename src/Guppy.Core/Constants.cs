@@ -10,11 +10,6 @@ namespace Guppy.Core
 {
     public static class Constants
     {
-        public static class ServiceConfigurationKeys
-        {
-            public static readonly ServiceConfigurationKey ILog = ServiceConfigurationKey.From<ILog>();
-        }
-
         public static class Priorities
         {
             public const Int32 PreCreate = -10;

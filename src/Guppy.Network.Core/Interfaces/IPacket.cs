@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Guppy.Network.Interfaces
 {
-    public interface IData
+    public interface IPacket : IDisposable
     {
     }
 }

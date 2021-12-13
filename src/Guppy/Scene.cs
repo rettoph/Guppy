@@ -33,7 +33,7 @@ namespace Guppy
             base.PreInitialize(provider);
 
             _provider = provider;
-            provider.Service(Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue, out _threadQueue);
+            provider.Service(out _threadQueue);
             provider.Service(out _intervals);
 
             this.Layers = provider.GetService<LayerList>();

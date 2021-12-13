@@ -12,19 +12,25 @@ namespace Guppy.Network.ServiceLoaders
     [AutoLoad]
     internal sealed class LiteNetLibServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
-        {
-            #region Register TypeFactories
-            services.RegisterTypeFactory<EventBasedNetListener>(p => new EventBasedNetListener());
-            services.RegisterTypeFactory<NetManager>(p => new NetManager(p.GetService<EventBasedNetListener>()));
-            #endregion
+        public class MyExample { 
+        }
 
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        {
             #region Register Services
             services.RegisterService<EventBasedNetListener>()
-                .SetLifetime(ServiceLifetime.Singleton);
+                .SetLifetime(ServiceLifetime.Singleton)
+                .CreateTypeFactory(factory =>
+                {
+                    factory.SetMethod((_, _) => new EventBasedNetListener());
+                });
 
             services.RegisterService<NetManager>()
-                .SetLifetime(ServiceLifetime.Singleton);
+                .SetLifetime(ServiceLifetime.Singleton)
+                .CreateTypeFactory(factory =>
+                {
+                    factory.SetMethod((p, _) => new NetManager(p.GetService<EventBasedNetListener>()));
+                });
             #endregion
         }
 

@@ -10,15 +10,14 @@ using log4net.Core;
 using log4net;
 using Guppy.Extensions.log4net;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.DependencyInjection.ServiceConfigurations;
-using Guppy.DependencyInjection.Interfaces;
+using DotNetUtils.DependencyInjection;
 
 namespace Guppy
 {
     public abstract class Service : IService, IDisposable
     {
         #region Private Fields
-        private IServiceConfiguration _configuration;
+        private ServiceConfiguration<GuppyServiceProvider> _configuration;
         private Guid _id;
         private ServiceStatus _status;
         #endregion
@@ -28,7 +27,7 @@ namespace Guppy
         #endregion
 
         #region Public Properties
-        public IServiceConfiguration ServiceConfiguration
+        public ServiceConfiguration<GuppyServiceProvider> ServiceConfiguration
         {
             get => _configuration;
             set
@@ -70,7 +69,7 @@ namespace Guppy
         #region Lifecycle Methods
         void IService.TryPreCreate(GuppyServiceProvider provider)
         {
-            this.log = provider.GetService<ILog>(Guppy.Core.Constants.ServiceConfigurationKeys.ILog);
+            this.log = provider.GetService<ILog>();
 
             if (this.ValidateStatus(ServiceStatus.NotCreated))
             {

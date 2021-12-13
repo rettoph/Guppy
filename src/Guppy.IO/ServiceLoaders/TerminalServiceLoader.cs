@@ -1,11 +1,12 @@
-﻿using DotNetUtils.General.Interfaces;
+﻿using DotNetUtils.DependencyInjection;
+using DotNetUtils.General.Interfaces;
 using Guppy.Attributes;
 using Guppy.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Components;
 using Guppy.IO.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -16,23 +17,36 @@ namespace Guppy.IO.ServiceLoaders
 {
     internal sealed class TerminalServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<TerminalService>(p => new TerminalService());
-            services.RegisterTypeFactory<IConsole>(p => p.GetService<TerminalService>()).SetPriority(1);
-            services.RegisterTypeFactory<GameTerminalComponent>(p => new GameTerminalComponent());
+            services.RegisterTypeFactory<IConsole>()
+                .SetMethod(p => p.GetService<TerminalService>())
+                .SetPriority(1);
 
-            services.RegisterService<TerminalService>().SetLifetime(ServiceLifetime.Singleton);
-            services.RegisterService<GameTerminalComponent>().SetLifetime(ServiceLifetime.Transient);
+            services.RegisterService<TerminalService>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<TerminalService>();
+                });
+
+            services.RegisterService<GameTerminalComponent>()
+                .SetLifetime(ServiceLifetime.Transient).SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<GameTerminalComponent>();
+                });
+
 
             services.RegisterComponent<GameTerminalComponent>()
-                .SetEntityServiceConfigurationKey<Game>()
+                .SetAssignableEntityType<Game>()
                 .SetOrder(Guppy.Core.Constants.Orders.ComponentOrder);
 
-            services.RegisterBuilder<Game>((g, p, c) =>
-            {
-                p.GetService<TerminalService>();
-            }, Guppy.Core.Constants.Priorities.PreCreate);
+            services.RegisterBuilder<Game>()
+                .SetOrder(Guppy.Core.Constants.Priorities.PreCreate)
+                .SetMethod((g, p, c) =>
+                {
+                    p.GetService<TerminalService>();
+                });
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

@@ -8,12 +8,12 @@ namespace Guppy.Network
 {
     public class Message
     {
-        public UInt16 ChannelId { get; set; }
+        public Byte ChannelId { get; set; }
 
         public MessageConfiguration Configuration { get; set; }
 
         public IData Data { get; set; }
 
-        public List<IData> Packets { get; set; }
+        public List<IPacket> Packets { get; set; }
     }
 }

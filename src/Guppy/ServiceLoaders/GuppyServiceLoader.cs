@@ -8,28 +8,33 @@ using Guppy.Extensions.DependencyInjection;
 using Guppy.Services;
 using Guppy.Utilities;
 using Guppy.Threading.Utilities;
-using Microsoft.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
+using DotNetUtils.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ThreadQueue>(p => new ThreadQueue());
-            services.RegisterTypeFactory<IntervalInvoker>(p => new IntervalInvoker());
+            services.RegisterTypeFactory<ThreadQueue>()
+                .SetDefaultConstructor<ThreadQueue>();
 
-            services.RegisterService(Constants.ServiceConfigurationKeys.GameUpdateThreadQueue)
+            services.RegisterService<ThreadQueue>(Constants.ServiceNames.GameUpdateThreadQueue)
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory<ThreadQueue>();
+                .SetFactoryType<ThreadQueue>();
 
-            services.RegisterService(Constants.ServiceConfigurationKeys.SceneUpdateThreadQueue)
+            services.RegisterService<ThreadQueue>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetTypeFactory<ThreadQueue>();
+                .SetFactoryType<ThreadQueue>();
 
             services.RegisterService<IntervalInvoker>()
-                .SetLifetime(ServiceLifetime.Scoped);
+                .SetLifetime(ServiceLifetime.Scoped)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<IntervalInvoker>();
+                });
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

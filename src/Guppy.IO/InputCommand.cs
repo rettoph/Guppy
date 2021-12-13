@@ -67,7 +67,7 @@ namespace Guppy.IO
         #endregion
 
         #region Constructor
-        internal InputCommand()
+        public InputCommand()
         {
         }
         #endregion
@@ -79,7 +79,7 @@ namespace Guppy.IO
 
             provider.Service(out _commands);
             provider.Service(out _inputs);
-            provider.Service(Constants.ServiceConfigurationKeys.GameUpdateThreadQueue, out _threadQueue);
+            provider.Service(Constants.ServiceNames.GameUpdateThreadQueue, out _threadQueue);
         }
 
         protected override void Initialize(GuppyServiceProvider provider)

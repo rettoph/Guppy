@@ -1,8 +1,5 @@
 ﻿using Guppy.DependencyInjection;
 using Guppy.Extensions.DependencyInjection;
-using Guppy.Network;
-using Guppy.Network.Interfaces;
-using Lidgren.Network;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

@@ -1,42 +1,61 @@
-﻿using Guppy.DependencyInjection.Builders;
-using Guppy.DependencyInjection.Interfaces;
-using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using DotNetUtils.DependencyInjection;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Guppy.DependencyInjection
 {
-    public class ComponentConfiguration
+    public sealed class ComponentConfiguration
     {
-        public readonly ServiceConfigurationKey EntityServiceConfigurationKey;
-        public readonly IServiceConfiguration ComponentServiceConfiguration;
-        public readonly ComponentFilter[] ComponentFilters;
+        #region Public Properties
+        /// <summary>
+        /// The <see cref="ServiceConfiguration{TServiceProvider}"/> bound to the current component configuration's
+        /// <see cref="ComponentServiceName"/>.
+        /// </summary>
+        public readonly ServiceConfiguration<GuppyServiceProvider> ComponentServiceConfiguration;
+
+        /// <summary>
+        /// All registered entity <see cref="ServiceConfiguration{TServiceProvider}"/> bound to this
+        /// configuration.
+        /// </summary>
+        public readonly ServiceConfiguration<GuppyServiceProvider>[] EntityServiceConfigurations;
+
         public readonly Int32 Order;
 
-        internal ComponentConfiguration(
-            ComponentConfigurationBuilder context,
-            Dictionary<ServiceConfigurationKey, IServiceConfiguration> serviceConfigurations,
-            IEnumerable<ComponentFilter> componentFilters)
-        {
-            this.EntityServiceConfigurationKey = context.EntityServiceConfigurationKey;
-            this.ComponentServiceConfiguration = serviceConfigurations[context.ComponentServiceConfigurationKey];
-            this.Order = context.Order;
-            this.ComponentFilters = componentFilters
-                .Where(f => context.ComponentServiceConfigurationKey.Inherits(f.ComponentServiceConfigurationKey))
-                .Where(f => f.Validator(this.ComponentServiceConfiguration))
-                .ToArray();
-        }
+        /// <summary>
+        /// Every registered filter applicable to the current component configuration.
+        /// </summary>
+        public readonly ComponentFilter[] Filters;
+        #endregion
 
-        public Boolean CheckFilters(IEntity instance, GuppyServiceProvider provider)
+        #region Constructors
+        public ComponentConfiguration(
+            ServiceConfiguration<GuppyServiceProvider>  componentServiceConfiguration,
+            ServiceConfiguration<GuppyServiceProvider>[] entityServiceConfigurations, 
+            Int32 order, 
+            ComponentFilter[] filters)
         {
-            foreach (ComponentFilter filter in this.ComponentFilters)
-                if (!filter.Method(instance, provider, this.ComponentServiceConfiguration.TypeFactory.Type))
+            this.ComponentServiceConfiguration = componentServiceConfiguration;
+            this.EntityServiceConfigurations = entityServiceConfigurations;
+            this.Order = order;
+            this.Filters = filters;  
+        }
+        #endregion
+
+        #region Helper Methods
+        public Boolean CheckFilters(IEntity entity, GuppyServiceProvider provider)
+        {
+            foreach(ComponentFilter filter in this.Filters)
+            {
+                if(!filter.Method(entity, provider, this.ComponentServiceConfiguration))
+                {
                     return false;
+                }
+            }
 
             return true;
         }
+        #endregion
     }
 }

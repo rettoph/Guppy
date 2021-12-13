@@ -1,91 +1,85 @@
-﻿using DotNetUtils.General.Interfaces;
-using Guppy.DependencyInjection.Interfaces;
-using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using DotNetUtils.DependencyInjection;
+using DotNetUtils.General.Interfaces;
 using Guppy.Interfaces;
-using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.DependencyInjection.Builders
 {
-    public class ComponentConfigurationBuilder : IOrderable<ComponentConfigurationBuilder>
+    public sealed class ComponentConfigurationBuilder : IFluentOrderable<ComponentConfigurationBuilder>
     {
         #region Private Fields
-        private ServiceConfigurationKey _entityServiceConfigurationKey;
-        #endregion
-
-        #region Public Fields
-        /// <summary>
-        /// The desired <see cref="IComponent"/>'s <see cref="ServiceConfigurationKey"/>.
-        /// </summary>
-        public readonly ServiceConfigurationKey ComponentServiceConfigurationKey;
+        private Type _assignableEntityType;
         #endregion
 
         #region Public Properties
         /// <summary>
-        /// The desired <see cref="IEntity"/>'s <see cref="ServiceConfigurationKey"/>.
+        /// The ServiceConfiguration name of the Component to be bound.
         /// </summary>
-        public ServiceConfigurationKey EntityServiceConfigurationKey 
-        {
-            get => _entityServiceConfigurationKey;
-            set => this.SetEntityServiceConfigurationKey(value);
-        }
+        public String ComponentServiceName { get; }
 
         /// <summary>
-        /// The order value for this specific descriptor.
-        /// All components will be sorted by priority when created
-        /// for an entity.
+        /// All <see cref="TypeFactory"/>s who's <see cref="TypeFactory.Type"/>
+        /// is <see cref="Type.IsAssignableFrom(Type)"/> will be bound to the defined
+        /// <see cref="ComponentServiceName"/>.
         /// </summary>
+        public Type AssignableEntityType
+        {
+            get => _assignableEntityType;
+            set => this.SetAssignableEntityType(value);
+        }
+
         public Int32 Order { get; set; }
         #endregion
 
-        #region Constructor
-        internal ComponentConfigurationBuilder(ServiceConfigurationKey componentServiceConfigurationKey)
+        #region Constructors
+        internal ComponentConfigurationBuilder(String componentServiceName)
         {
-            this.ComponentServiceConfigurationKey = componentServiceConfigurationKey;
-
-            this.SetEntityServiceConfigurationKey(ServiceConfigurationKey.From<IEntity>());
+            this.ComponentServiceName = componentServiceName;
         }
         #endregion
 
-        /// <summary>
-        /// Set the desired <see cref="IEntity"/>'s <see cref="ServiceConfigurationKey"/>.
-        /// </summary>
-        /// <param name="entityServicConfigurationeKey"></param>
-        /// <returns></returns>
-        public ComponentConfigurationBuilder SetEntityServiceConfigurationKey(ServiceConfigurationKey entityServicConfigurationeKey)
+        #region SetAssignableEntityFactoryType Methods
+        public ComponentConfigurationBuilder SetAssignableEntityType(Type assignableEntityType)
         {
-            typeof(IEntity).ValidateAssignableFrom(entityServicConfigurationeKey.Type);
+            typeof(IEntity).ValidateAssignableFrom(assignableEntityType);
 
-            _entityServiceConfigurationKey = entityServicConfigurationeKey;
+            _assignableEntityType = assignableEntityType;
 
             return this;
         }
-
-        /// <summary>
-        /// Set the desired <see cref="IEntity"/>'s <see cref="ServiceConfigurationKey"/>.
-        /// </summary>
-        /// <param name="entityServicConfigurationeKey"></param>
-        /// <returns></returns>
-        public ComponentConfigurationBuilder SetEntityServiceConfigurationKey<TEntityServicConfigurationeKeyType>(String entityServicConfigurationeKeyName = null)
-            where TEntityServicConfigurationeKeyType : IEntity
+        public ComponentConfigurationBuilder SetAssignableEntityType<TEntity>()
+            where TEntity : IEntity
         {
-            _entityServiceConfigurationKey = ServiceConfigurationKey.From< TEntityServicConfigurationeKeyType>(entityServicConfigurationeKeyName);
+            this.SetAssignableEntityType(typeof(TEntity));
 
             return this;
         }
+        #endregion
 
-        /// <summary>
-        /// Construct a new <see cref="ComponentConfiguration"/> instance based on the internal
-        /// values.
-        /// </summary>
-        /// <param name="serviceConfigurations"></param>
-        /// <param name="componentFilters"></param>
-        /// <returns></returns>
-        internal ComponentConfiguration Build(
-            Dictionary<ServiceConfigurationKey, IServiceConfiguration> serviceConfigurations,
-            IEnumerable<ComponentFilter> componentFilters)
-                => new ComponentConfiguration(this, serviceConfigurations, componentFilters);
+        #region Build Methods
+        public ComponentConfiguration Build(List<ComponentFilter> allFilters, Dictionary<String, ServiceConfiguration<GuppyServiceProvider>> services)
+        {
+            ServiceConfiguration<GuppyServiceProvider> componentServiceConfiguration = services[this.ComponentServiceName];
+
+            ComponentFilter[] filters = allFilters.Where(f => {
+                return componentServiceConfiguration.TypeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(f.AssignableComponentType);
+            }).ToArray();
+
+            Type assignableEntityType = this.AssignableEntityType ?? typeof(IEntity);
+            ServiceConfiguration<GuppyServiceProvider>[] entityConfigurations = services.Values.Where(sc =>
+            {
+                return sc.TypeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(assignableEntityType);
+            }).ToArray();
+
+            return new ComponentConfiguration(
+                componentServiceConfiguration,
+                entityConfigurations,
+                this.Order,
+                filters);
+        }
+        #endregion
     }
 }

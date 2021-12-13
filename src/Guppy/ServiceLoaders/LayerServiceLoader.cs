@@ -6,29 +6,37 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
-using Microsoft.Extensions.DependencyInjection;
+using Guppy.DependencyInjection.Builders;
+using DotNetUtils.DependencyInjection;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class LayerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceCollection services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
         {
-            // Configure factories...
-            services.RegisterTypeFactory<Layer>(p => new Layer());
-            services.RegisterTypeFactory<LayerList>(p => new LayerList());
-            services.RegisterTypeFactory<OrderableList<ILayerable>>(p => new OrderableList<ILayerable>());
-
             // Configure services...
             services.RegisterService<Layer>()
-                .SetLifetime(ServiceLifetime.Transient);
+                .SetLifetime(ServiceLifetime.Transient)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<Layer>();
+                });
 
             services.RegisterService<LayerList>()
-                .SetLifetime(ServiceLifetime.Scoped);
+                .SetLifetime(ServiceLifetime.Scoped)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<LayerList>();
+                });
 
             services.RegisterService<OrderableList<ILayerable>>()
-                .SetLifetime(ServiceLifetime.Transient);
+                .SetLifetime(ServiceLifetime.Transient)
+                .SetTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<OrderableList<ILayerable>>();
+                });
         }
 
         public void ConfigureProvider(GuppyServiceProvider provider)

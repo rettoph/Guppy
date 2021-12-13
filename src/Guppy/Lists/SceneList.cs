@@ -1,9 +1,7 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Interfaces;
-using Guppy.DependencyInjection.ServiceConfigurations;
+﻿using DotNetUtils.DependencyInjection;
+using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Lists.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -88,11 +86,6 @@ namespace Guppy.Lists
         {
             this.Scene?.TryUpdate(gameTime);
         }
-        #endregion
-
-        #region Frame Methods
-        protected override T Create<T>(GuppyServiceProvider provider, ServiceConfigurationKey configurationKey, Action<T, GuppyServiceProvider, IServiceConfiguration> setup = null, Guid? id = null)
-            => base.Create(provider.CreateScope(), configurationKey, setup, id);
         #endregion
 
         #region Events

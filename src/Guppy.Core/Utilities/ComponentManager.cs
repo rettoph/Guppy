@@ -10,7 +10,7 @@ namespace Guppy.Utilities
     public class ComponentManager : Service
     {
         #region Private Fields
-        private Dictionary<ServiceConfigurationKey, IComponent> _components;
+        private Dictionary<String, IComponent> _components;
         #endregion
 
         #region Lifecycle Methods
@@ -26,10 +26,13 @@ namespace Guppy.Utilities
         #region Helper Methods
         internal void BuildDictionary(IEnumerable<IComponent> components)
         {
-            _components = new Dictionary<ServiceConfigurationKey, IComponent>(
-                components.SelectMany(static component => component.ServiceConfiguration.DefaultCacheKeys
-                    .Select(key => new KeyValuePair<ServiceConfigurationKey, IComponent>(key, component))
-                )
+            // throw new NotImplementedException();
+            _components = new Dictionary<String, IComponent>(
+                components.SelectMany(static component =>
+                {
+                    return component.ServiceConfiguration.CacheNames
+                        .Select(name => new KeyValuePair<String, IComponent>(name, component));
+                })
             );
         }
 
@@ -44,12 +47,12 @@ namespace Guppy.Utilities
         public TComponent Get<TComponent>()
             where TComponent : class, IComponent
         {
-            return this.Get<TComponent>(ServiceConfigurationKey.From<TComponent>());
+            return this.Get<TComponent>(typeof(TComponent).FullName);
         }
-        public TComponent Get<TComponent>(ServiceConfigurationKey key)
+        public TComponent Get<TComponent>(String componentName)
             where TComponent : class, IComponent
         {
-            if (_components.TryGetValue(key, out IComponent component) && component is TComponent casted)
+            if (_components.TryGetValue(componentName, out IComponent component) && component is TComponent casted)
             {
                 return casted;
             }

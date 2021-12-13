@@ -40,14 +40,14 @@ namespace Guppy
             base.PreInitialize(provider);
 
             this.Items = provider.GetService<OrderableList<ILayerable>>();
-            this.Items.OnCreated += this.HandleEntityCreated;
+            this.Items.OnItemCreated += this.HandleEntityCreated;
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Items.OnCreated -= this.HandleEntityCreated;
+            this.Items.OnItemCreated -= this.HandleEntityCreated;
             this.Items.TryRelease();
         }
         #endregion
