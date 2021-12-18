@@ -4,6 +4,6 @@
 [submodule "libraries/Minnow"]
 	path = libraries/Minnow
 	url = https://github.com/rettoph/Minnow
-[submodule "libraries\\LiteNetLib"]
-	path = libraries\\LiteNetLib
+[submodule "libraries/LiteNetLib"]
+	path = libraries/LiteNetLib
 	url = https://github.com/RevenantX/LiteNetLib
