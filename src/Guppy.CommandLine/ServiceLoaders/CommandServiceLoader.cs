@@ -22,23 +22,6 @@ namespace Guppy.CommandLine.ServiceLoaders
                 .SetDefaultConstructor<SystemConsole>()
                 .SetPriority(0);
 
-            services.RegisterService<CommandService>()
-                .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<CommandService>();
-                });
-
-            services.RegisterService<RootCommand>()
-                .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
-                {
-                    factory.SetMethod(_ => new RootCommand()
-                    {
-                        Name = ">‎"
-                    });
-                });
-
             services.RegisterService<IConsole>()
                 .SetLifetime(ServiceLifetime.Singleton);
         }

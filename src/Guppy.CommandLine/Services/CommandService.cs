@@ -17,12 +17,26 @@ namespace Guppy.CommandLine.Services
         private IConsole _console;
         #endregion
 
+        #region Constructor
+        public CommandService(IEnumerable<Command> commands)
+        {
+            _root = new RootCommand()
+            {
+                Name = ">‎"
+            };
+
+            foreach(Command command in commands)
+            {
+                _root.AddCommand(command);
+            }
+        }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
 
-            provider.Service(out _root);
             provider.Service(out _console);
         }
         #endregion
