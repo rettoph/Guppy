@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>9.0</LangVersion>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
   </PropertyGroup>
@@ -11,7 +11,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.MonoGame.Extensions\DotNetUtils.MonoGame.Extensions.csproj" />
+    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.MonoGame.Extensions\Minnow.MonoGame.Extensions.csproj" />
     <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
   </ItemGroup>

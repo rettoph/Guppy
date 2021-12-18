@@ -1,11 +1,10 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Lists.Interfaces;
+﻿using Guppy.Lists.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 using System.Linq;
 using Guppy.Interfaces;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy.Lists
 {
@@ -16,7 +15,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

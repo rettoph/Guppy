@@ -1,5 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.IO.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -28,7 +27,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecyle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -38,7 +37,7 @@ namespace Guppy.IO.Services
             _keys = new InputButtonManager[((Keys[])Enum.GetValues(typeof(Keys))).Length];
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 

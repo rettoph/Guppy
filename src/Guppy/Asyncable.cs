@@ -33,7 +33,7 @@ namespace Guppy
                 this.TryStopAsync();
         }
 
-        public async Task TryStartAsync(Boolean draw = false, Int32 period = 10)
+        public virtual async Task TryStartAsync(Boolean draw = false, Int32 period = 16)
         {
             if (_cancelation?.IsCancellationRequested ?? false)
                 throw new Exception("Unable to start Asyncable, already running.");

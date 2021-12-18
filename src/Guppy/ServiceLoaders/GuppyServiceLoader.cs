@@ -1,22 +1,21 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Services;
 using Guppy.Utilities;
 using Guppy.Threading.Utilities;
-using Guppy.DependencyInjection.Builders;
-using DotNetUtils.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<ThreadQueue>()
                 .SetDefaultConstructor<ThreadQueue>();
@@ -37,7 +36,7 @@ namespace Guppy.ServiceLoaders
                 });
         }
 
-        public void ConfigureProvider(GuppyServiceProvider provider)
+        public void ConfigureProvider(ServiceProvider provider)
         {
             // throw new NotImplementedException();
         }

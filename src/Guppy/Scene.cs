@@ -3,21 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Utilities;
 using Guppy.Interfaces;
 using Guppy.Threading.Utilities;
 using Guppy.Utilities.Threading;
 using System.Threading;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy
 {
     public abstract class Scene : Frameable, IScene
     {
         #region Private Fields
-        private GuppyServiceProvider _provider;
+        private ServiceProvider _provider;
         private ThreadQueue _threadQueue;
         private IntervalInvoker _intervals;
         #endregion
@@ -28,7 +27,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -40,7 +39,7 @@ namespace Guppy
             this.Layerables = provider.GetService<LayerableList>();
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 

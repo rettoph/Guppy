@@ -1,30 +1,30 @@
 ﻿using Guppy.Attributes;
+using Guppy.EntityComponent.Attributes;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.EntityComponent.Interfaces;
 using Guppy.Interfaces;
-using Guppy.Utilities;
-using Guppy.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
-using Guppy.DependencyInjection.Builders;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Guppy
 {
-    /// <summary>
-    /// The main Guppy object manager.
-    /// </summary>
-    public sealed class GuppyLoader : IDisposable
+    public class GuppyLoader
     {
         #region Private Fields
-        private GuppyServiceProviderBuilder _services;
-        private HashSet<IServiceLoader> _serviceLoaders;
+        private ServiceProviderBuilder _services;
+        private HashSet<IGuppyLoader> _loaders;
+        private HashSet<IGuppyInitializer> _initializers;
         #endregion
 
         #region Public Attributes
         public AssemblyHelper AssemblyHelper { get; private set; }
         public Boolean Initialized { get; private set; }
-        public GuppyServiceProviderBuilder Services
+        public ServiceProviderBuilder Services
         {
             get
             {
@@ -46,30 +46,43 @@ namespace Guppy
         {
             this.Initialized = false;
             this.AssemblyHelper = new AssemblyHelper(
-                entry, 
+                entry,
                 (withAssembliesReferencing ?? Enumerable.Empty<Assembly>()).Concat(typeof(GuppyLoader).Assembly).ToArray());
 
-            _services = new GuppyServiceProviderBuilder();
+            _services = new ServiceProviderBuilder();
 
-            _serviceLoaders = new HashSet<IServiceLoader>();
-            this.AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IServiceLoader, AutoLoadAttribute>()
-                    .Select(t => Activator.CreateInstance(t) as IServiceLoader)
+            _loaders = new HashSet<IGuppyLoader>();
+            this.AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IGuppyLoader, AutoLoadAttribute>()
+                    .Select(t => Activator.CreateInstance(t) as IGuppyLoader)
                     .ForEach(sl => this.RegisterServiceLoader(sl));
+
+            _initializers = new HashSet<IGuppyInitializer>();
+            this.AssemblyHelper.Types.GetTypesWithAutoLoadAttribute<IGuppyInitializer, AutoLoadAttribute>()
+                .Select(t => Activator.CreateInstance(t) as IGuppyInitializer)
+                .ForEach(sl => this.RegisterInitializer(sl));
         }
         #endregion
 
         #region Helper Methods
+        public void RegisterInitializer(IGuppyInitializer initializer)
+        {
+            if (this.Initialized)
+                throw new InvalidOperationException("Unable to add initizliaers after Guppy has been initialized.");
+
+            _initializers.Add(initializer);
+        }
+
         /// <summary>
         /// Manually add a service loader into Guppy. Note, this only
         /// works pre initialization.
         /// </summary>
         /// <param name="serviceLoader"></param>
-        public void RegisterServiceLoader(IServiceLoader serviceLoader)
+        public void RegisterServiceLoader(IGuppyLoader serviceLoader)
         {
             if (this.Initialized)
                 throw new InvalidOperationException("Unable to add service loaders after Guppy has been initialized.");
 
-            _serviceLoaders.Add(serviceLoader);
+            _loaders.Add(serviceLoader);
         }
 
         /// <summary>
@@ -81,9 +94,13 @@ namespace Guppy
             if (this.Initialized)
                 throw new InvalidOperationException("Unable to run GuppyLoader.Initialize multiple times.");
 
-            // Iterate through all contained service loaders and configure the services
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.RegisterServices(this.AssemblyHelper, this.Services);
+            // Iterate through all GuppyInitializers.
+            // Note, this is where IServiceLoader.RegisterServices gets called now.
+            // See ServiceLoaderGuppyInitializer.cs
+            foreach (IGuppyInitializer initializer in _initializers)
+            {
+                initializer.PreInitialize(this.AssemblyHelper, this.Services, _loaders);
+            }
 
             this.Initialized = true;
 
@@ -95,13 +112,16 @@ namespace Guppy
         /// run any service loader configurations to it.
         /// </summary>
         /// <returns></returns>
-        public GuppyServiceProvider BuildServiceProvider()
+        public ServiceProvider BuildServiceProvider()
         {
-            var provider = _services.Build();
+            // Now we can attempt to build the provider
+            ServiceProvider provider = _services.Build();
 
-            // Iterate through all contained service loaders and configure the provider
-            foreach (IServiceLoader serviceLoader in _serviceLoaders)
-                serviceLoader.ConfigureProvider(provider);
+            // Iterate through all GuppyInitializers.
+            foreach (IGuppyInitializer initializer in _initializers)
+            {
+                initializer.PostInitialize(provider, _loaders);
+            }
 
             return provider;
         }

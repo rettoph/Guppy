@@ -1,5 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Threading.Utilities;
+﻿using Guppy.Threading.Utilities;
 using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework.Graphics;
 using System;

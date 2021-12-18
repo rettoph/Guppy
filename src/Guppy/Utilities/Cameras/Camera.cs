@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy.Utilities.Cameras
 {
@@ -36,7 +36,7 @@ namespace Guppy.Utilities.Cameras
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

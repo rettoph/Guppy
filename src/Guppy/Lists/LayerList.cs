@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Lists.Interfaces;
 using System;
@@ -11,7 +11,7 @@ namespace Guppy.Lists
     public class LayerList : OrderableList<ILayer>
     {
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

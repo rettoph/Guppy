@@ -1,12 +1,12 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.IO.Enums;
+﻿using Guppy.IO.Enums;
 using Guppy.IO.Utilities;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.IO.Structs;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent;
 
 namespace Guppy.IO.Services
 {
@@ -18,7 +18,7 @@ namespace Guppy.IO.Services
         /// should be watched.
         /// </summary>
         private Dictionary<InputButton, InputButtonManager> _inputs;
-        private GuppyServiceProvider _provider;
+        private ServiceProvider _provider;
         #endregion
 
         #region Public Properties
@@ -35,7 +35,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

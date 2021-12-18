@@ -1,5 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Interfaces;
+﻿using Guppy.Interfaces;
 using Guppy.Services;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -8,9 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
-using Guppy.DependencyInjection.Builders;
-using DotNetUtils.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.ServiceLoaders
 {
@@ -21,7 +19,7 @@ namespace Guppy.ServiceLoaders
     /// </summary>
     internal class MonoGameServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<SpriteBatch>()
                 .SetMethod(p => new SpriteBatch(p.GetService<GraphicsDevice>()));
@@ -57,11 +55,6 @@ namespace Guppy.ServiceLoaders
                         factory.SetMethod(p => Activator.CreateInstance(primitiveBatchType, p.GetService<GraphicsDevice>()));
                     });
             });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

@@ -1,64 +1,65 @@
-﻿using Guppy.Network.Configurations;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
-using Guppy.Utilities;
-using LiteNetLib;
-using LiteNetLib.Utils;
+using Guppy.Network.MessageProcessors;
+using log4net;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Guppy.Network.Services
 {
-    public class MessageService : DataService<MessageConfiguration>
+    /// <summary>
+    /// Simple service used to handle incoming or outgoing
+    /// messages within a current scope.
+    /// </summary>
+    public sealed class MessageService : Service
     {
-        private Factory<Message> _messages;
-        private PacketService _packets;
+        #region Private Fields
+        private NetworkProvider _network;
+        private Dictionary<UInt16, MessageProcessor> _messageProcessors;
+        private ILog _log;
+        #endregion
 
-        internal MessageService(DynamicIdSize idSize, MessageConfiguration[] configurations) : base(idSize, configurations)
+        #region Lifecycle Methods
+        protected override void Initialize(ServiceProvider provider)
         {
-            _messages = new Factory<Message>(() => new Message());
+            base.Initialize(provider);
+
+            provider.Service(out _network);
+            provider.Service(out _log);
+
+            _messageProcessors = _network.MessageConfigurations
+                .Where(mc => mc.Filter(provider, mc))
+                .ToDictionary(
+                    keySelector: mc => mc.Id.Value,
+                    elementSelector: mc => mc.ProcessorFactory(provider));
         }
 
-        public void SendMessage(UInt16 channelId, IPacket data, IEnumerable<IPacket> packets)
+        protected override void Release()
         {
-            Message message =_messages.Create();
+            base.Release();
 
-            message.ChannelId = channelId;
-            message.Configuration = this.GetConfiguration(data);
-            message.Data = data;
-            message.Packets.AddRange(packets);
+            _network = default;
+            _log = default;
         }
+        #endregion
 
-        private void WriteMessage(NetDataWriter om, Message message)
+        #region Helper Methods
+        public void ProcessIncoming(Message message)
         {
-            om.Put(message.ChannelId);
-            this.WriteConfiguration(om, message.Configuration);
-
-            message.Configuration.DataWriter(om, message.Data);
-
-            foreach(IPacket packet in message.Packets)
+            if(_messageProcessors.TryGetValue(message.Configuration.Id.Value, out MessageProcessor processor))
             {
-                PacketConfiguration pConfiguration = _packets.GetConfiguration(packet);
-
-                _packets.WriteConfiguration(om, pConfiguration);
-                pConfiguration.DataWriter(om, packet);
+                processor.Process(message);
+            }
+            else
+            {
+                _log.Warn($"{nameof(MessageService)}::{nameof(ProcessIncoming)} - Recieved unprocessable message => '{message.Configuration.Name}'");
             }
         }
-
-        private void ReadMessage(NetDataReader im)
-        {
-            Message message = _messages.Create();
-
-            message.ChannelId = im.GetByte();
-            message.Configuration = this.ReadConfiguration(im);
-            message.Data = message.Configuration.DataReader(im);
-
-            while(!im.EndOfData)
-            {
-                PacketConfiguration pConfiguration = _packets.ReadConfiguration(im);
-                message.Packets.Add(pConfiguration.DataReader(im));
-            }
-        }
+        #endregion
     }
 }

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
 using Microsoft.Xna.Framework;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Lists.Interfaces;
 using Guppy.Interfaces;
 using Guppy.Contexts;
+using Guppy.EntityComponent.Enums;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy
 {
@@ -26,7 +26,7 @@ namespace Guppy
             get => _group;
             set
             {
-                if (this.Status == Enums.ServiceStatus.Ready)
+                if (this.Status == ServiceStatus.Ready)
                     throw new Exception("Unable to update Layer Group post initializtion.");
 
                 _group = value;
@@ -35,7 +35,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

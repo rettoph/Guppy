@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -12,7 +12,7 @@ namespace Guppy.Lists
         where TOrderable : class, IOrderable
     {
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -20,7 +20,7 @@ namespace Guppy.Lists
             this.OnRemove += this.RemoveItem;
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
         }

@@ -1,6 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Extensions.log4net;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Interfaces;
@@ -11,14 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Example.Library.Scenes;
-using Guppy.DependencyInjection.Builders;
+using Guppy.Network;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.Example.Library.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ExampleServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<ExampleGame>().SetDefaultConstructor<ExampleGame>();
             services.RegisterTypeFactory<ExampleScene>().SetDefaultConstructor<ExampleScene>();
@@ -34,11 +33,6 @@ namespace Guppy.Example.Library.ServiceLoaders
                     l.SetLevel(Level.Verbose);
                     l.ConfigureFileAppender($"logs\\{DateTime.Now.ToString("yyy-MM-dd")}.txt");
                 });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

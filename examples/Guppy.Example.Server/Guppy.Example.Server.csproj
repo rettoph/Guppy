@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\..\src\Guppy.Network.Core\Guppy.Network.Core.csproj" />
-    <ProjectReference Include="..\..\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\Guppy.Example.Library\Guppy.Example.Library.csproj" />
   </ItemGroup>

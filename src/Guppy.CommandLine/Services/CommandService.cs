@@ -1,5 +1,5 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -18,7 +18,7 @@ namespace Guppy.CommandLine.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
+        protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
 

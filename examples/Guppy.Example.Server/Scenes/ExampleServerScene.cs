@@ -1,4 +1,4 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Example.Library;
 using Guppy.Example.Library.Scenes;
 using Guppy.Lists.Interfaces;
@@ -12,7 +12,7 @@ namespace Guppy.Example.Server.Scenes
     public class ExampleServerScene : ExampleScene
     {
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
         }

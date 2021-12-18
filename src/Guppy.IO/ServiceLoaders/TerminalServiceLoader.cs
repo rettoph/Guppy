@@ -1,9 +1,6 @@
-﻿using DotNetUtils.DependencyInjection;
-using DotNetUtils.General.Interfaces;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Minnow.General.Interfaces;
 using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Builders;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Components;
 using Guppy.IO.Services;
@@ -12,12 +9,13 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.IO;
 using System.Text;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.IO.ServiceLoaders
 {
     internal sealed class TerminalServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<IConsole>()
                 .SetMethod(p => p.GetService<TerminalService>())
@@ -39,19 +37,14 @@ namespace Guppy.IO.ServiceLoaders
 
             services.RegisterComponent<GameTerminalComponent>()
                 .SetAssignableEntityType<Game>()
-                .SetOrder(Guppy.Core.Constants.Orders.ComponentOrder);
+                .SetOrder(EntityComponent.Constants.Orders.ComponentOrder);
 
             services.RegisterBuilder<Game>()
-                .SetOrder(Guppy.Core.Constants.Priorities.PreCreate)
+                .SetOrder(EntityComponent.Constants.Priorities.PreCreate)
                 .SetMethod((g, p, c) =>
                 {
                     p.GetService<TerminalService>();
                 });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

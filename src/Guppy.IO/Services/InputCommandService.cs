@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.IO.Contexts;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Guppy.IO.Services
     public sealed class InputCommandService : Service
     {
         #region Private Fields
-        private GuppyServiceProvider _provider;
+        private ServiceProvider _provider;
         private Dictionary<String, InputCommand> _inputCommands;
         #endregion
 
@@ -29,14 +30,14 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
+        protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
 
             _inputCommands = new Dictionary<String, InputCommand>();
         }
 
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

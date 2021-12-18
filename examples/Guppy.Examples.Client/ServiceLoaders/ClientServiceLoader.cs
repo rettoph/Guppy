@@ -1,6 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Example.Library;
 using Guppy.Interfaces;
 using System;
@@ -16,15 +14,16 @@ using Guppy.IO.Extensions.log4net;
 using log4net.Core;
 using Microsoft.Xna.Framework;
 using Guppy.CommandLine.Extensions.DependencyInjection;
-using DotNetUtils.General.Interfaces;
-using Guppy.DependencyInjection.Builders;
+using Minnow.General.Interfaces;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.Examples.Client.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ClientServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assmelbyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assmelbyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<ExampleGame>()
                 .SetDefaultConstructor<ExampleClientGame>()
@@ -70,26 +69,26 @@ namespace Guppy.Examples.Client.ServiceLoaders
                 });
         }
 
-        public void ConfigureProvider(GuppyServiceProvider provider)
+        public void ConfigureProvider(ServiceProvider provider)
         {
             // throw new NotImplementedException();
 
-            provider.GetCommand("test").Handler = CommandHandler.Create<String, IConsole>((input, console) =>
-            {
-                console.Out.WriteLine($"Your custom input: {input}");
-            });
-
-            provider.GetCommand("hello world").Handler = CommandHandler.Create<IConsole>((console) =>
-            {
-                console.Out.WriteLine($"The Earth says hello!");
-            });
-
-            provider.GetCommand("hello dolly").Handler = CommandHandler.Create<IConsole>((console) =>
-            {
-                console.Out.WriteLine($"Hello, Dolly,");
-                console.Out.WriteLine($"Well, hello, Dolly");
-                console.Out.WriteLine($"It's so nice to have you back where you belong");
-            });
+            // provider.GetCommand("test").Handler = CommandHandler.Create<String, IConsole>((input, console) =>
+            // {
+            //     console.Out.WriteLine($"Your custom input: {input}");
+            // });
+            // 
+            // provider.GetCommand("hello world").Handler = CommandHandler.Create<IConsole>((console) =>
+            // {
+            //     console.Out.WriteLine($"The Earth says hello!");
+            // });
+            // 
+            // provider.GetCommand("hello dolly").Handler = CommandHandler.Create<IConsole>((console) =>
+            // {
+            //     console.Out.WriteLine($"Hello, Dolly,");
+            //     console.Out.WriteLine($"Well, hello, Dolly");
+            //     console.Out.WriteLine($"It's so nice to have you back where you belong");
+            // });
         }
     }
 }

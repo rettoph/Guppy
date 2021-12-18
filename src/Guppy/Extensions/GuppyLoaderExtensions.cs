@@ -6,13 +6,11 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 using Guppy;
 using Guppy.Interfaces;
 using System.Linq;
 using Guppy.ServiceLoaders;
-using Guppy.DependencyInjection;
-using DotNetUtils.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy.Extensions
 {

@@ -1,6 +1,7 @@
 ﻿using Guppy.CommandLine.Services;
-using Guppy.DependencyInjection;
-using Guppy.Enums;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Enums;
 using Guppy.IO.Contexts;
 using Guppy.IO.Services;
 using Guppy.IO.Structs;
@@ -73,7 +74,7 @@ namespace Guppy.IO
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -82,7 +83,7 @@ namespace Guppy.IO
             provider.Service(Constants.ServiceNames.GameUpdateThreadQueue, out _threadQueue);
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 

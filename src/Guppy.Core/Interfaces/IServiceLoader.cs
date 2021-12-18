@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Guppy.EntityComponent.DependencyInjection.Builders;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Builders;
+using System.Threading.Tasks;
 
 namespace Guppy.Interfaces
 {
-    public interface IServiceLoader
+    public interface IServiceLoader : IGuppyLoader
     {
-        void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services);
-        void ConfigureProvider(GuppyServiceProvider provider);
+        void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services);
     }
 }

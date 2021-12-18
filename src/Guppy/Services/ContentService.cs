@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace Guppy.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 

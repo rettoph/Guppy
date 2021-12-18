@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.Delegates\Minnow.Delegates.csproj" />
+    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.General\Minnow.General.csproj" />
+    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.System.Helpers\Minnow.System.Helpers.csproj" />
+  </ItemGroup>
+
+</Project>

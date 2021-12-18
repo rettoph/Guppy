@@ -1,12 +1,10 @@
-﻿using DotNetUtils.DependencyInjection;
-using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.Lists.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GuppyServiceProvider = Guppy.DependencyInjection.GuppyServiceProvider;
 
 namespace Guppy.Lists
 {
@@ -32,7 +30,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

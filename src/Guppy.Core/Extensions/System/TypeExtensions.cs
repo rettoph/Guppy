@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.EntityComponent.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace System
 
             return types.GetTypesWithAttribute(type, autoLoadAttribute, inherit).OrderBy(t =>
             {
-                return t.GetCustomAttributes(autoLoadAttribute, inherit).Min(attr => (attr as AutoLoadAttribute).Priority);
+                return t.GetCustomAttributes(autoLoadAttribute, inherit).Min(attr => (attr as AutoLoadAttribute).Order);
             });
         }
         public static IEnumerable<Type> GetTypesWithAutoLoadAttribute<T>(this IEnumerable<Type> types, Boolean inherit = true)

@@ -1,6 +1,5 @@
 ﻿using Guppy.CommandLine.Services;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Extensions.Utilities;
 using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
@@ -33,6 +32,7 @@ namespace Guppy.IO.Services
         private KeyboardService _keyboard;
         private InputCommandService _inputCommands;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
+        private ILog _log;
 
         private Color _outColor = Color.White;
         private Color _errorColor = Color.Red;
@@ -98,7 +98,7 @@ namespace Guppy.IO.Services
 
         }
 
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -111,6 +111,7 @@ namespace Guppy.IO.Services
             provider.Service(out _mouse);
             provider.Service(out _keyboard);
             provider.Service(out _inputCommands);
+            provider.Service(out _log);
             provider.Service(Guppy.Constants.ServiceNames.TransientSpritebatch, out _spriteBatch);
             provider.Service(Guppy.Constants.ServiceNames.TransientCamera, out _camera);
 
@@ -137,7 +138,7 @@ namespace Guppy.IO.Services
             this.Clean();
         }
 
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 
@@ -160,6 +161,7 @@ namespace Guppy.IO.Services
             _keyboard = default;
             _spriteBatch = default;
             _camera = default;
+            _log = default;
         }
         #endregion
 
@@ -364,7 +366,7 @@ namespace Guppy.IO.Services
                     }
                     catch(Exception err)
                     {
-                        this.log.Error(err.Message);
+                        _log.Error(err.Message);
                     }
                     finally
                     {

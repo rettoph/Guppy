@@ -1,20 +1,18 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
-using Guppy.DependencyInjection.Builders;
-using DotNetUtils.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class LayerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             // Configure services...
             services.RegisterService<Layer>()
@@ -37,11 +35,6 @@ namespace Guppy.ServiceLoaders
                 {
                     factory.SetDefaultConstructor<OrderableList<ILayerable>>();
                 });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

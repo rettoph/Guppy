@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>Guppy.Network.Core</AssemblyName>
     <LangVersion>9.0</LangVersion>
     <Configurations>Debug;Release;Debug_Verbose</Configurations>
@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\DotNetUtils\src\DotNetUtils.General\DotNetUtils.General.csproj" />
-    <ProjectReference Include="..\..\libraries\lidgren-network-gen3\Lidgren.Network.MultiTarget\Lidgren.Network.MultiTarget.csproj" />
+    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.General\Minnow.General.csproj" />
     <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
+    <ProjectReference Include="..\Guppy.CommandLine\Guppy.CommandLine.csproj" />
     <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />

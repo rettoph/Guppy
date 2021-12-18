@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
@@ -17,7 +18,7 @@ namespace Guppy.Threading.Utilities
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

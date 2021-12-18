@@ -1,27 +1,24 @@
 ﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
 using Guppy.Example.Library;
 using Guppy.Interfaces;
-using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.DependencyInjection;
 using log4net;
 using log4net.Core;
 using Guppy.Extensions.log4net;
 using log4net.Appender;
 using Guppy.Example.Library.Scenes;
 using Guppy.Example.Server.Scenes;
-using DotNetUtils.General.Interfaces;
-using Guppy.DependencyInjection.Builders;
+using Minnow.General.Interfaces;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.Example.Server.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ServerServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<ExampleGame>()
                 .SetDefaultConstructor<ExampleServerGame>()
@@ -62,11 +59,6 @@ namespace Guppy.Example.Server.ServiceLoaders
                             Level = Level.Verbose
                         });
                 });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

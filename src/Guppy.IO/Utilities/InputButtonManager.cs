@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
 using Guppy.Utilities;
@@ -28,7 +29,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecyel Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

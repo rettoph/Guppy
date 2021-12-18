@@ -1,5 +1,5 @@
 ﻿using Guppy.Contexts;
-using Guppy.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -54,7 +54,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 

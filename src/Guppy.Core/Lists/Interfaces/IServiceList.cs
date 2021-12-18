@@ -1,4 +1,5 @@
-﻿using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Interfaces;
 using Guppy.Interfaces;
 using System;
 using System.Collections;
@@ -9,7 +10,7 @@ namespace Guppy.Lists.Interfaces
 {
     public interface IServiceList : IEntity, IEnumerable
     {
-        GuppyServiceProvider Provider { get; }
+        ServiceProvider Provider { get; }
 
         /// <summary>
         /// The basetype stored within the current list.

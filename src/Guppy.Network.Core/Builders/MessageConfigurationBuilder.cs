@@ -1,60 +1,71 @@
-﻿using Guppy.Network.Configurations;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Minnow.General;
+using Minnow.General.Interfaces;
+using Guppy.Network.Configurations;
+using Guppy.Network.MessageProcessors;
 using Guppy.Network.Interfaces;
+using Guppy.Network.Structs;
+using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
+using System.Collections.Generic;
+using Guppy.Network.Enums;
 
 namespace Guppy.Network.Builders
 {
-    public class MessageConfigurationBuilder
+    public abstract class MessageConfigurationBuilder : IPrioritizable
+    {
+        #region Public Properties
+        public String Name { get; }
+
+        public Int32 Priority { get; set; }
+        #endregion
+
+        #region Constructor
+        internal MessageConfigurationBuilder(String name)
+        {
+            this.Name = name;
+        }
+        #endregion
+
+        #region Build Methods
+        public abstract MessageConfiguration Build(
+            DynamicId id,
+            DoubleDictionary<UInt16, Type, DataTypeConfiguration> dataTypeConfigurations);
+        #endregion
+    }
+    public class MessageConfigurationBuilder<TData> : MessageConfigurationBuilder, IFluentPrioritizable<MessageConfigurationBuilder<TData>>
+        where TData : class, IData
     {
         #region Private Fields
-        private String _name;
         private Type _dataType;
-        private Action<NetDataWriter, IData> _dataWriter;
-        private Func<NetDataReader, IData> _dataReader;
         #endregion
 
         #region Public Properties
-        public String Name
-        {
-            get => _name;
-            set => this.SetName(value);
-        }
-
         public Type DataType
         {
             get => _dataType;
             set => this.SetDataType(value);
         }
 
-        public Action<NetDataWriter, IData> DataWriter
-        {
-            get => _dataWriter;
-            set => this.SetDataWriter(value);
-        }
+        public DeliveryMethod DeliveryMethod { get; set; }
+        public Byte SequenceChannel { get; set; }
 
-        public Func<NetDataReader, IData> DataReader
-        {
-            get => _dataReader;
-            set => this.SetDataReader(value);
-        }
+        public Func<ServiceProvider, MessageProcessor<TData>> ProcessorFactory { get; set; }
 
-        public Int32 Priority { get; set; }
+        public Func<ServiceProvider, MessageConfiguration, Boolean> Filter { get; set; }
         #endregion
 
-        #region SeName Methods
-        public MessageConfigurationBuilder SetName(String name)
+        #region Constructor
+        internal MessageConfigurationBuilder(String name) : base(name)
         {
-            _name = name;
-
-            return this;
         }
         #endregion
 
         #region SetType Methods
-        public MessageConfigurationBuilder SetDataType(Type dataType)
+        public MessageConfigurationBuilder<TData> SetDataType(Type dataType)
         {
-            if (typeof(IData).ValidateAssignableFrom(dataType))
+            if (typeof(TData).ValidateAssignableFrom(dataType))
             {
                 _dataType = dataType;
             }
@@ -63,53 +74,69 @@ namespace Guppy.Network.Builders
         }
         #endregion
 
-        #region SetWriter Methods
-        public MessageConfigurationBuilder SetDataWriter(Action<NetDataWriter, IData> dataWriter)
+        #region SetDeliveryMethod Methods
+        public MessageConfigurationBuilder<TData> SetDeliveryMethod(DeliveryMethod deliveryMethod)
         {
-            _dataWriter = dataWriter;
+            this.DeliveryMethod = deliveryMethod;
 
             return this;
         }
         #endregion
 
-        #region SetReader Methods
-        public MessageConfigurationBuilder SetDataReader(Func<NetDataReader, IData> dataReader)
+        #region SetSequenceChannel Methods
+        public MessageConfigurationBuilder<TData> SetSequenceChannel(Byte sequenceChannel)
         {
-            _dataReader = dataReader;
+            this.SequenceChannel = sequenceChannel;
 
             return this;
+        }
+        #endregion
+
+        #region SetProcessorFactory Methods
+        public MessageConfigurationBuilder<TData> SetProcessorFactory<TMessageProcessor>(Func<ServiceProvider, TMessageProcessor> processorFactory)
+            where TMessageProcessor : MessageProcessor<TData>
+        {
+            this.ProcessorFactory = processorFactory;
+
+            return this;
+        }
+        #endregion
+
+        #region SetNetworkAuthorization Methods
+        public MessageConfigurationBuilder<TData> SetFilter(Func<ServiceProvider, MessageConfiguration, Boolean> filter)
+        {
+            this.Filter = filter;
+
+            return this;
+        }
+
+        public MessageConfigurationBuilder<TData> SetPeerFilter<TPeer>()
+            where TPeer : Peer
+        {
+            return this.SetFilter((p, _) => p.GetService<Peer>() is TPeer);
         }
         #endregion
 
         #region Build Methods
-        public TConfiguration Build(DynamicIdSize dynamicIdSize)
+        public override MessageConfiguration Build(
+            DynamicId id,
+            DoubleDictionary<UInt16, Type, DataTypeConfiguration> dataTypeConfigurations)
         {
-            if (!this.Id.HasValue)
-            {
-                throw new InvalidOperationException($"{nameof(PacketConfigurationBuilder)}::{nameof(Build)} - Ensure {nameof(PacketConfigurationBuilder)}.{nameof(Id)} has a value by calling {nameof(PacketConfigurationBuilder)}::{nameof(SetId)} at least once.");
-            }
+            Func<ServiceProvider, MessageProcessor> processorFactory = this.ProcessorFactory;
 
-            UInt16 id = this.Id.Value;
-
-            Byte[] idBytes = dynamicIdSize switch
-            {
-                DynamicIdSize.OneByte => new Byte[] { BitConverter.GetBytes(id)[0] },
-                DynamicIdSize.TwoBytes => BitConverter.GetBytes(id),
-                _ => throw new ArgumentOutOfRangeException(nameof(dynamicIdSize))
-            };
-
-            return this.Build(idBytes);
+            return new MessageConfiguration(
+                id,
+                this.Name,
+                dataTypeConfigurations[this.DataType ?? typeof(TData)],
+                this.DeliveryMethod,
+                this.SequenceChannel,
+                processorFactory ?? EmptyIncomingMessageResponseMessageProcessor.Factory,
+                this.Filter ?? DefaultFilter);
         }
 
-        protected override MessageConfiguration Build(byte[] idBytes)
+        private static Boolean DefaultFilter(ServiceProvider providert, MessageConfiguration configuration)
         {
-            return new MessageConfiguration(
-                this.Id.Value,
-                idBytes,
-                this.Name,
-                this.Type,
-                this.Writer,
-                this.Reader);
+            return true;
         }
         #endregion
     }

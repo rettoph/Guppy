@@ -1,5 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.IO.Enums;
 using Guppy.IO.Structs;
 using Guppy.IO.Utilities;
@@ -54,7 +53,7 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -73,7 +72,7 @@ namespace Guppy.IO.Services
             });
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 

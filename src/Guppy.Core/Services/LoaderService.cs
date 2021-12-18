@@ -1,9 +1,10 @@
-﻿using Guppy.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Enums;
 using System.Linq;
+using Guppy.EntityComponent.Enums;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy.Services
 {
@@ -37,14 +38,14 @@ namespace Guppy.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _registeredValues = new HashSet<RegisteredValue>();
         }
 
-        protected override void PostInitialize(GuppyServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
             base.PostInitialize(provider);
 

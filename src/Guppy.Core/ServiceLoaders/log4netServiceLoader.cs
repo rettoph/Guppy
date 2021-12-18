@@ -1,9 +1,6 @@
-﻿using DotNetUtils.DependencyInjection;
-using DotNetUtils.General.Interfaces;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Minnow.General.Interfaces;
 using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Builders;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using log4net;
 using log4net.Repository;
@@ -11,13 +8,15 @@ using log4net.Repository.Hierarchy;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class log4netServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterService<ILog>()
                 .SetLifetime(ServiceLifetime.Singleton)
@@ -46,11 +45,6 @@ namespace Guppy.ServiceLoaders
                 { // Mark as configured...
                     ((Hierarchy)l.Logger.Repository).Configured = true;
                 });
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

@@ -4,12 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.Extensions;
-using Guppy.DependencyInjection;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Lists;
 using Guppy.Utilities;
 using Guppy.Threading.Utilities;
 using Guppy.Attributes;
+using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy
 {
@@ -20,7 +19,7 @@ namespace Guppy
     {
         #region Private Fields
         private ThreadQueue _threadQueue;
-        private GuppyServiceProvider _provider;
+        private ServiceProvider _provider;
         #endregion
 
         #region Public Attributes
@@ -28,7 +27,7 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
 

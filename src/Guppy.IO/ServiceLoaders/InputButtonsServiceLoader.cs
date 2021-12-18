@@ -1,20 +1,18 @@
-﻿using DotNetUtils.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Attributes;
-using Guppy.DependencyInjection;
-using Guppy.DependencyInjection.Builders;
-using Guppy.Extensions.DependencyInjection;
 using Guppy.Interfaces;
 using Guppy.IO.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.IO.ServiceLoaders
 {
     [AutoLoad(-1)]
     internal sealed class InputButtonsServiceLoader : IServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterService<InputButtonService>()
                 .SetLifetime(ServiceLifetime.Singleton)
@@ -58,11 +56,6 @@ namespace Guppy.IO.ServiceLoaders
                     factory.SetDefaultConstructor<InputCommand>();
                 });
 
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using Guppy.Attributes;
-using Guppy.DependencyInjection;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Attributes;
 using Guppy.Interfaces;
 using LiteNetLib;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -15,28 +15,23 @@ namespace Guppy.Network.ServiceLoaders
         public class MyExample { 
         }
 
-        public void RegisterServices(AssemblyHelper assemblyHelper, GuppyServiceProviderBuilder services)
+        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             #region Register Services
             services.RegisterService<EventBasedNetListener>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .CreateTypeFactory(factory =>
+                .SetTypeFactory(factory =>
                 {
-                    factory.SetMethod((_, _) => new EventBasedNetListener());
+                    factory.SetDefaultConstructor<EventBasedNetListener>();
                 });
 
             services.RegisterService<NetManager>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .CreateTypeFactory(factory =>
+                .SetTypeFactory(factory =>
                 {
-                    factory.SetMethod((p, _) => new NetManager(p.GetService<EventBasedNetListener>()));
+                    factory.SetMethod(p => new NetManager(p.GetService<EventBasedNetListener>()));
                 });
             #endregion
-        }
-
-        public void ConfigureProvider(GuppyServiceProvider provider)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

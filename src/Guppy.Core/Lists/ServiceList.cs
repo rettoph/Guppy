@@ -1,5 +1,4 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Interfaces;
+﻿using Guppy.Interfaces;
 using Guppy.Utilities;
 using System;
 using System.Collections;
@@ -8,9 +7,10 @@ using System.Linq;
 using System.Text;
 using Guppy.Lists.Interfaces;
 using Guppy.Lists.Delegates;
-using Guppy.Enums;
-using Guppy.Extensions.DependencyInjection;
-using DotNetUtils.DependencyInjection;
+using Guppy.EntityComponent.Interfaces;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Enums;
 
 namespace Guppy.Lists
 {
@@ -31,7 +31,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Protected Fields
-        protected GuppyServiceProvider provider { get; private set; }
+        protected ServiceProvider provider { get; private set; }
 
         /// <summary>
         /// When true, then all self contained items
@@ -46,7 +46,7 @@ namespace Guppy.Lists
         public Int32 Count => _list.Count;
 
         Type IServiceList.BaseType => typeof(TService);
-        GuppyServiceProvider IServiceList.Provider => this.provider;
+        ServiceProvider IServiceList.Provider => this.provider;
         #endregion
 
         #region Events
@@ -83,7 +83,7 @@ namespace Guppy.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(GuppyServiceProvider provider)
+        protected override void Create(ServiceProvider provider)
         {
             base.Create(provider);
 
@@ -92,7 +92,7 @@ namespace Guppy.Lists
             _creating = new List<TService>();
         }
 
-        protected override void PreInitialize(GuppyServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
@@ -178,9 +178,9 @@ namespace Guppy.Lists
 
         #region CreateItem Methods
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName,
-            Action<T, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Guid id)
                 where T : class, TService
         {
@@ -200,31 +200,31 @@ namespace Guppy.Lists
             return instance;
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName,
-            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
             Guid id)
         {
             return this.CreateItem<TService>(provider, serviceName, customSetup, id);
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
-            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            ServiceProvider provider,
+            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
             Guid id)
         {
             return this.CreateItem<TService>(provider, typeof(TService).FullName, customSetup, id);
         }
 
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
-            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup,
+            ServiceProvider provider,
+            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
             Guid id)
                 where T : class, TService
         {
             return this.CreateItem<T>(provider, typeof(T).FullName, customSetup, id);
         }
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName,
             Guid id)
                 where T : class, TService
@@ -244,21 +244,21 @@ namespace Guppy.Lists
             return instance;
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName,
             Guid id)
         {
             return this.CreateItem<TService>(provider, serviceName, id);
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             Guid id)
         {
             return this.CreateItem<TService>(provider, typeof(TService).FullName, id);
         }
 
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             Guid id)
                 where T : class, TService
         {
@@ -266,9 +266,9 @@ namespace Guppy.Lists
         }
 
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName,
-            Action<T, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+            Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
             var instance = provider.GetService<T>(serviceName, (i, p, d) =>
@@ -285,29 +285,29 @@ namespace Guppy.Lists
             return instance;
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName,
-            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+            Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
             return this.CreateItem<TService>(provider, serviceName, customSetup);
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
-            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+            ServiceProvider provider,
+            Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
             return this.CreateItem<TService>(provider, typeof(TService).FullName, customSetup);
         }
 
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
-            Action<TService, GuppyServiceProvider, ServiceConfiguration<GuppyServiceProvider>> customSetup)
+            ServiceProvider provider,
+            Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
             return this.CreateItem<T>(provider, typeof(T).FullName, customSetup);
         }
 
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName)
                 where T : class, TService
         {
@@ -324,19 +324,19 @@ namespace Guppy.Lists
             return instance;
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider,
+            ServiceProvider provider,
             String serviceName)
         {
             return this.CreateItem<TService>(provider, serviceName);
         }
         protected virtual TService CreateItem(
-            GuppyServiceProvider provider)
+            ServiceProvider provider)
         {
             return this.CreateItem<TService>(provider, typeof(TService).FullName);
         }
 
         protected virtual T CreateItem<T>(
-            GuppyServiceProvider provider)
+            ServiceProvider provider)
                 where T : class, TService
         {
             return this.CreateItem<T>(provider, typeof(T).FullName);
