@@ -16,7 +16,7 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterService<LayerableList>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<LayerableList>();
                 });

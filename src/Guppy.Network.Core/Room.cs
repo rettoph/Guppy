@@ -13,7 +13,7 @@ namespace Guppy.Network
     {
         #region Private Fields
         private Boolean _isScopedLinked;
-        private MessageService _messages;
+        private NetworkMessageService _messages;
         #endregion
 
         #region Public Properties
@@ -46,9 +46,9 @@ namespace Guppy.Network
         /// Process an incoming message
         /// </summary>
         /// <param name="message"></param>
-        public void ProcessIncoming(Message message)
+        public void ProcessIncoming(NetworkMessage message)
         {
-            _messages.ProcessIncoming(message);
+            _messages.Process(message.Data);
         }
         #endregion
     }

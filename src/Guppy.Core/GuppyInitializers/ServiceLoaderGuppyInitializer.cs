@@ -19,9 +19,12 @@ namespace Guppy.GuppyInitializers
             ServiceProviderBuilder services, 
             IEnumerable<IGuppyLoader> loaders)
         {
-            foreach(IServiceLoader serviceLoader in loaders)
+            foreach(IGuppyLoader loader in loaders)
             {
-                serviceLoader.RegisterServices(assemblies, services);
+                if(loader is IServiceLoader serviceLoader)
+                {
+                    serviceLoader.RegisterServices(assemblies, services);
+                }
             }
         }
 

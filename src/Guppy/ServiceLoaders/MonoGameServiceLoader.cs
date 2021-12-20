@@ -50,7 +50,7 @@ namespace Guppy.ServiceLoaders
                 var primitiveBatchType = typeof(PrimitiveBatch<>).MakeGenericType(vt);
                 services.RegisterService(primitiveBatchType.FullName)
                     .SetLifetime(ServiceLifetime.Singleton)
-                    .SetTypeFactory(primitiveBatchType, factory =>
+                    .RegisterTypeFactory(primitiveBatchType, factory =>
                     {
                         factory.SetMethod(p => Activator.CreateInstance(primitiveBatchType, p.GetService<GraphicsDevice>()));
                     });

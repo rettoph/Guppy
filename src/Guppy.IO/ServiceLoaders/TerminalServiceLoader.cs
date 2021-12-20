@@ -23,13 +23,13 @@ namespace Guppy.IO.ServiceLoaders
 
             services.RegisterService<TerminalService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<TerminalService>();
                 });
 
             services.RegisterService<GameTerminalComponent>()
-                .SetLifetime(ServiceLifetime.Transient).SetTypeFactory(factory =>
+                .SetLifetime(ServiceLifetime.Transient).RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<GameTerminalComponent>();
                 });

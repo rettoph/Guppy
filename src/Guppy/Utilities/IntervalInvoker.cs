@@ -30,8 +30,6 @@ namespace Guppy.Utilities
         }
         #endregion
 
-
-
         #region Constructor
         public IntervalInvoker()
         {

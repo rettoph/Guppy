@@ -71,7 +71,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
-        #region SetTypeFactory Methods
+        #region RegisterTypeFactory Methods
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
         /// current <see cref="ServiceConfigurationBuilder"/>.
@@ -80,7 +80,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <param name="type"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public ServiceConfigurationBuilder<TService> SetTypeFactory<TFactoryType>(Type type, Action<TypeFactoryBuilder<TFactoryType>> builder)
+        public ServiceConfigurationBuilder<TService> RegisterTypeFactory<TFactoryType>(Type type, Action<TypeFactoryBuilder<TFactoryType>> builder)
             where TFactoryType : class, TService
         {
             TypeFactoryBuilder<TFactoryType> typeFactory = this.services.RegisterTypeFactory<TFactoryType>(type);
@@ -95,10 +95,10 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <typeparam name="TFactoryType"></typeparam>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public ServiceConfigurationBuilder<TService> SetTypeFactory<TFactoryType>(Action<TypeFactoryBuilder<TFactoryType>> builder)
+        public ServiceConfigurationBuilder<TService> RegisterTypeFactory<TFactoryType>(Action<TypeFactoryBuilder<TFactoryType>> builder)
             where TFactoryType : class, TService
         {
-            return this.SetTypeFactory<TFactoryType>(typeof(TFactoryType), builder);
+            return this.RegisterTypeFactory<TFactoryType>(typeof(TFactoryType), builder);
         }
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
@@ -107,9 +107,9 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <param name="type"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public ServiceConfigurationBuilder<TService> SetTypeFactory(Type type, Action<TypeFactoryBuilder<TService>> builder)
+        public ServiceConfigurationBuilder<TService> RegisterTypeFactory(Type type, Action<TypeFactoryBuilder<TService>> builder)
         {
-            return this.SetTypeFactory<TService>(type, builder);
+            return this.RegisterTypeFactory<TService>(type, builder);
         }
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
@@ -118,9 +118,9 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <param name="type"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public ServiceConfigurationBuilder<TService> SetTypeFactory(Action<TypeFactoryBuilder<TService>> builder)
+        public ServiceConfigurationBuilder<TService> RegisterTypeFactory(Action<TypeFactoryBuilder<TService>> builder)
         {
-            return this.SetTypeFactory<TService>(builder);
+            return this.RegisterTypeFactory<TService>(builder);
         }
         #endregion
 

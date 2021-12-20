@@ -18,7 +18,7 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterService<SceneList>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<SceneList>();
                 });

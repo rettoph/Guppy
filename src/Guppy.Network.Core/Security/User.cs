@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Dtos;
+﻿using Guppy.Network.Messages;
 using Guppy.Network.Security.Dtos;
 using Guppy.Network.Security.Enums;
 using Guppy.Network.Security.Structs;
@@ -40,7 +40,7 @@ namespace Guppy.Network.Security
         #endregion
 
         #region Network Methods
-        public UserDto ToDto(ClaimType lowestClaimType)
+        public UserDto GetMessage(ClaimType lowestClaimType)
         {
             return new UserDto()
             {

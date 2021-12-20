@@ -18,7 +18,7 @@ namespace Guppy.EntityComponent.ServiceLoaders
         {
             services.RegisterService<Settings>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<Settings>();
                 });

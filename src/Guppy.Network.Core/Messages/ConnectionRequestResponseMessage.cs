@@ -5,15 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Network.Dtos
+namespace Guppy.Network.Messages
 {
-    public class ConnectionRequestResponseDto : IData
+    public class ConnectionRequestResponseMessage : IData
     {
         public Boolean Accepted { get; internal set; }
         public UserDto User { get; internal set; }
 
         #region Read/Write Methods
-        public static ConnectionRequestResponseDto Read(NetDataReader reader)
+        public static ConnectionRequestResponseMessage Read(NetDataReader reader)
         {
             Boolean accepted = reader.GetBool();
             UserDto user = null;
@@ -23,14 +23,14 @@ namespace Guppy.Network.Dtos
                 user = UserDto.Read(reader);
             }
 
-            return new ConnectionRequestResponseDto()
+            return new ConnectionRequestResponseMessage()
             {
                 Accepted = accepted,
                 User = user
             };
         }
 
-        public static void Write(NetDataWriter writer, ConnectionRequestResponseDto dto)
+        public static void Write(NetDataWriter writer, ConnectionRequestResponseMessage dto)
         {
             writer.Put(dto.Accepted);
 

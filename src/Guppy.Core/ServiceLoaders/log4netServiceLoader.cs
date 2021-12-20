@@ -20,21 +20,21 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterService<ILog>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => LogManager.GetLogger(typeof(GuppyLoader)));
                 });
 
             services.RegisterService<ILoggerRepository>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => p.GetService<ILog>().Logger.Repository);
                 });
 
             services.RegisterService<Hierarchy>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => (Hierarchy)p.GetService<ILoggerRepository>());
                 });

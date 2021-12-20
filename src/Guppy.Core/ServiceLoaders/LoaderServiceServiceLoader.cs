@@ -19,7 +19,7 @@ namespace Guppy.ServiceLoaders
             {
                 services.RegisterService(loaderServiceType.FullName)
                     .SetLifetime(ServiceLifetime.Singleton)
-                    .SetTypeFactory(loaderServiceType, factory =>
+                    .RegisterTypeFactory(loaderServiceType, factory =>
                     {
                         factory.SetMethod(P => Activator.CreateInstance(loaderServiceType));
                     });

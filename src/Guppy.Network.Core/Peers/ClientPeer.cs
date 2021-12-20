@@ -1,5 +1,5 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Network.Dtos;
+using Guppy.Network.Messages;
 using Guppy.Network.Enums;
 using Guppy.Network.Security.Structs;
 using System;
@@ -22,13 +22,13 @@ namespace Guppy.Network
         {
             this.UsingDataWriter(writer =>
             {
-                ConnectionRequestDto connectionRequest = new ConnectionRequestDto()
+                ConnectionRequestMessage connectionRequest = new ConnectionRequestMessage()
                 {
-                    NetworkProvider = this.network.ToDto(),
+                    NetworkProvider = this.network.GetMessage(),
                     Claims = claims
                 };
 
-                this.network.GetDataTypeConfiguration<ConnectionRequestDto>().Writer(writer, connectionRequest);
+                this.network.GetDataTypeConfiguration<ConnectionRequestMessage>().Writer(writer, connectionRequest);
 
                 this.manager.Connect(target, port, writer);
             });

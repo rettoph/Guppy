@@ -16,42 +16,42 @@ namespace Guppy.IO.ServiceLoaders
         {
             services.RegisterService<InputButtonService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<InputButtonService>();
                 });
 
             services.RegisterService<InputButtonManager>()
                 .SetLifetime(ServiceLifetime.Transient)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<InputButtonManager>();
                 });
 
             services.RegisterService<MouseService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<MouseService>();
                 });
 
             services.RegisterService<KeyboardService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<KeyboardService>();
                 });
 
             services.RegisterService<InputCommandService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<InputCommandService>();
                 });
 
             services.RegisterService<InputCommand>()
                 .SetLifetime(ServiceLifetime.Transient)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<InputCommand>();
                 });

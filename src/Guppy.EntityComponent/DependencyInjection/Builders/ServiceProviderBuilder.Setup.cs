@@ -19,7 +19,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         {
             this.RegisterService<ComponentManager>()
                 .SetLifetime(ServiceLifetime.Transient)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<ComponentManager>();
                 });

@@ -1,5 +1,5 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Network.Dtos;
+using Guppy.Network.Messages;
 using Guppy.Network.Enums;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Dtos;
@@ -74,7 +74,7 @@ namespace Guppy.Network
         /// <param name="request"></param>
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            ConnectionRequestDto connectionRequestDto = this.network.GetDataTypeConfiguration<ConnectionRequestDto>().Reader(request.Data) as ConnectionRequestDto;
+            ConnectionRequestMessage connectionRequestDto = this.network.GetDataTypeConfiguration<ConnectionRequestMessage>().Reader(request.Data) as ConnectionRequestMessage;
 
             if(!this.network.CheckDto(connectionRequestDto.NetworkProvider))
             {
@@ -92,11 +92,10 @@ namespace Guppy.Network
 
                 // Send an accepted response to peer...
                 this.SendMessage(
-                    Constants.Messages.ConnectionRequestResponse,
-                    new ConnectionRequestResponseDto()
+                    new ConnectionRequestResponseMessage()
                     {
                         Accepted = true,
-                        User = user.ToDto(ClaimType.Protected)
+                        User = user.GetMessage(ClaimType.Protected)
                     },
                     client);
 

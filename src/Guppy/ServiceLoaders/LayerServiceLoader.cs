@@ -17,21 +17,21 @@ namespace Guppy.ServiceLoaders
             // Configure services...
             services.RegisterService<Layer>()
                 .SetLifetime(ServiceLifetime.Transient)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<Layer>();
                 });
 
             services.RegisterService<LayerList>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<LayerList>();
                 });
 
             services.RegisterService<OrderableList<ILayerable>>()
                 .SetLifetime(ServiceLifetime.Transient)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<OrderableList<ILayerable>>();
                 });

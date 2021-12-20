@@ -1,5 +1,5 @@
 ﻿using Minnow.General;
-using Guppy.Network.Dtos;
+using Guppy.Network.Messages;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Security;
@@ -14,6 +14,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.CommandLine.Services;
+using System.CommandLine.Invocation;
+using System.CommandLine;
+using System.CommandLine.IO;
+using System.Linq;
+using Guppy.Network.Security.Structs;
+using Guppy.Threading.Utilities;
 
 namespace Guppy.Network
 {
@@ -41,12 +48,14 @@ namespace Guppy.Network
         private NetDataWriterFactory _writerFactory;
         private User _currentUser;
         private Room _room;
+        private ThreadQueue _threadQueue;
         #endregion
 
         #region Protected Properties
         protected EventBasedNetListener listener { get; private set; }
         protected NetManager manager { get; private set; }
         protected NetworkProvider network { get; private set; }
+        protected CommandService commands { get; private set; }
         #endregion
 
         #region Public Properties
@@ -73,10 +82,13 @@ namespace Guppy.Network
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
             this.network = provider.GetService<NetworkProvider>();
+            this.commands = provider.GetService<CommandService>();
 
             this.Users = provider.GetService<UserService>();
 
             provider.Settings.Set(HostType.Local);
+
+            this.commands.Get("network users").Handler = CommandHandler.Create<Int32?, IConsole>(this.HandleNetworkUserCommand);
         }
 
         protected override void Create(ServiceProvider provider)
@@ -142,12 +154,12 @@ namespace Guppy.Network
         #endregion
 
         #region SendMessage Methods
-        public void SendMessage(String messageName, IData data, NetPeer recipient)
+        public void SendMessage<TData>(TData data, NetPeer recipient)
+            where TData : class, IData
         {
-            this.UsingDataWriter(writer =>
-            {
-                this.network.SendMessage(writer, messageName, data, recipient);
-            });
+            NetDataWriter om = _writerFactory.GetInstance();
+            this.network.SendMessage(om, data, recipient);
+            _writerFactory.TryReturnToPool(om);
         }
         #endregion
 
@@ -172,8 +184,37 @@ namespace Guppy.Network
         #region Event Methods
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
-            Message message = this.network.ReadMessage(reader);
+            NetworkMessage message = this.network.ReadMessage(reader);
             _room.ProcessIncoming(message);
+        }
+        #endregion
+
+        #region Command Handlers
+        private void HandleNetworkUserCommand(Int32? id, IConsole console)
+        {
+            if(id.HasValue)
+            { // Print user specific data...
+                if(this.Users.TryGetById(id.Value, out User user))
+                {
+                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}");
+
+                    foreach(Claim claim in user.Claims)
+                    {
+                        console.Out.WriteLine($"{claim.Key}, {claim.Value}, {claim.Type}");
+                    }
+                }
+                else
+                {
+                    console.Error.WriteLine($"Unable to find {nameof(User)}: {id.Value}");
+                }
+            }
+            else
+            { // Print all user overview...
+                foreach(User user in this.Users)
+                {
+                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}, Claims: {user.Claims.Count()}");
+                }
+            }
         }
         #endregion
     }

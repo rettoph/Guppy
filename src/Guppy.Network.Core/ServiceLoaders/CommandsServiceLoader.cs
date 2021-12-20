@@ -1,38 +1,33 @@
-﻿using Guppy.CommandLine.Services;
+﻿using Guppy.Attributes;
+using Guppy.CommandLine.Builders;
+using Guppy.CommandLine.Interfaces;
+using Guppy.CommandLine.Services;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.Network.ServiceLoaders
 {
-    internal sealed class CommandsServiceLoader : IServiceLoader
+    [AutoLoad]
+    internal sealed class CommandsServiceLoader : ICommandServiceLoader
     {
-        public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
+        public void RegisterCommands(CommandServiceBuilder commands)
         {
-            services.RegisterSetup<CommandService>()
-                .SetMethod((commands, _, _) =>
+            commands.RegisterCommand("network")
+                .SetDescription("Interact with current network info.")
+                .AddSubCommand("users", users =>
                 {
-                    var network = new Command("network", "Interact with current network info.")
-                    {
-                    };
-
-                    var user = new Command("user", "Investigate a current user")
-                    {
-                        // new 
-                    };
-
-                    network.AddCommand(user);
-
-                    commands.Get().Add(network);
-                    commands.Get().Add(new Command("test", "This is a test command")
-                    {
-                        new Argument<string>("input", "This is a test argument"),
-                    });
+                    users.SetDescription("Investigate user info")
+                        .AddOption(new Option<Int32?>("id", "Specific user Id")
+                        {
+                            IsRequired = false
+                        });
                 });
         }
     }

@@ -16,7 +16,7 @@ namespace Guppy.Network.Security.ServiceLoaders
         {
             services.RegisterService<UserService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<UserService>();
                 });

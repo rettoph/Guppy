@@ -20,19 +20,19 @@ namespace Guppy.Extensions
         {
             loader.Services.RegisterService<GraphicsDeviceManager>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory => factory.SetMethod(_ => graphics));
+                .RegisterTypeFactory(factory => factory.SetMethod(_ => graphics));
 
             loader.Services.RegisterService<ContentManager>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory => factory.SetMethod(_ => content));
+                .RegisterTypeFactory(factory => factory.SetMethod(_ => content));
 
             loader.Services.RegisterService<GameWindow>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory => factory.SetMethod(_ => window));
+                .RegisterTypeFactory(factory => factory.SetMethod(_ => window));
 
             loader.Services.RegisterService<GraphicsDevice>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory => factory.SetMethod(_ => graphics.GraphicsDevice));
+                .RegisterTypeFactory(factory => factory.SetMethod(_ => graphics.GraphicsDevice));
 
             loader.RegisterServiceLoader(new MonoGameServiceLoader());
             loader.RegisterServiceLoader(new ContentServiceLoader());

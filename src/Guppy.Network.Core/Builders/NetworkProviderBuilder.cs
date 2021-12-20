@@ -8,39 +8,32 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.Network.Builders
 {
     public class NetworkProviderBuilder : IDisposable
     {
         #region Private Fields
-        private List<DataTypeConfigurationBuilder> _dataTypes;
-        private List<MessageConfigurationBuilder> _messages;
+        private List<DataConfigurationBuilder> _dataTypes;
+        private List<NetworkMessageConfigurationBuilder> _messages;
+        private ServiceProviderBuilder _services;
         #endregion
 
         #region Constructors
-        public NetworkProviderBuilder()
+        public NetworkProviderBuilder(ServiceProviderBuilder service)
         {
-            _dataTypes = new List<DataTypeConfigurationBuilder>();
-            _messages = new List<MessageConfigurationBuilder>();
+            _dataTypes = new List<DataConfigurationBuilder>();
+            _messages = new List<NetworkMessageConfigurationBuilder>();
+            _services = service;
         }
         #endregion
 
         #region RegisterDataType Methods
-        public DataTypeConfigurationBuilder<IData> RegisterDataType(Type type)
-        {
-            typeof(IData).ValidateAssignableFrom(type);
-
-            DataTypeConfigurationBuilder<IData> dataType = new DataTypeConfigurationBuilder<IData>(type, this);
-            _dataTypes.Add(dataType);
-
-            return dataType;
-        }
-
-        public DataTypeConfigurationBuilder<TData> RegisterDataType<TData>()
+        public DataConfigurationBuilder<TData> RegisterDataType<TData>()
             where TData : class, IData
         {
-            DataTypeConfigurationBuilder<TData> dataType = new DataTypeConfigurationBuilder<TData>(typeof(TData), this);
+            DataConfigurationBuilder<TData> dataType = new DataConfigurationBuilder<TData>(this);
             _dataTypes.Add(dataType);
 
             return dataType;
@@ -48,25 +41,20 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region RegisterMessage Methods
-        public MessageConfigurationBuilder<TData> RegisterMessage<TData>(String name)
+        public NetworkMessageConfigurationBuilder<TData> RegisterNetworkMessage<TData>()
             where TData : class, IData
         {
-            MessageConfigurationBuilder<TData> message = new MessageConfigurationBuilder<TData>(name);
+            NetworkMessageConfigurationBuilder<TData> message = new NetworkMessageConfigurationBuilder<TData>(_services);
             _messages.Add(message);
 
             return message;
-        }
-
-        public MessageConfigurationBuilder<IData> RegisterMessage(String name)
-        {
-            return this.RegisterMessage<IData>(name);
         }
         #endregion
 
         #region Build Methods
         private void BuildDataTypes(
             out DynamicIdSize dataTypeIdSize,
-            out DoubleDictionary<UInt16, Type, DataTypeConfiguration> dataTypes)
+            out DoubleDictionary<UInt16, Type, DataConfiguration> dataTypes)
         {
             // Calculate the maximum id
             UInt16 maxDataTypeId = (UInt16)(_dataTypes.Any() ? _dataTypes.Count - 1 : 0);
@@ -78,16 +66,16 @@ namespace Guppy.Network.Builders
             DynamicId id = new DynamicId(0, dataTypeIdSize);
 
             // Create the DoubleDictionary, making sure to auto incrememnt the id as configurations build. 
-            dataTypes =  new DoubleDictionary<UInt16, Type, DataTypeConfiguration>(
+            dataTypes =  new DoubleDictionary<UInt16, Type, DataConfiguration>(
                 keySelector1: dtc => dtc.Id.Value,
                 keySelector2: dtc => dtc.Type,
                 values: _dataTypes.PrioritizeBy(dtcb => dtcb.Type).Select(dtcb => dtcb.Build(id++)).ToList());
         }
 
         private void BuildMessages(
-            DoubleDictionary<UInt16, Type, DataTypeConfiguration> dataTypes,
+            DoubleDictionary<UInt16, Type, DataConfiguration> dataTypes,
             out DynamicIdSize messageIdSize,
-            out DoubleDictionary<UInt16, String, MessageConfiguration> messages)
+            out DoubleDictionary<UInt16, Type, NetworkMessageConfiguration> messages)
         {
             // Calculate the maximum id
             UInt16 maxMessageId = (UInt16)(_messages.Any() ? _messages.Count - 1 : 0);
@@ -99,22 +87,22 @@ namespace Guppy.Network.Builders
             DynamicId id = new DynamicId(0, messageIdSize);
 
             // Create the DoubleDictionary, making sure to auto incrememnt the id as configurations build. 
-            messages = new DoubleDictionary<UInt16, String, MessageConfiguration>(
+            messages = new DoubleDictionary<UInt16, Type, NetworkMessageConfiguration>(
                 keySelector1: mc => mc.Id.Value,
-                keySelector2: mc => mc.Name,
-                values: _messages.PrioritizeBy(mcb => mcb.Name).Select(mcb => mcb.Build(id++, dataTypes)).ToList());
+                keySelector2: mc => mc.DataConfiguration.Type,
+                values: _messages.PrioritizeBy(mcb => mcb.DataConfigurationType).Select(mcb => mcb.Build(id++, dataTypes)).ToList());
         }
 
         public NetworkProvider Build()
         {
             this.BuildDataTypes(
                 out DynamicIdSize dataTypesIdSize,
-                out DoubleDictionary<UInt16, Type, DataTypeConfiguration> dataTypes);
+                out DoubleDictionary<UInt16, Type, DataConfiguration> dataTypes);
 
             this.BuildMessages(
                 dataTypes,
                 out DynamicIdSize messageIdSize,
-                out DoubleDictionary<UInt16, String, MessageConfiguration> messages);
+                out DoubleDictionary<UInt16, Type, NetworkMessageConfiguration> messages);
 
             return new NetworkProvider(
                 dataTypesIdSize,

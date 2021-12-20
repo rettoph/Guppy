@@ -20,14 +20,14 @@ namespace Guppy.Network.ServiceLoaders
             #region Register Services
             services.RegisterService<EventBasedNetListener>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<EventBasedNetListener>();
                 });
 
             services.RegisterService<NetManager>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => new NetManager(p.GetService<EventBasedNetListener>()));
                 });

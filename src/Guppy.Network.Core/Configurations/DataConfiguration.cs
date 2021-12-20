@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Dtos;
+﻿using Guppy.Network.Messages;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Structs;
 using LiteNetLib.Utils;
@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Network.Configurations
 {
-    public class DataTypeConfiguration
+    public class DataConfiguration
     {
         public readonly DynamicId Id;
 
@@ -18,7 +18,7 @@ namespace Guppy.Network.Configurations
 
         public readonly Func<NetDataReader, IData> Reader;
 
-        internal DataTypeConfiguration(
+        internal DataConfiguration(
             DynamicId id,
             Type type,
             Action<NetDataWriter, IData> writer,
@@ -30,9 +30,9 @@ namespace Guppy.Network.Configurations
             this.Reader = reader;
         }
 
-        internal DataTypeConfigurationDto ToDto()
+        internal DataTypeConfigurationMessage GetMessage()
         {
-            return new DataTypeConfigurationDto()
+            return new DataTypeConfigurationMessage()
             {
                 Id = this.Id.Value,
                 TypeAssemblyQualifiedName = this.Type.AssemblyQualifiedName

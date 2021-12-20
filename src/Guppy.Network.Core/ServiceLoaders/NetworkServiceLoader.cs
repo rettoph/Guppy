@@ -3,7 +3,7 @@ using Guppy.Attributes;
 using Guppy.Interfaces;
 using Guppy.Network.Builders;
 using Guppy.Network.Interfaces;
-using Guppy.Network.Dtos;
+using Guppy.Network.Messages;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +18,7 @@ using Guppy.Network.Enums;
 using Guppy.Utilities;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.EntityComponent.Utilities;
+using Guppy.Threading.Utilities;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -28,29 +29,36 @@ namespace Guppy.Network.ServiceLoaders
         {
             services.RegisterService<RoomService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<RoomService>();
                 });
 
             services.RegisterService<PipeService>()
                 .SetLifetime(ServiceLifetime.Transient)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<PipeService>();
                 });
 
-            services.RegisterService<MessageService>()
+            services.RegisterService<MessageQueue<IData>>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
-                    factory.SetDefaultConstructor<MessageService>();
+                    factory.SetDefaultConstructor<MessageQueue<IData>>();
+                });
+
+            services.RegisterService<NetworkMessageService>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<NetworkMessageService>();
                 });
 
             services.RegisterService<ClientPeer>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .AddCacheNamesBetweenTypes<Peer, ClientPeer>()
-                .SetTypeFactory(builder =>
+                .RegisterTypeFactory(builder =>
                 {
                     builder.SetDefaultConstructor<ClientPeer>();
                 });
@@ -58,7 +66,7 @@ namespace Guppy.Network.ServiceLoaders
             services.RegisterService<ServerPeer>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .AddCacheNamesBetweenTypes<Peer, ServerPeer>()
-                .SetTypeFactory(builder =>
+                .RegisterTypeFactory(builder =>
                 {
                     builder.SetDefaultConstructor<ServerPeer>();
                 });
@@ -69,19 +77,26 @@ namespace Guppy.Network.ServiceLoaders
 
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
-            network.RegisterDataType<ConnectionRequestDto>()
-                .SetReader(ConnectionRequestDto.Read)
-                .SetWriter(ConnectionRequestDto.Write);
+            network.RegisterDataType<ConnectionRequestMessage>()
+                .SetReader(ConnectionRequestMessage.Read)
+                .SetWriter(ConnectionRequestMessage.Write);
 
-            network.RegisterDataType<ConnectionRequestResponseDto>()
-                .SetReader(ConnectionRequestResponseDto.Read)
-                .SetWriter(ConnectionRequestResponseDto.Write)
-                .RegisterMessage(Constants.Messages.ConnectionRequestResponse, message =>
+            network.RegisterDataType<ConnectionRequestResponseMessage>()
+                .SetReader(ConnectionRequestResponseMessage.Read)
+                .SetWriter(ConnectionRequestResponseMessage.Write)
+                .RegisterNetworkMessage(message =>
                 {
                     message.SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
                         .SetSequenceChannel(0)
                         .SetPeerFilter<ClientPeer>()
-                        .SetProcessorFactory(ConnectionRequestResponseMessageProcessor.Factory);
+                        .RegisterProcessorConfiguration<ConnectionRequestResponseMessageProcessor>(processor =>
+                        {
+                            processor.SetLifetime(ServiceLifetime.Singleton)
+                                .RegisterTypeFactory(factory =>
+                                {
+                                    factory.SetDefaultConstructor<ConnectionRequestResponseMessageProcessor>();
+                                });
+                        });
                 });
         }
     }

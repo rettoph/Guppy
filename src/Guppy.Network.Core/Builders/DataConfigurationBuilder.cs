@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Network.Builders
 {
-    public abstract class DataTypeConfigurationBuilder : IFluentPrioritizable<DataTypeConfigurationBuilder>
+    public abstract class DataConfigurationBuilder : IFluentPrioritizable<DataConfigurationBuilder>
     {
         #region Protected Properties
         protected NetworkProviderBuilder network { get; private set; }
@@ -22,7 +22,7 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region Constructor
-        internal DataTypeConfigurationBuilder(Type type, NetworkProviderBuilder network)
+        protected DataConfigurationBuilder(Type type, NetworkProviderBuilder network)
         {
             this.network = network;
 
@@ -31,11 +31,11 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region Build Methods
-        public abstract DataTypeConfiguration Build(DynamicId id);
+        public abstract DataConfiguration Build(DynamicId id);
         #endregion
     }
 
-    public class DataTypeConfigurationBuilder<TData> : DataTypeConfigurationBuilder
+    public class DataConfigurationBuilder<TData> : DataConfigurationBuilder
         where TData : class, IData
     {
         #region Private Fields
@@ -58,13 +58,13 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region Constructor
-        internal DataTypeConfigurationBuilder(Type type, NetworkProviderBuilder network) : base(type, network)
+        internal DataConfigurationBuilder(NetworkProviderBuilder network) : base(typeof(TData), network)
         {
         }
         #endregion
 
         #region SetWriter Methods
-        public DataTypeConfigurationBuilder<TData> SetWriter(Action<NetDataWriter, TData> dataWriter)
+        public DataConfigurationBuilder<TData> SetWriter(Action<NetDataWriter, TData> dataWriter)
         {
             _writer = dataWriter;
 
@@ -73,7 +73,7 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region SetReader Methods
-        public DataTypeConfigurationBuilder<TData> SetReader(Func<NetDataReader, TData> dataReader)
+        public DataConfigurationBuilder<TData> SetReader(Func<NetDataReader, TData> dataReader)
         {
             _reader = dataReader;
 
@@ -82,25 +82,19 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region RegisterMessage Methods
-        public DataTypeConfigurationBuilder<TData> RegisterMessage(String name, Action<MessageConfigurationBuilder<TData>> builder)
+        public DataConfigurationBuilder<TData> RegisterNetworkMessage(Action<NetworkMessageConfigurationBuilder<TData>> builder)
         {
-            MessageConfigurationBuilder<TData> message = this.network.RegisterMessage<TData>(name).SetDataType(this.Type);
+            NetworkMessageConfigurationBuilder<TData> message = this.network.RegisterNetworkMessage<TData>();
             builder(message);
-
-            return this;
-        }
-        public DataTypeConfigurationBuilder<TData> RegisterMessage(String name)
-        {
-            this.network.RegisterMessage(name).SetDataType(this.Type);
 
             return this;
         }
         #endregion
 
-        #region DataTypeConfigurationBuilder Implmenetation
-        public override DataTypeConfiguration Build(DynamicId id)
+        #region DataConfigurationBuilder Implmenetation
+        public override DataConfiguration Build(DynamicId id)
         {
-            return new DataTypeConfiguration(
+            return new DataConfiguration(
                 id,
                 this.Type,
                 this.Writer.ToIDataWriter(),

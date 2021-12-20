@@ -1,5 +1,5 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Network.Dtos;
+using Guppy.Network.Messages;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Services;
@@ -9,33 +9,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Threading;
 
 namespace Guppy.Network.MessageProcessors
 {
-    internal sealed class ConnectionRequestResponseMessageProcessor : MessageProcessor<ConnectionRequestResponseDto>
+    internal sealed class ConnectionRequestResponseMessageProcessor : MessageProcessor<ConnectionRequestResponseMessage>
     {
         private ClientPeer _client;
         private UserService _users;
 
-        private ConnectionRequestResponseMessageProcessor(ServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
             provider.Service(out _client);
             provider.Service(out _users);
         }
 
-        protected override void Process(ConnectionRequestResponseDto data, Message message)
+        protected override void Release()
         {
-            _client.CurrentUser = _users.UpdateOrCreate(data.User);
+            base.Release();
+
+            _client = default;
+            _client = default;
         }
 
-        public override void Dispose()
+        #region Lifecycle Methods
+        public override void Process(ConnectionRequestResponseMessage message)
         {
-            _client = null;
+            _client.CurrentUser = _users.UpdateOrCreate(message.User);
         }
-
-        internal static ConnectionRequestResponseMessageProcessor Factory(ServiceProvider provider)
-        {
-            return new ConnectionRequestResponseMessageProcessor(provider);
-        }
+        #endregion
     }
 }

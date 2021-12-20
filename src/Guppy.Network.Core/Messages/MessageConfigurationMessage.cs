@@ -3,18 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Network.Dtos
+namespace Guppy.Network.Messages
 {
-    internal sealed class MessageConfigurationDto
+    internal sealed class MessageConfigurationMessage
     {
         public UInt16 Id { get; internal set; }
         public String Name { get; internal set; }
         public UInt16 DataTypeId { get; internal set; }
 
         #region Read/Write Methods
-        public static MessageConfigurationDto Read(NetDataReader reader)
+        public static MessageConfigurationMessage Read(NetDataReader reader)
         {
-            return new MessageConfigurationDto()
+            return new MessageConfigurationMessage()
             {
                 Id = reader.GetUShort(),
                 Name = reader.GetString(),
@@ -22,7 +22,7 @@ namespace Guppy.Network.Dtos
             };
         }
 
-        public static void Write(NetDataWriter writer, MessageConfigurationDto dto)
+        public static void Write(NetDataWriter writer, MessageConfigurationMessage dto)
         {
             writer.Put(dto.Id);
             writer.Put(dto.Name);

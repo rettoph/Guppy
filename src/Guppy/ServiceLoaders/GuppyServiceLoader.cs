@@ -30,7 +30,7 @@ namespace Guppy.ServiceLoaders
 
             services.RegisterService<IntervalInvoker>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<IntervalInvoker>();
                 });

@@ -4,6 +4,7 @@ using Guppy.Network.Security.Dtos;
 using Guppy.Network.Security.Structs;
 using LiteNetLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace Guppy.Network.Security.Services
     /// <summary>
     /// Simple manager for users.
     /// </summary>
-    public class UserService : Service
+    public class UserService : Service, IEnumerable<User>
     {
         #region Private Fields
         private Dictionary<Int32, User> _users;
@@ -76,6 +77,23 @@ namespace Guppy.Network.Security.Services
         internal User UpdateOrCreate(UserDto dto)
         {
             return this.UpdateOrCreate(dto.Id, dto.Claims);
+        }
+
+        public Boolean TryGetById(Int32 id, out User user)
+        {
+            return _users.TryGetValue(id, out user);
+        }
+        #endregion
+
+        #region IEnumerable<User> Implementation
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public IEnumerator<User> GetEnumerator()
+        {
+            return _users.Values.GetEnumerator();
         }
         #endregion
     }

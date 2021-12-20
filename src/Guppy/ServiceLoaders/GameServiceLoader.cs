@@ -16,7 +16,7 @@ namespace Guppy.ServiceLoaders
             assemblyHelper.Types.GetTypesWithAutoLoadAttribute<Game>(false).ForEach(gameType =>
             {
                 services.RegisterGame(game: gameType)
-                    .SetTypeFactory(factory =>
+                    .RegisterTypeFactory(factory =>
                     {
                         factory.SetMethod(p => Activator.CreateInstance(gameType) as Game);
                     });

@@ -30,7 +30,7 @@ namespace Guppy.CommandLine.GuppyInitializers
 
             services.RegisterService<CommandService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => builder.Build());
                 });

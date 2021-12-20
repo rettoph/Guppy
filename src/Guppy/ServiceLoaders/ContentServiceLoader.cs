@@ -16,7 +16,7 @@ namespace Guppy.ServiceLoaders
         {
             services.RegisterService<ContentService>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetTypeFactory(factory =>
+                .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => new ContentService());
                 });

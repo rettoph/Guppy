@@ -1,14 +1,15 @@
 ﻿using Guppy.Network.Configurations;
 using Guppy.Network.Interfaces;
+using Guppy.Threading.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.Network
 {
-    public class Message
+    public class NetworkMessage : IMessage
     {
-        public MessageConfiguration Configuration { get; set; }
+        public NetworkMessageConfiguration Configuration { get; set; }
 
         public IData Data { get; set; }
     }

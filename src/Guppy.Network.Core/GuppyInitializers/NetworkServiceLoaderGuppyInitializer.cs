@@ -16,9 +16,9 @@ namespace Guppy.Network.GuppyInitializers
     {
         public void PreInitialize(AssemblyHelper assemblies, ServiceProviderBuilder services, IEnumerable<IGuppyLoader> loaders)
         {
-            using (NetworkProviderBuilder networkBuilder = new NetworkProviderBuilder())
+            using (NetworkProviderBuilder networkBuilder = new NetworkProviderBuilder(services))
             {
-                foreach (IServiceLoader serviceLoader in loaders)
+                foreach (IGuppyLoader serviceLoader in loaders)
                 {
                     if (serviceLoader is INetworkServiceLoader networkServiceLoader)
                     {
@@ -29,7 +29,7 @@ namespace Guppy.Network.GuppyInitializers
                 NetworkProvider network = networkBuilder.Build();
                 services.RegisterService<NetworkProvider>()
                     .SetLifetime(ServiceLifetime.Singleton)
-                    .SetTypeFactory(builder =>
+                    .RegisterTypeFactory(builder =>
                     {
                         builder.SetMethod(p => network);
                     });
