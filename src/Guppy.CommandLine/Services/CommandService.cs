@@ -15,17 +15,19 @@ namespace Guppy.CommandLine.Services
         #region Private Fields
         private RootCommand _root;
         private IConsole _console;
+        private Dictionary<Type, Command> _commands;
         #endregion
 
         #region Constructor
-        public CommandService(IEnumerable<Command> commands)
+        public CommandService(Dictionary<Type, Command> commands)
         {
+            _commands = commands;
             _root = new RootCommand()
             {
                 Name = ">‎"
             };
 
-            foreach(Command command in commands)
+            foreach(Command command in commands.Values)
             {
                 _root.AddCommand(command);
             }
@@ -42,12 +44,15 @@ namespace Guppy.CommandLine.Services
         #endregion
 
         #region Methods
-        public TCommand Get<TCommand>(String input = "")
-            where TCommand : class, ICommand
-                => _root.Parse(input).CommandResult.Command as TCommand;
+        public Command Get<TCommand>()
+            where TCommand : class
+                => _commands[typeof(TCommand)];
+
+        public Command Get(Type type)
+            => _commands[type];
 
         public Command Get(String input = "")
-            => this.Get<Command>(input);
+            => _root.Parse(input).CommandResult.Command as Command;
 
         public Int32 Invoke(String input = "")
             => _root.Invoke(input, _console);

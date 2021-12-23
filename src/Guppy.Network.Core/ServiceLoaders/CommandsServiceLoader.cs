@@ -19,16 +19,7 @@ namespace Guppy.Network.ServiceLoaders
     {
         public void RegisterCommands(CommandServiceBuilder commands)
         {
-            commands.RegisterCommand("network")
-                .SetDescription("Interact with current network info.")
-                .AddSubCommand("users", users =>
-                {
-                    users.SetDescription("Investigate user info")
-                        .AddOption(new Option<Int32?>("id", "Specific user Id")
-                        {
-                            IsRequired = false
-                        });
-                });
+            // throw new NotImplementedException();
         }
     }
 }

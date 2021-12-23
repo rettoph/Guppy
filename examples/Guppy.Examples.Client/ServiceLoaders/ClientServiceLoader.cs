@@ -54,34 +54,34 @@ namespace Guppy.Examples.Client.ServiceLoaders
 
         public void RegisterCommands(CommandServiceBuilder commands)
         {
-            commands.RegisterCommand("test")
-                .SetDescription("This is a test command")
-                .AddArgument(new Argument<string>("input", "This is a test argument"))
-                .SetDefaultHandler(CommandHandler.Create<String, IConsole>((input, console) =>
-                {
-                    console.Out.WriteLine($"Your custom input: {input}");
-                }));
-
-            commands.RegisterCommand("hello")
-                .SetDescription("This is the base hello command")
-                .AddSubCommand("world", world =>
-                {
-                    world.SetDescription("Hello World!")
-                        .SetDefaultHandler(CommandHandler.Create<IConsole>((console) =>
-                        {
-                            console.Out.WriteLine($"The Earth says hello!");
-                        }));
-                })
-                .AddSubCommand("dolly", dolly =>
-                {
-                    dolly.SetDescription("Hello, Dolly.")
-                        .SetDefaultHandler(CommandHandler.Create<IConsole>((console) =>
-                        {
-                            console.Out.WriteLine($"Hello, Dolly,");
-                            console.Out.WriteLine($"Well, hello, Dolly");
-                            console.Out.WriteLine($"It's so nice to have you back where you belong");
-                        }));
-                });
+            // commands.RegisterCommand("test")
+            //     .SetDescription("This is a test command")
+            //     .AddArgument(new Argument<string>("input", "This is a test argument"))
+            //     .SetDefaultHandler(CommandHandler.Create<String, IConsole>((input, console) =>
+            //     {
+            //         console.Out.WriteLine($"Your custom input: {input}");
+            //     }));
+            // 
+            // commands.RegisterCommand("hello")
+            //     .SetDescription("This is the base hello command")
+            //     .AddSubCommand("world", world =>
+            //     {
+            //         world.SetDescription("Hello World!")
+            //             .SetDefaultHandler(CommandHandler.Create<IConsole>((console) =>
+            //             {
+            //                 console.Out.WriteLine($"The Earth says hello!");
+            //             }));
+            //     })
+            //     .AddSubCommand("dolly", dolly =>
+            //     {
+            //         dolly.SetDescription("Hello, Dolly.")
+            //             .SetDefaultHandler(CommandHandler.Create<IConsole>((console) =>
+            //             {
+            //                 console.Out.WriteLine($"Hello, Dolly,");
+            //                 console.Out.WriteLine($"Well, hello, Dolly");
+            //                 console.Out.WriteLine($"It's so nice to have you back where you belong");
+            //             }));
+            //     });
         }
     }
 }

@@ -24,6 +24,7 @@ using Guppy.Threading.Utilities;
 using Guppy.EntityComponent;
 using System.Threading;
 using Guppy.Utilities.Threading;
+using System.CommandLine.Binding;
 
 namespace Guppy.Network
 {
@@ -87,7 +88,7 @@ namespace Guppy.Network
 
             provider.Settings.Set(HostType.Remote);
 
-            this.commands.Get("network users").Handler = CommandHandler.Create<Int32?, IConsole>(this.HandleNetworkUserCommand);
+            this.commands.Get<Commands.Network.Users>().Handler = CommandHandler.Create<Int32?, IConsole>(this.HandleNetworkUserCommand);
         }
 
         protected override void Create(ServiceProvider provider)

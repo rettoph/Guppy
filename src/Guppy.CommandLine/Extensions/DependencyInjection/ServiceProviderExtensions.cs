@@ -17,8 +17,9 @@ namespace Guppy.CommandLine.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static Command GetCommand(this ServiceProvider provider, String command)
-            => provider.GetService<CommandService>().Get(command);
+        public static Command GetCommand<TCommand>(this ServiceProvider provider)
+            where TCommand : class
+                => provider.GetService<CommandService>().Get<TCommand>();
 
         /// <summary>
         /// Automatically return a command directly from the
@@ -28,8 +29,7 @@ namespace Guppy.CommandLine.Extensions.DependencyInjection
         /// <param name="provider"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static TCommand GetCommand<TCommand>(this ServiceProvider provider, String command)
-            where TCommand : class, ICommand
-                => provider.GetService<CommandService>().Get<TCommand>(command);
+        public static Command GetCommand(this ServiceProvider provider, String command)
+                => provider.GetService<CommandService>().Get(command);
     }
 }

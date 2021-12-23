@@ -3,88 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Linq;
 
 namespace Guppy.CommandLine.Builders
 {
-    public sealed class CommandBuilder : IFluentPrioritizable<CommandBuilder>
+    public sealed class CommandBuilder
     {
-        #region Public Fields
-        public readonly String Name;
-        #endregion
-
-        #region Public Properties
-        public String Description { get; set; }
-        public Int32 Priority { get; set; }
-        public List<Argument> Arguments { get; set; }
-        public List<Option> Options { get; set; }
-        public List<CommandBuilder> SubCommands { get; set; }
-        public List<String> Aliases { get; set; }
-        public ICommandHandler? DefaultHandler { get; set; }
-        #endregion
+        public readonly Type Type;
+        public readonly CommandDefinition Definition;
+        public CommandDefinition Parent { get; set; }
 
         #region Constructor
-        public CommandBuilder(string name)
+        public CommandBuilder(Type type)
         {
-            this.Name = name;
+            typeof(CommandDefinition).ValidateAssignableFrom(type);
 
-            this.Arguments = new List<Argument>();
-            this.Options = new List<Option>();
-            this.SubCommands = new List<CommandBuilder>();
-            this.Aliases = new List<String>();
+            this.Type = type;
+            this.Definition = Activator.CreateInstance(type) as CommandDefinition;
         }
         #endregion
 
         #region SetDescription Methods
-        public CommandBuilder SetDescription(String description)
+        public CommandBuilder SetParent(CommandDefinition parent)
         {
-            this.Description = description;
-
-            return this;
-        }
-        #endregion
-
-        #region AddArgument Methods
-        public CommandBuilder AddArgument(Argument argument)
-        {
-            this.Arguments.Add(argument);
-
-            return this;
-        }
-        #endregion
-
-        #region AddOption Methods
-        public CommandBuilder AddOption(Option option)
-        {
-            this.Options.Add(option);
-
-            return this;
-        }
-        #endregion
-
-        #region AddCommand Methods
-        public CommandBuilder AddSubCommand(String name, Action<CommandBuilder> builder)
-        {
-            CommandBuilder subCommand = new CommandBuilder(name);
-            builder(subCommand);
-            this.SubCommands.Add(subCommand);
-
-            return this;
-        }
-        #endregion
-
-        #region AddAlias Methods
-        public CommandBuilder AddAlias(String alias)
-        {
-            this.Aliases.Add(alias);
-
-            return this;
-        }
-        #endregion
-
-        #region SetHandler Methods
-        public CommandBuilder SetDefaultHandler(ICommandHandler handler)
-        {
-            this.DefaultHandler = handler;
+            this.Parent = parent;
 
             return this;
         }
@@ -93,27 +35,21 @@ namespace Guppy.CommandLine.Builders
         #region Build Methods
         internal Command Build()
         {
-            Command command = new Command(this.Name, this.Description);
-            command.Handler = this.DefaultHandler;
+            var command = new Command(this.Definition.Name, this.Definition.Description);
 
-            foreach (String alias in this.Aliases)
-            {
-                command.AddAlias(alias);
-            }
-
-            foreach (Option option in this.Options)
+            foreach (Option option in this.Definition.Options)
             {
                 command.AddOption(option);
             }
 
-            foreach (Argument argument in this.Arguments)
+            foreach (Argument argument in this.Definition.Arguments)
             {
                 command.AddArgument(argument);
             }
 
-            foreach (CommandBuilder subCommand in this.SubCommands)
+            foreach (String alias in this.Definition.Aliases)
             {
-                command.AddCommand(subCommand.Build());
+                command.AddAlias(alias);
             }
 
             return command;

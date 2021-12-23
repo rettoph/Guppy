@@ -20,7 +20,12 @@ namespace Guppy.CommandLine.GuppyInitializers
         {
             CommandServiceBuilder builder = new CommandServiceBuilder();
 
-            foreach(IGuppyLoader loader in loaders)
+            foreach (Type commandDefinitionType in assemblies.Types.GetTypesWithAutoLoadAttribute<CommandDefinition>())
+            {
+                builder.ImportCommandDefinition(commandDefinitionType);
+            }
+
+            foreach (IGuppyLoader loader in loaders)
             {
                 if(loader is ICommandLoader commandLoader)
                 {

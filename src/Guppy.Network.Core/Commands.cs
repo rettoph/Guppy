@@ -1,0 +1,36 @@
+﻿using Guppy.Attributes;
+using Guppy.CommandLine;
+using Guppy.CommandLine.Arguments;
+using Guppy.CommandLine.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Guppy.Network
+{
+    public class Commands
+    {
+        [AutoLoad]
+        [CommandParent(typeof(CommandLine.Commands.Guppy))]
+        public class Network : CommandDefinition
+        {
+            public override String Name => "network";
+            public override String Description => "Guppy.Network commands.";
+
+            public class Users : CommandDefinition
+            {
+                public override String Name => "users";
+                public override String Description => "Guppy.Network User commands.";
+
+                public override Option[] Options => new[] 
+                {
+                    new Option<Int32?>("id", "Specific user Id")
+                };
+            }
+        }
+    }
+}
