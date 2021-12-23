@@ -1,5 +1,7 @@
-﻿using Guppy.EntityComponent;
+﻿using Guppy.CommandLine.Interfaces;
+using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Threading.Utilities;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -10,7 +12,7 @@ using System.Text;
 
 namespace Guppy.CommandLine.Services
 {
-    public class CommandService : Service
+    public class CommandService : MessageQueue<ICommandData>
     {
         #region Private Fields
         private RootCommand _root;

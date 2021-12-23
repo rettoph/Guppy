@@ -1,4 +1,5 @@
 ﻿using Guppy.CommandLine.Arguments;
+using Guppy.CommandLine.Services;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -21,6 +22,14 @@ namespace Guppy.CommandLine
         public CommandDefinition()
         {
 
+        }
+
+        public virtual ICommandHandler CreateCommandHandler(CommandService commands)
+        {
+            return CommandHandler.Create(() =>
+            {
+                //
+            });
         }
     }
 }

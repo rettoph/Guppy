@@ -74,7 +74,16 @@ namespace Guppy.CommandLine.Builders
 
         public CommandService Build()
         {
-            return new CommandService(_commands.Build());
+            var commands = new CommandService(_commands.Build());
+
+            // We can go through and create all the command handlers now. Its not ideal but it works
+
+            foreach(CommandBuilder builder in _commands.Values)
+            {
+                commands.Get(builder.Type).Handler = builder.Definition.CreateCommandHandler(commands);
+            }
+
+            return commands;
         }
     }
 }

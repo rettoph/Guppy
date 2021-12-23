@@ -25,13 +25,16 @@ using Guppy.EntityComponent;
 using System.Threading;
 using Guppy.Utilities.Threading;
 using System.CommandLine.Binding;
+using Guppy.Network.Messages.Commands;
+using Guppy.Threading.Interfaces;
+using log4net;
 
 namespace Guppy.Network
 {
     /// <summary>
     /// The primary peer class, used as a wrapper for all client/server connections.
     /// </summary>
-    public class Peer : Service
+    public class Peer : Service, IMessageProcessor<GuppyNetworkUsersCommand>
     {
         /// <summary>
         /// The default RoomId used for inner Peer communication.
@@ -46,6 +49,7 @@ namespace Guppy.Network
         private Room _room;
         private CancellationTokenSource _cancelation;
         private Task _loop;
+        private ILog _log;
         #endregion
 
         #region Protected Properties
@@ -78,6 +82,7 @@ namespace Guppy.Network
             base.Create(provider);
 
             provider.Service(out _rooms);
+            provider.Service(out _log);
 
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
@@ -88,7 +93,7 @@ namespace Guppy.Network
 
             provider.Settings.Set(HostType.Remote);
 
-            this.commands.Get<Commands.Network.Users>().Handler = CommandHandler.Create<Int32?, IConsole>(this.HandleNetworkUserCommand);
+            this.commands.RegisterProcessor<GuppyNetworkUsersCommand>(this);
         }
 
         protected override void Create(ServiceProvider provider)
@@ -123,6 +128,9 @@ namespace Guppy.Network
         protected override void PostDispose()
         {
             base.Dispose();
+
+            _rooms = default;
+            _log = default;
 
             this.listener = default;
             this.manager = default;
@@ -185,39 +193,39 @@ namespace Guppy.Network
         #endregion
 
         #region Command Handlers
-        private void HandleNetworkUserCommand(Int32? id, IConsole console)
+        public void Process(GuppyNetworkUsersCommand data)
         {
-            if(id.HasValue)
+            if (data.Id.HasValue)
             { // Print user specific data...
-                if(this.Users.TryGetById(id.Value, out User user))
+                if (this.Users.TryGetById(data.Id.Value, out User user))
                 {
-                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}, {nameof(User.CreatedAt)}: {user.CreatedAt:HH:mm:ss}, {nameof(User.UpdatedAt)}: {user.UpdatedAt:HH:mm:ss}");
+                    _log.Info($"{nameof(User.Id)}: {user.Id}, {nameof(User.CreatedAt)}: {user.CreatedAt:HH:mm:ss}, {nameof(User.UpdatedAt)}: {user.UpdatedAt:HH:mm:ss}");
 
-                    console.Out.WriteLine("------------------------------------------------");
+                    _log.Info("------------------------------------------------");
 
-                    console.Out.WriteLine("Claim(s)");
+                    _log.Info("Claim(s)");
                     foreach (Claim claim in user.Claims)
                     {
-                        console.Out.WriteLine($"  {claim.Key}, {claim.Value}, {claim.Type}, {claim.CreatedAt:HH:mm:ss}");
+                        _log.Info($"  {claim.Key}, {claim.Value}, {claim.Type}, {claim.CreatedAt:HH:mm:ss}");
                     }
 
-                    console.Out.WriteLine("------------------------------------------------");
-                    console.Out.WriteLine("Room(s)");
-                    foreach(Room room in user.Rooms)
+                    _log.Info("------------------------------------------------");
+                    _log.Info("Room(s)");
+                    foreach (Room room in user.Rooms)
                     {
-                        console.Out.WriteLine($"  {nameof(Room.Id)}: {room.Id}");
+                        _log.Info($"  {nameof(Room.Id)}: {room.Id}");
                     }
                 }
                 else
                 {
-                    console.Error.WriteLine($"Unable to find {nameof(User)}: {id.Value}");
+                    _log.Error($"Unable to find {nameof(User)}: {data.Id.Value}");
                 }
             }
             else
             { // Print all user overview...
-                foreach(User user in this.Users)
+                foreach (User user in this.Users)
                 {
-                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}, Claim(s): {user.Claims.Count()}, Room(s): {user.Rooms.Count()}");
+                    _log.Info($"{nameof(User.Id)}: {user.Id}, Claim(s): {user.Claims.Count()}, Room(s): {user.Rooms.Count()}");
                 }
             }
         }

@@ -2,6 +2,8 @@
 using Guppy.CommandLine;
 using Guppy.CommandLine.Arguments;
 using Guppy.CommandLine.Interfaces;
+using Guppy.CommandLine.Services;
+using Guppy.Network.Messages.Commands;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -30,6 +32,17 @@ namespace Guppy.Network
                 {
                     new Option<Int32?>("id", "Specific user Id")
                 };
+
+                public override ICommandHandler CreateCommandHandler(CommandService commands)
+                {
+                    return CommandHandler.Create<Int32?>((id) =>
+                    {
+                        commands.Process(new GuppyNetworkUsersCommand()
+                        {
+                            Id = id,
+                        });
+                    });
+                }
             }
         }
     }
