@@ -166,6 +166,22 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
+        #region RegisterComponentService Methods
+        public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentService<TComponent>(String name)
+            where TComponent : class, IComponent
+        {
+            ComponentServiceConfigurationBuilder<TComponent> serviceConfigurationBuilder = new ComponentServiceConfigurationBuilder<TComponent>(name, this);
+            _serviceConfigurations.Add(serviceConfigurationBuilder);
+
+            return serviceConfigurationBuilder.SetLifetime(ServiceLifetime.Transient);
+        }
+        public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentService<TComponent>()
+            where TComponent : class, IComponent
+        {
+            return this.RegisterComponentService<TComponent>(typeof(TComponent).FullName);
+        }
+        #endregion
+
         #region RegisterComponentConfiguration Methods
         public ComponentConfigurationBuilder RegisterComponent(String componentName)
         {

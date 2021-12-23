@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.Network.Messages;
 
 namespace Guppy.Network.Builders
 {
@@ -20,9 +21,15 @@ namespace Guppy.Network.Builders
         private ServiceProviderBuilder _services;
         #endregion
 
+        #region Public Properties
+        public Byte SequenceChannelCount { get; set; }
+        #endregion
+
         #region Constructors
         public NetworkProviderBuilder(ServiceProviderBuilder service)
         {
+            this.SequenceChannelCount = 1;
+
             _dataTypes = new List<DataConfigurationBuilder>();
             _messages = new List<NetworkMessageConfigurationBuilder>();
             _services = service;
@@ -40,11 +47,29 @@ namespace Guppy.Network.Builders
         }
         #endregion
 
-        #region RegisterMessage Methods
+        #region RegisterNetworkMessage Methods
         public NetworkMessageConfigurationBuilder<TData> RegisterNetworkMessage<TData>()
             where TData : class, IData
         {
             NetworkMessageConfigurationBuilder<TData> message = new NetworkMessageConfigurationBuilder<TData>(_services);
+            _messages.Add(message);
+
+            return message;
+        }
+        #endregion
+
+        #region RegisterNetworkEntityMessage Methods
+        /// <summary>
+        /// Add a new message configuration designed specifically for communicating to Network Entities.
+        /// This will automatically define a DataType & processor. Dont change these unless you know 
+        /// what you're doing.
+        /// </summary>
+        /// <typeparam name="TNetworkEntityMessage"></typeparam>
+        /// <returns></returns>
+        public NetworkEntityMessageConfigurationBuilder<TNetworkEntityMessage> RegisterNetworkEntityMessage<TNetworkEntityMessage>()
+            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>, new()
+        {
+            NetworkEntityMessageConfigurationBuilder<TNetworkEntityMessage> message = new NetworkEntityMessageConfigurationBuilder<TNetworkEntityMessage>(this, _services);
             _messages.Add(message);
 
             return message;
@@ -105,6 +130,7 @@ namespace Guppy.Network.Builders
                 out DoubleDictionary<UInt16, Type, NetworkMessageConfiguration> messages);
 
             return new NetworkProvider(
+                this.SequenceChannelCount,
                 dataTypesIdSize,
                 dataTypes,
                 messageIdSize,

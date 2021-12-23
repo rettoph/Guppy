@@ -13,7 +13,7 @@ namespace Guppy.Network.Messages
         public UserDto User { get; internal set; }
 
         #region Read/Write Methods
-        public static ConnectionRequestResponseMessage Read(NetDataReader reader)
+        public static ConnectionRequestResponseMessage Read(NetDataReader reader, NetworkProvider network)
         {
             Boolean accepted = reader.GetBool();
             UserDto user = null;
@@ -30,7 +30,7 @@ namespace Guppy.Network.Messages
             };
         }
 
-        public static void Write(NetDataWriter writer, ConnectionRequestResponseMessage dto)
+        public static void Write(NetDataWriter writer, NetworkProvider network, ConnectionRequestResponseMessage dto)
         {
             writer.Put(dto.Accepted);
 
@@ -38,6 +38,13 @@ namespace Guppy.Network.Messages
             {
                 UserDto.Write(writer, dto.User);
             }
+        }
+        #endregion
+
+        #region IDIsposable Implementation
+        void IData.Clean()
+        {
+            // throw new NotImplementedException();
         }
         #endregion
     }

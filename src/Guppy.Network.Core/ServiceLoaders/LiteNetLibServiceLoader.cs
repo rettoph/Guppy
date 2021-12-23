@@ -29,7 +29,10 @@ namespace Guppy.Network.ServiceLoaders
                 .SetLifetime(ServiceLifetime.Singleton)
                 .RegisterTypeFactory(factory =>
                 {
-                    factory.SetMethod(p => new NetManager(p.GetService<EventBasedNetListener>()));
+                    factory.SetMethod(p => new NetManager(p.GetService<EventBasedNetListener>())
+                    {
+                        ChannelsCount = p.GetService<NetworkProvider>().SequenceChannelCount
+                    });
                 });
             #endregion
         }

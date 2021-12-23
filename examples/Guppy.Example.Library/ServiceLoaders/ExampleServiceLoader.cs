@@ -11,6 +11,9 @@ using System.Text;
 using Guppy.Example.Library.Scenes;
 using Guppy.Network;
 using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Example.Library.Layerables;
+using Guppy.Example.Library.Components.Layerables;
 
 namespace Guppy.Example.Library.ServiceLoaders
 {
@@ -19,13 +22,15 @@ namespace Guppy.Example.Library.ServiceLoaders
     {
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ExampleGame>().SetDefaultConstructor<ExampleGame>();
-            services.RegisterTypeFactory<ExampleScene>().SetDefaultConstructor<ExampleScene>();
-            services.RegisterTypeFactory<Ball>().SetDefaultConstructor<Ball>();
-
             services.RegisterGame<ExampleGame>();
             services.RegisterScene<ExampleScene>();
-            services.RegisterService<Ball>();
+
+            services.RegisterService<Ball>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<Ball>();
+                });
 
             services.RegisterSetup<ILog>()
                 .SetMethod((l, p, s) =>
@@ -33,6 +38,28 @@ namespace Guppy.Example.Library.ServiceLoaders
                     l.SetLevel(Level.Verbose);
                     l.ConfigureFileAppender($"logs\\{DateTime.Now.ToString("yyy-MM-dd")}.txt");
                 });
+
+            #region Components
+            services.RegisterComponentService<PositionableRemoteSlaveComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<PositionableRemoteSlaveComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Positionable>();
+                });
+
+            services.RegisterComponentService<PositionableRemoteMasterComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<PositionableRemoteMasterComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Positionable>();
+                });
+            #endregion
         }
     }
 }

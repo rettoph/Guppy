@@ -14,15 +14,15 @@ namespace Guppy.Network.Configurations
 
         public readonly Type Type;
 
-        public readonly Action<NetDataWriter, IData> Writer;
+        public readonly Action<NetDataWriter, NetworkProvider, IData> Writer;
 
-        public readonly Func<NetDataReader, IData> Reader;
+        public readonly Func<NetDataReader, NetworkProvider, IData> Reader;
 
         internal DataConfiguration(
             DynamicId id,
             Type type,
-            Action<NetDataWriter, IData> writer,
-            Func<NetDataReader, IData> reader)
+            Action<NetDataWriter, NetworkProvider, IData> writer,
+            Func<NetDataReader, NetworkProvider, IData> reader)
         {
             this.Id = id;
             this.Type = type;
@@ -30,7 +30,7 @@ namespace Guppy.Network.Configurations
             this.Reader = reader;
         }
 
-        internal DataTypeConfigurationMessage GetMessage()
+        internal DataTypeConfigurationMessage ToMessage()
         {
             return new DataTypeConfigurationMessage()
             {

@@ -1,12 +1,12 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Lists.Interfaces;
+using Guppy.EntityComponent.Lists.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Lists
+namespace Guppy.EntityComponent.Lists
 {
     public class SceneList : FactoryServiceList<IScene>
     {
@@ -56,6 +56,33 @@ namespace Guppy.Lists
                 throw new Exception("Unable to render non-child theme.");
 
             this.Scene = scene;
+        }
+        #endregion
+
+        #region Create Methods
+        protected override IScene Create(ServiceProvider provider, string serviceName, Action<IScene, ServiceProvider, ServiceConfiguration> customSetup, Guid id)
+        {
+            return base.Create(provider.CreateScope(), serviceName, customSetup, id);
+        }
+
+        protected override T Create<T>(ServiceProvider provider, string serviceName)
+        {
+            return base.Create<T>(provider.CreateScope(), serviceName);
+        }
+
+        protected override T Create<T>(ServiceProvider provider, string serviceName, Action<T, ServiceProvider, ServiceConfiguration> customSetup)
+        {
+            return base.Create(provider.CreateScope(), serviceName, customSetup);
+        }
+
+        protected override T Create<T>(ServiceProvider provider, string serviceName, Action<T, ServiceProvider, ServiceConfiguration> customSetup, Guid id)
+        {
+            return base.Create(provider.CreateScope(), serviceName, customSetup, id);
+        }
+
+        protected override T Create<T>(ServiceProvider provider, string serviceName, Guid id)
+        {
+            return base.Create<T>(provider.CreateScope(), serviceName, id);
         }
         #endregion
 

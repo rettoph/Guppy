@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Interfaces;
+﻿using Guppy.Network;
+using Guppy.Network.Interfaces;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,14 @@ namespace System
 {
     public static class ActionExtensions
     {
-        public static Action<NetDataWriter, IData> ToIDataWriter<TData>(this Action<NetDataWriter, TData> writer)
+        public static Action<NetDataWriter, NetworkProvider, IData> ToIDataWriter<TData>(this Action<NetDataWriter, NetworkProvider, TData> writer)
             where TData : class, IData
         {
-            void IDataWriter(NetDataWriter om, IData data)
+            void IDataWriter(NetDataWriter om, NetworkProvider network, IData data)
             {
                 if(data is TData casted)
                 {
-                    writer(om, casted);
+                    writer(om, network, casted);
 
                     return;
                 }

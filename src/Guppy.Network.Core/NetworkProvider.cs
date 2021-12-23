@@ -10,54 +10,76 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.Network.Utilities;
 
 namespace Guppy.Network
 {
     public sealed class NetworkProvider
     {
+        #region Private Fields
         private DynamicIdSize _dataTypesIdSize;
-        private Action<NetDataWriter, Byte[]> _dataTypeIdWriter;
-        private Func<NetDataReader, UInt16> _dataTypeIdReader;
-        private DoubleDictionary<UInt16, Type, DataConfiguration> _dataTypes;
+        private Action<NetDataWriter, Byte[]> _dataConfigurationIdWriter;
+        private Func<NetDataReader, UInt16> _dataConfigurationIdReader;
+        private DoubleDictionary<UInt16, Type, DataConfiguration> _dataConfigurations;
 
         private DynamicIdSize _messagesIdSize;
         private Action<NetDataWriter, Byte[]> _messageIdWriter;
         private Func<NetDataReader, UInt16> _messageIdReader;
         private DoubleDictionary<UInt16, Type, NetworkMessageConfiguration> _messages;
 
-        public IEnumerable<DataConfiguration> DataTypeConfigurations => _dataTypes.Values;
-        public IEnumerable<NetworkMessageConfiguration> MessageConfigurations => _messages.Values;
+        private NetDataWriterFactory _netDataWriterFactory;
+        #endregion
 
+        #region Public Properties
+        /// <summary>
+        /// QoS channel count per message type (value must be between 1 and 64 channels)
+        /// </summary>
+        public readonly Byte SequenceChannelCount;
+        public IEnumerable<DataConfiguration> DataTypeConfigurations => _dataConfigurations.Values;
+        public IEnumerable<NetworkMessageConfiguration> MessageConfigurations => _messages.Values;
+        #endregion
+
+        #region Constructor
         internal NetworkProvider(
+            Byte sequenceChannelCount,
             DynamicIdSize dataTypesIdSize,
             DoubleDictionary<UInt16, Type, DataConfiguration> dataTypes,
             DynamicIdSize messagesIdSize,
             DoubleDictionary<UInt16, Type, NetworkMessageConfiguration> messages)
         {
             _dataTypesIdSize = dataTypesIdSize;
-            _dataTypeIdWriter = DynamicId.GetNetWriter(_dataTypesIdSize);
-            _dataTypeIdReader = DynamicId.GetNetReader(_dataTypesIdSize);
-            _dataTypes = dataTypes;
+            _dataConfigurationIdWriter = DynamicId.GetNetWriter(_dataTypesIdSize);
+            _dataConfigurationIdReader = DynamicId.GetNetReader(_dataTypesIdSize);
+            _dataConfigurations = dataTypes;
 
             _messagesIdSize = messagesIdSize;
             _messageIdWriter = DynamicId.GetNetWriter(_messagesIdSize);
             _messageIdReader = DynamicId.GetNetReader(_messagesIdSize);
             _messages = messages;
-        }
 
-        #region GetDataTypeConfiguration Methods
-        public DataConfiguration GetDataTypeConfiguration<TDataType>()
+            _netDataWriterFactory = new NetDataWriterFactory();
+
+            this.SequenceChannelCount = sequenceChannelCount;
+        }
+        #endregion
+
+        #region GetDataConfiguration Methods
+        public DataConfiguration GetDataConfiguration<TDataType>()
             where TDataType : IData
         {
-            return _dataTypes[typeof(TDataType)];
+            return _dataConfigurations[typeof(TDataType)];
         }
-        public DataConfiguration GetDataTypeConfiguration(Type type)
+        public DataConfiguration GetDataConfiguration(Type type)
         {
-            return _dataTypes[type];
+            return _dataConfigurations[type];
+        }
+        public DataConfiguration GetDataConfiguration(IData data)
+        {
+            return _dataConfigurations[data.GetType()];
         }
         public DataConfiguration GetDataTypeConfiguration(UInt16 id)
         {
-            return _dataTypes[id];
+            return _dataConfigurations[id];
         }
         #endregion
 
@@ -73,22 +95,48 @@ namespace Guppy.Network
         #endregion
 
         #region SendMessage Methods
-        public void SendMessage<TData>(NetDataWriter writer, TData data, NetPeer recipient)
+        public void SendMessage<TData>(Room room, TData data, NetPeer recipient)
             where TData : class, IData
         {
-            NetworkMessageConfiguration configuration = _messages[typeof(TData)];
+            this.WriteMessage(room, data, out NetDataWriter writer, out NetworkMessageConfiguration configuration);
 
-            // Write message id...
-            _messageIdWriter(writer, configuration.Id.Bytes);
-            // Write message data...
-            configuration.DataConfiguration.Writer(writer, data);
-
-            // Send message
             recipient.Send(writer, configuration.SequenceChannel, configuration.DeliveryMethod);
+
+            this.RecycleMessage(writer);
+            data.Clean();
+        }
+        public void SendMessage<TData>(Room room, TData data, IEnumerable<NetPeer> recipients)
+            where TData : class, IData
+        {
+            this.WriteMessage(room, data, out NetDataWriter writer, out NetworkMessageConfiguration configuration);
+
+            foreach (NetPeer recipient in recipients)
+            {
+                recipient.Send(writer, configuration.SequenceChannel, configuration.DeliveryMethod);
+            }
+
+            this.RecycleMessage(writer);
+            data.Clean();
         }
         #endregion
 
-        #region ReadMessage
+        #region WriteMessage Methods
+        public void WriteMessage<TData>(Room room, TData data, out NetDataWriter writer, out NetworkMessageConfiguration configuration)
+            where TData : class, IData
+        {
+            writer = _netDataWriterFactory.GetInstance();
+            configuration = _messages[typeof(TData)];
+
+            // Write message id...
+            _messageIdWriter(writer, configuration.Id.Bytes);
+            // Write RoomId
+            writer.Put(room.Id);
+            // Write message data...
+            configuration.DataConfiguration.Writer(writer, this, data);
+        }
+        #endregion
+
+        #region ReadMessage Methods
         public NetworkMessage ReadMessage(NetDataReader reader)
         {
             UInt16 messageId = _messageIdReader(reader);
@@ -96,21 +144,50 @@ namespace Guppy.Network
 
             return new NetworkMessage()
             {
+                RoomId = reader.GetByte(),
                 Configuration = configuration,
-                Data = configuration.DataConfiguration.Reader(reader)
+                Data = configuration.DataConfiguration.Reader(reader, this)
             };
         }
         #endregion
 
+        #region WriteData Methods
+        public void WriteData(NetDataWriter writer, IData data)
+        {
+            DataConfiguration configuration = _dataConfigurations[data.GetType()];
+
+            // Write data id...
+            _dataConfigurationIdWriter(writer, configuration.Id.Bytes);
+            // Write data...
+            configuration.Writer(writer, this, data);
+        }
+        #endregion
+
+        #region ReadData Methods
+        public TData ReadData<TData>(NetDataReader reader)
+            where TData : class, IData
+        {
+            UInt16 dataConfigurationId = _dataConfigurationIdReader(reader);
+            return _dataConfigurations[dataConfigurationId].Reader(reader, this) as TData;
+        }
+        #endregion
+
+        #region RecycleMethods Methods
+        public void RecycleMessage(NetDataWriter writer)
+        {
+            _netDataWriterFactory.TryReturnToPool(writer);
+        }
+        #endregion
+
         #region Helper Methods
-        internal NetworkProviderMessage GetMessage()
+        internal NetworkProviderMessage ToMessage()
         {
             return new NetworkProviderMessage()
             {
                 DataTypesIdSize = _dataTypesIdSize,
-                DataTypeConfigurations = _dataTypes.Values.Select(dt => dt.GetMessage()),
+                DataTypeConfigurations = _dataConfigurations.Values.Select(dt => dt.ToMessage()),
                 MessagesIdSize = _messagesIdSize,
-                MessageConfigurations = _messages.Values.Select(m => m.GetMessage())
+                MessageConfigurations = _messages.Values.Select(m => m.ToMessage())
             };
         }
 
@@ -130,7 +207,7 @@ namespace Guppy.Network
 
             foreach(DataTypeConfigurationMessage dataTypeDto in dto.DataTypeConfigurations)
             {
-                if (!_dataTypes.TryGetValue(dataTypeDto.Id, out DataConfiguration dataType)
+                if (!_dataConfigurations.TryGetValue(dataTypeDto.Id, out DataConfiguration dataType)
                     || dataType.Type.AssemblyQualifiedName != dataTypeDto.TypeAssemblyQualifiedName)
                 {
                     return false;

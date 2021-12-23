@@ -4,9 +4,10 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.IO.Structs;
+using Guppy.IO.EventArgs;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent;
+using Guppy.IO.Structs;
 
 namespace Guppy.IO.Services
 {

@@ -2,6 +2,7 @@
 using Minnow.General;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.EntityComponent.DependencyInjection
@@ -74,7 +75,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             this.Root = parent.Root;
 
             _registeredServices = parent._registeredServices;
-            _activeServices = new DoubleDictionary<String, UInt32, ServiceConfigurationManager>();
+            _activeServices = parent._activeServices.Where(kkvp => kkvp.value is SingletonServiceConfigurationManager).ToDoubleDictionary();
 
             _parent = parent;
             _children = new List<ServiceProvider>();

@@ -11,12 +11,14 @@ namespace Guppy.Network.Security.Structs
         public readonly String Key;
         public readonly String Value;
         public readonly ClaimType Type;
+        public readonly DateTime CreatedAt;
 
         public Claim(string name, string value, ClaimType type)
         {
             this.Key = name;
             this.Value = value;
             this.Type = type;
+            this.CreatedAt = DateTime.UtcNow;
         }
     }
 }

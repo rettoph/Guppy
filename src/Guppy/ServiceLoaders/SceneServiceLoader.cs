@@ -1,7 +1,7 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Attributes;
 using Guppy.Interfaces;
-using Guppy.Lists;
+using Guppy.EntityComponent.Lists;
 using Guppy.Utilities;
 using System;
 using System.Collections.Generic;

@@ -21,34 +21,30 @@ using System.CommandLine.IO;
 using System.Linq;
 using Guppy.Network.Security.Structs;
 using Guppy.Threading.Utilities;
+using Guppy.EntityComponent;
+using System.Threading;
+using Guppy.Utilities.Threading;
 
 namespace Guppy.Network
 {
     /// <summary>
     /// The primary peer class, used as a wrapper for all client/server connections.
     /// </summary>
-    public class Peer : Asyncable
+    public class Peer : Service
     {
-        #region Classes
-        private class NetDataWriterFactory : Factory<NetDataWriter>
-        {
-            public NetDataWriterFactory() : base(() => new NetDataWriter(), 100)
-            {
-            }
-
-            public override bool TryReturnToPool(NetDataWriter instance)
-            {
-                instance.Reset();
-                return base.TryReturnToPool(instance);
-            }
-        }
-        #endregion
+        /// <summary>
+        /// The default RoomId used for inner Peer communication.
+        /// Try to avoid using this room id unless you know what
+        /// you are doing.
+        /// </summary>
+        public const Byte RoomId = Byte.MaxValue;
 
         #region Private Fields
-        private NetDataWriterFactory _writerFactory;
         private User _currentUser;
+        private RoomService _rooms;
         private Room _room;
-        private ThreadQueue _threadQueue;
+        private CancellationTokenSource _cancelation;
+        private Task _loop;
         #endregion
 
         #region Protected Properties
@@ -56,6 +52,7 @@ namespace Guppy.Network
         protected NetManager manager { get; private set; }
         protected NetworkProvider network { get; private set; }
         protected CommandService commands { get; private set; }
+        protected Room room => _room;
         #endregion
 
         #region Public Properties
@@ -66,6 +63,8 @@ namespace Guppy.Network
             get => _currentUser;
             set => this.OnCurrentUserChanged.InvokeIf(value != _currentUser, this, ref _currentUser, value);
         }
+
+        public RoomService Rooms => _rooms;
         #endregion
 
         #region Events
@@ -77,7 +76,7 @@ namespace Guppy.Network
         {
             base.Create(provider);
 
-            _writerFactory = new NetDataWriterFactory();
+            provider.Service(out _rooms);
 
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
@@ -86,7 +85,7 @@ namespace Guppy.Network
 
             this.Users = provider.GetService<UserService>();
 
-            provider.Settings.Set(HostType.Local);
+            provider.Settings.Set(HostType.Remote);
 
             this.commands.Get("network users").Handler = CommandHandler.Create<Int32?, IConsole>(this.HandleNetworkUserCommand);
         }
@@ -107,7 +106,8 @@ namespace Guppy.Network
         {
             base.Initialize(provider);
 
-            _room = provider.GetService<RoomService>().GetPeerRoom(provider);
+            _room = _rooms.GetById(RoomId);
+            _room.TryLinkScope(provider);
         }
 
         protected override void PostRelease()
@@ -115,6 +115,8 @@ namespace Guppy.Network
             base.PostRelease();
 
             this.listener.NetworkReceiveEvent -= this.HandleNetworkReceiveEvent;
+
+            _cancelation?.Cancel();
         }
 
         protected override void PostDispose()
@@ -130,54 +132,44 @@ namespace Guppy.Network
         #endregion
 
         #region Start Methods
-        /// <summary>
-        /// Start logic thread and listening on available port
-        /// </summary>
-        public override Task TryStartAsync(bool draw = false, int period = 16)
+        protected async Task TryStartAsync(Int32 period)
         {
-            this.manager.Start();
+            _cancelation = new CancellationTokenSource();
 
-            return base.TryStartAsync(draw, period);
-        }
+            _loop = TaskHelper.CreateLoop(this.Update, period, _cancelation.Token);
 
-
-        /// <summary>
-        /// Start logic thread and listening on selected port
-        /// </summary>
-        /// <param name="port">port to listen</param>
-        public Task TryStartAsync(Int32 port, bool draw = false, int period = 16)
-        {
-            this.manager.Start(port);
-
-            return base.TryStartAsync(draw, period);
+            await _loop;
         }
         #endregion
 
         #region SendMessage Methods
-        public void SendMessage<TData>(TData data, NetPeer recipient)
+        public void SendMessage<TData>(Room room, TData data, NetPeer recipient)
             where TData : class, IData
         {
-            NetDataWriter om = _writerFactory.GetInstance();
-            this.network.SendMessage(om, data, recipient);
-            _writerFactory.TryReturnToPool(om);
+            this.network.SendMessage(room, data, recipient);
+        }
+        public void SendMessage<TData>(Room room, TData data, IEnumerable<NetPeer> recipients)
+            where TData : class, IData
+        {
+            this.network.SendMessage(room, data, recipients); 
+        }
+        protected void SendMessage<TData>(TData data, NetPeer recipient)
+            where TData : class, IData
+        {
+            this.SendMessage(_room, data, recipient);
+        }
+        protected void SendMessage<TData>(TData data, IEnumerable<NetPeer> recipients)
+            where TData : class, IData
+        {
+            this.SendMessage(_room, data, recipients);
         }
         #endregion
 
         #region Frame Methods
-        protected override void Update(GameTime gameTime)
+        protected virtual void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
             this.manager.PollEvents();
-        }
-        #endregion
-
-        #region DataWriter Methods
-        public void UsingDataWriter(Action<NetDataWriter> writer)
-        {
-            NetDataWriter om = _writerFactory.GetInstance();
-            writer(om);
-            _writerFactory.TryReturnToPool(om);
+            this.room.TryUpdate(gameTime);
         }
         #endregion
 
@@ -185,7 +177,9 @@ namespace Guppy.Network
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
             NetworkMessage message = this.network.ReadMessage(reader);
-            _room.ProcessIncoming(message);
+
+            Console.WriteLine($"Recived Message => {message.Data.GetType().Name}");
+            _rooms.EnqueueIncoming(message);
         }
         #endregion
 
@@ -196,11 +190,21 @@ namespace Guppy.Network
             { // Print user specific data...
                 if(this.Users.TryGetById(id.Value, out User user))
                 {
-                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}");
+                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}, {nameof(User.CreatedAt)}: {user.CreatedAt:HH:mm:ss}, {nameof(User.UpdatedAt)}: {user.UpdatedAt:HH:mm:ss}");
 
-                    foreach(Claim claim in user.Claims)
+                    console.Out.WriteLine("------------------------------------------------");
+
+                    console.Out.WriteLine("Claim(s)");
+                    foreach (Claim claim in user.Claims)
                     {
-                        console.Out.WriteLine($"{claim.Key}, {claim.Value}, {claim.Type}");
+                        console.Out.WriteLine($"  {claim.Key}, {claim.Value}, {claim.Type}, {claim.CreatedAt:HH:mm:ss}");
+                    }
+
+                    console.Out.WriteLine("------------------------------------------------");
+                    console.Out.WriteLine("Room(s)");
+                    foreach(Room room in user.Rooms)
+                    {
+                        console.Out.WriteLine($"  {nameof(Room.Id)}: {room.Id}");
                     }
                 }
                 else
@@ -212,7 +216,7 @@ namespace Guppy.Network
             { // Print all user overview...
                 foreach(User user in this.Users)
                 {
-                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}, Claims: {user.Claims.Count()}");
+                    console.Out.WriteLine($"{nameof(User.Id)}: {user.Id}, Claim(s): {user.Claims.Count()}, Room(s): {user.Rooms.Count()}");
                 }
             }
         }

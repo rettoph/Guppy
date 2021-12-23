@@ -65,7 +65,8 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
             ServiceConfiguration componentServiceConfiguration = services[this.ComponentServiceName];
 
             ComponentFilter[] filters = allFilters.Where(f => {
-                return componentServiceConfiguration.TypeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(f.AssignableComponentType);
+                return componentServiceConfiguration.TypeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(f.AssignableComponentType)
+                    && f.Filter(componentServiceConfiguration);
             }).ToArray();
 
             Type assignableEntityType = this.AssignableEntityType ?? typeof(IEntity);

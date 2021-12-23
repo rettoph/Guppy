@@ -15,12 +15,12 @@ namespace Guppy.Network.Security.Dtos
         public IEnumerable<Claim> Claims { get; internal set; }
 
         #region Read/Write Methods
-        public static UserDto Read(NetDataReader reader)
+        public static UserDto Read(NetDataReader dto)
         {
             return new UserDto()
             {
-                Id = reader.GetInt(),
-                Claims = reader.GetClaims()
+                Id = dto.GetInt(),
+                Claims = dto.GetClaims()
             };
         }
 

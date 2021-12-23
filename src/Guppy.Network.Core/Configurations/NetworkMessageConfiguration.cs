@@ -42,10 +42,10 @@ namespace Guppy.Network.Configurations
             this.Filter = filter;
         }
 
-        internal abstract void RegisterProcessor(ServiceProvider provider, MessageQueue<IData> messages);
+        internal abstract void TryRegisterProcessor(ServiceProvider provider, MessageQueue<IData> messages);
 
 
-        internal MessageConfigurationMessage GetMessage()
+        internal MessageConfigurationMessage ToMessage()
         {
             return new MessageConfigurationMessage()
             {
@@ -62,8 +62,13 @@ namespace Guppy.Network.Configurations
         {
         }
 
-        internal override void RegisterProcessor(ServiceProvider provider, MessageQueue<IData> messages)
+        internal override void TryRegisterProcessor(ServiceProvider provider, MessageQueue<IData> messages)
         {
+            if(this.ProcessorConfigurationName is null)
+            {
+                return;
+            }
+
             messages.RegisterProcessor<TData>(provider.GetService<IMessageProcessor<TData>>(this.ProcessorConfigurationName));
         }
     }

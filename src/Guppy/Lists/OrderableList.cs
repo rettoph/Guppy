@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Lists
+namespace Guppy.EntityComponent.Lists
 {
     public class OrderableList<TOrderable> : FrameableList<TOrderable>
         where TOrderable : class, IOrderable

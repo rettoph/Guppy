@@ -1,4 +1,5 @@
 ﻿using Guppy.IO.Enums;
+using Guppy.Threading.Interfaces;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Guppy.IO.Structs
     public struct InputButton
     {
         [FieldOffset(0)]
-        public readonly Enums.InputButtonType Type;
+        public readonly InputButtonType Type;
 
         [FieldOffset(1)]
         public readonly Keys KeyboardKey;
@@ -19,17 +20,16 @@ namespace Guppy.IO.Structs
         [FieldOffset(1)]
         public readonly MouseButton MouseButton;
 
-
         public InputButton(Keys keyboardKey)
         {
-            this.Type = Enums.InputButtonType.Keyboard;
+            this.Type = InputButtonType.Keyboard;
             this.MouseButton = default(MouseButton);
             this.KeyboardKey = keyboardKey;
         }
 
         public InputButton(MouseButton cursorButton)
         {
-            this.Type = Enums.InputButtonType.MouseButton;
+            this.Type = InputButtonType.MouseButton;
             this.KeyboardKey = default(Keys);
             this.MouseButton = cursorButton;
         }
@@ -39,9 +39,9 @@ namespace Guppy.IO.Structs
         {
             switch (this.Type)
             {
-                case Enums.InputButtonType.MouseButton:
+                case InputButtonType.MouseButton:
                     return this.MouseButton.ToString();
-                case Enums.InputButtonType.Keyboard:
+                case InputButtonType.Keyboard:
                     return this.KeyboardKey.ToString();
                 default:
                     return base.ToString();

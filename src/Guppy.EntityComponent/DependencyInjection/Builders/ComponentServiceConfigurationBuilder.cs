@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Guppy.EntityComponent.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.EntityComponent.DependencyInjection.Builders
 {
-    public sealed class ComponentServiceConfigurationBuilder<TService> : ServiceConfigurationBuilder<TService>
-        where TService : class
+    public sealed class ComponentServiceConfigurationBuilder<TComponent> : ServiceConfigurationBuilder<TComponent, ComponentServiceConfigurationBuilder<TComponent>>
+        where TComponent : class, IComponent
     {
         #region Constructors
         public ComponentServiceConfigurationBuilder(String name, ServiceProviderBuilder services) : base(name, services)
@@ -14,7 +15,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #endregion
 
         #region RegisterComponentConfiguration Methods
-        public ComponentServiceConfigurationBuilder<TService> RegisterComponentConfiguration(Action<ComponentConfigurationBuilder> builder)
+        public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentConfiguration(Action<ComponentConfigurationBuilder> builder)
         {
             ComponentConfigurationBuilder componentConfiguration = this.services.RegisterComponent(this.Name);
             builder(componentConfiguration);

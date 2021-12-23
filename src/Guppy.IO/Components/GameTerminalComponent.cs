@@ -1,7 +1,7 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.IO.Services;
-using Guppy.IO.Structs;
+using Guppy.IO.EventArgs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;

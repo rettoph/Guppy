@@ -1,7 +1,7 @@
 ﻿using Guppy.CommandLine.Services;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Extensions.Utilities;
-using Guppy.IO.Structs;
+using Guppy.IO.EventArgs;
 using Guppy.IO.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
@@ -333,7 +333,7 @@ namespace Guppy.IO.Services
             _scrollPosition = MathHelper.Clamp(_scrollPosition, 0, (_lineCount * _font.LineSpacing) - _consoleBounds.Height);
         }
 
-        private void HandleClientSizeChanged(object sender, EventArgs e)
+        private void HandleClientSizeChanged(object sender, System.EventArgs e)
             => this.Clean();
 
         private void HandleTextInput(object sender, TextInputEventArgs e)

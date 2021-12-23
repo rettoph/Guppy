@@ -19,14 +19,22 @@ using Guppy.Utilities;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.EntityComponent.Utilities;
 using Guppy.Threading.Utilities;
+using Guppy.Network.Components;
+using Minnow.General;
+using Guppy.Network.Attributes;
+using System.Reflection;
+using Guppy.Network.Components.Rooms;
+using Guppy.Network.Utilities;
+using Guppy.Network.Components.NetworkEntities;
 
 namespace Guppy.Network.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class NetworkServiceLoader : INetworkServiceLoader
+    internal sealed class NetworkServiceLoader : IServiceLoader, INetworkLoader
     {
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
+            #region Register Services
             services.RegisterService<RoomService>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .RegisterTypeFactory(factory =>
@@ -34,11 +42,11 @@ namespace Guppy.Network.ServiceLoaders
                     factory.SetDefaultConstructor<RoomService>();
                 });
 
-            services.RegisterService<PipeService>()
+            services.RegisterService<Room>()
                 .SetLifetime(ServiceLifetime.Transient)
                 .RegisterTypeFactory(factory =>
                 {
-                    factory.SetDefaultConstructor<PipeService>();
+                    factory.SetDefaultConstructor<Room>();
                 });
 
             services.RegisterService<MessageQueue<IData>>()
@@ -73,13 +81,79 @@ namespace Guppy.Network.ServiceLoaders
 
             services.RegisterSetup<Settings>()
                 .SetMethod((s, _, _) => s.Set(HostType.Local));
+
+            services.RegisterService<AttributeCache<NetworkAuthorizationRequiredAttribute>>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<AttributeCache<NetworkAuthorizationRequiredAttribute>>();
+                });
+
+            services.RegisterService<AttributeCache<NetworkAuthorizationRequiredAttribute>>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<AttributeCache<NetworkAuthorizationRequiredAttribute>>();
+                });
+
+            services.RegisterService<AttributeCache<HostTypeRequiredAttribute>>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<AttributeCache<HostTypeRequiredAttribute>>();
+                });
+            #endregion
+
+            #region Register Component Filters
+            services.RegisterComponentFilter(typeof(NetworkComponent<>))
+                .SetMethod((e, p, c) =>
+                {
+                    NetworkAuthorization requiredNetworkAuthorization = p.GetService<AttributeCache<NetworkAuthorizationRequiredAttribute>>()[c.TypeFactory.Type].NetworkAuthorization;
+                    return requiredNetworkAuthorization == p.Settings.Get<NetworkAuthorization>();
+                })
+                .SetFilter(cc =>
+                {
+                    var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>() != default;
+                    return hasAttribute;
+                });
+
+            services.RegisterComponentFilter(typeof(NetworkComponent<>))
+                .SetMethod((e, p, c) =>
+                {
+                    HostType requiredNetworkAuthorization = p.GetService<AttributeCache<HostTypeRequiredAttribute>>()[c.TypeFactory.Type].HostType;
+                    return requiredNetworkAuthorization == p.Settings.Get<HostType>();
+                })
+                .SetFilter(cc =>
+                {
+                    var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<HostTypeRequiredAttribute>() != default;
+                    return hasAttribute;
+                });
+            #endregion
+
+            #region Register Components
+            services.RegisterComponentService<RoomRemoteMasterComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<RoomRemoteMasterComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Room>();
+                });
+            #endregion
         }
 
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
             network.RegisterDataType<ConnectionRequestMessage>()
                 .SetReader(ConnectionRequestMessage.Read)
-                .SetWriter(ConnectionRequestMessage.Write);
+                .SetWriter(ConnectionRequestMessage.Write)
+                .RegisterNetworkMessage(message =>
+                {
+                    // This message is never sent traditionally
+                    // So theres no need to build a processor for it
+                    message.SetFilter((_, _) => false);
+                });
 
             network.RegisterDataType<ConnectionRequestResponseMessage>()
                 .SetReader(ConnectionRequestResponseMessage.Read)
@@ -97,6 +171,17 @@ namespace Guppy.Network.ServiceLoaders
                                     factory.SetDefaultConstructor<ConnectionRequestResponseMessageProcessor>();
                                 });
                         });
+                });
+
+            network.RegisterDataType<UserRoomActionMessage>()
+                .SetReader(UserRoomActionMessage.Read)
+                .SetWriter(UserRoomActionMessage.Write)
+                .RegisterNetworkMessage(message =>
+                {
+                    message.SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
+                        .SetSequenceChannel(0)
+                        .SetPeerFilter<ClientPeer>()
+                        .SetProcessorConfiguration<ClientPeer>();
                 });
         }
     }

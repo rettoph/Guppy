@@ -9,8 +9,8 @@ namespace Guppy.Network
 {
     public class NetworkMessage : IMessage
     {
+        public Byte RoomId { get; set; }
         public NetworkMessageConfiguration Configuration { get; set; }
-
         public IData Data { get; set; }
     }
 }

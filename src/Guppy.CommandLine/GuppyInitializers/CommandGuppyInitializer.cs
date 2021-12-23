@@ -22,7 +22,7 @@ namespace Guppy.CommandLine.GuppyInitializers
 
             foreach(IGuppyLoader loader in loaders)
             {
-                if(loader is ICommandServiceLoader commandLoader)
+                if(loader is ICommandLoader commandLoader)
                 {
                     commandLoader.RegisterCommands(builder);
                 }

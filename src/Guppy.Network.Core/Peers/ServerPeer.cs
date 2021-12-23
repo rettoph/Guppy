@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
@@ -36,7 +37,7 @@ namespace Guppy.Network
             base.Create(provider);
 
             this.listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
-            this.listener.PeerConnectedEvent += this.HandlePeerConnectedEvent;
+            this.listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -58,14 +59,34 @@ namespace Guppy.Network
             base.Dispose();
 
             this.listener.ConnectionRequestEvent -= this.HandleConnectionRequestEvent;
-            this.listener.PeerConnectedEvent -= this.HandlePeerConnectedEvent;
+            this.listener.PeerDisconnectedEvent -= this.HandlePeerDisconnectedEvent;
+        }
+        #endregion
+
+        #region Start Methods
+        /// <summary>
+        /// Start logic thread and listening on selected port
+        /// </summary>
+        /// <param name="port">port to listen</param>
+        public Task TryStart(Int32 port, IEnumerable<Claim> claims, Int32 period = 16)
+        {
+            // Create a new local user representing the server
+            this.CurrentUser = _users.UpdateOrCreate(-1, claims);
+
+            this.manager.Start(port);
+
+            return base.TryStartAsync(period);
         }
         #endregion
 
         #region Event Handlers
-        private void HandlePeerConnectedEvent(NetPeer peer)
+        private void HandlePeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
         {
-            // throw new NotImplementedException();
+            // Attempt to automatically dispose the old user...
+            if (_users.TryGetById(peer.Id, out User user))
+            {
+                user.Dispose();
+            }
         }
 
         /// <summary>
@@ -74,7 +95,8 @@ namespace Guppy.Network
         /// <param name="request"></param>
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            ConnectionRequestMessage connectionRequestDto = this.network.GetDataTypeConfiguration<ConnectionRequestMessage>().Reader(request.Data) as ConnectionRequestMessage;
+            NetworkMessage message = this.network.ReadMessage(request.Data);
+            ConnectionRequestMessage connectionRequestDto = message.Data as ConnectionRequestMessage;
 
             if(!this.network.CheckDto(connectionRequestDto.NetworkProvider))
             {
@@ -95,7 +117,7 @@ namespace Guppy.Network
                     new ConnectionRequestResponseMessage()
                     {
                         Accepted = true,
-                        User = user.GetMessage(ClaimType.Protected)
+                        User = user.GetDto(ClaimType.Protected)
                     },
                     client);
 
@@ -103,6 +125,7 @@ namespace Guppy.Network
             }
 
             request.Reject();
+            connectionRequestDto.Clean();
         }
         #endregion
     }

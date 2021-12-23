@@ -11,10 +11,9 @@ namespace Guppy.Network.Services
 {
     public sealed class RoomService : Service
     {
-        private static Byte PeerRoomId = 0;
-
         #region Private Fields
         private Dictionary<Byte, Room> _rooms;
+        private ServiceProvider _provider;
         #endregion
 
         #region Lifecycle Methods
@@ -23,47 +22,35 @@ namespace Guppy.Network.Services
             base.Initialize(provider);
 
             _rooms = new Dictionary<Byte, Room>();
+            _provider = provider.Root;
         }
         #endregion
 
         #region Helper Methods
         /// <summary>
-        /// Get or create a new <see cref="Room"/> instance based on the
-        /// given <paramref name="id"/>.
+        /// Process an incoming message
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private Room Get(Byte id, ServiceProvider provider)
+        /// <param name="message"></param>
+        public void EnqueueIncoming(NetworkMessage message)
         {
-            if (!_rooms.TryGetValue(0, out Room room))
-            {
-                room = new Room()
-                {
-                    Id = 0
-                };
-
-                _rooms.Add(0, room);
-            }
-
-            room.TryLinkScope(provider);
-            return room;
+            this.GetById(message.RoomId).EnqueueIncoming(message);
         }
+
         /// <summary>
         /// Get or create a new <see cref="Room"/> instance based on the
         /// given <paramref name="id"/>.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Room GetById(Byte id, ServiceProvider provider)
+        public Room GetById(Byte id)
         {
-            Debug.Assert(id == PeerRoomId, $"{nameof(Room)}::{nameof(GetById)} - {nameof(id)}:{PeerRoomId} is reserved for {nameof(Peer)} communications. Only mess with this {nameof(Room)} if you know what you're doing.");
+            if (!_rooms.TryGetValue(id, out Room room))
+            {
+                room = _provider.GetService<Room>((r, _, _) => r.Id = id);
+                _rooms.Add(room.Id, room);
+            }
 
-            return this.Get(id, provider);
-        }
-
-        internal Room GetPeerRoom(ServiceProvider provider)
-        {
-            return this.Get(PeerRoomId, provider);
+            return room;
         }
         #endregion
     }

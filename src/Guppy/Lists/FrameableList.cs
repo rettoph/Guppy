@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Guppy.EntityComponent.DependencyInjection;
 
-namespace Guppy.Lists
+namespace Guppy.EntityComponent.Lists
 {
     public class FrameableList<TFrameable> : FactoryServiceList<TFrameable>, IFrameable
         where TFrameable : class, IFrameable

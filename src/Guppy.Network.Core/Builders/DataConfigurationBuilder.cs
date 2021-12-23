@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Network.Builders
 {
-    public abstract class DataConfigurationBuilder : IFluentPrioritizable<DataConfigurationBuilder>
+    public abstract class DataConfigurationBuilder : IPrioritizable
     {
         #region Protected Properties
         protected NetworkProviderBuilder network { get; private set; }
@@ -35,22 +35,22 @@ namespace Guppy.Network.Builders
         #endregion
     }
 
-    public class DataConfigurationBuilder<TData> : DataConfigurationBuilder
+    public class DataConfigurationBuilder<TData> : DataConfigurationBuilder, IFluentPrioritizable<DataConfigurationBuilder<TData>>
         where TData : class, IData
     {
         #region Private Fields
-        private Action<NetDataWriter, TData> _writer;
-        private Func<NetDataReader, TData> _reader;
+        private Action<NetDataWriter, NetworkProvider, TData> _writer;
+        private Func<NetDataReader, NetworkProvider, TData> _reader;
         #endregion
 
         #region Public Properties
-        public Action<NetDataWriter, TData> Writer
+        public Action<NetDataWriter, NetworkProvider, TData> Writer
         {
             get => _writer;
             set => this.SetWriter(value);
         }
 
-        public Func<NetDataReader, TData> Reader
+        public Func<NetDataReader, NetworkProvider, TData> Reader
         {
             get => _reader;
             set => this.SetReader(value);
@@ -64,18 +64,18 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region SetWriter Methods
-        public DataConfigurationBuilder<TData> SetWriter(Action<NetDataWriter, TData> dataWriter)
+        public virtual DataConfigurationBuilder<TData> SetWriter(Action<NetDataWriter, NetworkProvider, TData> writer)
         {
-            _writer = dataWriter;
+            _writer = writer;
 
             return this;
         }
         #endregion
 
         #region SetReader Methods
-        public DataConfigurationBuilder<TData> SetReader(Func<NetDataReader, TData> dataReader)
+        public virtual DataConfigurationBuilder<TData> SetReader(Func<NetDataReader, NetworkProvider, TData> reader)
         {
-            _reader = dataReader;
+            _reader = reader;
 
             return this;
         }

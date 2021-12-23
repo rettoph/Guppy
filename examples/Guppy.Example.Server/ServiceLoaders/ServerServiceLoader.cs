@@ -21,11 +21,11 @@ namespace Guppy.Example.Server.ServiceLoaders
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<ExampleGame>()
-                .SetDefaultConstructor<ExampleServerGame>()
+                .SetDefaultConstructor<ServerExampleGame>()
                 .SetPriority(1);
 
             services.RegisterTypeFactory<ExampleScene>()
-                .SetDefaultConstructor<ExampleServerScene>()
+                .SetDefaultConstructor<ServerExampleScene>()
                 .SetPriority(1);
 
             services.RegisterSetup<ILog>()

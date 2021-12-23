@@ -30,15 +30,25 @@ namespace Guppy.Network.Services
             IEnumerable<NetworkMessageConfiguration> configurations = _network.MessageConfigurations.Where(mc => mc.Filter(provider, mc));
             foreach (NetworkMessageConfiguration configuration in configurations)
             {
-                configuration.RegisterProcessor(provider, _incomingMessageQueue);
+                configuration.TryRegisterProcessor(provider, _incomingMessageQueue);
             }
         }
         #endregion
 
         #region Helper Methods
-        public void Process(IData data)
+        public void Enqueue(IData data)
         {
-            _incomingMessageQueue.Process(data);
+            _incomingMessageQueue.Enqueue(data);
+        }
+
+        public void ProcessEnqueued()
+        {
+            _incomingMessageQueue.ProcessEnqueued(this.PostProcessor);
+        }
+
+        private void PostProcessor(IData data)
+        {
+            data.Clean();
         }
         #endregion
     }

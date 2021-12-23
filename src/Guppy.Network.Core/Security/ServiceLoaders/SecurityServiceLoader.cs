@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.Network.Security.Lists;
 
 namespace Guppy.Network.Security.ServiceLoaders
 {
@@ -14,6 +15,13 @@ namespace Guppy.Network.Security.ServiceLoaders
     {
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
+            services.RegisterService<UserList>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<UserList>();
+                });
+
             services.RegisterService<UserService>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .RegisterTypeFactory(factory =>

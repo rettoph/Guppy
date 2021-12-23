@@ -29,8 +29,8 @@ namespace Guppy
         {
             base.Release();
 
-            if (!_cancelation.IsCancellationRequested)
-                this.TryStopAsync();
+            if (!_cancelation?.IsCancellationRequested ?? false)
+                this.TryStopAsync().GetAwaiter().GetResult();
         }
 
         public virtual async Task TryStartAsync(Boolean draw = false, Int32 period = 16)
@@ -45,6 +45,7 @@ namespace Guppy
         {
             _cancelation = new CancellationTokenSource();
 
+            _draw = draw;
             _loop = TaskHelper.CreateLoop(this.Frame, period, _cancelation.Token);
 
             await _loop;

@@ -106,7 +106,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
                 return true;
             }
 
-            Boolean DefaultFilter(ServiceConfiguration componentConfiguration, ServiceConfiguration entityConfiguration)
+            Boolean DefaultFilter(ServiceConfiguration componentConfiguration)
             {
                 return true;
             }

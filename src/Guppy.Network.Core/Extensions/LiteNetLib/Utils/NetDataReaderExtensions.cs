@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Structs;
 using LiteNetLib.Utils;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,11 @@ namespace LiteNetLib.Utils
         {
             var byteVal = reader.GetByte();
             return EnumHelper.GetValues<TEnum>().First(v => Convert.ToByte(v) == byteVal);
+        }
+
+        public static Vector2 GetVector2(this NetDataReader reader)
+        {
+            return new Vector2(reader.GetFloat(), reader.GetFloat());
         }
     }
 }

@@ -3,7 +3,7 @@ using Guppy.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Lists;
+using Guppy.EntityComponent.Lists;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 

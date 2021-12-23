@@ -1,4 +1,4 @@
-﻿using Guppy.Lists.Interfaces;
+﻿using Guppy.EntityComponent.Lists.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +6,7 @@ using System.Linq;
 using Guppy.Interfaces;
 using Guppy.EntityComponent.DependencyInjection;
 
-namespace Guppy.Lists
+namespace Guppy.EntityComponent.Lists
 {
     public class LayerableList : OrderableList<ILayerable>
     {

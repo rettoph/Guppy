@@ -1,4 +1,5 @@
-﻿using Guppy.IO.Structs;
+﻿using Guppy.IO.EventArgs;
+using Guppy.IO.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;

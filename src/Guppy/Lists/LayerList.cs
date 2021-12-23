@@ -1,12 +1,12 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Interfaces;
-using Guppy.Lists.Interfaces;
+using Guppy.EntityComponent.Lists.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Lists
+namespace Guppy.EntityComponent.Lists
 {
     public class LayerList : OrderableList<ILayer>
     {

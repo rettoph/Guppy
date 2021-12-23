@@ -106,7 +106,24 @@ namespace Guppy.Threading.Utilities
             {
                 throw new KeyNotFoundException($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved when processing message:'{message}'.");
             }
+        }
 
+        /// <summary>
+        /// Process an incoming message immidiately.
+        /// </summary>
+        /// <param name="message"></param>
+        public void Process(TMessage message, Action<TMessage> postProcessor)
+        {
+            if (_processors.TryGetValue(message.GetType(), out IMessageProcessor processor))
+            {
+                processor.Process(message);
+            }
+            else
+            {
+                throw new KeyNotFoundException($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved when processing message:'{message}'.");
+            }
+
+            postProcessor(message);
         }
 
         /// <summary>
@@ -124,10 +141,20 @@ namespace Guppy.Threading.Utilities
         /// </summary>
         public void ProcessEnqueued()
         {
-            Int32 count = _queue.Count;
-            for (Int32 i = 0; i < count; i++)
+            while(_queue.TryDequeue(out TMessage message))
             {
-                this.Process(_queue.Dequeue());
+                this.Process(message);
+            }
+        }
+
+        /// <summary>
+        /// Process all enqueued Dtos.
+        /// </summary>
+        public void ProcessEnqueued(Action<TMessage> postProcessor)
+        {
+            while (_queue.TryDequeue(out TMessage message))
+            {
+                this.Process(message, postProcessor);
             }
         }
         #endregion

@@ -9,7 +9,7 @@ namespace Guppy.EntityComponent.DependencyInjection
     {
         #region Delegates
         public delegate Boolean MethodDelegate(IEntity entity, ServiceProvider provider, ServiceConfiguration componentConfiguration);
-        public delegate Boolean FilterDelegate(ServiceConfiguration componentConfiguration, ServiceConfiguration entityConfiguration);
+        public delegate Boolean FilterDelegate(ServiceConfiguration componentConfiguration);
         #endregion
 
         #region Public Fields

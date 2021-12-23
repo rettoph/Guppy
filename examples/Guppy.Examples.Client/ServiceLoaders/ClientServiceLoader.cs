@@ -19,16 +19,22 @@ using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.CommandLine.Interfaces;
 using Guppy.CommandLine.Builders;
+using Guppy.Example.Library.Scenes;
+using Guppy.Examples.Client.Scenes;
 
 namespace Guppy.Examples.Client.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class ClientServiceLoader : IServiceLoader, ICommandServiceLoader
+    internal sealed class ClientServiceLoader : IServiceLoader, ICommandLoader
     {
         public void RegisterServices(AssemblyHelper assmelbyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<ExampleGame>()
-                .SetDefaultConstructor<ExampleClientGame>()
+                .SetDefaultConstructor<ClientExampleGame>()
+                .SetPriority(1);
+
+            services.RegisterTypeFactory<ExampleScene>()
+                .SetDefaultConstructor<ClientExampleScene>()
                 .SetPriority(1);
 
             services.RegisterSetup<ILog>()

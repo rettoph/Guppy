@@ -20,7 +20,7 @@ namespace Guppy.Network.GuppyInitializers
             {
                 foreach (IGuppyLoader serviceLoader in loaders)
                 {
-                    if (serviceLoader is INetworkServiceLoader networkServiceLoader)
+                    if (serviceLoader is INetworkLoader networkServiceLoader)
                     {
                         networkServiceLoader.ConfigureNetwork(networkBuilder);
                     }

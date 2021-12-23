@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Guppy.Network.ServiceLoaders
 {
     [AutoLoad]
-    internal sealed class CommandsServiceLoader : ICommandServiceLoader
+    internal sealed class CommandsServiceLoader : ICommandLoader
     {
         public void RegisterCommands(CommandServiceBuilder commands)
         {

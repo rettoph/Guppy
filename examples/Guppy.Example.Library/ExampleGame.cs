@@ -12,6 +12,8 @@ namespace Guppy.Example.Library
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+
+            this.Scenes.Create<ExampleScene>();
         }
         #endregion
 

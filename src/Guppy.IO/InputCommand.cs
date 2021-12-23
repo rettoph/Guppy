@@ -4,7 +4,7 @@ using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.Enums;
 using Guppy.IO.Contexts;
 using Guppy.IO.Services;
-using Guppy.IO.Structs;
+using Guppy.IO.EventArgs;
 using Guppy.IO.Utilities;
 using Guppy.Threading.Utilities;
 using Guppy.Utilities;
@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Guppy.IO.Structs;
 
 namespace Guppy.IO
 {
@@ -122,12 +123,12 @@ namespace Guppy.IO
         /// <param name="input"></param>
         public void ConfigureInput(InputButton? input)
         {
-            if (_inputManager != null)
+            if (_inputManager is not null)
             { // Unset the old manager...
                 this.Commands.Keys.ForEach(bs => _inputManager.OnState[bs] -= this.HandleInput);
             }
 
-            if (input != null)
+            if (input is not null)
             { // Configure the new value...
                 this.Input = input.Value;
                 _inputManager = _inputs.GetManager(this.Input);
