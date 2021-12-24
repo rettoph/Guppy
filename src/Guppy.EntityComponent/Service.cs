@@ -28,17 +28,7 @@ namespace Guppy.EntityComponent
                 _configuration = value;
             }
         }
-        public virtual Guid Id
-        {
-            get => _id;
-            set
-            {
-                if (this.Status == ServiceStatus.Ready)
-                    throw new InvalidOperationException("Unable to update Id after initialization.");
-
-                _id = value;
-            }
-        }
+        public virtual Guid Id { get; protected set; } = Guid.NewGuid();
 
         public ServiceStatus Status
         {
@@ -170,7 +160,7 @@ namespace Guppy.EntityComponent
 
         protected virtual void PreInitialize(ServiceProvider provider)
         {
-            this.Id = Guid.NewGuid();
+            //
         }
 
         protected virtual void Initialize(ServiceProvider provider)

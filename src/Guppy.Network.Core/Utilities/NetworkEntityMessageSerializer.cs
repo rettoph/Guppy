@@ -21,20 +21,14 @@ namespace Guppy.Network.Utilities
         private static TNetworkEntityMessage Reader(NetDataReader reader, NetworkProvider network)
         {
             UInt16 networkId = reader.GetUShort();
-            UInt32 serviceConfigurationId = reader.GetUInt();
 
             
             TNetworkEntityMessage message = new TNetworkEntityMessage()
             {
-                NetworkId = networkId,
-                ServiceConfigurationId = serviceConfigurationId
+                NetworkId = networkId
             };
 
-            Int32 packetCount = reader.GetInt();
-            for (Int32 i=0; i<packetCount; i++)
-            {
-                message.Packets.Add(network.ReadData<IPacket>(reader));
-            }
+            reader.GetPackets(network, message);
 
             return message;
         }
@@ -47,13 +41,8 @@ namespace Guppy.Network.Utilities
         private static void Writer(NetDataWriter writer, NetworkProvider network, TNetworkEntityMessage message)
         {
             writer.Put(message.NetworkId);
-            writer.Put(message.ServiceConfigurationId);
 
-            writer.Put(message.Packets.Count());
-            foreach(IPacket packet in message.Packets)
-            {
-                network.WriteData(writer, packet);
-            }
+            writer.PutPackets(network, message);
         }
     }
 }

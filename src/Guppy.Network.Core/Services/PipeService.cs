@@ -21,7 +21,8 @@ namespace Guppy.Network.Services
                 item = this.Create<Pipe>(this.provider, (pipe, _, _) =>
                 {
                     pipe.Room = this.room;
-                }, id);
+                    pipe.SetId(id);
+                });
             }
 
             return true;

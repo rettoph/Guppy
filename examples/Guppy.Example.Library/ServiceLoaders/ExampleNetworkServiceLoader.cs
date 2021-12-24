@@ -23,10 +23,6 @@ namespace Guppy.Example.Library.ServiceLoaders
                 .SetReader(PositionDto.Read)
                 .SetWriter(PositionDto.Write);
 
-            network.RegisterDataType<BallRadiusDto>()
-                .SetReader(BallRadiusDto.Read)
-                .SetWriter(BallRadiusDto.Write);
-
             network.RegisterNetworkEntityMessage<PositionMessage>()
                 .SetDeliveryMethod(DeliveryMethod.Sequenced)
                 .SetSequenceChannel(1);

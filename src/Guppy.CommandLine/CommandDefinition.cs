@@ -13,7 +13,11 @@ namespace Guppy.CommandLine
 {
     public abstract class CommandDefinition
     {
-        public abstract String Name { get; }
+        public virtual String Name
+        {
+            get => this.GetType().Name.ToLower();
+        }
+
         public virtual String Description { get; } = default;
         public virtual String[] Aliases { get; } = Array.Empty<String>();
         public virtual Option[] Options { get; } = Array.Empty<Option>();
@@ -26,10 +30,7 @@ namespace Guppy.CommandLine
 
         public virtual ICommandHandler CreateCommandHandler(CommandService commands)
         {
-            return CommandHandler.Create(() =>
-            {
-                //
-            });
+            return default;
         }
     }
 }

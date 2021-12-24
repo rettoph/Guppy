@@ -14,18 +14,16 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public class Commands
+    public static class Commands
     {
         [AutoLoad]
         [CommandParent(typeof(CommandLine.Commands.Guppy))]
         public class Network : CommandDefinition
         {
-            public override String Name => "network";
             public override String Description => "Guppy.Network commands.";
 
             public class Users : CommandDefinition
             {
-                public override String Name => "users";
                 public override String Description => "Guppy.Network User commands.";
 
                 public override Option[] Options => new[] 

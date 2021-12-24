@@ -11,7 +11,7 @@ namespace Guppy.EntityComponent.Interfaces
         #region Properties
         ServiceStatus Status { get; }
         ServiceConfiguration ServiceConfiguration { get; internal set; }
-        Guid Id { get; internal set; }
+        Guid Id { get; }
         #endregion
 
         #region Events

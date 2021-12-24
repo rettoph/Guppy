@@ -35,61 +35,6 @@ namespace Guppy.EntityComponent.Lists
         #region Create Methods
         public T Create<T>(
             String serviceName,
-            Action<T, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-                where T : class, TService
-        {
-            return this.Create<T>(this.provider, serviceName, customSetup, id);
-        }
-        public TService Create(
-            String serviceName,
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-        {
-            return this.Create(this.provider, serviceName, customSetup, id);
-        }
-        public TService Create(
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-        {
-            return this.Create(this.provider, customSetup, id);
-        }
-
-        public T Create<T>(
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-                where T : class, TService
-        {
-            return this.Create<T>(this.provider, customSetup, id);
-        }
-        public T Create<T>(
-            String serviceName,
-            Guid id)
-                where T : class, TService
-        {
-            return this.Create<T>(this.provider, serviceName, id);
-        }
-        public TService Create(
-            String serviceName,
-            Guid id)
-        {
-            return this.Create(this.provider, serviceName, id);
-        }
-        public TService Create(
-            Guid id)
-        {
-            return this.Create<TService>(this.provider, id);
-        }
-
-        public T Create<T>(
-            Guid id)
-                where T : class, TService
-        {
-            return this.Create<T>(this.provider, id);
-        }
-
-        public T Create<T>(
-            String serviceName,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
@@ -108,7 +53,7 @@ namespace Guppy.EntityComponent.Lists
         }
 
         public T Create<T>(
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
+            Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
             return this.Create<T>(this.provider, customSetup);
@@ -135,22 +80,6 @@ namespace Guppy.EntityComponent.Lists
         {
             return this.Create<T>(this.provider);
         }
-        #endregion
-
-        #region GetOrCreateById Methods
-        public T GetOrCreateById<T>(Guid id, String serviceName)
-            where T : class, TService
-                => this.GetById<T>(id) ?? this.Create<T>(serviceName, id);
-
-        public TService GetOrCreateById(Guid id, String serviceName)
-            => this.GetOrCreateById<TService>(id, serviceName);
-
-        public T GetOrCreateById<T>(Guid id)
-            where T : class, TService
-                => this.GetById<T>(id) ?? this.Create<T>(id);
-
-        public TService GetOrCreateById(Guid id)
-            => this.GetOrCreateById<TService>(id);
         #endregion
     }
 }

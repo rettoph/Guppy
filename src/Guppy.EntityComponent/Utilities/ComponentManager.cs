@@ -1,4 +1,5 @@
-﻿using Guppy.EntityComponent.Interfaces;
+﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Guppy.EntityComponent.Utilities
     {
         #region Private Fields
         private Dictionary<String, IComponent> _components;
+        private IComponent[] _distinct;
         #endregion
 
         #region Lifecycle Methods
@@ -33,12 +35,32 @@ namespace Guppy.EntityComponent.Utilities
                         .Select(name => new KeyValuePair<String, IComponent>(name, component));
                 })
             );
+
+            _distinct = _components.Values.Distinct().ToArray();
         }
 
-        internal void Do(Action<IComponent> action)
+        internal void TryPreInitializeAll(ServiceProvider provider)
         {
-            foreach (IComponent component in _components.Values.Distinct())
-                action(component);
+            foreach (IComponent component in _distinct)
+            {
+                component.TryPreInitialize(provider);
+            }
+        }
+
+        internal void TryInitializeAll(ServiceProvider provider)
+        {
+            foreach (IComponent component in _distinct)
+            {
+                component.TryInitialize(provider);
+            }
+        }
+
+        internal void TryPostInitializeAll(ServiceProvider provider)
+        {
+            foreach (IComponent component in _distinct)
+            {
+                component.TryPostInitialize(provider);
+            }
         }
         #endregion
 

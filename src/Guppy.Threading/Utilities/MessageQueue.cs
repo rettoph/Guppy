@@ -104,7 +104,7 @@ namespace Guppy.Threading.Utilities
             }
             else
             {
-                throw new KeyNotFoundException($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved when processing message:'{message}'.");
+                throw new KeyNotFoundException($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved:'{message.GetType().GetPrettyName()}'.");
             }
         }
 

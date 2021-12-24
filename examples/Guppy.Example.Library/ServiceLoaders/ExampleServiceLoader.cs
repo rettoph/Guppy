@@ -32,6 +32,13 @@ namespace Guppy.Example.Library.ServiceLoaders
                     factory.SetDefaultConstructor<Ball>();
                 });
 
+            services.RegisterService<Paddle>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<Paddle>();
+                });
+
             services.RegisterSetup<ILog>()
                 .SetMethod((l, p, s) =>
                 {

@@ -22,9 +22,9 @@ namespace Guppy.Network.Components.Pipes
     internal sealed class PipeNetworkEntityRemoteComponent : NetworkComponent<Pipe>
     {
         #region Lifecycle Methods
-        protected override void InitializeRemote(ServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitializeRemote(ServiceProvider provider, NetworkAuthorization networkAuthorization)
         {
-            base.InitializeRemote(provider, networkAuthorization);
+            base.PreInitializeRemote(provider, networkAuthorization);
 
             if(networkAuthorization == NetworkAuthorization.Master)
             {
@@ -33,9 +33,9 @@ namespace Guppy.Network.Components.Pipes
             }
         }
 
-        protected override void ReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
         {
-            base.ReleaseRemote(networkAuthorization);
+            base.PostReleaseRemote(networkAuthorization);
 
             if (networkAuthorization == NetworkAuthorization.Master)
             {
@@ -53,7 +53,7 @@ namespace Guppy.Network.Components.Pipes
                 // Broadcast a create message for every entity within the pipe...
                 foreach (INetworkEntity entity in this.Entity.NetworkEntities)
                 {
-                    entity.SendMessage<CreateNetworkEntityMessage>(args.User.NetPeer);
+                    entity.SendMessage<CreateNetworkEntityMessage>(args.User.NetPeer, message => message.ServiceConfigurationId = entity.ServiceConfiguration.Id);
                 }
             }
         }
@@ -63,7 +63,7 @@ namespace Guppy.Network.Components.Pipes
             if(args.OldPipe is null)
             { // This is the first pipe the entity has been put into...
                 // Broadcast a create message to all users.
-                args.Entity.SendMessage<CreateNetworkEntityMessage>();
+                args.Entity.SendMessage<CreateNetworkEntityMessage>(message => message.ServiceConfigurationId = args.Entity.ServiceConfiguration.Id);
             }
         }
         #endregion

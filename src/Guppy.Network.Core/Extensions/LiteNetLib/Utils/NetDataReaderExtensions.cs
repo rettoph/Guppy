@@ -1,4 +1,7 @@
-﻿using Guppy.Network.Structs;
+﻿using Guppy.Network;
+using Guppy.Network.Interfaces;
+using Guppy.Network.Messages;
+using Guppy.Network.Structs;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using System;
@@ -25,6 +28,16 @@ namespace LiteNetLib.Utils
         public static Vector2 GetVector2(this NetDataReader reader)
         {
             return new Vector2(reader.GetFloat(), reader.GetFloat());
+        }
+
+        internal static void GetPackets<TNetworkEntityMessage>(this NetDataReader reader, NetworkProvider network, TNetworkEntityMessage message)
+            where TNetworkEntityMessage : NetworkEntityMessage, new()
+        {
+            Int32 packetCount = reader.GetInt();
+            for (Int32 i = 0; i < packetCount; i++)
+            {
+                message.Packets.Add(network.ReadData<IPacket>(reader));
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Guppy.Network.MessageProcessors
         #region IMessageProcessor<CreateNetworkEntityMessage> Implementation
         void IMessageProcessor<TNetworkEntityMessage>.Process(TNetworkEntityMessage message)
         {
-            throw new NotImplementedException();
+            _entities.TryProcess(message);
         }
         #endregion
     }

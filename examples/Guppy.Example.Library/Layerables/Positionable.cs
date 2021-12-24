@@ -2,6 +2,7 @@
 using Guppy.Example.Library.Messages;
 using Guppy.Network;
 using Guppy.Network.Messages;
+using Guppy.Network.Services;
 using Guppy.Threading.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
@@ -17,8 +18,34 @@ namespace Guppy.Example.Library.Layerables
     /// </summary>
     public abstract class Positionable : NetworkLayerable
     {
+        #region Protected Fields
+        protected Vector2 position;
+        protected Vector2 velocity;
+        #endregion
+
         #region Public Properties
-        public virtual Vector2 Position { get; set; }
+        public Vector2 Position
+        {
+            get => position;
+            set => position = value;
+        }
+        public Vector2 Velocity
+        {
+            get => velocity;
+            set => velocity = value;
+        }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.LayerGroup = Constants.LayerContexts.Foreground.Group.GetValue();
+
+            var room = provider.GetService<RoomService>().GetById(0);
+            this.Pipe = room.Pipes.GetById(Guid.Empty);
+        }
         #endregion
     }
 }

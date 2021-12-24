@@ -2,6 +2,7 @@
 using Guppy.Example.Library.Scenes;
 using Guppy.Network;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace Guppy.Example.Library

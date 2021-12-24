@@ -60,11 +60,6 @@ namespace Guppy.EntityComponent.Lists
         #endregion
 
         #region Create Methods
-        protected override IScene Create(ServiceProvider provider, string serviceName, Action<IScene, ServiceProvider, ServiceConfiguration> customSetup, Guid id)
-        {
-            return base.Create(provider.CreateScope(), serviceName, customSetup, id);
-        }
-
         protected override T Create<T>(ServiceProvider provider, string serviceName)
         {
             return base.Create<T>(provider.CreateScope(), serviceName);
@@ -73,16 +68,6 @@ namespace Guppy.EntityComponent.Lists
         protected override T Create<T>(ServiceProvider provider, string serviceName, Action<T, ServiceProvider, ServiceConfiguration> customSetup)
         {
             return base.Create(provider.CreateScope(), serviceName, customSetup);
-        }
-
-        protected override T Create<T>(ServiceProvider provider, string serviceName, Action<T, ServiceProvider, ServiceConfiguration> customSetup, Guid id)
-        {
-            return base.Create(provider.CreateScope(), serviceName, customSetup, id);
-        }
-
-        protected override T Create<T>(ServiceProvider provider, string serviceName, Guid id)
-        {
-            return base.Create<T>(provider.CreateScope(), serviceName, id);
         }
         #endregion
 

@@ -11,6 +11,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.MonoGame.Extensions\Minnow.MonoGame.Extensions.csproj" />
+    <ProjectReference Include="..\Guppy.CommandLine\Guppy.CommandLine.csproj" />
     <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
   </ItemGroup>

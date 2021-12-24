@@ -16,6 +16,8 @@ namespace Guppy.Examples.Client
     {
         #region Private Fields
         private GraphicsDevice _graphics;
+        private GraphicsDeviceManager _graphicsManager;
+        private GameWindow _window;
         private ClientPeer _client;
         #endregion
 
@@ -25,7 +27,15 @@ namespace Guppy.Examples.Client
             base.PreInitialize(provider);
 
             provider.Service(out _graphics);
+            provider.Service(out _graphicsManager);
+            provider.Service(out _window);
             provider.Service(out _client);
+
+            _window.AllowUserResizing = true;
+
+            _graphicsManager.PreferredBackBufferWidth = Guppy.Example.Library.Constants.WorldWidth;
+            _graphicsManager.PreferredBackBufferHeight = Guppy.Example.Library.Constants.WorldHeight;
+            _graphicsManager.ApplyChanges();
         }
 
         protected override void PostInitialize(ServiceProvider provider)

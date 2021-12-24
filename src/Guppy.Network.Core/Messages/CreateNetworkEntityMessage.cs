@@ -12,7 +12,33 @@ namespace Guppy.Network.Messages
 {
     public sealed class CreateNetworkEntityMessage : NetworkEntityMessage<CreateNetworkEntityMessage>
     {
-        #region Filter Methods
+        public UInt32 ServiceConfigurationId { get; internal set; }
+
+        #region Read/Write/Filter Methods
+        internal static CreateNetworkEntityMessage Read(NetDataReader reader, NetworkProvider network)
+        {
+            UInt16 networkId = reader.GetUShort();
+            UInt32 serviceConfigurationId = reader.GetUInt();
+
+            CreateNetworkEntityMessage message = new CreateNetworkEntityMessage()
+            {
+                NetworkId = networkId,
+                ServiceConfigurationId = serviceConfigurationId
+            };
+
+            reader.GetPackets(network, message);
+
+            return message;
+        }
+
+        internal static void Write(NetDataWriter writer, NetworkProvider network, CreateNetworkEntityMessage message)
+        {
+            writer.Put(message.NetworkId);
+            writer.Put(message.ServiceConfigurationId);
+
+            writer.PutPackets(network, message);
+        }
+
         /// <summary>
         /// Simple method used to determin whether or not 
         /// a CreateNetworkEntityMessage should be processed

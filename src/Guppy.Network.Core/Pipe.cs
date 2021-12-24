@@ -51,6 +51,11 @@ namespace Guppy.Network
         #endregion
 
         #region Helper Methods
+        internal void SetId(Guid id)
+        {
+            this.Id = id;
+        }
+
         /// <summary>
         /// Send a message within the current room to a specific recipient
         /// </summary>

@@ -42,24 +42,52 @@ namespace Guppy.Network.Services
         }
         #endregion
 
-        internal Boolean TryCreate(CreateNetworkEntityMessage message, out INetworkEntity entity)
+        internal Boolean TryProcess(NetworkEntityMessage message)
         {
             // Create a new entity instance if one doesnt already exists...
-            if(!_entities.TryGetValue(message.NetworkId, out entity))
+            if (_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
+            {
+                this.ProcessPackets(entity, message);
+                return true;
+            }
+            else
+            {
+                _log.Warn($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {message.GetType().GetPrettyName()} message, an entity with the recieved {nameof(message.NetworkId)} cannot be found.");
+                return false;
+            }
+        }
+
+        internal Boolean TryProcess(CreateNetworkEntityMessage message)
+        {
+            // Create a new entity instance if one doesnt already exists...
+            if(!_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
             { // No entity with the recieved id exists, try creating one now!
                 entity = _provider.GetService<INetworkEntity>(message.ServiceConfigurationId, (e, _, _) =>
                 { // Set the entity's internal network id to the message value.
                     e.NetworkId = message.NetworkId;
+                    this.ProcessPackets(e, message);
                 });
             }
             else if(entity.ServiceConfiguration.Id != message.ServiceConfigurationId)
             {
-                _log.Warn($"{nameof(NetworkEntityService)}::{nameof(TryCreate)} - Update to process {nameof(CreateNetworkEntityMessage)} message, as an entity with the recieved {nameof(CreateNetworkEntityMessage.NetworkId)} already exists, but the expected {nameof(CreateNetworkEntityMessage.ServiceConfigurationId)} does not match.");
+                _log.Warn($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {nameof(CreateNetworkEntityMessage)} message, an entity with the recieved {nameof(CreateNetworkEntityMessage.NetworkId)} already exists, but the expected {nameof(CreateNetworkEntityMessage.ServiceConfigurationId)} does not match.");
                 return false;
+            }
+            else
+            {
+                this.ProcessPackets(entity, message);
             }
 
             // Entity created, we can safely assume it was added?
             return true;
+        }
+
+        private void ProcessPackets(INetworkEntity entity, NetworkEntityMessage message)
+        {
+            foreach (IPacket packet in message.Packets)
+            {
+                entity.Packets.Process(packet);
+            }
         }
 
         /// <summary>

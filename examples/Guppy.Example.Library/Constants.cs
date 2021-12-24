@@ -10,6 +10,9 @@ namespace Guppy.Example.Library
 {
     public static class Constants
     {
+        public const Int32 WorldWidth = 800;
+        public const Int32 WorldHeight = 480;
+
         public static class LayerContexts
         {
             public static readonly LayerContext Foreground = new LayerContext()
@@ -20,6 +23,11 @@ namespace Guppy.Example.Library
                 Enabled = true,
                 Group = new SingleLayerGroup(0)
             };
+        }
+
+        public static class Intervals
+        {
+            public const UInt16 PositionMessage = 250;
         }
     }
 }

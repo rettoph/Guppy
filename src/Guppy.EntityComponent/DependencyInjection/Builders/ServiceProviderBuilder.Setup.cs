@@ -31,7 +31,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
                 });
 
             this.RegisterSetup<IEntity>()
-                .SetOrder(Constants.Priorities.PreInitialize)
+                .SetOrder(Constants.Priorities.PreInitialize - 1)
                 .SetMethod((e, p, _) =>
                 {
                     e.Components = p.GetService<ComponentManager>((manager, _, _) =>
@@ -39,22 +39,27 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
                         IEnumerable<IComponent> components = CreateComponents(p.EntityComponentConfigurations[e.ServiceConfiguration.Id], e, p) ?? Enumerable.Empty<IComponent>();
                         manager.BuildDictionary(components);
                     });
-
-                    e.Components.Do(component => component.TryPreInitialize(p));
                 });
 
             this.RegisterSetup<IEntity>()
-                .SetOrder(Constants.Priorities.Initialize)
+                .SetOrder(Constants.Priorities.PreInitialize + 1)
                 .SetMethod((e, p, _) =>
                 {
-                    e.Components.Do(component => component.TryInitialize(p));
+                    e.Components.TryPreInitializeAll(p);
                 });
 
             this.RegisterSetup<IEntity>()
-                .SetOrder(Constants.Priorities.PostInitialize)
+                .SetOrder(Constants.Priorities.Initialize + 1)
                 .SetMethod((e, p, _) =>
                 {
-                    e.Components.Do(component => component.TryPostInitialize(p));
+                    e.Components.TryInitializeAll(p);
+                });
+
+            this.RegisterSetup<IEntity>()
+                .SetOrder(Constants.Priorities.PostInitialize + 1)
+                .SetMethod((e, p, _) =>
+                {
+                    e.Components.TryPostInitializeAll(p);
                 });
         }
 

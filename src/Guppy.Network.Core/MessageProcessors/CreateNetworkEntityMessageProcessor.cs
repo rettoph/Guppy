@@ -28,16 +28,6 @@ namespace Guppy.Network.MessageProcessors
             provider.Service(out _entities);
         }
 
-        protected override void Initialize(ServiceProvider provider)
-        {
-            base.Initialize(provider);
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-        }
-
         protected override void PostRelease()
         {
             base.PostRelease();
@@ -49,12 +39,9 @@ namespace Guppy.Network.MessageProcessors
         #region IMessageProcessor<CreateNetworkEntityMessage> Implementation
         void IMessageProcessor<CreateNetworkEntityMessage>.Process(CreateNetworkEntityMessage message)
         {
-            if(_entities.TryCreate(message, out INetworkEntity entity))
+            if(!_entities.TryProcess(message))
             {
-                foreach(IPacket packet in message.Packets)
-                {
-                    entity.Packets.Process(packet);
-                }
+                throw new InvalidOperationException();
             }
         }
         #endregion

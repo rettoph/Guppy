@@ -21,6 +21,8 @@ using Guppy.CommandLine.Interfaces;
 using Guppy.CommandLine.Builders;
 using Guppy.Example.Library.Scenes;
 using Guppy.Examples.Client.Scenes;
+using Guppy.Examples.Client.Components.Layerables;
+using Guppy.Example.Library.Layerables;
 
 namespace Guppy.Examples.Client.ServiceLoaders
 {
@@ -49,6 +51,26 @@ namespace Guppy.Examples.Client.ServiceLoaders
                         (Level.Debug, Color.Magenta),
                         (Level.Verbose, Color.Cyan)
                     );
+                });
+
+            services.RegisterComponentService<BallDrawComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<BallDrawComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Ball>();
+                });
+
+            services.RegisterComponentService<PaddleDrawComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<PaddleDrawComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Paddle>();
                 });
         }
 

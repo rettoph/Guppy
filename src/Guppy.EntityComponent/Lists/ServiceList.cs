@@ -202,94 +202,6 @@ namespace Guppy.EntityComponent.Lists
         protected virtual T Create<T>(
             ServiceProvider provider,
             String serviceName,
-            Action<T, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-                where T : class, TService
-        {
-            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
-            {
-                i.Id = id;
-
-                customSetup.Invoke(i, p, d);
-                _creating.Add(i);
-
-                this.OnItemCreated?.Invoke(i);
-            });
-
-            this.TryAdd(instance);
-            _creating.Remove(instance);
-
-            return instance;
-        }
-        protected virtual TService Create(
-            ServiceProvider provider,
-            String serviceName,
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-        {
-            return this.Create<TService>(provider, serviceName, customSetup, id);
-        }
-        protected TService Create(
-            ServiceProvider provider,
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-        {
-            return this.Create<TService>(provider, typeof(TService).FullName, customSetup, id);
-        }
-
-        protected T Create<T>(
-            ServiceProvider provider,
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup,
-            Guid id)
-                where T : class, TService
-        {
-            return this.Create<T>(provider, typeof(T).FullName, customSetup, id);
-        }
-        protected virtual T Create<T>(
-            ServiceProvider provider,
-            String serviceName,
-            Guid id)
-                where T : class, TService
-        {
-            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
-            {
-                i.Id = id;
-
-                _creating.Add(i);
-
-                this.OnItemCreated?.Invoke(i);
-            });
-
-            this.TryAdd(instance);
-            _creating.Remove(instance);
-
-            return instance;
-        }
-        protected TService Create(
-            ServiceProvider provider,
-            String serviceName,
-            Guid id)
-        {
-            return this.Create<TService>(provider, serviceName, id);
-        }
-        protected TService Create(
-            ServiceProvider provider,
-            Guid id)
-        {
-            return this.Create<TService>(provider, typeof(TService).FullName, id);
-        }
-
-        protected T Create<T>(
-            ServiceProvider provider,
-            Guid id)
-                where T : class, TService
-        {
-            return this.Create<T>(provider, typeof(T).FullName, id);
-        }
-
-        protected virtual T Create<T>(
-            ServiceProvider provider,
-            String serviceName,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
@@ -322,7 +234,7 @@ namespace Guppy.EntityComponent.Lists
 
         protected T Create<T>(
             ServiceProvider provider,
-            Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
+            Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
             return this.Create<T>(provider, typeof(T).FullName, customSetup);

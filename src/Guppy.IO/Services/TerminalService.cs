@@ -225,7 +225,7 @@ namespace Guppy.IO.Services
                     index = _lines.Length + index;
 
                 var tString = _lines[index];
-                _spriteBatch.DrawString(_font, tString.Text, position, tString.Color);
+                _spriteBatch.DrawString(_font, tString.Text ?? "*Error displaying output*", position, tString.Color);
 
                 position.Y -= _font.LineSpacing;
             }

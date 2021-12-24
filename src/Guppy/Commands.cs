@@ -1,21 +1,20 @@
 ﻿using Guppy.Attributes;
+using Guppy.CommandLine;
 using Guppy.CommandLine.Arguments;
-using Guppy.CommandLine.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.CommandLine.Invocation;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.CommandLine
+namespace Guppy
 {
     public static class Commands
     {
         [AutoLoad]
-        public class Guppy : CommandDefinition
+        [CommandParent(typeof(CommandLine.Commands.Guppy))]
+        public class Scenes : CommandDefinition
         {
-            public override String Description => "Guppy commands.";
 
         }
     }

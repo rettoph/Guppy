@@ -1,4 +1,7 @@
-﻿using Guppy.Network.Structs;
+﻿using Guppy.Network;
+using Guppy.Network.Interfaces;
+using Guppy.Network.Messages;
+using Guppy.Network.Structs;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using System;
@@ -31,6 +34,16 @@ namespace LiteNetLib.Utils
         public static void Put(this NetDataWriter writer, Vector2 vector2)
         {
             writer.Put(in vector2);
+        }
+
+        internal static void PutPackets<TNetworkEntityMessage>(this NetDataWriter writer, NetworkProvider network, TNetworkEntityMessage message)
+            where TNetworkEntityMessage : NetworkEntityMessage
+        {
+            writer.Put(message.Packets.Count);
+            foreach (IPacket packet in message.Packets)
+            {
+                network.WriteData(writer, packet);
+            }
         }
     }
 }

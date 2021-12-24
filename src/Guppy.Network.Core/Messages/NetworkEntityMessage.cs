@@ -14,7 +14,6 @@ namespace Guppy.Network.Messages
         private static Factory<List<IPacket>> PacketListFactory = new Factory<List<IPacket>>(() => new List<IPacket>(), 50);
 
         public UInt16 NetworkId { get; internal init; }
-        public UInt32 ServiceConfigurationId { get; internal init; }
         public List<IPacket> Packets { get; } = PacketListFactory.GetInstance();
 
         #region IData Implementation

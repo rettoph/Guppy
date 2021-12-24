@@ -22,6 +22,8 @@ namespace Guppy.Network.Components.NetworkEntities
             base.PreInitialize(provider);
 
             this.Entity.OnPipeChanged += this.HandlePipeChanged;
+
+            this.CleanPipe(default, this.Entity.Pipe);
         }
 
         protected override void PostRelease()
