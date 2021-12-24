@@ -58,7 +58,7 @@ namespace Guppy.Network
                 this.room, 
                 new ConnectionRequestMessage()
                 {
-                    NetworkProvider = this.network.ToMessage(),
+                    NetworkProviderConfigurationHash = this.network.GetConfigurationHash(),
                     Claims = claims
                 },
                 out NetDataWriter writer,

@@ -66,6 +66,26 @@ namespace Guppy.Example.Library.ServiceLoaders
                 {
                     component.SetAssignableEntityType<Positionable>();
                 });
+
+            services.RegisterComponentService<PaddleRemoteMasterComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<PaddleRemoteMasterComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Paddle>();
+                });
+
+            services.RegisterComponentService<PaddleRemoteSlaveComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<PaddleRemoteSlaveComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Paddle>();
+                });
             #endregion
         }
     }

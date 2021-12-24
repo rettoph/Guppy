@@ -19,13 +19,9 @@ namespace Guppy.Example.Library.Components.Layerables
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
-    internal sealed class PositionableRemoteSlaveComponent : NetworkComponent<Positionable>,
+    public sealed class PositionableRemoteSlaveComponent : NetworkComponent<Positionable>,
         IMessageProcessor<PositionDto>
     {
-        #region Private Fields
-        private Vector2 _masterPosition;
-        #endregion
-
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
@@ -49,23 +45,22 @@ namespace Guppy.Example.Library.Components.Layerables
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
-            Console.WriteLine($"{this.Entity.GetType().Name} - {_masterPosition}");
-            _masterPosition += this.Entity.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            this.Entity.MasterPosition += this.Entity.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(Vector2.Distance(_masterPosition, this.Entity.Position) > 20)
+            if(Vector2.Distance(this.Entity.MasterPosition, this.Entity.Position) > 150)
             {
-                this.Entity.Position = _masterPosition;
+                this.Entity.Position = this.Entity.MasterPosition;
                 return;
             }
             
-            this.Entity.Position = Vector2.Lerp(this.Entity.Position, _masterPosition, Math.Min(1, (Single)(gameTime.ElapsedGameTime.TotalSeconds)));
+            this.Entity.Position = Vector2.Lerp(this.Entity.Position, this.Entity.MasterPosition, Math.Min(1, (Single)(gameTime.ElapsedGameTime.TotalSeconds)));
         }
         #endregion
 
         #region Packet Processors
         void IMessageProcessor<PositionDto>.Process(PositionDto message)
         {
-            _masterPosition = message.Position;
+            this.Entity.MasterPosition = message.Position;
             this.Entity.Velocity = message.Velocity;
         }
         #endregion

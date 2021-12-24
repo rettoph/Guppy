@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Examples.Client.Components.Layerables
+namespace Guppy.Example.Client.Components.Layerables
 {
     internal sealed class BallDrawComponent : DrawComponent<Ball>
     {

@@ -21,7 +21,7 @@ namespace Guppy.Example.Library.Components.Layerables
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal sealed class PositionableRemoteMasterComponent : NetworkComponent<Positionable>,
+    public sealed class PositionableRemoteMasterComponent : NetworkComponent<Positionable>,
         IMessageFactory<PositionDto>
     {
         #region Private Fields

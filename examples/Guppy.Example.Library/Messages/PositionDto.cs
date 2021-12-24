@@ -41,12 +41,5 @@ namespace Guppy.Example.Library.Messages
             writer.Put(dto.Velocity);
         }
         #endregion
-
-        #region IDisposable Implementation
-        void IData.Clean()
-        {
-            // throw new NotImplementedException();
-        }
-        #endregion
     }
 }

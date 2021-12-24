@@ -29,14 +29,5 @@ namespace Guppy.Network.Configurations
             this.Writer = writer;
             this.Reader = reader;
         }
-
-        internal DataTypeConfigurationMessage ToMessage()
-        {
-            return new DataTypeConfigurationMessage()
-            {
-                Id = this.Id.Value,
-                TypeAssemblyQualifiedName = this.Type.AssemblyQualifiedName
-            };
-        }
     }
 }

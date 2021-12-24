@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Examples.Client.Scenes
+namespace Guppy.Example.Client.Scenes
 {
     public sealed class ClientExampleScene : ExampleScene
     {

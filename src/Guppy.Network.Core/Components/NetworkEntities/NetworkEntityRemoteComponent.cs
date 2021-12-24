@@ -30,7 +30,6 @@ namespace Guppy.Network.Components.NetworkEntities
             if (networkAuthorization == NetworkAuthorization.Master)
             { // Define the network id automatically for master authorizations...
                 provider.Service(out _idProvider);
-
                 this.Entity.NetworkId = _idProvider.ClaimId();
             }
         }

@@ -98,7 +98,7 @@ namespace Guppy.Network
             NetworkMessage message = this.network.ReadMessage(request.Data);
             ConnectionRequestMessage connectionRequestDto = message.Data as ConnectionRequestMessage;
 
-            if(!this.network.CheckDto(connectionRequestDto.NetworkProvider))
+            if(this.network.GetConfigurationHash() != connectionRequestDto.NetworkProviderConfigurationHash)
             {
                 request.Reject();
                 return;
@@ -125,7 +125,6 @@ namespace Guppy.Network
             }
 
             request.Reject();
-            connectionRequestDto.Clean();
         }
         #endregion
     }

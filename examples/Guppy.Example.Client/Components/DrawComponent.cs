@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Examples.Client.Components
+namespace Guppy.Example.Client.Components
 {
     public abstract class DrawComponent<TEntity> : Component<TEntity>
         where TEntity : Frameable

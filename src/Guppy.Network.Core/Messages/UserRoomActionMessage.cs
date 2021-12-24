@@ -35,12 +35,5 @@ namespace Guppy.Network.Messages
             UserDto.Write(writer, message.User);
         }
         #endregion
-
-        #region IDisposable Implementation
-        void IData.Clean()
-        {
-            // throw new NotImplementedException();
-        }
-        #endregion
     }
 }

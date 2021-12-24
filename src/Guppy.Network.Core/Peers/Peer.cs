@@ -186,8 +186,6 @@ namespace Guppy.Network
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
             NetworkMessage message = this.network.ReadMessage(reader);
-
-            Console.WriteLine($"Recived Message => {message.Data.GetType().Name}");
             _rooms.EnqueueIncoming(message);
         }
         #endregion

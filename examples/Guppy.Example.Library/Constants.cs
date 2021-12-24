@@ -28,6 +28,7 @@ namespace Guppy.Example.Library
         public static class Intervals
         {
             public const UInt16 PositionMessage = 250;
+            public const UInt16 TargetMessage = 60;
         }
     }
 }

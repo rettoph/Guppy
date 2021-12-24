@@ -43,16 +43,6 @@ namespace Guppy.Network.Configurations
         }
 
         internal abstract void TryRegisterProcessor(ServiceProvider provider, MessageQueue<IData> messages);
-
-
-        internal MessageConfigurationMessage ToMessage()
-        {
-            return new MessageConfigurationMessage()
-            {
-                Id = this.Id.Value,
-                DataTypeId = this.DataConfiguration.Id.Value
-            };
-        }
     }
 
     internal class NetworkMessageConfiguration<TData> : NetworkMessageConfiguration

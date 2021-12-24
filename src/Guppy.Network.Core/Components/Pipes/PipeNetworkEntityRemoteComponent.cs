@@ -1,4 +1,6 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Enums;
+using Guppy.EntityComponent.Interfaces;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.EventArgs;
@@ -62,8 +64,25 @@ namespace Guppy.Network.Components.Pipes
         {
             if(args.OldPipe is null)
             { // This is the first pipe the entity has been put into...
-                // Broadcast a create message to all users.
-                args.Entity.SendMessage<CreateNetworkEntityMessage>(message => message.ServiceConfigurationId = args.Entity.ServiceConfiguration.Id);
+                if(args.Entity.Status == ServiceStatus.Ready)
+                {
+                    // Broadcast a create message to all users.
+                    args.Entity.SendMessage<CreateNetworkEntityMessage>(message => message.ServiceConfigurationId = args.Entity.ServiceConfiguration.Id);
+                }
+                else
+                {
+                    // Wait for the entity to be ready...
+                    args.Entity.OnStatusChanged += this.HandleNetworkEntityWithFirstPipeReady;
+                }
+            }
+        }
+
+        private void HandleNetworkEntityWithFirstPipeReady(IService sender, ServiceStatus old, ServiceStatus value)
+        {
+            if(value == ServiceStatus.Ready && sender is INetworkEntity entity)
+            {
+                entity.OnStatusChanged -= this.HandleNetworkEntityWithFirstPipeReady;
+                entity.SendMessage<CreateNetworkEntityMessage>(message => message.ServiceConfigurationId = entity.ServiceConfiguration.Id);
             }
         }
         #endregion

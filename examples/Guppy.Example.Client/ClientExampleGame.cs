@@ -10,7 +10,7 @@ using Guppy.Network.Security.Enums;
 using Guppy.Network;
 using Guppy.EntityComponent.DependencyInjection;
 
-namespace Guppy.Examples.Client
+namespace Guppy.Example.Client
 {
     public class ClientExampleGame : ExampleGame
     {

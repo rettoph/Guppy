@@ -43,12 +43,7 @@ namespace Guppy.Network.Services
 
         public void ProcessEnqueued()
         {
-            _incomingMessageQueue.ProcessEnqueued(this.PostProcessor);
-        }
-
-        private void PostProcessor(IData data)
-        {
-            data.Clean();
+            _incomingMessageQueue.ProcessEnqueued();
         }
         #endregion
     }

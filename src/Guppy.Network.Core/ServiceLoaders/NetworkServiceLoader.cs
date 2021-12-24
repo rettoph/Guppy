@@ -108,13 +108,15 @@ namespace Guppy.Network.ServiceLoaders
             services.RegisterComponentFilter(typeof(NetworkComponent<>))
                 .SetMethod((e, p, c) =>
                 {
-                    NetworkAuthorization requiredNetworkAuthorization = p.GetService<AttributeCache<NetworkAuthorizationRequiredAttribute>>()[c.TypeFactory.Type].NetworkAuthorization;
-                    return requiredNetworkAuthorization == p.Settings.Get<NetworkAuthorization>();
+                    var cache = p.GetService<AttributeCache<NetworkAuthorizationRequiredAttribute>>();
+                    NetworkAuthorization requiredNetworkAuthorization = cache[c.TypeFactory.Type].NetworkAuthorization;
+                    var result = requiredNetworkAuthorization == p.Settings.Get<NetworkAuthorization>();
+
+                    return result;
                 })
                 .SetFilter(cc =>
                 {
-                    var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<NetworkAuthorizationRequiredAttribute>() != default;
-                    return hasAttribute;
+                    return cc.TypeFactory.Type.HasCustomAttribute<NetworkAuthorizationRequiredAttribute>();
                 });
 
             services.RegisterComponentFilter(typeof(NetworkComponent<>))
@@ -125,8 +127,7 @@ namespace Guppy.Network.ServiceLoaders
                 })
                 .SetFilter(cc =>
                 {
-                    var hasAttribute = cc.TypeFactory.Type.GetCustomAttribute<HostTypeRequiredAttribute>() != default;
-                    return hasAttribute;
+                    return cc.TypeFactory.Type.HasCustomAttribute<HostTypeRequiredAttribute>();
                 });
             #endregion
 

@@ -16,9 +16,21 @@ namespace Guppy.Example.Library.Layerables
 
         public User User { get; set; }
 
+        public Single Target { get; set; }
+
+
         protected override void Initialize(ServiceProvider provider)
         {
             base.Initialize(provider);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            Single speed = (Single)gameTime.ElapsedGameTime.TotalSeconds * 4;
+            this.Position = new Vector2(MathHelper.Lerp(this.Position.X, this.Target, speed), this.Position.Y);
+            this.MasterPosition = new Vector2(MathHelper.Lerp(this.MasterPosition.X, this.Target, speed), this.MasterPosition.Y);
         }
     }
 }

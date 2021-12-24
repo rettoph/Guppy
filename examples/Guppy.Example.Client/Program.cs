@@ -2,7 +2,7 @@
 using System;
 using Guppy.Extensions;
 
-namespace Guppy.Examples.Client
+namespace Guppy.Example.Client
 {
     class Program
     {

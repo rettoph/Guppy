@@ -40,9 +40,9 @@ namespace Guppy.Network.Utilities
             where TPacket : class, IPacket
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>, new()
         {
-            if(_packetFactories.TryGetValue(typeof(TNetworkEntityMessage), out PacketFactoryDelegate del))
+            if(_packetFactories.ContainsKey(typeof(TNetworkEntityMessage)))
             {
-                del += factory.Create;
+                _packetFactories[typeof(TNetworkEntityMessage)] += factory.Create;
                 return;
             }
 

@@ -17,15 +17,31 @@ namespace Guppy.Example.Library.ServiceLoaders
     {
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
-            network.SequenceChannelCount = 2;
+            network.SequenceChannelCount = 3;
 
             network.RegisterDataType<PositionDto>()
                 .SetReader(PositionDto.Read)
                 .SetWriter(PositionDto.Write);
 
+            network.RegisterDataType<UserDto>()
+                .SetReader(UserDto.Read)
+                .SetWriter(UserDto.Write);
+
+            network.RegisterDataType<PaddleTargetDto>()
+                .SetReader(PaddleTargetDto.Read)
+                .SetWriter(PaddleTargetDto.Write);
+
             network.RegisterNetworkEntityMessage<PositionMessage>()
                 .SetDeliveryMethod(DeliveryMethod.Sequenced)
                 .SetSequenceChannel(1);
+
+            network.RegisterNetworkEntityMessage<PaddleTargetRequestMessage>()
+                .SetDeliveryMethod(DeliveryMethod.Sequenced)
+                .SetSequenceChannel(2);
+
+            network.RegisterNetworkEntityMessage<PaddleTargetMessage>()
+                .SetDeliveryMethod(DeliveryMethod.Sequenced)
+                .SetSequenceChannel(2);
         }
     }
 }

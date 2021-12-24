@@ -10,7 +10,7 @@ namespace Guppy.Network.Messages
 {
     internal sealed class ConnectionRequestMessage : IData
     {
-        public NetworkProviderMessage NetworkProvider { get; internal set; }
+        public UInt32 NetworkProviderConfigurationHash { get; internal set; }
         public IEnumerable<Claim> Claims { get; internal set; }
 
         #region Read/Write Messages
@@ -18,22 +18,15 @@ namespace Guppy.Network.Messages
         {
             return new ConnectionRequestMessage()
             {
-                NetworkProvider = NetworkProviderMessage.Read(reader),
+                NetworkProviderConfigurationHash = reader.GetUInt(),
                 Claims = reader.GetClaims()
             };
         }
 
         public static void Write(NetDataWriter writer, NetworkProvider network, ConnectionRequestMessage dto)
         {
-            NetworkProviderMessage.Write(writer, dto.NetworkProvider);
+            writer.Put(dto.NetworkProviderConfigurationHash);
             writer.Put(dto.Claims);
-        }
-        #endregion
-
-        #region IDisposable Implementation
-        public void Clean()
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

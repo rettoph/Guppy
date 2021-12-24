@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Examples.Client
+namespace Guppy.Example.Client
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {

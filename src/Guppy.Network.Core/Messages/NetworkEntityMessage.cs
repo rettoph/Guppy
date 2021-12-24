@@ -11,24 +11,8 @@ namespace Guppy.Network.Messages
 {
     public abstract class NetworkEntityMessage : IData
     {
-        private static Factory<List<IPacket>> PacketListFactory = new Factory<List<IPacket>>(() => new List<IPacket>(), 50);
-
         public UInt16 NetworkId { get; internal init; }
-        public List<IPacket> Packets { get; } = PacketListFactory.GetInstance();
-
-        #region IData Implementation
-        void IData.Clean()
-        {
-            foreach(IPacket packet in this.Packets)
-            {
-                packet.Clean();
-            }
-
-            this.Packets.Clear();
-
-            PacketListFactory.TryReturnToPool(this.Packets);
-        }
-        #endregion
+        public List<IPacket> Packets { get; } = new List<IPacket>();
     }
 
     public abstract class NetworkEntityMessage<TNetworkEntityMessage> : NetworkEntityMessage

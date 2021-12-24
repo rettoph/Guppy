@@ -34,6 +34,8 @@ namespace Guppy.Example.Library.Layerables
             get => velocity;
             set => velocity = value;
         }
+
+        public Vector2 MasterPosition;
         #endregion
 
         #region Lifecycle Methods

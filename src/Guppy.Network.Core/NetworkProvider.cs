@@ -103,7 +103,6 @@ namespace Guppy.Network
             recipient.Send(writer, configuration.SequenceChannel, configuration.DeliveryMethod);
 
             this.RecycleMessage(writer);
-            data.Clean();
         }
         public void SendMessage<TData>(Room room, TData data, IEnumerable<NetPeer> recipients)
             where TData : class, IData
@@ -116,7 +115,6 @@ namespace Guppy.Network
             }
 
             this.RecycleMessage(writer);
-            data.Clean();
         }
         #endregion
 
@@ -180,59 +178,25 @@ namespace Guppy.Network
         #endregion
 
         #region Helper Methods
-        internal NetworkProviderMessage ToMessage()
+        internal UInt32 GetConfigurationHash()
         {
-            return new NetworkProviderMessage()
-            {
-                DataTypesIdSize = _dataTypesIdSize,
-                DataTypeConfigurations = _dataConfigurations.Values.Select(dt => dt.ToMessage()),
-                MessagesIdSize = _messagesIdSize,
-                MessageConfigurations = _messages.Values.Select(m => m.ToMessage())
-            };
-        }
+            StringBuilder sb = new StringBuilder();
 
-        /// <summary>
-        /// Compare a recieved dto and ensure the data contained matches the current
-        /// provider configuration exactly.
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        internal Boolean CheckDto(NetworkProviderMessage dto)
-        {
-            #region Check Data Types
-            if (_dataTypesIdSize != dto.DataTypesIdSize)
+            sb.Append(_dataTypesIdSize);
+            foreach(var dataConf in _dataConfigurations)
             {
-                return false;
+                sb.Append(dataConf.value.Id.Value);
+                sb.Append(dataConf.value.Type.AssemblyQualifiedName);
             }
 
-            foreach(DataTypeConfigurationMessage dataTypeDto in dto.DataTypeConfigurations)
+            sb.Append(_messagesIdSize);
+            foreach (var messageConf in _messages)
             {
-                if (!_dataConfigurations.TryGetValue(dataTypeDto.Id, out DataConfiguration dataType)
-                    || dataType.Type.AssemblyQualifiedName != dataTypeDto.TypeAssemblyQualifiedName)
-                {
-                    return false;
-                }
-            }
-            #endregion
-
-            #region Check Messages
-            if (_messagesIdSize != dto.MessagesIdSize)
-            {
-                return false;
+                sb.Append(messageConf.value.Id.Value);
+                sb.Append(messageConf.value.DataConfiguration.Id.Value);
             }
 
-            foreach(MessageConfigurationMessage messageDto in dto.MessageConfigurations)
-            {
-                if (!_messages.TryGetValue(messageDto.Id, out NetworkMessageConfiguration message)
-                    || message.DataConfiguration.Id != messageDto.DataTypeId)
-                {
-                    return false;
-                }
-            }
-            #endregion
-
-            // If we've made it this far then the configurations match!
-            return true;
+            return sb.ToString().xxHash();
         }
         #endregion
     }

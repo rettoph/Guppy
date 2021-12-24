@@ -40,12 +40,5 @@ namespace Guppy.Network.Messages
             }
         }
         #endregion
-
-        #region IDIsposable Implementation
-        void IData.Clean()
-        {
-            // throw new NotImplementedException();
-        }
-        #endregion
     }
 }

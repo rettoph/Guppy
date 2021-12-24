@@ -20,11 +20,11 @@ using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.CommandLine.Interfaces;
 using Guppy.CommandLine.Builders;
 using Guppy.Example.Library.Scenes;
-using Guppy.Examples.Client.Scenes;
-using Guppy.Examples.Client.Components.Layerables;
+using Guppy.Example.Client.Scenes;
+using Guppy.Example.Client.Components.Layerables;
 using Guppy.Example.Library.Layerables;
 
-namespace Guppy.Examples.Client.ServiceLoaders
+namespace Guppy.Example.Client.ServiceLoaders
 {
     [AutoLoad]
     internal sealed class ClientServiceLoader : IServiceLoader, ICommandLoader
@@ -67,6 +67,16 @@ namespace Guppy.Examples.Client.ServiceLoaders
                 .RegisterTypeFactory(factory =>
                 {
                     factory.SetDefaultConstructor<PaddleDrawComponent>();
+                })
+                .RegisterComponentConfiguration(component =>
+                {
+                    component.SetAssignableEntityType<Paddle>();
+                });
+
+            services.RegisterComponentService<PaddleCurrentUserComponent>()
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<PaddleCurrentUserComponent>();
                 })
                 .RegisterComponentConfiguration(component =>
                 {
