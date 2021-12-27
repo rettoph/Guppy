@@ -12,8 +12,8 @@ using Guppy.Example.Library.Scenes;
 using Guppy.Network;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Example.Library.Layerables;
-using Guppy.Example.Library.Components.Layerables;
+using Guppy.Example.Library.Entities;
+using Guppy.Example.Library.Components.Entities;
 
 namespace Guppy.Example.Library.ServiceLoaders
 {
@@ -32,11 +32,18 @@ namespace Guppy.Example.Library.ServiceLoaders
                     factory.SetDefaultConstructor<Ball>();
                 });
 
-            services.RegisterService<Paddle>()
+            services.RegisterService<GoalZone>()
                 .SetLifetime(ServiceLifetime.Transient)
                 .RegisterTypeFactory(factory =>
                 {
-                    factory.SetDefaultConstructor<Paddle>();
+                    factory.SetDefaultConstructor<GoalZone>();
+                });
+
+            services.RegisterService<List<Paddle>>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<List<Paddle>>();
                 });
 
             services.RegisterSetup<ILog>()
@@ -46,45 +53,57 @@ namespace Guppy.Example.Library.ServiceLoaders
                     l.ConfigureFileAppender($"logs\\{DateTime.Now.ToString("yyy-MM-dd")}.txt");
                 });
 
-            #region Components
-            services.RegisterComponentService<PositionableRemoteSlaveComponent>()
-                .RegisterTypeFactory(factory =>
+            #region Entities
+            services.RegisterEntity<Paddle>()
+                .RegisterService(service =>
                 {
-                    factory.SetDefaultConstructor<PositionableRemoteSlaveComponent>();
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<Paddle>();
+                        });
                 })
-                .RegisterComponentConfiguration(component =>
+                .RegisterComponent<PaddleRemoteSlaveComponent>(component =>
                 {
-                    component.SetAssignableEntityType<Positionable>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PaddleRemoteSlaveComponent>();
+                        });
+                    });
+                })
+                .RegisterComponent<PaddleRemoteMasterComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PaddleRemoteMasterComponent>();
+                        });
+                    });
                 });
 
-            services.RegisterComponentService<PositionableRemoteMasterComponent>()
-                .RegisterTypeFactory(factory =>
+            services.RegisterEntity<Positionable>()
+                .RegisterComponent<PositionableRemoteSlaveComponent>(component =>
                 {
-                    factory.SetDefaultConstructor<PositionableRemoteMasterComponent>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PositionableRemoteSlaveComponent>();
+                        });
+                    });
                 })
-                .RegisterComponentConfiguration(component =>
+                .RegisterComponent<PositionableRemoteMasterComponent>(component =>
                 {
-                    component.SetAssignableEntityType<Positionable>();
-                });
-
-            services.RegisterComponentService<PaddleRemoteMasterComponent>()
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<PaddleRemoteMasterComponent>();
-                })
-                .RegisterComponentConfiguration(component =>
-                {
-                    component.SetAssignableEntityType<Paddle>();
-                });
-
-            services.RegisterComponentService<PaddleRemoteSlaveComponent>()
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<PaddleRemoteSlaveComponent>();
-                })
-                .RegisterComponentConfiguration(component =>
-                {
-                    component.SetAssignableEntityType<Paddle>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PositionableRemoteMasterComponent>();
+                        });
+                    });
                 });
             #endregion
         }

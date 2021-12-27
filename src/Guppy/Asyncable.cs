@@ -1,5 +1,5 @@
-﻿using Guppy.Utilities;
-using Guppy.Utilities.Threading;
+﻿using Guppy.Threading.Helpers;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -54,7 +54,7 @@ namespace Guppy
         public async Task TryStopAsync()
         {
             if (_cancelation.IsCancellationRequested)
-                throw new Exception("Unable to stop Asyncable, cancelation has already been requested.");
+                throw new Exception("Unable to stop Asyncable, cancellation has already been requested.");
 
             await this.StopAsync();
         }

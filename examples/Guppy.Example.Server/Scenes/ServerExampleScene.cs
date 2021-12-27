@@ -6,7 +6,7 @@ using Guppy.Network.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Example.Library.Layerables;
+using Guppy.Example.Library.Entities;
 using Guppy.Network.Security.Lists;
 using Guppy.Network.Security.EventArgs;
 using Microsoft.Xna.Framework;
@@ -24,8 +24,6 @@ namespace Guppy.Example.Server.Scenes
         {
             base.Initialize(provider);
 
-            _ball = this.Layerables.Create<Ball>();
-
             this.Room.Users.OnUserAdded += this.HandleUserAdded;
         }
         #endregion
@@ -38,10 +36,17 @@ namespace Guppy.Example.Server.Scenes
                 return;
             }
 
-            this.Layerables.Create<Paddle>((paddle, _, _) =>
+            var paddle = this.Layerables.Create<Paddle>((paddle, _, _) =>
             {
                 paddle.User = args.User;
-                paddle.Position = new Vector2(0, Library.Constants.WorldHeight - Paddle.Height);
+                paddle.Position = new Vector2(0, Library.Constants.WorldHeight - Paddle.Height - 1);
+            });
+
+            this.Layerables.Create<GoalZone>((goal, _, _) =>
+            {
+                goal.Owner = paddle;
+                goal.Bounds = new System.Drawing.RectangleF(
+                    0, 0, Library.Constants.WorldWidth, Paddle.Height - 5);
             });
         }
         #endregion

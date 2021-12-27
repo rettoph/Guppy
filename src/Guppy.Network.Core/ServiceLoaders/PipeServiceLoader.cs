@@ -24,24 +24,25 @@ namespace Guppy.Network.ServiceLoaders
                     factory.SetDefaultConstructor<PipeService>();
                 });
 
-            services.RegisterService<Pipe>()
-                .SetLifetime(ServiceLifetime.Transient)
-                .RegisterTypeFactory(factory =>
+            services.RegisterEntity<Pipe>()
+                .RegisterService(service =>
                 {
-                    factory.SetDefaultConstructor<Pipe>();
-                });
-
-            #region Register Components
-            services.RegisterComponentService<PipeNetworkEntityRemoteComponent>()
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<PipeNetworkEntityRemoteComponent>();
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<Pipe>();
+                        });
                 })
-                .RegisterComponentConfiguration(component =>
+                .RegisterComponent<PipeNetworkEntityRemoteComponent>(component =>
                 {
-                    component.SetAssignableEntityType<Pipe>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PipeNetworkEntityRemoteComponent>();
+                        });
+                    });
                 });
-            #endregion
         }
     }
 }

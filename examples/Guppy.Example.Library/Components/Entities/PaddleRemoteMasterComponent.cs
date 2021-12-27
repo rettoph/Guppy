@@ -1,6 +1,6 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Example.Library.Layerables;
+using Guppy.Example.Library.Entities;
 using Guppy.Example.Library.Messages;
 using Guppy.Network;
 using Guppy.Network.Attributes;
@@ -16,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Example.Library.Components.Layerables
+namespace Guppy.Example.Library.Components.Entities
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
@@ -48,7 +48,7 @@ namespace Guppy.Example.Library.Components.Layerables
         {
             base.PostRelease();
 
-            this.Entity.Packets.DeregisterProcessor<PaddleTargetDto>();
+            this.Entity.Packets.DeregisterProcessor<PaddleTargetDto>(this);
 
             this.Entity.Packets.DeregisterPacket<UserDto, CreateNetworkEntityMessage>(this);
 

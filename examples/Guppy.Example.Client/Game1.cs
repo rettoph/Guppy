@@ -1,6 +1,10 @@
-﻿using Guppy.Example.Library;
+﻿using Guppy.EntityComponent.Interfaces;
+using Guppy.Example.Library;
 using Guppy.Extensions;
+using Guppy.Extensions.Utilities;
 using Guppy.IO.Extensions;
+using Guppy.Utilities;
+using Guppy.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,6 +17,16 @@ namespace Guppy.Example.Client
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        PrimitiveBatch<VertexPositionColor> primitiveBatch;
+        Matrix projection;
+        
+        Queue<float> _frameTimes = new Queue<float>();
+        int _frameCount = 0;
+        int _maxFrameCount = 800;
+
+        float _maxFrameTime = float.MinValue;
+
         GuppyLoader guppy;
         ExampleGame game;
 
@@ -40,6 +54,16 @@ namespace Guppy.Example.Client
             this.graphics.SynchronizeWithVerticalRetrace = false;
             this.graphics.GraphicsProfile = GraphicsProfile.HiDef;
             this.graphics.ApplyChanges();
+
+            primitiveBatch = new PrimitiveBatch<VertexPositionColor>(this.GraphicsDevice);
+
+            this.projection = projection = Matrix.CreateOrthographicOffCenter(
+                    0,
+                    800,
+                    480,
+                    0,
+                    0f,
+                    1f);
         }
 
         /// <summary>
@@ -89,7 +113,7 @@ namespace Guppy.Example.Client
         {
             base.Dispose(disposing);
 
-            game.TryDispose();
+            // game.TryDispose();
         }
 
         /// <summary>
@@ -114,6 +138,43 @@ namespace Guppy.Example.Client
             base.Draw(gameTime);
 
             game.TryDraw(gameTime);
+            return;
+            this.GraphicsDevice.Clear(Color.Black);
+
+            float totalSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            _frameTimes.Enqueue(totalSeconds);
+
+            if(_frameCount++ > _maxFrameCount)
+            {
+                _frameTimes.Dequeue();
+                _frameCount--;
+            }
+
+            _maxFrameTime *= 0.99999f;
+            if(totalSeconds > _maxFrameTime)
+            {
+                _maxFrameTime = totalSeconds;
+            }
+
+
+
+            primitiveBatch.Begin(view: Matrix.Identity, projection: this.projection, world: Matrix.Identity);
+
+            float y;
+            float x = 0;
+
+            foreach (float frameTime in _frameTimes)
+            {
+                y = (frameTime / _maxFrameTime) * 480;
+
+                primitiveBatch.DrawLine(
+                    Color.Red, x, 480, 0, 
+                    Color.Red, x, 480 - y, 0);
+
+                x++;
+            }
+
+            primitiveBatch.End();
         }
     }
 }

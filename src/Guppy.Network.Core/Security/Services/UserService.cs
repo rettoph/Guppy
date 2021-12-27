@@ -39,19 +39,22 @@ namespace Guppy.Network.Security.Services
         #region Helper Methods
         internal User UpdateOrCreate(Int32 id, IEnumerable<Claim> claims)
         {
-            if(this.TryGetById(id, out User user))
+            lock(this)
             {
-                user.SetClaims(claims);
-                return user;
-            }
+                if (this.TryGetById(id, out User user))
+                {
+                    user.SetClaims(claims);
+                    return user;
+                }
 
-            user = new User(id, _netManager, claims);
-            if(this.TryAdd(user))
-            {
-                return user;
-            }
+                user = new User(id, _netManager, claims);
+                if (this.TryAdd(user))
+                {
+                    return user;
+                }
 
-            throw new InvalidOperationException();
+                throw new InvalidOperationException();
+            }
         }
 
         internal User UpdateOrCreate(UserDto dto)

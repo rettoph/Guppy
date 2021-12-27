@@ -2,6 +2,7 @@
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Threading.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,44 +12,59 @@ namespace Guppy.Threading.Utilities
 {
     public class MessageQueue : MessageQueue<IMessage>
     {
-
     }
 
     public class MessageQueue<TMessage> : Service
         where TMessage : class, IMessage
     {
         #region Classes
-        private interface IMessageProcessor
+        private interface IMessageProcessorContainer
         {
             void Process(TMessage message);
         }
 
-        private class MessageProcessor<T> : IMessageProcessor
+        private class MessageProcessorContainer<T> : IMessageProcessorContainer
             where T : class, TMessage
         {
-            private IMessageProcessor<T> _processor;
+            private delegate void ProcessDelegate(T message);
 
-            public MessageProcessor(IMessageProcessor<T> processor)
+            private ProcessDelegate _processors;
+
+            public MessageProcessorContainer(IMessageProcessor<T> processor)
             {
-                _processor = processor;
+                _processors = processor.Process;
             }
 
             public void Process(TMessage message)
             {
                 if (message is T casted)
                 {
-                    _processor.Process(casted);
+                    foreach(ProcessDelegate processor in _processors.GetInvocationList())
+                    {
+                        processor(casted);
+                    }
+
                     return;
                 }
 
                 throw new ArgumentException(nameof(message));
+            }
+
+            public void RegisterProcessor(IMessageProcessor<T> processor)
+            {
+                _processors += processor.Process;
+            }
+
+            public void DeregisterProcessor(IMessageProcessor<T> processor)
+            {
+                _processors -= processor.Process;
             }
         }
         #endregion
 
         #region Private Fields
         private Queue<TMessage> _queue;
-        private Dictionary<Type, IMessageProcessor> _processors;
+        private Dictionary<Type, IMessageProcessorContainer> _processors;
         #endregion
 
         #region Constructors
@@ -57,7 +73,7 @@ namespace Guppy.Threading.Utilities
             base.PreInitialize(provider);
 
             _queue = new Queue<TMessage>();
-            _processors = new Dictionary<Type, IMessageProcessor>();
+            _processors = new Dictionary<Type, IMessageProcessorContainer>();
         }
 
         protected override void PostRelease()
@@ -78,7 +94,14 @@ namespace Guppy.Threading.Utilities
         public void RegisterProcessor<T>(IMessageProcessor<T> processor)
             where T : class, TMessage
         {
-            _processors.Add(typeof(T), new MessageProcessor<T>(processor));
+            if(_processors.TryGetValue(typeof(T), out IMessageProcessorContainer processors)
+                && processors is MessageProcessorContainer<T> casted)
+            {
+                casted.RegisterProcessor(processor);
+                return;
+            }
+
+            _processors.Add(typeof(T), new MessageProcessorContainer<T>(processor));
         }
 
         /// <summary>
@@ -86,10 +109,15 @@ namespace Guppy.Threading.Utilities
         /// </summary>
         /// <param name="key"></param>
         /// <param name="processor"></param>
-        public void DeregisterProcessor<T>()
+        public void DeregisterProcessor<T>(IMessageProcessor<T> processor)
             where T : class, TMessage
         {
-            _processors.Remove(typeof(T));
+            if (_processors.TryGetValue(typeof(T), out IMessageProcessorContainer processors)
+                && processors is MessageProcessorContainer<T> casted)
+            {
+                casted.DeregisterProcessor(processor);
+                return;
+            }
         }
 
         /// <summary>
@@ -98,7 +126,7 @@ namespace Guppy.Threading.Utilities
         /// <param name="message"></param>
         public void Process(TMessage message)
         {
-            if (_processors.TryGetValue(message.GetType(), out IMessageProcessor processor))
+            if (_processors.TryGetValue(message.GetType(), out IMessageProcessorContainer processor))
             {
                 processor.Process(message);
             }
@@ -114,7 +142,7 @@ namespace Guppy.Threading.Utilities
         /// <param name="message"></param>
         public void Process(TMessage message, Action<TMessage> postProcessor)
         {
-            if (_processors.TryGetValue(message.GetType(), out IMessageProcessor processor))
+            if (_processors.TryGetValue(message.GetType(), out IMessageProcessorContainer processor))
             {
                 processor.Process(message);
             }

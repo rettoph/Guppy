@@ -31,6 +31,11 @@ namespace Guppy.Example.Library.ServiceLoaders
                 .SetReader(PaddleTargetDto.Read)
                 .SetWriter(PaddleTargetDto.Write);
 
+            network.RegisterDataType<GoalZoneDto>()
+                .SetReader(GoalZoneDto.Read)
+                .SetWriter(GoalZoneDto.Write);
+
+
             network.RegisterNetworkEntityMessage<PositionMessage>()
                 .SetDeliveryMethod(DeliveryMethod.Sequenced)
                 .SetSequenceChannel(1);

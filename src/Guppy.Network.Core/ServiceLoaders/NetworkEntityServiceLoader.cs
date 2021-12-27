@@ -47,25 +47,27 @@ namespace Guppy.Network.ServiceLoaders
                 });
             #endregion
 
-            #region Register Components
-            services.RegisterComponentService<NetworkEntityRemoteComponent>()
-                .RegisterTypeFactory(factory =>
+            #region Entities
+            services.RegisterEntity<INetworkEntity>()
+                .RegisterComponent<NetworkEntityRemoteComponent>(component =>
                 {
-                    factory.SetDefaultConstructor<NetworkEntityRemoteComponent>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<NetworkEntityRemoteComponent>();
+                        });
+                    });
                 })
-                .RegisterComponentConfiguration(component =>
+                .RegisterComponent<NetworkEntityRemotePipeComponent>(component =>
                 {
-                    component.SetAssignableEntityType<INetworkEntity>();
-                });
-
-            services.RegisterComponentService<NetworkEntityRemotePipeComponent>()
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<NetworkEntityRemotePipeComponent>();
-                })
-                .RegisterComponentConfiguration(component =>
-                {
-                    component.SetAssignableEntityType<INetworkEntity>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<NetworkEntityRemotePipeComponent>();
+                        });
+                    });
                 });
             #endregion
         }

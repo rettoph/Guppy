@@ -1,7 +1,7 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.Enums;
 using Guppy.EntityComponent.Interfaces;
-using Guppy.Example.Library.Layerables;
+using Guppy.Example.Library.Entities;
 using Guppy.Example.Library.Messages;
 using Guppy.Network.Attributes;
 using Guppy.Network.Components;
@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Example.Library.Components.Layerables
+namespace Guppy.Example.Library.Components.Entities
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Slave)]
@@ -36,7 +36,7 @@ namespace Guppy.Example.Library.Components.Layerables
         {
             base.PostRelease();
 
-            this.Entity.Packets.DeregisterProcessor<PositionDto>();
+            this.Entity.Packets.DeregisterProcessor<PositionDto>(this);
 
             this.Entity.OnPreUpdate -= this.Update;
         }
@@ -45,6 +45,11 @@ namespace Guppy.Example.Library.Components.Layerables
         #region Frame Methods
         private void Update(GameTime gameTime)
         {
+            if(!this.Entity.Awake)
+            {
+                return;
+            }
+
             this.Entity.MasterPosition += this.Entity.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
 
             if(Vector2.Distance(this.Entity.MasterPosition, this.Entity.Position) > 150)

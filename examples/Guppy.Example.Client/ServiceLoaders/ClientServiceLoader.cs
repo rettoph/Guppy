@@ -21,8 +21,8 @@ using Guppy.CommandLine.Interfaces;
 using Guppy.CommandLine.Builders;
 using Guppy.Example.Library.Scenes;
 using Guppy.Example.Client.Scenes;
-using Guppy.Example.Client.Components.Layerables;
-using Guppy.Example.Library.Layerables;
+using Guppy.Example.Client.Components.Entities;
+using Guppy.Example.Library.Entities;
 
 namespace Guppy.Example.Client.ServiceLoaders
 {
@@ -53,34 +53,47 @@ namespace Guppy.Example.Client.ServiceLoaders
                     );
                 });
 
-            services.RegisterComponentService<BallDrawComponent>()
-                .RegisterTypeFactory(factory =>
+
+            services.RegisterEntity<Paddle>()
+                .RegisterComponent<PaddleDrawComponent>(component =>
                 {
-                    factory.SetDefaultConstructor<BallDrawComponent>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PaddleDrawComponent>();
+                        });
+                    });
                 })
-                .RegisterComponentConfiguration(component =>
+                .RegisterComponent<PaddleCurrentUserComponent>(component =>
                 {
-                    component.SetAssignableEntityType<Ball>();
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<PaddleCurrentUserComponent>();
+                        });
+                    });
                 });
 
-            services.RegisterComponentService<PaddleDrawComponent>()
-                .RegisterTypeFactory(factory =>
+            services.RegisterComponent<BallDrawComponent>()
+                .SetAssignableEntityType<Ball>()
+                .RegisterService(service =>
                 {
-                    factory.SetDefaultConstructor<PaddleDrawComponent>();
-                })
-                .RegisterComponentConfiguration(component =>
-                {
-                    component.SetAssignableEntityType<Paddle>();
+                    service.RegisterTypeFactory(factory =>
+                    {
+                        factory.SetDefaultConstructor<BallDrawComponent>();
+                    });
                 });
 
-            services.RegisterComponentService<PaddleCurrentUserComponent>()
-                .RegisterTypeFactory(factory =>
+            services.RegisterComponent<GoalZoneDrawComponent>()
+                .SetAssignableEntityType<GoalZone>()
+                .RegisterService(service =>
                 {
-                    factory.SetDefaultConstructor<PaddleCurrentUserComponent>();
-                })
-                .RegisterComponentConfiguration(component =>
-                {
-                    component.SetAssignableEntityType<Paddle>();
+                    service.RegisterTypeFactory(factory =>
+                    {
+                        factory.SetDefaultConstructor<GoalZoneDrawComponent>();
+                    });
                 });
         }
 

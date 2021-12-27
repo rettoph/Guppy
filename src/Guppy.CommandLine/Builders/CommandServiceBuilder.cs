@@ -54,8 +54,22 @@ namespace Guppy.CommandLine.Builders
             CommandDefinition parent = default;
             if (type.TryGetAttribute(out CommandParentAttribute parentAttribute) || defaultParentType is not null)
             { // Ensure that the parent type has already been imported...
-                this.ImportCommandDefinition(parentAttribute?.Type ?? defaultParentType);
-                parent = _commands[parentAttribute?.Type ?? defaultParentType].Definition;
+                Type parentType = parentAttribute?.Type ?? defaultParentType;
+
+                if(parentType is not null)
+                {
+                    if (_commands.TryGetValue(parentType, out CommandBuilder parentCommentBuilder))
+                    {
+                        parent = parentCommentBuilder.Definition;
+                    }
+                    else
+                    {
+                        this.ImportCommandDefinition(parentType);
+                        parent = _commands[parentAttribute?.Type ?? defaultParentType].Definition;
+                    }
+                }
+                
+                
             }
 
             // Add the requested definition
@@ -77,7 +91,6 @@ namespace Guppy.CommandLine.Builders
             var commands = new CommandService(_commands.Build());
 
             // We can go through and create all the command handlers now. Its not ideal but it works
-
             foreach(CommandBuilder builder in _commands.Values)
             {
                 commands.Get(builder.Type).Handler = builder.Definition.CreateCommandHandler(commands);

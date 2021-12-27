@@ -42,11 +42,24 @@ namespace Guppy.Network.ServiceLoaders
                     factory.SetDefaultConstructor<RoomService>();
                 });
 
-            services.RegisterService<Room>()
-                .SetLifetime(ServiceLifetime.Transient)
-                .RegisterTypeFactory(factory =>
+            services.RegisterEntity<Room>()
+                .RegisterService(service =>
                 {
-                    factory.SetDefaultConstructor<Room>();
+                    service.SetLifetime(ServiceLifetime.Transient)
+                        .RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<Room>();
+                        });
+                })
+                .RegisterComponent<RoomRemoteMasterComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<RoomRemoteMasterComponent>();
+                        });
+                    });
                 });
 
             services.RegisterService<MessageQueue<IData>>()
@@ -128,18 +141,6 @@ namespace Guppy.Network.ServiceLoaders
                 .SetFilter(cc =>
                 {
                     return cc.TypeFactory.Type.HasCustomAttribute<HostTypeRequiredAttribute>();
-                });
-            #endregion
-
-            #region Register Components
-            services.RegisterComponentService<RoomRemoteMasterComponent>()
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<RoomRemoteMasterComponent>();
-                })
-                .RegisterComponentConfiguration(component =>
-                {
-                    component.SetAssignableEntityType<Room>();
                 });
             #endregion
         }

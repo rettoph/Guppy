@@ -8,10 +8,23 @@ using System.Text;
 
 namespace Guppy.EntityComponent.DependencyInjection.Builders
 {
-    public sealed class ComponentConfigurationBuilder : IFluentOrderable<ComponentConfigurationBuilder>
+    public abstract class ComponentConfigurationBuilder : IOrderable
+    {
+        #region Public Properties
+        public Int32 Order { get; set; }
+        #endregion
+
+        #region Build Method
+        public abstract ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<String, UInt32, ServiceConfiguration> services);
+        #endregion
+    }
+
+    public sealed class ComponentConfigurationBuilder<TComponent> : ComponentConfigurationBuilder, IFluentOrderable<ComponentConfigurationBuilder<TComponent>>
+        where TComponent : class, IComponent
     {
         #region Private Fields
         private Type _assignableEntityType;
+        private ServiceProviderBuilder _services;
         #endregion
 
         #region Public Properties
@@ -30,19 +43,19 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
             get => _assignableEntityType;
             set => this.SetAssignableEntityType(value);
         }
-
-        public Int32 Order { get; set; }
         #endregion
 
         #region Constructors
-        internal ComponentConfigurationBuilder(String componentServiceName)
+        internal ComponentConfigurationBuilder(String componentServiceName, ServiceProviderBuilder services)
         {
+            _services = services;
+
             this.ComponentServiceName = componentServiceName;
         }
         #endregion
 
         #region SetAssignableEntityFactoryType Methods
-        public ComponentConfigurationBuilder SetAssignableEntityType(Type assignableEntityType)
+        public ComponentConfigurationBuilder<TComponent> SetAssignableEntityType(Type assignableEntityType)
         {
             typeof(IEntity).ValidateAssignableFrom(assignableEntityType);
 
@@ -50,7 +63,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
 
             return this;
         }
-        public ComponentConfigurationBuilder SetAssignableEntityType<TEntity>()
+        public ComponentConfigurationBuilder<TComponent> SetAssignableEntityType<TEntity>()
             where TEntity : IEntity
         {
             this.SetAssignableEntityType(typeof(TEntity));
@@ -59,8 +72,62 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
+        #region RegisterComponentTypeFilter Methods
+        public ComponentConfigurationBuilder<TComponent> RegisterComponentFilter(Type assignableComponentType, Action<ComponentFilterBuilder> builder)
+        {
+            typeof(TComponent).ValidateAssignableFrom(assignableComponentType);
+
+            ComponentFilterBuilder filter = _services.RegisterComponentFilter(assignableComponentType);
+            builder(filter);
+
+            return this;
+        }
+
+        public ComponentConfigurationBuilder<TComponent> RegisterComponentFilter<TAssignableComponent>(Action<ComponentFilterBuilder> builder)
+            where TAssignableComponent : class, TComponent
+        {
+            ComponentFilterBuilder filter = _services.RegisterComponentFilter<TAssignableComponent>();
+            builder(filter);
+
+            return this;
+        }
+
+        public ComponentConfigurationBuilder<TComponent> RegisterComponentFilter(Action<ComponentFilterBuilder> builder)
+        {
+            return this.RegisterComponentFilter<TComponent>(builder);
+        }
+        #endregion
+
+        #region RegisterComponentService Methods
+        /// <summary>
+        /// Register a new service for the component
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public ComponentConfigurationBuilder<TComponent> RegisterService(String name, Action<ServiceConfigurationBuilder<TComponent>> builder)
+        {
+            ServiceConfigurationBuilder<TComponent> service = _services.RegisterService<TComponent>(name);
+            service.SetLifetime(ServiceLifetime.Transient);
+            builder(service);
+
+            return this;
+        }
+        /// <summary>
+        /// Register a new service for the component.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public ComponentConfigurationBuilder<TComponent> RegisterService(Action<ServiceConfigurationBuilder<TComponent>> builder)
+        {
+            this.RegisterService(typeof(TComponent).FullName, builder);
+
+            return this;
+        }
+        #endregion
+
         #region Build Methods
-        public ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<String, UInt32, ServiceConfiguration> services)
+        public override ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<String, UInt32, ServiceConfiguration> services)
         {
             ServiceConfiguration componentServiceConfiguration = services[this.ComponentServiceName];
 

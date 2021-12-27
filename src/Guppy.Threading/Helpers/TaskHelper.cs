@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Guppy.Utilities.Threading
+namespace Guppy.Threading.Helpers
 {
     public static class TaskHelper
     {
@@ -24,13 +24,12 @@ namespace Guppy.Utilities.Threading
         {
             return Task.Run(async () =>
             {
-
                 try
                 {
                     DateTime start = DateTime.Now;
                     DateTime now = DateTime.Now;
                     DateTime last = default;
-                    GameTime gameTime = default;
+                    GameTime gameTime = new GameTime();
 
                     while (!token.IsCancellationRequested)
                     {
@@ -39,7 +38,8 @@ namespace Guppy.Utilities.Threading
                         last = now;
                         now = DateTime.Now;
 
-                        gameTime = new GameTime(now - start, now - last);
+                        gameTime.TotalGameTime = now - start;
+                        gameTime.ElapsedGameTime = now - last;
 
                         frame(gameTime);
                     }

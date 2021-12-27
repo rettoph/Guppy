@@ -1,4 +1,4 @@
-﻿using Guppy.Example.Library.Layerables;
+﻿using Guppy.Example.Library.Entities;
 using Guppy.Network;
 using Guppy.Network.Interfaces;
 using LiteNetLib.Utils;

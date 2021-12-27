@@ -166,52 +166,69 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
-        #region RegisterComponentService Methods
-        public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentService<TComponent>(String name)
-            where TComponent : class, IComponent
-        {
-            ComponentServiceConfigurationBuilder<TComponent> serviceConfigurationBuilder = new ComponentServiceConfigurationBuilder<TComponent>(name, this);
-            _serviceConfigurations.Add(serviceConfigurationBuilder);
+        //#region RegisterComponentService Methods
+        //public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentService<TComponent>(String name)
+        //    where TComponent : class, IComponent
+        //{
+        //    ComponentServiceConfigurationBuilder<TComponent> serviceConfigurationBuilder = new ComponentServiceConfigurationBuilder<TComponent>(name, this);
+        //    _serviceConfigurations.Add(serviceConfigurationBuilder);
+        //
+        //    return serviceConfigurationBuilder.SetLifetime(ServiceLifetime.Transient);
+        //}
+        //public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentService<TComponent>()
+        //    where TComponent : class, IComponent
+        //{
+        //    return this.RegisterComponentService<TComponent>(typeof(TComponent).FullName);
+        //}
+        //#endregion
 
-            return serviceConfigurationBuilder.SetLifetime(ServiceLifetime.Transient);
-        }
-        public ComponentServiceConfigurationBuilder<TComponent> RegisterComponentService<TComponent>()
-            where TComponent : class, IComponent
+        #region RegisterComponent Methods
+        public ComponentConfigurationBuilder<TComponent> RegisterComponent<TComponent>(String componentName)
+            where TComponent: class, IComponent
         {
-            return this.RegisterComponentService<TComponent>(typeof(TComponent).FullName);
-        }
-        #endregion
-
-        #region RegisterComponentConfiguration Methods
-        public ComponentConfigurationBuilder RegisterComponent(String componentName)
-        {
-            ComponentConfigurationBuilder componentConfiguration = new ComponentConfigurationBuilder(componentName);
+            ComponentConfigurationBuilder<TComponent> componentConfiguration = new ComponentConfigurationBuilder<TComponent>(componentName, this);
             _componentConfigurations.Add(componentConfiguration);
 
             return componentConfiguration;
         }
-
-        public ComponentConfigurationBuilder RegisterComponent<TComponent>()
+        public ComponentConfigurationBuilder<IComponent> RegisterComponent(String componentName)
         {
-            return this.RegisterComponent(typeof(TComponent).FullName);
+            return this.RegisterComponent<IComponent>(componentName);
+        }
+
+        public ComponentConfigurationBuilder<TComponent> RegisterComponent<TComponent>()
+            where TComponent : class, IComponent
+        {
+            return this.RegisterComponent<TComponent>(typeof(TComponent).FullName);
         }
         #endregion
 
         #region RegisterComponentTypeFilter Methods
         public ComponentFilterBuilder RegisterComponentFilter(Type assignableComponentType)
         {
+            typeof(IComponent).ValidateAssignableFrom(assignableComponentType);
+
             ComponentFilterBuilder componentFilter = new ComponentFilterBuilder(assignableComponentType);
             _componentFilters.Add(componentFilter);
 
             return componentFilter;
         }
 
-        public ComponentFilterBuilder RegisterComponentFilter<TAssignableComponentType>()
+        public ComponentFilterBuilder RegisterComponentFilter<TAssignableComponent>()
+            where TAssignableComponent : class, IComponent
         {
-            ComponentFilterBuilder componentFilter = new ComponentFilterBuilder(typeof(TAssignableComponentType));
+            ComponentFilterBuilder componentFilter = new ComponentFilterBuilder(typeof(TAssignableComponent));
             _componentFilters.Add(componentFilter);
 
             return componentFilter;
+        }
+        #endregion
+
+        #region RegisterEntity Methods
+        public EntityConfigurationBuilder<TEntity> RegisterEntity<TEntity>()
+            where TEntity : class, IEntity
+        {
+            return new EntityConfigurationBuilder<TEntity>(this);
         }
         #endregion
 

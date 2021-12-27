@@ -1,7 +1,7 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Example.Library.Components.Layerables;
-using Guppy.Example.Library.Layerables;
+using Guppy.Example.Library.Components.Entities;
+using Guppy.Example.Library.Entities;
 using Guppy.Example.Library.Messages;
 using Guppy.IO.Services;
 using Guppy.Network;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Example.Client.Components.Layerables
+namespace Guppy.Example.Client.Components.Entities
 {
     internal class PaddleCurrentUserComponent : Component<Paddle>
     {

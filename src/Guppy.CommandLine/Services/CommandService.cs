@@ -8,6 +8,7 @@ using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Help;
 using System.CommandLine.Parsing;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.CommandLine.Services
@@ -29,7 +30,7 @@ namespace Guppy.CommandLine.Services
                 Name = ">‎"
             };
 
-            foreach(Command command in commands.Values)
+            foreach(Command command in commands.Values.Where(command => command.Parents.Count == 0))
             {
                 _root.AddCommand(command);
             }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.Components;
 
 namespace Guppy.ServiceLoaders
 {
@@ -55,6 +56,16 @@ namespace Guppy.ServiceLoaders
                         factory.SetMethod(p => Activator.CreateInstance(primitiveBatchType, p.GetService<GraphicsDevice>()));
                     });
             });
+
+            services.RegisterComponent<GameDebugComponent>()
+                .SetAssignableEntityType<Game>()
+                .RegisterService(component =>
+                {
+                    component.RegisterTypeFactory(factory =>
+                    {
+                        factory.SetDefaultConstructor<GameDebugComponent>();
+                    });
+                });
         }
     }
 }

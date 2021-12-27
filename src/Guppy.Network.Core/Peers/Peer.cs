@@ -23,11 +23,11 @@ using Guppy.Network.Security.Structs;
 using Guppy.Threading.Utilities;
 using Guppy.EntityComponent;
 using System.Threading;
-using Guppy.Utilities.Threading;
 using System.CommandLine.Binding;
 using Guppy.Network.Messages.Commands;
 using Guppy.Threading.Interfaces;
 using log4net;
+using Guppy.Threading.Helpers;
 
 namespace Guppy.Network
 {

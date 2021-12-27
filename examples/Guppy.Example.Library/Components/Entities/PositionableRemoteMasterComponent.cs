@@ -1,7 +1,7 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.Enums;
 using Guppy.EntityComponent.Interfaces;
-using Guppy.Example.Library.Layerables;
+using Guppy.Example.Library.Entities;
 using Guppy.Example.Library.Messages;
 using Guppy.Network;
 using Guppy.Network.Attributes;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Example.Library.Components.Layerables
+namespace Guppy.Example.Library.Components.Entities
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]

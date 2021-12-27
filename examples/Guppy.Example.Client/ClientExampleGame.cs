@@ -9,6 +9,7 @@ using Guppy.Network.Security.Structs;
 using Guppy.Network.Security.Enums;
 using Guppy.Network;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Threading.Helpers;
 
 namespace Guppy.Example.Client
 {
@@ -30,9 +31,9 @@ namespace Guppy.Example.Client
             provider.Service(out _graphicsManager);
             provider.Service(out _window);
             provider.Service(out _client);
-
+            
             _window.AllowUserResizing = true;
-
+            
             _graphicsManager.PreferredBackBufferWidth = Guppy.Example.Library.Constants.WorldWidth;
             _graphicsManager.PreferredBackBufferHeight = Guppy.Example.Library.Constants.WorldHeight;
             _graphicsManager.ApplyChanges();

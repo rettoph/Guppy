@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Example.Library.Layerables
+namespace Guppy.Example.Library.Entities
 {
     /// <summary>
     /// A simple entity capeable of having a position.
@@ -24,6 +24,8 @@ namespace Guppy.Example.Library.Layerables
         #endregion
 
         #region Public Properties
+        public Boolean Awake { get; set; }
+
         public Vector2 Position
         {
             get => position;
@@ -47,6 +49,8 @@ namespace Guppy.Example.Library.Layerables
 
             var room = provider.GetService<RoomService>().GetById(0);
             this.Pipe = room.Pipes.GetById(Guid.Empty);
+
+            this.Awake = true;
         }
         #endregion
     }
