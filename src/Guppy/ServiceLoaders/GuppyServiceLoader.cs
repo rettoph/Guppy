@@ -16,16 +16,16 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<MessageQueue>()
-                .SetDefaultConstructor<MessageQueue>();
+            services.RegisterTypeFactory<MessageBus>()
+                .SetDefaultConstructor<MessageBus>();
 
-            services.RegisterService<MessageQueue>(Constants.ServiceNames.GameMessageQueue)
+            services.RegisterService<MessageBus>(Constants.ServiceNames.GameMessageBus)
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetFactoryType<MessageQueue>();
+                .SetFactoryType<MessageBus>();
 
-            services.RegisterService<MessageQueue>(Constants.ServiceNames.SceneMessagueQueue)
+            services.RegisterService<MessageBus>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetFactoryType<MessageQueue>();
+                .SetFactoryType<MessageBus>();
 
             services.RegisterService<IntervalInvoker>()
                 .SetLifetime(ServiceLifetime.Scoped)

@@ -16,7 +16,7 @@ namespace Guppy
     {
         #region Private Fields
         private ServiceProvider _provider;
-        private MessageQueue _messageQueue;
+        private MessageBus _messageBus;
         private IntervalInvoker _intervals;
         #endregion
 
@@ -31,7 +31,7 @@ namespace Guppy
             base.PreInitialize(provider);
 
             _provider = provider;
-            provider.Service(Constants.ServiceNames.SceneMessagueQueue,out _messageQueue);
+            provider.Service(out _messageBus);
             provider.Service(out _intervals);
 
             this.Layers = provider.GetService<LayerList>();
@@ -59,7 +59,7 @@ namespace Guppy
             base.Release();
 
             _provider = null;
-            _messageQueue = null;
+            _messageBus = null;
             this.Layerables.TryRelease();
             this.Layers.TryRelease();
         }
@@ -73,6 +73,13 @@ namespace Guppy
             this.Layers.TryDraw(gameTime);
         }
 
+        protected override void PreUpdate(GameTime gameTime)
+        {
+            base.PreUpdate(gameTime);
+
+            _messageBus.ProcessEnqueued();
+        }
+
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -80,13 +87,6 @@ namespace Guppy
             this.Layers.TryUpdate(gameTime);
 
             _intervals.Update(gameTime);
-        }
-
-        protected override void PostUpdate(GameTime gameTime)
-        {
-            base.PostUpdate(gameTime);
-
-            _messageQueue.ProcessEnqueued();
         }
         #endregion
     }

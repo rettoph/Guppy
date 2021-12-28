@@ -12,7 +12,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             TypeFactory typeFactory,
             ServiceLifetime lifetime, 
             string[] cacheNames,
-            CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] setups) : base(name, typeFactory, lifetime, cacheNames, setups)
+            CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] setups) : base(name, typeFactory, lifetime, cacheNames, setups)
         {
         }
 

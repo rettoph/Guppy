@@ -50,6 +50,7 @@ namespace Guppy.Network
         private CancellationTokenSource _cancelation;
         private Task _loop;
         private ILog _log;
+        private MessageBus _messageBus;
         #endregion
 
         #region Protected Properties
@@ -83,6 +84,7 @@ namespace Guppy.Network
 
             provider.Service(out _rooms);
             provider.Service(out _log);
+            provider.Service(Constants.ServiceNames.PeerMessageBus, out _messageBus);
 
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
@@ -113,7 +115,7 @@ namespace Guppy.Network
             base.Initialize(provider);
 
             _room = _rooms.GetById(RoomId);
-            _room.TryLinkScope(provider);
+            _room.TryBindToScope(provider, _messageBus);
         }
 
         protected override void PostRelease()
@@ -129,6 +131,7 @@ namespace Guppy.Network
         {
             base.Dispose();
 
+            _messageBus = default;
             _rooms = default;
             _log = default;
 
@@ -178,7 +181,8 @@ namespace Guppy.Network
         protected virtual void Update(GameTime gameTime)
         {
             this.manager.PollEvents();
-            this.room.TryUpdate(gameTime);
+
+            _messageBus.ProcessEnqueued();
         }
         #endregion
 
@@ -186,7 +190,7 @@ namespace Guppy.Network
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
             NetworkMessage message = this.network.ReadMessage(reader);
-            _rooms.EnqueueIncoming(message);
+            _rooms.ProcessIncomingMessage(message);
         }
         #endregion
 

@@ -18,7 +18,7 @@ namespace Guppy
     public abstract class Game : Asyncable
     {
         #region Private Fields
-        private MessageQueue _messageQueue;
+        private MessageBus _messageBus;
         private ServiceProvider _provider;
         #endregion
 
@@ -32,7 +32,7 @@ namespace Guppy
             base.Initialize(provider);
 
             _provider = provider;
-            provider.Service(Constants.ServiceNames.GameMessageQueue, out _messageQueue);
+            provider.Service(Constants.ServiceNames.GameMessageBus, out _messageBus);
 
             this.Scenes = provider.GetService<SceneList>();
         }
@@ -41,8 +41,8 @@ namespace Guppy
         {
             base.Release();
 
-            _messageQueue.TryRelease();
-            _messageQueue = null;
+            _messageBus.TryRelease();
+            _messageBus = null;
         }
 
         protected override void PostDispose()
@@ -73,7 +73,7 @@ namespace Guppy
         {
             base.PostUpdate(gameTime);
 
-            _messageQueue.ProcessEnqueued();
+            _messageBus.ProcessEnqueued();
         }
         #endregion
     }

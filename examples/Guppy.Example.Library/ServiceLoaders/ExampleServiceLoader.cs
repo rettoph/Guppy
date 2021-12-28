@@ -1,5 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.Extensions.log4net;
 using Guppy.IO.Extensions.log4net;
 using Guppy.Interfaces;
 using log4net;

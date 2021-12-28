@@ -1,9 +1,11 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Network.Configurations;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Security.EventArgs;
 using Guppy.Network.Security.Lists;
 using Guppy.Network.Services;
+using Guppy.Threading.Utilities;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
 using System;
@@ -20,8 +22,9 @@ namespace Guppy.Network
     {
         #region Private Fields
         private Boolean _isScopedLinked;
-        private NetworkMessageService _messages;
+        private MessageBus _messageBus;
         private Peer _peer;
+        private NetworkProvider _network;
         #endregion
 
         #region Public Properties
@@ -36,6 +39,7 @@ namespace Guppy.Network
             base.PreInitialize(provider);
 
             provider.Service(out _peer);
+            provider.Service(out _network);
 
             this.Users = provider.GetService<UserList>();
             this.Pipes = provider.GetService<PipeService>((pipes, _, _) => pipes.room = this);
@@ -49,8 +53,9 @@ namespace Guppy.Network
             base.PostRelease();
 
             _peer = default;
+            _network = default;
 
-            while(this.Users.Any())
+            while (this.Users.Any())
             {
                 this.Users.TryRemove(this.Users.First());
             }
@@ -59,7 +64,7 @@ namespace Guppy.Network
             this.Users.OnUserRemoved -= this.HandleUserRemoved;
             this.Users.TryRelease();
 
-            this.TryUnlinkScope();
+            this.TryUnbindToScope();
         }
         #endregion
 
@@ -67,32 +72,68 @@ namespace Guppy.Network
         /// <summary>
         /// Attempt to link the room to the current scope.
         /// If a scope is already linked, this will fail,
-        /// otherwise, the provider's MessageManager will
+        /// otherwise, the provider's scoped MessageBus will
         /// be utilized for incoming messages.
         /// </summary>
         /// <param name="provider"></param>
         /// <returns></returns>
-        public Boolean TryLinkScope(ServiceProvider provider)
+        public Boolean TryBindToScope(ServiceProvider provider)
+        {
+            return this.TryBindToScope(provider, provider.GetService<MessageBus>());
+        }
+
+        /// <summary>
+        /// Attempt to link the room to the current scope.
+        /// If a scope is already linked, this will fail,
+        /// otherwise, the given MessageBus will
+        /// be utilized for incoming messages.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="messageBus"></param>
+        /// <returns></returns>
+        public Boolean TryBindToScope(ServiceProvider provider, MessageBus messageBus)
         {
             if(_isScopedLinked)
             {
                 return false;
             }
 
-            provider.Service(out _messages);
+            _messageBus = messageBus;
+
+            // Determin which message configurations are valid within the current scope...
+            IEnumerable<NetworkMessageConfiguration> configurations = _network.MessageConfigurations.Where(mc => mc.Filter(provider, mc));
+
+            // Generate a lookup table of valid message configuration bus queues and their types...
+            Dictionary<MessageBus.Queue, Type[]> messageBusQueus = configurations.GroupBy(configuration => configuration.MessageBusQueue)
+                .ToDictionary(
+                    keySelector: g => g.Key,
+                    elementSelector: g => g.Select(configuration => configuration.Type).ToArray());
+
+
+            // Ensure that all required message bus queus have been registered...
+            foreach ((MessageBus.Queue queue, Type[] types) in messageBusQueus)
+            {
+                _messageBus.TryRegisterQueue(queue, types);
+            }
+
+            // Register all message processors into the bus
+            foreach (NetworkMessageConfiguration configuration in configurations)
+            {
+                configuration.TryRegisterProcessor(provider, _messageBus);
+            }
 
             _isScopedLinked = true;
             return true;
         }
 
-        public Boolean TryUnlinkScope()
+        public Boolean TryUnbindToScope()
         {
             if (!_isScopedLinked)
             {
                 return false;
             }
 
-            _messages = default;
+            _messageBus = default;
 
             _isScopedLinked = false;
             return true;
@@ -102,9 +143,9 @@ namespace Guppy.Network
         /// Process an incoming message
         /// </summary>
         /// <param name="message"></param>
-        public void EnqueueIncoming(NetworkMessage message)
+        public void TryEnqueueIncomingMessage(NetworkMessage message)
         {
-            _messages.Enqueue(message.Data);
+            _messageBus.TryEnqueue(message.Data);
         }
 
         /// <summary>
@@ -135,18 +176,6 @@ namespace Guppy.Network
             where TData : class, IData
         {
             _peer.SendMessage(this, data, this.Users.NetPeers);
-        }
-        #endregion
-
-        #region Frame Methods
-        /// <summary>
-        /// Update the internal room. This should be called manually, generally within
-        /// a scene.
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public void TryUpdate(GameTime gameTime)
-        {
-            _messages.ProcessEnqueued();
         }
         #endregion
 

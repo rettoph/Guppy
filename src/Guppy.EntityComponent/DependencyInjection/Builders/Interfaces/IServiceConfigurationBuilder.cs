@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.EntityComponent.DependencyInjection.Builders.Interfaces
 {
-    public interface IServiceConfigurationBuilder : IPrioritizable
+    public interface ServiceConfigurationBuilder : IPrioritizable
     {
         String Name { get; }
 
@@ -28,6 +28,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders.Interfaces
 
         ServiceConfiguration Build(
             Dictionary<Type, TypeFactory> typeFactories,
-            IEnumerable<CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>> allSetups);
+            IEnumerable<CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>> allSetups);
     }
 }

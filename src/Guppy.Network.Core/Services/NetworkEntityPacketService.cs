@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Utilities
 {
-    public sealed class NetworkEntityPacketService : MessageQueue<IPacket>
+    public sealed class NetworkEntityPacketService : MessageProcessor<IPacket>
     {
         private delegate IPacket PacketFactoryDelegate();
 

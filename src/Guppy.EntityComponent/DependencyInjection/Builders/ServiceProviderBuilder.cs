@@ -13,8 +13,8 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #region Private Fields
         private List<ITypeFactoryBuilder> _typeFactories;
         private List<ICustomActionBuilder<TypeFactory, ITypeFactoryBuilder>> _builders;
-        private List<ICustomActionBuilder<ServiceConfiguration, IServiceConfigurationBuilder>> _setups;
-        private List<IServiceConfigurationBuilder> _serviceConfigurations;
+        private List<ICustomActionBuilder<ServiceConfiguration, ServiceConfigurationBuilder>> _setups;
+        private List<ServiceConfigurationBuilder> _serviceConfigurations;
         private List<ComponentConfigurationBuilder> _componentConfigurations;
         private List<ComponentFilterBuilder> _componentFilters;
         #endregion
@@ -24,13 +24,13 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         {
             _typeFactories = new List<ITypeFactoryBuilder>();
             _builders = new List<ICustomActionBuilder<TypeFactory, ITypeFactoryBuilder>>();
-            _setups = new List<ICustomActionBuilder<ServiceConfiguration, IServiceConfigurationBuilder>>();
-            _serviceConfigurations = new List<IServiceConfigurationBuilder>();
+            _setups = new List<ICustomActionBuilder<ServiceConfiguration, ServiceConfigurationBuilder>>();
+            _serviceConfigurations = new List<ServiceConfigurationBuilder>();
             _componentConfigurations = new List<ComponentConfigurationBuilder>();
             _componentFilters = new List<ComponentFilterBuilder>();
 
             this.SetupIEntityConfiguration();
-            this.SetupIServiceConfiguration();
+            this.SetupServiceConfiguration();
         }
         #endregion
 
@@ -112,10 +112,10 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <param name="assignableFactoryType">All <see cref="TypeFactoryBuilder"/>s who's <see cref="TypeFactoryBuilder.Type"/>
         /// is <see cref="Type.IsAssignableFrom(Type)"/> will utilize the defined <see cref="IFactoryActionBuilder"/>.</param>
         /// <returns></returns>
-        public CustomActionBuilder<T, ServiceConfiguration, IServiceConfigurationBuilder> RegisterSetup<T>(Type assignableFactoryType)
+        public CustomActionBuilder<T, ServiceConfiguration, ServiceConfigurationBuilder> RegisterSetup<T>(Type assignableFactoryType)
             where T : class
         {
-            var setup = new CustomActionBuilder<T, ServiceConfiguration, IServiceConfigurationBuilder>(assignableFactoryType);
+            var setup = new CustomActionBuilder<T, ServiceConfiguration, ServiceConfigurationBuilder>(assignableFactoryType);
 
             _setups.Add(setup);
 
@@ -128,7 +128,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <typeparam name="TAssignableFactoryType">All <see cref="TypeFactoryBuilder"/>s who's <see cref="TypeFactoryBuilder.Type"/>
         /// is <see cref="Type.IsAssignableFrom(Type)"/> will utilize the defined <see cref="IFactoryActionBuilder"/>.</typeparam>
         /// <returns></returns>
-        public CustomActionBuilder<TAssignableFactoryType, ServiceConfiguration, IServiceConfigurationBuilder> RegisterSetup<TAssignableFactoryType>()
+        public CustomActionBuilder<TAssignableFactoryType, ServiceConfiguration, ServiceConfigurationBuilder> RegisterSetup<TAssignableFactoryType>()
             where TAssignableFactoryType : class
         {
             return this.RegisterSetup<TAssignableFactoryType>(typeof(TAssignableFactoryType));
@@ -140,7 +140,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <param name="assignableFactoryType">All <see cref="TypeFactoryBuilder"/>s who's <see cref="TypeFactoryBuilder.Type"/>
         /// is <see cref="Type.IsAssignableFrom(Type)"/> will utilize the defined <see cref="IFactoryActionBuilder"/>.</param>
         /// <returns></returns>
-        public CustomActionBuilder<Object, ServiceConfiguration, IServiceConfigurationBuilder> RegisterSetup(Type assignableFactoryType)
+        public CustomActionBuilder<Object, ServiceConfiguration, ServiceConfigurationBuilder> RegisterSetup(Type assignableFactoryType)
         {
             return this.RegisterSetup<Object>(assignableFactoryType);
         }
@@ -249,7 +249,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
             Dictionary<Type, TypeFactory> factories,
             out DoubleDictionary<String, UInt32, ServiceConfiguration> serviceConfigurations)
         {
-            List<CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>> allSetups = _setups.Order().Select(b => b.Build()).ToList();
+            List<CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>> allSetups = _setups.Order().Select(b => b.Build()).ToList();
 
             // Build all ServiceConfigurations...
             List<ServiceConfiguration> allServiceConfigurations = _serviceConfigurations.PrioritizeBy(s => s.Name)

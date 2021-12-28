@@ -63,7 +63,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
                 });
         }
 
-        private void SetupIServiceConfiguration()
+        private void SetupServiceConfiguration()
         {
             this.RegisterBuilder<IService>()
                 .SetOrder(Constants.Priorities.Create)
@@ -97,7 +97,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
 
         #region Helper Methods
-        private static bool SkipInitializationFilter(IServiceConfigurationBuilder configuration)
+        private static bool SkipInitializationFilter(ServiceConfigurationBuilder configuration)
         {
             Boolean CheckIsManualInitializationEnabled(Type type)
             {

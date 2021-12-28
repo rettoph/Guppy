@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Guppy.Extensions.log4net
+namespace log4net
 {
     public static class ILogExtensions
     {

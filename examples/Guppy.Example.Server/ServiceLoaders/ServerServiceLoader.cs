@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Text;
 using log4net;
 using log4net.Core;
-using Guppy.Extensions.log4net;
 using log4net.Appender;
 using Guppy.Example.Library.Scenes;
 using Guppy.Example.Server.Scenes;

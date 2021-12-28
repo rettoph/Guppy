@@ -22,7 +22,7 @@ namespace Guppy.Example.Library.Scenes
             base.Initialize(provider);
 
             this.Room = provider.GetService<RoomService>().GetById(0);
-            this.Room.TryLinkScope(provider);
+            this.Room.TryBindToScope(provider);
 
             this.Room.Users.OnUserAdded += this.HandleUserAdded;
             this.Room.Users.OnUserRemoved += this.HandleUserRemoved;
@@ -34,8 +34,6 @@ namespace Guppy.Example.Library.Scenes
         protected override void PreUpdate(GameTime gameTime)
         {
             base.PreUpdate(gameTime);
-
-            this.Room.TryUpdate(gameTime);
         }
         #endregion
 

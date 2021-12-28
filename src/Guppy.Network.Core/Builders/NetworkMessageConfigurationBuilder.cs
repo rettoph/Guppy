@@ -12,11 +12,16 @@ using System.Collections.Generic;
 using Guppy.Network.Enums;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Threading.Interfaces;
+using Guppy.Threading.Utilities;
 
 namespace Guppy.Network.Builders
 {
     public abstract class NetworkMessageConfigurationBuilder : IPrioritizable
     {
+        #region Static Fields
+        public static readonly MessageBus.Queue DefaultMessageBusQueue = new MessageBus.Queue("default-network-message-queue", 0);
+        #endregion
+
         #region Public Fields
         public readonly Type DataConfigurationType;
         #endregion
@@ -51,6 +56,7 @@ namespace Guppy.Network.Builders
         public Byte SequenceChannel { get; set; }
         public String ProcessorConfigurationName { get; set; }
         public Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter { get; set; }
+        public MessageBus.Queue MessageBusQueue { get; set; }
         #endregion
 
         #region Constructor
@@ -177,18 +183,29 @@ namespace Guppy.Network.Builders
         }
         #endregion
 
+        #region SetMessageBusQueue Methods
+        public TNetworkMessageConfigurationBuilder SetMessageBusQueue(MessageBus.Queue queue)
+        {
+            this.MessageBusQueue = queue;
+
+            return this as TNetworkMessageConfigurationBuilder;
+        }
+        #endregion
+
         #region Build Methods
         public override NetworkMessageConfiguration Build(
             DynamicId id,
             DoubleDictionary<UInt16, Type, DataConfiguration> dataTypeConfigurations)
         {
+            
             return new NetworkMessageConfiguration<TData>(
                 id,
                 dataTypeConfigurations[this.DataConfigurationType],
                 this.DeliveryMethod,
                 this.SequenceChannel,
                 this.ProcessorConfigurationName,
-                this.Filter ?? DefaultFilter);
+                this.Filter ?? DefaultFilter,
+                this.MessageBusQueue ?? DefaultMessageBusQueue);
         }
 
         private static Boolean DefaultFilter(ServiceProvider providert, NetworkMessageConfiguration configuration)

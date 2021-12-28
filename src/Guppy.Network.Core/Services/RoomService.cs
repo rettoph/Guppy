@@ -31,9 +31,9 @@ namespace Guppy.Network.Services
         /// Process an incoming message
         /// </summary>
         /// <param name="message"></param>
-        public void EnqueueIncoming(NetworkMessage message)
+        public void ProcessIncomingMessage(NetworkMessage message)
         {
-            this.GetById(message.RoomId).EnqueueIncoming(message);
+            this.GetById(message.RoomId).TryEnqueueIncomingMessage(message);
         }
 
         /// <summary>

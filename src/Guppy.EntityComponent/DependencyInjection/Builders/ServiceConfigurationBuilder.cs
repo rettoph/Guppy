@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Guppy.EntityComponent.DependencyInjection.Builders
 {
-    public class ServiceConfigurationBuilder<TService, TServiceConfigurationBuilder> : IServiceConfigurationBuilder, IFluentPrioritizable<TServiceConfigurationBuilder>
+    public class ServiceConfigurationBuilder<TService, TServiceConfigurationBuilder> : ServiceConfigurationBuilder, IFluentPrioritizable<TServiceConfigurationBuilder>
         where TService : class
         where TServiceConfigurationBuilder : ServiceConfigurationBuilder<TService, TServiceConfigurationBuilder>
     {
@@ -244,15 +244,15 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #endregion
 
         #region TypeFactoryBuilder Implementation
-        ServiceConfiguration IServiceConfigurationBuilder.Build(
+        ServiceConfiguration ServiceConfigurationBuilder.Build(
             Dictionary<Type, TypeFactory> typeFactories,
-            IEnumerable<CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>> allSetups)
+            IEnumerable<CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>> allSetups)
         {
 
             Type factoryType = this.FactoryType ?? typeof(TService);
             TypeFactory typeFactory = typeFactories[factoryType];
             String[] cacheNames = this.CacheNames.Concat(this.Name).Distinct().ToArray();
-            CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] setups = allSetups.Where(b => {
+            CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] setups = allSetups.Where(b => {
                 return typeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(b.AssignableFactoryType) && b.Filter(this);
             }).ToArray();
 

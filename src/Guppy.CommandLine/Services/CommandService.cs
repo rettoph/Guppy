@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Guppy.CommandLine.Services
 {
-    public class CommandService : MessageQueue<ICommandData>
+    public class CommandService : MessageProcessor<ICommandData>
     {
         #region Private Fields
         private RootCommand _root;

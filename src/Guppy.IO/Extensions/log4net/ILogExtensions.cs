@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.Extensions.log4net;
 using Guppy.EntityComponent.DependencyInjection;
 
 namespace Guppy.IO.Extensions.log4net

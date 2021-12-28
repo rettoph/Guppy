@@ -100,7 +100,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             this.GetInstance(provider, out TFactory item);
             instance = item;
 
-            foreach (CustomAction<ServiceConfiguration, IServiceConfigurationBuilder> setup in configuration.Setups)
+            foreach (CustomAction<ServiceConfiguration, ServiceConfigurationBuilder> setup in configuration.Setups)
             {
                 setup.Invoke(item, provider, configuration);
             }
@@ -118,7 +118,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             instance = item;
 
             Boolean ranCustomSetup = false;
-            foreach (CustomAction<ServiceConfiguration, IServiceConfigurationBuilder> setup in configuration.Setups)
+            foreach (CustomAction<ServiceConfiguration, ServiceConfigurationBuilder> setup in configuration.Setups)
             {
                 if (!ranCustomSetup && setup.Order >= customSetupOrder)
                 {

@@ -36,6 +36,10 @@ namespace Guppy.Network.ServiceLoaders
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             #region Register Services
+            services.RegisterService<MessageBus>(Constants.ServiceNames.PeerMessageBus)
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetFactoryType<MessageBus>();
+
             services.RegisterService<RoomService>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .RegisterTypeFactory(factory =>
@@ -61,20 +65,6 @@ namespace Guppy.Network.ServiceLoaders
                             factory.SetDefaultConstructor<RoomRemoteMasterComponent>();
                         });
                     });
-                });
-
-            services.RegisterService<MessageQueue<IData>>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<MessageQueue<IData>>();
-                });
-
-            services.RegisterService<NetworkMessageService>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<NetworkMessageService>();
                 });
 
             services.RegisterService<ClientPeer>()

@@ -39,7 +39,7 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// <summary>
         /// An array of actions to preform when building a new instace
         /// </summary>
-        public readonly CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] Setups;
+        public readonly CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] Setups;
         #endregion
 
         #region Constructors
@@ -48,7 +48,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             TypeFactory typeFactory,
             ServiceLifetime lifetime,
             String[] cacheNames,
-            CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] setups)
+            CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] setups)
         {
             this.Id = name.xxHash();
             this.Name = name;
