@@ -75,23 +75,18 @@ namespace Guppy.Network.ServiceLoaders
 
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
-            network.RegisterDataType<CreateNetworkEntityMessage>()
-                .SetReader(CreateNetworkEntityMessage.Read)
-                .SetWriter(CreateNetworkEntityMessage.Write)
-                .RegisterNetworkMessage(message =>
+            network.RegisterNetworkEntityMessage<CreateNetworkEntityMessage>()
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
+                .SetSequenceChannel(0)
+                .SetFilter(CreateNetworkEntityMessage.Filter)
+                .RegisterProcessorConfiguration<CreateNetworkEntityMessageProcessor>(service =>
                 {
-                    message.SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
-                        .SetSequenceChannel(0)
-                        .SetFilter(CreateNetworkEntityMessage.Filter)
-                        .RegisterProcessorConfiguration<CreateNetworkEntityMessageProcessor>(service =>
+                    service.SetLifetime(ServiceLifetime.Scoped)
+                        .RegisterTypeFactory(factory =>
                         {
-                            service.SetLifetime(ServiceLifetime.Scoped)
-                                .RegisterTypeFactory(factory =>
-                                {
-                                    factory.SetDefaultConstructor<CreateNetworkEntityMessageProcessor>();
-                                });
+                            factory.SetDefaultConstructor<CreateNetworkEntityMessageProcessor>();
                         });
-                });  
+                }); 
         }
     }
 }

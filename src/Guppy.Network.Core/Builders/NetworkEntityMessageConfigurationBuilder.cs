@@ -20,11 +20,9 @@ namespace Guppy.Network.Builders
     {
         private NetworkProviderBuilder _network;
 
-        public NetworkEntityMessageConfigurationBuilder(NetworkProviderBuilder network, ServiceProviderBuilder services) : base(services)
+        public NetworkEntityMessageConfigurationBuilder(NetworkProviderBuilder network, ServiceProviderBuilder services) : base(network, services)
         {
-            _network = network;
-
-            _network.RegisterDataType<TNetworkEntityMessage>()
+            this.network.RegisterDataType<TNetworkEntityMessage>()
                 .SetPriority(-1)
                 .SetReader(NetworkEntityMessageSerializer<TNetworkEntityMessage>.GetReader())
                 .SetWriter(NetworkEntityMessageSerializer<TNetworkEntityMessage>.GetWriter());

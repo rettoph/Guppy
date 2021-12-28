@@ -55,7 +55,10 @@ namespace Guppy.Network.Components.Pipes
                 // Broadcast a create message for every entity within the pipe...
                 foreach (INetworkEntity entity in this.Entity.NetworkEntities)
                 {
-                    entity.SendMessage<CreateNetworkEntityMessage>(args.User.NetPeer, message => message.ServiceConfigurationId = entity.ServiceConfiguration.Id);
+                    entity.SendMessage(new CreateNetworkEntityMessage()
+                    {
+                        ServiceConfigurationId = entity.ServiceConfiguration.Id
+                    }, args.User.NetPeer);
                 }
             }
         }
@@ -67,7 +70,10 @@ namespace Guppy.Network.Components.Pipes
                 if(args.Entity.Status == ServiceStatus.Ready)
                 {
                     // Broadcast a create message to all users.
-                    args.Entity.SendMessage<CreateNetworkEntityMessage>(message => message.ServiceConfigurationId = args.Entity.ServiceConfiguration.Id);
+                    args.Entity.SendMessage(new CreateNetworkEntityMessage()
+                    {
+                        ServiceConfigurationId = args.Entity.ServiceConfiguration.Id
+                    });
                 }
                 else
                 {
@@ -82,7 +88,10 @@ namespace Guppy.Network.Components.Pipes
             if(value == ServiceStatus.Ready && sender is INetworkEntity entity)
             {
                 entity.OnStatusChanged -= this.HandleNetworkEntityWithFirstPipeReady;
-                entity.SendMessage<CreateNetworkEntityMessage>(message => message.ServiceConfigurationId = entity.ServiceConfiguration.Id);
+                entity.SendMessage(new CreateNetworkEntityMessage()
+                {
+                    ServiceConfigurationId = entity.ServiceConfiguration.Id
+                });
             }
         }
         #endregion

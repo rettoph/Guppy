@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Interfaces;
 using Guppy.Threading.Interfaces;
+using LiteNetLib.Utils;
 using Minnow.General;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,26 @@ namespace Guppy.Network.Messages
 {
     public abstract class NetworkEntityMessage : IData
     {
-        public UInt16 NetworkId { get; internal init; }
+        public UInt16 NetworkId { get; internal set; }
         public List<IPacket> Packets { get; } = new List<IPacket>();
+
+        protected internal virtual void Read(NetDataReader im, NetworkProvider network)
+        {
+            this.NetworkId = im.GetUShort();
+
+            im.GetPackets(network, this);
+        }
+
+        protected internal virtual void Write(NetDataWriter om, NetworkProvider network)
+        {
+            om.Put(this.NetworkId);
+
+            om.PutPackets(network, this);
+        }
     }
 
     public abstract class NetworkEntityMessage<TNetworkEntityMessage> : NetworkEntityMessage
-        where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>, new()
+        where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
     {
 
     }

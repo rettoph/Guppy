@@ -31,7 +31,7 @@ namespace LiteNetLib.Utils
         }
 
         internal static void GetPackets<TNetworkEntityMessage>(this NetDataReader reader, NetworkProvider network, TNetworkEntityMessage message)
-            where TNetworkEntityMessage : NetworkEntityMessage, new()
+            where TNetworkEntityMessage : NetworkEntityMessage
         {
             Int32 packetCount = reader.GetInt();
             for (Int32 i = 0; i < packetCount; i++)

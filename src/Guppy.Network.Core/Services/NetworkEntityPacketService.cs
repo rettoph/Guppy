@@ -38,7 +38,7 @@ namespace Guppy.Network.Utilities
         #region Helper Methods
         public void RegisterPacket<TPacket, TNetworkEntityMessage>(IMessageFactory<TPacket> factory)
             where TPacket : class, IPacket
-            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>, new()
+            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             if(_packetFactories.ContainsKey(typeof(TNetworkEntityMessage)))
             {
@@ -50,7 +50,7 @@ namespace Guppy.Network.Utilities
         }
         public void DeregisterPacket<TPacket, TNetworkEntityMessage>(IMessageFactory<TPacket> factory)
             where TPacket : class, IPacket
-            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>, new()
+            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             _packetFactories[typeof(TNetworkEntityMessage)] -= factory.Create;
         }
@@ -62,7 +62,7 @@ namespace Guppy.Network.Utilities
         /// <typeparam name="TNetworkEntityMessage"></typeparam>
         /// <returns></returns>
         public IEnumerable<IPacket> GetAll<TNetworkEntityMessage>()
-            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>, new()
+            where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             if(_packetFactories.TryGetValue(typeof(TNetworkEntityMessage), out PacketFactoryDelegate factories))
             {

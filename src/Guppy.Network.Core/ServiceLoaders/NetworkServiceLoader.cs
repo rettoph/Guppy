@@ -138,43 +138,45 @@ namespace Guppy.Network.ServiceLoaders
 
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
-            network.RegisterDataType<ConnectionRequestMessage>()
-                .SetReader(ConnectionRequestMessage.Read)
-                .SetWriter(ConnectionRequestMessage.Write)
-                .RegisterNetworkMessage(message =>
+            // This message is never sent traditionally
+            // So theres no need to build a processor for it
+            network.RegisterNetworkMessage<ConnectionRequestMessage>()
+                .SetFilter((_, _) => false)
+                .RegisterDataType(dataType =>
                 {
-                    // This message is never sent traditionally
-                    // So theres no need to build a processor for it
-                    message.SetFilter((_, _) => false);
+                    dataType
+                        .SetReader(ConnectionRequestMessage.Read)
+                        .SetWriter(ConnectionRequestMessage.Write);
                 });
 
-            network.RegisterDataType<ConnectionRequestResponseMessage>()
-                .SetReader(ConnectionRequestResponseMessage.Read)
-                .SetWriter(ConnectionRequestResponseMessage.Write)
-                .RegisterNetworkMessage(message =>
+            network.RegisterNetworkMessage<ConnectionRequestResponseMessage>()
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
+                .SetSequenceChannel(0)
+                .SetPeerFilter<ClientPeer>()
+                .RegisterProcessorConfiguration<ConnectionRequestResponseMessageProcessor>(processor =>
                 {
-                    message.SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
-                        .SetSequenceChannel(0)
-                        .SetPeerFilter<ClientPeer>()
-                        .RegisterProcessorConfiguration<ConnectionRequestResponseMessageProcessor>(processor =>
+                    processor.SetLifetime(ServiceLifetime.Singleton)
+                        .RegisterTypeFactory(factory =>
                         {
-                            processor.SetLifetime(ServiceLifetime.Singleton)
-                                .RegisterTypeFactory(factory =>
-                                {
-                                    factory.SetDefaultConstructor<ConnectionRequestResponseMessageProcessor>();
-                                });
+                            factory.SetDefaultConstructor<ConnectionRequestResponseMessageProcessor>();
                         });
+                })
+                .RegisterDataType(dataType =>
+                {
+                    dataType
+                        .SetReader(ConnectionRequestResponseMessage.Read)
+                        .SetWriter(ConnectionRequestResponseMessage.Write);
                 });
 
-            network.RegisterDataType<UserRoomActionMessage>()
-                .SetReader(UserRoomActionMessage.Read)
-                .SetWriter(UserRoomActionMessage.Write)
-                .RegisterNetworkMessage(message =>
+            network.RegisterNetworkMessage<UserRoomActionMessage>()
+                .SetSequenceChannel(0)
+                .SetPeerFilter<ClientPeer>()
+                .SetProcessorConfiguration<ClientPeer>()
+                .RegisterDataType(dataType =>
                 {
-                    message.SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
-                        .SetSequenceChannel(0)
-                        .SetPeerFilter<ClientPeer>()
-                        .SetProcessorConfiguration<ClientPeer>();
+                    dataType
+                        .SetReader(UserRoomActionMessage.Read)
+                        .SetWriter(UserRoomActionMessage.Write);
                 });
         }
     }

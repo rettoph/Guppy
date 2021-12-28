@@ -15,28 +15,18 @@ namespace Guppy.Network.Messages
         public UInt32 ServiceConfigurationId { get; internal set; }
 
         #region Read/Write/Filter Methods
-        internal static CreateNetworkEntityMessage Read(NetDataReader reader, NetworkProvider network)
+        protected internal override void Read(NetDataReader im, NetworkProvider network)
         {
-            UInt16 networkId = reader.GetUShort();
-            UInt32 serviceConfigurationId = reader.GetUInt();
+            base.Read(im, network);
 
-            CreateNetworkEntityMessage message = new CreateNetworkEntityMessage()
-            {
-                NetworkId = networkId,
-                ServiceConfigurationId = serviceConfigurationId
-            };
-
-            reader.GetPackets(network, message);
-
-            return message;
+            this.ServiceConfigurationId = im.GetUInt();
         }
 
-        internal static void Write(NetDataWriter writer, NetworkProvider network, CreateNetworkEntityMessage message)
+        protected internal override void Write(NetDataWriter om, NetworkProvider network)
         {
-            writer.Put(message.NetworkId);
-            writer.Put(message.ServiceConfigurationId);
+            base.Write(om, network);
 
-            writer.PutPackets(network, message);
+            om.Put(this.ServiceConfigurationId);
         }
 
         /// <summary>

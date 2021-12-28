@@ -81,16 +81,6 @@ namespace Guppy.Network.Builders
         }
         #endregion
 
-        #region RegisterMessage Methods
-        public DataConfigurationBuilder<TData> RegisterNetworkMessage(Action<NetworkMessageConfigurationBuilder<TData>> builder)
-        {
-            NetworkMessageConfigurationBuilder<TData> message = this.network.RegisterNetworkMessage<TData>();
-            builder(message);
-
-            return this;
-        }
-        #endregion
-
         #region DataConfigurationBuilder Implmenetation
         public override DataConfiguration Build(DynamicId id)
         {

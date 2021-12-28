@@ -51,7 +51,7 @@ namespace Guppy.Network.Builders
         public NetworkMessageConfigurationBuilder<TData> RegisterNetworkMessage<TData>()
             where TData : class, IData
         {
-            NetworkMessageConfigurationBuilder<TData> message = new NetworkMessageConfigurationBuilder<TData>(_services);
+            NetworkMessageConfigurationBuilder<TData> message = new NetworkMessageConfigurationBuilder<TData>(this, _services);
             _messages.Add(message);
 
             return message;
