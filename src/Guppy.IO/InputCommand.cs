@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.IO.Structs;
+using Guppy.CommandLine.Interfaces;
 
 namespace Guppy.IO
 {
@@ -25,15 +26,10 @@ namespace Guppy.IO
     /// </summary>
     public class InputCommand : Service
     {
-        #region Static Properties
-        public static String StateShortcode { get; private set; } = "[state]";
-        #endregion
-
         #region Private Fields
         private CommandService _commands;
         private InputButtonService _inputs;
         private InputButtonManager _inputManager;
-        private ThreadQueue _threadQueue;
         #endregion
 
         #region Public Properties
@@ -51,7 +47,7 @@ namespace Guppy.IO
         /// <summary>
         /// An dictionary of button states and the command to run
         /// </summary>
-        public IReadOnlyDictionary<ButtonState, String> Commands { get; private set; }
+        public IReadOnlyDictionary<ButtonState, ICommandData> Commands { get; private set; }
 
         /// <summary>
         /// The owning <see cref="InputCommandService"/>. This will
@@ -81,7 +77,6 @@ namespace Guppy.IO
 
             provider.Service(out _commands);
             provider.Service(out _inputs);
-            provider.Service(Constants.ServiceNames.GameUpdateThreadQueue, out _threadQueue);
         }
 
         protected override void Initialize(ServiceProvider provider)
@@ -97,7 +92,6 @@ namespace Guppy.IO
 
             _commands = null;
             _inputs = null;
-            _threadQueue = null;
 
             this.ConfigureInput(null);
         }
@@ -148,7 +142,7 @@ namespace Guppy.IO
             if (this.Lockable && this.InputCommandService.Locked)
                 return;
 
-            _threadQueue.Enqueue(gt => _commands.Invoke(this.Commands[args.State]));
+            _commands.Process(this.Commands[args.State]);
         }
         #endregion
     }

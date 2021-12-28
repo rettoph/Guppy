@@ -13,7 +13,8 @@ namespace Guppy
         {
             public static readonly String TransientSpritebatch = "service:spritebatch:transient";
             public static readonly String TransientCamera = "service:camera:transient";
-            public static readonly String GameUpdateThreadQueue = "thread-queue:game";
+            public static readonly String GameMessageQueue = "message-queue:game";
+            public static readonly String SceneMessagueQueue = "message-queue:scene";
         }
 
         public static class Content

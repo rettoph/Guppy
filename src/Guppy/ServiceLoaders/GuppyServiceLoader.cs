@@ -7,7 +7,6 @@ using Guppy.Services;
 using Guppy.Utilities;
 using Guppy.Threading.Utilities;
 using Guppy.EntityComponent.DependencyInjection;
-using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.ServiceLoaders
@@ -17,16 +16,16 @@ namespace Guppy.ServiceLoaders
     {
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
-            services.RegisterTypeFactory<ThreadQueue>()
-                .SetDefaultConstructor<ThreadQueue>();
+            services.RegisterTypeFactory<MessageQueue>()
+                .SetDefaultConstructor<MessageQueue>();
 
-            services.RegisterService<ThreadQueue>(Constants.ServiceNames.GameUpdateThreadQueue)
+            services.RegisterService<MessageQueue>(Constants.ServiceNames.GameMessageQueue)
                 .SetLifetime(ServiceLifetime.Singleton)
-                .SetFactoryType<ThreadQueue>();
+                .SetFactoryType<MessageQueue>();
 
-            services.RegisterService<ThreadQueue>()
+            services.RegisterService<MessageQueue>(Constants.ServiceNames.SceneMessagueQueue)
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetFactoryType<ThreadQueue>();
+                .SetFactoryType<MessageQueue>();
 
             services.RegisterService<IntervalInvoker>()
                 .SetLifetime(ServiceLifetime.Scoped)

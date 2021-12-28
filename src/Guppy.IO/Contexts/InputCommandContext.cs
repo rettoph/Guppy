@@ -1,4 +1,5 @@
-﻿using Guppy.IO.EventArgs;
+﻿using Guppy.CommandLine.Interfaces;
+using Guppy.IO.EventArgs;
 using Guppy.IO.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -23,7 +24,7 @@ namespace Guppy.IO.Contexts
         /// <summary>
         /// An array of button states and their command to run
         /// </summary>
-        public (ButtonState state, String command)[] Commands { get; set; }
+        public (ButtonState state, ICommandData command)[] Commands { get; set; }
 
         /// <summary>
         /// When true, then the command input will 
