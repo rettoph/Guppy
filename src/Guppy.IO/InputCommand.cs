@@ -98,17 +98,19 @@ namespace Guppy.IO
         #endregion
 
         #region Helper Methods
-        internal void SetContext(InputCommandContext context)
+        internal void SetContext(
+            String handle, 
+            InputButton input, 
+            Dictionary<ButtonState, ICommandData> commands,
+            Boolean lockable)
         {
             if (this.Status >= ServiceStatus.Initializing)
                 throw new Exception("Unable to set context after initialization has begin");
 
-            this.Handle = context.Handle;
-            this.Input = context.DefaultInput;
-            this.Commands = context.Commands.ToDictionary(
-                keySelector: bsc => bsc.state,
-                elementSelector: bsc => bsc.command);
-            this.Lockable = context.Lockable;
+            this.Handle = handle;
+            this.Input = input;
+            this.Commands = commands;
+            this.Lockable = lockable;
         }
 
         /// <summary>

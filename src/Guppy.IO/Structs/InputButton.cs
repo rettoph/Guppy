@@ -27,11 +27,11 @@ namespace Guppy.IO.Structs
             this.KeyboardKey = keyboardKey;
         }
 
-        public InputButton(MouseButton cursorButton)
+        public InputButton(MouseButton mouseButton)
         {
             this.Type = InputButtonType.MouseButton;
             this.KeyboardKey = default(Keys);
-            this.MouseButton = cursorButton;
+            this.MouseButton = mouseButton;
         }
 
         #region ToString Methods

@@ -1,10 +1,9 @@
 ﻿using Guppy.Attributes;
-using Guppy.CommandLine.Builders;
-using Guppy.CommandLine.Interfaces;
-using Guppy.CommandLine.Services;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
+using Guppy.IO.Builders;
+using Guppy.IO.Services;
 using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
@@ -12,33 +11,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.CommandLine.GuppyInitializers
+namespace Guppy.IO.GuppyInitializers
 {
     [AutoLoad]
-    internal sealed class CommandGuppyInitializer : IGuppyInitializer
+    internal sealed class InputCommandGuppyInitializer : IGuppyInitializer
     {
         public void PreInitialize(AssemblyHelper assemblies, ServiceProviderBuilder services, IEnumerable<IGuppyLoader> loaders)
         {
-            CommandServiceBuilder builder = new CommandServiceBuilder();
-
-            foreach (Type commandDefinitionType in assemblies.Types.GetTypesWithAutoLoadAttribute<CommandDefinition>())
-            {
-                builder.ImportCommandDefinition(commandDefinitionType);
-            }
+            InputCommandServiceBuilder builder = new InputCommandServiceBuilder();
 
             foreach (IGuppyLoader loader in loaders)
             {
-                if(loader is ICommandLoader commandLoader)
+                if (loader is IInputCommandLoader inputCommandLoader)
                 {
-                    commandLoader.RegisterCommands(builder);
+                    inputCommandLoader.RegisterInputCommands(builder);
                 }
             }
 
-            services.RegisterService<CommandService>()
+            services.RegisterService<InputCommandService>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .RegisterTypeFactory(factory =>
                 {
-                    factory.SetMethod(p => builder.Build());
+                    factory.SetMethod(p => builder.Build(p));
+                });
+
+            services.RegisterService<InputCommand>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<InputCommand>();
                 });
         }
 

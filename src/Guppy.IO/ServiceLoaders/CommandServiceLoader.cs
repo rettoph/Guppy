@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.CommandLine.Builders;
 using Guppy.CommandLine.Interfaces;
+using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,6 +4,7 @@ using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.EntityComponent.Interfaces;
 using Guppy.Interfaces;
+using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;

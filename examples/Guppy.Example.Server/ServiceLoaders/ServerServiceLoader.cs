@@ -12,6 +12,7 @@ using Guppy.Example.Library.Scenes;
 using Guppy.Example.Server.Scenes;
 using Minnow.General.Interfaces;
 using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.Example.Server.ServiceLoaders
 {

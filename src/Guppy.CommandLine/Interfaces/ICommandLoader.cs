@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.CommandLine.Interfaces
+namespace Guppy.ServiceLoaders
 {
     public interface ICommandLoader : IGuppyLoader
     {

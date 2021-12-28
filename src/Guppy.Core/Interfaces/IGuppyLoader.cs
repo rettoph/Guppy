@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guppy.Interfaces
+namespace Guppy.ServiceLoaders
 {
     public interface IGuppyLoader
     {

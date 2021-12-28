@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Interfaces
+namespace Guppy.ServiceLoaders
 {
     public interface IServiceLoader : IGuppyLoader
     {

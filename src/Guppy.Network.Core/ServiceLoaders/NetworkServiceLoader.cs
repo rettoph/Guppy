@@ -26,6 +26,7 @@ using System.Reflection;
 using Guppy.Network.Components.Rooms;
 using Guppy.Network.Utilities;
 using Guppy.Network.Components.NetworkEntities;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.Network.ServiceLoaders
 {

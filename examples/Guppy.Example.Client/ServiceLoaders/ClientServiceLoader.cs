@@ -23,6 +23,7 @@ using Guppy.Example.Library.Scenes;
 using Guppy.Example.Client.Scenes;
 using Guppy.Example.Client.Components.Entities;
 using Guppy.Example.Library.Entities;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.Example.Client.ServiceLoaders
 {

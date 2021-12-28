@@ -14,6 +14,7 @@ using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Example.Library.Entities;
 using Guppy.Example.Library.Components.Entities;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.Example.Library.ServiceLoaders
 {

@@ -10,6 +10,7 @@ using System.CommandLine.IO;
 using System.Text;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using System.CommandLine.Binding;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.CommandLine.ServiceLoaders
 {

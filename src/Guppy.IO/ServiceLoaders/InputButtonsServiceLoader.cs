@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Guppy.EntityComponent.DependencyInjection.Builders;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.IO.ServiceLoaders
 {
@@ -41,21 +42,6 @@ namespace Guppy.IO.ServiceLoaders
                 {
                     factory.SetDefaultConstructor<KeyboardService>();
                 });
-
-            services.RegisterService<InputCommandService>()
-                .SetLifetime(ServiceLifetime.Singleton)
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<InputCommandService>();
-                });
-
-            services.RegisterService<InputCommand>()
-                .SetLifetime(ServiceLifetime.Transient)
-                .RegisterTypeFactory(factory =>
-                {
-                    factory.SetDefaultConstructor<InputCommand>();
-                });
-
         }
     }
 }

@@ -29,6 +29,18 @@ namespace Guppy.IO.Services
         public Boolean Locked { get; set; }
         #endregion
 
+        #region Constructor
+        internal InputCommandService(Dictionary<String, InputCommand> inputCommands)
+        {
+            _inputCommands = inputCommands;
+
+            foreach(InputCommand inputCommand in _inputCommands.Values)
+            {
+                inputCommand.InputCommandService = this;
+            }
+        }
+        #endregion
+
         #region Lifecycle Methods
         protected override void Create(ServiceProvider provider)
         {
@@ -51,26 +63,6 @@ namespace Guppy.IO.Services
             _provider = null;
             _inputCommands.ForEach(ic => ic.Value.TryRelease());
             _inputCommands.Clear();
-        }
-        #endregion
-
-        #region Helper Methods
-        public InputCommand Add(InputCommandContext context)
-        {
-            // Validate the context...
-            if (_inputCommands.ContainsKey(context.Handle))
-                throw new DuplicateNameException($"Duplicate InputCommand handle detected '{context.Handle}'. Please use a unique identifier.");
-
-            // Create a new InputCommand instance...
-            var inputCommand = _provider.GetService<InputCommand>((i, s, c) =>
-            {
-                i.SetContext(context);
-                i.InputCommandService = this;
-            });
-
-            _inputCommands.Add(inputCommand.Handle, inputCommand);
-
-            return inputCommand;
         }
         #endregion
     }

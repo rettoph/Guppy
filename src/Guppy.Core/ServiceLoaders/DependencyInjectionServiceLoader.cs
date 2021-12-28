@@ -8,6 +8,7 @@ using Guppy.EntityComponent.Interfaces;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
 using Guppy.Attributes;
+using Guppy.ServiceLoaders;
 
 namespace Guppy.EntityComponent.ServiceLoaders
 {

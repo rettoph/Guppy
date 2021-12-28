@@ -1,6 +1,7 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Threading.Interfaces;
+using log4net;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -63,6 +64,7 @@ namespace Guppy.Threading.Utilities
         #endregion
 
         #region Private Fields
+        private ILog _log;
         private Queue<TMessage> _queue;
         private Dictionary<Type, IMessageProcessorContainer> _processors;
         #endregion
@@ -71,6 +73,8 @@ namespace Guppy.Threading.Utilities
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
+
+            provider.Service(out _log);
 
             _queue = new Queue<TMessage>();
             _processors = new Dictionary<Type, IMessageProcessorContainer>();
@@ -132,7 +136,7 @@ namespace Guppy.Threading.Utilities
             }
             else
             {
-                throw new KeyNotFoundException($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved:'{message.GetType().GetPrettyName()}'.");
+                _log.Warn($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved:'{message.GetType().GetPrettyName()}'.");
             }
         }
 

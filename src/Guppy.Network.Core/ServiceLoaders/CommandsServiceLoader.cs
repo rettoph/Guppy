@@ -4,6 +4,7 @@ using Guppy.CommandLine.Interfaces;
 using Guppy.CommandLine.Services;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
+using Guppy.ServiceLoaders;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
