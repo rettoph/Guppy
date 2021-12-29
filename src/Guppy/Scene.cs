@@ -9,10 +9,12 @@ using Guppy.Interfaces;
 using Guppy.Threading.Utilities;
 using System.Threading;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Threading.Interfaces;
+using Guppy.Messages;
 
 namespace Guppy
 {
-    public abstract class Scene : Frameable, IScene
+    public abstract class Scene : Frameable, IScene, IMessageProcessor<ReleaseServiceMessage>
     {
         #region Private Fields
         private ServiceProvider _provider;
@@ -36,6 +38,15 @@ namespace Guppy
 
             this.Layers = provider.GetService<LayerList>();
             this.Layerables = provider.GetService<LayerableList>();
+        }
+
+        protected override void Initialize(ServiceProvider provider)
+        {
+            base.Initialize(provider);
+
+            _messageBus.TryRegisterQueue(Constants.MessageBusQueues.ReleaseServiceQueue, typeof(ReleaseServiceMessage));
+
+            _messageBus.RegisterProcessor<ReleaseServiceMessage>(this);
         }
 
         protected override void PostInitialize(ServiceProvider provider)
@@ -87,6 +98,13 @@ namespace Guppy
             this.Layers.TryUpdate(gameTime);
 
             _intervals.Update(gameTime);
+        }
+        #endregion
+
+        #region Message Processors
+        void IMessageProcessor<ReleaseServiceMessage>.Process(ReleaseServiceMessage message)
+        {
+            message.Service.TryRelease();
         }
         #endregion
     }

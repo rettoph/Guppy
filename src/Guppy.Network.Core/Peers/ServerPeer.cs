@@ -75,7 +75,7 @@ namespace Guppy.Network
 
             this.manager.Start(port);
 
-            return base.TryStartAsync(period);
+            return base.TryStart(period);
         }
         #endregion
 

@@ -33,6 +33,13 @@ namespace Guppy.ServiceLoaders
                 {
                     factory.SetDefaultConstructor<IntervalInvoker>();
                 });
+
+            services.RegisterService<IntervalBus>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<IntervalBus>();
+                });
         }
 
         public void ConfigureProvider(ServiceProvider provider)

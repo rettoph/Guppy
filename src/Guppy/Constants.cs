@@ -20,5 +20,10 @@ namespace Guppy
         {
             public const String DebugFont = "guppy:font:debug";
         }
+
+        public static class MessageBusQueues
+        {
+            public static readonly MessageBus.Queue ReleaseServiceQueue = new MessageBus.Queue("release-service-queue", Int32.MaxValue);
+        }
     }
 }

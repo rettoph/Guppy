@@ -144,13 +144,28 @@ namespace Guppy.Network
         #endregion
 
         #region Start Methods
-        protected async Task TryStartAsync(Int32 period)
+        protected virtual async Task TryStart(Int32 period)
         {
             _cancelation = new CancellationTokenSource();
 
             _loop = TaskHelper.CreateLoop(this.Update, period, _cancelation.Token);
 
             await _loop;
+        }
+
+        public virtual async Task TryStop()
+        {
+            if(_cancelation is not null)
+            {
+                _cancelation.Cancel();
+
+                await _loop;
+
+                this.manager.Stop();
+
+                _cancelation = null;
+                _log = null;
+            }
         }
         #endregion
 

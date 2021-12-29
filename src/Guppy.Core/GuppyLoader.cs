@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    public class GuppyLoader
+    public class GuppyLoader : IDisposable
     {
         #region Private Fields
         private ServiceProviderBuilder _services;

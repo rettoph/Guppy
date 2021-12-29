@@ -1,4 +1,5 @@
 ﻿using Guppy.Services;
+using Guppy.Utilities;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,31 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// <param name="_out"></param>
         public static void String(this ServiceProvider provider, String handle, out String _out)
             => _out = provider.GetString(handle);
+        #endregion
+
+        #region Interval Methods
+        /// <summary>
+        /// REturn the current scope's <see cref="Interval"/> instance
+        /// at a requested millisecond interval.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        public static Interval GetInterval(this ServiceProvider provider, Double milliseconds)
+            => provider.GetService<IntervalInvoker>()[milliseconds];
+        #endregion
+
+
+        #region IntervalQueue Methods
+        /// <summary>
+        /// REturn the current scope's <see cref="IntervalQueue"/> instance
+        /// at a requested millisecond interval.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        public static IntervalQueue GetIntervalQueue(this ServiceProvider provider, Double milliseconds)
+            => provider.GetService<IntervalBus>()[milliseconds];
         #endregion
     }
 }

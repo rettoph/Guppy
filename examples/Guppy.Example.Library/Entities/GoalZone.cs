@@ -30,16 +30,16 @@ namespace Guppy.Example.Library.Entities
 
             provider.Service(out _paddles);
 
-            this.Packets.RegisterPacket<GoalZoneDto, CreateNetworkEntityMessage>(this);
-            this.Packets.RegisterProcessor<GoalZoneDto>(this);
+            this.Messages.RegisterPacket<GoalZoneDto, CreateNetworkEntityMessage>(this);
+            this.Messages.RegisterProcessor<GoalZoneDto>(this);
         }
 
         protected override void Release()
         {
             base.Release();
 
-            this.Packets.DeregisterPacket<GoalZoneDto, CreateNetworkEntityMessage>(this);
-            this.Packets.DeregisterProcessor<GoalZoneDto>(this);
+            this.Messages.DeregisterPacket<GoalZoneDto, CreateNetworkEntityMessage>(this);
+            this.Messages.DeregisterProcessor<GoalZoneDto>(this);
         }
 
         public GoalZoneDto Create()

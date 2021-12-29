@@ -28,20 +28,20 @@ namespace Guppy.Example.Library.Components.Entities
         {
             base.PreInitialize(provider);
 
-            this.Entity.Packets.RegisterProcessor<UserDto>(this);
-            this.Entity.Packets.RegisterProcessor<PaddleTargetDto>(this);
+            this.Entity.Messages.RegisterProcessor<UserDto>(this);
+            this.Entity.Messages.RegisterProcessor<PaddleTargetDto>(this);
 
-            this.Entity.Packets.RegisterPacket<PaddleTargetDto, PaddleTargetRequestMessage>(this);
+            this.Entity.Messages.RegisterPacket<PaddleTargetDto, PaddleTargetRequestMessage>(this);
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.Entity.Packets.DeregisterProcessor<UserDto>(this);
-            this.Entity.Packets.DeregisterProcessor<PaddleTargetDto>(this);
+            this.Entity.Messages.DeregisterProcessor<UserDto>(this);
+            this.Entity.Messages.DeregisterProcessor<PaddleTargetDto>(this);
 
-            this.Entity.Packets.DeregisterPacket<PaddleTargetDto, PaddleTargetRequestMessage>(this);
+            this.Entity.Messages.DeregisterPacket<PaddleTargetDto, PaddleTargetRequestMessage>(this);
         }
         #endregion
 

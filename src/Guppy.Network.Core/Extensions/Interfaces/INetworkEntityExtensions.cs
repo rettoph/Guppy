@@ -23,7 +23,7 @@ namespace Guppy.Network
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             message.NetworkId = entity.NetworkId;
-            message.Packets.AddRange(entity.Packets.GetAll<TNetworkEntityMessage>());
+            message.Packets.AddRange(entity.Messages.GetAll<TNetworkEntityMessage>());
         }
 
         public static void SendMessage<TNetworkEntityMessage>(this INetworkEntity entity, TNetworkEntityMessage message)

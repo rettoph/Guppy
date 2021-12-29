@@ -98,7 +98,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
-        #region RegisterComponentService Methods
+        #region RegisterService Methods
         /// <summary>
         /// Register a new service for the component
         /// </summary>

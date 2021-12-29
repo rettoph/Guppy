@@ -12,7 +12,6 @@ namespace Guppy.Network.Services
     {
         internal Room room { private get; set; }
 
-
         #region Helper Methods
         public override bool TryGetById(Guid id, out Pipe item)
         {

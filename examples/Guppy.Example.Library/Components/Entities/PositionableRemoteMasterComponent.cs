@@ -37,16 +37,16 @@ namespace Guppy.Example.Library.Components.Entities
 
             _intervals[Constants.Intervals.PositionMessage].OnInterval += this.HandlePositionMessageInterval;
 
-            this.Entity.Packets.RegisterPacket<PositionDto, CreateNetworkEntityMessage>(this);
-            this.Entity.Packets.RegisterPacket<PositionDto, PositionMessage>(this);
+            this.Entity.Messages.RegisterPacket<PositionDto, CreateNetworkEntityMessage>(this);
+            this.Entity.Messages.RegisterPacket<PositionDto, PositionMessage>(this);
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.Entity.Packets.DeregisterPacket<PositionDto, CreateNetworkEntityMessage>(this);
-            this.Entity.Packets.DeregisterPacket<PositionDto, PositionMessage>(this);
+            this.Entity.Messages.DeregisterPacket<PositionDto, CreateNetworkEntityMessage>(this);
+            this.Entity.Messages.DeregisterPacket<PositionDto, PositionMessage>(this);
 
             _intervals[Constants.Intervals.PositionMessage].OnInterval -= this.HandlePositionMessageInterval;
 

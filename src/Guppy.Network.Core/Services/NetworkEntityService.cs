@@ -5,6 +5,7 @@ using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
 using log4net;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Guppy.Network.Services
     /// <summary>
     /// Manage scoped NetworkEntity instances.
     /// </summary>
-    public class NetworkEntityService : Service
+    public class NetworkEntityService : Service, IEnumerable<INetworkEntity>
     {
         private ILog _log;
         private ServiceProvider _provider;
@@ -42,6 +43,34 @@ namespace Guppy.Network.Services
         }
         #endregion
 
+        #region Helper Methods
+        public Boolean TryGetByNetworkId<TNetworkEntity>(UInt16 networkId, out TNetworkEntity entity)
+            where TNetworkEntity : INetworkEntity
+        {
+            if(_entities.TryGetValue(networkId, out INetworkEntity uncasted) && uncasted is TNetworkEntity casted)
+            {
+                entity = casted;
+                return true;
+            }
+
+            entity = default;
+            return false;
+        }
+        #endregion
+
+        #region IEnumerable<INetworkEntity> Implementation
+        public IEnumerator<INetworkEntity> GetEnumerator()
+        {
+            return _entities.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+        #endregion
+
+        #region Internal Methods
         internal Boolean TryProcess(NetworkEntityMessage message)
         {
             // Create a new entity instance if one doesnt already exists...
@@ -84,9 +113,11 @@ namespace Guppy.Network.Services
 
         private void ProcessPackets(INetworkEntity entity, NetworkEntityMessage message)
         {
+            entity.Messages.Process(message);
+
             foreach (IPacket packet in message.Packets)
             {
-                entity.Packets.Process(packet);
+                entity.Messages.Process(packet);
             }
         }
 
@@ -103,5 +134,8 @@ namespace Guppy.Network.Services
         {
             _entities.Remove(entity.NetworkId);
         }
+        #endregion
+
+
     }
 }

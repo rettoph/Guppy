@@ -13,7 +13,7 @@ namespace Guppy.Network.Utilities
     /// value for instances created on a <see cref="NetworkAuthorization.Master"/>
     /// <see cref="HostType.Remote"/> host.
     /// </summary>
-    internal sealed class NetworkIdProvider
+    public sealed class NetworkIdProvider
     {
         private Queue<UInt16> _surrendedIds = new Queue<UInt16>();
         private UInt16 _current = 0;

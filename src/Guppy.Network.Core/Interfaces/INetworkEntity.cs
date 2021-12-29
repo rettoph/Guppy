@@ -12,7 +12,7 @@ namespace Guppy.Network.Interfaces
     {
         UInt16 NetworkId { get; internal set; }
         Pipe Pipe { get; set; }
-        NetworkEntityPacketService Packets { get; }
+        NetworkEntityPacketService Messages { get; }
 
         event OnChangedEventDelegate<INetworkEntity, Pipe> OnPipeChanged;
     }

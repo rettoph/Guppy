@@ -43,16 +43,16 @@ namespace Guppy.Network
         /// <summary>
         /// Start logic thread and listening on available port
         /// </summary>
-        public Task TryStart(Int32 period = 16)
+        public new Task TryStart(Int32 period = 16)
         {
             this.manager.Start();
 
-            return base.TryStartAsync(period);
+            return base.TryStart(period);
         }
         #endregion
 
         #region Connect Methods
-        public void Connect(String target, Int32 port, params Claim[] claims)
+        public void TryConnect(String target, Int32 port, params Claim[] claims)
         {
             this.network.WriteMessage(
                 this.room, 

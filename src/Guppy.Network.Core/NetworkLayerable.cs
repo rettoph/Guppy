@@ -18,16 +18,22 @@ namespace Guppy.Network
 
         #region Public Properties
         public UInt16 NetworkId { get; set; }
-        public NetworkEntityPacketService Packets { get; private set; }
-        public Pipe Pipe
+        public NetworkEntityPacketService Messages { get; private set; }
+        public virtual Pipe Pipe
         {
             get => _pipe;
-            set => this.OnPipeChanged.InvokeIf(_pipe != value, this, ref _pipe, value);
+            protected set => this.OnPipeChanged.InvokeIf(_pipe != value, this, ref _pipe, value);
+        }
+
+        Pipe INetworkEntity.Pipe
+        {
+            get => this.Pipe;
+            set => this.Pipe = value;
         }
         #endregion
 
         #region Events
-        public event OnChangedEventDelegate<INetworkEntity, Pipe> OnPipeChanged;
+        public virtual event OnChangedEventDelegate<INetworkEntity, Pipe> OnPipeChanged;
         #endregion
 
         #region Lifecycle Methods
@@ -35,15 +41,15 @@ namespace Guppy.Network
         {
             base.PreInitialize(provider);
 
-            this.Packets = provider.GetService<NetworkEntityPacketService>();
+            this.Messages = provider.GetService<NetworkEntityPacketService>();
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.Packets.TryRelease();
-            this.Packets = default;
+            this.Messages.TryRelease();
+            this.Messages = default;
         }
         #endregion
     }

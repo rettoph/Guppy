@@ -29,14 +29,14 @@ namespace Guppy.Example.Library.Components.Entities
 
             this.Entity.OnPreUpdate += this.Update;
 
-            this.Entity.Packets.RegisterProcessor<PositionDto>(this);
+            this.Entity.Messages.RegisterProcessor<PositionDto>(this);
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.Entity.Packets.DeregisterProcessor<PositionDto>(this);
+            this.Entity.Messages.DeregisterProcessor<PositionDto>(this);
 
             this.Entity.OnPreUpdate -= this.Update;
         }

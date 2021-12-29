@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Messages
 {
-    public abstract class NetworkEntityMessage : IData
+    public abstract class NetworkEntityMessage : IPacket
     {
         public UInt16 NetworkId { get; internal set; }
         public List<IPacket> Packets { get; } = new List<IPacket>();

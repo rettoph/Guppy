@@ -36,24 +36,24 @@ namespace Guppy.Example.Library.Components.Entities
 
             _intervals[Library.Constants.Intervals.TargetMessage].OnInterval += this.HandlePaddleTargetMessageInterval;
 
-            this.Entity.Packets.RegisterProcessor<PaddleTargetDto>(this);
+            this.Entity.Messages.RegisterProcessor<PaddleTargetDto>(this);
 
-            this.Entity.Packets.RegisterPacket<UserDto, CreateNetworkEntityMessage>(this);
+            this.Entity.Messages.RegisterPacket<UserDto, CreateNetworkEntityMessage>(this);
 
-            this.Entity.Packets.RegisterPacket<PaddleTargetDto, CreateNetworkEntityMessage>(this);
-            this.Entity.Packets.RegisterPacket<PaddleTargetDto, PaddleTargetMessage>(this);
+            this.Entity.Messages.RegisterPacket<PaddleTargetDto, CreateNetworkEntityMessage>(this);
+            this.Entity.Messages.RegisterPacket<PaddleTargetDto, PaddleTargetMessage>(this);
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            this.Entity.Packets.DeregisterProcessor<PaddleTargetDto>(this);
+            this.Entity.Messages.DeregisterProcessor<PaddleTargetDto>(this);
 
-            this.Entity.Packets.DeregisterPacket<UserDto, CreateNetworkEntityMessage>(this);
+            this.Entity.Messages.DeregisterPacket<UserDto, CreateNetworkEntityMessage>(this);
 
-            this.Entity.Packets.DeregisterPacket<PaddleTargetDto, CreateNetworkEntityMessage>(this);
-            this.Entity.Packets.DeregisterPacket<PaddleTargetDto, PaddleTargetMessage>(this);
+            this.Entity.Messages.DeregisterPacket<PaddleTargetDto, CreateNetworkEntityMessage>(this);
+            this.Entity.Messages.DeregisterPacket<PaddleTargetDto, PaddleTargetMessage>(this);
 
             _intervals[Library.Constants.Intervals.TargetMessage].OnInterval -= this.HandlePaddleTargetMessageInterval;
 
