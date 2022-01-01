@@ -26,10 +26,11 @@ namespace Guppy.EntityComponent.Lists
         private Dictionary<Guid, TService> _dictionary;
         private List<TService> _list;
         private List<TService> _creating;
+        private ServiceProvider _provider;
         #endregion
 
         #region Protected Fields
-        protected ServiceProvider provider { get; private set; }
+        protected virtual ServiceProvider provider => _provider;
 
         /// <summary>
         /// When true, then all self contained items
@@ -44,7 +45,6 @@ namespace Guppy.EntityComponent.Lists
         public Int32 Count => _list.Count;
 
         Type IServiceList.BaseType => typeof(TService);
-        ServiceProvider IServiceList.Provider => this.provider;
 
         public TService this[Guid id] => this.GetById(id);
         #endregion
@@ -96,7 +96,7 @@ namespace Guppy.EntityComponent.Lists
         {
             base.PreInitialize(provider);
 
-            this.provider = provider;
+            _provider = provider;
             this.releaseChildren = false;
 
             this.CanAdd += this.HandleCanAdd;
@@ -132,7 +132,7 @@ namespace Guppy.EntityComponent.Lists
         {
             base.PostRelease();
 
-            this.provider = null;
+            _provider = null;
         }
         #endregion
 
@@ -165,12 +165,12 @@ namespace Guppy.EntityComponent.Lists
         public virtual Boolean TryGetById(Guid id, out TService item)
             => _dictionary.TryGetValue(id, out item);
 
-        public virtual Boolean TryGetById<T>(Guid id, out T item)
+        public Boolean TryGetById<T>(Guid id, out T item)
             where T : class, TService
         {
-            if(this.TryGetById(id, out TService source))
+            if(this.TryGetById(id, out TService source) && source is T casted)
             {
-                item = source as T;
+                item = casted;
                 return true;
             }
 
@@ -178,13 +178,13 @@ namespace Guppy.EntityComponent.Lists
             return false;
         }
 
-        public virtual TService GetById(Guid id)
+        public TService GetById(Guid id)
         {
             this.TryGetById(id, out TService item);
             return item;
         }
 
-        public virtual T GetById<T>(Guid id)
+        public T GetById<T>(Guid id)
             where T : class, TService
         {
             this.TryGetById(id, out T item);
@@ -199,13 +199,12 @@ namespace Guppy.EntityComponent.Lists
         #endregion
 
         #region Create Methods
-        protected virtual T Create<T>(
-            ServiceProvider provider,
+        protected internal virtual T Create<T>(
             String serviceName,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
+            var instance = this.provider.GetService<T>(serviceName, (i, p, d) =>
             {
                 customSetup.Invoke(i, p, d);
                 _creating.Add(i);
@@ -218,34 +217,30 @@ namespace Guppy.EntityComponent.Lists
 
             return instance;
         }
-        protected TService Create(
-            ServiceProvider provider,
+        protected internal TService Create(
             String serviceName,
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return this.Create<TService>(provider, serviceName, customSetup);
+            return this.Create<TService>(serviceName, customSetup);
         }
-        protected TService Create(
-            ServiceProvider provider,
+        protected internal TService Create(
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return this.Create<TService>(provider, typeof(TService).FullName, customSetup);
+            return this.Create<TService>(typeof(TService).FullName, customSetup);
         }
 
-        protected T Create<T>(
-            ServiceProvider provider,
+        protected internal T Create<T>(
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            return this.Create<T>(provider, typeof(T).FullName, customSetup);
+            return this.Create<T>(typeof(T).FullName, customSetup);
         }
 
-        protected virtual T Create<T>(
-            ServiceProvider provider,
+        protected internal virtual T Create<T>(
             String serviceName)
                 where T : class, TService
         {
-            var instance = provider.GetService<T>(serviceName, (i, p, d) =>
+            var instance = this.provider.GetService<T>(serviceName, (i, p, d) =>
             {
                 _creating.Add(i);
 
@@ -257,18 +252,16 @@ namespace Guppy.EntityComponent.Lists
 
             return instance;
         }
-        protected TService Create(
-            ServiceProvider provider,
+        protected internal TService Create(
             String serviceName)
         {
-            return this.Create<TService>(provider, serviceName);
+            return this.Create<TService>(serviceName);
         }
 
-        protected T Create<T>(
-            ServiceProvider provider)
+        protected internal T Create<T>()
                 where T : class, TService
         {
-            return this.Create<T>(provider, typeof(T).FullName);
+            return this.Create<T>(typeof(T).FullName);
         }
         #endregion
 

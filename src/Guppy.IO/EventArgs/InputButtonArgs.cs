@@ -9,7 +9,7 @@ using Guppy.IO.Structs;
 
 namespace Guppy.IO.EventArgs
 {
-    public class InputButtonArgs : System.EventArgs, IMessage
+    public class InputButtonArgs : System.EventArgs, IData
     {
         public readonly InputButton Which;
         public readonly ButtonState State;

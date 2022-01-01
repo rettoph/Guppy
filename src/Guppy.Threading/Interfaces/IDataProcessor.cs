@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Interfaces
 {
-    public interface IMessageProcessor<TMessage> : IService
-        where TMessage : class, IMessage
+    public interface IDataProcessor<TData> : IService
+        where TData : class, IData
     {
-        void Process(TMessage message);
+        void Process(TData message);
     }
 }

@@ -35,7 +35,7 @@ namespace Guppy.Network.MessageProcessors
         #region Lifecycle Methods
         public override void Process(ConnectionRequestResponseMessage message)
         {
-            _client.CurrentUser = _users.UpdateOrCreate(message.User);
+            _client.CurrentUser = _users.UpdateOrCreate(message.User, true);
         }
         #endregion
     }

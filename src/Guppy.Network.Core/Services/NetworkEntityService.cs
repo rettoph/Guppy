@@ -3,6 +3,7 @@ using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.Lists;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
+using Guppy.Threading.Interfaces;
 using log4net;
 using System;
 using System.Collections;
@@ -28,7 +29,7 @@ namespace Guppy.Network.Services
             base.PreInitialize(provider);
 
             _provider = provider;
-            _entities = new Dictionary<ushort, INetworkEntity>();
+            _entities = new Dictionary<UInt16, INetworkEntity>();
 
             _provider.Service(out _log);
         }
@@ -91,7 +92,7 @@ namespace Guppy.Network.Services
             // Create a new entity instance if one doesnt already exists...
             if(!_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
             { // No entity with the recieved id exists, try creating one now!
-                entity = _provider.GetService<INetworkEntity>(message.ServiceConfigurationId, (e, _, _) =>
+                entity = _provider.GetService<IMagicNetworkEntity>(message.ServiceConfigurationId, (e, _, _) =>
                 { // Set the entity's internal network id to the message value.
                     e.NetworkId = message.NetworkId;
                     this.ProcessPackets(e, message);
@@ -115,7 +116,7 @@ namespace Guppy.Network.Services
         {
             entity.Messages.Process(message);
 
-            foreach (IPacket packet in message.Packets)
+            foreach (IData packet in message.Packets)
             {
                 entity.Messages.Process(packet);
             }

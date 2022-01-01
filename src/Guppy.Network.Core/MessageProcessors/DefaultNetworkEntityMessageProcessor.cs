@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.MessageProcessors
 {
-    internal sealed class DefaultNetworkEntityMessageProcessor<TNetworkEntityMessage> : Service, IMessageProcessor<TNetworkEntityMessage>
+    internal sealed class DefaultNetworkEntityMessageProcessor<TNetworkEntityMessage> : Service, IDataProcessor<TNetworkEntityMessage>
         where TNetworkEntityMessage : NetworkEntityMessage
     {
         #region Private Fields
@@ -47,7 +47,7 @@ namespace Guppy.Network.MessageProcessors
         #endregion
 
         #region IMessageProcessor<CreateNetworkEntityMessage> Implementation
-        void IMessageProcessor<TNetworkEntityMessage>.Process(TNetworkEntityMessage message)
+        void IDataProcessor<TNetworkEntityMessage>.Process(TNetworkEntityMessage message)
         {
             _entities.TryProcess(message);
         }

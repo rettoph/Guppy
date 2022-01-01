@@ -1,4 +1,5 @@
-﻿using Guppy.EntityComponent.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
@@ -11,24 +12,24 @@ using System.Threading.Tasks;
 namespace Guppy.Network.Components.NetworkEntities
 {
     /// <summary>
-    /// Automatically add a <see cref="INetworkEntity"/> into the given pipe 
+    /// Automatically add a <see cref="IMagicNetworkEntity"/> into the given pipe 
     /// when the event is triggered.
     /// </summary>
     [HostTypeRequired(HostType.Remote)]
-    internal sealed class NetworkEntityRemotePipeComponent : NetworkComponent<INetworkEntity>
+    internal sealed class MagicNetworkEntityRemotePipeComponent : Component<IMagicNetworkEntity>
     {
-        protected override void PreInitialize(ServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
-            base.PreInitialize(provider);
+            base.Initialize(provider);
 
             this.Entity.OnPipeChanged += this.HandlePipeChanged;
 
             this.CleanPipe(default, this.Entity.Pipe);
         }
 
-        protected override void PostRelease()
+        protected override void Release()
         {
-            base.PostRelease();
+            base.Release();
 
             this.Entity.Pipe = default;
 
@@ -43,7 +44,7 @@ namespace Guppy.Network.Components.NetworkEntities
             value?.TryAddNetworkEntity(this.Entity, old);
         }
 
-        private void HandlePipeChanged(INetworkEntity sender, Pipe old, Pipe value)
+        private void HandlePipeChanged(IMagicNetworkEntity sender, Pipe old, Pipe value)
         {
             this.CleanPipe(old, value);
         }

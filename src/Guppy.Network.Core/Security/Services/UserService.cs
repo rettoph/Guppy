@@ -37,7 +37,7 @@ namespace Guppy.Network.Security.Services
         #endregion
 
         #region Helper Methods
-        internal User UpdateOrCreate(Int32 id, IEnumerable<Claim> claims)
+        internal User UpdateOrCreate(Int32 id, IEnumerable<Claim> claims, Boolean isCurrentUser)
         {
             lock(this)
             {
@@ -47,7 +47,7 @@ namespace Guppy.Network.Security.Services
                     return user;
                 }
 
-                user = new User(id, _netManager, claims);
+                user = new User(id, _netManager, claims, isCurrentUser);
                 if (this.TryAdd(user))
                 {
                     return user;
@@ -57,9 +57,9 @@ namespace Guppy.Network.Security.Services
             }
         }
 
-        internal User UpdateOrCreate(UserDto dto)
+        internal User UpdateOrCreate(UserDto dto, Boolean isCurrentUser)
         {
-            return this.UpdateOrCreate(dto.Id, dto.Claims);
+            return this.UpdateOrCreate(dto.Id, dto.Claims, isCurrentUser);
         }
         #endregion
     }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Network.Messages;
+using Guppy.Threading.Interfaces;
 
 namespace Guppy.Network.Builders
 {
@@ -48,10 +49,10 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region RegisterNetworkMessage Methods
-        public NetworkMessageConfigurationBuilder<TData> RegisterNetworkMessage<TData>()
-            where TData : class, IData
+        public NetworkMessageConfigurationBuilder<TMessage> RegisterNetworkMessage<TMessage>()
+            where TMessage : class, IData
         {
-            NetworkMessageConfigurationBuilder<TData> message = new NetworkMessageConfigurationBuilder<TData>(this, _services);
+            NetworkMessageConfigurationBuilder<TMessage> message = new NetworkMessageConfigurationBuilder<TMessage>(this, _services);
             _messages.Add(message);
 
             return message;

@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Interfaces
 {
-    public interface IMessageFactory<TMessage>
-        where TMessage : class, IMessage
+    public interface IData
     {
-        TMessage Create();
     }
 }

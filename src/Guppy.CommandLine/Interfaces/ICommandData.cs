@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.CommandLine.Interfaces
 {
-    public interface ICommandData : IMessage
+    public interface ICommandData : IData
     {
     }
 }

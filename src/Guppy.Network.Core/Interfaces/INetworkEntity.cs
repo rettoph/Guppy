@@ -8,12 +8,14 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Interfaces
 {
+    /// <summary>
+    /// Defines a simple entity that contains a network id.
+    /// This value will automatically get defined within 
+    /// remote master peers.
+    /// </summary>
     public interface INetworkEntity : IEntity
     {
+        NetworkEntityMessageService Messages { get; }
         UInt16 NetworkId { get; internal set; }
-        Pipe Pipe { get; set; }
-        NetworkEntityPacketService Messages { get; }
-
-        event OnChangedEventDelegate<INetworkEntity, Pipe> OnPipeChanged;
     }
 }

@@ -14,7 +14,7 @@ using Guppy.Messages;
 
 namespace Guppy
 {
-    public abstract class Scene : Frameable, IScene, IMessageProcessor<ReleaseServiceMessage>
+    public abstract class Scene : Frameable, IScene, IDataProcessor<ReleaseServiceMessage>
     {
         #region Private Fields
         private ServiceProvider _provider;
@@ -44,7 +44,7 @@ namespace Guppy
         {
             base.Initialize(provider);
 
-            _messageBus.TryRegisterQueue(Constants.MessageBusQueues.ReleaseServiceQueue, typeof(ReleaseServiceMessage));
+            _messageBus.TryRegisterQueue(Constants.BusQueues.ReleaseServiceQueue, typeof(ReleaseServiceMessage));
 
             _messageBus.RegisterProcessor<ReleaseServiceMessage>(this);
         }
@@ -102,7 +102,7 @@ namespace Guppy
         #endregion
 
         #region Message Processors
-        void IMessageProcessor<ReleaseServiceMessage>.Process(ReleaseServiceMessage message)
+        void IDataProcessor<ReleaseServiceMessage>.Process(ReleaseServiceMessage message)
         {
             message.Service.TryRelease();
         }

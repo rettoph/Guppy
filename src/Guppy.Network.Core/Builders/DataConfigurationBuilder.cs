@@ -6,6 +6,7 @@ using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Guppy.Threading.Interfaces;
 
 namespace Guppy.Network.Builders
 {

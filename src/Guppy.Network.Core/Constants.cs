@@ -11,7 +11,7 @@ namespace Guppy.Network
     {
         public static class ServiceNames
         {
-            public const String PeerMessageBus = "peer-message-bus";
+            public const String RoomBus = "room-bus";
         }
         public static class Commands
         {

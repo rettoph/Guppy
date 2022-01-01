@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Guppy.Network
 {
-    public class NetworkMessage : IMessage
+    public class NetworkMessage : IData
     {
         public Byte RoomId { get; set; }
         public NetworkMessageConfiguration Configuration { get; set; }

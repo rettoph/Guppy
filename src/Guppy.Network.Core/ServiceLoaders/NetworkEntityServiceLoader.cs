@@ -3,6 +3,7 @@ using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 using Guppy.Interfaces;
 using Guppy.Network.Builders;
+using Guppy.Network.Components;
 using Guppy.Network.Components.NetworkEntities;
 using Guppy.Network.Interfaces;
 using Guppy.Network.MessageProcessors;
@@ -40,16 +41,26 @@ namespace Guppy.Network.ServiceLoaders
                     factory.SetDefaultConstructor<NetworkEntityService>();
                 });
 
-            services.RegisterService<NetworkEntityPacketService>()
+            services.RegisterService<NetworkEntityMessageService>()
                 .SetLifetime(ServiceLifetime.Transient)
                 .RegisterTypeFactory(factory =>
                 {
-                    factory.SetDefaultConstructor<NetworkEntityPacketService>();
+                    factory.SetDefaultConstructor<NetworkEntityMessageService>();
                 });
             #endregion
 
             #region Entities
             services.RegisterEntity<INetworkEntity>()
+                .RegisterComponent<NetworkEntityRemoteMasterIdComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<NetworkEntityRemoteMasterIdComponent>();
+                        });
+                    });
+                })
                 .RegisterComponent<NetworkEntityRemoteComponent>(component =>
                 {
                     component.RegisterService(service =>
@@ -59,14 +70,16 @@ namespace Guppy.Network.ServiceLoaders
                             factory.SetDefaultConstructor<NetworkEntityRemoteComponent>();
                         });
                     });
-                })
-                .RegisterComponent<NetworkEntityRemotePipeComponent>(component =>
+                });
+
+            services.RegisterEntity<IMagicNetworkEntity>()
+                .RegisterComponent<MagicNetworkEntityRemotePipeComponent>(component =>
                 {
                     component.RegisterService(service =>
                     {
                         service.RegisterTypeFactory(factory =>
                         {
-                            factory.SetDefaultConstructor<NetworkEntityRemotePipeComponent>();
+                            factory.SetDefaultConstructor<MagicNetworkEntityRemotePipeComponent>();
                         });
                     });
                 });

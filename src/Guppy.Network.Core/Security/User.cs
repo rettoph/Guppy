@@ -24,6 +24,7 @@ namespace Guppy.Network.Security
         public readonly NetPeer NetPeer;
 
         public readonly DateTime CreatedAt;
+        public readonly Boolean IsCurrentUser;
         #endregion
 
         #region Public Properties
@@ -41,7 +42,7 @@ namespace Guppy.Network.Security
         #endregion
 
         #region Constructors
-        internal User(Int32 id, NetManager manager, IEnumerable<Claim> claims)
+        internal User(Int32 id, NetManager manager, IEnumerable<Claim> claims, Boolean isCurrentUser)
         {
             this.Id = id;
             this.NetPeer = id == -1 ? default : manager.GetPeerById(id);

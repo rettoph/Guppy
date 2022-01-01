@@ -12,7 +12,7 @@ using LiteNetLib.Utils;
 
 namespace Guppy.Network
 {
-    public class ClientPeer : Peer, IMessageProcessor<UserRoomActionMessage>
+    public class ClientPeer : Peer, IDataProcessor<UserRoomActionMessage>
     {
         protected override void PreCreate(ServiceProvider provider)
         {
@@ -22,10 +22,10 @@ namespace Guppy.Network
         }
 
         #region Message Processors
-        void IMessageProcessor<UserRoomActionMessage>.Process(UserRoomActionMessage message)
+        void IDataProcessor<UserRoomActionMessage>.Process(UserRoomActionMessage message)
         {
             Room room = this.Rooms.GetById(message.RoomId);
-            User user = this.Users.UpdateOrCreate(message.User);
+            User user = this.Users.UpdateOrCreate(message.User, false);
 
             switch (message.Action)
             {

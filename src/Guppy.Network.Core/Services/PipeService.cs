@@ -17,7 +17,7 @@ namespace Guppy.Network.Services
         {
             if(!base.TryGetById(id, out item))
             {
-                item = this.Create<Pipe>(this.provider, (pipe, _, _) =>
+                item = this.Create<Pipe>((pipe, _, _) =>
                 {
                     pipe.Room = this.room;
                     pipe.SetId(id);

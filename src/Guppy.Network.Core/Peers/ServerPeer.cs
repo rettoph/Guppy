@@ -71,7 +71,7 @@ namespace Guppy.Network
         public Task TryStart(Int32 port, IEnumerable<Claim> claims, Int32 period = 16)
         {
             // Create a new local user representing the server
-            this.CurrentUser = _users.UpdateOrCreate(-1, claims);
+            this.CurrentUser = _users.UpdateOrCreate(-1, claims, true);
 
             this.manager.Start(port);
 
@@ -110,7 +110,7 @@ namespace Guppy.Network
                 NetPeer client = request.Accept();
 
                 // Create a new user instance...
-                User user = _users.UpdateOrCreate(client.Id, connectionRequestDto.Claims);
+                User user = _users.UpdateOrCreate(client.Id, connectionRequestDto.Claims, false);
 
                 // Send an accepted response to peer...
                 this.SendMessage(

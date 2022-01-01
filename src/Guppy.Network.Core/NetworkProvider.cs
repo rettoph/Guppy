@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Guppy.Network.Utilities;
+using Guppy.Threading.Interfaces;
 
 namespace Guppy.Network
 {
@@ -144,7 +145,7 @@ namespace Guppy.Network
             {
                 RoomId = reader.GetByte(),
                 Configuration = configuration,
-                Data = configuration.DataConfiguration.Reader(reader, this)
+                Data = configuration.DataConfiguration.Reader(reader, this) as IData
             };
         }
         #endregion

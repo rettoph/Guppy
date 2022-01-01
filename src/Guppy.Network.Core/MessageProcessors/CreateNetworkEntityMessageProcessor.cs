@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.MessageProcessors
 {
-    internal sealed class CreateNetworkEntityMessageProcessor : Service, IMessageProcessor<CreateNetworkEntityMessage>
+    internal sealed class CreateNetworkEntityMessageProcessor : Service, IDataProcessor<CreateNetworkEntityMessage>
     {
         #region Private Fields
         private NetworkEntityService _entities;
@@ -37,7 +37,7 @@ namespace Guppy.Network.MessageProcessors
         #endregion
 
         #region IMessageProcessor<CreateNetworkEntityMessage> Implementation
-        void IMessageProcessor<CreateNetworkEntityMessage>.Process(CreateNetworkEntityMessage message)
+        void IDataProcessor<CreateNetworkEntityMessage>.Process(CreateNetworkEntityMessage message)
         {
             if(!_entities.TryProcess(message))
             {

@@ -3,7 +3,6 @@ using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
-using Guppy.Network.Services;
 using Guppy.Network.Utilities;
 using System;
 using System.Collections.Generic;
@@ -11,13 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.Components.NetworkEntities
+namespace Guppy.Network.Components
 {
     [HostTypeRequired(HostType.Remote)]
-    internal sealed class NetworkEntityRemoteComponent : Component<INetworkEntity>
+    [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
+    internal sealed class NetworkEntityRemoteMasterIdComponent : Component<INetworkEntity>
     {
         #region Private Fields
-        private NetworkEntityService _networkEntities;
+        private NetworkIdProvider _idProvider;
         #endregion
 
         #region Lifecycle Methods
@@ -25,28 +25,17 @@ namespace Guppy.Network.Components.NetworkEntities
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _networkEntities);
-        }
-
-        protected override void Initialize(ServiceProvider provider)
-        {
-            base.Initialize(provider);
-
-            _networkEntities.TryAdd(this.Entity);
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _networkEntities.Remove(this.Entity);
+            // Define the network id automatically for master authorizations...
+            provider.Service(out _idProvider);
+            this.Entity.NetworkId = _idProvider.ClaimId();
         }
 
         protected override void PostRelease()
         {
             base.PostRelease();
 
-            _networkEntities = default;
+            _idProvider.SurrenderId(this.Entity.NetworkId);
+            _idProvider = default;
         }
         #endregion
     }

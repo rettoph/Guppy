@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Security.EventArgs
 {
-    public sealed class UserEventArgs : System.EventArgs, IMessage
+    public sealed class UserEventArgs : System.EventArgs, IData
     {
         public readonly User User;
 

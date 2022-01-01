@@ -5,6 +5,7 @@ using Guppy.Network.Interfaces;
 using Guppy.Network.Security.EventArgs;
 using Guppy.Network.Security.Lists;
 using Guppy.Network.Services;
+using Guppy.Threading.Interfaces;
 using Guppy.Threading.Utilities;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
@@ -22,7 +23,7 @@ namespace Guppy.Network
     {
         #region Private Fields
         private Boolean _isScopedLinked;
-        private MessageBus _messageBus;
+        private Bus _bus;
         private Peer _peer;
         private NetworkProvider _network;
         #endregion
@@ -40,6 +41,7 @@ namespace Guppy.Network
 
             provider.Service(out _peer);
             provider.Service(out _network);
+            provider.Service(Constants.ServiceNames.RoomBus, out _bus);
 
             this.Users = provider.GetService<UserList>();
             this.Pipes = provider.GetService<PipeService>((pipes, _, _) => pipes.room = this);
@@ -52,8 +54,11 @@ namespace Guppy.Network
         {
             base.PostRelease();
 
+            _bus.TryRelease();
+
             _peer = default;
             _network = default;
+            _bus = default;
 
             while (this.Users.Any())
             {
@@ -79,47 +84,31 @@ namespace Guppy.Network
         /// <returns></returns>
         public Boolean TryBindToScope(ServiceProvider provider)
         {
-            return this.TryBindToScope(provider, provider.GetService<MessageBus>());
-        }
-
-        /// <summary>
-        /// Attempt to link the room to the current scope.
-        /// If a scope is already linked, this will fail,
-        /// otherwise, the given MessageBus will
-        /// be utilized for incoming messages.
-        /// </summary>
-        /// <param name="provider"></param>
-        /// <param name="messageBus"></param>
-        /// <returns></returns>
-        public Boolean TryBindToScope(ServiceProvider provider, MessageBus messageBus)
-        {
-            if(_isScopedLinked)
+            if (_isScopedLinked)
             {
                 return false;
             }
-
-            _messageBus = messageBus;
 
             // Determin which message configurations are valid within the current scope...
             IEnumerable<NetworkMessageConfiguration> configurations = _network.MessageConfigurations.Where(mc => mc.Filter(provider, mc));
 
             // Generate a lookup table of valid message configuration bus queues and their types...
-            Dictionary<MessageBus.Queue, Type[]> messageBusQueus = configurations.GroupBy(configuration => configuration.MessageBusQueue)
+            Dictionary<Bus.Queue, Type[]> messageBusQueus = configurations.GroupBy(configuration => configuration.MessageBusQueue)
                 .ToDictionary(
                     keySelector: g => g.Key,
                     elementSelector: g => g.Select(configuration => configuration.Type).ToArray());
 
 
             // Ensure that all required message bus queus have been registered...
-            foreach ((MessageBus.Queue queue, Type[] types) in messageBusQueus)
+            foreach ((Bus.Queue queue, Type[] types) in messageBusQueus)
             {
-                _messageBus.TryRegisterQueue(queue, types);
+                _bus.TryRegisterQueue(queue, types);
             }
 
             // Register all message processors into the bus
             foreach (NetworkMessageConfiguration configuration in configurations)
             {
-                configuration.TryRegisterProcessor(provider, _messageBus);
+                configuration.TryRegisterProcessor(provider, _bus);
             }
 
             _isScopedLinked = true;
@@ -133,7 +122,7 @@ namespace Guppy.Network
                 return false;
             }
 
-            _messageBus = default;
+            _bus = default;
 
             _isScopedLinked = false;
             return true;
@@ -145,7 +134,7 @@ namespace Guppy.Network
         /// <param name="message"></param>
         public void TryEnqueueIncomingMessage(NetworkMessage message)
         {
-            _messageBus.TryEnqueue(message.Data);
+            _bus.TryEnqueue(message.Data);
         }
 
         /// <summary>
@@ -176,6 +165,13 @@ namespace Guppy.Network
             where TData : class, IData
         {
             _peer.SendMessage(this, data, this.Users.NetPeers);
+        }
+        #endregion
+
+        #region Frame Methods
+        public void Update()
+        {
+            _bus.ProcessEnqueued();
         }
         #endregion
 

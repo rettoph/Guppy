@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Guppy.IO.EventArgs
 {
-    public class ScrollWheelArgs : System.EventArgs, IMessage
+    public class ScrollWheelArgs : System.EventArgs, IData
     {
         public readonly Single Value;
         public readonly Single Delta;

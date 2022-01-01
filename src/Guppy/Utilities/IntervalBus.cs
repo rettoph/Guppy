@@ -38,6 +38,8 @@ namespace Guppy.Utilities
             base.PreInitialize(provider);
 
             provider.Service(out _intervals);
+
+            _queues = new Dictionary<Double, IntervalQueue>();
         }
         #endregion
     }

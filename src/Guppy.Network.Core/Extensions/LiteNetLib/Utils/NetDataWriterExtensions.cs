@@ -2,6 +2,7 @@
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
 using Guppy.Network.Structs;
+using Guppy.Threading.Interfaces;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using System;
@@ -40,7 +41,7 @@ namespace LiteNetLib.Utils
             where TNetworkEntityMessage : NetworkEntityMessage
         {
             writer.Put(message.Packets.Count);
-            foreach (IPacket packet in message.Packets)
+            foreach (IData packet in message.Packets)
             {
                 network.WriteData(writer, packet);
             }

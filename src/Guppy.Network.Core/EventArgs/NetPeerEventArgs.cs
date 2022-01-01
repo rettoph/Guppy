@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.EventArgs
 {
-    public sealed class NetPeerEventArgs : System.EventArgs, IMessage
+    public sealed class NetPeerEventArgs : System.EventArgs, IData
     {
         public readonly NetPeer NetPeer;
 

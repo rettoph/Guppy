@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Guppy.Components
 {
     internal class GameDebugComponent : Component<Game>,
-        IMessageProcessor<DebugFpsCommand>
+        IDataProcessor<DebugFpsCommand>
     {
         #region Private Fields
         private Double[] _frameBuffer;
@@ -142,7 +142,7 @@ namespace Guppy.Components
             _spriteBatch.End();
         }
 
-        void IMessageProcessor<DebugFpsCommand>.Process(DebugFpsCommand message)
+        void IDataProcessor<DebugFpsCommand>.Process(DebugFpsCommand message)
         {
             if(message.ResetFps)
             {

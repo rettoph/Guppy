@@ -9,7 +9,7 @@ using Guppy.Network.Enums;
 namespace Guppy.Network.Utilities
 {
     /// <summary>
-    /// Simple helper used for defining a unique <see cref="INetworkEntity.NetworkId"/>
+    /// Simple helper used for defining a unique <see cref="IMagicNetworkEntity.NetworkId"/>
     /// value for instances created on a <see cref="NetworkAuthorization.Master"/>
     /// <see cref="HostType.Remote"/> host.
     /// </summary>

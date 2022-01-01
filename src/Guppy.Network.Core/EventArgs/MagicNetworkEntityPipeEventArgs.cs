@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.EventArgs
 {
-    public sealed class NetworkEntityPipeEventArgs : System.EventArgs, IMessage
+    public sealed class MagicNetworkEntityPipeEventArgs : System.EventArgs, IData
     {
         public readonly Pipe NewPipe;
         public readonly Pipe OldPipe;
-        public readonly INetworkEntity Entity;
+        public readonly IMagicNetworkEntity Entity;
 
-        public NetworkEntityPipeEventArgs(Pipe newPipe, Pipe oldPipe, INetworkEntity entity)
+        public MagicNetworkEntityPipeEventArgs(Pipe newPipe, Pipe oldPipe, IMagicNetworkEntity entity)
         {
             this.NewPipe = newPipe;
             this.OldPipe = oldPipe;

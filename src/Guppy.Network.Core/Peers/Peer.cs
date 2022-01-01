@@ -34,7 +34,7 @@ namespace Guppy.Network
     /// <summary>
     /// The primary peer class, used as a wrapper for all client/server connections.
     /// </summary>
-    public class Peer : Service, IMessageProcessor<GuppyNetworkUsersCommand>
+    public class Peer : Service, IDataProcessor<GuppyNetworkUsersCommand>
     {
         /// <summary>
         /// The default RoomId used for inner Peer communication.
@@ -50,7 +50,6 @@ namespace Guppy.Network
         private CancellationTokenSource _cancelation;
         private Task _loop;
         private ILog _log;
-        private MessageBus _messageBus;
         #endregion
 
         #region Protected Properties
@@ -84,7 +83,6 @@ namespace Guppy.Network
 
             provider.Service(out _rooms);
             provider.Service(out _log);
-            provider.Service(Constants.ServiceNames.PeerMessageBus, out _messageBus);
 
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
@@ -115,7 +113,7 @@ namespace Guppy.Network
             base.Initialize(provider);
 
             _room = _rooms.GetById(RoomId);
-            _room.TryBindToScope(provider, _messageBus);
+            _room.TryBindToScope(provider);
         }
 
         protected override void PostRelease()
@@ -131,7 +129,6 @@ namespace Guppy.Network
         {
             base.Dispose();
 
-            _messageBus = default;
             _rooms = default;
             _log = default;
 
@@ -197,7 +194,7 @@ namespace Guppy.Network
         {
             this.manager.PollEvents();
 
-            _messageBus.ProcessEnqueued();
+            _room.Update();
         }
         #endregion
 

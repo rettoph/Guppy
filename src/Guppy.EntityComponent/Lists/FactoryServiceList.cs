@@ -33,52 +33,52 @@ namespace Guppy.EntityComponent.Lists
         #endregion
 
         #region Create Methods
-        public T Create<T>(
+        public new T Create<T>(
             String serviceName,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            return this.Create<T>(this.provider, serviceName, customSetup);
+            return base.Create<T>(serviceName, customSetup);
         }
-        public TService Create(
+        public new TService Create(
             String serviceName,
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return this.Create(this.provider, serviceName, customSetup);
+            return base.Create(serviceName, customSetup);
         }
-        public TService Create(
+        public new TService Create(
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return this.Create(this.provider, customSetup);
+            return base.Create(customSetup);
         }
 
-        public T Create<T>(
+        public new T Create<T>(
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            return this.Create<T>(this.provider, customSetup);
+            return base.Create<T>(customSetup);
         }
 
-        public T Create<T>(
+        public new T Create<T>(
             String serviceName)
                 where T : class, TService
         {
-            return this.Create<T>(this.provider, serviceName);
+            return base.Create<T>(serviceName);
         }
-        public TService Create(
+        public new TService Create(
             String serviceName)
         {
-            return this.Create(this.provider, serviceName);
+            return base.Create(serviceName);
         }
-        public TService Create()
+        public new TService Create()
         {
-            return this.Create<TService>(this.provider);
+            return base.Create<TService>();
         }
 
-        public T Create<T>()
+        public new T Create<T>()
                 where T : class, TService
         {
-            return this.Create<T>(this.provider);
+            return base.Create<T>();
         }
         #endregion
     }

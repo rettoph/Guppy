@@ -1,4 +1,5 @@
-﻿using Guppy.EntityComponent.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Network.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Messages;
@@ -17,7 +18,7 @@ namespace Guppy.Network.Components.Rooms
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal class RoomRemoteMasterComponent : NetworkComponent<Room>
+    internal class RoomRemoteMasterComponent : Component<Room>
     {
         #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)

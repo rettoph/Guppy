@@ -10,28 +10,28 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Utilities
 {
-    public class MessageProcessor<TMessage> : Service
-        where TMessage : class, IMessage
+    public class DataProcessor<TData> : Service
+        where TData : class, IData
     {
         #region Classes
         private interface IMessageProcessorContainer
         {
-            void Process(TMessage message);
+            void Process(TData message);
         }
 
         private class MessageProcessorContainer<T> : IMessageProcessorContainer
-            where T : class, TMessage
+            where T : class, TData
         {
             private delegate void ProcessDelegate(T message);
 
             private ProcessDelegate _processors;
 
-            public MessageProcessorContainer(IMessageProcessor<T> processor)
+            public MessageProcessorContainer(IDataProcessor<T> processor)
             {
                 _processors = processor.Process;
             }
 
-            public void Process(TMessage message)
+            public void Process(TData message)
             {
                 if (message is T casted)
                 {
@@ -46,12 +46,12 @@ namespace Guppy.Threading.Utilities
                 throw new ArgumentException(nameof(message));
             }
 
-            public void RegisterProcessor(IMessageProcessor<T> processor)
+            public void RegisterProcessor(IDataProcessor<T> processor)
             {
                 _processors += processor.Process;
             }
 
-            public void DeregisterProcessor(IMessageProcessor<T> processor)
+            public void DeregisterProcessor(IDataProcessor<T> processor)
             {
                 _processors -= processor.Process;
             }
@@ -88,8 +88,8 @@ namespace Guppy.Threading.Utilities
         /// </summary>
         /// <param name="key"></param>
         /// <param name="processor"></param>
-        public void RegisterProcessor<T>(IMessageProcessor<T> processor)
-            where T : class, TMessage
+        public void RegisterProcessor<T>(IDataProcessor<T> processor)
+            where T : class, TData
         {
             if (_processors.TryGetValue(typeof(T), out IMessageProcessorContainer processors)
                 && processors is MessageProcessorContainer<T> casted)
@@ -106,8 +106,8 @@ namespace Guppy.Threading.Utilities
         /// </summary>
         /// <param name="key"></param>
         /// <param name="processor"></param>
-        public void DeregisterProcessor<T>(IMessageProcessor<T> processor)
-            where T : class, TMessage
+        public void DeregisterProcessor<T>(IDataProcessor<T> processor)
+            where T : class, TData
         {
             if (_processors.TryGetValue(typeof(T), out IMessageProcessorContainer processors)
                 && processors is MessageProcessorContainer<T> casted)
@@ -121,7 +121,7 @@ namespace Guppy.Threading.Utilities
         /// Process an incoming message immidiately.
         /// </summary>
         /// <param name="message"></param>
-        public void Process(TMessage message)
+        public void Process(TData message)
         {
             if (_processors.TryGetValue(message.GetType(), out IMessageProcessorContainer processor))
             {

@@ -9,8 +9,6 @@ namespace Guppy.EntityComponent.Lists.Interfaces
 {
     public interface IServiceList : IEntity, IEnumerable
     {
-        ServiceProvider Provider { get; }
-
         /// <summary>
         /// The basetype stored within the current list.
         /// </summary>

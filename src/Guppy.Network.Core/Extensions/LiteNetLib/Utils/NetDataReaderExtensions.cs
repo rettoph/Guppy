@@ -2,6 +2,7 @@
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
 using Guppy.Network.Structs;
+using Guppy.Threading.Interfaces;
 using LiteNetLib.Utils;
 using Microsoft.Xna.Framework;
 using System;
@@ -36,7 +37,7 @@ namespace LiteNetLib.Utils
             Int32 packetCount = reader.GetInt();
             for (Int32 i = 0; i < packetCount; i++)
             {
-                message.Packets.Add(network.ReadData<IPacket>(reader));
+                message.Packets.Add(network.ReadData<IData>(reader));
             }
         }
     }

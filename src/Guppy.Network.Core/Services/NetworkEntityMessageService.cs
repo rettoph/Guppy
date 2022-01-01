@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Utilities
 {
-    public sealed class NetworkEntityPacketService : MessageProcessor<IPacket>
+    public sealed class NetworkEntityMessageService : DataProcessor<IData>
     {
-        private delegate IPacket PacketFactoryDelegate();
+        private delegate IData PacketFactoryDelegate();
 
         #region Private Fields
         private Dictionary<Type, PacketFactoryDelegate> _packetFactories;
@@ -36,8 +36,8 @@ namespace Guppy.Network.Utilities
         #endregion
 
         #region Helper Methods
-        public void RegisterPacket<TPacket, TNetworkEntityMessage>(IMessageFactory<TPacket> factory)
-            where TPacket : class, IPacket
+        public void RegisterPacket<TPacket, TNetworkEntityMessage>(IDataFactory<TPacket> factory)
+            where TPacket : class, IData
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             if(_packetFactories.ContainsKey(typeof(TNetworkEntityMessage)))
@@ -48,8 +48,8 @@ namespace Guppy.Network.Utilities
 
             _packetFactories.Add(typeof(TNetworkEntityMessage), factory.Create);
         }
-        public void DeregisterPacket<TPacket, TNetworkEntityMessage>(IMessageFactory<TPacket> factory)
-            where TPacket : class, IPacket
+        public void DeregisterPacket<TPacket, TNetworkEntityMessage>(IDataFactory<TPacket> factory)
+            where TPacket : class, IData
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             _packetFactories[typeof(TNetworkEntityMessage)] -= factory.Create;
@@ -61,7 +61,7 @@ namespace Guppy.Network.Utilities
         /// </summary>
         /// <typeparam name="TNetworkEntityMessage"></typeparam>
         /// <returns></returns>
-        public IEnumerable<IPacket> GetAll<TNetworkEntityMessage>()
+        public IEnumerable<IData> GetAll<TNetworkEntityMessage>()
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
             if(_packetFactories.TryGetValue(typeof(TNetworkEntityMessage), out PacketFactoryDelegate factories))

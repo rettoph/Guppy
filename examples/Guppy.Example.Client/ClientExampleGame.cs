@@ -44,7 +44,7 @@ namespace Guppy.Example.Client
             base.PostInitialize(provider);
 
             _client.TryStart();
-            _client.Connect("localhost", 1337, new Claim("name", "Rettoph", ClaimType.Public));
+            _client.TryConnect("localhost", 1337, new Claim("name", "Rettoph", ClaimType.Public));
         }
         #endregion
 

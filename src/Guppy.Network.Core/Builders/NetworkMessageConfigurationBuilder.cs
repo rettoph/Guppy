@@ -19,7 +19,7 @@ namespace Guppy.Network.Builders
     public abstract class NetworkMessageConfigurationBuilder : IPrioritizable
     {
         #region Static Fields
-        public static readonly MessageBus.Queue DefaultMessageBusQueue = new MessageBus.Queue("default-network-message-queue", 0);
+        public static readonly Bus.Queue DefaultMessageBusQueue = new Bus.Queue("default-network-message-queue", 0);
         #endregion
 
         #region Public Fields
@@ -43,9 +43,9 @@ namespace Guppy.Network.Builders
             DoubleDictionary<UInt16, Type, DataConfiguration> dataTypeConfigurations);
         #endregion
     }
-    public abstract class NetworkMessageConfigurationBuilder<TData, TNetworkMessageConfigurationBuilder> : NetworkMessageConfigurationBuilder, IFluentPrioritizable<NetworkMessageConfigurationBuilder<TData, TNetworkMessageConfigurationBuilder>>
-        where TData : class, IData
-        where TNetworkMessageConfigurationBuilder : NetworkMessageConfigurationBuilder<TData, TNetworkMessageConfigurationBuilder>
+    public abstract class NetworkMessageConfigurationBuilder<TMessage, TNetworkMessageConfigurationBuilder> : NetworkMessageConfigurationBuilder, IFluentPrioritizable<NetworkMessageConfigurationBuilder<TMessage, TNetworkMessageConfigurationBuilder>>
+        where TMessage : class, IData
+        where TNetworkMessageConfigurationBuilder : NetworkMessageConfigurationBuilder<TMessage, TNetworkMessageConfigurationBuilder>
     {
         #region Protected Properties
         protected ServiceProviderBuilder services { get; private set; }
@@ -57,11 +57,11 @@ namespace Guppy.Network.Builders
         public Byte SequenceChannel { get; set; }
         public String ProcessorConfigurationName { get; set; }
         public Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter { get; set; }
-        public MessageBus.Queue MessageBusQueue { get; set; }
+        public Bus.Queue MessageBusQueue { get; set; }
         #endregion
 
         #region Constructor
-        internal NetworkMessageConfigurationBuilder(NetworkProviderBuilder network, ServiceProviderBuilder services) : base(typeof(TData))
+        internal NetworkMessageConfigurationBuilder(NetworkProviderBuilder network, ServiceProviderBuilder services) : base(typeof(TMessage))
         {
             this.network = network;
             this.services = services;
@@ -88,7 +88,7 @@ namespace Guppy.Network.Builders
 
         #region SetProcessorConfiguration Methods
         /// <summary>
-        /// Define the service name to act as the message's <see cref="IMessageProcessor{TMessage}"/>
+        /// Define the service name to act as the message's <see cref="IDataProcessor{TMessage}"/>
         /// </summary>
         /// <typeparam name="TMessageProcessor"></typeparam>
         /// <param name="service"></param>
@@ -101,14 +101,14 @@ namespace Guppy.Network.Builders
             return this as TNetworkMessageConfigurationBuilder;
         }
         /// <summary>
-        /// Define the service type to act as the message's <see cref="IMessageProcessor{TMessage}"/>
+        /// Define the service type to act as the message's <see cref="IDataProcessor{TMessage}"/>
         /// </summary>
         /// <typeparam name="TMessageProcessor"></typeparam>
         /// <param name="service"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
         public TNetworkMessageConfigurationBuilder SetProcessorConfiguration<TMessageProcessor>()
-            where TMessageProcessor : IMessageProcessor<TData>
+            where TMessageProcessor : IDataProcessor<TMessage>
         {
             return this.SetProcessorConfiguration(typeof(TMessageProcessor).FullName);
         }
@@ -117,7 +117,7 @@ namespace Guppy.Network.Builders
 
         #region RegisterProcessorServiceConfiguration Methods
         /// <summary>
-        /// Register a new service to act as the message's <see cref="IMessageProcessor{TMessage}"/>
+        /// Register a new service to act as the message's <see cref="IDataProcessor{TMessage}"/>
         /// </summary>
         /// <typeparam name="TMessageProcessor"></typeparam>
         /// <param name="service"></param>
@@ -126,7 +126,7 @@ namespace Guppy.Network.Builders
         private TNetworkMessageConfigurationBuilder RegisterProcessorConfiguration<TMessageProcessor>(
             ServiceConfigurationBuilder<TMessageProcessor> service,
             Action<ServiceConfigurationBuilder<TMessageProcessor>> builder)
-            where TMessageProcessor : class, IMessageProcessor<TData>
+            where TMessageProcessor : class, IDataProcessor<TMessage>
         {
             builder(service);
             this.SetProcessorConfiguration(service.Name);
@@ -134,7 +134,7 @@ namespace Guppy.Network.Builders
             return this as TNetworkMessageConfigurationBuilder;
         }
         /// <summary>
-        /// Register a new service to act as the message's <see cref="IMessageProcessor{TMessage}"/>
+        /// Register a new service to act as the message's <see cref="IDataProcessor{TMessage}"/>
         /// </summary>
         /// <typeparam name="TMessageProcessor"></typeparam>
         /// <param name="service"></param>
@@ -142,14 +142,14 @@ namespace Guppy.Network.Builders
         /// <returns></returns>
         public TNetworkMessageConfigurationBuilder RegisterProcessorConfiguration<TMessageProcessor>(
             Action<ServiceConfigurationBuilder<TMessageProcessor>> builder)
-            where TMessageProcessor : class, IMessageProcessor<TData>
+            where TMessageProcessor : class, IDataProcessor<TMessage>
         {
             return this.RegisterProcessorConfiguration(
                 this.services.RegisterService<TMessageProcessor>(), 
                 builder);
         }
         /// <summary>
-        /// Register a new service to act as the message's <see cref="IMessageProcessor{TMessage}"/>
+        /// Register a new service to act as the message's <see cref="IDataProcessor{TMessage}"/>
         /// </summary>
         /// <typeparam name="TMessageProcessor"></typeparam>
         /// <param name="service"></param>
@@ -158,7 +158,7 @@ namespace Guppy.Network.Builders
         public TNetworkMessageConfigurationBuilder RegisterProcessorConfiguration<TMessageProcessor>(
             String name,
             Action<ServiceConfigurationBuilder<TMessageProcessor>> builder)
-            where TMessageProcessor : class, IMessageProcessor<TData>
+            where TMessageProcessor : class, IDataProcessor<TMessage>
         {
             return this.RegisterProcessorConfiguration(
                 this.services.RegisterService<TMessageProcessor>(name),
@@ -186,7 +186,7 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region SetMessageBusQueue Methods
-        public TNetworkMessageConfigurationBuilder SetMessageBusQueue(MessageBus.Queue queue)
+        public TNetworkMessageConfigurationBuilder SetMessageBusQueue(Bus.Queue queue)
         {
             this.MessageBusQueue = queue;
 
@@ -195,9 +195,9 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region RegisterMessage Methods
-        public TNetworkMessageConfigurationBuilder RegisterDataType(Action<DataConfigurationBuilder<TData>> builder)
+        public TNetworkMessageConfigurationBuilder RegisterDataType(Action<DataConfigurationBuilder<TMessage>> builder)
         {
-            DataConfigurationBuilder<TData> dataType = this.network.RegisterDataType<TData>();
+            DataConfigurationBuilder<TMessage> dataType = this.network.RegisterDataType<TMessage>();
             builder(dataType);
 
             return this as TNetworkMessageConfigurationBuilder;
@@ -210,7 +210,7 @@ namespace Guppy.Network.Builders
             DoubleDictionary<UInt16, Type, DataConfiguration> dataTypeConfigurations)
         {
             
-            return new NetworkMessageConfiguration<TData>(
+            return new NetworkMessageConfiguration<TMessage>(
                 id,
                 dataTypeConfigurations[this.DataConfigurationType],
                 this.DeliveryMethod,
@@ -227,8 +227,8 @@ namespace Guppy.Network.Builders
         #endregion
     }
 
-    public class NetworkMessageConfigurationBuilder<TData> : NetworkMessageConfigurationBuilder<TData, NetworkMessageConfigurationBuilder<TData>>
-        where TData : class, IData
+    public class NetworkMessageConfigurationBuilder<TMessage> : NetworkMessageConfigurationBuilder<TMessage, NetworkMessageConfigurationBuilder<TMessage>>
+        where TMessage : class, IData
     {
         internal NetworkMessageConfigurationBuilder(NetworkProviderBuilder network, ServiceProviderBuilder services) : base(network, services)
         {

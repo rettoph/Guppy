@@ -27,7 +27,7 @@ namespace Guppy.Network.Configurations
 
         public readonly String ProcessorConfigurationName;
         public readonly Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter;
-        public readonly MessageBus.Queue MessageBusQueue;
+        public readonly Bus.Queue MessageBusQueue;
 
         protected NetworkMessageConfiguration(
             Type type,
@@ -37,7 +37,7 @@ namespace Guppy.Network.Configurations
             Byte sequenceChannel,
             String processorConfigurationName,
             Func<ServiceProvider, NetworkMessageConfiguration, Boolean> filter,
-            MessageBus.Queue messageBusQueue)
+            Bus.Queue messageBusQueue)
         {
             this.Type = type;
             this.Id = id;
@@ -49,11 +49,11 @@ namespace Guppy.Network.Configurations
             this.MessageBusQueue = messageBusQueue;
         }
 
-        internal abstract void TryRegisterProcessor(ServiceProvider provider, MessageBus bus);
+        internal abstract void TryRegisterProcessor(ServiceProvider provider, Bus bus);
     }
 
-    internal class NetworkMessageConfiguration<TData> : NetworkMessageConfiguration
-        where TData : class, IData
+    internal class NetworkMessageConfiguration<TMessage> : NetworkMessageConfiguration
+        where TMessage : class, IData
     {
         public NetworkMessageConfiguration(
             DynamicId id, 
@@ -62,18 +62,18 @@ namespace Guppy.Network.Configurations
             byte sequenceChannel, 
             String processorConfigurationName, 
             Func<ServiceProvider, NetworkMessageConfiguration, bool> filter,
-            MessageBus.Queue messageBusQueue) : base(typeof(TData), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationName, filter, messageBusQueue)
+            Bus.Queue messageBusQueue) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationName, filter, messageBusQueue)
         {
         }
 
-        internal override void TryRegisterProcessor(ServiceProvider provider, MessageBus bus)
+        internal override void TryRegisterProcessor(ServiceProvider provider, Bus bus)
         {
             if(this.ProcessorConfigurationName is null)
             {
                 return;
             }
 
-            bus.RegisterProcessor<TData>(provider.GetService<IMessageProcessor<TData>>(this.ProcessorConfigurationName));
+            bus.RegisterProcessor<TMessage>(provider.GetService<IDataProcessor<TMessage>>(this.ProcessorConfigurationName));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Guppy.EntityComponent.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.Enums;
 using Guppy.EntityComponent.Interfaces;
 using Guppy.Network.Attributes;
@@ -21,29 +22,24 @@ namespace Guppy.Network.Components.Pipes
     /// between peers
     /// </summary>
     [HostTypeRequired(HostType.Remote)]
-    internal sealed class PipeNetworkEntityRemoteComponent : NetworkComponent<Pipe>
+    [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
+    internal sealed class PipeMagicNetworkEntityRemoteComponent : Component<Pipe>
     {
         #region Lifecycle Methods
-        protected override void PreInitializeRemote(ServiceProvider provider, NetworkAuthorization networkAuthorization)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.PreInitializeRemote(provider, networkAuthorization);
+            base.PreInitialize(provider);
 
-            if(networkAuthorization == NetworkAuthorization.Master)
-            {
-                this.Entity.OnNetworkEntityAdded += this.HandleMasterNetworkEntityAdded;
-                this.Entity.Users.OnUserAdded += this.HandleMasterUserAdded;
-            }
+            this.Entity.OnNetworkEntityAdded += this.HandleMasterNetworkEntityAdded;
+            this.Entity.Users.OnUserAdded += this.HandleMasterUserAdded;
         }
 
-        protected override void PostReleaseRemote(NetworkAuthorization networkAuthorization)
+        protected override void PostRelease()
         {
-            base.PostReleaseRemote(networkAuthorization);
+            base.PostRelease();
 
-            if (networkAuthorization == NetworkAuthorization.Master)
-            {
-                this.Entity.OnNetworkEntityAdded -= this.HandleMasterNetworkEntityAdded;
-                this.Entity.Users.OnUserAdded -= this.HandleMasterUserAdded;
-            }
+            this.Entity.OnNetworkEntityAdded -= this.HandleMasterNetworkEntityAdded;
+            this.Entity.Users.OnUserAdded -= this.HandleMasterUserAdded;
         }
         #endregion
 
@@ -53,7 +49,7 @@ namespace Guppy.Network.Components.Pipes
             if(args.User.NetPeer is not null)
             {
                 // Broadcast a create message for every entity within the pipe...
-                foreach (INetworkEntity entity in this.Entity.NetworkEntities)
+                foreach (IMagicNetworkEntity entity in this.Entity.NetworkEntities)
                 {
                     entity.SendMessage(new CreateNetworkEntityMessage()
                     {
@@ -63,7 +59,7 @@ namespace Guppy.Network.Components.Pipes
             }
         }
 
-        private void HandleMasterNetworkEntityAdded(Pipe sender, NetworkEntityPipeEventArgs args)
+        private void HandleMasterNetworkEntityAdded(Pipe sender, MagicNetworkEntityPipeEventArgs args)
         {
             if(args.OldPipe is null)
             { // This is the first pipe the entity has been put into...
@@ -85,7 +81,7 @@ namespace Guppy.Network.Components.Pipes
 
         private void HandleNetworkEntityWithFirstPipeReady(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            if(value == ServiceStatus.Ready && sender is INetworkEntity entity)
+            if(value == ServiceStatus.Ready && sender is IMagicNetworkEntity entity)
             {
                 entity.OnStatusChanged -= this.HandleNetworkEntityWithFirstPipeReady;
                 entity.SendMessage(new CreateNetworkEntityMessage()

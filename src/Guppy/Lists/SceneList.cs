@@ -10,6 +10,10 @@ namespace Guppy.EntityComponent.Lists
 {
     public class SceneList : FactoryServiceList<IScene>
     {
+        #region Protected Attributes
+        protected override ServiceProvider provider => base.provider.CreateScope();
+        #endregion
+
         #region Public Attributes
         public IScene Scene { get; private set; }
         #endregion
@@ -56,18 +60,6 @@ namespace Guppy.EntityComponent.Lists
                 throw new Exception("Unable to render non-child theme.");
 
             this.Scene = scene;
-        }
-        #endregion
-
-        #region Create Methods
-        protected override T Create<T>(ServiceProvider provider, string serviceName)
-        {
-            return base.Create<T>(provider.CreateScope(), serviceName);
-        }
-
-        protected override T Create<T>(ServiceProvider provider, string serviceName, Action<T, ServiceProvider, ServiceConfiguration> customSetup)
-        {
-            return base.Create(provider.CreateScope(), serviceName, customSetup);
         }
         #endregion
 

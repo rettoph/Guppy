@@ -27,6 +27,8 @@ using Guppy.Network.Components.Rooms;
 using Guppy.Network.Utilities;
 using Guppy.Network.Components.NetworkEntities;
 using Guppy.ServiceLoaders;
+using Guppy.EntityComponent;
+using Guppy.EntityComponent.Interfaces;
 
 namespace Guppy.Network.ServiceLoaders
 {
@@ -36,9 +38,12 @@ namespace Guppy.Network.ServiceLoaders
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             #region Register Services
-            services.RegisterService<MessageBus>(Constants.ServiceNames.PeerMessageBus)
-                .SetLifetime(ServiceLifetime.Singleton)
-                .SetFactoryType<MessageBus>();
+            services.RegisterService<Bus>(Constants.ServiceNames.RoomBus)
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory<Bus>(factory =>
+                {
+                    factory.SetDefaultConstructor<Bus>();
+                });
 
             services.RegisterService<RoomService>()
                 .SetLifetime(ServiceLifetime.Singleton)
@@ -109,7 +114,7 @@ namespace Guppy.Network.ServiceLoaders
             #endregion
 
             #region Register Component Filters
-            services.RegisterComponentFilter(typeof(NetworkComponent<>))
+            services.RegisterComponentFilter(typeof(IComponent))
                 .SetMethod((e, p, c) =>
                 {
                     var cache = p.GetService<AttributeCache<NetworkAuthorizationRequiredAttribute>>();
@@ -123,7 +128,7 @@ namespace Guppy.Network.ServiceLoaders
                     return cc.TypeFactory.Type.HasCustomAttribute<NetworkAuthorizationRequiredAttribute>();
                 });
 
-            services.RegisterComponentFilter(typeof(NetworkComponent<>))
+            services.RegisterComponentFilter(typeof(IComponent))
                 .SetMethod((e, p, c) =>
                 {
                     HostType requiredNetworkAuthorization = p.GetService<AttributeCache<HostTypeRequiredAttribute>>()[c.TypeFactory.Type].HostType;
