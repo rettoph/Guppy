@@ -24,16 +24,11 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
                     factory.SetDefaultConstructor<ComponentManager>();
                 });
 
-            this.RegisterBuilder<IEntity>()
-                .SetMethod((e, p, c) =>
-                {
-                    e.OnStatusChanged += ServiceProviderBuilder.HandleEntityStatusChanged;
-                });
-
             this.RegisterSetup<IEntity>()
                 .SetOrder(Constants.Priorities.PreInitialize - 1)
                 .SetMethod((e, p, _) =>
                 {
+                    e.OnStatusChanged += ServiceProviderBuilder.HandleEntityStatusChanged;
                     e.Components = p.GetService<ComponentManager>((manager, _, _) =>
                     {
                         IEnumerable<IComponent> components = CreateComponents(p.EntityComponentConfigurations[e.ServiceConfiguration.Id], e, p) ?? Enumerable.Empty<IComponent>();
@@ -65,25 +60,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
 
         private void SetupServiceConfiguration()
         {
-            this.RegisterBuilder<IService>()
-                .SetOrder(Constants.Priorities.Create)
-                .SetMethod((s, p, sd) =>
-                {
-                    s.OnStatusChanged += ServiceProviderBuilder.HandleServiceStatusChanged;
-                });
-
-            this.RegisterBuilder<IService>()
-                .SetOrder(Constants.Priorities.PreCreate)
-                .SetMethod((s, p, sd) => s.TryPreCreate(p));
-
-            this.RegisterBuilder<IService>()
-                .SetOrder(Constants.Priorities.Create)
-                .SetMethod((s, p, sd) => s.TryCreate(p));
-
-            this.RegisterBuilder<IService>()
-                .SetOrder(Constants.Priorities.PostCreate)
-                .SetMethod((s, p, sd) => s.TryPostCreate(p));
-
             this.RegisterSetup<IService>()
                 .SetOrder(Int32.MinValue)
                 .SetMethod((s, p, sd) =>
@@ -149,35 +125,11 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
             {
                 switch (value)
                 {
-                    case ServiceStatus.Releasing:
-                        entity.Components.TryRelease();
-                        break;
-                    case ServiceStatus.Disposing:
+                    case ServiceStatus.Uninitializing:
+                        entity.Components.Dispose();
                         entity.OnStatusChanged -= ServiceProviderBuilder.HandleEntityStatusChanged;
                         break;
                 };
-            }
-        }
-
-        /// <summary>
-        /// When an IService instance is marked not ready, we should automatically
-        /// return the instance to the ServiceTypeDescriptor pool.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="old"></param>
-        /// <param name="value"></param>
-        private static void HandleServiceStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            switch (value)
-            {
-                case ServiceStatus.NotInitialized:
-                    if (old == ServiceStatus.PostReleasing)
-                        if (!sender.ServiceConfiguration.TypeFactory.TryReturnToPool(sender))
-                            sender.TryDispose();
-                    break;
-                case ServiceStatus.Disposing:
-                    sender.OnStatusChanged -= ServiceProviderBuilder.HandleServiceStatusChanged;
-                    break;
             }
         }
         #endregion

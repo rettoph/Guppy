@@ -32,25 +32,16 @@ namespace Guppy
             base.Initialize(provider);
 
             _provider = provider;
-            provider.Service(Constants.ServiceNames.GameMessageBus, out _messageBus);
+            provider.Service(out _messageBus);
 
             this.Scenes = provider.GetService<SceneList>();
         }
 
-        protected override void Release()
+        protected override void PostUninitialize()
         {
-            base.Release();
-
-            _messageBus.TryRelease();
-            _messageBus = null;
-        }
-
-        protected override void PostDispose()
-        {
-            base.PostDispose();
+            base.PostUninitialize();
 
             _provider.Dispose();
-            _provider = null;
         }
         #endregion
 
@@ -62,18 +53,17 @@ namespace Guppy
             this.Scenes.TryDraw(gameTime);
         }
 
+        protected override void PreUpdate(GameTime gameTime)
+        {
+            base.PreUpdate(gameTime);
+
+            _messageBus.ProcessEnqueued();
+        }
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             this.Scenes.TryUpdate(gameTime);
-        }
-
-        protected override void PostUpdate(GameTime gameTime)
-        {
-            base.PostUpdate(gameTime);
-
-            _messageBus.ProcessEnqueued();
         }
         #endregion
     }

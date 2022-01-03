@@ -34,13 +34,11 @@ namespace Guppy.Network.Services
             _provider.Service(out _log);
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
             _entities.Clear();
-            _log = default;
-            _provider = default;
         }
         #endregion
 
@@ -109,6 +107,21 @@ namespace Guppy.Network.Services
             }
 
             // Entity created, we can safely assume it was added?
+            return true;
+        }
+
+        internal Boolean TryProcess(DisposeNetworkEntityMessage message)
+        {
+            // Try to load the requested entity...
+            if (!_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
+            {
+                return false;
+            }
+
+            // Do one final process, just in case...
+            this.ProcessPackets(entity, message);
+            // Goodbye.
+            entity.Dispose();
             return true;
         }
 

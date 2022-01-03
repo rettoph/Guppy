@@ -43,9 +43,9 @@ namespace Guppy.EntityComponent.Lists
             this.OnAdd += this.HandleSceneAdded;
         }
 
-        protected override void Release()
+        protected override void PostUninitialize()
         {
-            base.Release();
+            base.PostUninitialize();
 
             this.OnDraw -= this.Draw;
             this.OnUpdate -= this.Update;

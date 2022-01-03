@@ -50,7 +50,7 @@ namespace Guppy.Network.Builders
 
         #region RegisterNetworkMessage Methods
         public NetworkMessageConfigurationBuilder<TMessage> RegisterNetworkMessage<TMessage>()
-            where TMessage : class, IData
+            where TMessage : class, IMessage
         {
             NetworkMessageConfigurationBuilder<TMessage> message = new NetworkMessageConfigurationBuilder<TMessage>(this, _services);
             _messages.Add(message);

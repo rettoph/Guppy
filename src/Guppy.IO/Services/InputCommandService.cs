@@ -42,27 +42,12 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
-        {
-            base.Create(provider);
-
-            _inputCommands = new Dictionary<String, InputCommand>();
-        }
-
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _provider = provider;
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _provider = null;
-            _inputCommands.ForEach(ic => ic.Value.TryRelease());
-            _inputCommands.Clear();
+            _inputCommands = new Dictionary<String, InputCommand>();
         }
         #endregion
     }

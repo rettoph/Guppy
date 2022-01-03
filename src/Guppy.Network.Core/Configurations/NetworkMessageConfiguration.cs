@@ -27,7 +27,7 @@ namespace Guppy.Network.Configurations
 
         public readonly String ProcessorConfigurationName;
         public readonly Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter;
-        public readonly Bus.Queue MessageBusQueue;
+        public readonly Int32 MessageBusQueue;
 
         protected NetworkMessageConfiguration(
             Type type,
@@ -37,7 +37,7 @@ namespace Guppy.Network.Configurations
             Byte sequenceChannel,
             String processorConfigurationName,
             Func<ServiceProvider, NetworkMessageConfiguration, Boolean> filter,
-            Bus.Queue messageBusQueue)
+            Int32 messageBusQueue)
         {
             this.Type = type;
             this.Id = id;
@@ -49,11 +49,11 @@ namespace Guppy.Network.Configurations
             this.MessageBusQueue = messageBusQueue;
         }
 
-        internal abstract void TryRegisterProcessor(ServiceProvider provider, Bus bus);
+        internal abstract void TryRegisterProcessor(ServiceProvider provider, MessageBus bus);
     }
 
     internal class NetworkMessageConfiguration<TMessage> : NetworkMessageConfiguration
-        where TMessage : class, IData
+        where TMessage : class, IMessage
     {
         public NetworkMessageConfiguration(
             DynamicId id, 
@@ -62,11 +62,11 @@ namespace Guppy.Network.Configurations
             byte sequenceChannel, 
             String processorConfigurationName, 
             Func<ServiceProvider, NetworkMessageConfiguration, bool> filter,
-            Bus.Queue messageBusQueue) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationName, filter, messageBusQueue)
+            Int32 messageBusQueue) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationName, filter, messageBusQueue)
         {
         }
 
-        internal override void TryRegisterProcessor(ServiceProvider provider, Bus bus)
+        internal override void TryRegisterProcessor(ServiceProvider provider, MessageBus bus)
         {
             if(this.ProcessorConfigurationName is null)
             {

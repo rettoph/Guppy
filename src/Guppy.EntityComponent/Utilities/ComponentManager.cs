@@ -15,12 +15,11 @@ namespace Guppy.EntityComponent.Utilities
         #endregion
 
         #region Lifecycle Methods
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
-            _components.Values.ForEach(c => c.TryRelease());
-            _components = default;
+            _components.Values.ForEach(c => c.Dispose());
         }
         #endregion
 

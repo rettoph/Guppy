@@ -11,26 +11,13 @@ namespace Guppy.Threading.Utilities
 {
     public class Bus : Bus<IData>
     {
-        #region Classes
-        public class Queue
-        {
-            public readonly String Name;
-            public readonly Int32 Order;
-
-            public Queue(string name, int order)
-            {
-                this.Name = name;
-                this.Order = order;
-            }
-        }
-        #endregion
     }
 
     public class Bus<TData> : DataProcessor<TData>
         where TData : class, IData
     {
         #region Private Fields
-        private Dictionary<Bus.Queue, Queue<TData>> _queues;
+        private Dictionary<Int32, Queue<TData>> _queues;
         private Queue<TData>[] _orderedQueues = Array.Empty<Queue<TData>>();
         private Dictionary<Type, Queue<TData>> _messageTypeQueues;
         private ILog _log;
@@ -43,17 +30,8 @@ namespace Guppy.Threading.Utilities
 
             provider.Service(out _log);
 
-            _queues = new Dictionary<Bus.Queue, Queue<TData>>();
+            _queues = new Dictionary<Int32, Queue<TData>>();
             _messageTypeQueues = new Dictionary<Type, Queue<TData>>();
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _log = default;
-            _queues = default;
-            _messageTypeQueues = default;
         }
         #endregion
 
@@ -81,27 +59,33 @@ namespace Guppy.Threading.Utilities
             }
         }
 
-        public Boolean TryRegisterQueue(Bus.Queue key, params Type[] messageTypes)
+        public void RegisterMessageTypes(Int32 queue, params Type[] messageTypes)
         {
-            Queue<TData> queue = new Queue<TData>();
-            if (_queues.TryAdd(key, queue))
+            // Look i know theQueue isnt a great name. It makes sense that we call
+            // the queue id 'queue' in the context of this method. it *is* queue N.
+            // theQueue is.. the actual queue. Dont sue me
+            if(!_queues.TryGetValue(queue, out Queue<TData> theQueue))
             {
+                theQueue = new Queue<TData>();
+
+                // Create the new queue
+                _queues.Add(queue, theQueue);
+
                 // Attempt to order all registered queues into an array
-                _orderedQueues = _queues.OrderBy(kvp => kvp.Key.Order).Select(kvp => kvp.Value).ToArray();
-
-                // Create lookup table so that incoming messages can be placed into their apprioriate queue
-                foreach (Type messageType in messageTypes)
-                {
-                    if (!_messageTypeQueues.TryAdd(messageType, queue))
-                    {
-                        _log.Warn($"{nameof(MessageBus)}::{nameof(TryRegisterQueue)} - Unable to register message type '{messageType.Name}' to queue '{key.Name}'.");
-                    }
-                }
-
-                return true;
+                _orderedQueues = _queues.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToArray();
             }
 
-            return false;
+            // Create lookup table so that incoming messages can be placed into their apprioriate queue
+            foreach (Type messageType in messageTypes)
+            {
+                if (_messageTypeQueues.TryAdd(messageType, theQueue))
+                {
+                    _log.Info($"{nameof(MessageBus)}::{nameof(RegisterMessageTypes)} - Registered message type '{messageType.Name}' to queue '{queue}'.");
+                    return;
+                }
+
+                _log.Warn($"{nameof(MessageBus)}::{nameof(RegisterMessageTypes)} - Unable to register message type '{messageType.Name}' to queue '{queue}'.");
+            }
         }
         #endregion
     }

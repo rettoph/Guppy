@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.EntityComponent.Interfaces
 {
-    public interface IService
+    public interface IService : IDisposable
     {
         #region Properties
         ServiceStatus Status { get; }
@@ -19,14 +19,9 @@ namespace Guppy.EntityComponent.Interfaces
         #endregion
 
         #region Lifecycle Methods
-        void TryPreCreate(ServiceProvider provider);
-        void TryCreate(ServiceProvider provider);
-        void TryPostCreate(ServiceProvider provider);
-        void TryPreInitialize(ServiceProvider provider);
-        void TryInitialize(ServiceProvider provider);
-        void TryPostInitialize(ServiceProvider provider);
-        void TryRelease();
-        void TryDispose();
+        internal void TryPreInitialize(ServiceProvider provider);
+        internal void TryInitialize(ServiceProvider provider);
+        internal void TryPostInitialize(ServiceProvider provider);
         #endregion
     }
 }

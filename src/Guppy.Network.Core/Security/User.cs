@@ -24,12 +24,12 @@ namespace Guppy.Network.Security
         public readonly NetPeer NetPeer;
 
         public readonly DateTime CreatedAt;
-        public readonly Boolean IsCurrentUser;
         #endregion
 
         #region Public Properties
         public IEnumerable<Claim> Claims => _claims.Values;
         public IEnumerable<Room> Rooms => _rooms;
+        public Boolean IsCurrentUser { get; internal set; }
         public DateTime UpdatedAt { get; private set; }
         #endregion
 
@@ -42,10 +42,11 @@ namespace Guppy.Network.Security
         #endregion
 
         #region Constructors
-        internal User(Int32 id, NetManager manager, IEnumerable<Claim> claims, Boolean isCurrentUser)
+        internal User(Int32 id, NetManager manager, IEnumerable<Claim> claims)
         {
             this.Id = id;
             this.NetPeer = id == -1 ? default : manager.GetPeerById(id);
+
             _claims = claims.ToDictionaryByValue(c => c.Key);
             _rooms = new List<Room>();
 

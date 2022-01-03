@@ -1,4 +1,5 @@
 ﻿using Guppy.CommandLine;
+using Guppy.Threading.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace Guppy.Network
 {
     public static class Constants
     {
-        public static class ServiceNames
+        public static class Queues
         {
-            public const String RoomBus = "room-bus";
-        }
-        public static class Commands
-        {
+            public const Int32 UserRoomActionMessageQueue = Int32.MinValue;
+            public const Int32 CreateNetworkEntityMessageQueue = Int32.MinValue + 1000;
+            public const Int32 RemoveNetworkEntityMessageQueue = Int32.MaxValue;
+            public const Int32 DefaultMessageQueue = -1000;
         }
     }
 }

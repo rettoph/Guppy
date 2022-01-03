@@ -43,13 +43,6 @@ namespace Guppy.IO.Services
 
             this.TryStartAsync();
         }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _inputButtons = null;
-        }
         #endregion
 
         #region Frame Methods

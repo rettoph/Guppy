@@ -19,10 +19,6 @@ namespace Guppy.ServiceLoaders
             services.RegisterTypeFactory<MessageBus>()
                 .SetDefaultConstructor<MessageBus>();
 
-            services.RegisterService<MessageBus>(Constants.ServiceNames.GameMessageBus)
-                .SetLifetime(ServiceLifetime.Singleton)
-                .SetFactoryType<MessageBus>();
-
             services.RegisterService<MessageBus>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .SetFactoryType<MessageBus>();

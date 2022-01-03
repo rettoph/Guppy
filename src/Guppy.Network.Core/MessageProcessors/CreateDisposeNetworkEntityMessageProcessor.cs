@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.MessageProcessors
 {
-    internal sealed class CreateNetworkEntityMessageProcessor : Service, IDataProcessor<CreateNetworkEntityMessage>
+    internal sealed class CreateDisposeNetworkEntityMessageProcessor : Service, 
+        IDataProcessor<CreateNetworkEntityMessage>,
+        IDataProcessor<DisposeNetworkEntityMessage>
     {
         #region Private Fields
         private NetworkEntityService _entities;
@@ -27,22 +29,17 @@ namespace Guppy.Network.MessageProcessors
 
             provider.Service(out _entities);
         }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            _entities = default;
-        }
         #endregion
 
         #region IMessageProcessor<CreateNetworkEntityMessage> Implementation
-        void IDataProcessor<CreateNetworkEntityMessage>.Process(CreateNetworkEntityMessage message)
+        Boolean IDataProcessor<CreateNetworkEntityMessage>.Process(CreateNetworkEntityMessage message)
         {
-            if(!_entities.TryProcess(message))
-            {
-                throw new InvalidOperationException();
-            }
+            return _entities.TryProcess(message);
+        }
+
+        Boolean IDataProcessor<DisposeNetworkEntityMessage>.Process(DisposeNetworkEntityMessage message)
+        {
+            return _entities.TryProcess(message);
         }
         #endregion
     }

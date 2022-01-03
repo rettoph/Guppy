@@ -14,7 +14,7 @@ using Guppy.Messages;
 
 namespace Guppy
 {
-    public abstract class Scene : Frameable, IScene, IDataProcessor<ReleaseServiceMessage>
+    public abstract class Scene : Frameable, IScene, IDataProcessor<DisposeServiceMessage>
     {
         #region Private Fields
         private ServiceProvider _provider;
@@ -44,9 +44,9 @@ namespace Guppy
         {
             base.Initialize(provider);
 
-            _messageBus.TryRegisterQueue(Constants.BusQueues.ReleaseServiceQueue, typeof(ReleaseServiceMessage));
+            _messageBus.RegisterMessageTypes(Int32.MaxValue, typeof(DisposeServiceMessage));
 
-            _messageBus.RegisterProcessor<ReleaseServiceMessage>(this);
+            _messageBus.RegisterProcessor<DisposeServiceMessage>(this);
         }
 
         protected override void PostInitialize(ServiceProvider provider)
@@ -57,22 +57,13 @@ namespace Guppy
             // TaskHelper.CreateLoop(this.TryUpdate, 16, source.Token);
         }
 
-        protected override void PreRelease()
+        protected override void PreUninitialize()
         {
-            base.PreRelease();
+            base.PreUninitialize();
 
             // When a scene is released lets just dispose the entire ServiceProvider instance.
+            // TODO: Verify this cascades and disposes everything
             _provider.Dispose();
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _provider = null;
-            _messageBus = null;
-            this.Layerables.TryRelease();
-            this.Layers.TryRelease();
         }
         #endregion
 
@@ -102,9 +93,11 @@ namespace Guppy
         #endregion
 
         #region Message Processors
-        void IDataProcessor<ReleaseServiceMessage>.Process(ReleaseServiceMessage message)
+        Boolean IDataProcessor<DisposeServiceMessage>.Process(DisposeServiceMessage message)
         {
-            message.Service.TryRelease();
+            message.Service.Dispose();
+
+            return true;
         }
         #endregion
     }

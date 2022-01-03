@@ -13,17 +13,11 @@ namespace Guppy
         {
             public static readonly String TransientSpritebatch = "service:spritebatch:transient";
             public static readonly String TransientCamera = "service:camera:transient";
-            public static readonly String GameMessageBus = "message-queue:game";
         }
 
         public static class Content
         {
             public const String DebugFont = "guppy:font:debug";
-        }
-
-        public static class BusQueues
-        {
-            public static readonly Bus.Queue ReleaseServiceQueue = new Bus.Queue("release-service-queue", Int32.MaxValue);
         }
     }
 }

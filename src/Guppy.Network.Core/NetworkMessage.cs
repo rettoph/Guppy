@@ -11,6 +11,6 @@ namespace Guppy.Network
     {
         public Byte RoomId { get; set; }
         public NetworkMessageConfiguration Configuration { get; set; }
-        public IData Data { get; set; }
+        public IMessage Data { get; set; }
     }
 }

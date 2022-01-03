@@ -30,12 +30,11 @@ namespace Guppy.Network.Components
             this.Entity.NetworkId = _idProvider.ClaimId();
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
             _idProvider.SurrenderId(this.Entity.NetworkId);
-            _idProvider = default;
         }
         #endregion
     }

@@ -9,6 +9,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders.Interfaces
     {
         public Type Type { get; }
 
-        TypeFactory Build(IEnumerable<CustomAction<TypeFactory, ITypeFactoryBuilder>> allBuilders);
+        TypeFactory Build();
     }
 }

@@ -25,12 +25,11 @@ namespace Guppy.Network
             this.Messages = provider.GetService<NetworkEntityMessageService>();
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
-            this.Messages.TryRelease();
-            this.Messages = default;
+            this.Messages.Dispose();
         }
         #endregion
     }

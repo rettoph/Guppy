@@ -43,12 +43,12 @@ namespace Guppy
             this.Items.OnItemCreated += this.HandleEntityCreated;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             this.Items.OnItemCreated -= this.HandleEntityCreated;
-            this.Items.TryRelease();
+            this.Items.Dispose();
         }
         #endregion
 

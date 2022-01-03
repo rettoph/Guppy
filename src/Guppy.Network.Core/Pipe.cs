@@ -40,14 +40,13 @@ namespace Guppy.Network
             _entities = new Dictionary<UInt16, IMagicNetworkEntity>();
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
             _entities.Clear();
 
-            this.Users.TryRelease();
-            this.Users = default;
+            this.Users.Dispose();
         }
         #endregion
 

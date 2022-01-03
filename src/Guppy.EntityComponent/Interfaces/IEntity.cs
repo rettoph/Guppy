@@ -11,6 +11,6 @@ namespace Guppy.EntityComponent.Interfaces
     /// </summary>
     public interface IEntity : IService
     {
-        ComponentManager Components { get; set; }
+        ComponentManager Components { get; internal set; }
     }
 }

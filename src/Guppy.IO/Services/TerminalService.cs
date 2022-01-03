@@ -147,21 +147,11 @@ namespace Guppy.IO.Services
             Console.SetError(new ConsoleTerminalTextWriter(this));
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
             this.Close();
-
-            _commands = default;
-            _window = default;
-            _graphics = default;
-            _primitiveBatch = default;
-            _mouse = default;
-            _keyboard = default;
-            _spriteBatch = default;
-            _camera = default;
-            _log = default;
         }
         #endregion
 

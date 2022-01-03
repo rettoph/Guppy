@@ -30,15 +30,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
             get => _method;
             set => this.SetMethod(value);
         }
-
-        /// <summary>
-        /// The maximum size of the factory's internal pool.
-        /// </summary>
-        public UInt16? MaxPoolSize
-        {
-            get => _maxPoolSize;
-            set => this.SetMaxPoolSize(value);
-        }
         #endregion
 
         #region Constructors
@@ -84,38 +75,17 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
-        #region SetMaxPoolSize Methods
-        /// <summary>
-        /// Set the maximum size of the factory's internal pool.
-        /// </summary>
-        /// <param name="implementationType"></param>
-        /// <returns></returns>
-        public TypeFactoryBuilder<TFactory> SetMaxPoolSize(UInt16? maxPoolSize)
-        {
-            _maxPoolSize = maxPoolSize;
-
-            return this;
-        }
-        #endregion
-
         #region TypeFactoryBuilder Implementation
-        TypeFactory ITypeFactoryBuilder.Build(
-            IEnumerable<CustomAction<TypeFactory, ITypeFactoryBuilder>> allBuilders)
+        TypeFactory ITypeFactoryBuilder.Build()
         {
             TFactory DefaultMethod(ServiceProvider provider)
             {
                 return Activator.CreateInstance(this.Type) as TFactory;
             }
 
-            CustomAction<TypeFactory, ITypeFactoryBuilder>[] builders = allBuilders.Where(b => {
-                return this.Type.IsAssignableToOrSubclassOfGenericDefinition(b.AssignableFactoryType)&& b.Filter(this);
-            }).ToArray();
-
             return new TypeFactory<TFactory>(
                 type: this.Type,
-                method: this.Method ?? DefaultMethod,
-                builders: builders,
-                maxPoolSize: this.MaxPoolSize ?? 500);
+                method: this.Method ?? DefaultMethod);
         }
         #endregion
     }

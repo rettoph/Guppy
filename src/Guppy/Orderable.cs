@@ -61,18 +61,6 @@ namespace Guppy
             this.Enabled = true;
             this.Visible = true;
         }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-#if DEBUG_VERBOSE
-            this.OnDrawOrderChanged.LogInvocationList($"OnDrawOrderChanged", this);
-            this.OnUpdateOrderChanged.LogInvocationList($"OnUpdateOrderChanged", this);
-            this.OnVisibleChanged.LogInvocationList($"OnVisibleChanged", this);
-            this.OnEnabledChanged.LogInvocationList($"OnEnabledChanged", this);
-#endif
-        }
         #endregion
 
         #region IOrderable Methods

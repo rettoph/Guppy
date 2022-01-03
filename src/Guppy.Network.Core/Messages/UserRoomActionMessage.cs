@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Messages
 {
-    internal sealed class UserRoomActionMessage : IData
+    internal sealed class UserRoomActionMessage : IMessage
     {
         public UserRoomAction Action { get; internal init; }
         public Byte RoomId { get; internal init; }

@@ -31,9 +31,9 @@ namespace Guppy.IO.Components
             _keyboard[Keys.OemTilde].OnState[ButtonState.Pressed] += this.HandleToggleTerminal;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             _keyboard[Keys.OemTilde].OnState[ButtonState.Pressed] -= this.HandleToggleTerminal;
         }

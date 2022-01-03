@@ -91,15 +91,23 @@ namespace Guppy.Network.ServiceLoaders
             network.RegisterNetworkEntityMessage<CreateNetworkEntityMessage>()
                 .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
                 .SetSequenceChannel(0)
+                .SetMessageBusQueue(Constants.Queues.CreateNetworkEntityMessageQueue)
                 .SetFilter(CreateNetworkEntityMessage.Filter)
-                .RegisterProcessorConfiguration<CreateNetworkEntityMessageProcessor>(service =>
+                .RegisterProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>(service =>
                 {
                     service.SetLifetime(ServiceLifetime.Scoped)
                         .RegisterTypeFactory(factory =>
                         {
-                            factory.SetDefaultConstructor<CreateNetworkEntityMessageProcessor>();
+                            factory.SetDefaultConstructor<CreateDisposeNetworkEntityMessageProcessor>();
                         });
-                }); 
+                });
+
+            network.RegisterNetworkEntityMessage<DisposeNetworkEntityMessage>()
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
+                .SetSequenceChannel(0)
+                .SetMessageBusQueue(Constants.Queues.RemoveNetworkEntityMessageQueue)
+                .SetFilter(DisposeNetworkEntityMessage.Filter)
+                .SetProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>();
         }
     }
 }

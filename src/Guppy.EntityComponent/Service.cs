@@ -13,7 +13,7 @@ namespace Guppy.EntityComponent
         #region Private Fields
         private ServiceConfiguration _configuration;
         private Guid _id;
-        private ServiceStatus _status;
+        private ServiceStatus _status = ServiceStatus.Initializing;
         #endregion
 
         #region Public Properties
@@ -35,127 +35,43 @@ namespace Guppy.EntityComponent
             get => _status;
             set => this.OnStatusChanged.InvokeIf(value != _status, this, ref _status, value);
         }
-
-#if DEBUG
-        public UInt32 HistoricInitializedCount { get; private set; } = 0;
-#endif
-
-#endregion
+        #endregion
 
         #region Events
         public event OnChangedEventDelegate<IService, ServiceStatus> OnStatusChanged;
         #endregion
 
         #region Lifecycle Methods
-        void IService.TryPreCreate(ServiceProvider provider)
-        {
-            if (this.ValidateStatus(ServiceStatus.NotCreated))
-            {
-                this.Status = ServiceStatus.PreCreating;
-                this.PreCreate(provider);
-            }
-        }
-        void IService.TryCreate(ServiceProvider provider)
-        {
-            if (this.ValidateStatus(ServiceStatus.PreCreating))
-            {
-                this.Status = ServiceStatus.Creating;
-                this.Create(provider);
-            }
-        }
-
-        void IService.TryPostCreate(ServiceProvider provider)
-        {
-            if (this.ValidateStatus(ServiceStatus.Creating))
-            {
-                this.Status = ServiceStatus.PostCreating;
-                this.PostCreate(provider);
-
-                this.Status = ServiceStatus.NotInitialized;
-            }
-        }
-
         void IService.TryPreInitialize(ServiceProvider provider)
         {
-            if (this.ValidateStatus(ServiceStatus.NotInitialized))
-            {
-                this.Status = ServiceStatus.PreInitializing;
-                this.PreInitialize(provider);
-            }
+            this.PreInitialize(provider);
         }
 
         void IService.TryInitialize(ServiceProvider provider)
         {
-            if (this.ValidateStatus(ServiceStatus.PreInitializing))
-            {
-#if DEBUG
-                this.HistoricInitializedCount++;
-#endif
-                this.Status = ServiceStatus.Initializing;
-                this.Initialize(provider);
-            }
+            this.Initialize(provider);
         }
 
         void IService.TryPostInitialize(ServiceProvider provider)
         {
-            if(this.ValidateStatus(ServiceStatus.Initializing))
+            this.PostInitialize(provider);
+            this.Status = ServiceStatus.Ready;
+        }
+
+        public void Dispose()
+        {
+            if(this.Status != ServiceStatus.Ready)
             {
-                this.Status = ServiceStatus.PostInitializing;
-                this.PostInitialize(provider);
-
-                this.Status = ServiceStatus.Ready;
+                return;
             }
-        }
 
-        public void TryRelease()
-        {
-            if(this.ValidateStatus(status: ServiceStatus.Ready, required: false))
-            {
-                this.Status = ServiceStatus.PreReleasing;
-                this.PreRelease();
+            this.Status = ServiceStatus.Uninitializing;
 
-                this.Status = ServiceStatus.Releasing;
-                this.Release();
+            this.PreUninitialize();
+            this.Uninitialize();
+            this.PostUninitialize();
 
-                this.Status = ServiceStatus.PostReleasing;
-                this.PostRelease();
-
-                this.Status = ServiceStatus.NotInitialized;
-            }
-        }
-
-        public void TryDispose()
-        {
-            this.TryRelease();
-
-            if (this.ValidateStatus(status: ServiceStatus.NotInitialized, required: false))
-            {
-                this.Status = ServiceStatus.PreDisposing;
-                this.PreDispose();
-
-                this.Status = ServiceStatus.Disposing;
-                this.Dispose();
-
-                this.Status = ServiceStatus.PostDisposing;
-                this.PostDispose();
-
-                this.Status = ServiceStatus.NotCreated;
-            }
-        }
-
-        protected virtual void PreCreate(ServiceProvider provider)
-        {
-            //
-        }
-
-        protected virtual void Create(ServiceProvider provider)
-        {
-            //
-        }
-
-        protected virtual void PostCreate(ServiceProvider provider)
-        {
-            //
+            this.Status = ServiceStatus.Disposed;
         }
 
         protected virtual void PreInitialize(ServiceProvider provider)
@@ -173,49 +89,19 @@ namespace Guppy.EntityComponent
             //
         }
 
-        protected virtual void PreRelease()
+        protected virtual void PreUninitialize()
         {
             //
         }
 
-        protected virtual void Release()
+        protected virtual void Uninitialize()
         {
             //
         }
 
-        protected virtual void PostRelease()
+        protected virtual void PostUninitialize()
         {
             //
-        }
-
-        protected virtual void PreDispose()
-        {
-            //
-        }
-
-        protected virtual void Dispose()
-        {
-            //
-        }
-
-        protected virtual void PostDispose()
-        {
-            //
-        }
-        #endregion
-
-        #region IDisposable Implementation
-        void IDisposable.Dispose()
-            => this.TryRelease();
-        #endregion
-
-        #region Helper Methods
-        private Boolean ValidateStatus(ServiceStatus status, Boolean required = true)
-        {
-            if (this.Status != status)
-                return required ? throw new Exception($"Invalid Status, expected '{status}' but got '{this.Status}'.") : false;
-
-            return true;
         }
         #endregion
     }

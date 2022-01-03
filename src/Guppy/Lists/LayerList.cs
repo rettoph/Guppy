@@ -18,11 +18,9 @@ namespace Guppy.EntityComponent.Lists
             this.CanAdd += this.CanAddLayer;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
-
-            this.releaseChildren = true;
+            base.Uninitialize();
 
             this.CanAdd -= this.CanAddLayer;
         }

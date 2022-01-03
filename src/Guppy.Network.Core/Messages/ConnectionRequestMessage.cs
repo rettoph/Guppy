@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Network.Messages
 {
-    internal sealed class ConnectionRequestMessage : IData
+    internal sealed class ConnectionRequestMessage : IMessage
     {
         public UInt32 NetworkProviderConfigurationHash { get; internal set; }
         public IEnumerable<Claim> Claims { get; internal set; }

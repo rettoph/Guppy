@@ -77,9 +77,9 @@ namespace Guppy.Network
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreCreate(ServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Create(provider);
+            base.PreInitialize(provider);
 
             provider.Service(out _rooms);
             provider.Service(out _log);
@@ -94,17 +94,8 @@ namespace Guppy.Network
             provider.Settings.Set(HostType.Remote);
 
             this.commands.RegisterProcessor<GuppyNetworkUsersCommand>(this);
-        }
 
-        protected override void Create(ServiceProvider provider)
-        {
-            base.Create(provider);
-        }
-
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
+            this.OnCurrentUserChanged += this.HandleCurrentUserChanged;
             this.listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
 
@@ -116,27 +107,14 @@ namespace Guppy.Network
             _room.TryBindToScope(provider);
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
             this.listener.NetworkReceiveEvent -= this.HandleNetworkReceiveEvent;
+            this.OnCurrentUserChanged -= this.HandleCurrentUserChanged;
 
             _cancelation?.Cancel();
-        }
-
-        protected override void PostDispose()
-        {
-            base.Dispose();
-
-            _rooms = default;
-            _log = default;
-
-            this.listener = default;
-            this.manager = default;
-            this.network = default;
-
-            this.Users = default;
         }
         #endregion
 
@@ -193,21 +171,32 @@ namespace Guppy.Network
         protected virtual void Update(GameTime gameTime)
         {
             this.manager.PollEvents();
-
-            _room.Update();
         }
         #endregion
 
-        #region Event Methods
+        #region Event Handlers
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
             NetworkMessage message = this.network.ReadMessage(reader);
             _rooms.ProcessIncomingMessage(message);
         }
+
+        private void HandleCurrentUserChanged(Peer sender, User old, User value)
+        {
+            if (old is not null)
+            {
+                old.IsCurrentUser = false;
+            }
+
+            if (value is not null)
+            {
+                value.IsCurrentUser = true;
+            }
+        }
         #endregion
 
         #region Command Handlers
-        public void Process(GuppyNetworkUsersCommand data)
+        public Boolean Process(GuppyNetworkUsersCommand data)
         {
             if (data.Id.HasValue)
             { // Print user specific data...
@@ -242,6 +231,8 @@ namespace Guppy.Network
                     _log.Info($"{nameof(User.Id)}: {user.Id}, Claim(s): {user.Claims.Count()}, Room(s): {user.Rooms.Count()}");
                 }
             }
+
+            return true;
         }
         #endregion
     }

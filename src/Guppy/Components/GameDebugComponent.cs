@@ -65,7 +65,9 @@ namespace Guppy.Components
 
             _commands.RegisterProcessor<DebugFpsCommand>(this);
         }
+        #endregion
 
+        #region Frame Methods
         private void Update(GameTime gameTime)
         {
             _frameBuffer[_frameBufferIndex++ % _frameBuffer.Length] = gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -134,20 +136,24 @@ namespace Guppy.Components
                 .Append((1000f / (_maxGroupTime / _framesPerGroup)).ToString("#,##0.0"))
                 .AppendLine("fps)\n")
                 .Append("FPS: ")
-                .Append((1000 / _frameBuffer.Average()).ToString("0,000.0"))
+                .Append((1000 / _frameBuffer.Average()).ToString("#,##0.0"))
                 ;
 
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_font, sb, Vector2.One * 15, Color.WhiteSmoke);
             _spriteBatch.End();
         }
+        #endregion
 
-        void IDataProcessor<DebugFpsCommand>.Process(DebugFpsCommand message)
+        #region Data Processors
+        Boolean IDataProcessor<DebugFpsCommand>.Process(DebugFpsCommand message)
         {
             if(message.ResetFps)
             {
                 _maxGroupTime = Single.MinValue;
             }
+
+            return true;
         }
         #endregion
     }

@@ -26,15 +26,11 @@ namespace Guppy.Network
         #endregion
 
         #region Lifecycle Methods
-        protected override void PreCreate(ServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.PreCreate(provider);
+            base.PreInitialize(provider);
 
             provider.Settings.Set(NetworkAuthorization.Master);
-        }
-        protected override void Create(ServiceProvider provider)
-        {
-            base.Create(provider);
 
             this.listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
             this.listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
@@ -47,16 +43,9 @@ namespace Guppy.Network
             provider.Service(out _users);
         }
 
-        protected override void Release()
+        protected override void PostUninitialize()
         {
-            base.Release();
-
-            _users = default;
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
+            base.PostUninitialize();
 
             this.listener.ConnectionRequestEvent -= this.HandleConnectionRequestEvent;
             this.listener.PeerDisconnectedEvent -= this.HandlePeerDisconnectedEvent;
@@ -71,7 +60,7 @@ namespace Guppy.Network
         public Task TryStart(Int32 port, IEnumerable<Claim> claims, Int32 period = 16)
         {
             // Create a new local user representing the server
-            this.CurrentUser = _users.UpdateOrCreate(-1, claims, true);
+            this.CurrentUser = _users.UpdateOrCreate(-1, claims);
 
             this.manager.Start(port);
 
@@ -110,7 +99,7 @@ namespace Guppy.Network
                 NetPeer client = request.Accept();
 
                 // Create a new user instance...
-                User user = _users.UpdateOrCreate(client.Id, connectionRequestDto.Claims, false);
+                User user = _users.UpdateOrCreate(client.Id, connectionRequestDto.Claims);
 
                 // Send an accepted response to peer...
                 this.SendMessage(

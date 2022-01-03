@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Messages
 {
-    public sealed class ReleaseServiceMessage : IMessage
+    public sealed class DisposeServiceMessage : IMessage
     {
         public IService Service { get; init; }
     }

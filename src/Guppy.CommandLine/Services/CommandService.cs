@@ -38,9 +38,9 @@ namespace Guppy.CommandLine.Services
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
-            base.Create(provider);
+            base.Initialize(provider);
 
             provider.Service(out _console);
         }

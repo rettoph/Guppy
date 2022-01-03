@@ -145,7 +145,7 @@ namespace Guppy.Network
             {
                 RoomId = reader.GetByte(),
                 Configuration = configuration,
-                Data = configuration.DataConfiguration.Reader(reader, this) as IData
+                Data = configuration.DataConfiguration.Reader(reader, this) as IMessage
             };
         }
         #endregion

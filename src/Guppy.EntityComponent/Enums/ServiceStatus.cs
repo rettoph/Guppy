@@ -6,20 +6,9 @@ namespace Guppy.EntityComponent.Enums
 {
     public enum ServiceStatus
     {
-        NotCreated,
-        PreCreating,
-        Creating,
-        PostCreating,
-        NotInitialized,
-        PreInitializing,
         Initializing,
-        PostInitializing,
         Ready,
-        PreReleasing,
-        Releasing,
-        PostReleasing,
-        PreDisposing,
-        Disposing,
-        PostDisposing,
+        Uninitializing,
+        Disposed
     }
 }

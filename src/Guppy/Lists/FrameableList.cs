@@ -56,33 +56,15 @@ namespace Guppy.EntityComponent.Lists
             this.OnRemove += this.RemoveItem;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
-
-            _draws.Clear();
-            _updates.Clear();
-
+            base.Uninitialize();
 
             this.OnAdd -= this.AddItem;
             this.OnRemove -= this.RemoveItem;
 
             this.OnDraw -= this.Draw;
             this.OnUpdate -= this.Update;
-        }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-#if DEBUG_VERBOSE
-            this.OnPreDraw.LogInvocationList("OnPreDraw", this, 1);
-            this.OnDraw.LogInvocationList("OnDraw", this, 1);
-            this.OnPostDraw.LogInvocationList("OnPostDraw", this, 1);
-            this.OnPreUpdate.LogInvocationList("OnPreUpdate", this, 1);
-            this.OnUpdate.LogInvocationList("OnUpdate", this, 1);
-            this.OnPostUpdate.LogInvocationList("OnPostUpdate", this, 1);
-#endif
         }
         #endregion
 

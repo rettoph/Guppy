@@ -25,9 +25,9 @@ namespace Guppy
         /// </summary>
         public Boolean Running => !_cancelation.IsCancellationRequested;
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             if (!_cancelation?.IsCancellationRequested ?? false)
                 this.TryStopAsync().GetAwaiter().GetResult();

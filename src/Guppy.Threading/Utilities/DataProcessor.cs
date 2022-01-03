@@ -16,13 +16,13 @@ namespace Guppy.Threading.Utilities
         #region Classes
         private interface IMessageProcessorContainer
         {
-            void Process(TData message);
+            Boolean Process(TData message);
         }
 
         private class MessageProcessorContainer<T> : IMessageProcessorContainer
             where T : class, TData
         {
-            private delegate void ProcessDelegate(T message);
+            private delegate Boolean ProcessDelegate(T message);
 
             private ProcessDelegate _processors;
 
@@ -31,16 +31,17 @@ namespace Guppy.Threading.Utilities
                 _processors = processor.Process;
             }
 
-            public void Process(TData message)
+            public Boolean Process(TData message)
             {
                 if (message is T casted)
                 {
+                    Boolean success = true;
                     foreach (ProcessDelegate processor in _processors.GetInvocationList())
                     {
-                        processor(casted);
+                        success &= processor(casted);
                     }
 
-                    return;
+                    return success;
                 }
 
                 throw new ArgumentException(nameof(message));
@@ -71,14 +72,6 @@ namespace Guppy.Threading.Utilities
             provider.Service(out _log);
 
             _processors = new Dictionary<Type, IMessageProcessorContainer>();
-        }
-
-        protected override void Release()
-        {
-            base.Release();
-
-            _log = default;
-            _processors = default;
         }
         #endregion
 
@@ -121,15 +114,16 @@ namespace Guppy.Threading.Utilities
         /// Process an incoming message immidiately.
         /// </summary>
         /// <param name="message"></param>
-        public void Process(TData message)
+        public Boolean Process(TData message)
         {
             if (_processors.TryGetValue(message.GetType(), out IMessageProcessorContainer processor))
             {
-                processor.Process(message);
+                return processor.Process(message);
             }
             else
             {
                 _log.Warn($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved:'{message.GetType().GetPrettyName()}'.");
+                return false;
             }
         }
         #endregion

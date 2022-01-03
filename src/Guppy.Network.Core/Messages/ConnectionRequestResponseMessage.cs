@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Guppy.Network.Messages
 {
-    public class ConnectionRequestResponseMessage : IData
+    public class ConnectionRequestResponseMessage : IMessage
     {
         public Boolean Accepted { get; internal set; }
         public UserDto User { get; internal set; }

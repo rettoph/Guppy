@@ -19,7 +19,7 @@ namespace Guppy.EntityComponent.Lists
         {
             base.PreInitialize(provider);
 
-            this.releaseChildren = true;
+            this.disposeChildren = true;
 
             _layers = provider.GetService<LayerList>();
 
@@ -27,9 +27,9 @@ namespace Guppy.EntityComponent.Lists
             this.OnRemove += this.RemoveLayerable;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             this.OnAdd -= this.AddLayerable;
             this.OnRemove -= this.RemoveLayerable;

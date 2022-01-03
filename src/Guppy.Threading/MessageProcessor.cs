@@ -11,6 +11,6 @@ namespace Guppy.Threading
     public abstract class MessageProcessor<TMessage> : Service, IDataProcessor<TMessage>
         where TMessage : class, IData
     {
-        public abstract void Process(TMessage message);
+        public abstract Boolean Process(TMessage message);
     }
 }

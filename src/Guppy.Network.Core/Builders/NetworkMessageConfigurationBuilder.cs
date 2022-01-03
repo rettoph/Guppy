@@ -18,10 +18,6 @@ namespace Guppy.Network.Builders
 {
     public abstract class NetworkMessageConfigurationBuilder : IPrioritizable
     {
-        #region Static Fields
-        public static readonly Bus.Queue DefaultMessageBusQueue = new Bus.Queue("default-network-message-queue", 0);
-        #endregion
-
         #region Public Fields
         public readonly Type DataConfigurationType;
         #endregion
@@ -44,7 +40,7 @@ namespace Guppy.Network.Builders
         #endregion
     }
     public abstract class NetworkMessageConfigurationBuilder<TMessage, TNetworkMessageConfigurationBuilder> : NetworkMessageConfigurationBuilder, IFluentPrioritizable<NetworkMessageConfigurationBuilder<TMessage, TNetworkMessageConfigurationBuilder>>
-        where TMessage : class, IData
+        where TMessage : class, IMessage
         where TNetworkMessageConfigurationBuilder : NetworkMessageConfigurationBuilder<TMessage, TNetworkMessageConfigurationBuilder>
     {
         #region Protected Properties
@@ -57,7 +53,7 @@ namespace Guppy.Network.Builders
         public Byte SequenceChannel { get; set; }
         public String ProcessorConfigurationName { get; set; }
         public Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter { get; set; }
-        public Bus.Queue MessageBusQueue { get; set; }
+        public Int32? MessageBusQueue { get; set; }
         #endregion
 
         #region Constructor
@@ -186,7 +182,7 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region SetMessageBusQueue Methods
-        public TNetworkMessageConfigurationBuilder SetMessageBusQueue(Bus.Queue queue)
+        public TNetworkMessageConfigurationBuilder SetMessageBusQueue(Int32 queue)
         {
             this.MessageBusQueue = queue;
 
@@ -217,7 +213,7 @@ namespace Guppy.Network.Builders
                 this.SequenceChannel,
                 this.ProcessorConfigurationName,
                 this.Filter ?? DefaultFilter,
-                this.MessageBusQueue ?? DefaultMessageBusQueue);
+                this.MessageBusQueue ?? Constants.Queues.DefaultMessageQueue);
         }
 
         private static Boolean DefaultFilter(ServiceProvider providert, NetworkMessageConfiguration configuration)
@@ -228,7 +224,7 @@ namespace Guppy.Network.Builders
     }
 
     public class NetworkMessageConfigurationBuilder<TMessage> : NetworkMessageConfigurationBuilder<TMessage, NetworkMessageConfigurationBuilder<TMessage>>
-        where TMessage : class, IData
+        where TMessage : class, IMessage
     {
         internal NetworkMessageConfigurationBuilder(NetworkProviderBuilder network, ServiceProviderBuilder services) : base(network, services)
         {

@@ -86,12 +86,9 @@ namespace Guppy.IO
             this.ConfigureInput(this.Input);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
-
-            _commands = null;
-            _inputs = null;
+            base.Uninitialize();
 
             this.ConfigureInput(null);
         }

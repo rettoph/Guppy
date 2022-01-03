@@ -25,8 +25,14 @@ namespace Guppy.Network.Components.Rooms
         {
             base.Initialize(provider);
 
-            this.Entity.Users.OnUserAdded += this.HandleUserAdded;
-            this.Entity.Users.OnUserRemoved += this.HandleUserRemoved;
+            this.Entity.Users.OnEvent += this.HandleUserListEvent;
+        }
+
+        protected override void Uninitialize()
+        {
+            base.Uninitialize();
+
+            this.Entity.Users.OnEvent -= this.HandleUserListEvent;
         }
         #endregion
 
@@ -56,14 +62,27 @@ namespace Guppy.Network.Components.Rooms
         #endregion
 
         #region Event Handlers
-        private void HandleUserAdded(UserList sender, UserEventArgs args)
+        private void HandleUserListEvent(UserList sender, UserListEventArgs args)
         {
-            this.SendUserRoomActionMessage(UserRoomAction.Joined, args.User, args.User.NetPeer);
+            switch (args.Action)
+            {
+                case UserListAction.Added:
+                    this.HandleUserAdded(args.User);
+                    break;
+                case UserListAction.Removed:
+                    this.HandleUserRemoved(args.User);
+                    break;
+            }
         }
 
-        private void HandleUserRemoved(UserList sender, UserEventArgs args)
+        private void HandleUserAdded(User user)
         {
-            this.SendUserRoomActionMessage(UserRoomAction.Left, args.User, args.User.NetPeer);
+            this.SendUserRoomActionMessage(UserRoomAction.Joined, user, user.NetPeer);
+        }
+
+        private void HandleUserRemoved(User user)
+        {
+            this.SendUserRoomActionMessage(UserRoomAction.Left, user, user.NetPeer);
         }
         #endregion
     }

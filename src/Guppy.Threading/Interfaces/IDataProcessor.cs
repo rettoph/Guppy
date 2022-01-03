@@ -10,6 +10,12 @@ namespace Guppy.Threading.Interfaces
     public interface IDataProcessor<TData> : IService
         where TData : class, IData
     {
-        void Process(TData message);
+        /// <summary>
+        /// Process the incoming <see cref="TData"/>
+        /// message.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>Success status</returns>
+        Boolean Process(TData message);
     }
 }

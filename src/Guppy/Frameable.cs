@@ -25,9 +25,9 @@ namespace Guppy
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void Initialize(ServiceProvider provider)
         {
-            base.Create(provider);
+            base.Initialize(provider);
 
             this.OnPreDraw += this.PreDraw;
             this.OnDraw += this.Draw;
@@ -38,23 +38,9 @@ namespace Guppy
             this.OnPostUpdate += this.PostUpdate;
         }
 
-        protected override void PostRelease()
+        protected override void Uninitialize()
         {
-            base.PostRelease();
-
-#if DEBUG_VERBOSE
-            this.OnPreDraw.LogInvocationList($"OnPreDraw", this);
-            this.OnDraw.LogInvocationList("OnDraw", this);
-            this.OnPostDraw.LogInvocationList("OnPostDraw", this);
-            this.OnPreUpdate.LogInvocationList("OnPreUpdate", this);
-            this.OnUpdate.LogInvocationList("OnUpdate", this);
-            this.OnPostUpdate.LogInvocationList("OnPostUpdate", this);
-#endif
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
+            base.Uninitialize();
 
             this.OnPreDraw -= this.PreDraw;
             this.OnDraw -= this.Draw;

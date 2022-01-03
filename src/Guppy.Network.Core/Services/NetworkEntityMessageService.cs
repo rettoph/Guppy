@@ -27,9 +27,9 @@ namespace Guppy.Network.Utilities
             _packetFactories = new Dictionary<Type, PacketFactoryDelegate>();
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             _packetFactories.Clear();
         }

@@ -35,18 +35,11 @@ namespace Guppy.Network.Components.NetworkEntities
             _networkEntities.TryAdd(this.Entity);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             _networkEntities.Remove(this.Entity);
-        }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            _networkEntities = default;
         }
         #endregion
     }

@@ -81,9 +81,9 @@ namespace Guppy.IO.Services
             this.TryStartAsync();
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             _buttons = null;
 

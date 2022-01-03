@@ -7,6 +7,8 @@ using Guppy.Network.Enums;
 using Guppy.Network.EventArgs;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
+using Guppy.Network.Security;
+using Guppy.Network.Security.Enums;
 using Guppy.Network.Security.EventArgs;
 using Guppy.Network.Security.Lists;
 using System;
@@ -23,30 +25,45 @@ namespace Guppy.Network.Components.Pipes
     /// </summary>
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal sealed class PipeMagicNetworkEntityRemoteComponent : Component<Pipe>
+    internal sealed class PipeMagicNetworkEntityRemoteMasterComponent : Component<Pipe>
     {
         #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
-            this.Entity.OnNetworkEntityAdded += this.HandleMasterNetworkEntityAdded;
-            this.Entity.Users.OnUserAdded += this.HandleMasterUserAdded;
+            this.Entity.OnNetworkEntityAdded += this.HandleNetworkEntityAdded;
+            this.Entity.OnNetworkEntityRemoved += this.HandleNetworkEntityRemoved;
+            this.Entity.Users.OnEvent += this.HandleUserListEvent;
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
+            base.PostUninitialize();
 
-            this.Entity.OnNetworkEntityAdded -= this.HandleMasterNetworkEntityAdded;
-            this.Entity.Users.OnUserAdded -= this.HandleMasterUserAdded;
+            this.Entity.OnNetworkEntityAdded -= this.HandleNetworkEntityAdded;
+            this.Entity.OnNetworkEntityRemoved -= this.HandleNetworkEntityRemoved;
+            this.Entity.Users.OnEvent -= this.HandleUserListEvent;
         }
         #endregion
 
         #region Event Handlers
-        private void HandleMasterUserAdded(UserList sender, UserEventArgs args)
+        private void HandleUserListEvent(UserList sender, UserListEventArgs args)
         {
-            if(args.User.NetPeer is not null)
+            switch (args.Action)
+            {
+                case UserListAction.Added:
+                    this.HandleUserAdded(args.User);
+                    break;
+                case UserListAction.Removed:
+                    this.HandleUserRemoved(args.User);
+                    break;
+            }
+        }
+
+        private void HandleUserAdded(User user)
+        {
+            if(user.NetPeer is not null)
             {
                 // Broadcast a create message for every entity within the pipe...
                 foreach (IMagicNetworkEntity entity in this.Entity.NetworkEntities)
@@ -54,12 +71,24 @@ namespace Guppy.Network.Components.Pipes
                     entity.SendMessage(new CreateNetworkEntityMessage()
                     {
                         ServiceConfigurationId = entity.ServiceConfiguration.Id
-                    }, args.User.NetPeer);
+                    }, user.NetPeer);
                 }
             }
         }
 
-        private void HandleMasterNetworkEntityAdded(Pipe sender, MagicNetworkEntityPipeEventArgs args)
+        private void HandleUserRemoved(User user)
+        {
+            if (user.NetPeer is not null)
+            {
+                // Broadcast a create message for every entity within the pipe...
+                foreach (IMagicNetworkEntity entity in this.Entity.NetworkEntities)
+                {
+                    entity.SendMessage<DisposeNetworkEntityMessage>(user.NetPeer);
+                }
+            }
+        }
+
+        private void HandleNetworkEntityAdded(Pipe sender, MagicNetworkEntityPipeEventArgs args)
         {
             if(args.OldPipe is null)
             { // This is the first pipe the entity has been put into...
@@ -76,6 +105,18 @@ namespace Guppy.Network.Components.Pipes
                     // Wait for the entity to be ready...
                     args.Entity.OnStatusChanged += this.HandleNetworkEntityWithFirstPipeReady;
                 }
+            }
+            else
+            { // The entity just changed pipes...
+                // throw new NotImplementedException();
+            }
+        }
+
+        private void HandleNetworkEntityRemoved(Pipe sender, MagicNetworkEntityPipeEventArgs args)
+        {
+            if(args.NewPipe is null)
+            { // The entity was NOT added into another pipe, so we can just remove it everywhere.
+                args.Entity.SendMessage<DisposeNetworkEntityMessage>(this.Entity);
             }
         }
 

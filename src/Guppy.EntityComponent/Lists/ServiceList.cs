@@ -38,7 +38,7 @@ namespace Guppy.EntityComponent.Lists
         /// <see cref="Release"/>. Otherwise, the list
         /// will only be cleared.
         /// </summary>
-        protected Boolean releaseChildren { get; set; } = false;
+        protected Boolean disposeChildren { get; set; } = false;
         #endregion
 
         #region Public Properties
@@ -83,21 +83,16 @@ namespace Guppy.EntityComponent.Lists
         #endregion
 
         #region Lifecycle Methods
-        protected override void Create(ServiceProvider provider)
-        {
-            base.Create(provider);
-
-            _dictionary = new Dictionary<Guid, TService>();
-            _list = new List<TService>();
-            _creating = new List<TService>();
-        }
-
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             _provider = provider;
-            this.releaseChildren = false;
+            _dictionary = new Dictionary<Guid, TService>();
+            _list = new List<TService>();
+            _creating = new List<TService>();
+
+            this.disposeChildren = false;
 
             this.CanAdd += this.HandleCanAdd;
             this.OnAdd += this.HandleAdd;
@@ -106,20 +101,19 @@ namespace Guppy.EntityComponent.Lists
             this.OnRemove += this.HandleRemove;
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
-            if(this.releaseChildren)
+            if (this.disposeChildren)
             { // Auto release all children.
                 while (this.Any())
-                    this.First().TryRelease();
+                    this.First().Dispose();
             }
             else
             { // Simply clear all children.
                 this.Clear();
             }
-
 
             this.CanAdd -= this.HandleCanAdd;
             this.OnAdd -= this.HandleAdd;
@@ -128,12 +122,6 @@ namespace Guppy.EntityComponent.Lists
             this.OnRemove -= this.HandleRemove;
         }
 
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            _provider = null;
-        }
         #endregion
 
         #region Helper Methods
@@ -267,7 +255,7 @@ namespace Guppy.EntityComponent.Lists
 
         #region Event Handlers
         private Boolean HandleCanAdd(IServiceList<TService> sender, TService item)
-            => item != default && item.Status != ServiceStatus.NotInitialized && !_dictionary.ContainsKey(item.Id);
+            => item != default && item.Status != ServiceStatus.Disposed && !_dictionary.ContainsKey(item.Id);
 
         private void HandleAdd(TService item)
         {
@@ -290,7 +278,7 @@ namespace Guppy.EntityComponent.Lists
 
         protected virtual void HandleItemStatusChanged(IService sender, ServiceStatus old, ServiceStatus value)
         {
-            if(value == ServiceStatus.PreReleasing)
+            if(value == ServiceStatus.Uninitializing)
                 this.TryRemove(sender as TService);
         }
         #endregion

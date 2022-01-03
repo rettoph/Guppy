@@ -1,7 +1,11 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.Network.Enums;
 using Guppy.Network.EventArgs;
+using Guppy.Network.Security.Enums;
 using Guppy.Network.Security.EventArgs;
+using Guppy.Threading.Interfaces;
+using Guppy.Threading.Utilities;
 using LiteNetLib;
 using System;
 using System.Collections;
@@ -26,11 +30,8 @@ namespace Guppy.Network.Security.Lists
         #endregion
 
         #region Events
-        public event OnEventDelegate<UserList, UserEventArgs> OnUserAdded;
-        public event OnEventDelegate<UserList, UserEventArgs> OnUserRemoved;
+        public event OnEventDelegate<UserList, UserListEventArgs> OnEvent;
 
-        public event OnEventDelegate<UserList, NetPeerEventArgs> OnNetPeerAdded;
-        public event OnEventDelegate<UserList, NetPeerEventArgs> OnNetPeerRemoved;
         #endregion
 
         #region Lifecycle Methods
@@ -42,9 +43,9 @@ namespace Guppy.Network.Security.Lists
             _netPeers = new Dictionary<Int32, NetPeer>();
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             while(_users.Any())
             {
@@ -55,30 +56,24 @@ namespace Guppy.Network.Security.Lists
 
         #region Helper Methods
         /// <summary>
-        /// Attempt to add a user into the list...
+        /// Immidiately add a new user into the <see cref="UserList"/>
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
         public virtual Boolean TryAdd(User user)
         {
-            if(_users.TryAdd(user.Id, user))
+            if (_users.TryAdd(user.Id, user))
             {
-                if(user.NetPeer is null)
+                user.OnDisposing += this.HandleUserDisposing;
+
+                if (user.NetPeer is null || _netPeers.TryAdd(user.NetPeer.Id, user.NetPeer))
                 {
-                    user.OnDisposing += this.HandleUserDisposing;
-                    this.OnUserAdded?.Invoke(this, new UserEventArgs(user));
-                    return true;
-                }
-                else if(_netPeers.TryAdd(user.NetPeer.Id, user.NetPeer))
-                {
-                    user.OnDisposing += this.HandleUserDisposing;
-                    this.OnUserAdded?.Invoke(this, new UserEventArgs(user));
-                    this.OnNetPeerAdded?.Invoke(this, new NetPeerEventArgs(user.NetPeer));
+                    this.OnEvent?.Invoke(this, new UserListEventArgs(user, UserListAction.Added));
                     return true;
                 }
                 else
                 {
-                    _users.Remove(user.Id);
+                    user.OnDisposing -= this.HandleUserDisposing;
                 }
             }
 
@@ -86,24 +81,27 @@ namespace Guppy.Network.Security.Lists
         }
 
         /// <summary>
-        /// Remove a user from the list...
+        /// Immidiately remove a user from the <see cref="UserList"/>
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
         public virtual Boolean TryRemove(User user)
         {
-            _users.Remove(user.Id);
-            user.OnDisposing -= this.HandleUserDisposing;
-
-            this.OnUserRemoved?.Invoke(this, new UserEventArgs(user));
-
-            if (user.NetPeer is not null)
+            if (_users.ContainsKey(user.Id))
             {
-                _netPeers.Remove(user.NetPeer.Id);
-                this.OnNetPeerRemoved?.Invoke(this, new NetPeerEventArgs(user.NetPeer));
-            }            
+                _users.Remove(user.Id);
+                user.OnDisposing -= this.HandleUserDisposing;
 
-            return true;
+                if (user.NetPeer is not null)
+                {
+                    _netPeers.Remove(user.NetPeer.Id);
+                }
+
+                this.OnEvent?.Invoke(this, new UserListEventArgs(user, UserListAction.Removed));
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

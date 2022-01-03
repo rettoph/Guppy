@@ -21,25 +21,18 @@ namespace Guppy.Network.Security.Services
         #endregion
 
         #region Lifecyele Methods
-        protected override void Create(ServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.Create(provider);
+            base.PreInitialize(provider);
 
             provider.Service(out _netManager);
-        }
-
-        protected override void Dispose()
-        {
-            base.Dispose();
-
-            _netManager = default;
         }
         #endregion
 
         #region Helper Methods
-        internal User UpdateOrCreate(Int32 id, IEnumerable<Claim> claims, Boolean isCurrentUser)
+        internal User UpdateOrCreate(Int32 id, IEnumerable<Claim> claims)
         {
-            lock(this)
+            lock (this)
             {
                 if (this.TryGetById(id, out User user))
                 {
@@ -47,7 +40,7 @@ namespace Guppy.Network.Security.Services
                     return user;
                 }
 
-                user = new User(id, _netManager, claims, isCurrentUser);
+                user = new User(id, _netManager, claims);
                 if (this.TryAdd(user))
                 {
                     return user;
@@ -57,9 +50,9 @@ namespace Guppy.Network.Security.Services
             }
         }
 
-        internal User UpdateOrCreate(UserDto dto, Boolean isCurrentUser)
+        internal User UpdateOrCreate(UserDto dto)
         {
-            return this.UpdateOrCreate(dto.Id, dto.Claims, isCurrentUser);
+            return this.UpdateOrCreate(dto.Id, dto.Claims);
         }
         #endregion
     }

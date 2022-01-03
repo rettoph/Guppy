@@ -9,33 +9,34 @@ using Guppy.Threading.Interfaces;
 using Guppy.Network.Security;
 using System.Threading.Tasks;
 using LiteNetLib.Utils;
+using Guppy.Network.Security.Enums;
 
 namespace Guppy.Network
 {
     public class ClientPeer : Peer, IDataProcessor<UserRoomActionMessage>
     {
-        protected override void PreCreate(ServiceProvider provider)
+        protected override void PreInitialize(ServiceProvider provider)
         {
-            base.PreCreate(provider);
+            base.PreInitialize(provider);
 
             provider.Settings.Set(NetworkAuthorization.Slave);
         }
 
         #region Message Processors
-        void IDataProcessor<UserRoomActionMessage>.Process(UserRoomActionMessage message)
+        Boolean IDataProcessor<UserRoomActionMessage>.Process(UserRoomActionMessage message)
         {
             Room room = this.Rooms.GetById(message.RoomId);
-            User user = this.Users.UpdateOrCreate(message.User, false);
+            User user = this.Users.UpdateOrCreate(message.User);
 
             switch (message.Action)
             {
                 case UserRoomAction.Joined:
-                    room.Users.TryAdd(user);
-                    break;
+                    return room.Users.TryAdd(user);
                 case UserRoomAction.Left:
-                    room.Users.TryRemove(user);
-                    break;
+                    return room.Users.TryRemove(user);
             }
+
+            return false;
         }
         #endregion
 

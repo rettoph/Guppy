@@ -20,14 +20,9 @@ namespace Guppy.EntityComponent.Lists
             this.OnRemove += this.RemoveItem;
         }
 
-        protected override void Initialize(ServiceProvider provider)
+        protected override void Uninitialize()
         {
-            base.Initialize(provider);
-        }
-
-        protected override void Release()
-        {
-            base.Release();
+            base.Uninitialize();
 
             this.OnAdd -= this.AddItem;
             this.OnRemove -= this.RemoveItem;

@@ -24,18 +24,12 @@ namespace Guppy.Network.MessageProcessors
             provider.Service(out _users);
         }
 
-        protected override void Release()
-        {
-            base.Release();
-
-            _client = default;
-            _client = default;
-        }
-
         #region Lifecycle Methods
-        public override void Process(ConnectionRequestResponseMessage message)
+        public override Boolean Process(ConnectionRequestResponseMessage message)
         {
-            _client.CurrentUser = _users.UpdateOrCreate(message.User, true);
+            _client.CurrentUser = _users.UpdateOrCreate(message.User);
+
+            return true;
         }
         #endregion
     }

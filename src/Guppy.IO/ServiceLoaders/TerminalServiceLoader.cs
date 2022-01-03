@@ -40,8 +40,8 @@ namespace Guppy.IO.ServiceLoaders
                 .SetAssignableEntityType<Game>()
                 .SetOrder(EntityComponent.Constants.Orders.ComponentOrder);
 
-            services.RegisterBuilder<Game>()
-                .SetOrder(EntityComponent.Constants.Priorities.PreCreate)
+            services.RegisterSetup<Game>()
+                .SetOrder(EntityComponent.Constants.Priorities.PreInitialize - 1)
                 .SetMethod((g, p, c) =>
                 {
                     p.GetService<TerminalService>();

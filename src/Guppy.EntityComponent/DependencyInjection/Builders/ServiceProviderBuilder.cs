@@ -12,7 +12,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
     {
         #region Private Fields
         private List<ITypeFactoryBuilder> _typeFactories;
-        private List<ICustomActionBuilder<TypeFactory, ITypeFactoryBuilder>> _builders;
         private List<ICustomActionBuilder<ServiceConfiguration, ServiceConfigurationBuilder>> _setups;
         private List<ServiceConfigurationBuilder> _serviceConfigurations;
         private List<ComponentConfigurationBuilder> _componentConfigurations;
@@ -23,7 +22,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         public ServiceProviderBuilder()
         {
             _typeFactories = new List<ITypeFactoryBuilder>();
-            _builders = new List<ICustomActionBuilder<TypeFactory, ITypeFactoryBuilder>>();
             _setups = new List<ICustomActionBuilder<ServiceConfiguration, ServiceConfigurationBuilder>>();
             _serviceConfigurations = new List<ServiceConfigurationBuilder>();
             _componentConfigurations = new List<ComponentConfigurationBuilder>();
@@ -60,47 +58,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         {
             return this.RegisterTypeFactory<TFactory>(typeof(TFactory))
                 .SetMethod(p => new TFactory());
-        }
-        #endregion
-
-        #region RegisterBuilder Methods
-        /// <summary>
-        /// Define a new builder action that will run immidiately after a <see cref="TypeFactory{T}"/> creates a new instance.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="assignableFactoryType">All <see cref="TypeFactoryBuilder"/>s who's <see cref="TypeFactoryBuilder.Type"/>
-        /// is <see cref="Type.IsAssignableFrom(Type)"/> will utilize the defined <see cref="IFactoryActionBuilder"/>.</param>
-        /// <returns></returns>
-        public CustomActionBuilder<T, TypeFactory, ITypeFactoryBuilder> RegisterBuilder<T>(Type assignableFactoryType)
-            where T : class
-        {
-            var builder = new CustomActionBuilder<T, TypeFactory, ITypeFactoryBuilder>(assignableFactoryType);
-            _builders.Add(builder);
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Define a new builder action that will run immidiately after a <see cref="TypeFactory{T}"/> creates a new instance.
-        /// </summary>
-        /// <typeparam name="TAssignableFactoryType">All <see cref="TypeFactoryBuilder"/>s who's <see cref="TypeFactoryBuilder.Type"/>
-        /// is <see cref="Type.IsAssignableFrom(Type)"/> will utilize the defined <see cref="IFactoryActionBuilder"/>.</typeparam>
-        /// <returns></returns>
-        public CustomActionBuilder<TAssignableFactoryType, TypeFactory, ITypeFactoryBuilder> RegisterBuilder<TAssignableFactoryType>()
-            where TAssignableFactoryType : class
-        {
-            return this.RegisterBuilder<TAssignableFactoryType>(typeof(TAssignableFactoryType));
-        }
-
-        /// <summary>
-        /// Define a new builder action that will run immidiately after a <see cref="TypeFactory{T}"/> creates a new instance.
-        /// </summary>
-        /// <param name="assignableFactoryType">All <see cref="TypeFactoryBuilder"/>s who's <see cref="TypeFactoryBuilder.Type"/>
-        /// is <see cref="Type.IsAssignableFrom(Type)"/> will utilize the defined <see cref="IFactoryActionBuilder"/>.</param>
-        /// <returns></returns>
-        public CustomActionBuilder<Object, TypeFactory, ITypeFactoryBuilder> RegisterBuilder(Type assignableFactoryType)
-        {
-            return this.RegisterBuilder<Object>(assignableFactoryType);
         }
         #endregion
 
@@ -235,12 +192,9 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #region Protected Helper Methods
         private void BuildFactories(out Dictionary<Type, TypeFactory> factories)
         {
-            // Build all BuilderActions & SetupActions...
-            List<CustomAction<TypeFactory, ITypeFactoryBuilder>> allBuilders = _builders.Order().Select(b => b.Build()).ToList();
-
             // Build all TypeFactories...
             factories = _typeFactories.PrioritizeBy(f => f.Type)
-                .Select(f => f.Build(allBuilders))
+                .Select(f => f.Build())
                 .ToDictionaryByValue(
                     keySelector: f => f.Type);
         }

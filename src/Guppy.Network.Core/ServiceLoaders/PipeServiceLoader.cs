@@ -34,13 +34,13 @@ namespace Guppy.Network.ServiceLoaders
                             factory.SetDefaultConstructor<Pipe>();
                         });
                 })
-                .RegisterComponent<PipeMagicNetworkEntityRemoteComponent>(component =>
+                .RegisterComponent<PipeMagicNetworkEntityRemoteMasterComponent>(component =>
                 {
                     component.RegisterService(service =>
                     {
                         service.RegisterTypeFactory(factory =>
                         {
-                            factory.SetDefaultConstructor<PipeMagicNetworkEntityRemoteComponent>();
+                            factory.SetDefaultConstructor<PipeMagicNetworkEntityRemoteMasterComponent>();
                         });
                     });
                 });

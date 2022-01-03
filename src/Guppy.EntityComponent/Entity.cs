@@ -14,17 +14,7 @@ namespace Guppy.EntityComponent
         #endregion
 
         #region IEntity Implementation
-        public ComponentManager Components
-        {
-            get => _components;
-            set
-            {
-                if (this.Status != ServiceStatus.NotInitialized && this.Status != ServiceStatus.PostReleasing)
-                    throw new InvalidOperationException("Unable to update Components after initialization has begun.");
-
-                _components = value;
-            }
-        }
+        public ComponentManager Components { get; set; }
         #endregion
     }
 }

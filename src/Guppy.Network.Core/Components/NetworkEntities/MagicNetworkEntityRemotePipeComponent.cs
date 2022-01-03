@@ -27,9 +27,9 @@ namespace Guppy.Network.Components.NetworkEntities
             this.CleanPipe(default, this.Entity.Pipe);
         }
 
-        protected override void Release()
+        protected override void Uninitialize()
         {
-            base.Release();
+            base.Uninitialize();
 
             this.Entity.Pipe = default;
 

@@ -23,7 +23,7 @@ namespace Guppy.Network
     {
         #region Private Fields
         private Boolean _isScopedLinked;
-        private Bus _bus;
+        private MessageBus _bus;
         private Peer _peer;
         private NetworkProvider _network;
         #endregion
@@ -41,33 +41,23 @@ namespace Guppy.Network
 
             provider.Service(out _peer);
             provider.Service(out _network);
-            provider.Service(Constants.ServiceNames.RoomBus, out _bus);
 
             this.Users = provider.GetService<UserList>();
             this.Pipes = provider.GetService<PipeService>((pipes, _, _) => pipes.room = this);
 
-            this.Users.OnUserAdded += this.HandleUserAdded;
-            this.Users.OnUserRemoved += this.HandleUserRemoved;
+            this.Users.OnEvent += this.HandleUserListEvent;
         }
 
-        protected override void PostRelease()
+        protected override void PostUninitialize()
         {
-            base.PostRelease();
-
-            _bus.TryRelease();
-
-            _peer = default;
-            _network = default;
-            _bus = default;
+            base.PostUninitialize();
 
             while (this.Users.Any())
             {
                 this.Users.TryRemove(this.Users.First());
             }
 
-            this.Users.OnUserAdded -= this.HandleUserAdded;
-            this.Users.OnUserRemoved -= this.HandleUserRemoved;
-            this.Users.TryRelease();
+            this.Users.OnEvent -= this.HandleUserListEvent;
 
             this.TryUnbindToScope();
         }
@@ -93,16 +83,17 @@ namespace Guppy.Network
             IEnumerable<NetworkMessageConfiguration> configurations = _network.MessageConfigurations.Where(mc => mc.Filter(provider, mc));
 
             // Generate a lookup table of valid message configuration bus queues and their types...
-            Dictionary<Bus.Queue, Type[]> messageBusQueus = configurations.GroupBy(configuration => configuration.MessageBusQueue)
+            Dictionary<Int32, Type[]> messageBusQueus = configurations.GroupBy(configuration => configuration.MessageBusQueue)
                 .ToDictionary(
                     keySelector: g => g.Key,
                     elementSelector: g => g.Select(configuration => configuration.Type).ToArray());
 
 
             // Ensure that all required message bus queus have been registered...
-            foreach ((Bus.Queue queue, Type[] types) in messageBusQueus)
+            provider.Service(out _bus);
+            foreach ((Int32 queue, Type[] types) in messageBusQueus)
             {
-                _bus.TryRegisterQueue(queue, types);
+                _bus.RegisterMessageTypes(queue, types);
             }
 
             // Register all message processors into the bus
@@ -168,22 +159,18 @@ namespace Guppy.Network
         }
         #endregion
 
-        #region Frame Methods
-        public void Update()
-        {
-            _bus.ProcessEnqueued();
-        }
-        #endregion
-
         #region Event Handlers
-        private void HandleUserAdded(UserList sender, UserEventArgs args)
+        private void HandleUserListEvent(UserList sender, UserListEventArgs args)
         {
-            args.User.AddToRoom(this);
-        }
-
-        private void HandleUserRemoved(UserList sender, UserEventArgs args)
-        {
-            args.User.RemoveFromRoom(this);
+            switch (args.Action)
+            {
+                case Security.Enums.UserListAction.Added:
+                    args.User.AddToRoom(this);
+                    break;
+                case Security.Enums.UserListAction.Removed:
+                    args.User.RemoveFromRoom(this);
+                    break;
+            }
         }
         #endregion
     }

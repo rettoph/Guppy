@@ -38,13 +38,6 @@ namespace Guppy.Network.ServiceLoaders
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             #region Register Services
-            services.RegisterService<Bus>(Constants.ServiceNames.RoomBus)
-                .SetLifetime(ServiceLifetime.Transient)
-                .RegisterTypeFactory<Bus>(factory =>
-                {
-                    factory.SetDefaultConstructor<Bus>();
-                });
-
             services.RegisterService<RoomService>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .RegisterTypeFactory(factory =>
@@ -177,6 +170,7 @@ namespace Guppy.Network.ServiceLoaders
                 .SetSequenceChannel(0)
                 .SetPeerFilter<ClientPeer>()
                 .SetProcessorConfiguration<ClientPeer>()
+                .SetMessageBusQueue(Constants.Queues.UserRoomActionMessageQueue)
                 .RegisterDataType(dataType =>
                 {
                     dataType

@@ -32,24 +32,12 @@ namespace Guppy.Network.MessageProcessors
         {
             base.Initialize(provider);
         }
-
-        protected override void Release()
-        {
-            base.Release();
-        }
-
-        protected override void PostRelease()
-        {
-            base.PostRelease();
-
-            _entities = default;
-        }
         #endregion
 
         #region IMessageProcessor<CreateNetworkEntityMessage> Implementation
-        void IDataProcessor<TNetworkEntityMessage>.Process(TNetworkEntityMessage message)
+        Boolean IDataProcessor<TNetworkEntityMessage>.Process(TNetworkEntityMessage message)
         {
-            _entities.TryProcess(message);
+            return _entities.TryProcess(message);
         }
         #endregion
     }

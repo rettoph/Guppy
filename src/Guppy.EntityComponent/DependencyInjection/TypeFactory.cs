@@ -40,56 +40,22 @@ namespace Guppy.EntityComponent.DependencyInjection
             Action<Object, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder,
             out Object instance);
-
-        /// <summary>
-        /// Attempt to return a given item back into the factory pool
-        /// </summary>
-        /// <param name="instance"></param>
-        /// <returns></returns>
-        public abstract Boolean TryReturnToPool(Object instance);
     }
 
     public sealed class TypeFactory<TFactory> : TypeFactory
         where TFactory : class
     {
-        #region Private Fields
-        private Pool<TFactory> _pool;
-        #endregion
-
         #region Public Fields
 
         public readonly Func<ServiceProvider, TFactory> Method;
-        public readonly CustomAction<TypeFactory, ITypeFactoryBuilder>[] Builders;
-        public UInt16 MaxPoolSize;
         #endregion
 
         #region Constructor
         public TypeFactory(
             Type type, 
-            Func<ServiceProvider, TFactory> method,
-            CustomAction<TypeFactory, ITypeFactoryBuilder>[] builders,
-            ushort maxPoolSize) : base(type)
+            Func<ServiceProvider, TFactory> method) : base(type)
         {
             this.Method = method;
-            this.Builders = builders;
-            this.MaxPoolSize = maxPoolSize;
-
-            _pool = new Pool<TFactory>(ref this.MaxPoolSize);
-        }
-        #endregion
-
-        #region Helper Methods
-        private void GetInstance(ServiceProvider provider, out TFactory instance)
-        {
-            if (!_pool.TryPull(out instance))
-            {
-                instance = this.Method(provider);
-
-                foreach (CustomAction<TypeFactory, ITypeFactoryBuilder> builder in this.Builders)
-                {
-                    builder.Invoke(instance, provider, this);
-                }
-            }
         }
         #endregion
 
@@ -97,12 +63,11 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// <inheritdoc />
         public override void BuildInstance(ServiceProvider provider, ServiceConfiguration configuration, out Object instance)
         {
-            this.GetInstance(provider, out TFactory item);
-            instance = item;
+            instance = this.Method(provider);
 
             foreach (CustomAction<ServiceConfiguration, ServiceConfigurationBuilder> setup in configuration.Setups)
             {
-                setup.Invoke(item, provider, configuration);
+                setup.Invoke(instance, provider, configuration);
             }
         }
 
@@ -114,36 +79,24 @@ namespace Guppy.EntityComponent.DependencyInjection
             Int32 customSetupOrder,
             out Object instance)
         {
-            this.GetInstance(provider, out TFactory item);
-            instance = item;
+            instance = this.Method(provider);
 
             Boolean ranCustomSetup = false;
             foreach (CustomAction<ServiceConfiguration, ServiceConfigurationBuilder> setup in configuration.Setups)
             {
                 if (!ranCustomSetup && setup.Order >= customSetupOrder)
                 {
-                    customSetup(item, provider, configuration);
+                    customSetup(instance, provider, configuration);
                     ranCustomSetup = true;
                 }
 
-                setup.Invoke(item, provider, configuration);
+                setup.Invoke(instance, provider, configuration);
             }
 
             if (!ranCustomSetup)
             {
-                customSetup(item, provider, configuration);
+                customSetup(instance, provider, configuration);
             }
-        }
-
-        /// <inheritdoc />
-        public override bool TryReturnToPool(Object instance)
-        {
-            if(instance is TFactory item)
-            {
-                return _pool.TryReturn(item);
-            }
-
-            return false;
         }
         #endregion
     }
