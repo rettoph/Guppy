@@ -1,7 +1,6 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Threading.Interfaces;
-using log4net;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

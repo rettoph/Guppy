@@ -32,6 +32,7 @@ namespace Guppy.Network
         public Byte Id { get; internal set; }
         public UserList Users { get; private set; }
         public PipeService Pipes { get; private set; }
+        public MessageBus Bus => _bus;
         #endregion
 
         #region Lifecycle Methods

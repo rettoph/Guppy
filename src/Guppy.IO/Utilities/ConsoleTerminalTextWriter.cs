@@ -10,25 +10,18 @@ namespace Guppy.IO.Utilities
     internal class ConsoleTerminalTextWriter : TextWriter
     {
         private TerminalService _terminal;
-        private String _string;
+        private Guid _id = Guid.NewGuid();
 
         public override Encoding Encoding => Encoding.Default;
 
         internal ConsoleTerminalTextWriter(TerminalService terminal)
         {
             _terminal = terminal;
-            _string = String.Empty;
         }
 
         public override void Write(Char value)
         {
-            _string += value;
-
-            if (value == '\n' && _string != String.Empty)
-            {
-                _terminal.Write(_string, this.FromConsoleColor(Console.ForegroundColor));
-                _string = String.Empty;
-            }
+            _terminal.Write(value, this.FromConsoleColor(Console.ForegroundColor), _id);
         }
 
         private Color FromConsoleColor(ConsoleColor consoleColor)

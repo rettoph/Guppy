@@ -23,7 +23,7 @@ namespace Guppy.ServiceLoaders
                     factory.SetDefaultConstructor<SceneList>();
                 });
 
-            assemblyHelper.Types.GetTypesWithAutoLoadAttribute<IScene>(false).ForEach(s =>
+            assemblyHelper.Types.GetTypesWithAutoLoadAttribute<Scene>(false).ForEach(s =>
             {
                 services.RegisterScene(s);
             });

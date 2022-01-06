@@ -60,6 +60,11 @@ namespace Guppy.EntityComponent
 
         public void Dispose()
         {
+            if(this.GetType().Name == "Ship")
+            {
+
+            }
+
             if(this.Status != ServiceStatus.Ready)
             {
                 return;

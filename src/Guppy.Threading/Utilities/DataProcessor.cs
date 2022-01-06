@@ -1,7 +1,7 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.Threading.Interfaces;
-using log4net;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +60,7 @@ namespace Guppy.Threading.Utilities
         #endregion
 
         #region Private Fields
-        private ILog _log;
+        private ILogger _log;
         private Dictionary<Type, IMessageProcessorContainer> _processors;
         #endregion
 
@@ -122,7 +122,7 @@ namespace Guppy.Threading.Utilities
             }
             else
             {
-                _log.Warn($"{this.GetType().GetPrettyName()}::{nameof(Process)} - Unknown type recieved:'{message.GetType().GetPrettyName()}'.");
+                _log.Warning("{type}::{method} - Unknown type recieved:'{messageType}'.", this.GetType().GetPrettyName(), nameof(Process), message.GetType().GetPrettyName());
                 return false;
             }
         }

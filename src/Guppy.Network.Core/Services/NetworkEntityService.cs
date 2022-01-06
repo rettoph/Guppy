@@ -4,7 +4,7 @@ using Guppy.EntityComponent.Lists;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
 using Guppy.Threading.Interfaces;
-using log4net;
+using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace Guppy.Network.Services
     /// </summary>
     public class NetworkEntityService : Service, IEnumerable<INetworkEntity>
     {
-        private ILog _log;
+        private ILogger _logger;
         private ServiceProvider _provider;
         private Dictionary<UInt16, INetworkEntity> _entities;
 
@@ -31,7 +31,7 @@ namespace Guppy.Network.Services
             _provider = provider;
             _entities = new Dictionary<UInt16, INetworkEntity>();
 
-            _provider.Service(out _log);
+            _provider.Service(out _logger);
         }
 
         protected override void PostUninitialize()
@@ -80,7 +80,7 @@ namespace Guppy.Network.Services
             }
             else
             {
-                _log.Warn($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {message.GetType().GetPrettyName()} message, an entity with the recieved {nameof(message.NetworkId)} cannot be found.");
+                _logger.Warning($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {message.GetType().GetPrettyName()} message, an entity with the recieved {nameof(message.NetworkId)} cannot be found.");
                 return false;
             }
         }
@@ -98,7 +98,7 @@ namespace Guppy.Network.Services
             }
             else if(entity.ServiceConfiguration.Id != message.ServiceConfigurationId)
             {
-                _log.Warn($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {nameof(CreateNetworkEntityMessage)} message, an entity with the recieved {nameof(CreateNetworkEntityMessage.NetworkId)} already exists, but the expected {nameof(CreateNetworkEntityMessage.ServiceConfigurationId)} does not match.");
+                _logger.Warning($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {nameof(CreateNetworkEntityMessage)} message, an entity with the recieved {nameof(CreateNetworkEntityMessage.NetworkId)} already exists, but the expected {nameof(CreateNetworkEntityMessage.ServiceConfigurationId)} does not match.");
                 return false;
             }
             else

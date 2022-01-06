@@ -34,7 +34,6 @@ namespace Guppy.Network
         public static void SendMessage<TNetworkEntityMessage>(this IMagicNetworkEntity entity, TNetworkEntityMessage message, NetPeer recipient)
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
-            entity.PopulateMessage(message);
             entity.SendMessage(message, entity.Pipe, recipient);
         }
 
@@ -48,7 +47,6 @@ namespace Guppy.Network
         public static void SendMessage<TNetworkEntityMessage>(this IMagicNetworkEntity entity, TNetworkEntityMessage message, IEnumerable<NetPeer> recipients)
             where TNetworkEntityMessage : NetworkEntityMessage<TNetworkEntityMessage>
         {
-            entity.PopulateMessage(message);
             entity.SendMessage(message, entity.Pipe, recipients);
         }
 

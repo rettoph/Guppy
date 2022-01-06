@@ -10,17 +10,20 @@ using Guppy.Network.Security;
 using System.Threading.Tasks;
 using LiteNetLib.Utils;
 using Guppy.Network.Security.Enums;
+using LiteNetLib;
 
 namespace Guppy.Network
 {
     public class ClientPeer : Peer, IDataProcessor<UserRoomActionMessage>
     {
+        #region Lifecycle Methods
         protected override void PreInitialize(ServiceProvider provider)
         {
             base.PreInitialize(provider);
 
             provider.Settings.Set(NetworkAuthorization.Slave);
         }
+        #endregion
 
         #region Message Processors
         Boolean IDataProcessor<UserRoomActionMessage>.Process(UserRoomActionMessage message)

@@ -70,7 +70,7 @@ namespace Guppy.Network.Components.Pipes
                 {
                     entity.SendMessage(new CreateNetworkEntityMessage()
                     {
-                        ServiceConfigurationId = entity.ServiceConfiguration.Id
+                        ServiceConfigurationId = entity.ServiceConfiguration.Id,
                     }, user.NetPeer);
                 }
             }
@@ -92,19 +92,10 @@ namespace Guppy.Network.Components.Pipes
         {
             if(args.OldPipe is null)
             { // This is the first pipe the entity has been put into...
-                if(args.Entity.Status == ServiceStatus.Ready)
+                args.Entity.SendMessage(new CreateNetworkEntityMessage()
                 {
-                    // Broadcast a create message to all users.
-                    args.Entity.SendMessage(new CreateNetworkEntityMessage()
-                    {
-                        ServiceConfigurationId = args.Entity.ServiceConfiguration.Id
-                    });
-                }
-                else
-                {
-                    // Wait for the entity to be ready...
-                    args.Entity.OnStatusChanged += this.HandleNetworkEntityWithFirstPipeReady;
-                }
+                    ServiceConfigurationId = args.Entity.ServiceConfiguration.Id,
+                });
             }
             else
             { // The entity just changed pipes...
@@ -117,18 +108,6 @@ namespace Guppy.Network.Components.Pipes
             if(args.NewPipe is null)
             { // The entity was NOT added into another pipe, so we can just remove it everywhere.
                 args.Entity.SendMessage<DisposeNetworkEntityMessage>(this.Entity);
-            }
-        }
-
-        private void HandleNetworkEntityWithFirstPipeReady(IService sender, ServiceStatus old, ServiceStatus value)
-        {
-            if(value == ServiceStatus.Ready && sender is IMagicNetworkEntity entity)
-            {
-                entity.OnStatusChanged -= this.HandleNetworkEntityWithFirstPipeReady;
-                entity.SendMessage(new CreateNetworkEntityMessage()
-                {
-                    ServiceConfigurationId = entity.ServiceConfiguration.Id
-                });
             }
         }
         #endregion

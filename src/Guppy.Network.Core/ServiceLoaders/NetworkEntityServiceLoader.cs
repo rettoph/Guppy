@@ -82,6 +82,16 @@ namespace Guppy.Network.ServiceLoaders
                             factory.SetDefaultConstructor<MagicNetworkEntityRemotePipeComponent>();
                         });
                     });
+                })
+                .RegisterComponent<MagicNetworkEntityRemoteSlaveComponent>(component =>
+                {
+                    component.RegisterService(service =>
+                    {
+                        service.RegisterTypeFactory(factory =>
+                        {
+                            factory.SetDefaultConstructor<MagicNetworkEntityRemoteSlaveComponent>();
+                        });
+                    });
                 });
             #endregion
         }
@@ -89,8 +99,7 @@ namespace Guppy.Network.ServiceLoaders
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
             network.RegisterNetworkEntityMessage<CreateNetworkEntityMessage>()
-                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
-                .SetSequenceChannel(0)
+                .SetDeliveryMethod(DeliveryMethod.ReliableUnordered)
                 .SetMessageBusQueue(Constants.Queues.CreateNetworkEntityMessageQueue)
                 .SetFilter(CreateNetworkEntityMessage.Filter)
                 .RegisterProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>(service =>
@@ -103,8 +112,7 @@ namespace Guppy.Network.ServiceLoaders
                 });
 
             network.RegisterNetworkEntityMessage<DisposeNetworkEntityMessage>()
-                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
-                .SetSequenceChannel(0)
+                .SetDeliveryMethod(DeliveryMethod.ReliableUnordered)
                 .SetMessageBusQueue(Constants.Queues.RemoveNetworkEntityMessageQueue)
                 .SetFilter(DisposeNetworkEntityMessage.Filter)
                 .SetProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>();

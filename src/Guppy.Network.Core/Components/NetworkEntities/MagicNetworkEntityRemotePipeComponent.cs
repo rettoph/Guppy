@@ -18,18 +18,18 @@ namespace Guppy.Network.Components.NetworkEntities
     [HostTypeRequired(HostType.Remote)]
     internal sealed class MagicNetworkEntityRemotePipeComponent : Component<IMagicNetworkEntity>
     {
-        protected override void Initialize(ServiceProvider provider)
+        protected override void PostInitialize(ServiceProvider provider)
         {
-            base.Initialize(provider);
+            base.PostInitialize(provider);
 
             this.Entity.OnPipeChanged += this.HandlePipeChanged;
 
             this.CleanPipe(default, this.Entity.Pipe);
         }
 
-        protected override void Uninitialize()
+        protected override void PreUninitialize()
         {
-            base.Uninitialize();
+            base.PreUninitialize();
 
             this.Entity.Pipe = default;
 

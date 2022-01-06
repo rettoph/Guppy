@@ -26,8 +26,8 @@ using System.Threading;
 using System.CommandLine.Binding;
 using Guppy.Network.Messages.Commands;
 using Guppy.Threading.Interfaces;
-using log4net;
 using Guppy.Threading.Helpers;
+using Serilog;
 
 namespace Guppy.Network
 {
@@ -49,7 +49,7 @@ namespace Guppy.Network
         private Room _room;
         private CancellationTokenSource _cancelation;
         private Task _loop;
-        private ILog _log;
+        private ILogger _logger;
         #endregion
 
         #region Protected Properties
@@ -82,7 +82,7 @@ namespace Guppy.Network
             base.PreInitialize(provider);
 
             provider.Service(out _rooms);
-            provider.Service(out _log);
+            provider.Service(out _logger);
 
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
@@ -139,7 +139,7 @@ namespace Guppy.Network
                 this.manager.Stop();
 
                 _cancelation = null;
-                _log = null;
+                _logger = null;
             }
         }
         #endregion
@@ -202,33 +202,33 @@ namespace Guppy.Network
             { // Print user specific data...
                 if (this.Users.TryGetById(data.Id.Value, out User user))
                 {
-                    _log.Info($"{nameof(User.Id)}: {user.Id}, {nameof(User.CreatedAt)}: {user.CreatedAt:HH:mm:ss}, {nameof(User.UpdatedAt)}: {user.UpdatedAt:HH:mm:ss}");
+                    _logger.Information($"{nameof(User.Id)}: {user.Id}, {nameof(User.CreatedAt)}: {user.CreatedAt:HH:mm:ss}, {nameof(User.UpdatedAt)}: {user.UpdatedAt:HH:mm:ss}");
 
-                    _log.Info("------------------------------------------------");
+                    _logger.Information("------------------------------------------------");
 
-                    _log.Info("Claim(s)");
+                    _logger.Information("Claim(s)");
                     foreach (Claim claim in user.Claims)
                     {
-                        _log.Info($"  {claim.Key}, {claim.Value}, {claim.Type}, {claim.CreatedAt:HH:mm:ss}");
+                        _logger.Information($"  {claim.Key}, {claim.Value}, {claim.Type}, {claim.CreatedAt:HH:mm:ss}");
                     }
 
-                    _log.Info("------------------------------------------------");
-                    _log.Info("Room(s)");
+                    _logger.Information("------------------------------------------------");
+                    _logger.Information("Room(s)");
                     foreach (Room room in user.Rooms)
                     {
-                        _log.Info($"  {nameof(Room.Id)}: {room.Id}");
+                        _logger.Information($"  {nameof(Room.Id)}: {room.Id}");
                     }
                 }
                 else
                 {
-                    _log.Error($"Unable to find {nameof(User)}: {data.Id.Value}");
+                    _logger.Error($"Unable to find {nameof(User)}: {data.Id.Value}");
                 }
             }
             else
             { // Print all user overview...
                 foreach (User user in this.Users)
                 {
-                    _log.Info($"{nameof(User.Id)}: {user.Id}, Claim(s): {user.Claims.Count()}, Room(s): {user.Rooms.Count()}");
+                    _logger.Information($"{nameof(User.Id)}: {user.Id}, Claim(s): {user.Claims.Count()}, Room(s): {user.Rooms.Count()}");
                 }
             }
 

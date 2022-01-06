@@ -14,8 +14,8 @@ namespace Guppy.Threading.Interfaces
         /// Process the incoming <see cref="TData"/>
         /// message.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="data"></param>
         /// <returns>Success status</returns>
-        Boolean Process(TData message);
+        Boolean Process(TData data);
     }
 }

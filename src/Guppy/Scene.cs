@@ -14,7 +14,7 @@ using Guppy.Messages;
 
 namespace Guppy
 {
-    public abstract class Scene : Frameable, IScene, IDataProcessor<DisposeServiceMessage>
+    public abstract class Scene : Asyncable, IDataProcessor<DisposeServiceMessage>
     {
         #region Private Fields
         private ServiceProvider _provider;

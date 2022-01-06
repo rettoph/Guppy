@@ -46,24 +46,11 @@ namespace Guppy
         #endregion
 
         #region Frame Methods
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            this.Scenes.TryDraw(gameTime);
-        }
-
         protected override void PreUpdate(GameTime gameTime)
         {
             base.PreUpdate(gameTime);
 
             _messageBus.ProcessEnqueued();
-        }
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            this.Scenes.TryUpdate(gameTime);
         }
         #endregion
     }

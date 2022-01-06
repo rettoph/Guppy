@@ -27,7 +27,7 @@ namespace Guppy.CommandLine.Services
             _commands = commands;
             _root = new RootCommand()
             {
-                Name = ">‎"
+                Name = ">"
             };
 
             foreach(Command command in commands.Values.Where(command => command.Parents.Count == 0))

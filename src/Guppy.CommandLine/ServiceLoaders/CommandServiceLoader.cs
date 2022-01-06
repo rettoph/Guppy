@@ -17,11 +17,6 @@ namespace Guppy.CommandLine.ServiceLoaders
     [AutoLoad]
     internal sealed class CommandServiceLoader : IServiceLoader
     {
-        class Test
-        {
-            public String Name { get; set; }
-            public Int32 Age;
-        }
         public void RegisterServices(AssemblyHelper assemblyHelper, ServiceProviderBuilder services)
         {
             services.RegisterTypeFactory<IConsole>()

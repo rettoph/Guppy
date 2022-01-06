@@ -5,10 +5,10 @@ using Guppy.IO.EventArgs;
 using Guppy.IO.Utilities;
 using Guppy.Utilities;
 using Guppy.Utilities.Cameras;
-using log4net;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -32,16 +32,13 @@ namespace Guppy.IO.Services
         private KeyboardService _keyboard;
         private InputCommandService _inputCommands;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private ILog _log;
+        private ILogger _log;
 
-        private Color _outColor = Color.White;
-        private Color _errorColor = Color.Red;
         private IStandardStreamWriter _out;
         private IStandardStreamWriter _error;
 
-        private TerminalString[] _lines;
-        private Int32 _lineCount;
-        private Int32 _lineIndex;
+        private TerminalStringBuilder _strings;
+        private Single _stringsHeight;
 
         private Single _scrollPosition;
         private RasterizerState _rasterizerState;
@@ -66,17 +63,7 @@ namespace Guppy.IO.Services
             get => _font;
             set => _font = value;
         }
-        public Color OutColor
-        {
-            get => _outColor;
-            set => _outColor = value;
-        }
 
-        public Color ErrorColor
-        {
-            get => _errorColor;
-            set => _errorColor = value;
-        }
         public Color InputColor { get; set; }
         #endregion
 
@@ -115,10 +102,10 @@ namespace Guppy.IO.Services
             provider.Service(Guppy.Constants.ServiceNames.TransientSpritebatch, out _spriteBatch);
             provider.Service(Guppy.Constants.ServiceNames.TransientCamera, out _camera);
 
-            _lines = new TerminalString[256];
-            _lineIndex = -1;
-            _out = StandardStreamWriter.Create(new CommandTerminalTextWriter(this, ref _outColor));
-            _error = StandardStreamWriter.Create(new CommandTerminalTextWriter(this, ref _errorColor));
+            _strings = new TerminalStringBuilder(256);
+
+            _out = StandardStreamWriter.Create(new CommandTerminalTextWriter(this));
+            _error = StandardStreamWriter.Create(new CommandTerminalTextWriter(this));
             _toggleIsCaretVisibleTimer = new ActionTimer(750);
             _input = String.Empty;
             _inputBufferLength = 0;
@@ -156,18 +143,14 @@ namespace Guppy.IO.Services
         #endregion
 
         #region Helper Methods
-        public void Write(String text, Color color)
+        public void Write(Char character, Color color, Guid sourceId)
         {
-            foreach(String line in text.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-            {
-                _lines[(_lineIndex = (_lineIndex + 1) % _lines.Length)] = new TerminalString()
-                {
-                    Color = color,
-                    Text = new String(line.Where(c => _font.Characters.Contains(c)).ToArray())
-                };
+            _strings.Append(character, color, sourceId);
+        }
 
-                _lineCount = Math.Min(_lineCount + 1, _lines.Length);
-            }
+        public void Write(String text, Color color, Guid sourceId)
+        {
+            _strings.Append(text, color, sourceId);
         }
         #endregion
 
@@ -204,22 +187,39 @@ namespace Guppy.IO.Services
 
             _graphics.ScissorRectangle = _consoleScissorBounds;
 
+            _spriteBatch.DrawString(
+                _font,
+                _scrollPosition.ToString(),
+                new Vector2(700, 100),
+                Color.Cyan);
+
             var position = new Vector2(_consoleScissorBounds.Left, _consoleScissorBounds.Bottom);
-            position.Y -= _font.LineSpacing;
+            position.Y -= _stringsHeight;
             position.Y += _scrollPosition;
+            Single stringsHeight = 0;
 
-            for (var i=0; i<_lineCount; i++)
+            foreach (TerminalString tString in _strings)
             {
-                var index = (_lineIndex - i);
-                if (index < 0)
-                    index = _lines.Length + index;
+                if(tString.NewLine)
+                {
+                    position.X = _consoleScissorBounds.Left;
+                    position.Y += _font.LineSpacing;
+                    stringsHeight += _font.LineSpacing;
+                }
 
-                var tString = _lines[index];
-                _spriteBatch.DrawString(_font, tString.Text ?? "*Error displaying output*", position, tString.Color);
+                if(tString.Text is not null)
+                {
+                    _spriteBatch.DrawString(
+                        _font,
+                        tString.Text,
+                        position,
+                        tString.Color);
 
-                position.Y -= _font.LineSpacing;
+                    position.X += _font.MeasureString(tString.Text).X;
+                }
             }
 
+            _stringsHeight = stringsHeight;
             _graphics.ScissorRectangle = _inputScissorBounds;
             _spriteBatch.DrawString(
                 _font, 
@@ -320,7 +320,7 @@ namespace Guppy.IO.Services
         private void HandleScrollWheelValueChanged(MouseService sender, ScrollWheelArgs args)
         {
             _scrollPosition += (args.Delta / 120) * _font.LineSpacing;
-            _scrollPosition = MathHelper.Clamp(_scrollPosition, 0, (_lineCount * _font.LineSpacing) - _consoleBounds.Height);
+            _scrollPosition = MathHelper.Clamp(_scrollPosition, 0, _stringsHeight - _consoleBounds.Height);
         }
 
         private void HandleClientSizeChanged(object sender, System.EventArgs e)
@@ -338,7 +338,7 @@ namespace Guppy.IO.Services
                     if (_input == String.Empty)
                         return;
 
-                    this.Write($"> {_input}", this.InputColor);
+                    this.Write($"> {_input}", this.InputColor, this.Id);
                     _inputBuffer.Enqueue(_input);
 
                     if (_inputBufferLength < _maxInputBufferLength)
@@ -356,7 +356,7 @@ namespace Guppy.IO.Services
                     }
                     catch(Exception err)
                     {
-                        _log.Error(err.Message);
+                        _log.Error(err, err.Message);
                     }
                     finally
                     {

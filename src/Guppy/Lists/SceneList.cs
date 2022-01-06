@@ -8,14 +8,14 @@ using System.Text;
 
 namespace Guppy.EntityComponent.Lists
 {
-    public class SceneList : FactoryServiceList<IScene>
+    public class SceneList : FactoryServiceList<Scene>
     {
         #region Protected Attributes
         protected override ServiceProvider provider => base.provider.CreateScope();
         #endregion
 
         #region Public Attributes
-        public IScene Scene { get; private set; }
+        public Scene Scene { get; private set; }
         #endregion
 
         #region Events
@@ -54,7 +54,7 @@ namespace Guppy.EntityComponent.Lists
         #endregion
 
         #region Helper Methods
-        public void SetScene(IScene scene)
+        public void SetScene(Scene scene)
         {
             if (!this.Contains(scene))
                 throw new Exception("Unable to render non-child theme.");
@@ -91,7 +91,7 @@ namespace Guppy.EntityComponent.Lists
         #endregion
 
         #region Events
-        private void HandleSceneAdded(IScene scene)
+        private void HandleSceneAdded(Scene scene)
         {
             if (this.Scene == null)
                 this.SetScene(scene);
