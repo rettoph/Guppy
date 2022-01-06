@@ -187,12 +187,6 @@ namespace Guppy.IO.Services
 
             _graphics.ScissorRectangle = _consoleScissorBounds;
 
-            _spriteBatch.DrawString(
-                _font,
-                _scrollPosition.ToString(),
-                new Vector2(700, 100),
-                Color.Cyan);
-
             var position = new Vector2(_consoleScissorBounds.Left, _consoleScissorBounds.Bottom);
             position.Y -= _stringsHeight;
             position.Y += _scrollPosition;
