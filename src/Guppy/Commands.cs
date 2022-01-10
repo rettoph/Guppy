@@ -29,7 +29,7 @@ namespace Guppy
             {
                 return CommandHandler.Create<Boolean?>((resetfps) =>
                 {
-                    commands.Process(new DebugFpsCommand()
+                    commands.Publish(new DebugFpsCommand()
                     {
                         ResetFps = resetfps ?? false,
                     });

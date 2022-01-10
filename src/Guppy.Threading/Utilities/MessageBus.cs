@@ -12,6 +12,13 @@ namespace Guppy.Threading.Utilities
 {
     public class MessageBus : Bus<IMessage>
     {
-        
+        public ServiceProvider Provider { get; private set; }
+
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.Provider = provider;
+        }
     }
 }

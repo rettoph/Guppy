@@ -47,6 +47,13 @@ namespace Guppy.Network.ServiceLoaders
                 {
                     factory.SetDefaultConstructor<NetworkEntityMessageService>();
                 });
+
+            services.RegisterService<NetworkEntityMessagePinger>()
+                .SetLifetime(ServiceLifetime.Transient)
+                .RegisterTypeFactory(factory =>
+                {
+                    factory.SetDefaultConstructor<NetworkEntityMessagePinger>();
+                });
             #endregion
 
             #region Entities

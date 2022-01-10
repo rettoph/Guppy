@@ -44,7 +44,7 @@ namespace Guppy
         {
             base.Initialize(provider);
 
-            _messageBus.RegisterMessageTypes(Int32.MaxValue, typeof(DisposeServiceMessage));
+            _messageBus.ConfigureMessageTypes(Int32.MaxValue, typeof(DisposeServiceMessage));
 
             _messageBus.RegisterProcessor<DisposeServiceMessage>(this);
         }
@@ -79,7 +79,7 @@ namespace Guppy
         {
             base.PreUpdate(gameTime);
 
-            _messageBus.ProcessEnqueued();
+            _messageBus.PublishEnqueued();
         }
 
         protected override void Update(GameTime gameTime)

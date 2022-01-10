@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Interfaces
 {
-    public interface IDataProcessor<TData> : IService
+    public interface IDataProcessor<TData>
         where TData : class, IData
     {
         /// <summary>

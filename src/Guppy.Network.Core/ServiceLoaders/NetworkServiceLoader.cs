@@ -112,7 +112,7 @@ namespace Guppy.Network.ServiceLoaders
                 {
                     var cache = p.GetService<AttributeCache<NetworkAuthorizationRequiredAttribute>>();
                     NetworkAuthorization requiredNetworkAuthorization = cache[c.TypeFactory.Type].NetworkAuthorization;
-                    var result = requiredNetworkAuthorization == p.Settings.Get<NetworkAuthorization>();
+                    var result = (p.Settings.Get<NetworkAuthorization>() & requiredNetworkAuthorization) != 0;
 
                     return result;
                 })

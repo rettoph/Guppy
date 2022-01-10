@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using Guppy.CommandLine.Services;
 using System.CommandLine;
-using Guppy.EntityComponent.DependencyInjection;
 
-namespace Guppy.CommandLine.Extensions.DependencyInjection
+namespace Guppy.EntityComponent.DependencyInjection
 {
     public static class ServiceProviderExtensions
     {
+        /// <summary>
+        /// Return the static CommandsService.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public static CommandService GetCommands(this ServiceProvider provider)
+                => provider.GetService<CommandService>();
+
         /// <summary>
         /// Automatically return a command directly from the
         /// ServiceProvider's Command service.

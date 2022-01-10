@@ -13,7 +13,7 @@ using Guppy.Threading;
 
 namespace Guppy.Network.MessageProcessors
 {
-    internal sealed class ConnectionRequestResponseMessageProcessor : MessageProcessor<ConnectionRequestResponseMessage>
+    internal sealed class ConnectionRequestResponseMessageProcessor : DataProcessor<ConnectionRequestResponseMessage>
     {
         private ClientPeer _client;
         private UserService _users;

@@ -13,23 +13,6 @@ namespace Guppy.Network
     {
         #region Public Properties
         public UInt16 NetworkId { get; set; }
-        public NetworkEntityMessageService Messages { get; private set; }
-        #endregion
-
-        #region Lifecycle Methods
-        protected override void PreInitialize(ServiceProvider provider)
-        {
-            base.PreInitialize(provider);
-
-            this.Messages = provider.GetService<NetworkEntityMessageService>();
-        }
-
-        protected override void PostUninitialize()
-        {
-            base.PostUninitialize();
-
-            this.Messages.Dispose();
-        }
         #endregion
     }
 }

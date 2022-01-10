@@ -73,9 +73,9 @@ namespace Guppy.Network.Services
         internal Boolean TryProcess(NetworkEntityMessage message)
         {
             // Create a new entity instance if one doesnt already exists...
-            if (_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
+            if (_entities.TryGetValue(message.NetworkId, out INetworkEntity entity) && entity is IMagicNetworkEntity magic)
             {
-                this.ProcessPackets(entity, message);
+                this.ProcessPackets(magic, message);
                 return true;
             }
             else
@@ -101,9 +101,9 @@ namespace Guppy.Network.Services
                 _logger.Warning($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {nameof(CreateNetworkEntityMessage)} message, an entity with the recieved {nameof(CreateNetworkEntityMessage.NetworkId)} already exists, but the expected {nameof(CreateNetworkEntityMessage.ServiceConfigurationId)} does not match.");
                 return false;
             }
-            else
+            else if (entity is IMagicNetworkEntity magic)
             {
-                this.ProcessPackets(entity, message);
+                this.ProcessPackets(magic, message);
             }
 
             // Entity created, we can safely assume it was added?
@@ -113,25 +113,25 @@ namespace Guppy.Network.Services
         internal Boolean TryProcess(DisposeNetworkEntityMessage message)
         {
             // Try to load the requested entity...
-            if (!_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
+            if (_entities.TryGetValue(message.NetworkId, out INetworkEntity entity) && entity is IMagicNetworkEntity magic)
             {
-                return false;
+                // Do one final process, just in case...
+                this.ProcessPackets(magic, message);
+                // Goodbye.
+                entity.Dispose();
+                return true;
             }
 
-            // Do one final process, just in case...
-            this.ProcessPackets(entity, message);
-            // Goodbye.
-            entity.Dispose();
-            return true;
+            return false;
         }
 
-        private void ProcessPackets(INetworkEntity entity, NetworkEntityMessage message)
+        private void ProcessPackets(IMagicNetworkEntity entity, NetworkEntityMessage message)
         {
-            entity.Messages.Process(message);
+            entity.Messages.Publish(message);
 
             foreach (IData packet in message.Packets)
             {
-                entity.Messages.Process(packet);
+                entity.Messages.Publish(packet);
             }
         }
 

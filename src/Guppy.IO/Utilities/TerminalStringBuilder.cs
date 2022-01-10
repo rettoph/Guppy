@@ -90,7 +90,8 @@ namespace Guppy.IO.Utilities
                 yield return _buffer[(_bufferIndex + i) % _buffer.Length];
             }
 
-            yield return new TerminalString(_currentString.ToString(), _currentColor, _currentNewLine);
+            String built = _currentString.ToString();
+            yield return new TerminalString(built, _currentColor, _currentNewLine);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -1,13 +1,13 @@
-﻿using Guppy.Threading.Interfaces;
+﻿using Guppy.EntityComponent.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.CommandLine.Interfaces
+namespace Guppy.Threading.Utilities
 {
-    public interface ICommandData : IMessage
+    public static class MessageBusExtensions
     {
     }
 }

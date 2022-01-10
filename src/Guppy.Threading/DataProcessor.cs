@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading
 {
-    public abstract class MessageProcessor<TMessage> : Service, IDataProcessor<TMessage>
+    public abstract class DataProcessor<TMessage> : Service, IDataProcessor<TMessage>
         where TMessage : class, IData
     {
         public abstract Boolean Process(TMessage message);

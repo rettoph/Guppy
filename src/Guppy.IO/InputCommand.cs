@@ -101,9 +101,6 @@ namespace Guppy.IO
             Dictionary<ButtonState, ICommandData> commands,
             Boolean lockable)
         {
-            if (this.Status >= ServiceStatus.Initializing)
-                throw new Exception("Unable to set context after initialization has begin");
-
             this.Handle = handle;
             this.Input = input;
             this.Commands = commands;
@@ -141,7 +138,7 @@ namespace Guppy.IO
             if (this.Lockable && this.InputCommandService.Locked)
                 return;
 
-            _commands.Process(this.Commands[args.State]);
+            _commands.Publish(this.Commands[args.State]);
         }
         #endregion
     }

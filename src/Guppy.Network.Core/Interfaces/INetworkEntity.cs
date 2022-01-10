@@ -15,7 +15,6 @@ namespace Guppy.Network.Interfaces
     /// </summary>
     public interface INetworkEntity : IEntity
     {
-        NetworkEntityMessageService Messages { get; }
         UInt16 NetworkId { get; internal set; }
     }
 }

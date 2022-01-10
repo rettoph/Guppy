@@ -29,7 +29,7 @@ namespace Guppy.IO.GuppyInitializers
             }
 
             services.RegisterService<InputCommandService>()
-                .SetLifetime(ServiceLifetime.Singleton)
+                .SetLifetime(ServiceLifetime.Transient)
                 .RegisterTypeFactory(factory =>
                 {
                     factory.SetMethod(p => builder.Build(p));

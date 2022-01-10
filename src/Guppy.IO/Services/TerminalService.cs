@@ -102,7 +102,7 @@ namespace Guppy.IO.Services
             provider.Service(Guppy.Constants.ServiceNames.TransientSpritebatch, out _spriteBatch);
             provider.Service(Guppy.Constants.ServiceNames.TransientCamera, out _camera);
 
-            _strings = new TerminalStringBuilder(256);
+            _strings = new TerminalStringBuilder(2048);
 
             _out = StandardStreamWriter.Create(new CommandTerminalTextWriter(this));
             _error = StandardStreamWriter.Create(new CommandTerminalTextWriter(this));

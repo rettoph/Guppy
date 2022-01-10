@@ -94,7 +94,7 @@ namespace Guppy.Network
             provider.Service(out _bus);
             foreach ((Int32 queue, Type[] types) in messageBusQueus)
             {
-                _bus.RegisterMessageTypes(queue, types);
+                _bus.ConfigureMessageTypes(queue, types);
             }
 
             // Register all message processors into the bus
@@ -126,7 +126,7 @@ namespace Guppy.Network
         /// <param name="message"></param>
         public void TryEnqueueIncomingMessage(NetworkMessage message)
         {
-            _bus.TryEnqueue(message.Data);
+            _bus.Enqueue(message.Data);
         }
 
         /// <summary>

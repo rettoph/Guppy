@@ -17,6 +17,8 @@ namespace Guppy.Network
         #endregion
 
         #region Public Properties
+        public NetworkEntityMessageService Messages { get; private set; }
+
         public virtual Pipe Pipe
         {
             get => _pipe;
@@ -27,6 +29,22 @@ namespace Guppy.Network
         {
             get => this.Pipe;
             set => this.Pipe = value;
+        }
+        #endregion
+
+        #region Lifecycle Methods
+        protected override void PreInitialize(ServiceProvider provider)
+        {
+            base.PreInitialize(provider);
+
+            this.Messages = provider.GetService<NetworkEntityMessageService>((m, _, _) => m.entity = this);
+        }
+
+        protected override void PostUninitialize()
+        {
+            base.PostUninitialize();
+
+            this.Messages.Dispose();
         }
         #endregion
 

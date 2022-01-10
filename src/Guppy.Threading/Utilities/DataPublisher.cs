@@ -1,5 +1,7 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Enums;
+using Guppy.EntityComponent.Interfaces;
 using Guppy.Threading.Interfaces;
 using Serilog;
 using System;
@@ -10,23 +12,23 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Utilities
 {
-    public class DataProcessor<TData> : Service
+    public class DataPublisher<TData> : Service
         where TData : class, IData
     {
         #region Classes
-        private interface IMessageProcessorContainer
+        private interface IDataProcessorContainer
         {
-            Boolean Process(TData message);
+            Boolean Process(TData data);
         }
 
-        private class MessageProcessorContainer<T> : IMessageProcessorContainer
+        private class DataProcessorContainer<T> : IDataProcessorContainer
             where T : class, TData
         {
             private delegate Boolean ProcessDelegate(T message);
 
             private ProcessDelegate _processors;
 
-            public MessageProcessorContainer(IDataProcessor<T> processor)
+            public DataProcessorContainer(IDataProcessor<T> processor)
             {
                 _processors = processor.Process;
             }
@@ -61,7 +63,7 @@ namespace Guppy.Threading.Utilities
 
         #region Private Fields
         private ILogger _log;
-        private Dictionary<Type, IMessageProcessorContainer> _processors;
+        private Dictionary<Type, IDataProcessorContainer> _processors;
         #endregion
 
         #region Lifecycle Methods
@@ -71,7 +73,7 @@ namespace Guppy.Threading.Utilities
 
             provider.Service(out _log);
 
-            _processors = new Dictionary<Type, IMessageProcessorContainer>();
+            _processors = new Dictionary<Type, IDataProcessorContainer>();
         }
         #endregion
 
@@ -84,14 +86,14 @@ namespace Guppy.Threading.Utilities
         public void RegisterProcessor<T>(IDataProcessor<T> processor)
             where T : class, TData
         {
-            if (_processors.TryGetValue(typeof(T), out IMessageProcessorContainer processors)
-                && processors is MessageProcessorContainer<T> casted)
+            if (_processors.TryGetValue(typeof(T), out IDataProcessorContainer processors)
+                && processors is DataProcessorContainer<T> casted)
             {
                 casted.RegisterProcessor(processor);
                 return;
             }
 
-            _processors.Add(typeof(T), new MessageProcessorContainer<T>(processor));
+            _processors.Add(typeof(T), new DataProcessorContainer<T>(processor));
         }
 
         /// <summary>
@@ -102,8 +104,8 @@ namespace Guppy.Threading.Utilities
         public void DeregisterProcessor<T>(IDataProcessor<T> processor)
             where T : class, TData
         {
-            if (_processors.TryGetValue(typeof(T), out IMessageProcessorContainer processors)
-                && processors is MessageProcessorContainer<T> casted)
+            if (_processors.TryGetValue(typeof(T), out IDataProcessorContainer processors)
+                && processors is DataProcessorContainer<T> casted)
             {
                 casted.DeregisterProcessor(processor);
                 return;
@@ -111,20 +113,17 @@ namespace Guppy.Threading.Utilities
         }
 
         /// <summary>
-        /// Process an incoming message immidiately.
+        /// Publish an incoming message to be processed immidiately.
         /// </summary>
         /// <param name="message"></param>
-        public Boolean Process(TData message)
+        public Boolean Publish(TData message)
         {
-            if (_processors.TryGetValue(message.GetType(), out IMessageProcessorContainer processor))
+            if (_processors.TryGetValue(message.GetType(), out IDataProcessorContainer processor))
             {
                 return processor.Process(message);
             }
-            else
-            {
-                _log.Warning("{type}::{method} - Unknown type recieved:'{messageType}'.", this.GetType().GetPrettyName(), nameof(Process), message.GetType().GetPrettyName());
-                return false;
-            }
+
+            return false;
         }
         #endregion
     }

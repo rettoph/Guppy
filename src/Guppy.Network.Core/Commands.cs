@@ -35,7 +35,7 @@ namespace Guppy.Network
                 {
                     return CommandHandler.Create<Int32?>((id) =>
                     {
-                        commands.Process(new GuppyNetworkUsersCommand()
+                        commands.Publish(new GuppyNetworkUsersCommand()
                         {
                             Id = id,
                         });

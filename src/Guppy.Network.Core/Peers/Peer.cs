@@ -50,6 +50,7 @@ namespace Guppy.Network
         private CancellationTokenSource _cancelation;
         private Task _loop;
         private ILogger _logger;
+        private CommandService _commands;
         #endregion
 
         #region Protected Properties
@@ -83,6 +84,7 @@ namespace Guppy.Network
 
             provider.Service(out _rooms);
             provider.Service(out _logger);
+            provider.Service(out _commands);
 
             this.listener = provider.GetService<EventBasedNetListener>();
             this.manager = provider.GetService<NetManager>();
@@ -93,7 +95,7 @@ namespace Guppy.Network
 
             provider.Settings.Set(HostType.Remote);
 
-            this.commands.RegisterProcessor<GuppyNetworkUsersCommand>(this);
+            _commands.RegisterProcessor<GuppyNetworkUsersCommand>(this);
 
             this.OnCurrentUserChanged += this.HandleCurrentUserChanged;
             this.listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;

@@ -12,7 +12,6 @@ namespace Guppy.EntityComponent
     {
         #region Private Fields
         private ServiceConfiguration _configuration;
-        private Guid _id;
         private ServiceStatus _status = ServiceStatus.Initializing;
         #endregion
 
@@ -60,11 +59,6 @@ namespace Guppy.EntityComponent
 
         public void Dispose()
         {
-            if(this.GetType().Name == "Ship")
-            {
-
-            }
-
             if(this.Status != ServiceStatus.Ready)
             {
                 return;
