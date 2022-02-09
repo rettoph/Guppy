@@ -5,6 +5,7 @@ using System.Text;
 using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.Interfaces;
 using Guppy.EntityComponent.Enums;
+using Minnow.System.Helpers;
 
 namespace Guppy.EntityComponent
 {
@@ -59,6 +60,7 @@ namespace Guppy.EntityComponent
 
         public void Dispose()
         {
+
             if(this.Status != ServiceStatus.Ready)
             {
                 return;

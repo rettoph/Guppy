@@ -37,8 +37,8 @@ namespace Guppy.Utilities.Cameras
         /// Otherwise, the position represents the top left corner of the viewport.
         /// </summary>
         public Boolean Center { get; set; } = true;
-        public Single ZoomLerpStrength = 0.015625f;
-        public Single MoveLerpStrength = 0.015625f;
+        public Single ZoomLerpStrength = 10f;
+        public Single MoveLerpStrength = 10f;
         public Single Zoom { get; set; } = 1;
 
         public Single ZoomTarget { get => _zoomTarget; }
@@ -92,19 +92,19 @@ namespace Guppy.Utilities.Cameras
         {
             this.ViewportBounds = this.buildViewportBounds();
 
-            base.Clean(gameTime);
-
             if (MathHelper.Distance(this.Zoom, _zoomTarget) > 0.0001f)
             { // Lerp to the zoom target
-                this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, Math.Min(1, this.ZoomLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
+                this.Zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, Math.Clamp(this.ZoomLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1));
                 this.dirty = true;
             }
 
             if (Vector2.Distance(this.Position, _positionTarget) > 0.001f)
             { // Lerp to the position target
-                this.Position = Vector2.Lerp(this.Position, _positionTarget, Math.Min(1, this.MoveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalMilliseconds));
+                this.Position = Vector2.Lerp(this.Position, _positionTarget, Math.Clamp(this.MoveLerpStrength * (Single)gameTime.ElapsedGameTime.TotalSeconds, 0, 1));
                 this.dirty = true;
             }
+
+            base.Clean(gameTime);
         }
         #endregion
 

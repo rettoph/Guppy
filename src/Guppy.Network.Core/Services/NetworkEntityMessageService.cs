@@ -1,4 +1,5 @@
 ﻿using Guppy.EntityComponent.DependencyInjection;
+using Guppy.EntityComponent.Enums;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
 using Guppy.Threading.Interfaces;
@@ -40,6 +41,13 @@ namespace Guppy.Network.Utilities
             base.Uninitialize();
 
             _packetFactories.Clear();
+
+            foreach(NetworkEntityMessagePinger pinger in _messagePingers.Values)
+            {
+                pinger.Dispose();
+            }
+
+            _messagePingers.Clear();
         }
         #endregion
 
@@ -62,6 +70,11 @@ namespace Guppy.Network.Utilities
         {
             void Sender()
             {
+                if(this.entity.Status != ServiceStatus.Ready)
+                {
+                    return;
+                }
+
                 this.entity.SendMessage<TMessage>(factory());
             };
 

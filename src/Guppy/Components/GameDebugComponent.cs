@@ -1,7 +1,6 @@
 ﻿using Guppy.CommandLine.Services;
 using Guppy.EntityComponent;
 using Guppy.EntityComponent.DependencyInjection;
-using Guppy.Extensions.Utilities;
 using Guppy.Messages;
 using Guppy.Threading.Interfaces;
 using Guppy.Threading.Utilities;
@@ -64,6 +63,14 @@ namespace Guppy.Components
             _frameBuffer = new Double[1000];
 
             _commands.RegisterProcessor<DebugFpsCommand>(this);
+        }
+
+        protected override void Uninitialize()
+        {
+            base.Uninitialize();
+
+            this.Entity.OnPostDraw -= this.Draw;
+            this.Entity.OnUpdate -= this.Update;
         }
         #endregion
 
@@ -136,8 +143,7 @@ namespace Guppy.Components
                 .Append((1000f / (_maxGroupTime / _framesPerGroup)).ToString("#,##0.0"))
                 .AppendLine("fps)\n")
                 .Append("FPS: ")
-                .Append((1000 / _frameBuffer.Average()).ToString("#,##0.0"))
-                ;
+                .Append((1000 / _frameBuffer.Average()).ToString("#,##0.0"));
 
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_font, sb, Vector2.One * 15, Color.WhiteSmoke);

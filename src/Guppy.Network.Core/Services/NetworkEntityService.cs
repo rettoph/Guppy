@@ -46,7 +46,7 @@ namespace Guppy.Network.Services
         public Boolean TryGetByNetworkId<TNetworkEntity>(UInt16 networkId, out TNetworkEntity entity)
             where TNetworkEntity : INetworkEntity
         {
-            if(_entities.TryGetValue(networkId, out INetworkEntity uncasted) && uncasted is TNetworkEntity casted)
+            if (_entities.TryGetValue(networkId, out INetworkEntity uncasted) && uncasted is TNetworkEntity casted)
             {
                 entity = casted;
                 return true;
@@ -80,7 +80,11 @@ namespace Guppy.Network.Services
             }
             else
             {
-                _logger.Warning($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {message.GetType().GetPrettyName()} message, an entity with the recieved {nameof(message.NetworkId)} cannot be found.");
+                _logger.Verbose("{type}::{method} - Update to process {packet} message, an entity with the recieved {id} cannot be found.",
+                    nameof(NetworkEntityService),
+                    nameof(TryProcess),
+                    message.GetType().GetPrettyName(),
+                    nameof(message.NetworkId));
                 return false;
             }
         }

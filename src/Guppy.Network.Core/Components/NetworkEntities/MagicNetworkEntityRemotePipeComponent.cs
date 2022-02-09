@@ -31,7 +31,7 @@ namespace Guppy.Network.Components.NetworkEntities
         {
             base.PreUninitialize();
 
-            this.Entity.Pipe = default;
+             this.Entity.Pipe = default;
 
             this.Entity.OnPipeChanged -= this.HandlePipeChanged;
         }

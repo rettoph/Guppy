@@ -19,7 +19,7 @@ namespace Guppy.EntityComponent.Utilities
         {
             base.Uninitialize();
 
-            _components.Values.ForEach(c => c.Dispose());
+            _distinct.ForEach(c => c.Dispose());
         }
         #endregion
 

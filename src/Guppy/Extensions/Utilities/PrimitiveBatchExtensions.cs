@@ -11,7 +11,7 @@ using System.Text;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
-namespace Guppy.Extensions.Utilities
+namespace Guppy.Utilities
 {
     public static class PrimitiveBatchExtensions
     {

@@ -31,14 +31,6 @@ namespace Guppy.EntityComponent.Lists
 
         #region Protected Fields
         protected virtual ServiceProvider provider => _provider;
-
-        /// <summary>
-        /// When true, then all self contained items
-        /// will be released with the invocation of
-        /// <see cref="Release"/>. Otherwise, the list
-        /// will only be cleared.
-        /// </summary>
-        protected Boolean disposeChildren { get; set; } = false;
         #endregion
 
         #region Public Properties
@@ -92,8 +84,6 @@ namespace Guppy.EntityComponent.Lists
             _list = new List<TService>();
             _creating = new List<TService>();
 
-            this.disposeChildren = false;
-
             this.CanAdd += this.HandleCanAdd;
             this.OnAdd += this.HandleAdd;
 
@@ -105,16 +95,6 @@ namespace Guppy.EntityComponent.Lists
         {
             base.Uninitialize();
 
-            if (this.disposeChildren)
-            { // Auto release all children.
-                while (this.Any())
-                    this.First().Dispose();
-            }
-            else
-            { // Simply clear all children.
-                this.Clear();
-            }
-
             this.CanAdd -= this.HandleCanAdd;
             this.OnAdd -= this.HandleAdd;
 
@@ -122,6 +102,18 @@ namespace Guppy.EntityComponent.Lists
             this.OnRemove -= this.HandleRemove;
         }
 
+        public void Dispose(Boolean disposeItems)
+        {
+            if(disposeItems)
+            {
+                while(this.Any())
+                {
+                    this.First().Dispose();
+                }
+            }
+
+            this.Dispose();
+        }
         #endregion
 
         #region Helper Methods

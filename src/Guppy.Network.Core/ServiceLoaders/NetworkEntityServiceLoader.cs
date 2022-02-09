@@ -106,7 +106,7 @@ namespace Guppy.Network.ServiceLoaders
         public void ConfigureNetwork(NetworkProviderBuilder network)
         {
             network.RegisterNetworkEntityMessage<CreateNetworkEntityMessage>()
-                .SetDeliveryMethod(DeliveryMethod.ReliableUnordered)
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
                 .SetMessageBusQueue(Constants.Queues.CreateNetworkEntityMessageQueue)
                 .SetFilter(CreateNetworkEntityMessage.Filter)
                 .RegisterProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>(service =>
@@ -119,7 +119,7 @@ namespace Guppy.Network.ServiceLoaders
                 });
 
             network.RegisterNetworkEntityMessage<DisposeNetworkEntityMessage>()
-                .SetDeliveryMethod(DeliveryMethod.ReliableUnordered)
+                .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
                 .SetMessageBusQueue(Constants.Queues.RemoveNetworkEntityMessageQueue)
                 .SetFilter(DisposeNetworkEntityMessage.Filter)
                 .SetProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>();

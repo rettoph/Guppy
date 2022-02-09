@@ -19,8 +19,6 @@ namespace Guppy.EntityComponent.Lists
         {
             base.PreInitialize(provider);
 
-            this.disposeChildren = true;
-
             _layers = provider.GetService<LayerList>();
 
             this.OnAdd += this.AddLayerable;

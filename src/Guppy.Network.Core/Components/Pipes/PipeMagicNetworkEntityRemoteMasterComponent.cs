@@ -11,6 +11,7 @@ using Guppy.Network.Security;
 using Guppy.Network.Security.Enums;
 using Guppy.Network.Security.EventArgs;
 using Guppy.Network.Security.Lists;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,12 +95,15 @@ namespace Guppy.Network.Components.Pipes
             { // This is the first pipe the entity has been put into...
                 args.Entity.SendMessage(new CreateNetworkEntityMessage()
                 {
-                    ServiceConfigurationId = args.Entity.ServiceConfiguration.Id,
+                    ServiceConfigurationId = args.Entity.ServiceConfiguration.Id
                 });
             }
             else
             { // The entity just changed pipes...
-                // throw new NotImplementedException();
+                args.Entity.SendMessage(new CreateNetworkEntityMessage()
+                {
+                    ServiceConfigurationId = args.Entity.ServiceConfiguration.Id
+                }, args.NewPipe.Users.NetPeers.Except(args.OldPipe.Users.NetPeers));
             }
         }
 
