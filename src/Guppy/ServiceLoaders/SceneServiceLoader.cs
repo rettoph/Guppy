@@ -6,7 +6,6 @@ using Guppy.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guppy.EntityComponent.DependencyInjection;
 using Guppy.EntityComponent.DependencyInjection.Builders;
 
 namespace Guppy.ServiceLoaders

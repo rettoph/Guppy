@@ -9,10 +9,6 @@ namespace Guppy.EntityComponent
 {
     public class Entity : Service, IEntity
     {
-        #region Private Fields
-        private ComponentManager _components;
-        #endregion
-
         #region IEntity Implementation
         public ComponentManager Components { get; set; }
         #endregion

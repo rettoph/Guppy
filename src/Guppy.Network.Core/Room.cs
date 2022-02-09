@@ -29,7 +29,7 @@ namespace Guppy.Network
         #endregion
 
         #region Public Properties
-        public Byte Id { get; internal set; }
+        public new Byte Id { get; internal set; }
         public UserList Users { get; private set; }
         public PipeService Pipes { get; private set; }
         public MessageBus Bus => _bus;

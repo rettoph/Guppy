@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Guppy.EntityComponent.DependencyInjection;
+using System.Linq;
 
 namespace Guppy.EntityComponent.Lists
 {
-    public class FrameableList<TFrameable> : FactoryServiceList<TFrameable>, IFrameable
+    public class FrameableList<TFrameable> : FactoryServiceList<TFrameable>
         where TFrameable : class, IFrameable
     {
         #region Private Attributes
@@ -27,15 +28,6 @@ namespace Guppy.EntityComponent.Lists
         protected Boolean dirtyUpdates { get; set; }
         #endregion
 
-        #region Events
-        public event Step OnPreDraw;
-        public event Step OnDraw;
-        public event Step OnPostDraw;
-        public event Step OnPreUpdate;
-        public event Step OnUpdate;
-        public event Step OnPostUpdate;
-        #endregion
-
         #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)
         {
@@ -49,9 +41,6 @@ namespace Guppy.EntityComponent.Lists
             this.dirtyDraws = true;
             this.dirtyUpdates = true;
 
-            this.OnDraw += this.Draw;
-            this.OnUpdate += this.Update;
-
             this.OnAdd += this.AddItem;
             this.OnRemove += this.RemoveItem;
         }
@@ -62,25 +51,18 @@ namespace Guppy.EntityComponent.Lists
 
             this.OnAdd -= this.AddItem;
             this.OnRemove -= this.RemoveItem;
-
-            this.OnDraw -= this.Draw;
-            this.OnUpdate -= this.Update;
         }
         #endregion
 
         #region Frame Methods
         public virtual void TryDraw(GameTime gameTime)
         {
-            this.OnPreDraw?.Invoke(gameTime);
-            this.OnDraw?.Invoke(gameTime);
-            this.OnPostDraw?.Invoke(gameTime);
+            this.Draw(gameTime);
         }
 
         public virtual void TryUpdate(GameTime gameTime)
         {
-            this.OnPreUpdate?.Invoke(gameTime);
-            this.OnUpdate?.Invoke(gameTime);
-            this.OnPostUpdate?.Invoke(gameTime);
+            this.Update(gameTime);
         }
 
         protected virtual void Draw(GameTime gameTime)
@@ -123,12 +105,12 @@ namespace Guppy.EntityComponent.Lists
         #region Helper Methods
         protected virtual IEnumerable<TFrameable> RemapDraws()
         {
-            return _dirtySource.Values;
+            return _dirtySource.Values.Where(o => o.Visible);
         }
 
         protected virtual IEnumerable<TFrameable> RemapUpdates()
         {
-            return _dirtySource.Values;
+            return _dirtySource.Values.Where(o => o.Enabled);
         }
         #endregion
 
@@ -136,6 +118,9 @@ namespace Guppy.EntityComponent.Lists
         private void AddItem(TFrameable item)
         {
             _dirtySource.TryAdd(item.Id, item);
+
+            item.OnVisibleChanged += this.HandleItemVisibleChanged;
+            item.OnEnabledChanged += this.HandleItemEnabledChanged;
 
             if (this.IsDirtyDraw(item))
                 this.dirtyDraws = true;
@@ -147,6 +132,9 @@ namespace Guppy.EntityComponent.Lists
         {
             _dirtySource.TryRemove(item.Id, out _);
 
+            item.OnVisibleChanged -= this.HandleItemVisibleChanged;
+            item.OnEnabledChanged -= this.HandleItemEnabledChanged;
+
             if (this.IsDirtyDraw(item))
                 this.dirtyDraws = true;
             if (this.IsDirtyUpdate(item))
@@ -155,12 +143,24 @@ namespace Guppy.EntityComponent.Lists
 
         protected virtual Boolean IsDirtyDraw(TFrameable item)
         {
-            return true;
+            return item.Visible;
         }
 
         protected virtual Boolean IsDirtyUpdate(TFrameable item)
         {
-            return true;
+            return item.Enabled;
+        }
+        #endregion
+
+        #region Event Handlers
+        private void HandleItemVisibleChanged(object sender, bool arg)
+        {
+            this.dirtyDraws = true;
+        }
+
+        private void HandleItemEnabledChanged(object sender, bool arg)
+        {
+            this.dirtyUpdates = true;
         }
         #endregion
     }

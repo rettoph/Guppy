@@ -40,7 +40,7 @@ namespace Guppy.Extensions
             return loader;
         }
 
-        public static T BuildGame<T>(this GuppyLoader guppy, String? name = null)
+        public static T BuildGame<T>(this GuppyLoader guppy, String name = null)
             where T : Game
         {
             if (!guppy.Initialized)

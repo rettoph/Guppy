@@ -10,6 +10,9 @@ namespace Guppy.Interfaces
 
     public interface IFrameable : IEntity
     {
+        Boolean Visible { get; set; }
+        Boolean Enabled { get; set; }
+
         /// <summary>
         /// Delegate invoked each frame immidiately before OnDraw.
         /// </summary>
@@ -35,6 +38,9 @@ namespace Guppy.Interfaces
         /// Delegate invoked each frame immidiately after OnUpdate
         /// </summary>
         event Step OnPostUpdate;
+
+        public event OnEventDelegate<IFrameable, Boolean> OnVisibleChanged;
+        public event OnEventDelegate<IFrameable, Boolean> OnEnabledChanged;
 
         /// <summary>
         /// Public method used to begin the Draw delegate invocation.

@@ -12,7 +12,6 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
     {
         #region Private Fields
         private Func<ServiceProvider, TFactory> _method;
-        private UInt16? _maxPoolSize;
         #endregion
 
         #region Public Properties

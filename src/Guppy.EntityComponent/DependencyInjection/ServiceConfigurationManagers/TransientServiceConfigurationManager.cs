@@ -43,7 +43,7 @@ namespace Guppy.EntityComponent.DependencyInjection
         #endregion
 
         #region IDisposable Implementation
-        public virtual void Dispose()
+        public override void Dispose()
         {
             //
         }

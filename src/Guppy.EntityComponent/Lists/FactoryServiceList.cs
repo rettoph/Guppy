@@ -70,7 +70,7 @@ namespace Guppy.EntityComponent.Lists
         {
             return base.Create(serviceName);
         }
-        public new TService Create()
+        public TService Create()
         {
             return base.Create<TService>();
         }
