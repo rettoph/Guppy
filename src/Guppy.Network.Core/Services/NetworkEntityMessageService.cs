@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Utilities
 {
-    public sealed class NetworkEntityMessageService : DataPublisher<IData>
+    public sealed class NetworkEntityMessageService : Publisher<IData>
     {
         private delegate IData PacketFactoryDelegate();
 

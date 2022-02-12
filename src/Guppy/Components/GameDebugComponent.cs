@@ -143,7 +143,18 @@ namespace Guppy.Components
                 .Append((1000f / (_maxGroupTime / _framesPerGroup)).ToString("#,##0.0"))
                 .AppendLine("fps)\n")
                 .Append("FPS: ")
-                .Append((1000 / _frameBuffer.Average()).ToString("#,##0.0"));
+                .AppendLine((1000 / _frameBuffer.Average()).ToString("#,##0.0") + "\n");
+
+            if(this.Entity.Scenes.Scene is not null)
+            {
+                var publishers = this.Entity.Scenes.Scene.Provider.GetService<MessageBus>().Publishers.OrderByDescending(p => p.Count);
+                sb.AppendLine("Messages Processed: ");
+                foreach (Publisher<IMessage>.IDataPublisher publisher in publishers)
+                {
+                    sb.AppendLine($"   {publisher.Type.Name} - {publisher.Count.ToString("#,##0")}");
+                }
+            }
+
 
             _spriteBatch.Begin();
             _spriteBatch.DrawString(_font, sb, Vector2.One * 15, Color.WhiteSmoke);

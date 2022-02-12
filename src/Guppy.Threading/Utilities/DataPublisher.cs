@@ -12,23 +12,29 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Utilities
 {
-    public class DataPublisher<TData> : Service
+    public class Publisher<TData> : Service
         where TData : class, IData
     {
         #region Classes
-        private interface IDataProcessorContainer
+        public interface IDataPublisher
         {
+            public Type Type { get; }
+            UInt32 Count { get; }
+
             Boolean Process(TData data);
         }
 
-        private class DataProcessorContainer<T> : IDataProcessorContainer
+        private class DataPublisher<T> : IDataPublisher
             where T : class, TData
         {
             private delegate Boolean ProcessDelegate(T message);
 
             private ProcessDelegate _processors;
 
-            public DataProcessorContainer(IDataProcessor<T> processor)
+            public Type Type => typeof(T);
+            public UInt32 Count { get; private set; }
+
+            public DataPublisher(IDataProcessor<T> processor)
             {
                 _processors = processor.Process;
             }
@@ -42,6 +48,13 @@ namespace Guppy.Threading.Utilities
                     {
                         success &= processor(casted);
                     }
+
+#if DEBUG
+                    if(success)
+                    {
+                        this.Count++;
+                    }
+#endif
 
                     return success;
                 }
@@ -63,8 +76,13 @@ namespace Guppy.Threading.Utilities
 
         #region Private Fields
         private ILogger _log;
-        private Dictionary<Type, IDataProcessorContainer> _processors;
+        private Dictionary<Type, IDataPublisher> _publishers;
         #endregion
+
+        #region Public Properties
+        public IEnumerable<IDataPublisher> Publishers => _publishers.Values;
+        #endregion
+
 
         #region Lifecycle Methods
         protected override void Initialize(ServiceProvider provider)
@@ -73,7 +91,7 @@ namespace Guppy.Threading.Utilities
 
             provider.Service(out _log);
 
-            _processors = new Dictionary<Type, IDataProcessorContainer>();
+            _publishers = new Dictionary<Type, IDataPublisher>();
         }
         #endregion
 
@@ -86,14 +104,14 @@ namespace Guppy.Threading.Utilities
         public void RegisterProcessor<T>(IDataProcessor<T> processor)
             where T : class, TData
         {
-            if (_processors.TryGetValue(typeof(T), out IDataProcessorContainer processors)
-                && processors is DataProcessorContainer<T> casted)
+            if (_publishers.TryGetValue(typeof(T), out IDataPublisher processors)
+                && processors is DataPublisher<T> casted)
             {
                 casted.RegisterProcessor(processor);
                 return;
             }
 
-            _processors.Add(typeof(T), new DataProcessorContainer<T>(processor));
+            _publishers.Add(typeof(T), new DataPublisher<T>(processor));
         }
 
         /// <summary>
@@ -104,8 +122,8 @@ namespace Guppy.Threading.Utilities
         public void DeregisterProcessor<T>(IDataProcessor<T> processor)
             where T : class, TData
         {
-            if (_processors.TryGetValue(typeof(T), out IDataProcessorContainer processors)
-                && processors is DataProcessorContainer<T> casted)
+            if (_publishers.TryGetValue(typeof(T), out IDataPublisher processors)
+                && processors is DataPublisher<T> casted)
             {
                 casted.DeregisterProcessor(processor);
                 return;
@@ -118,7 +136,7 @@ namespace Guppy.Threading.Utilities
         /// <param name="message"></param>
         public Boolean Publish(TData message)
         {
-            if (_processors.TryGetValue(message.GetType(), out IDataProcessorContainer processor))
+            if (_publishers.TryGetValue(message.GetType(), out IDataPublisher processor))
             {
                 return processor.Process(message);
             }

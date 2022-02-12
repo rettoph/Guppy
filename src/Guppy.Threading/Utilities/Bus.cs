@@ -17,7 +17,7 @@ namespace Guppy.Threading.Utilities
     {
     }
 
-    public class Bus<TData> : DataPublisher<TData>
+    public class Bus<TData> : Publisher<TData>
         where TData : class, IData
     {
         #region Classes

@@ -23,6 +23,8 @@ namespace Guppy
         #endregion
 
         #region Public Properties
+        public ServiceProvider Provider => _provider;
+
         public LayerList Layers { get; private set; }
         public LayerableList Layerables { get; private set; }
         #endregion

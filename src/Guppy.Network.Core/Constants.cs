@@ -14,8 +14,8 @@ namespace Guppy.Network
         {
             public const Int32 UserRoomActionMessageQueue = Int32.MinValue;
             public const Int32 CreateNetworkEntityMessageQueue = Int32.MinValue + 1000;
-            public const Int32 RemoveNetworkEntityMessageQueue = Int32.MinValue + 1010;
-            public const Int32 DefaultMessageQueue             = Int32.MinValue + 1020;
+            public const Int32 DefaultMessageQueue             = Int32.MinValue + 1010;
+            public const Int32 DisposeNetworkEntityMessageQueue = Int32.MinValue + 1020;
         }
     }
 }
