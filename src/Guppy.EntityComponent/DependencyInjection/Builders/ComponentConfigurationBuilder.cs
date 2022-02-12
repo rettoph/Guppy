@@ -15,7 +15,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #endregion
 
         #region Build Method
-        public abstract ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<String, UInt32, ServiceConfiguration> services);
+        public abstract ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<Type, UInt32, ServiceConfiguration> services);
         #endregion
     }
 
@@ -29,14 +29,14 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
 
         #region Public Properties
         /// <summary>
-        /// The ServiceConfiguration name of the Component to be bound.
+        /// The ServiceConfiguration type of the Component to be bound.
         /// </summary>
-        public String ComponentServiceName { get; }
+        public Type ComponentServiceType { get; }
 
         /// <summary>
         /// All <see cref="TypeFactory"/>s who's <see cref="TypeFactory.Type"/>
         /// is <see cref="Type.IsAssignableFrom(Type)"/> will be bound to the defined
-        /// <see cref="ComponentServiceName"/>.
+        /// <see cref="ComponentServiceType"/>.
         /// </summary>
         public Type AssignableEntityType
         {
@@ -46,11 +46,11 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #endregion
 
         #region Constructors
-        internal ComponentConfigurationBuilder(String componentServiceName, ServiceProviderBuilder services)
+        internal ComponentConfigurationBuilder(Type componentServiceType, ServiceProviderBuilder services)
         {
             _services = services;
 
-            this.ComponentServiceName = componentServiceName;
+            this.ComponentServiceType = componentServiceType;
         }
         #endregion
 
@@ -105,9 +105,9 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <param name="name"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public ComponentConfigurationBuilder<TComponent> RegisterService(String name, Action<ServiceConfigurationBuilder<TComponent>> builder)
+        public ComponentConfigurationBuilder<TComponent> RegisterService(Type type, Action<ServiceConfigurationBuilder<TComponent>> builder)
         {
-            ServiceConfigurationBuilder<TComponent> service = _services.RegisterService<TComponent>(name);
+            ServiceConfigurationBuilder<TComponent> service = _services.RegisterService<TComponent>(type);
             service.SetLifetime(ServiceLifetime.Transient);
             builder(service);
 
@@ -120,16 +120,16 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <returns></returns>
         public ComponentConfigurationBuilder<TComponent> RegisterService(Action<ServiceConfigurationBuilder<TComponent>> builder)
         {
-            this.RegisterService(typeof(TComponent).FullName, builder);
+            this.RegisterService(typeof(TComponent), builder);
 
             return this;
         }
         #endregion
 
         #region Build Methods
-        public override ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<String, UInt32, ServiceConfiguration> services)
+        public override ComponentConfiguration Build(List<ComponentFilter> allFilters, DoubleDictionary<Type, UInt32, ServiceConfiguration> services)
         {
-            ServiceConfiguration componentServiceConfiguration = services[this.ComponentServiceName];
+            ServiceConfiguration componentServiceConfiguration = services[this.ComponentServiceType];
 
             ComponentFilter[] filters = allFilters.Where(f => {
                 return componentServiceConfiguration.TypeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(f.AssignableComponentType)

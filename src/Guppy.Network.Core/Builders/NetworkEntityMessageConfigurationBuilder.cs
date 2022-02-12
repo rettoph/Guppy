@@ -30,7 +30,7 @@ namespace Guppy.Network.Builders
 
         public override NetworkMessageConfiguration Build(DynamicId id, DoubleDictionary<ushort, Type, DataConfiguration> dataTypeConfigurations)
         {
-            if(this.ProcessorConfigurationName is null)
+            if(this.ProcessorConfigurationType is null)
             { // No custom processor was defined, so we should generate a default one now...
                 this.RegisterProcessorConfiguration<DefaultNetworkEntityMessageProcessor<TNetworkEntityMessage>>(processor =>
                 {

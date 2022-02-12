@@ -4,6 +4,8 @@ using Guppy.EntityComponent.Lists;
 using Guppy.Network.Interfaces;
 using Guppy.Network.Messages;
 using Guppy.Threading.Interfaces;
+using Guppy.Threading.Utilities;
+using Microsoft.Xna.Framework;
 using Serilog;
 using System;
 using System.Collections;
@@ -70,75 +72,6 @@ namespace Guppy.Network.Services
         #endregion
 
         #region Internal Methods
-        internal Boolean TryProcess(NetworkEntityMessage message)
-        {
-            // Create a new entity instance if one doesnt already exists...
-            if (_entities.TryGetValue(message.NetworkId, out INetworkEntity entity) && entity is IMagicNetworkEntity magic)
-            {
-                this.ProcessPackets(magic, message);
-                return true;
-            }
-            else
-            {
-                _logger.Verbose("{type}::{method} - Update to process {packet} message, an entity with the recieved {id} cannot be found.",
-                    nameof(NetworkEntityService),
-                    nameof(TryProcess),
-                    message.GetType().GetPrettyName(),
-                    nameof(message.NetworkId));
-                return false;
-            }
-        }
-
-        internal Boolean TryProcess(CreateNetworkEntityMessage message)
-        {
-            // Create a new entity instance if one doesnt already exists...
-            if(!_entities.TryGetValue(message.NetworkId, out INetworkEntity entity))
-            { // No entity with the recieved id exists, try creating one now!
-                entity = _provider.GetService<IMagicNetworkEntity>(message.ServiceConfigurationId, (e, _, _) =>
-                { // Set the entity's internal network id to the message value.
-                    e.NetworkId = message.NetworkId;
-                    this.ProcessPackets(e, message);
-                });
-            }
-            else if(entity.ServiceConfiguration.Id != message.ServiceConfigurationId)
-            {
-                _logger.Warning($"{nameof(NetworkEntityService)}::{nameof(TryProcess)} - Update to process {nameof(CreateNetworkEntityMessage)} message, an entity with the recieved {nameof(CreateNetworkEntityMessage.NetworkId)} already exists, but the expected {nameof(CreateNetworkEntityMessage.ServiceConfigurationId)} does not match.");
-                return false;
-            }
-            else if (entity is IMagicNetworkEntity magic)
-            {
-                this.ProcessPackets(magic, message);
-            }
-
-            // Entity created, we can safely assume it was added?
-            return true;
-        }
-
-        internal Boolean TryProcess(DisposeNetworkEntityMessage message)
-        {
-            // Try to load the requested entity...
-            if (_entities.TryGetValue(message.NetworkId, out INetworkEntity entity) && entity is IMagicNetworkEntity magic)
-            {
-                // Do one final process, just in case...
-                this.ProcessPackets(magic, message);
-                // Goodbye.
-                entity.Dispose();
-                return true;
-            }
-
-            return false;
-        }
-
-        private void ProcessPackets(IMagicNetworkEntity entity, NetworkEntityMessage message)
-        {
-            entity.Messages.Publish(message);
-
-            foreach (IData packet in message.Packets)
-            {
-                entity.Messages.Publish(packet);
-            }
-        }
-
         /// <summary>
         /// Attempt to add a new entity into the current serivce...
         /// </summary>
@@ -153,7 +86,5 @@ namespace Guppy.Network.Services
             _entities.Remove(entity.NetworkId);
         }
         #endregion
-
-
     }
 }

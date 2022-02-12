@@ -10,14 +10,14 @@ namespace Guppy.EntityComponent.DependencyInjection
     {
         #region Public Fields
         /// <summary>
-        /// The xxHash of the <see cref="ServiceConfiguration.Name"/>
+        /// The xxHash of the <see cref="ServiceConfiguration.Type"/>
         /// </summary>
         public readonly UInt32 Id;
 
         /// <summary>
         /// The primary lookup key for the current service.
         /// </summary>
-        public readonly String Name;
+        public readonly Type Type;
 
         /// <summary>
         /// The bound <see cref="TypeFactory"/>.
@@ -34,27 +34,27 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// All queries matching any of these values will return the defined
         /// configuration.
         /// </summary>
-        public readonly String[] CacheNames;
+        public readonly Type[] Aliases;
 
         /// <summary>
         /// An array of actions to preform when building a new instace
         /// </summary>
-        public readonly CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] Setups;
+        public readonly CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] Setups;
         #endregion
 
         #region Constructors
         internal ServiceConfiguration(
-            String name,
+            Type type,
             TypeFactory typeFactory,
             ServiceLifetime lifetime,
-            String[] cacheNames,
-            CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] setups)
+            Type[] aliases,
+            CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] setups)
         {
-            this.Id = name.xxHash();
-            this.Name = name;
+            this.Id = type.AssemblyQualifiedName.xxHash();
+            this.Type = type;
             this.TypeFactory = typeFactory;
             this.Lifetime = lifetime;
-            this.CacheNames = cacheNames;
+            this.Aliases = aliases;
             this.Setups = setups;
         }
         #endregion
@@ -70,6 +70,16 @@ namespace Guppy.EntityComponent.DependencyInjection
         public virtual Object GetInstance(ServiceProvider provider, Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder)
         {
             return provider.GetServiceConfigurationManager(this).GetInstance(customSetup, customSetupOrder);
+        }
+
+        public virtual Object BuildInstance(ServiceProvider provider)
+        {
+            return provider.GetServiceConfigurationManager(this).BuildInstance();
+        }
+
+        public virtual Object BuildInstance(ServiceProvider provider, Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder)
+        {
+            return provider.GetServiceConfigurationManager(this).BuildInstance(customSetup, customSetupOrder);
         }
         #endregion
 

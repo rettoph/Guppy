@@ -25,7 +25,7 @@ namespace Guppy.Network.Configurations
         public readonly DeliveryMethod DeliveryMethod;
         public readonly Byte SequenceChannel;
 
-        public readonly String ProcessorConfigurationName;
+        public readonly Type ProcessorConfigurationType;
         public readonly Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter;
         public readonly Int32 MessageBusQueue;
 
@@ -35,7 +35,7 @@ namespace Guppy.Network.Configurations
             DataConfiguration dataConfiguration,
             DeliveryMethod deliveryMethod,
             Byte sequenceChannel,
-            String processorConfigurationName,
+            Type processorConfigurationType,
             Func<ServiceProvider, NetworkMessageConfiguration, Boolean> filter,
             Int32 messageBusQueue)
         {
@@ -44,7 +44,7 @@ namespace Guppy.Network.Configurations
             this.DataConfiguration = dataConfiguration;
             this.DeliveryMethod = deliveryMethod;
             this.SequenceChannel = sequenceChannel;
-            this.ProcessorConfigurationName = processorConfigurationName;
+            this.ProcessorConfigurationType = processorConfigurationType;
             this.Filter = filter;
             this.MessageBusQueue = messageBusQueue;
         }
@@ -60,20 +60,20 @@ namespace Guppy.Network.Configurations
             DataConfiguration dataConfiguration, 
             DeliveryMethod deliveryMethod, 
             byte sequenceChannel, 
-            String processorConfigurationName, 
+            Type processorConfigurationType, 
             Func<ServiceProvider, NetworkMessageConfiguration, bool> filter,
-            Int32 messageBusQueue) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationName, filter, messageBusQueue)
+            Int32 messageBusQueue) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationType, filter, messageBusQueue)
         {
         }
 
         internal override void TryRegisterProcessor(ServiceProvider provider, MessageBus bus)
         {
-            if(this.ProcessorConfigurationName is null)
+            if(this.ProcessorConfigurationType is null)
             {
                 return;
             }
 
-            bus.RegisterProcessor<TMessage>(provider.GetService<IDataProcessor<TMessage>>(this.ProcessorConfigurationName));
+            bus.RegisterProcessor<TMessage>(provider.GetService<IDataProcessor<TMessage>>(this.ProcessorConfigurationType));
         }
     }
 }

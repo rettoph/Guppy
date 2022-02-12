@@ -98,8 +98,8 @@ namespace Guppy.IO.Services
             provider.Service(out _keyboard);
             provider.Service(out _inputCommands);
             provider.Service(out _log);
-            provider.Service(Guppy.Constants.ServiceNames.TransientSpritebatch, out _spriteBatch);
-            provider.Service(Guppy.Constants.ServiceNames.TransientCamera, out _camera);
+            provider.BuildService(out _spriteBatch);
+            provider.BuildService(out _camera);
 
             _strings = new TerminalStringBuilder(2048);
 

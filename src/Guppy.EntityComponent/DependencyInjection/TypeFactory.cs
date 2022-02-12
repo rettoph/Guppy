@@ -65,7 +65,7 @@ namespace Guppy.EntityComponent.DependencyInjection
         {
             instance = this.Method(provider);
 
-            foreach (CustomAction<ServiceConfiguration, ServiceConfigurationBuilder> setup in configuration.Setups)
+            foreach (CustomAction<ServiceConfiguration, IServiceConfigurationBuilder> setup in configuration.Setups)
             {
                 setup.Invoke(instance, provider, configuration);
             }
@@ -82,7 +82,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             instance = this.Method(provider);
 
             Boolean ranCustomSetup = false;
-            foreach (CustomAction<ServiceConfiguration, ServiceConfigurationBuilder> setup in configuration.Setups)
+            foreach (CustomAction<ServiceConfiguration, IServiceConfigurationBuilder> setup in configuration.Setups)
             {
                 if (!ranCustomSetup && setup.Order >= customSetupOrder)
                 {

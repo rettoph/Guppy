@@ -8,11 +8,11 @@ namespace Guppy.EntityComponent.DependencyInjection
     internal sealed class TransientServiceConfiguration : ServiceConfiguration
     {
         public TransientServiceConfiguration(
-            string name,
+            Type type,
             TypeFactory typeFactory,
             ServiceLifetime lifetime,
-            string[] cacheNames,
-            CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] setups) : base(name, typeFactory, lifetime, cacheNames, setups)
+            Type[] aliases,
+            CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] setups) : base(type, typeFactory, lifetime, aliases, setups)
         {
         }
 

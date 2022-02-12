@@ -34,17 +34,17 @@ namespace Guppy.EntityComponent.Lists
 
         #region Create Methods
         public new T Create<T>(
-            String serviceName,
+            Type type,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            return base.Create<T>(serviceName, customSetup);
+            return base.Create<T>(type, customSetup);
         }
         public new TService Create(
-            String serviceName,
+            Type type,
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return base.Create(serviceName, customSetup);
+            return base.Create(type, customSetup);
         }
         public new TService Create(
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
@@ -60,15 +60,15 @@ namespace Guppy.EntityComponent.Lists
         }
 
         public new T Create<T>(
-            String serviceName)
+            Type type)
                 where T : class, TService
         {
-            return base.Create<T>(serviceName);
+            return base.Create<T>(type);
         }
         public new TService Create(
-            String serviceName)
+            Type type)
         {
-            return base.Create(serviceName);
+            return base.Create(type);
         }
         public TService Create()
         {

@@ -17,7 +17,7 @@ namespace Guppy.ServiceLoaders
         {
             assemblyHelper.Types.GetTypesWithAutoLoadAttribute(typeof(LoaderService<,,>)).ForEach(loaderServiceType =>
             {
-                services.RegisterService(loaderServiceType.FullName)
+                services.RegisterService(loaderServiceType)
                     .SetLifetime(ServiceLifetime.Singleton)
                     .RegisterTypeFactory(loaderServiceType, factory =>
                     {

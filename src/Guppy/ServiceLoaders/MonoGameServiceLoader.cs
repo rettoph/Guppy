@@ -32,16 +32,8 @@ namespace Guppy.ServiceLoaders
                 .SetLifetime(ServiceLifetime.Scoped)
                 .SetFactoryType<SpriteBatch>();
 
-            services.RegisterService<SpriteBatch>(Guppy.Constants.ServiceNames.TransientSpritebatch)
-                .SetLifetime(ServiceLifetime.Transient)
-                .SetFactoryType<SpriteBatch>();
-
             services.RegisterService<Camera2D>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetFactoryType<Camera2D>();
-
-            services.RegisterService<Camera2D>(Guppy.Constants.ServiceNames.TransientCamera)
-                .SetLifetime(ServiceLifetime.Transient)
                 .SetFactoryType<Camera2D>();
 
             assemblyHelper.AddAssembly(typeof(GraphicsDevice).Assembly);
@@ -49,7 +41,7 @@ namespace Guppy.ServiceLoaders
             assemblyHelper.Types.GetTypesAssignableFrom<IVertexType>().Where(t => t.IsValueType).ForEach(vt =>
             {
                 var primitiveBatchType = typeof(PrimitiveBatch<>).MakeGenericType(vt);
-                services.RegisterService(primitiveBatchType.FullName)
+                services.RegisterService(primitiveBatchType)
                     .SetLifetime(ServiceLifetime.Singleton)
                     .RegisterTypeFactory(primitiveBatchType, factory =>
                     {

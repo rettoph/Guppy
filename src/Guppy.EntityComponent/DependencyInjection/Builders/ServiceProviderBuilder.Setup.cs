@@ -73,7 +73,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
 
         #region Helper Methods
-        private static bool SkipInitializationFilter(ServiceConfigurationBuilder configuration)
+        private static bool SkipInitializationFilter(IServiceConfigurationBuilder configuration)
         {
             Boolean CheckIsManualInitializationEnabled(Type type)
             {

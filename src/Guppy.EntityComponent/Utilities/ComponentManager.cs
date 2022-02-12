@@ -10,7 +10,7 @@ namespace Guppy.EntityComponent.Utilities
     public class ComponentManager : Service
     {
         #region Private Fields
-        private Dictionary<String, IComponent> _components;
+        private Dictionary<Type, IComponent> _components;
         private IComponent[] _distinct;
         #endregion
 
@@ -27,11 +27,11 @@ namespace Guppy.EntityComponent.Utilities
         internal void BuildDictionary(IEnumerable<IComponent> components)
         {
             // throw new NotImplementedException();
-            _components = new Dictionary<String, IComponent>(
+            _components = new Dictionary<Type, IComponent>(
                 components.SelectMany(static component =>
                 {
-                    return component.ServiceConfiguration.CacheNames
-                        .Select(name => new KeyValuePair<String, IComponent>(name, component));
+                    return component.ServiceConfiguration.Aliases
+                        .Select(alias => new KeyValuePair<Type, IComponent>(alias, component));
                 })
             );
 
@@ -67,12 +67,7 @@ namespace Guppy.EntityComponent.Utilities
         public TComponent Get<TComponent>()
             where TComponent : class, IComponent
         {
-            return this.Get<TComponent>(typeof(TComponent).FullName);
-        }
-        public TComponent Get<TComponent>(String componentName)
-            where TComponent : class, IComponent
-        {
-            if (_components.TryGetValue(componentName, out IComponent component) && component is TComponent casted)
+            if (_components.TryGetValue(typeof(TComponent), out IComponent component) && component is TComponent casted)
             {
                 return casted;
             }

@@ -182,6 +182,16 @@ namespace Guppy.Network.Utilities
                 }
             }
         }
+
+        public void Process(NetworkEntityMessage message)
+        {
+            this.Publish(message);
+
+            foreach(IData packet in message.Packets)
+            {
+                this.Publish(packet);
+            }
+        }
         #endregion
     }
 }

@@ -50,7 +50,7 @@ namespace Guppy.Components
             provider.Service(out _commands);
             provider.Service(out _primitiveBatch);
             provider.Service(out _spriteBatch);
-            provider.Service(Constants.ServiceNames.TransientCamera, out _camera);
+            provider.BuildService(out _camera);
 
             _font = provider.GetContent<SpriteFont>(Constants.Content.DebugFont);
 

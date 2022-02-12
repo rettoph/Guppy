@@ -92,9 +92,10 @@ namespace Guppy.Network
 
             // Ensure that all required message bus queus have been registered...
             provider.Service(out _bus);
+
             foreach ((Int32 queue, Type[] types) in messageBusQueus)
             {
-                _bus.ConfigureMessageTypes(queue, types);
+                _bus.GetQueue(queue).RegisterTypes(types);
             }
 
             // Register all message processors into the bus

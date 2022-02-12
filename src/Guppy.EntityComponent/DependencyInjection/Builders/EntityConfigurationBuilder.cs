@@ -22,10 +22,10 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #endregion
 
         #region RegisterEntityServiceConfiguration Methods
-        public EntityConfigurationBuilder<TEntity> RegisterService<T>(String name, Action<ServiceConfigurationBuilder<T>> builder)
+        public EntityConfigurationBuilder<TEntity> RegisterService<T>(Type type, Action<ServiceConfigurationBuilder<T>> builder)
             where T : class, TEntity
         {
-            ServiceConfigurationBuilder<T> service = _services.RegisterService<T>(name);
+            ServiceConfigurationBuilder<T> service = _services.RegisterService<T>(type);
             builder(service);
 
             return this;
@@ -33,11 +33,11 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         public EntityConfigurationBuilder<TEntity> RegisterService<T>(Action<ServiceConfigurationBuilder<T>> builder)
             where T : class, TEntity
         {
-            return this.RegisterService<T>(typeof(T).FullName, builder);
+            return this.RegisterService<T>(typeof(T), builder);
         }
-        public EntityConfigurationBuilder<TEntity> RegisterService(String name, Action<ServiceConfigurationBuilder<TEntity>> builder)
+        public EntityConfigurationBuilder<TEntity> RegisterService(Type type, Action<ServiceConfigurationBuilder<TEntity>> builder)
         {
-            return this.RegisterService<TEntity>(name, builder);
+            return this.RegisterService<TEntity>(type, builder);
         }
         public EntityConfigurationBuilder<TEntity> RegisterService(Action<ServiceConfigurationBuilder<TEntity>> builder)
         {
@@ -46,10 +46,10 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #endregion
 
         #region RegisterComponentConfiguration Methods
-        public EntityConfigurationBuilder<TEntity> RegisterComponent<TComponent>(String name, Action<ComponentConfigurationBuilder<TComponent>> builder)
+        public EntityConfigurationBuilder<TEntity> RegisterComponent<TComponent>(Type type, Action<ComponentConfigurationBuilder<TComponent>> builder)
             where TComponent : Component<TEntity>
         {
-            ComponentConfigurationBuilder<TComponent> componentConfiguration = _services.RegisterComponent<TComponent>(name);
+            ComponentConfigurationBuilder<TComponent> componentConfiguration = _services.RegisterComponent<TComponent>(type);
             componentConfiguration.SetAssignableEntityType<TEntity>();
             builder(componentConfiguration);
 
@@ -58,7 +58,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         public EntityConfigurationBuilder<TEntity> RegisterComponent<TComponent>(Action<ComponentConfigurationBuilder<TComponent>> builder)
             where TComponent : Component<TEntity>
         {
-            return this.RegisterComponent<TComponent>(typeof(TComponent).FullName, builder);
+            return this.RegisterComponent<TComponent>(typeof(TComponent), builder);
         }
         #endregion
     }

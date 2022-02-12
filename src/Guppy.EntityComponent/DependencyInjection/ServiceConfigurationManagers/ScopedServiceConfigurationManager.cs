@@ -29,7 +29,7 @@ namespace Guppy.EntityComponent.DependencyInjection
         public override object GetInstance(Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder)
             => _getInstanceWithCustomSetup(customSetup, customSetupOrder);
 
-        private Object BuildInstance()
+        public override Object BuildInstance()
         {
             _getInstance = this.ReturnInstance;
             _getInstanceWithCustomSetup = this.ReturnInstance;
@@ -38,7 +38,7 @@ namespace Guppy.EntityComponent.DependencyInjection
             return this.ReturnInstance();
         }
 
-        private Object BuildInstance(Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder)
+        public override Object BuildInstance(Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder)
         {
             _getInstance = this.ReturnInstance;
             _getInstanceWithCustomSetup = this.ReturnInstance;

@@ -180,11 +180,11 @@ namespace Guppy.EntityComponent.Lists
 
         #region Create Methods
         protected internal virtual T Create<T>(
-            String serviceName,
+            Type type,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            var instance = this.provider.GetService<T>(serviceName, (i, p, d) =>
+            var instance = this.provider.GetService<T>(type, (i, p, d) =>
             {
                 customSetup.Invoke(i, p, d);
                 _creating.Add(i);
@@ -198,29 +198,29 @@ namespace Guppy.EntityComponent.Lists
             return instance;
         }
         protected internal TService Create(
-            String serviceName,
+            Type type,
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return this.Create<TService>(serviceName, customSetup);
+            return this.Create<TService>(type, customSetup);
         }
         protected internal TService Create(
             Action<TService, ServiceProvider, ServiceConfiguration> customSetup)
         {
-            return this.Create<TService>(typeof(TService).FullName, customSetup);
+            return this.Create<TService>(typeof(TService), customSetup);
         }
 
         protected internal T Create<T>(
             Action<T, ServiceProvider, ServiceConfiguration> customSetup)
                 where T : class, TService
         {
-            return this.Create<T>(typeof(T).FullName, customSetup);
+            return this.Create<T>(typeof(T), customSetup);
         }
 
         protected internal virtual T Create<T>(
-            String serviceName)
+            Type type)
                 where T : class, TService
         {
-            var instance = this.provider.GetService<T>(serviceName, (i, p, d) =>
+            var instance = this.provider.GetService<T>(type, (i, p, d) =>
             {
                 _creating.Add(i);
 
@@ -233,15 +233,15 @@ namespace Guppy.EntityComponent.Lists
             return instance;
         }
         protected internal TService Create(
-            String serviceName)
+            Type type)
         {
-            return this.Create<TService>(serviceName);
+            return this.Create<TService>(type);
         }
 
         protected internal T Create<T>()
                 where T : class, TService
         {
-            return this.Create<T>(typeof(T).FullName);
+            return this.Create<T>(typeof(T));
         }
         #endregion
 

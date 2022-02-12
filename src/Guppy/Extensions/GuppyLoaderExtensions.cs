@@ -40,13 +40,13 @@ namespace Guppy.Extensions
             return loader;
         }
 
-        public static T BuildGame<T>(this GuppyLoader guppy, String name = null)
+        public static T BuildGame<T>(this GuppyLoader guppy, Type type = null)
             where T : Game
         {
             if (!guppy.Initialized)
                 throw new Exception("Please initialize Guppy before building a game instance.");
 
-            return guppy.BuildServiceProvider().GetService<T>(name ?? typeof(T).FullName);
+            return guppy.BuildServiceProvider().GetService<T>(type ?? typeof(T));
         }
     }
 }

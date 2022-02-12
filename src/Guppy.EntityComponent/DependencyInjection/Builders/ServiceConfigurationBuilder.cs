@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace Guppy.EntityComponent.DependencyInjection.Builders
 {
-    public class ServiceConfigurationBuilder<TService, TServiceConfigurationBuilder> : ServiceConfigurationBuilder, IFluentPrioritizable<TServiceConfigurationBuilder>
+    public class ServiceConfigurationBuilder<TService, TServiceConfigurationBuilder> : IServiceConfigurationBuilder, IFluentPrioritizable<TServiceConfigurationBuilder>
         where TService : class
         where TServiceConfigurationBuilder : ServiceConfigurationBuilder<TService, TServiceConfigurationBuilder>
     {
@@ -18,10 +18,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
 
         #region Public Properties
         /// <inheritdoc />
-        public String Name { get; }
-
-        /// <inheritdoc />
-        public Int32 Priority { get; set; }
+        public Type Type { get; }
 
         /// <inheritdoc />
         public Type FactoryType { get; set; }
@@ -30,19 +27,22 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         public ServiceLifetime Lifetime { get; set; }
 
         /// <inheritdoc />
-        public List<String> CacheNames { get; set; }
+        public HashSet<Type> Aliases { get; set; }
+
+        /// <inheritdoc />
+        public Int32 Priority { get; set; }
         #endregion
 
         #region Constructor
         public ServiceConfigurationBuilder(
-            String name,
+            Type type,
             ServiceProviderBuilder services)
         {
             this.services = services;
 
-            this.Name = name;
-            this.CacheNames = new List<String>();
-            this.SetFactoryType<TService>();
+            this.Type = type;
+            this.Aliases = new HashSet<Type>();
+            this.SetFactoryType(this.Type);
         }
         #endregion
 
@@ -54,8 +54,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// <returns></returns>
         public TServiceConfigurationBuilder SetFactoryType(Type factoryType)
         {
-            typeof(TService).ValidateAssignableFrom(factoryType);
-
+            this.Type.ValidateAssignableFrom(factoryType);
             this.FactoryType = factoryType;
 
             return this as TServiceConfigurationBuilder;
@@ -75,7 +74,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         #region RegisterTypeFactory Methods
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
-        /// current <see cref="ServiceConfigurationBuilder"/>.
+        /// current <see cref="IServiceConfigurationBuilder"/>.
         /// </summary>
         /// <typeparam name="TFactoryType"></typeparam>
         /// <param name="type"></param>
@@ -91,7 +90,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
-        /// current <see cref="ServiceConfigurationBuilder"/>.
+        /// current <see cref="IServiceConfigurationBuilder"/>.
         /// </summary>
         /// <typeparam name="TFactoryType"></typeparam>
         /// <param name="builder"></param>
@@ -103,7 +102,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
-        /// current <see cref="ServiceConfigurationBuilder"/>.
+        /// current <see cref="IServiceConfigurationBuilder"/>.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="builder"></param>
@@ -114,7 +113,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         /// <summary>
         /// Register and define a brand new <see cref="TypeFactoryBuilder"/>, then link it to the
-        /// current <see cref="ServiceConfigurationBuilder"/>.
+        /// current <see cref="IServiceConfigurationBuilder"/>.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="builder"></param>
@@ -139,72 +138,50 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         }
         #endregion
 
-        #region AddCacheName(s) Methods
+        #region AddAlias(es) Methods
         /// <summary>
         /// Add a singlular cache name.
         /// </summary>
-        /// <param name="name">A value with which this service will be cached once activated.
+        /// <param name="alias">A value with which this service will be cached once activated.
         /// All queries matching  this value will return the defined
         /// configuration.</param>
         /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheName(String name)
+        public TServiceConfigurationBuilder AddAlias(Type alias)
         {
-            this.CacheNames.Add(name);
+            alias.ValidateAssignableFrom(this.Type);
+            this.Aliases.Add(alias);
 
             return this as TServiceConfigurationBuilder;
-        }
-
-        /// <summary>
-        /// Add a singlular cache name, defaulting to the <see cref="Type.Name"/>
-        /// </summary>
-        /// <param name="type">A value with which this service will be cached once activated.
-        /// All queries matching  this value will return the defined
-        /// configuration.</param>
-        /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheName(Type type)
-        {
-            return this.AddCacheName(type.Name);
         }
 
         /// <summary>
         /// Add many cache names at once.
         /// </summary>
-        /// <param name="names">A list of strings with which this service will be cached once activated.
+        /// <param name="aliases">A list of strings with which this service will be cached once activated.
         /// All queries matching any of these values will return the defined
         /// configuration.</param>
         /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheNames(IEnumerable<String> names)
+        public TServiceConfigurationBuilder AddAliases(IEnumerable<Type> aliases)
         {
-            this.CacheNames.AddRange(names);
+            foreach(Type alias in aliases)
+            {
+                this.AddAlias(alias);
+            }
 
             return this as TServiceConfigurationBuilder;
         }
 
         /// <summary>
-        /// Att many cache names at once, based on the input types.
-        /// The names will default to <see cref="Type.Name"/>
-        /// </summary>
-        /// <param name="types">A list of strings with which this service will be cached once activated.
-        /// All queries matching any of these values will return the defined
-        /// configuration.</param>
-        /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheNames(IEnumerable<Type> types)
-        {
-            return this.AddCacheNames(types.Select(t => t.FullName));
-        }
-
-        /// <summary>
         /// Add a cache name for every single <see cref="Type"/> between <typeparamref name="TService"/>
         /// and <paramref name="childType"/>
         /// </summary>
         /// <param name="childType"></param>
         /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheNamesBetweenTypes(Type parent, Type childType)
+        public TServiceConfigurationBuilder AddAllAliases(Type baseType)
         {
-            typeof(TService).ValidateAssignableFrom(childType);
-            parent.ValidateAssignableFrom(childType);
+            baseType.ValidateAssignableFrom(this.Type);
 
-            return this.AddCacheNames(childType.GetAncestors(parent));
+            return this.AddAliases(this.Type.GetAncestors(baseType));
         }
 
         /// <summary>
@@ -213,54 +190,30 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
         /// </summary>
         /// <typeparam name="TChild"></typeparam>
         /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheNamesBetweenTypes<TParent, TChild>()
-            where TChild : class, TService, TParent
+        public TServiceConfigurationBuilder AddAllAliases<TBaseType>()
         {
-            return this.AddCacheNamesBetweenTypes(typeof(TParent), typeof(TChild));
-        }
-
-        /// <summary>
-        /// Add a cache name for every single <see cref="Type"/> between <typeparamref name="TService"/>
-        /// and <paramref name="childType"/>
-        /// </summary>
-        /// <param name="childType"></param>
-        /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheNamesBetweenType(Type childType)
-        {
-            return this.AddCacheNamesBetweenTypes(typeof(TService), childType);
-        }
-
-        /// <summary>
-        /// Add a cache name for every single <see cref="Type"/> between <typeparamref name="TService"/>
-        /// and <typeparamref name="TChild"/> 
-        /// </summary>
-        /// <typeparam name="TChild"></typeparam>
-        /// <returns></returns>
-        public TServiceConfigurationBuilder AddCacheNamesBetweenType<TChild>()
-            where TChild : class, TService
-        {
-            return this.AddCacheNamesBetweenTypes<TService, TChild>();
+            return this.AddAllAliases(typeof(TBaseType));
         }
         #endregion
 
         #region TypeFactoryBuilder Implementation
-        ServiceConfiguration ServiceConfigurationBuilder.Build(
+        ServiceConfiguration IServiceConfigurationBuilder.Build(
             Dictionary<Type, TypeFactory> typeFactories,
-            IEnumerable<CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>> allSetups)
+            IEnumerable<CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>> allSetups)
         {
 
             Type factoryType = this.FactoryType ?? typeof(TService);
             TypeFactory typeFactory = typeFactories[factoryType];
-            String[] cacheNames = this.CacheNames.Concat(this.Name).Distinct().ToArray();
-            CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>[] setups = allSetups.Where(b => {
+            Type[] cacheNames = this.Aliases.Concat(this.Type).Distinct().ToArray();
+            CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>[] setups = allSetups.Where(b => {
                 return typeFactory.Type.IsAssignableToOrSubclassOfGenericDefinition(b.AssignableFactoryType) && b.Filter(this);
             }).ToArray();
 
             return this.Lifetime switch
             {
-                ServiceLifetime.Singleton => new SingletonServiceConfiguration(this.Name, typeFactory, this.Lifetime, cacheNames, setups),
-                ServiceLifetime.Scoped => new ScopedServiceConfiguration(this.Name, typeFactory, this.Lifetime, cacheNames, setups),
-                _ => new TransientServiceConfiguration(this.Name, typeFactory, this.Lifetime, cacheNames, setups
+                ServiceLifetime.Singleton => new SingletonServiceConfiguration(this.Type, typeFactory, this.Lifetime, cacheNames, setups),
+                ServiceLifetime.Scoped => new ScopedServiceConfiguration(this.Type, typeFactory, this.Lifetime, cacheNames, setups),
+                _ => new TransientServiceConfiguration(this.Type, typeFactory, this.Lifetime, cacheNames, setups
                 )
             };
         }
@@ -270,7 +223,7 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders
     public class ServiceConfigurationBuilder<TService> : ServiceConfigurationBuilder<TService, ServiceConfigurationBuilder<TService>>
         where TService : class
     {
-        public ServiceConfigurationBuilder(string name, ServiceProviderBuilder services) : base(name, services)
+        public ServiceConfigurationBuilder(Type type, ServiceProviderBuilder services) : base(type, services)
         {
         }
     }

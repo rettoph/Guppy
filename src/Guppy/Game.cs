@@ -50,7 +50,7 @@ namespace Guppy
         {
             base.PreUpdate(gameTime);
 
-            _messageBus.PublishEnqueued();
+            _messageBus.PublishEnqueued(gameTime);
         }
         #endregion
     }

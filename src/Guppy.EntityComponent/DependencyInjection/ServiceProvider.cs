@@ -13,13 +13,13 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// <summary>
         /// All registered <see cref="ServiceConfiguration"/> instances.
         /// </summary>
-        private DoubleDictionary<String, UInt32, ServiceConfiguration> _registeredServices;
+        private DoubleDictionary<Type, UInt32, ServiceConfiguration> _registeredServices;
 
         /// <summary>
         /// All <see cref="ServiceConfigurationManager"/> instances that have been activated
         /// for the current scope by id.
         /// </summary>
-        private DoubleDictionary<String, UInt32, ServiceConfigurationManager> _activeServices;
+        private DoubleDictionary<Type, UInt32, ServiceConfigurationManager> _activeServices;
 
         private Boolean _disposing;
         private ServiceProvider _parent;
@@ -55,14 +55,14 @@ namespace Guppy.EntityComponent.DependencyInjection
 
         #region Constructors
         internal ServiceProvider(
-            DoubleDictionary<String, UInt32, ServiceConfiguration> serviceConfigurations,
+            DoubleDictionary<Type, UInt32, ServiceConfiguration> serviceConfigurations,
             Dictionary<UInt32, ComponentConfiguration[]> entityComponentConfigurations)
         {
             this.IsRoot = true;
             this.Root = this;
 
             _registeredServices = serviceConfigurations;
-            _activeServices = new DoubleDictionary<String, UInt32, ServiceConfigurationManager>();
+            _activeServices = new DoubleDictionary<Type, UInt32, ServiceConfigurationManager>();
 
             _children = new List<ServiceProvider>();
 
@@ -94,7 +94,7 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// <returns></returns>
         internal ServiceConfigurationManager GetServiceConfigurationManager(ServiceConfiguration configuration)
         {
-            if(_activeServices.TryGetValue(configuration.Name, out ServiceConfigurationManager manager))
+            if(_activeServices.TryGetValue(configuration.Type, out ServiceConfigurationManager manager))
             {
                 return manager;
             }
@@ -116,9 +116,9 @@ namespace Guppy.EntityComponent.DependencyInjection
 
             // Cache all of the configurations CacheNames so that future lookup will return this instance.
             // If there is any overlap at all this will fail.
-            foreach(String cacheName in configuration.CacheNames)
+            foreach(Type alias in configuration.Aliases)
             {
-                _activeServices.TryAdd(cacheName, cacheName.xxHash(), manager);
+                _activeServices.TryAdd(alias, alias.AssemblyQualifiedName.xxHash(), manager);
             }
 
             this.OnServiceActivated?.Invoke(this, configuration);

@@ -67,7 +67,7 @@ namespace Guppy.Network.ServiceLoaders
 
             services.RegisterService<ClientPeer>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .AddCacheNamesBetweenTypes<Peer, ClientPeer>()
+                .AddAllAliases<Peer>()
                 .RegisterTypeFactory(builder =>
                 {
                     builder.SetDefaultConstructor<ClientPeer>();
@@ -75,7 +75,7 @@ namespace Guppy.Network.ServiceLoaders
 
             services.RegisterService<ServerPeer>()
                 .SetLifetime(ServiceLifetime.Singleton)
-                .AddCacheNamesBetweenTypes<Peer, ServerPeer>()
+                .AddAllAliases<Peer>()
                 .RegisterTypeFactory(builder =>
                 {
                     builder.SetDefaultConstructor<ServerPeer>();

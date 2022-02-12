@@ -6,22 +6,22 @@ namespace Guppy.EntityComponent.DependencyInjection
 {
     public partial class ServiceProvider
     {
-        #region Object Methods
+        #region Base GetService Methods
         /// <summary>
-        /// Attempt to get a service by name
+        /// Attempt to get a service by type
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        public Object GetService(String name)
+        public Object GetService(Type type)
         {
             // Check to see if this service is already active...
-            if(_activeServices.TryGetValue(name, out ServiceConfigurationManager manager))
+            if(_activeServices.TryGetValue(type, out ServiceConfigurationManager manager))
             {
                 return manager.GetInstance();
             }
             
             // Check to see if this service has been registered...
-            if(_registeredServices.TryGetValue(name, out ServiceConfiguration configuration))
+            if(_registeredServices.TryGetValue(type, out ServiceConfiguration configuration))
             {
                 return configuration.GetInstance(this);
             }
@@ -52,23 +52,23 @@ namespace Guppy.EntityComponent.DependencyInjection
         }
 
         /// <summary>
-        /// Attempt to get a service by name
+        /// Attempt to get a service by type
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         public Object GetService(
-            String name,
+            Type type,
             Action<Object, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
         {
             // Check to see if this service is already active...
-            if (_activeServices.TryGetValue(name, out ServiceConfigurationManager manager))
+            if (_activeServices.TryGetValue(type, out ServiceConfigurationManager manager))
             {
                 return manager.GetInstance(customSetup, customSetupOrder);
             }
 
             // Check to see if this service has been registered...
-            if (_registeredServices.TryGetValue(name, out ServiceConfiguration configuration))
+            if (_registeredServices.TryGetValue(type, out ServiceConfiguration configuration))
             {
                 return configuration.GetInstance(this, customSetup, customSetupOrder);
             }
@@ -104,26 +104,26 @@ namespace Guppy.EntityComponent.DependencyInjection
 
         #region GetService Generic Helpers
         public T GetService<T>(
-            String name)
+            Type type)
                 where T : class
-                    => this.GetService(name) as T;
+                    => this.GetService(type) as T;
 
         public T GetService<T>(
-            String name,
+            Type type,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
                 where T : class
-                    => this.GetService(name, (i, p, c) => customSetup(i as T, p, c), customSetupOrder) as T;
+                    => this.GetService(type, (i, p, c) => customSetup(i as T, p, c), customSetupOrder) as T;
 
         public T GetService<T>()
                 where T : class
-                    => this.GetService(typeof(T).FullName) as T;
+                    => this.GetService(typeof(T)) as T;
 
         public T GetService<T>(
             Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
                 where T : class
-                    => this.GetService(typeof(T).FullName, (i, p, c) => customSetup(i as T, p, c), customSetupOrder) as T;
+                    => this.GetService(typeof(T), (i, p, c) => customSetup(i as T, p, c), customSetupOrder) as T;
 
         public T GetService<T>(
             UInt32 id)
@@ -140,16 +140,16 @@ namespace Guppy.EntityComponent.DependencyInjection
 
         #region GetService Generic Helpers
         public Lazy<T> GetServiceLazy<T>(
-            String name)
+            Type type)
                 where T : class
-                    => new Lazy<T>(() => this.GetService<T>(name));
+                    => new Lazy<T>(() => this.GetService<T>(type));
 
         public Lazy<T> GetServiceLazy<T>(
-            String name,
+            Type type,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
                 where T : class
-                    => new Lazy<T>(() => this.GetService<T>(name, customSetup, customSetupOrder));
+                    => new Lazy<T>(() => this.GetService<T>(type, customSetup, customSetupOrder));
 
         public Lazy<T> GetServiceLazy<T>()
                 where T : class
@@ -176,18 +176,18 @@ namespace Guppy.EntityComponent.DependencyInjection
 
         #region Service Methods
         public void Service<T>(
-            String name,
+            Type type,
             out T instance)
                 where T : class
-                    => instance = this.GetService(name) as T;
+                    => instance = this.GetService(type) as T;
 
         public void Service<T>(
-            String name,
+            Type type,
             out T instance,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
                 where T : class
-                    => instance = this.GetService(name, customSetup, customSetupOrder) as T;
+                    => instance = this.GetService(type, customSetup, customSetupOrder) as T;
 
         public void Service<T>(
             UInt32 id,
@@ -206,30 +206,30 @@ namespace Guppy.EntityComponent.DependencyInjection
         public void Service<T>(
             out T instance)
                 where T : class
-                    => instance = this.GetService(typeof(T).FullName) as T;
+                    => instance = this.GetService(typeof(T)) as T;
 
         public void Service<T>(
             out T instance,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
                 where T : class
-                    => instance = this.GetService(typeof(T).FullName, customSetup, customSetupOrder) as T;
+                    => instance = this.GetService(typeof(T), customSetup, customSetupOrder) as T;
         #endregion
 
         #region ServiceLazy Methods
         public void ServiceLazy<T>(
-            String name,
+            Type type,
             out Lazy<T> instance)
                 where T : class
-                    => instance = this.GetServiceLazy<T>(name);
+                    => instance = this.GetServiceLazy<T>(type);
 
         public void ServiceLazy<T>(
-            String name,
+            Type type,
             out Lazy<T> instance,
             Action<T, ServiceProvider, ServiceConfiguration> customSetup,
             Int32 customSetupOrder = 0)
                 where T : class
-                    => instance = this.GetServiceLazy<T>(name, customSetup, customSetupOrder);
+                    => instance = this.GetServiceLazy<T>(type, customSetup, customSetupOrder);
 
         public void ServiceLazy<T>(
             UInt32 id,

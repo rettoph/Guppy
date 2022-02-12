@@ -1,16 +1,20 @@
 ﻿using Minnow.General.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Guppy.EntityComponent.DependencyInjection.Builders.Interfaces
 {
-    public interface ServiceConfigurationBuilder : IPrioritizable
+    public interface IServiceConfigurationBuilder : IPrioritizable
     {
-        String Name { get; }
+        /// <summary>
+        /// The primary lookup type bound to this service.
+        /// </summary>
+        public Type Type { get; }
 
         /// <summary>
         /// The lookup key of the service's <see cref="TypeFactory"/>.
+        /// If undefined this will be defaulted to the current <see cref="Type"/>
+        /// value.
         /// </summary>
         public Type FactoryType { get; }
 
@@ -20,14 +24,14 @@ namespace Guppy.EntityComponent.DependencyInjection.Builders.Interfaces
         public ServiceLifetime Lifetime { get; }
 
         /// <summary>
-        /// A list of strings with which this service will be cached once activated.
-        /// All queries matching any of these values will return the defined
-        /// configuration.
+        /// A list alternative lookup types that may be linked to this service.
+        /// The current <see cref="Type"/> must be assignable to all of the
+        /// given aliases.
         /// </summary>
-        public List<String> CacheNames { get; }
+        public HashSet<Type> Aliases { get; }
 
         ServiceConfiguration Build(
             Dictionary<Type, TypeFactory> typeFactories,
-            IEnumerable<CustomAction<ServiceConfiguration, ServiceConfigurationBuilder>> allSetups);
+            IEnumerable<CustomAction<ServiceConfiguration, IServiceConfigurationBuilder>> allSetups);
     }
 }

@@ -51,7 +51,7 @@ namespace Guppy.Network.Builders
         #region Public Properties
         public DeliveryMethod DeliveryMethod { get; set; }
         public Byte SequenceChannel { get; set; }
-        public String ProcessorConfigurationName { get; set; }
+        public Type ProcessorConfigurationType { get; set; }
         public Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter { get; set; }
         public Int32? MessageBusQueue { get; set; }
         #endregion
@@ -90,9 +90,9 @@ namespace Guppy.Network.Builders
         /// <param name="service"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public TNetworkMessageConfigurationBuilder SetProcessorConfiguration(String processorServiceConfigurationName)
+        public TNetworkMessageConfigurationBuilder SetProcessorConfiguration(Type processorServiceConfigurationType)
         {
-            this.ProcessorConfigurationName = processorServiceConfigurationName;
+            this.ProcessorConfigurationType = processorServiceConfigurationType;
 
             return this as TNetworkMessageConfigurationBuilder;
         }
@@ -106,7 +106,7 @@ namespace Guppy.Network.Builders
         public TNetworkMessageConfigurationBuilder SetProcessorConfiguration<TMessageProcessor>()
             where TMessageProcessor : IDataProcessor<TMessage>
         {
-            return this.SetProcessorConfiguration(typeof(TMessageProcessor).FullName);
+            return this.SetProcessorConfiguration(typeof(TMessageProcessor));
         }
 
         #endregion
@@ -125,7 +125,7 @@ namespace Guppy.Network.Builders
             where TMessageProcessor : class, IDataProcessor<TMessage>
         {
             builder(service);
-            this.SetProcessorConfiguration(service.Name);
+            this.SetProcessorConfiguration(service.Type);
 
             return this as TNetworkMessageConfigurationBuilder;
         }
@@ -152,12 +152,12 @@ namespace Guppy.Network.Builders
         /// <param name="builder"></param>
         /// <returns></returns>
         public TNetworkMessageConfigurationBuilder RegisterProcessorConfiguration<TMessageProcessor>(
-            String name,
+            Type type,
             Action<ServiceConfigurationBuilder<TMessageProcessor>> builder)
             where TMessageProcessor : class, IDataProcessor<TMessage>
         {
             return this.RegisterProcessorConfiguration(
-                this.services.RegisterService<TMessageProcessor>(name),
+                this.services.RegisterService<TMessageProcessor>(type),
                 builder);
         }
         #endregion
@@ -211,7 +211,7 @@ namespace Guppy.Network.Builders
                 dataTypeConfigurations[this.DataConfigurationType],
                 this.DeliveryMethod,
                 this.SequenceChannel,
-                this.ProcessorConfigurationName,
+                this.ProcessorConfigurationType,
                 this.Filter ?? DefaultFilter,
                 this.MessageBusQueue ?? Constants.Queues.DefaultMessageQueue);
         }

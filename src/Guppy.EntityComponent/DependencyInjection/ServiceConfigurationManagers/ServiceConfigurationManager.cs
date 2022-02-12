@@ -18,6 +18,18 @@ namespace Guppy.EntityComponent.DependencyInjection
         /// <returns></returns>
         public abstract Object GetInstance(Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder);
 
+        /// <summary>
+        /// Build a new instance of the contained service reguardless of its lifetime.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Object BuildInstance();
+
+        /// <summary>
+        /// Build a new instance of the contained service reguardless of its lifetime.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Object BuildInstance(Action<Object, ServiceProvider, ServiceConfiguration> customSetup, Int32 customSetupOrder);
+
         #region IDisposable Implementation
         public virtual void Dispose()
         {
