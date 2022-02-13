@@ -102,7 +102,7 @@ namespace Guppy.Network
                 User user = _users.UpdateOrCreate(client.Id, connectionRequestDto.Claims);
 
                 // Send an accepted response to peer...
-                this.SendMessage(
+                this.Room.Messages.Send(
                     new ConnectionRequestResponseMessage()
                     {
                         Accepted = true,

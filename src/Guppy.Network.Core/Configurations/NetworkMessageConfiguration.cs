@@ -26,8 +26,9 @@ namespace Guppy.Network.Configurations
         public readonly Byte SequenceChannel;
 
         public readonly Type ProcessorConfigurationType;
-        public readonly Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter;
-        public readonly Int32 MessageBusQueue;
+        public readonly NetworkAuthorization SenderAuthorization;
+        public readonly Int32 IncomingPriority;
+        public readonly Int32 OutgoingPriority;
 
         protected NetworkMessageConfiguration(
             Type type,
@@ -36,8 +37,9 @@ namespace Guppy.Network.Configurations
             DeliveryMethod deliveryMethod,
             Byte sequenceChannel,
             Type processorConfigurationType,
-            Func<ServiceProvider, NetworkMessageConfiguration, Boolean> filter,
-            Int32 messageBusQueue)
+            NetworkAuthorization senderAuthorization,
+            Int32 incomingPriority,
+            Int32 outgoingPriority)
         {
             this.Type = type;
             this.Id = id;
@@ -45,11 +47,22 @@ namespace Guppy.Network.Configurations
             this.DeliveryMethod = deliveryMethod;
             this.SequenceChannel = sequenceChannel;
             this.ProcessorConfigurationType = processorConfigurationType;
-            this.Filter = filter;
-            this.MessageBusQueue = messageBusQueue;
+            this.SenderAuthorization = senderAuthorization;
+            this.IncomingPriority = incomingPriority;
+            this.OutgoingPriority = outgoingPriority;
         }
 
-        internal abstract void TryRegisterProcessor(ServiceProvider provider, MessageBus bus);
+        internal abstract void TryRegisterIncomingProcessor(ServiceProvider provider, MessageBus bus);
+
+        public Boolean CanSend(NetworkAuthorization authorization)
+        {
+            return (this.SenderAuthorization & authorization) != 0;
+        }
+
+        public Boolean CanRecieve(NetworkAuthorization authorization)
+        {
+            return this.SenderAuthorization != authorization;
+        }
     }
 
     internal class NetworkMessageConfiguration<TMessage> : NetworkMessageConfiguration
@@ -60,13 +73,14 @@ namespace Guppy.Network.Configurations
             DataConfiguration dataConfiguration, 
             DeliveryMethod deliveryMethod, 
             byte sequenceChannel, 
-            Type processorConfigurationType, 
-            Func<ServiceProvider, NetworkMessageConfiguration, bool> filter,
-            Int32 messageBusQueue) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationType, filter, messageBusQueue)
+            Type processorConfigurationType,
+            NetworkAuthorization senderAuthorization,
+            Int32 incomingPriority,
+            Int32 outgoingPriority) : base(typeof(TMessage), id, dataConfiguration, deliveryMethod, sequenceChannel, processorConfigurationType, senderAuthorization, incomingPriority, outgoingPriority)
         {
         }
 
-        internal override void TryRegisterProcessor(ServiceProvider provider, MessageBus bus)
+        internal override void TryRegisterIncomingProcessor(ServiceProvider provider, MessageBus bus)
         {
             if(this.ProcessorConfigurationType is null)
             {

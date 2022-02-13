@@ -5,6 +5,7 @@ using Guppy.Interfaces;
 using Guppy.Network.Builders;
 using Guppy.Network.Components;
 using Guppy.Network.Components.NetworkEntities;
+using Guppy.Network.Enums;
 using Guppy.Network.Interfaces;
 using Guppy.Network.MessageProcessors;
 using Guppy.Network.Messages;
@@ -107,8 +108,9 @@ namespace Guppy.Network.ServiceLoaders
         {
             network.RegisterNetworkEntityMessage<CreateNetworkEntityMessage>()
                 .SetDeliveryMethod(DeliveryMethod.ReliableUnordered)
-                .SetMessageBusQueue(Constants.Queues.CreateNetworkEntityMessageQueue)
-                .SetFilter(CreateNetworkEntityMessage.Filter)
+                .SetIncomingPriority(Constants.Queues.CreateNetworkEntityIncomingMessagePriority)
+                .SetOutgoingPriority(Constants.Queues.CreateNetworkEntityOutgoingMessagePriority)
+                .SetSenderAuthorization(NetworkAuthorization.Master)
                 .RegisterProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>(service =>
                 {
                     service.SetLifetime(ServiceLifetime.Scoped)
@@ -120,8 +122,9 @@ namespace Guppy.Network.ServiceLoaders
 
             network.RegisterNetworkEntityMessage<DisposeNetworkEntityMessage>()
                 .SetDeliveryMethod(DeliveryMethod.ReliableUnordered)
-                .SetMessageBusQueue(Constants.Queues.DisposeNetworkEntityMessageQueue)
-                .SetFilter(DisposeNetworkEntityMessage.Filter)
+                .SetIncomingPriority(Constants.Queues.DisposeNetworkEntityIncomingMessagePriority)
+                .SetOutgoingPriority(Constants.Queues.DisposeNetworkEntityOutgoingMessagePriority)
+                .SetSenderAuthorization(NetworkAuthorization.Master)
                 .SetProcessorConfiguration<CreateDisposeNetworkEntityMessageProcessor>();
         }
     }

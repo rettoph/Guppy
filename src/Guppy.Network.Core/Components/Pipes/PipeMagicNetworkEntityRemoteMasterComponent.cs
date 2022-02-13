@@ -91,7 +91,7 @@ namespace Guppy.Network.Components.Pipes
 
         private void HandleNetworkEntityAdded(Pipe sender, MagicNetworkEntityPipeEventArgs args)
         {
-            if(args.OldPipe is null)
+            if (args.OldPipe is null)
             { // This is the first pipe the entity has been put into...
                 args.Entity.SendMessage(new CreateNetworkEntityMessage()
                 {

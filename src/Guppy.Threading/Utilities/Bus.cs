@@ -23,32 +23,19 @@ namespace Guppy.Threading.Utilities
         #region Classes
         public class Queue
         {
-            private UInt32 _maximumMessagesPerSecond;
             private ConcurrentQueue<TData> _queue;
             private HashSet<Type> _types;
             private Bus<TData> _bus;
 
-            public Int32 Index { get; private set; }
-            public UInt32 MaximumMessagesPerSecond
-            {
-                get => _maximumMessagesPerSecond;
-                set => _maximumMessagesPerSecond = value;
-            }
+            public Int32 Priority { get; private set; }
 
-            internal Queue(Bus<TData> bus, Int32 index)
+            internal Queue(Bus<TData> bus, Int32 priority)
             {
-                this.Index = index;
-                this.MaximumMessagesPerSecond = 0;
+                this.Priority = priority;
 
                 _queue = new ConcurrentQueue<TData>();
                 _types = new HashSet<Type>();
                 _bus = bus;
-            }
-
-            public Queue SetMaximumMessagesPerSecond(UInt32 maximumMessagesPerSecond)
-            {
-                _maximumMessagesPerSecond = maximumMessagesPerSecond;
-                return this;
             }
 
             public Queue RegisterType<T>(Boolean deregisterIfNecessary = false)
@@ -76,7 +63,7 @@ namespace Guppy.Threading.Utilities
                     }
                     else
                     {
-                        throw new InvalidOperationException($"{nameof(Queue)}::{nameof(RegisterType)} - Unable to register type '{type.Name}' to queue '{this.Index}', as it is already registered to queue {oldQueue.Index}");
+                        throw new InvalidOperationException($"{nameof(Queue)}::{nameof(RegisterType)} - Unable to register type '{type.Name}' to queue '{this.Priority}', as it is already registered to queue {oldQueue.Priority}");
                     }
                 }
                 
@@ -88,7 +75,7 @@ namespace Guppy.Threading.Utilities
 
                 _types.Add(type);
                 _bus._messageTypeQueues[type] = this;
-                _bus._logger.Information("{type}::{method} - Registered message type '{messageType}' to queue '{queue}'", nameof(Queue), nameof(RegisterType), type.Name, this.Index);
+                _bus._logger.Information("{type}::{method} - Registered message type '{messageType}' to queue '{queue}'", nameof(Queue), nameof(RegisterType), type.Name, this.Priority);
 
                 return this;
             }
@@ -109,7 +96,7 @@ namespace Guppy.Threading.Utilities
 
                 _types.Remove(type);
                 _bus._messageTypeQueues.Remove(type);
-                _bus._logger.Information("{type}::{method} - Deregistered message type '{messageType}' from queue '{queue}'", nameof(Queue), nameof(RegisterType), type.Name, this.Index);
+                _bus._logger.Information("{type}::{method} - Deregistered message type '{messageType}' from queue '{queue}'", nameof(Queue), nameof(RegisterType), type.Name, this.Priority);
 
                 return this;
             }
@@ -134,28 +121,11 @@ namespace Guppy.Threading.Utilities
                     _bus.Publish(message);
                 }
             }
-
-            internal void Publish(GameTime gameTime)
-            {
-                if(_maximumMessagesPerSecond == 0)
-                {
-                    this.Publish();
-                    return;
-                }
-
-                var messagesToPublishThisFrame = (UInt32)(gameTime.ElapsedGameTime.TotalMilliseconds * _maximumMessagesPerSecond) + 1;
-                var messagesPublished = 0;
-
-                while (++messagesPublished < messagesToPublishThisFrame && _queue.TryDequeue(out TData message))
-                {
-                    _bus.Publish(message);
-                }
-            }
         }
         #endregion
 
         #region Constants
-        public const Int32 DefaultQueue = 0;
+        public const Int32 DefaultPriority = 0;
         #endregion
 
         #region Private Fields
@@ -175,7 +145,7 @@ namespace Guppy.Threading.Utilities
 
             _queues = new Dictionary<Int32, Queue>();
             _messageTypeQueues = new Dictionary<Type, Queue>();
-            _defaultQueue = this.GetQueue(Bus.DefaultQueue);
+            _defaultQueue = this.GetQueue(Bus.DefaultPriority);
         }
         #endregion
 
@@ -199,26 +169,17 @@ namespace Guppy.Threading.Utilities
             }
         }
 
-
-        public void PublishEnqueued(GameTime gameTime)
+        public Queue GetQueue(Int32 priority)
         {
-            foreach (Queue queue in _orderedQueues)
+            if (!_queues.TryGetValue(priority, out Queue queue))
             {
-                queue.Publish(gameTime);
-            }
-        }
-
-        public Queue GetQueue(Int32 index)
-        {
-            if (!_queues.TryGetValue(index, out Queue queue))
-            {
-                queue = new Queue(this, index);
+                queue = new Queue(this, priority);
 
                 // Create the new queue
-                _queues.Add(queue.Index, queue);
+                _queues.Add(queue.Priority, queue);
 
                 // Attempt to order all registered queues into an array
-                _orderedQueues = _queues.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToArray();
+                _orderedQueues = _queues.Values.OrderBy(kvp => kvp.Priority).ToArray();
             }
 
             return queue;

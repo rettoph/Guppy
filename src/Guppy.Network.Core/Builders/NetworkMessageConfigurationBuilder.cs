@@ -52,8 +52,9 @@ namespace Guppy.Network.Builders
         public DeliveryMethod DeliveryMethod { get; set; }
         public Byte SequenceChannel { get; set; }
         public Type ProcessorConfigurationType { get; set; }
-        public Func<ServiceProvider, NetworkMessageConfiguration, Boolean> Filter { get; set; }
-        public Int32? MessageBusQueue { get; set; }
+        public Int32? IncomingPriority { get; set; }
+        public Int32? OutgoingPriority { get; set; }
+        public NetworkAuthorization? SenderAuthorization { get; set; }
         #endregion
 
         #region Constructor
@@ -163,28 +164,27 @@ namespace Guppy.Network.Builders
         #endregion
 
         #region SetNetworkAuthorization Methods
-        public TNetworkMessageConfigurationBuilder SetFilter(Func<ServiceProvider, NetworkMessageConfiguration, Boolean> filter)
+        public TNetworkMessageConfigurationBuilder SetSenderAuthorization(NetworkAuthorization senderAuthorization)
         {
-            this.Filter = filter;
+            this.SenderAuthorization = senderAuthorization;
 
             return this as TNetworkMessageConfigurationBuilder;
         }
+        #endregion
 
-        public TNetworkMessageConfigurationBuilder SetPeerFilter<TPeer>()
-            where TPeer : Peer
+        #region SetIncomingMessageBusQueue Methods
+        public TNetworkMessageConfigurationBuilder SetIncomingPriority(Int32 priority)
         {
-            return this.SetFilter((p, _) => {
-                var peer = p.GetService<Peer>();
+            this.IncomingPriority = priority;
 
-                return peer is TPeer;
-            });
+            return this as TNetworkMessageConfigurationBuilder;
         }
         #endregion
 
-        #region SetMessageBusQueue Methods
-        public TNetworkMessageConfigurationBuilder SetMessageBusQueue(Int32 queue)
+        #region SetOutogingMessageBusQueue Methods
+        public TNetworkMessageConfigurationBuilder SetOutgoingPriority(Int32 priority)
         {
-            this.MessageBusQueue = queue;
+            this.OutgoingPriority = priority;
 
             return this as TNetworkMessageConfigurationBuilder;
         }
@@ -205,20 +205,15 @@ namespace Guppy.Network.Builders
             DynamicId id,
             DoubleDictionary<UInt16, Type, DataConfiguration> dataTypeConfigurations)
         {
-            
             return new NetworkMessageConfiguration<TMessage>(
                 id,
                 dataTypeConfigurations[this.DataConfigurationType],
                 this.DeliveryMethod,
                 this.SequenceChannel,
                 this.ProcessorConfigurationType,
-                this.Filter ?? DefaultFilter,
-                this.MessageBusQueue ?? Constants.Queues.DefaultMessageQueue);
-        }
-
-        private static Boolean DefaultFilter(ServiceProvider providert, NetworkMessageConfiguration configuration)
-        {
-            return true;
+                this.SenderAuthorization ?? NetworkAuthorization.Slave | NetworkAuthorization.Master,
+                this.IncomingPriority ?? Constants.Queues.DefaultIncomingMessagePriority,
+                this.OutgoingPriority ?? Constants.Queues.DefaultOutgoingMessagePriority);
         }
         #endregion
     }

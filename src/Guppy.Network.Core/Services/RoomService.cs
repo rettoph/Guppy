@@ -33,7 +33,7 @@ namespace Guppy.Network.Services
         /// <param name="message"></param>
         public void ProcessIncomingMessage(NetworkMessage message)
         {
-            this.GetById(message.RoomId).TryEnqueueIncomingMessage(message);
+            this.GetById(message.RoomId).Messages.TryEnqueueIncomingMessage(message);
         }
 
         /// <summary>

@@ -1,17 +1,14 @@
-﻿using Minnow.General;
-using Guppy.Network.Configurations;
-using Guppy.Network.Messages;
+﻿using Guppy.Network.Configurations;
 using Guppy.Network.Enums;
-using Guppy.Network.Interfaces;
 using Guppy.Network.Structs;
-using LiteNetLib;
-using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Guppy.Network.Utilities;
 using Guppy.Threading.Interfaces;
+using LiteNetLib;
+using LiteNetLib.Utils;
+using Minnow.General;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Guppy.Network
 {
@@ -36,6 +33,12 @@ namespace Guppy.Network
         /// QoS channel count per message type (value must be between 1 and 64 channels)
         /// </summary>
         public readonly Byte SequenceChannelCount;
+
+        /// <summary>
+        /// The total amount of messages that may be sent per room per second.
+        /// </summary>
+        public readonly Int32 OutgoingRateLimit;
+
         public IEnumerable<DataConfiguration> DataTypeConfigurations => _dataConfigurations.Values;
         public IEnumerable<NetworkMessageConfiguration> MessageConfigurations => _messages.Values;
         #endregion
@@ -43,6 +46,7 @@ namespace Guppy.Network
         #region Constructor
         internal NetworkProvider(
             Byte sequenceChannelCount,
+            Int32 outgoingRateLimit,
             DynamicIdSize dataTypesIdSize,
             DoubleDictionary<UInt16, Type, DataConfiguration> dataTypes,
             DynamicIdSize messagesIdSize,
@@ -61,6 +65,7 @@ namespace Guppy.Network
             _netDataWriterFactory = new NetDataWriterFactory();
 
             this.SequenceChannelCount = sequenceChannelCount;
+            this.OutgoingRateLimit = outgoingRateLimit;
         }
         #endregion
 
@@ -121,7 +126,21 @@ namespace Guppy.Network
 
         #region WriteMessage Methods
         public void WriteMessage<TData>(Room room, TData data, out NetDataWriter writer, out NetworkMessageConfiguration configuration)
-            where TData : class, IData
+            where TData : IData
+        {
+            writer = _netDataWriterFactory.GetInstance();
+            configuration = _messages[typeof(TData)];
+
+            // Write message id...
+            _messageIdWriter(writer, configuration.Id.Bytes);
+            // Write RoomId
+            writer.Put(room.Id);
+            // Write message data...
+            configuration.DataConfiguration.Writer(writer, this, data);
+        }
+
+        public void WriteMessage<TData>(Room room, ref TData data, out NetDataWriter writer, out NetworkMessageConfiguration configuration)
+            where TData : struct, IData
         {
             writer = _netDataWriterFactory.GetInstance();
             configuration = _messages[typeof(TData)];

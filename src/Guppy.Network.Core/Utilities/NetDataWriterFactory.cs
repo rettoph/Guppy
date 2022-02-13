@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Utilities
 {
-    internal sealed class NetDataWriterFactory : Factory<NetDataWriter>
+    internal sealed class NetDataWriterFactory : ConcurrentFactory<NetDataWriter>
     {
         public NetDataWriterFactory() : base(() => new NetDataWriter(), 100)
         {

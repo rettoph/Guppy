@@ -5,6 +5,7 @@ using Guppy.Network.Interfaces;
 using Guppy.Network.Security.EventArgs;
 using Guppy.Network.Security.Lists;
 using Guppy.Network.Services;
+using Guppy.Network.Utilities;
 using Guppy.Threading.Interfaces;
 using Guppy.Threading.Utilities;
 using LiteNetLib;
@@ -23,16 +24,17 @@ namespace Guppy.Network
     {
         #region Private Fields
         private Boolean _isScopedLinked;
-        private MessageBus _bus;
-        private Peer _peer;
         private NetworkProvider _network;
+
+        private RoomMessageManager _messages;
         #endregion
 
         #region Public Properties
         public new Byte Id { get; internal set; }
         public UserList Users { get; private set; }
         public PipeService Pipes { get; private set; }
-        public MessageBus Bus => _bus;
+
+        public RoomMessageManager Messages => _messages;
         #endregion
 
         #region Lifecycle Methods
@@ -40,7 +42,6 @@ namespace Guppy.Network
         {
             base.PreInitialize(provider);
 
-            provider.Service(out _peer);
             provider.Service(out _network);
 
             this.Users = provider.GetService<UserList>();
@@ -80,29 +81,10 @@ namespace Guppy.Network
                 return false;
             }
 
-            // Determin which message configurations are valid within the current scope...
-            IEnumerable<NetworkMessageConfiguration> configurations = _network.MessageConfigurations.Where(mc => mc.Filter(provider, mc));
-
-            // Generate a lookup table of valid message configuration bus queues and their types...
-            Dictionary<Int32, Type[]> messageBusQueus = configurations.GroupBy(configuration => configuration.MessageBusQueue)
-                .ToDictionary(
-                    keySelector: g => g.Key,
-                    elementSelector: g => g.Select(configuration => configuration.Type).ToArray());
-
-
-            // Ensure that all required message bus queus have been registered...
-            provider.Service(out _bus);
-
-            foreach ((Int32 queue, Type[] types) in messageBusQueus)
-            {
-                _bus.GetQueue(queue).RegisterTypes(types);
-            }
-
-            // Register all message processors into the bus
-            foreach (NetworkMessageConfiguration configuration in configurations)
-            {
-                configuration.TryRegisterProcessor(provider, _bus);
-            }
+            _messages = new RoomMessageManager(
+                this, 
+                _network,
+                provider);
 
             _isScopedLinked = true;
             return true;
@@ -115,49 +97,10 @@ namespace Guppy.Network
                 return false;
             }
 
-            _bus = default;
+            _messages.Dispose();
 
             _isScopedLinked = false;
             return true;
-        }
-
-        /// <summary>
-        /// Process an incoming message
-        /// </summary>
-        /// <param name="message"></param>
-        public void TryEnqueueIncomingMessage(NetworkMessage message)
-        {
-            _bus.Enqueue(message.Data);
-        }
-
-        /// <summary>
-        /// Send a message within the current room to a specific recipient
-        /// </summary>
-        /// <param name="data"></param>
-        public void SendMessage<TData>(TData data, NetPeer reciepient)
-            where TData : class, IData
-        {
-            _peer.SendMessage(this, data, reciepient);
-        }
-
-        /// <summary>
-        /// Send a message within the current room to a specific collection of recipients
-        /// </summary>
-        /// <param name="data"></param>
-        public void SendMessage<TData>(TData data, IEnumerable<NetPeer> reciepients)
-            where TData : class, IData
-        {
-            _peer.SendMessage(this, data, reciepients);
-        }
-
-        /// <summary>
-        /// Send a message within the current room to all joined peers
-        /// </summary>
-        /// <param name="data"></param>
-        public void SendMessage<TData>(TData data)
-            where TData : class, IData
-        {
-            _peer.SendMessage(this, data, this.Users.NetPeers);
         }
         #endregion
 

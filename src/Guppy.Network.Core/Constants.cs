@@ -13,9 +13,13 @@ namespace Guppy.Network
         public static class Queues
         {
             public const Int32 UserRoomActionMessageQueue = Int32.MinValue;
-            public const Int32 CreateNetworkEntityMessageQueue = Int32.MinValue + 1000;
-            public const Int32 DefaultMessageQueue             = Int32.MinValue + 1010;
-            public const Int32 DisposeNetworkEntityMessageQueue = Int32.MinValue + 1020;
+            public const Int32 CreateNetworkEntityIncomingMessagePriority  = 1000;
+            public const Int32 DefaultIncomingMessagePriority              = 1010;
+            public const Int32 DisposeNetworkEntityIncomingMessagePriority = 1020;
+
+            public const Int32 DefaultOutgoingMessagePriority              = 1000;
+            public const Int32 DisposeNetworkEntityOutgoingMessagePriority = 1010;
+            public const Int32 CreateNetworkEntityOutgoingMessagePriority  = 1010;
         }
     }
 }

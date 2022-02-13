@@ -139,7 +139,7 @@ namespace Guppy.Network.ServiceLoaders
             // This message is never sent traditionally
             // So theres no need to build a processor for it
             network.RegisterNetworkMessage<ConnectionRequestMessage>()
-                .SetFilter((_, _) => false)
+                .SetSenderAuthorization(NetworkAuthorization.Master)
                 .RegisterDataType(dataType =>
                 {
                     dataType
@@ -150,7 +150,7 @@ namespace Guppy.Network.ServiceLoaders
             network.RegisterNetworkMessage<ConnectionRequestResponseMessage>()
                 .SetDeliveryMethod(DeliveryMethod.ReliableOrdered)
                 .SetSequenceChannel(0)
-                .SetPeerFilter<ClientPeer>()
+                .SetSenderAuthorization(NetworkAuthorization.Master)
                 .RegisterProcessorConfiguration<ConnectionRequestResponseMessageProcessor>(processor =>
                 {
                     processor.SetLifetime(ServiceLifetime.Singleton)
@@ -168,9 +168,9 @@ namespace Guppy.Network.ServiceLoaders
 
             network.RegisterNetworkMessage<UserRoomActionMessage>()
                 .SetSequenceChannel(0)
-                .SetPeerFilter<ClientPeer>()
+                .SetSenderAuthorization(NetworkAuthorization.Master)
                 .SetProcessorConfiguration<ClientPeer>()
-                .SetMessageBusQueue(Constants.Queues.UserRoomActionMessageQueue)
+                .SetIncomingPriority(Constants.Queues.UserRoomActionMessageQueue)
                 .RegisterDataType(dataType =>
                 {
                     dataType

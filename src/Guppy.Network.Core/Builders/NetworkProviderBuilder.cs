@@ -24,6 +24,8 @@ namespace Guppy.Network.Builders
 
         #region Public Properties
         public Byte SequenceChannelCount { get; set; }
+
+        public Int32 OutgoingRateLimit { get; set; } = 750;
         #endregion
 
         #region Constructors
@@ -132,6 +134,7 @@ namespace Guppy.Network.Builders
 
             return new NetworkProvider(
                 this.SequenceChannelCount,
+                this.OutgoingRateLimit,
                 dataTypesIdSize,
                 dataTypes,
                 messageIdSize,

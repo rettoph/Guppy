@@ -71,6 +71,12 @@ namespace Guppy.Network
         }
 
         public RoomService Rooms => _rooms;
+
+        /// <summary>
+        /// All messages must be passed through a room, even peer messages.
+        /// This is the room used by the current peer.
+        /// </summary>
+        public Room Room => _room;
         #endregion
 
         #region Events
@@ -143,29 +149,6 @@ namespace Guppy.Network
                 _cancelation = null;
                 _logger = null;
             }
-        }
-        #endregion
-
-        #region SendMessage Methods
-        public void SendMessage<TData>(Room room, TData data, NetPeer recipient)
-            where TData : class, IData
-        {
-            this.network.SendMessage(room, data, recipient);
-        }
-        public void SendMessage<TData>(Room room, TData data, IEnumerable<NetPeer> recipients)
-            where TData : class, IData
-        {
-            this.network.SendMessage(room, data, recipients); 
-        }
-        protected void SendMessage<TData>(TData data, NetPeer recipient)
-            where TData : class, IData
-        {
-            this.SendMessage(_room, data, recipient);
-        }
-        protected void SendMessage<TData>(TData data, IEnumerable<NetPeer> recipients)
-            where TData : class, IData
-        {
-            this.SendMessage(_room, data, recipients);
         }
         #endregion
 

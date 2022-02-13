@@ -14,7 +14,7 @@ namespace Guppy.Network.Messages
     {
         public UInt32 ServiceConfigurationId { get; internal set; }
 
-        #region Read/Write/Filter Methods
+        #region Read/Write Methods
         protected internal override void Read(NetDataReader im, NetworkProvider network)
         {
             base.Read(im, network);
@@ -27,30 +27,6 @@ namespace Guppy.Network.Messages
             base.Write(om, network);
 
             om.Put(this.ServiceConfigurationId);
-        }
-
-        /// <summary>
-        /// Simple method used to determin whether or not 
-        /// a CreateNetworkEntityMessage should be processed
-        /// within the peer.
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        internal static bool Filter(ServiceProvider p, NetworkMessageConfiguration c)
-        {
-            if(p.GetService<Peer>() is not ClientPeer)
-            {
-                return false;
-            }
-
-            if(p.GetService<Scene>() is null)
-            {
-                return false;
-            }
-
-            return true;
         }
         #endregion
     }

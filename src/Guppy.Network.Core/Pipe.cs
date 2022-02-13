@@ -63,7 +63,7 @@ namespace Guppy.Network
         public void SendMessage<TMessage>(TMessage data, NetPeer reciepient)
             where TMessage : class, IData
         {
-            this.Room.SendMessage(data, reciepient);
+            this.Room.Messages.Send(data, reciepient);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Guppy.Network
         public void SendMessage<TMessage>(TMessage data, IEnumerable<NetPeer> reciepients)
             where TMessage : class, IData
         {
-            this.Room.SendMessage(data, reciepients);
+            this.Room.Messages.Send(data, reciepients);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Guppy.Network
         public void SendMessage<TMessage>(TMessage data)
             where TMessage : class, IData
         {
-            this.Room.SendMessage(data, this.Users.NetPeers);
+            this.Room.Messages.Send(data, this.Users.NetPeers);
         }
 
         internal Boolean TryAddNetworkEntity(IMagicNetworkEntity entity, Pipe oldPipe)

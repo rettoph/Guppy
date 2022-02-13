@@ -40,7 +40,7 @@ namespace Guppy.Network.Components.Rooms
         private void SendUserRoomActionMessage(UserRoomAction action, User user, NetPeer recipient)
         {
             // First, broadcast the new user to all connected users.
-            this.Entity.SendMessage(new UserRoomActionMessage()
+            this.Entity.Messages.Send(new UserRoomActionMessage()
             {
                 Action = action,
                 RoomId = this.Entity.Id,
@@ -51,7 +51,7 @@ namespace Guppy.Network.Components.Rooms
             // TODO: Maybe dont be lazy and do this properly? Just an idea...
             foreach (User existingUser in this.Entity.Users.Except(user.Yield()))
             {
-                this.Entity.SendMessage(new UserRoomActionMessage()
+                this.Entity.Messages.Send(new UserRoomActionMessage()
                 {
                     Action = action,
                     RoomId = this.Entity.Id,
