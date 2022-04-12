@@ -1,14 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-	<LangVersion>10.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.Delegates\Minnow.Delegates.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.General\Minnow.General.csproj" />
     <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.System.Helpers\Minnow.System.Helpers.csproj" />
+    <ProjectReference Include="..\Guppy.Common\Guppy.Common.csproj" />
+    <ProjectReference Include="..\Guppy.EntityComponent.Common\Guppy.EntityComponent.Common.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
 </Project>

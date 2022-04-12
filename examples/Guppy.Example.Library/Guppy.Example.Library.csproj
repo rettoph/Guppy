@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Guppy.Core\Guppy.Core.csproj" />
-    <ProjectReference Include="..\..\src\Guppy.IO\Guppy.IO.csproj" />
-    <ProjectReference Include="..\..\src\Guppy.Network.Core\Guppy.Network.Core.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Network.Common\Guppy.Network.Common.csproj" />
     <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.EntityComponent\Guppy.EntityComponent.csproj" />
   </ItemGroup>
 
 </Project>

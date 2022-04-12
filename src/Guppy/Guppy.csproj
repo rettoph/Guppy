@@ -1,28 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-	<LangVersion>10.0</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.MonoGame.Extensions\Minnow.MonoGame.Extensions.csproj" />
-    <ProjectReference Include="..\Guppy.CommandLine\Guppy.CommandLine.csproj" />
-    <ProjectReference Include="..\Guppy.Core\Guppy.Core.csproj" />
-    <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.System.Helpers\Minnow.System.Helpers.csproj" />
+    <ProjectReference Include="..\Guppy.Common\Guppy.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Content\Effects\Compiled\*.mgfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>
