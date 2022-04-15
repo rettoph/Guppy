@@ -1,5 +1,6 @@
 ﻿using Guppy.Network.Initializers;
 using Guppy.Network.Loaders;
+using Guppy.Network.Security.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,17 @@ namespace Guppy
         /// <returns></returns>
         public static GuppyEngine ConfigureNetwork(this GuppyEngine guppy, byte channelsCount)
         {
-            guppy.AddInitializer(new NetworkInitializer())
-                .AddLoader(new LiteNetLibServiceLoader(channelsCount));
+            if (guppy.Tags.Contains(nameof(ConfigureNetwork)))
+            {
+                return guppy;
+            }
 
-            return guppy;
+            return guppy.ConfigureSettings()
+                .AddInitializer(new NetworkInitializer())
+                .AddLoader(new LiteNetLibServiceLoader(channelsCount))
+                .AddLoader(new NetworkServiceLoader())
+                .AddLoader(new SecurityLoader())
+                .AddTag(nameof(ConfigureNetwork));
         }
     }
 }

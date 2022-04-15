@@ -15,6 +15,8 @@ namespace Guppy
 
         public AssemblyHelper Assemblies { get; private init; }
 
+        public HashSet<string> Tags { get; private set; }
+
         public GuppyEngine(
             Assembly? entry = null, 
             IEnumerable<Assembly>? libraries = null)
@@ -32,6 +34,8 @@ namespace Guppy
             this.Assemblies.OnAssemblyLoaded += this.HandleAssemblyLoaded;
 
             this.Assemblies.TryLoadAssembly(entry ?? Assembly.GetEntryAssembly());
+
+            this.Tags = new HashSet<string>();
         }
 
         public GuppyEngine AddInitializer(IGuppyInitializer initializer)
@@ -44,6 +48,13 @@ namespace Guppy
         public GuppyEngine AddLoader(IGuppyLoader loader)
         {
             _loaders.Add(loader);
+
+            return this;
+        }
+
+        public GuppyEngine AddTag(string tag)
+        {
+            this.Tags.Add(tag);
 
             return this;
         }

@@ -12,12 +12,22 @@ using Guppy.EntityComponent.Loaders;
 using Guppy.Network.Loaders;
 using Guppy.Network;
 using LiteNetLib;
+using Guppy.Gaming;
+using Guppy.Threading.Loaders;
+using Guppy.Threading;
+using Guppy.EntityComponent.Loaders.Collections;
+using Guppy.Network.Loaders.Collections;
 
 namespace Guppy.Example.Library.Loaders
 {
     [AutoLoad]
-    internal sealed class ExampleServiceLoader : IServiceLoader, IComponentLoader, INetworkLoader
+    internal sealed class ExampleServiceLoader : IServiceLoader, IComponentLoader, INetworkLoader, IBusLoader
     {
+        public void ConfigureBus(IBusMessageCollection bus)
+        {
+            bus.AddNetDeserialized<TestNetMessage>(0);
+        }
+
         public void ConfigureNetSerializers(INetSerializerCollection serializers)
         {
             serializers.Add<TestNetMessage>(TestNetMessage.Serialize, TestNetMessage.Deserialize);
@@ -35,7 +45,7 @@ namespace Guppy.Example.Library.Loaders
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddActivated<Scene, ExampleScene>();
+            services.AddScene<ExampleScene>();
         }
     }
 }

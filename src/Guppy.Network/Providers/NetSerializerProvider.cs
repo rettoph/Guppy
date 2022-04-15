@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Utilities;
+﻿using Guppy.Network.Loaders.Descriptors;
+using Guppy.Network.Utilities;
 using LiteNetLib.Utils;
 using Minnow.General;
 using System;
@@ -20,7 +21,7 @@ namespace Guppy.Network.Providers
             _ids = new DynamicIdProvider((ushort)descriptors.Count());
 
             _serializers = _ids.All()
-                .Zip(descriptors, (id, desc) => desc.Create(id))
+                .Zip(descriptors, (id, desc) => desc.BuildNetSerializer(id))
                 .ToDoubleDictionary(
                     keySelector1: s => s.Type,
                     keySelector2: s => s.Id.Value);

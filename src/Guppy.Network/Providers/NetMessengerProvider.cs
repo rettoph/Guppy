@@ -1,7 +1,9 @@
-﻿using Guppy.Network.Utilities;
+﻿using Guppy.Network.Loaders.Descriptors;
+using Guppy.Network.Utilities;
 using LiteNetLib.Utils;
 using Minnow.General;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +24,7 @@ namespace Guppy.Network.Providers
             _serializers = serializers;
             _ids = new DynamicIdProvider((ushort)descriptors.Count());
             _messengers = _ids.All()
-                .Zip(descriptors, (id, desc) => desc.Create(id, _serializers))
+                .Zip(descriptors, (id, desc) => desc.BuildNetMessenger(id, _serializers))
                 .ToDoubleDictionary(
                     keySelector1: s => s.Type,
                     keySelector2: s => s.Id.Value);
@@ -37,10 +39,10 @@ namespace Guppy.Network.Providers
             return incoming;
         }
 
-        public NetOutgoingMessage<T> CreateOutgoing<T>(in byte roomId, in T content)
+        public NetOutgoingMessage<T> CreateOutgoing<T>(Room room, in T content)
         {
             var messenger = (_messengers[typeof(T)] as NetMessenger<T>)!;
-            var outgoing = messenger.CreateOutgoing(in roomId, in content);
+            var outgoing = messenger.CreateOutgoing(room, in content);
 
             return outgoing;
         }
@@ -60,6 +62,16 @@ namespace Guppy.Network.Providers
         public bool TryGetMessenger(ushort id, out NetMessenger messenger)
         {
             return _messengers.TryGetValue(id, out messenger);
+        }
+
+        public IEnumerator<NetMessenger> GetEnumerator()
+        {
+            return _messengers.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

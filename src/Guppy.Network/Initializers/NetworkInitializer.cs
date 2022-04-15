@@ -1,4 +1,5 @@
 ﻿using Guppy.Initializers;
+using Guppy.Network.Initializers.Collections;
 using Guppy.Network.Loaders;
 using Guppy.Network.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,8 +28,8 @@ namespace Guppy.Network.Initializers
                 loader.ConfigureNetMessengers(messengersCollection);
             }
 
-            var serializers = serializersCollection.Build();
-            var messengers = messengersCollection.Build(serializers);
+            var serializers = serializersCollection.BuildNetSerializerProvider();
+            var messengers = messengersCollection.BuildNetMessengerProvider(serializers);
 
             services.AddSingleton<INetSerializerProvider>(serializers);
             services.AddSingleton<INetMessengerProvider>(messengers);

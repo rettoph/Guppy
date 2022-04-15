@@ -12,11 +12,15 @@ namespace Guppy
     {
         public static GuppyEngine ConfigureEntityComponent(this GuppyEngine guppy)
         {
-            guppy.AddInitializer(new ComponentInitializer())
-                .AddInitializer(new SetupInitializer())
-                .AddLoader(new EntityComponentServiceLoader());
+            if (guppy.Tags.Contains(nameof(ConfigureEntityComponent)))
+            {
+                return guppy;
+            }
 
-            return guppy;
+            return guppy.AddInitializer(new ComponentInitializer())
+                .AddInitializer(new SetupInitializer())
+                .AddLoader(new EntityComponentServiceLoader())
+                .AddTag(nameof(ConfigureEntityComponent));
         }
     }
 }

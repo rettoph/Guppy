@@ -14,7 +14,7 @@ namespace Guppy.Network.Loaders
         /// <summary>
         /// QoS channel count per message type (value must be between 1 and 64 channels)
         /// </summary>
-        private byte _channelsCount;
+        private readonly byte _channelsCount;
 
         /// <summary>
         /// 

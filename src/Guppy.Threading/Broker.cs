@@ -1,4 +1,4 @@
-﻿using Guppy.Threading.Interfaces;
+﻿using Guppy.Threading;
 
 namespace Guppy.Threading
 {
@@ -30,6 +30,11 @@ namespace Guppy.Threading
 
             public bool Publish(in T message)
             {
+                if(_subscribers is null)
+                {
+                    return true;
+                }
+
                 bool success = true;
                 foreach (ProcessDelegate processor in _subscribers.GetInvocationList())
                 {
@@ -48,14 +53,14 @@ namespace Guppy.Threading
                 throw new ArgumentException(nameof(message));
             }
 
-            public void RegisterProcessor(ISubscriber<T> processor)
+            public void Subscribe(ISubscriber<T> subscriber)
             {
-                _subscribers += processor.Process;
+                _subscribers += subscriber.Process;
             }
 
-            public void DeregisterProcessor(ISubscriber<T> processor)
+            public void Unsubscribe(ISubscriber<T> subscriber)
             {
-                _subscribers -= processor.Process;
+                _subscribers -= subscriber.Process;
             }
         }
         #endregion
@@ -79,7 +84,7 @@ namespace Guppy.Threading
         {
             if (_subscribers.TryGetValue(typeof(T), out TypeSubscribers subscribers) && subscribers is TypeSubscribers<T> casted)
             {
-                casted.RegisterProcessor(subscriber);
+                casted.Subscribe(subscriber);
                 return;
             }
 
@@ -95,7 +100,7 @@ namespace Guppy.Threading
         {
             if (_subscribers.TryGetValue(typeof(T), out TypeSubscribers subscribers) && subscribers is TypeSubscribers<T> casted)
             {
-                casted.DeregisterProcessor(processor);
+                casted.Unsubscribe(processor);
                 return;
             }
         }
