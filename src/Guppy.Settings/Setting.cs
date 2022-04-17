@@ -1,18 +1,11 @@
-﻿using Guppy.Settings.Loaders.Descriptors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Settings
+﻿namespace Guppy.Settings
 {
     public abstract class Setting
     {
         public readonly Type Type;
         public readonly string Key;
-        public readonly string Name;
-        public readonly string Description;
+        public readonly string? Name;
+        public readonly string? Description;
 
         internal Setting(Type type, string key, string name, string description)
         {
@@ -35,9 +28,9 @@ namespace Guppy.Settings
 
         public readonly bool Exportable;
         public readonly string[] Tags;
-        public readonly SettingSerializerDescriptor<T> Serializer;
+        public readonly SettingSerializer<T> Serializer;
 
-        public Setting(string key, string name, string description, T value, bool exportable, string[] tags, SettingSerializerDescriptor<T> serializer) : base(typeof(T), key, name, description)
+        public Setting(string key, string? name, string? description, T value, bool exportable, string[] tags, SettingSerializer<T> serializer) : base(typeof(T), key, name, description)
         {
             this.Value = value;
             this.Exportable = exportable;

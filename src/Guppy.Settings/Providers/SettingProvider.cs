@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Settings.Definitions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,20 +10,26 @@ namespace Guppy.Settings.Providers
 {
     internal sealed class SettingProvider : ISettingProvider
     {
-        private Dictionary<string, Setting> _settings;
+        private readonly ISettingSerializerProvider _serializers;
+        private readonly Dictionary<string, Setting> _settings;
 
         public Setting this[string key] => _settings[key];
 
-        public SettingProvider(IEnumerable<Setting> settings)
+        public SettingProvider(ISettingSerializerProvider serializers, IEnumerable<SettingDefinition> definitions)
         {
-            _settings = settings.ToDictionary(
-                keySelector: x => x.Key,
-                elementSelector: x => x);
+            _serializers = serializers;
+            _settings = new Dictionary<string, Setting>(definitions.Count());
+
+            foreach(SettingDefinition definition in definitions)
+            {
+                var setting = definition.BuildSetting(_serializers);
+                _settings.Add(setting.Key, setting);
+            }
         }
 
         public Setting<T> Get<T>()
         {
-            return this.Get<T>(typeof(T).FullName ?? throw new InvalidOperationException());
+            return this.Get<T>(SettingDefinition.GetKey<T>(null));
         }
 
         public Setting<T> Get<T>(string key)

@@ -60,7 +60,6 @@ namespace Guppy.Example.Client
 
             this.game = guppy
                 .ConfigureThreading()
-                .ConfigureEntityComponent()
                 .ConfigureNetwork(channelsCount: 1)
                 .ConfigureMonoGame<ClientExampleGame>(this.graphics, this.Content, this.Window)
                 .BuildServiceProvider()

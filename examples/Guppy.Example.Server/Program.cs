@@ -11,7 +11,6 @@ var game = new GuppyEngine(
         typeof(ExampleScene).Assembly
     })
     .ConfigureThreading()
-    .ConfigureEntityComponent()
     .ConfigureNetwork(channelsCount: 1)
     .ConfigureGame<ServerExampleGame>()
     .BuildServiceProvider()

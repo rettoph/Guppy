@@ -1,11 +1,4 @@
-﻿using Guppy.Settings.Loaders.Descriptors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Settings.Loaders.Definitions
+﻿namespace Guppy.Settings.Definitions
 {
     public abstract class SettingSerializerDefinition
     {
@@ -16,7 +9,7 @@ namespace Guppy.Settings.Loaders.Definitions
 
         }
 
-        public abstract SettingSerializerDescriptor BuildDescriptor();
+        public abstract SettingSerializer BuildSerializer();
     }
 
     public abstract class SettingSerializerDefinition<T> : SettingSerializerDefinition
@@ -26,9 +19,9 @@ namespace Guppy.Settings.Loaders.Definitions
         public abstract string Serialize(T deserialized);
         public abstract T Deserialize(string serialized);
 
-        public override SettingSerializerDescriptor BuildDescriptor()
+        public override SettingSerializer BuildSerializer()
         {
-            return SettingSerializerDescriptor.Create(this.Serialize, this.Deserialize);
+            return new SettingSerializer<T>(this.Serialize, this.Deserialize);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace Guppy
             }
 
             return guppy.AddLoader(new GamingServiceLoader<TGame>())
+                .ConfigureEntityComponent()
                 .AddTag(nameof(ConfigureGame));
         }
 

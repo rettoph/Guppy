@@ -1,6 +1,4 @@
-﻿using Guppy.Settings.Initializers.Collections;
-using Guppy.Settings.Loaders;
-using Guppy.Settings.Providers;
+﻿using Guppy.Settings.Providers;
 using Guppy.Initializers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,34 +7,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.Attributes;
-using Guppy.Settings.Loaders.Definitions;
+using Guppy.Settings.Definitions;
+using Guppy.Loaders;
 
 namespace Guppy.Settings.Initializers
 {
-    internal sealed class SettingInitializer : GuppyInitializer<ISettingLoader>
+    internal sealed class SettingInitializer : IGuppyInitializer
     {
-        protected override void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<ISettingLoader> loaders)
+        public void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var serializerDescriptors = assemblies.Types.GetTypesWithAttribute<SettingSerializerDefinition, AutoLoadAttribute>()
-                .Select(x => Activator.CreateInstance(x) as SettingSerializerDefinition)
-                .Select(x => x.BuildDescriptor());
+            var serializers = assemblies.Types.GetTypesWithAttribute<SettingSerializerDefinition, AutoLoadAttribute>();
 
-            var settingDescriptors = assemblies.Types.GetTypesWithAttribute<SettingDefinition, AutoLoadAttribute>()
-                .Select(x => Activator.CreateInstance(x) as SettingDefinition)
-                .Select(x => x.BuildDescriptor());
-
-            var serializers = new SettingSerializerCollection(serializerDescriptors);
-            var settings = new SettingCollection(settingDescriptors);
-
-            
-
-            foreach (ISettingLoader loader in loaders)
+            foreach (Type serializer in serializers)
             {
-                loader.ConfigureSettings(settings, serializers);
+                services.AddSettingSerializer(serializer);
             }
 
-            var provider = settings.BuildSettingProvider(serializers);
-            services.AddSingleton<ISettingProvider>(provider);
+            var settings = assemblies.Types.GetTypesWithAttribute<SettingDefinition, AutoLoadAttribute>();
+
+            foreach (Type setting in settings)
+            {
+                services.AddSetting(setting);
+            }
+
+            services.AddSingleton<ISettingSerializerProvider, SettingSerializerProvider>();
+            services.AddSingleton<ISettingProvider, SettingProvider>();
         }
     }
 }

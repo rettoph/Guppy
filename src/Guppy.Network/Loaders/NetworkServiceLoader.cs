@@ -13,8 +13,6 @@ using Guppy.Network.Loaders.Definitions.SettingSerializers;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
 using Guppy.Network.Security.Messages;
-using Guppy.Settings.Loaders;
-using Guppy.Settings.Loaders.Collections;
 using Guppy.Settings.Providers;
 using Guppy.Threading;
 using Guppy.Threading.Loaders;
@@ -28,18 +26,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Loaders
 {
-    internal sealed class NetworkServiceLoader : IServiceLoader, IComponentLoader, ISettingLoader
+    internal sealed class NetworkServiceLoader : IServiceLoader, IComponentLoader
     {
-        public void ConfigureSettings(ISettingCollection settings, ISettingSerializerCollection serializers)
-        {
-            serializers.Add<HostTypeSettingSerializer>();
-            serializers.Add<NetworkAuthorizationSettingSerializer>();
-
-
-            settings.Add<HostTypeSetting>();
-            settings.Add<NetworkAuthorizationSetting>();
-        }
-
         public void ConfigureComponents(IComponentCollection components, IComponentFilterCollection filters)
         {
             filters.Add<HostTypeRequiredComponentFilter>();
@@ -54,6 +42,13 @@ namespace Guppy.Network.Loaders
 
             services.AddActivated<Peer, ServerPeer>();
             services.AddActivated<Peer, ClientPeer>();
+
+            services.AddSettingSerializer<HostTypeSettingSerializer>();
+            services.AddSettingSerializer<NetworkAuthorizationSettingSerializer>();
+
+
+            services.AddSetting<HostTypeSetting>();
+            services.AddSetting<NetworkAuthorizationSetting>();
         }
     }
 }

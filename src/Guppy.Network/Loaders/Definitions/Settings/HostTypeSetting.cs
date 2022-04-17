@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network.Constants;
 using Guppy.Network.Enums;
-using Guppy.Settings.Loaders.Definitions;
+using Guppy.Settings.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
