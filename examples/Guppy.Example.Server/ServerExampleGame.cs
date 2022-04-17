@@ -1,7 +1,9 @@
 ﻿using Guppy.EntityComponent.Services;
 using Guppy.Example.Library;
 using Guppy.Gaming.Services;
+using Guppy.Network.Enums;
 using Guppy.Network.Peers;
+using Guppy.Settings.Providers;
 using Guppy.Threading;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
@@ -16,15 +18,19 @@ namespace Guppy.Example.Server
     internal class ServerExampleGame : ExampleGame
     {
         private ServerPeer _server;
+        private ISettingProvider _settings;
 
         public ServerExampleGame(
             Bus bus, 
             ServerPeer server,
             ISceneService scenes, 
-            IEntityService entities) : base(bus, server, scenes, entities)
+            IEntityService entities,
+            ISettingProvider settings) : base(bus, server, scenes, entities)
         {
             _server = server;
+            _settings = settings;
 
+            _settings.Get<NetworkAuthorization>().Value = NetworkAuthorization.Master;
             _server.Start(1337);
         }
     }

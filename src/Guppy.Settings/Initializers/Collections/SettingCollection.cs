@@ -1,4 +1,5 @@
 ﻿using Guppy.Settings.Loaders.Collections;
+using Guppy.Settings.Loaders.Definitions;
 using Guppy.Settings.Loaders.Descriptors;
 using Guppy.Settings.Providers;
 using System;
@@ -25,6 +26,15 @@ namespace Guppy.Settings.Initializers.Collections
         public ISettingCollection Add<T>(string name, string description, T defaultValue, bool exportable, params string[] tags)
         {
             this.Add(SettingDescriptor.Create<T>(name, description, defaultValue, exportable, tags));
+
+            return this;
+        }
+
+        public ISettingCollection Add<TDefinition>()
+            where TDefinition : SettingDefinition
+        {
+            var definition = Activator.CreateInstance<TDefinition>();
+            this.Add(definition.BuildDescriptor());
 
             return this;
         }

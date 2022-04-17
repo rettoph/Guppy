@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.EntityComponent
+namespace Guppy.EntityComponent.Loaders.Descriptors
 {
     public sealed class SetupDescriptor
     {

@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings
+namespace Guppy.Settings.Loaders.Definitions
 {
     public abstract class SettingDefinition
     {
-        public virtual string Key { get; } = null;
+        public virtual string? Key { get; } = null;
         public virtual string? Name { get; } = null;
         public virtual string? Description { get; } = null;
-        public abstract bool Exportable { get; }
+        public virtual bool Exportable { get; } = false;
         public virtual string[] Tags { get; } = new string[0];
 
         internal SettingDefinition()

@@ -56,6 +56,8 @@ namespace Guppy.Network.Peers
         /// <param name="port">port to listen</param>
         public bool Start(IPAddress addressIPv4, IPAddress addressIPv6, int port, params Claim[] claims)
         {
+            base.Start();
+
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims);
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
@@ -68,6 +70,8 @@ namespace Guppy.Network.Peers
         /// <param name="port">port to listen</param>
         public bool Start(string addressIPv4, string addressIPv6, int port, params Claim[] claims)
         {
+            base.Start();
+
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims);
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
@@ -78,6 +82,8 @@ namespace Guppy.Network.Peers
         /// <param name="port">port to listen</param>
         public bool Start(int port, params Claim[] claims)
         {
+            base.Start();
+
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims);
             return _manager.Start(port);
         }
@@ -99,7 +105,7 @@ namespace Guppy.Network.Peers
                 client.Id, 
                 user.Claims.ToArray());
 
-            this.Room.Messages.CreateOutgoing<ConnectionResponseMessage>(in response)
+            this.Room!.Messages.CreateOutgoing<ConnectionResponseMessage>(in response)
                 .AddRecipient(client)
                 .Send()
                 .Recycle();

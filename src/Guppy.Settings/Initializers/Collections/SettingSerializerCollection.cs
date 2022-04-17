@@ -1,4 +1,5 @@
 ﻿using Guppy.Settings.Loaders.Collections;
+using Guppy.Settings.Loaders.Definitions;
 using Guppy.Settings.Loaders.Descriptors;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,15 @@ namespace Guppy.Settings.Initializers.Collections
         public ISettingSerializerCollection Add<T>(Func<T, string> serialize, Func<string, T> deserialize)
         {
             this.Add(SettingSerializerDescriptor.Create<T>(serialize, deserialize));
+
+            return this;
+        }
+
+        public ISettingSerializerCollection Add<TDefinition>()
+            where TDefinition : SettingSerializerDefinition
+        {
+            var definition = Activator.CreateInstance<TDefinition>();
+            this.Add(definition.BuildDescriptor());
 
             return this;
         }

@@ -26,6 +26,8 @@ namespace Guppy.Example.Library
         {
             _bus = bus;
             _peer = peer;
+
+            this.Scenes.TryCreate<ExampleScene>(out var scene);
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

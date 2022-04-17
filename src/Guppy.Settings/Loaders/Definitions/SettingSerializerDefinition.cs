@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings
+namespace Guppy.Settings.Loaders.Definitions
 {
     public abstract class SettingSerializerDefinition
     {

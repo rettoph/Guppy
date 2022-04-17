@@ -23,7 +23,7 @@ namespace Guppy.EntityComponent.Services
 
         public override bool TryCreate(IEntity entity)
         {
-            entity.Components = _components.Create(entity.GetType(), _provider);
+            entity.Components = _components.Create(entity, _provider);
 
             return true;
         }

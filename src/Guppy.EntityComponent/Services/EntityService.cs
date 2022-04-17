@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.EntityComponent.Services
 {
-    internal sealed class EntityService : IEntityService
+    internal sealed class EntityService : IEntityService, IDisposable
     {
         private IServiceProvider _provider;
         private ISetupService _setup;
@@ -23,6 +23,14 @@ namespace Guppy.EntityComponent.Services
             _provider = provider;
             _setup = setup;
             _list = new List<IEntity>();
+        }
+
+        public void Dispose()
+        {
+            while (_list.Any())
+            {
+                this.TryRemove(_list.First());
+            }
         }
 
         public bool TryAdd(IEntity entity)

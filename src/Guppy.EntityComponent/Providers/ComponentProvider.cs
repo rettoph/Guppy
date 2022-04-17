@@ -11,19 +11,25 @@ namespace Guppy.EntityComponent.Providers
 {
     internal sealed class ComponentProvider : IComponentProvider
     {
-        private Dictionary<Type, ComponentDescriptor[]> _configurations;
+        private Dictionary<Type, EntityComponentsDescriptor[]> _descriptors;
 
-        public ComponentProvider(Dictionary<Type, ComponentDescriptor[]> configurations)
+        public ComponentProvider(Dictionary<Type, EntityComponentsDescriptor[]> descriptors)
         {
-            _configurations = configurations;
+            _descriptors = descriptors;
         }
 
-        public IComponentService Create(Type entity, IServiceProvider provider)
+        public IComponentService Create(IEntity entity, IServiceProvider provider)
         {
-            Dictionary<Type, IComponent> components = new Dictionary<Type, IComponent>();
-            foreach(ComponentDescriptor descriptor in _configurations[entity])
+            EntityComponentsDescriptor[] descriptors = _descriptors[entity.GetType()];
+            Dictionary<Type, IComponent> components = new Dictionary<Type, IComponent>(descriptors.Length);
+            foreach(EntityComponentsDescriptor descriptor in descriptors)
             {
-                components.Add(descriptor.ComponentType, descriptor.Factory(provider));
+                if(descriptor.Filter(entity, provider))
+                {
+                    IComponent component = descriptor.ComponentDescriptor.Factory(provider, entity);
+
+                    components.Add(descriptor.ComponentDescriptor.ComponentType, component);
+                }
             }
 
             return new ComponentService(components);

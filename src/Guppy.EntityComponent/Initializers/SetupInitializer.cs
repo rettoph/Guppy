@@ -1,7 +1,9 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.EntityComponent;
+using Guppy.EntityComponent.Initializers.Collections;
 using Guppy.EntityComponent.Loaders;
+using Guppy.EntityComponent.Loaders.Collections;
 using Guppy.Initializers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,7 +18,7 @@ namespace Guppy.EntityComponent.Initializers
     {
         protected override void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<ISetupLoader> loaders)
         {
-            ISetupCollection components = new SetupCollection();
+            SetupCollection components = new SetupCollection();
 
             foreach(ISetupLoader loader in loaders)
             {
@@ -24,7 +26,6 @@ namespace Guppy.EntityComponent.Initializers
             }
 
             IEnumerable<Type> entities = assemblies.Types.GetTypesAssignableFrom<IEntity>().Where(t => t.IsConcrete());
-            var test = components.BuildProvider(entities);
 
             services.AddSingleton(components.BuildProvider(entities));
         }

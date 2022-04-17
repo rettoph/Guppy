@@ -47,8 +47,10 @@ namespace Guppy.Network.Peers
             base.Dispose();
         }
 
-        public void Start()
+        public new void Start()
         {
+            base.Start();
+
             _manager.Start();
         }
 

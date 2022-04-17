@@ -1,4 +1,5 @@
-﻿using Guppy.Settings.Loaders.Descriptors;
+﻿using Guppy.Settings.Loaders.Definitions;
+using Guppy.Settings.Loaders.Descriptors;
 
 namespace Guppy.Settings.Loaders.Collections
 {
@@ -6,5 +7,7 @@ namespace Guppy.Settings.Loaders.Collections
     {
         ISettingCollection Add<T>(string key, string name, string description, T defaultValue, bool exportable, params string[] tags);
         ISettingCollection Add<T>(string name, string description, T defaultValue, bool exportable, params string[] tags);
+        ISettingCollection Add<TDefinition>()
+            where TDefinition : SettingDefinition;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Guppy.EntityComponent.Services;
+﻿using Guppy.EntityComponent.Loaders.Descriptors;
+using Guppy.EntityComponent.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

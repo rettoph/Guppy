@@ -11,8 +11,6 @@ namespace Guppy.Settings.Loaders
 {
     public interface ISettingLoader : IGuppyLoader
     {
-        void ConfigureSettingSerializers(ISettingSerializerCollection serializers);
-        void ConfigureSettings(ISettingCollection settings);
-        void ImportSettings(ISettingProvider settings);
+        void ConfigureSettings(ISettingCollection settings, ISettingSerializerCollection serializers);
     }
 }

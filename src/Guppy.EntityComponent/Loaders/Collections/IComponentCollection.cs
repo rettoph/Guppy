@@ -1,4 +1,5 @@
-﻿using Guppy.EntityComponent.Loaders.Descriptors;
+﻿using Guppy.EntityComponent.Loaders.Definitions;
+using Guppy.EntityComponent.Loaders.Descriptors;
 using Guppy.EntityComponent.Providers;
 
 namespace Guppy.EntityComponent.Loaders.Collections
@@ -9,10 +10,11 @@ namespace Guppy.EntityComponent.Loaders.Collections
             where TEntity : class, IEntity
             where TComponent : class, IComponent;
 
-        IComponentCollection Add<TEntity, TComponent>(Func<IServiceProvider, TComponent> factory)
+        IComponentCollection Add<TEntity, TComponent>(Func<IServiceProvider, TEntity, TComponent> factory)
             where TEntity : class, IEntity
             where TComponent : class, IComponent;
 
-        IComponentProvider BuildProvider(IEnumerable<Type> entities);
+        IComponentCollection Add<TDefinition>()
+            where TDefinition : ComponentDefinition;
     }
 }

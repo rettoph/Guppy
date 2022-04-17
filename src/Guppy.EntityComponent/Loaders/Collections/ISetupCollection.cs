@@ -1,11 +1,12 @@
-﻿using Guppy.EntityComponent.Providers;
+﻿using Guppy.EntityComponent.Loaders.Descriptors;
+using Guppy.EntityComponent.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.EntityComponent
+namespace Guppy.EntityComponent.Loaders.Collections
 {
     public interface ISetupCollection : IList<SetupDescriptor>
     {
@@ -19,7 +20,5 @@ namespace Guppy.EntityComponent
             int order)
                 where TEntity : class, IEntity
                 where TSetup : class, ISetup;
-
-        ISetupProvider BuildProvider(IEnumerable<Type> entities);
     }
 }

@@ -20,10 +20,11 @@ namespace Guppy.Network.Peers
         private readonly IUserService _users;
         private readonly EventBasedNetListener _listener;
         private readonly NetManager _manager;
+        private readonly Bus _bus;
         private User? _currentUser;
 
         public IRoomProvider Rooms => _rooms;
-        public readonly Room Room;
+        public Room? Room;
 
         public IUserService Users => _users;
         public User? CurrentUser
@@ -48,9 +49,7 @@ namespace Guppy.Network.Peers
             _users = users;
             _listener = listener;
             _manager = manager;
-
-            this.Room = _rooms.Get(0);
-            this.Room.Messages.AttachBus(bus);
+            _bus = bus;
 
             this.OnCurrentUserChanged += this.HandleCurrentUserChanged;
             _listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
@@ -64,6 +63,12 @@ namespace Guppy.Network.Peers
             _listener.NetworkReceiveEvent -= this.HandleNetworkReceiveEvent;
 
             _manager.Stop();
+        }
+
+        protected virtual void Start()
+        {
+            this.Room = _rooms.Get(0);
+            this.Room.Messages.AttachBus(_bus);
         }
 
         /// <summary>

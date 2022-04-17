@@ -11,6 +11,6 @@ namespace Guppy.EntityComponent.Loaders
 {
     public interface IComponentLoader : IGuppyLoader
     {
-        void ConfigureComponents(IComponentCollection components);
+        void ConfigureComponents(IComponentCollection components, IComponentFilterCollection filters);
     }
 }

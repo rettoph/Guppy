@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.EntityComponent.Loaders.Collections;
 
 namespace Guppy.EntityComponent.Loaders
 {

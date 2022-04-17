@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.Attributes;
+using Guppy.Settings.Loaders.Definitions;
 
 namespace Guppy.Settings.Initializers
 {
@@ -31,17 +32,10 @@ namespace Guppy.Settings.Initializers
 
             foreach (ISettingLoader loader in loaders)
             {
-                loader.ConfigureSettingSerializers(serializers);
-                loader.ConfigureSettings(settings);
+                loader.ConfigureSettings(settings, serializers);
             }
 
             var provider = settings.BuildSettingProvider(serializers);
-
-            foreach (ISettingLoader loader in loaders)
-            {
-                loader.ImportSettings(provider);
-            }
-
             services.AddSingleton<ISettingProvider>(provider);
         }
     }

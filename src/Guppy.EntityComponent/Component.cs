@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace Guppy.EntityComponent
 {
-    public class Component
+    public abstract class Component<TEntity> : IComponent
+        where TEntity : IEntity
     {
+        public readonly TEntity Entity;
+
+        public virtual void Dispose()
+        {
+
+        }
+
+        public virtual void Initialize()
+        {
+
+        }
     }
 }

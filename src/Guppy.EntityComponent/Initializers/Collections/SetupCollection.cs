@@ -1,4 +1,6 @@
-﻿using Guppy.EntityComponent.Providers;
+﻿using Guppy.EntityComponent.Loaders.Collections;
+using Guppy.EntityComponent.Loaders.Descriptors;
+using Guppy.EntityComponent.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Minnow.System.Helpers;
 using System;
@@ -7,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.EntityComponent
+namespace Guppy.EntityComponent.Initializers.Collections
 {
     internal sealed class SetupCollection : List<SetupDescriptor>, ISetupCollection
     {

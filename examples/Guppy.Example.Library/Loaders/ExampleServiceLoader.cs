@@ -38,9 +38,9 @@ namespace Guppy.Example.Library.Loaders
             messengers.Add<TestNetMessage>(DeliveryMethod.ReliableOrdered, 0, 0);
         }
 
-        public void ConfigureComponents(IComponentCollection components)
+        public void ConfigureComponents(IComponentCollection components, IComponentFilterCollection filters)
         {
-            components.Add<Scene, TestComponent>();
+            components.Add<Scene, TestComponent>((p, e) => new TestComponent());
         }
 
         public void ConfigureServices(IServiceCollection services)

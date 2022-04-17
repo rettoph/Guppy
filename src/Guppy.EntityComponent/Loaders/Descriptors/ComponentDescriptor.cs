@@ -12,12 +12,12 @@ namespace Guppy.EntityComponent.Loaders.Descriptors
     {
         public readonly Type EntityType;
         public readonly Type ComponentType;
-        public readonly Func<IServiceProvider, IComponent> Factory;
+        public readonly Func<IServiceProvider, IEntity, IComponent> Factory;
 
         private ComponentDescriptor(
             Type entityType, 
             Type componentType, 
-            Func<IServiceProvider, IComponent> factory)
+            Func<IServiceProvider, IEntity, IComponent> factory)
         {
             this.EntityType = entityType;
             this.ComponentType = componentType;
@@ -25,28 +25,14 @@ namespace Guppy.EntityComponent.Loaders.Descriptors
         }
 
         public static ComponentDescriptor Create<TEntity, TComponent>(
-            Func<IServiceProvider, TComponent> factory)
+            Func<IServiceProvider, TEntity, TComponent> factory)
                 where TEntity : IEntity
                 where TComponent : IComponent
         {
             return new ComponentDescriptor(
                 typeof(TEntity),
                 typeof(TComponent),
-                p => factory(p));
-        }
-
-        public static ComponentDescriptor Create(
-            Type entityType,
-            Type componentType,
-            Func<IServiceProvider, IComponent> factory)
-        {
-            typeof(IEntity).ValidateAssignableFrom(entityType);
-            typeof(IComponent).ValidateAssignableFrom(componentType);
-
-            return new ComponentDescriptor(
-                entityType,
-                componentType,
-                factory);
+                (p, e) => factory(p, (TEntity)e));
         }
     }
 }

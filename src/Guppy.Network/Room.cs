@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.EntityComponent;
+using Guppy.Network.Providers;
 using Guppy.Network.Services;
 using Guppy.Threading;
 using System;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public sealed class Room
+    public sealed class Room : Entity
     {
         private INetMessengerProvider _messengers;
 
-        public readonly byte Id;
+        public new readonly byte Id;
         public readonly RoomMessageService Messages;
         public readonly RoomUserService Users;
 
