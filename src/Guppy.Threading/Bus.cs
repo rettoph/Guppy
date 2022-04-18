@@ -1,4 +1,4 @@
-﻿using Guppy.Threading.Loaders;
+﻿using Guppy.Threading.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace Guppy.Threading
         private Bus.Queue[] _queues = Array.Empty<Bus.Queue>();
         private Dictionary<Type, Bus.Queue> _typeQueues;
 
-        public Bus(IEnumerable<BusMessageDescriptor> messages) : base()
+        public Bus(IEnumerable<BusMessageDefinition> messages) : base()
         {
             var queueConfs = messages.OrderBy(x => x.Queue).GroupBy(x => x.Queue).ToList();
 
@@ -20,11 +20,11 @@ namespace Guppy.Threading
             _queues = new Queue[queueConfs.Count()];
             int index = 0;
 
-            foreach (IGrouping<int, BusMessageDescriptor> queueConf in queueConfs)
+            foreach (IGrouping<int, BusMessageDefinition> queueConf in queueConfs)
             {
                 Bus.Queue queue = _queues[index++] = new Queue(this, queueConf.Key);
 
-                foreach (BusMessageDescriptor messageConf in queueConf)
+                foreach (BusMessageDefinition messageConf in queueConf)
                 {
                     _typeQueues.Add(messageConf.Type, queue);
                 }
@@ -39,7 +39,7 @@ namespace Guppy.Threading
                 return;
             }
 
-            throw new ArgumentException($"{nameof(Bus)}:{nameof(Enqueue)} - Unknown message type '{message.GetType().GetPrettyName()}' recieved. Please ensure this type is registered within an {nameof(IBusLoader)}.", nameof(message));
+            throw new ArgumentException($"{nameof(Bus)}:{nameof(Enqueue)} - Unknown message type '{message.GetType().GetPrettyName()}' recieved. Please ensure a matching {nameof(BusMessageDefinition)} is defined.", nameof(message));
         }
 
         public void PublishEnqueued()

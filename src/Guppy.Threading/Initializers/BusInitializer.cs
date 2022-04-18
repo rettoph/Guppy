@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Initializers;
-using Guppy.Threading.Loaders;
+using Guppy.Loaders;
+using Guppy.Threading.Definitions;
 using Microsoft.Extensions.DependencyInjection;
 using Minnow.Providers;
 using System;
@@ -11,18 +12,18 @@ using System.Threading.Tasks;
 
 namespace Guppy.Threading.Initializers
 {
-    internal sealed class BusInitializer : GuppyInitializer<IBusLoader>
+    internal sealed class BusInitializer : IGuppyInitializer
     {
-        protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IBusLoader> loaders)
+        public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var messages = new BusMessageCollection();
+            var busMessages = assemblies.GetAttributes<BusMessageDefinition, AutoLoadAttribute>().Types;
 
-            foreach(IBusLoader loader in loaders)
+            foreach (Type busMessage in busMessages)
             {
-                loader.ConfigureBus(messages);
+                services.AddBusMessage(busMessage);
             }
 
-            services.AddScoped<Bus>(p => messages.Build());
+            services.AddScoped<Bus>();
         }
     }
 }

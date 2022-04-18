@@ -7,7 +7,6 @@ using Guppy.Network.Security.Definitions.NetSerializers;
 using Guppy.Network.Security.Messages;
 using Guppy.Network.Security.Services;
 using Guppy.Threading;
-using Guppy.Threading.Loaders;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,13 +17,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Security.Loaders
 {
-    internal sealed class SecurityLoader : IServiceLoader, IBusLoader
+    internal sealed class SecurityLoader : IServiceLoader
     {
-        public void ConfigureBus(IBusMessageCollection bus)
-        {
-            bus.AddNetIncomingMessage<ConnectionResponseMessage>(BusConstants.PeerQueuePriority);
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IUserService, UserService>();
@@ -32,6 +26,8 @@ namespace Guppy.Network.Security.Loaders
             services.AddNetSerializer<ConnectionResponseMessageNetSerializerDefinition>();
 
             services.AddNetMessenger<ConnectionResponseMessageNetMessengerDefinition>();
+
+            services.AddBusMessage<NetIncomingMessage<ConnectionResponseMessage>>(BusConstants.PeerQueuePriority);
         }
     }
 }
