@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Loaders.Descriptors;
+﻿using Guppy.Network.Definitions;
 using Guppy.Network.Utilities;
 using LiteNetLib.Utils;
 using Minnow.Collections;
@@ -19,12 +19,12 @@ namespace Guppy.Network.Providers
 
         public NetMessengerProvider(
             INetSerializerProvider serializers,
-            IEnumerable<NetMessengerDescriptor> descriptors)
+            IEnumerable<NetMessengerDefinition> definitions)
         {
             _serializers = serializers;
-            _ids = new DynamicIdProvider((ushort)descriptors.Count());
+            _ids = new DynamicIdProvider((ushort)definitions.Count());
             _messengers = _ids.All()
-                .Zip(descriptors, (id, desc) => desc.BuildNetMessenger(id, _serializers))
+                .Zip(definitions, (id, desc) => desc.BuildNetMessenger(id, _serializers))
                 .ToDoubleDictionary(
                     keySelector1: s => s.Type,
                     keySelector2: s => s.Id.Value);

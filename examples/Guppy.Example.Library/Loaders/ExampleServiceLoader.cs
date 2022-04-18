@@ -15,26 +15,16 @@ using LiteNetLib;
 using Guppy.Gaming;
 using Guppy.Threading.Loaders;
 using Guppy.Threading;
-using Guppy.Network.Loaders.Collections;
+using Guppy.Example.Library.Definitions.NetSerializers;
 
 namespace Guppy.Example.Library.Loaders
 {
     [AutoLoad]
-    internal sealed class ExampleServiceLoader : IServiceLoader, INetworkLoader, IBusLoader
+    internal sealed class ExampleServiceLoader : IServiceLoader, IBusLoader
     {
         public void ConfigureBus(IBusMessageCollection bus)
         {
             bus.AddNetDeserialized<TestNetMessage>(0);
-        }
-
-        public void ConfigureNetSerializers(INetSerializerCollection serializers)
-        {
-            serializers.Add<TestNetMessage>(TestNetMessage.Serialize, TestNetMessage.Deserialize);
-        }
-
-        public void ConfigureNetMessengers(INetMessengerCollection messengers)
-        {
-            messengers.Add<TestNetMessage>(DeliveryMethod.ReliableOrdered, 0, 0);
         }
 
         public void ConfigureServices(IServiceCollection services)

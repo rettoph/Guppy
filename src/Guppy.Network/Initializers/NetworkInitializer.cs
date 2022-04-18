@@ -1,5 +1,7 @@
-﻿using Guppy.Initializers;
-using Guppy.Network.Initializers.Collections;
+﻿using Guppy.Attributes;
+using Guppy.Initializers;
+using Guppy.Loaders;
+using Guppy.Network.Definitions;
 using Guppy.Network.Loaders;
 using Guppy.Network.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,28 +14,26 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Initializers
 {
-    internal sealed class NetworkInitializer : GuppyInitializer<INetworkLoader>
+    internal sealed class NetworkInitializer : IGuppyInitializer
     {
-        protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<INetworkLoader> loaders)
+        public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var serializersCollection = new NetSerializerCollection();
-            var messengersCollection = new NetMessengerCollection();
+            var serializers = assemblies.GetAttributes<NetSerializerDefinition, AutoLoadAttribute>().Types;
 
-            foreach (INetworkLoader loader in loaders)
+            foreach (Type serializer in serializers)
             {
-                loader.ConfigureNetSerializers(serializersCollection);
+                services.AddNetSerializer(serializer);
             }
 
-            foreach (INetworkLoader loader in loaders)
+            var messengers = assemblies.GetAttributes<NetMessengerDefinition, AutoLoadAttribute>().Types;
+
+            foreach (Type messenger in messengers)
             {
-                loader.ConfigureNetMessengers(messengersCollection);
+                services.AddNetMessenger(messenger);
             }
 
-            var serializers = serializersCollection.BuildNetSerializerProvider();
-            var messengers = messengersCollection.BuildNetMessengerProvider(serializers);
-
-            services.AddSingleton<INetSerializerProvider>(serializers);
-            services.AddSingleton<INetMessengerProvider>(messengers);
+            services.AddSingleton<INetSerializerProvider, NetSerializerProvider>();
+            services.AddSingleton<INetMessengerProvider, NetMessengerProvider>();
         }
     }
 }

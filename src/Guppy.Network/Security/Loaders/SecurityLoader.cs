@@ -1,7 +1,9 @@
 ﻿using Guppy.Loaders;
 using Guppy.Network.Constants;
+using Guppy.Network.Definitions.NetSerializers;
 using Guppy.Network.Loaders;
-using Guppy.Network.Loaders.Collections;
+using Guppy.Network.Security.Definitions.NetMessengers;
+using Guppy.Network.Security.Definitions.NetSerializers;
 using Guppy.Network.Security.Messages;
 using Guppy.Network.Security.Services;
 using Guppy.Threading;
@@ -16,31 +18,20 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Security.Loaders
 {
-    internal sealed class SecurityLoader : INetworkLoader, IServiceLoader, IBusLoader
+    internal sealed class SecurityLoader : IServiceLoader, IBusLoader
     {
         public void ConfigureBus(IBusMessageCollection bus)
         {
             bus.AddNetIncomingMessage<ConnectionResponseMessage>(BusConstants.PeerQueuePriority);
         }
 
-        public void ConfigureNetMessengers(INetMessengerCollection messengers)
-        {
-            messengers.Add<ConnectionResponseMessage>(
-                MessengerConstants.PeerDeliveryMethod,
-                MessengerConstants.PeerOutgoingChannel,
-                MessengerConstants.PeerOutgoingPriority);
-        }
-
-        public void ConfigureNetSerializers(INetSerializerCollection serializers)
-        {
-            serializers.Add<ConnectionResponseMessage>(
-                ConnectionResponseMessage.Serialize,
-                ConnectionResponseMessage.Deserialize);
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IUserService, UserService>();
+
+            services.AddNetSerializer<ConnectionResponseMessageNetSerializerDefinition>();
+
+            services.AddNetMessenger<ConnectionResponseMessageNetMessengerDefinition>();
         }
     }
 }

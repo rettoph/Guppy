@@ -21,22 +21,5 @@ namespace Guppy.Example.Library
             this.X = x;
             this.Y = y;
         }
-
-        internal static void Serialize(NetDataWriter writer, in TestNetMessage instance)
-        {
-            writer.Put(instance.Name);
-            writer.Put(instance.Age);
-            writer.Put(instance.X);
-            writer.Put(instance.Y);
-        }
-
-        internal static void Deserialize(NetDataReader reader, out TestNetMessage instance)
-        {
-            instance = new TestNetMessage(
-                name: reader.GetString(),
-                age: reader.GetInt(),
-                x: reader.GetInt(),
-                y: reader.GetInt());
-        }
     }
 }

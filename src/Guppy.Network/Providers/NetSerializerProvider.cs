@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Loaders.Descriptors;
+﻿using Guppy.Network.Definitions;
 using Guppy.Network.Utilities;
 using LiteNetLib.Utils;
 using Minnow.Collections;
@@ -17,12 +17,12 @@ namespace Guppy.Network.Providers
         private DoubleDictionary<Type, ushort, NetSerializer> _serializers;
 
         public NetSerializerProvider(
-            IEnumerable<NetSerializerDescriptor> descriptors)
+            IEnumerable<NetSerializerDefinition> definitions)
         {
-            _ids = new DynamicIdProvider((ushort)descriptors.Count());
+            _ids = new DynamicIdProvider((ushort)definitions.Count());
 
             _serializers = _ids.All()
-                .Zip(descriptors, (id, desc) => desc.BuildNetSerializer(id))
+                .Zip(definitions, (id, desc) => desc.BuildNetSerializer(id))
                 .ToDoubleDictionary(
                     keySelector1: s => s.Type,
                     keySelector2: s => s.Id.Value);

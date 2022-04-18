@@ -1,6 +1,7 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.EntityComponent;
+using Guppy.EntityComponent.Definitions;
 using Guppy.EntityComponent.Loaders;
 using Guppy.EntityComponent.Providers;
 using Guppy.Initializers;
@@ -19,6 +20,13 @@ namespace Guppy.EntityComponent.Initializers
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
+            var setups = assemblies.GetAttributes<SetupDefinition, AutoLoadAttribute>().Types;
+
+            foreach (Type setup in setups)
+            {
+                services.AddSetup(setup);
+            }
+
             services.AddSingleton<ISetupProvider, SetupProvider>();
         }
     }

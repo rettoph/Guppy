@@ -14,6 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
+        public static IServiceCollection AddSetup(this IServiceCollection services, Type setupDefinitionType)
+        {
+            return services.AddSingleton(typeof(SetupDefinition), setupDefinitionType);
+        }
+
         public static IServiceCollection AddSetup<TDefinition>(this IServiceCollection services)
             where TDefinition : SetupDefinition
         {
@@ -31,6 +36,11 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddSetup(new RuntimeSetupDefinition<TEntity>(create, destroy, order));
         }
 
+        public static IServiceCollection AddComponentFilter(this IServiceCollection services, Type componentFilterDefinitionType)
+        {
+            return services.AddSingleton(typeof(ComponentFilterDefinition), componentFilterDefinitionType);
+        }
+
         public static IServiceCollection AddComponentFilter<TDefinition>(this IServiceCollection services)
             where TDefinition : ComponentFilterDefinition
         {
@@ -45,6 +55,11 @@ namespace Microsoft.Extensions.DependencyInjection
             where TComponent : class, IComponent
         {
             return services.AddComponentFilter(new RuntimeComponentFilterDefinition(typeof(TComponent), entityFilter, typeFilter));
+        }
+
+        public static IServiceCollection AddComponent(this IServiceCollection services, Type componentDefinitionType)
+        {
+            return services.AddSingleton(typeof(ComponentDefinition), componentDefinitionType);
         }
 
         public static IServiceCollection AddComponen<TDefinition>(this IServiceCollection services)
@@ -79,11 +94,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddComponent<TEntity, TComponent>(this IServiceCollection services)
             where TEntity : class, IEntity
             where TComponent : class, IComponent
-                {
-                    return services.AddComponent(new RuntimeComponentDefinition(
-                        typeof(TEntity),
-                        typeof(TComponent),
-                        ComponentDefinition.DynamicFactory<TEntity, TComponent>()));
-                }
+        {
+            return services.AddComponent(new RuntimeComponentDefinition(
+                typeof(TEntity),
+                typeof(TComponent),
+                ComponentDefinition.DynamicFactory<TEntity, TComponent>()));
+        }
     }
 }

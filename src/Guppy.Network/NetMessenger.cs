@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Loaders;
+﻿using Guppy.Network.Definitions;
+using Guppy.Network.Loaders;
 using Guppy.Network.Providers;
 using Guppy.Network.Structs;
 using LiteNetLib;
@@ -55,7 +56,7 @@ namespace Guppy.Network
 
             if (!serializers.TryGetSerializer<T>(out _serializer!))
             {
-                throw new Exception($"{nameof(NetMessenger)}<{typeof(T).GetPrettyName()}> - Missing required {nameof(NetSerializer)}. Please ensure a default configuration is defined within an {nameof(INetworkLoader)} implementation.");
+                throw new Exception($"{nameof(NetMessenger)}<{typeof(T).GetPrettyName()}> - Missing required {nameof(NetSerializer)}. Please ensure a matching {nameof(NetSerializerDefinition)} is defined.");
             }
 
             _incomingFactory = new Factory<NetIncomingMessage<T>>(() => new NetIncomingMessage<T>(_serializers, _serializer, this));

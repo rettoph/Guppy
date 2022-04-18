@@ -32,6 +32,9 @@ namespace Guppy.Example.Server
 
             _settings.Get<NetworkAuthorization>().Value = NetworkAuthorization.Master;
             _server.Start(1337);
+
+            var value = new TestNetMessage("test", 10, 1, 3);
+            _server.Room.Messages.CreateOutgoing<TestNetMessage>(in value).Send().Recycle();
         }
     }
 }
