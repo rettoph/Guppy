@@ -3,7 +3,7 @@ using Guppy.Example.Library;
 using Guppy.Gaming.Services;
 using Guppy.Network.Enums;
 using Guppy.Network.Peers;
-using Guppy.Settings.Providers;
+using Guppy.Providers;
 using Guppy.Threading;
 using LiteNetLib;
 using Microsoft.Xna.Framework;

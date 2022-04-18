@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
     <ProjectReference Include="..\Guppy.EntityComponent\Guppy.EntityComponent.csproj" />
-    <ProjectReference Include="..\Guppy.Settings\Guppy.Settings.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
     <ProjectReference Include="..\Guppy.Threading\Guppy.Threading.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>

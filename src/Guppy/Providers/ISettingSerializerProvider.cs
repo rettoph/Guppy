@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Providers
+namespace Guppy.Providers
 {
     public interface ISettingSerializerProvider
     {

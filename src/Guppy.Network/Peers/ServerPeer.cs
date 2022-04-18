@@ -4,7 +4,7 @@ using Guppy.Network.Security;
 using Guppy.Network.Security.Messages;
 using Guppy.Network.Security.Services;
 using Guppy.Network.Security.Structs;
-using Guppy.Settings.Providers;
+using Guppy.Providers;
 using Guppy.Threading;
 using LiteNetLib;
 using LiteNetLib.Utils;

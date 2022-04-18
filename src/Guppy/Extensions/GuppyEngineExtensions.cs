@@ -1,4 +1,4 @@
-﻿using Guppy.Settings.Initializers;
+﻿using Guppy.Initializers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

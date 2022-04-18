@@ -28,6 +28,8 @@ namespace Guppy.Example.Library.Loaders
             services.AddComponent<Scene, TestComponent>();
 
             services.AddBusMessage<NetIncomingMessage<TestNetMessage>>(0);
+
+            services.AddText("test", "Hello world!");
         }
     }
 }

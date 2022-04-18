@@ -1,8 +1,8 @@
-﻿using Guppy.Settings;
-using Guppy.Settings.Definitions;
-using Guppy.Settings.Definitions.Settings;
-using Guppy.Settings.Definitions.SettingSerializers;
-using Guppy.Settings.Providers;
+﻿using Guppy;
+using Guppy.Definitions;
+using Guppy.Definitions.Settings;
+using Guppy.Definitions.SettingSerializers;
+using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

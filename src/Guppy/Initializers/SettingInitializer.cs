@@ -1,4 +1,4 @@
-﻿using Guppy.Settings.Providers;
+﻿using Guppy.Providers;
 using Guppy.Initializers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.Attributes;
-using Guppy.Settings.Definitions;
+using Guppy.Definitions;
 using Guppy.Loaders;
 using Minnow.Providers;
 using System.Reflection;
 
-namespace Guppy.Settings.Initializers
+namespace Guppy.Initializers
 {
     internal sealed class SettingInitializer : IGuppyInitializer
     {

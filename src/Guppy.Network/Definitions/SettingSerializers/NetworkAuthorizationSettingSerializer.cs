@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network.Enums;
-using Guppy.Settings.Definitions;
+using Guppy.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

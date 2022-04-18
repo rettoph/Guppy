@@ -1,11 +1,11 @@
-﻿using Guppy.Settings.Providers;
+﻿using Guppy.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Definitions
+namespace Guppy.Definitions
 {
     public abstract class SettingDefinition
     {
@@ -20,7 +20,7 @@ namespace Guppy.Settings.Definitions
 
         }
 
-        public abstract Setting BuildSetting(ISettingSerializerProvider serializers);
+        public abstract Setting BuildSetting(ISettingSerializerProvider serializers, ITextProvider text);
 
         public static string GetKey<T>(string? key)
         {
@@ -32,18 +32,19 @@ namespace Guppy.Settings.Definitions
     {
         public abstract T DefaultValue { get; }
 
-        public override Setting BuildSetting(ISettingSerializerProvider serializers)
+        public override Setting BuildSetting(ISettingSerializerProvider serializers, ITextProvider text)
         {
             if(serializers.TryGet<T>(out var serializer))
             {
                 return new Setting<T>(
                     key: SettingDefinition.GetKey<T>(this.Key),
-                    name: this.Name,
+                    name: this.Name ?? this.Key ?? typeof(T).Name,
                     description: this.Description,
                     value: this.DefaultValue,
                     exportable: this.Exportable,
                     tags: this.Tags,
-                    serializer: serializer);
+                    serializer: serializer,
+                    text: text);
             }
 
             throw new InvalidOperationException();

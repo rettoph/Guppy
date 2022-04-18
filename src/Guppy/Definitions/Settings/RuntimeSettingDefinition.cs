@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Definitions.Settings
+namespace Guppy.Definitions.Settings
 {
     internal sealed class RuntimeSettingDefinition<T> : SettingDefinition<T>
     {

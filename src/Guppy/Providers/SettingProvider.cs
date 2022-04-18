@@ -1,4 +1,4 @@
-﻿using Guppy.Settings.Definitions;
+﻿using Guppy.Definitions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,23 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Providers
+namespace Guppy.Providers
 {
     internal sealed class SettingProvider : ISettingProvider
     {
         private readonly ISettingSerializerProvider _serializers;
+        private readonly ITextProvider _text;
         private readonly Dictionary<string, Setting> _settings;
 
         public Setting this[string key] => _settings[key];
 
-        public SettingProvider(ISettingSerializerProvider serializers, IEnumerable<SettingDefinition> definitions)
+        public SettingProvider(ISettingSerializerProvider serializers, ITextProvider text, IEnumerable<SettingDefinition> definitions)
         {
             _serializers = serializers;
+            _text = text;
             _settings = new Dictionary<string, Setting>(definitions.Count());
 
             foreach(SettingDefinition definition in definitions)
             {
-                var setting = definition.BuildSetting(_serializers);
+                var setting = definition.BuildSetting(_serializers, _text);
                 _settings.Add(setting.Key, setting);
             }
         }

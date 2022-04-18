@@ -1,4 +1,4 @@
-﻿using Guppy.Settings.Definitions;
+﻿using Guppy.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Providers
+namespace Guppy.Providers
 {
     internal sealed class SettingSerializerProvider : ISettingSerializerProvider
     {

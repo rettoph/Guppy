@@ -1,4 +1,4 @@
-﻿namespace Guppy.Settings.Definitions
+﻿namespace Guppy.Definitions
 {
     public abstract class SettingSerializerDefinition
     {

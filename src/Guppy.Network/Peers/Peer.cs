@@ -2,7 +2,7 @@
 using Guppy.Network.Providers;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Services;
-using Guppy.Settings.Providers;
+using Guppy.Providers;
 using Guppy.Threading;
 using LiteNetLib;
 using System;

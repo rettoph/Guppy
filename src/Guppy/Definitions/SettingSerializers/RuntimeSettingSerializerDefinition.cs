@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Definitions.SettingSerializers
+namespace Guppy.Definitions.SettingSerializers
 {
     internal sealed class RuntimeSettingSerializerDefinition<T> : SettingSerializerDefinition
     {

@@ -1,12 +1,12 @@
 ﻿using Guppy.Attributes;
-using Guppy.Settings.Definitions;
+using Guppy.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Settings.Definitions.SettingSerializers
+namespace Guppy.Definitions.SettingSerializers
 {
     [AutoLoad]
     internal sealed class IntSettingSerializer : SettingSerializerDefinition<int>
