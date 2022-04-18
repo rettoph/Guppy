@@ -14,15 +14,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddSetting<T>(this IServiceCollection services, string key, string name, string description, T defaultValue, bool exportable, params string[] tags)
+        public static IServiceCollection AddSetting<T>(this IServiceCollection services, string key, T defaultValue, bool exportable, params string[] tags)
         {
-            var descriptor = new RuntimeSettingDefinition<T>(key, name, description, defaultValue, exportable, tags);
+            var descriptor = new RuntimeSettingDefinition<T>(key, defaultValue, exportable, tags);
             return services.AddSetting(descriptor);
         }
 
-        public static IServiceCollection AddSetting<T>(this IServiceCollection services, string name, string description, T defaultValue, bool exportable, params string[] tags)
+        public static IServiceCollection AddSetting<T>(this IServiceCollection services, T defaultValue, bool exportable, params string[] tags)
         {
-            var descriptor = new RuntimeSettingDefinition<T>(SettingDefinition.GetKey<T>(null), name, description, defaultValue, exportable, tags);
+            var descriptor = new RuntimeSettingDefinition<T>(SettingDefinition.GetKey<T>(null), defaultValue, exportable, tags);
             return services.AddSetting(descriptor);
         }
 

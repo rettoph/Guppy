@@ -4,23 +4,13 @@ namespace Guppy
 {
     public abstract class Setting
     {
-        private string? _name;
-        private string? _description;
-        private ITextProvider _text;
-
         public readonly Type Type;
         public readonly string Key;
-        public string? Name => _text[_name];
-        public string? Description => _text[_description];
 
-        internal Setting(Type type, string key, string? name, string? description, ITextProvider text)
+        internal Setting(Type type, string key)
         {
             this.Type = type;
             this.Key = key;
-
-            _name = name;
-            _description = description;
-            _text = text;
         }
 
         public abstract bool TrySetValue(object value);
@@ -38,7 +28,7 @@ namespace Guppy
         public readonly string[] Tags;
         public readonly SettingSerializer<T> Serializer;
 
-        public Setting(string key, string? name, string? description, T value, bool exportable, string[] tags, SettingSerializer<T> serializer, ITextProvider text) : base(typeof(T), key, name, description, text)
+        public Setting(string key, T value, bool exportable, string[] tags, SettingSerializer<T> serializer) : base(typeof(T), key)
         {
             this.Value = value;
             this.Exportable = exportable;
