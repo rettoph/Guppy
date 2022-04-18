@@ -32,7 +32,7 @@ namespace Guppy.Network.Security
             this.Id = id;
             this.NetPeer = peer;
 
-            _claims = claims.ToDictionaryByValue(c => c.Key);
+            _claims = claims.ToDictionary(c => c.Key);
             _rooms = new List<Room>();
 
             this.CreatedAt = DateTime.Now;

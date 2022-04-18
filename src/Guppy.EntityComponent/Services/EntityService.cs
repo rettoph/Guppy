@@ -1,4 +1,5 @@
 ﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
@@ -12,16 +13,16 @@ namespace Guppy.EntityComponent.Services
     internal sealed class EntityService : IEntityService, IDisposable
     {
         private IServiceProvider _provider;
-        private ISetupService _setup;
+        private ISetupProvider _setups;
         private List<IEntity> _list;
 
         public event OnEventDelegate<IEntityService, IEntity>? OnEntityAdded;
         public event OnEventDelegate<IEntityService, IEntity>? OnEntityRemoved;
 
-        public EntityService(IServiceProvider provider, ISetupService setup)
+        public EntityService(IServiceProvider provider, ISetupProvider setups)
         {
             _provider = provider;
-            _setup = setup;
+            _setups = setups;
             _list = new List<IEntity>();
         }
 
@@ -35,7 +36,7 @@ namespace Guppy.EntityComponent.Services
 
         public bool TryAdd(IEntity entity)
         {
-            if(_setup.TryCreate(entity))
+            if(_setups.TryCreate(_provider, entity))
             {
                 _list.Add(entity);
 
@@ -81,7 +82,7 @@ namespace Guppy.EntityComponent.Services
                 return false;
             }
 
-            if(_setup.TryDestroy(entity))
+            if(_setups.TryDestroy(_provider, entity))
             {
                 this.OnEntityRemoved?.Invoke(this, entity);
 

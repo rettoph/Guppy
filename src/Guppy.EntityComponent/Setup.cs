@@ -1,5 +1,4 @@
-﻿using Guppy.EntityComponent;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,41 +6,19 @@ using System.Threading.Tasks;
 
 namespace Guppy.EntityComponent
 {
-    public abstract class Setup : ISetup
+    public sealed class Setup
     {
-        public virtual Type EntityType => typeof(IEntity);
+        public readonly Type EntityType;
+        public Func<IServiceProvider, IEntity, bool> TryCreate;
+        public Func<IServiceProvider, IEntity, bool> TryDestroy;
+        public readonly int Order;
 
-        public virtual int Order => 0;
-
-        public abstract bool TryCreate(IEntity entity);
-        public abstract bool TryDestroy(IEntity entity);
-    }
-
-    public abstract class Setup<TEntity> : Setup
-        where TEntity : IEntity
-    {
-        public override Type EntityType => typeof(TEntity);
-
-        public override bool TryCreate(IEntity entity)
+        public Setup(Type entityType, Func<IServiceProvider, IEntity, bool> tryCreate, Func<IServiceProvider, IEntity, bool> tryDestroy, int order)
         {
-            if(entity is TEntity casted)
-            {
-                return this.TryCreate(casted);
-            }
-
-            return false;
+            this.EntityType = entityType;
+            this.TryCreate = tryCreate;
+            this.TryDestroy = tryDestroy;
+            this.Order = order;
         }
-        public override bool TryDestroy(IEntity entity)
-        {
-            if (entity is TEntity casted)
-            {
-                return this.TryDestroy(casted);
-            }
-
-            return false;
-        }
-
-        protected abstract bool TryCreate(IServiceProvider provider, TEntity entity);
-        protected abstract bool TryDestroy(IServiceProvider provider, TEntity entity);
     }
 }

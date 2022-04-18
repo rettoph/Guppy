@@ -1,6 +1,7 @@
 ﻿using Guppy.Initializers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,13 @@ namespace Guppy.Initializers
     public abstract class GuppyInitializer<TLoader> : IGuppyInitializer
         where TLoader : IGuppyLoader
     {
-        void IGuppyInitializer.Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
+        void IGuppyInitializer.Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
             var castedLoaders = loaders.Where(l => l is TLoader).Select(l => (TLoader)l);
 
             this.Initialize(assemblies, services, castedLoaders);
         }
 
-        protected abstract void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<TLoader> loaders);
+        protected abstract void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<TLoader> loaders);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Guppy.Network.Loaders.Descriptors;
 using Guppy.Network.Utilities;
 using LiteNetLib.Utils;
-using Minnow.General;
+using Minnow.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;

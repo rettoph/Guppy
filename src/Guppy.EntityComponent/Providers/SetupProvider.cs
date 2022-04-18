@@ -1,5 +1,6 @@
-﻿using Guppy.EntityComponent.Loaders.Descriptors;
+﻿using Guppy.EntityComponent.Definitions;
 using Guppy.EntityComponent.Services;
+using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +11,55 @@ namespace Guppy.EntityComponent.Providers
 {
     internal sealed class SetupProvider : ISetupProvider
     {
-        private Dictionary<Type, SetupDescriptor[]> _configurations;
+        private Dictionary<Type, Setup[]> _setups;
 
-        public SetupProvider(Dictionary<Type, SetupDescriptor[]> configurations)
+        public SetupProvider(ITypeProvider<IEntity> entities, IEnumerable<SetupDefinition> definitions)
         {
-            _configurations = configurations;
+            var setups = definitions.Select(x => x.BuildSetup()).ToArray();
+
+            _setups = new Dictionary<Type, Setup[]>(entities.Count());
+            foreach(Type entity in entities)
+            {
+                _setups.Add(entity, setups.Where(s => s.EntityType.IsAssignableFrom(entity)).ToArray());
+            }
         }
 
-        public ISetupService Create(IServiceProvider provider)
+        public bool TryCreate(IServiceProvider provider, IEntity entity)
         {
-            Dictionary<Type, ISetup[]> setups = _configurations.ToDictionary(
-                keySelector: kvp => kvp.Key,
-                elementSelector: kvp => kvp.Value.Select(sd => sd.Factory(provider)).ToArray());
+            try
+            {
+                bool result = true;
 
-            return new SetupService(setups);
+                foreach (Setup setup in _setups[entity.GetType()])
+                {
+                    result &= setup.TryCreate(provider, entity);
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public bool TryDestroy(IServiceProvider provider, IEntity entity)
+        {
+            try
+            {
+                bool result = true;
+
+                foreach (Setup setup in _setups[entity.GetType()])
+                {
+                    result &= setup.TryDestroy(provider, entity);
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
     }
 }

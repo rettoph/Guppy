@@ -1,5 +1,6 @@
 ﻿using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Guppy.Initializers
 {
     public interface IGuppyInitializer
     {
-        void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders);
+        void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders);
     }
 }

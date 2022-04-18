@@ -1,5 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.EntityComponent.Loaders.Collections;
+using Guppy.EntityComponent.Definitions.Setups;
 using Guppy.EntityComponent.Providers;
 using Guppy.EntityComponent.Services;
 using Guppy.Loaders;
@@ -13,16 +13,11 @@ using System.Threading.Tasks;
 namespace Guppy.EntityComponent.Loaders
 {
     [AutoLoad]
-    internal sealed class EntityComponentCommonLoader : IServiceLoader, ISetupLoader
+    internal sealed class EntityComponentCommonLoader : IServiceLoader
     {
-        public void ConfigureSetups(ISetupCollection setups)
-        {
-            setups.Add<IEntity, ComponentSetup>(Constants.SetupOrders.ComponentSetupOrder);
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ISetupService>(p => p.GetRequiredService<ISetupProvider>().Create(p));
+            services.AddSetup<ComponentSetupDefinition>();
         }
     }
 }

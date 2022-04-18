@@ -3,8 +3,7 @@ using Guppy.Network.Providers;
 using Guppy.Network.Structs;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using Minnow.General;
-using System;
+using Minnow.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,13 +53,13 @@ namespace Guppy.Network
         {
             _serializers = serializers;
 
-            _incomingFactory = new Factory<NetIncomingMessage<T>>(() => new NetIncomingMessage<T>(_serializers, _serializer, this));
-            _outgoingFactory = new Factory<NetOutgoingMessage<T>>(() => new NetOutgoingMessage<T>(_serializers, _serializer, this));
-
-            if(!serializers.TryGetSerializer<T>(out _serializer!))
+            if (!serializers.TryGetSerializer<T>(out _serializer!))
             {
                 throw new Exception($"{nameof(NetMessenger)}<{typeof(T).GetPrettyName()}> - Missing required {nameof(NetSerializer)}. Please ensure a default configuration is defined within an {nameof(INetworkLoader)} implementation.");
             }
+
+            _incomingFactory = new Factory<NetIncomingMessage<T>>(() => new NetIncomingMessage<T>(_serializers, _serializer, this));
+            _outgoingFactory = new Factory<NetOutgoingMessage<T>>(() => new NetOutgoingMessage<T>(_serializers, _serializer, this));
         }
 
         public override NetIncomingMessage<T> ReadIncoming(NetDataReader reader)

@@ -15,13 +15,12 @@ using LiteNetLib;
 using Guppy.Gaming;
 using Guppy.Threading.Loaders;
 using Guppy.Threading;
-using Guppy.EntityComponent.Loaders.Collections;
 using Guppy.Network.Loaders.Collections;
 
 namespace Guppy.Example.Library.Loaders
 {
     [AutoLoad]
-    internal sealed class ExampleServiceLoader : IServiceLoader, IComponentLoader, INetworkLoader, IBusLoader
+    internal sealed class ExampleServiceLoader : IServiceLoader, INetworkLoader, IBusLoader
     {
         public void ConfigureBus(IBusMessageCollection bus)
         {
@@ -38,14 +37,11 @@ namespace Guppy.Example.Library.Loaders
             messengers.Add<TestNetMessage>(DeliveryMethod.ReliableOrdered, 0, 0);
         }
 
-        public void ConfigureComponents(IComponentCollection components, IComponentFilterCollection filters)
-        {
-            components.Add<Scene, TestComponent>((p, e) => new TestComponent());
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScene<ExampleScene>();
+
+            services.AddComponent<Scene, TestComponent>();
         }
     }
 }

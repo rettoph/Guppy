@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.General\Minnow.General.csproj" />
     <ProjectReference Include="..\..\libraries\Minnow\src\Minnow.System.Helpers\Minnow.System.Helpers.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>

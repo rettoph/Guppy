@@ -9,6 +9,7 @@ namespace Guppy.EntityComponent.Providers
 {
     public interface ISetupProvider
     {
-        ISetupService Create(IServiceProvider provider);
+        bool TryCreate(IServiceProvider provider, IEntity entity);
+        bool TryDestroy(IServiceProvider provider, IEntity entity);
     }
 }

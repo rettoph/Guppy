@@ -9,6 +9,6 @@ namespace Guppy.EntityComponent.Providers
 {
     public interface IComponentProvider
     {
-        IComponentService Create(IEntity entity, IServiceProvider provider);
+        IComponentService Create(IServiceProvider provider, IEntity entity);
     }
 }

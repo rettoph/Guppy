@@ -1,8 +1,7 @@
 ﻿using Guppy.Network.Providers;
 using Guppy.Threading;
 using LiteNetLib;
-using Minnow.General;
-using System;
+using Minnow.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +60,7 @@ namespace Guppy.Network.Services
         /// <param name="message"></param>
         public override void ProcessIncoming(NetIncomingMessage message)
         {
-            _bus.Enqueue(message);
+            _bus!.Enqueue(message);
         }
 
         /// <summary>

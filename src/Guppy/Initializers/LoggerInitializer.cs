@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Minnow.Providers;
 using Serilog;
 using Serilog.Core;
 using System;
@@ -14,7 +15,7 @@ namespace Guppy.Initializers
     [AutoLoad]
     internal sealed class LoggerInitializer : GuppyInitializer<ILoggerLoader>
     {
-        protected override void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<ILoggerLoader> loaders)
+        protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<ILoggerLoader> loaders)
         {
             var conf = new LoggerConfiguration();
 

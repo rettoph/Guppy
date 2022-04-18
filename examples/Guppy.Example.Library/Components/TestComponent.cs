@@ -10,5 +10,8 @@ namespace Guppy.Example.Library.Components
 {
     public class TestComponent : Component<Scene>
     {
+        public TestComponent(Scene entity) : base(entity)
+        {
+        }
     }
 }

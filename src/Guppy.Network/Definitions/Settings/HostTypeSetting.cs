@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.Loaders.Definitions.Settings
+namespace Guppy.Network.Definitions.Settings
 {
     internal sealed class HostTypeSetting : SettingDefinition<HostType>
     {

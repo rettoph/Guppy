@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using Guppy.Initializers;
 using Guppy.Loaders;
+using Minnow.Providers;
 
 namespace Guppy
 {
@@ -13,7 +14,7 @@ namespace Guppy
         private List<IGuppyInitializer> _initializers;
         private List<IGuppyLoader> _loaders;
 
-        public AssemblyHelper Assemblies { get; private init; }
+        public IAssemblyProvider Assemblies { get; private init; }
 
         public HashSet<string> Tags { get; private set; }
 
@@ -30,10 +31,10 @@ namespace Guppy
             _initializers = new List<IGuppyInitializer>();
             _loaders = new List<IGuppyLoader>();
 
-            this.Assemblies = new AssemblyHelper(libraries);
+            this.Assemblies = new AssemblyProvider(libraries);
             this.Assemblies.OnAssemblyLoaded += this.HandleAssemblyLoaded;
 
-            this.Assemblies.TryLoadAssembly(entry ?? Assembly.GetEntryAssembly());
+            this.Assemblies.Load(entry ?? Assembly.GetEntryAssembly() ?? throw new InvalidOperationException());
 
             this.Tags = new HashSet<string>();
         }
@@ -80,7 +81,7 @@ namespace Guppy
             return services.BuildServiceProvider();
         }
 
-        private void HandleAssemblyLoaded(AssemblyHelper sender, Assembly assembly)
+        private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
         {
             assembly.GetTypes().GetTypesWithAttribute<IGuppyInitializer, AutoLoadAttribute>()
                 .OrderBy(t => t.GetAttribute<AutoLoadAttribute>()?.Order ?? 0)

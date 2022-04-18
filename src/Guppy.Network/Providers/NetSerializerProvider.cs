@@ -1,9 +1,10 @@
 ﻿using Guppy.Network.Loaders.Descriptors;
 using Guppy.Network.Utilities;
 using LiteNetLib.Utils;
-using Minnow.General;
+using Minnow.Collections;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,9 +48,9 @@ namespace Guppy.Network.Providers
             return serialized;
         }
 
-        public bool TryGetSerializer<T>(out NetSerializer<T>? serializer)
+        public bool TryGetSerializer<T>([MaybeNullWhen(false)] out NetSerializer<T>? serializer)
         {
-            if(_serializers.TryGetValue(typeof(T), out NetSerializer value) && value is NetSerializer<T> casted)
+            if(_serializers.TryGetValue(typeof(T), out NetSerializer? value) && value is NetSerializer<T> casted)
             {
                 serializer = casted;
                 return true;
@@ -59,7 +60,7 @@ namespace Guppy.Network.Providers
             return false;
         }
 
-        public bool TryGetSerializer(ushort id, out NetSerializer serializer)
+        public bool TryGetSerializer(ushort id, [MaybeNullWhen(false)] out NetSerializer serializer)
         {
             return _serializers.TryGetValue(id, out serializer);
         }

@@ -1,11 +1,12 @@
 ﻿using Guppy;
 using Guppy.Attributes;
 using Guppy.EntityComponent;
-using Guppy.EntityComponent.Initializers.Collections;
 using Guppy.EntityComponent.Loaders;
-using Guppy.EntityComponent.Loaders.Collections;
+using Guppy.EntityComponent.Providers;
 using Guppy.Initializers;
+using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +15,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.EntityComponent.Initializers
 {
-    internal sealed class SetupInitializer : GuppyInitializer<ISetupLoader>
+    internal sealed class SetupInitializer : IGuppyInitializer
     {
-        protected override void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<ISetupLoader> loaders)
+        public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            SetupCollection components = new SetupCollection();
-
-            foreach(ISetupLoader loader in loaders)
-            {
-                loader.ConfigureSetups(components);
-            }
-
-            IEnumerable<Type> entities = assemblies.Types.GetTypesAssignableFrom<IEntity>().Where(t => t.IsConcrete());
-
-            services.AddSingleton(components.BuildProvider(entities));
+            services.AddSingleton<ISetupProvider, SetupProvider>();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.Loaders.Definitions.SettingSerializers
+namespace Guppy.Network.Definitions.SettingSerializers
 {
     internal sealed class NetworkAuthorizationSettingSerializer : SettingSerializerDefinition<NetworkAuthorization>
     {

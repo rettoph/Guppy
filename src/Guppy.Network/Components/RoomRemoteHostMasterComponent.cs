@@ -11,7 +11,7 @@ namespace Guppy.Network.Components
 {
     [HostTypeRequired(HostType.Remote)]
     [NetworkAuthorizationRequired(NetworkAuthorization.Master)]
-    internal sealed class RoomRemoteHostMasterComponent : Component<Room>
+    internal sealed class RoomRemoteHostMasterComponent : Component
     {
         public readonly Room Room;
 

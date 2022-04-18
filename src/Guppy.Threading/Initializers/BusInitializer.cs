@@ -2,6 +2,7 @@
 using Guppy.Initializers;
 using Guppy.Threading.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Guppy.Threading.Initializers
 {
     internal sealed class BusInitializer : GuppyInitializer<IBusLoader>
     {
-        protected override void Initialize(AssemblyHelper assemblies, IServiceCollection services, IEnumerable<IBusLoader> loaders)
+        protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IBusLoader> loaders)
         {
             var messages = new BusMessageCollection();
 
