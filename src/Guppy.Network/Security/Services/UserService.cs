@@ -28,13 +28,34 @@ namespace Guppy.Network.Security.Services
             return _users.TryGetValue(id, out user);
         }
 
-        public User UpdateOrCreate(int id, IEnumerable<Claim> claims, NetPeer? peer = null)
+        public User UpdateOrCreate(int id, IEnumerable<Claim> claims)
+        {
+            lock (this)
+            {
+                if (this.TryGet(id, out User? user))
+                {
+                    user.SetClaims(claims);
+                    return user;
+                }
+
+                user = new User(id, claims, null);
+
+                if (_users.TryAdd(id, user))
+                {
+                    return user;
+                }
+
+                throw new InvalidOperationException();
+            }
+        }
+        public User UpdateOrCreate(int id, IEnumerable<Claim> claims, NetPeer? peer)
         {
             lock(this)
             {
                 if(this.TryGet(id, out User? user))
                 {
                     user.SetClaims(claims);
+                    user.NetPeer = peer;
                     return user;
                 }
 

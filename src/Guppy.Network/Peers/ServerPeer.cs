@@ -58,7 +58,9 @@ namespace Guppy.Network.Peers
         {
             base.Start();
 
-            this.CurrentUser = this.Users.UpdateOrCreate(-1, claims);
+            this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
+            this.Room!.Users.TryJoin(this.CurrentUser);
+
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
 
@@ -72,7 +74,9 @@ namespace Guppy.Network.Peers
         {
             base.Start();
 
-            this.CurrentUser = this.Users.UpdateOrCreate(-1, claims);
+            this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
+            this.Room!.Users.TryJoin(this.CurrentUser);
+
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
 
@@ -84,7 +88,9 @@ namespace Guppy.Network.Peers
         {
             base.Start();
 
-            this.CurrentUser = this.Users.UpdateOrCreate(-1, claims);
+            this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
+            this.Room!.Users.TryJoin(this.CurrentUser);
+
             return _manager.Start(port);
         }
 
@@ -92,21 +98,20 @@ namespace Guppy.Network.Peers
         {
             ConnectionRequestMessage.Deserialize(request.Data, out var data);
 
-            if(!this.ValidateUserConnectionRequest.Validate(this, data, true))
+            if(!this.ValidateUserConnectionRequest!.Validate(this, data, true))
             {
                 request.Reject();
                 return;
             }
 
             NetPeer client = request.Accept();
-            User user = this.Users.UpdateOrCreate(client.Id, data.Claims);
+            User user = this.Users.UpdateOrCreate(client.Id, data.Claims, client);
 
             ConnectionResponseMessage response = new ConnectionResponseMessage(
                 client.Id, 
                 user.Claims.ToArray());
 
-            this.Room!.Messages.CreateOutgoing<ConnectionResponseMessage>(in response)
-                .AddRecipient(client)
+            this.Room!.Messages.CreateOutgoing<ConnectionResponseMessage>(in response, client)
                 .Send()
                 .Recycle();
 

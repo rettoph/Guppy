@@ -10,7 +10,6 @@ namespace Guppy.EntityComponent
     {
         public virtual void Dispose()
         {
-
         }
     }
 

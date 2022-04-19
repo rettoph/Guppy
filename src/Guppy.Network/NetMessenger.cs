@@ -1,7 +1,9 @@
-﻿using Guppy.Network.Definitions;
+﻿using Guppy.Network.Constants;
+using Guppy.Network.Definitions;
 using Guppy.Network.Loaders;
 using Guppy.Network.Providers;
 using Guppy.Network.Structs;
+using Guppy.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Minnow.Collections;
@@ -43,6 +45,7 @@ namespace Guppy.Network
         private readonly NetSerializer<T> _serializer;
         private readonly Factory<NetIncomingMessage<T>> _incomingFactory;
         private readonly Factory<NetOutgoingMessage<T>> _outgoingFactory;
+        private readonly int _recipientsBufferSize;
 
         public NetMessenger(
             DynamicId id, 
@@ -50,9 +53,11 @@ namespace Guppy.Network
             deliveryMethod, 
             byte outgoingChannel, 
             int outgoingPriority,
-            INetSerializerProvider serializers) : base(id, typeof(T), deliveryMethod, outgoingChannel, outgoingPriority)
+            INetSerializerProvider serializers,
+            ISettingProvider settings) : base(id, typeof(T), deliveryMethod, outgoingChannel, outgoingPriority)
         {
             _serializers = serializers;
+            _recipientsBufferSize = settings.Get<int>(SettingConstants.MaxNetOutgoingMessageRecipients).Value;
 
             if (!serializers.TryGetSerializer<T>(out _serializer!))
             {
@@ -60,7 +65,7 @@ namespace Guppy.Network
             }
 
             _incomingFactory = new Factory<NetIncomingMessage<T>>(() => new NetIncomingMessage<T>(_serializers, _serializer, this));
-            _outgoingFactory = new Factory<NetOutgoingMessage<T>>(() => new NetOutgoingMessage<T>(_serializers, _serializer, this));
+            _outgoingFactory = new Factory<NetOutgoingMessage<T>>(() => new NetOutgoingMessage<T>(_serializers, _serializer, _recipientsBufferSize, this));
         }
 
         public override NetIncomingMessage<T> ReadIncoming(NetDataReader reader)

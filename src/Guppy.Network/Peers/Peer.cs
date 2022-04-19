@@ -78,6 +78,7 @@ namespace Guppy.Network.Peers
         public void PollEvents()
         {
             _manager.PollEvents();
+            this.Room!.Messages.SendEnqueued(100);
         }
 
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)

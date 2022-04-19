@@ -36,7 +36,7 @@ namespace Guppy.Definitions
             {
                 return new Setting<T>(
                     key: SettingDefinition.GetKey<T>(this.Key),
-                    value: this.DefaultValue,
+                    defaultValue: this.DefaultValue,
                     exportable: this.Exportable,
                     tags: this.Tags,
                     serializer: serializer);

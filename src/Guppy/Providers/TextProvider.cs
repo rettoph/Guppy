@@ -12,10 +12,15 @@ namespace Guppy.Providers
 {
     internal sealed class TextProvider : ITextProvider
     {
+        private ISettingProvider _settings;
         private List<TextDefinition> _definitions;
         private Dictionary<string, LanguageTextProvider> _languages;
 
-        public string CurrentLanguage { get; private set; } = LanguageConstants.DEFAULT;
+        public string CurrentLanguage
+        {
+            get => _settings.Get<string>(SettingConstants.CurrentLanguage).Value;
+            set => _settings.Get<string>(SettingConstants.CurrentLanguage).Value = value;
+        }
 
         public string? this[string? key]
         {
@@ -26,12 +31,13 @@ namespace Guppy.Providers
             }
         }
 
-        public TextProvider(IEnumerable<TextDefinition> texts)
+        public TextProvider(ISettingProvider settings, IEnumerable<TextDefinition> texts)
         {
+            _settings = settings;
             _definitions = texts.Reverse().Distinct().ToList();
             _languages = new Dictionary<string, LanguageTextProvider>();
 
-            this.SetCurrentLanguage(LanguageConstants.DEFAULT);
+            this.SetCurrentLanguage(this.CurrentLanguage);
         }
 
         public IEnumerable<string> GetLanguages()

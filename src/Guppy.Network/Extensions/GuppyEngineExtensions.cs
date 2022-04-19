@@ -27,10 +27,12 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.ConfigureSettings()
-                .AddInitializer(new NetworkInitializer())
+            return guppy.AddInitializer(new NetworkInitializer())
                 .AddLoader(new LiteNetLibServiceLoader(channelsCount))
                 .AddLoader(new NetworkServiceLoader())
+                .AddLoader(new SettingsServiceLoader())
+                .AddLoader(new NetMessageServiceLoader())
+                .AddLoader(new BusServiceLoader())
                 .AddLoader(new SecurityLoader())
                 .AddTag(nameof(ConfigureNetwork));
         }

@@ -11,6 +11,11 @@ namespace Guppy.Network.Services
     {
         public abstract void Dispose();
 
+        public virtual NetOutgoingMessage<T> CreateOutgoing<T>(T message)
+        {
+            return this.CreateOutgoing<T>(in message);
+        }
+
         public abstract NetOutgoingMessage<T> CreateOutgoing<T>(in T message);
 
         public abstract void ProcessIncoming(NetIncomingMessage message);

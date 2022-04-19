@@ -16,9 +16,9 @@ namespace Guppy.Services.Common
 
         public virtual T this[TId id] => this.items[id];
 
-        public CollectionService()
+        public CollectionService(int capacity = 0)
         {
-            this.items = new Dictionary<TId, T>();
+            this.items = new Dictionary<TId, T>(capacity);
         }
         public CollectionService(IEnumerable<T> items)
         {

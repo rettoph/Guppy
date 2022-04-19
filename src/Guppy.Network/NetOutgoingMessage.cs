@@ -1,4 +1,6 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.Network.Constants;
+using Guppy.Network.Providers;
+using Guppy.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using Minnow.Collections;
@@ -60,13 +62,14 @@ namespace Guppy.Network
         public NetOutgoingMessage(
             INetSerializerProvider serializers,
             NetSerializer<T> serializer,
+            int recipientsBufferSize,
             NetMessenger<T> messenger) : base(messenger)
         {
             _serializers = serializers;
             _serializer = serializer;
             _writer = new NetDataWriter();
             _appendages = new List<NetSerialized>();
-            _recipients = new Buffer<NetPeer>(256);
+            _recipients = new Buffer<NetPeer>(recipientsBufferSize);
 
             this.Messenger = messenger;
 

@@ -13,6 +13,7 @@ namespace Guppy.Network.Security.Services
     public interface IUserService : IEnumerable<User>
     {
         bool TryGet(int id, [MaybeNullWhen(false)] out User user);
-        User UpdateOrCreate(int id, IEnumerable<Claim> claims, NetPeer? peer = null);
+        User UpdateOrCreate(int id, IEnumerable<Claim> claims);
+        User UpdateOrCreate(int id, IEnumerable<Claim> claims, NetPeer? peer);
     }
 }

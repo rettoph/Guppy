@@ -1,4 +1,5 @@
 ﻿using Guppy.EntityComponent.Services;
+using Guppy.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,15 @@ namespace Guppy.Network.Providers
     {
         private INetMessengerProvider _messengers;
         private IEntityService _entities;
+        private ISettingProvider _settings;
 
         private Dictionary<int, Room> _rooms;
 
-        public RoomProvider(INetMessengerProvider messengers, IEntityService entities)
+        public RoomProvider(INetMessengerProvider messengers, IEntityService entities, ISettingProvider settings)
         {
             _messengers = messengers;
             _entities = entities;
+            _settings = settings;
             _rooms = new Dictionary<int, Room>();
         }
 
@@ -25,7 +28,7 @@ namespace Guppy.Network.Providers
         {
             if(!_rooms.TryGetValue(id, out Room? room))
             {
-                _rooms.Add(id, room = new Room(id, _messengers));
+                _rooms.Add(id, room = new Room(id, _messengers, _settings));
                 _entities.TryAdd(room);
             }
 

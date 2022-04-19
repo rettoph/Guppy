@@ -15,6 +15,8 @@ namespace Guppy
 
         public abstract bool TrySetValue(object value);
         public abstract object? GetValue();
+        public abstract object? GetDefaultValue();
+        public abstract void ResetToDefaultValue();
 
         public abstract string SerializeValue();
         public abstract void DeserializeValue(string serializedValue);
@@ -23,14 +25,16 @@ namespace Guppy
     public sealed class Setting<T> : Setting
     {
         public T Value;
+        public T DefaultValue;
 
         public readonly bool Exportable;
         public readonly string[] Tags;
         public readonly SettingSerializer<T> Serializer;
 
-        public Setting(string key, T value, bool exportable, string[] tags, SettingSerializer<T> serializer) : base(typeof(T), key)
+        public Setting(string key, T defaultValue, bool exportable, string[] tags, SettingSerializer<T> serializer) : base(typeof(T), key)
         {
-            this.Value = value;
+            this.Value = defaultValue;
+            this.DefaultValue = defaultValue;
             this.Exportable = exportable;
             this.Tags = tags;
             this.Serializer = serializer;
@@ -50,6 +54,16 @@ namespace Guppy
         public override object? GetValue()
         {
             return this.Value;
+        }
+
+        public override object? GetDefaultValue()
+        {
+            return this.DefaultValue;
+        }
+
+        public override void ResetToDefaultValue()
+        {
+            this.Value = this.DefaultValue;
         }
 
         public override string SerializeValue()

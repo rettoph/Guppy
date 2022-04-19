@@ -11,9 +11,11 @@ using Guppy.Definitions;
 using Guppy.Loaders;
 using Minnow.Providers;
 using System.Reflection;
+using Guppy.Constants;
 
 namespace Guppy.Initializers
 {
+    [AutoLoad]
     internal sealed class SettingInitializer : IGuppyInitializer
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
@@ -34,6 +36,8 @@ namespace Guppy.Initializers
 
             services.AddSingleton<ISettingSerializerProvider, SettingSerializerProvider>();
             services.AddSingleton<ISettingProvider, SettingProvider>();
+
+            services.AddSetting<string>(SettingConstants.CurrentLanguage, SettingConstants.DefaultLanguage, true);
         }
     }
 }

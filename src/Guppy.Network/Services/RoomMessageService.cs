@@ -18,6 +18,10 @@ namespace Guppy.Network.Services
 
         private DoubleDictionary<int, Type, ConcurrentQueue<NetOutgoingMessage>> _outgoingQueues;
 
+        public Bus? Bus => _bus;
+
+        public event OnChangedEventDelegate<RoomMessageService, Bus?>? OnBusChanged;
+
         public RoomMessageService(
             INetMessengerProvider messengers, 
             Room room)
@@ -51,7 +55,37 @@ namespace Guppy.Network.Services
         /// <returns></returns>
         public override NetOutgoingMessage<T> CreateOutgoing<T>(in T message)
         {
-            return _messengers.CreateOutgoing<T>(_room, in message);
+            var outgoing = _messengers.CreateOutgoing<T>(_room, in message);
+            outgoing.AddRecipients(_room.Users.NetPeers);
+
+            return outgoing;
+        }
+
+        /// <summary>
+        /// Create a new outgoing message configured for the current room.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message"></param>
+        /// <param name="recipient">A single target message.</param>
+        /// <returns></returns>
+        public NetOutgoingMessage<T> CreateOutgoing<T>(T message, NetPeer recipient)
+        {
+            return this.CreateOutgoing<T>(in message, recipient);
+        }
+
+        /// <summary>
+        /// Create a new outgoing message configured for the current room.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="message"></param>
+        /// <param name="recipient">A single target message.</param>
+        /// <returns></returns>
+        public NetOutgoingMessage<T> CreateOutgoing<T>(in T message, NetPeer recipient)
+        {
+            var outgoing = _messengers.CreateOutgoing<T>(_room, in message);
+            outgoing.AddRecipient(recipient);
+
+            return outgoing;
         }
 
         /// <summary>
@@ -97,7 +131,7 @@ namespace Guppy.Network.Services
         /// <param name="bus"></param>
         public void AttachBus(Bus bus)
         {
-            _bus = bus;
+            this.OnBusChanged!.InvokeIf(bus != _bus, this, ref _bus, bus);
         }
     }
 }

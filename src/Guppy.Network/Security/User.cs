@@ -16,13 +16,13 @@ namespace Guppy.Network.Security
         private List<Room> _rooms;
 
         public readonly int Id;
-        public readonly NetPeer? NetPeer;
         public readonly DateTime CreatedAt;
 
         public IEnumerable<Claim> Claims => _claims.Values;
         public IEnumerable<Room> Rooms => _rooms;
         public Boolean IsCurrentUser { get; internal set; }
         public DateTime UpdatedAt { get; private set; }
+        public NetPeer? NetPeer { get; internal set; }
         public String this[string key] => this.Claims.First(c => c.Key == key).Value;
 
         public event OnEventDelegate<User>? OnDisposing;

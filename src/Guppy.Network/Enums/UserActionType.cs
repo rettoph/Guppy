@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Constants
+namespace Guppy.Network.Enums
 {
-    public static class LanguageConstants
+    public enum UserActionType
     {
-        public const string EN_US = "en-US";
+        Joined,
+        Left
     }
 }
