@@ -113,6 +113,8 @@ namespace Guppy.Example.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            this.GraphicsDevice.Clear(Color.Black);
+
             base.Draw(gameTime);
 
             game?.Draw(gameTime);

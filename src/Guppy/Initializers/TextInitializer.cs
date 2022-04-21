@@ -24,7 +24,7 @@ namespace Guppy.Initializers
                 services.AddText(text);
             }
 
-            services.AddSingleton<ITextProvider, TextProvider>();
+            services.AddSingleton<ILanguageProvider, LanguageProvider>();
         }
     }
 }

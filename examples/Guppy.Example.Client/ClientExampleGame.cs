@@ -1,11 +1,13 @@
 ﻿using Guppy.EntityComponent.Services;
 using Guppy.Example.Library;
+using Guppy.Gaming.Graphics;
 using Guppy.Gaming.Services;
 using Guppy.Network.Peers;
 using Guppy.Network.Security.Structs;
 using Guppy.Threading;
 using LiteNetLib;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;

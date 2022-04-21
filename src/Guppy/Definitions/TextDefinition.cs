@@ -10,5 +10,10 @@ namespace Guppy.Definitions
     {
         public abstract string Key { get; }
         public abstract string? DefaultValue { get; }
+
+        public virtual Text BuildText()
+        {
+            return new Text(this.Key, this.DefaultValue);
+        }
     }
 }

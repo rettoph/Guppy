@@ -2,29 +2,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    internal sealed class SettingProvider : ISettingProvider
+    internal sealed class SettingProvider : ResourceProvider<ISetting>, ISettingProvider
     {
         private readonly ISettingSerializerProvider _serializers;
-        private readonly Dictionary<string, Setting> _settings;
-
-        public Setting this[string key] => _settings[key];
+        private readonly Dictionary<string, ISetting> _settings;
 
         public SettingProvider(ISettingSerializerProvider serializers, IEnumerable<SettingDefinition> definitions)
         {
             _serializers = serializers;
-            _settings = new Dictionary<string, Setting>(definitions.Count());
+            _settings = definitions.Select(x => x.BuildSetting(_serializers)).ToDictionary();
+        }
 
-            foreach(SettingDefinition definition in definitions)
-            {
-                var setting = definition.BuildSetting(_serializers);
-                _settings.Add(setting.Key, setting);
-            }
+        public override bool TryGet(string key, [MaybeNullWhen(false)] out ISetting resource)
+        {
+            return _settings.TryGetValue(key, out resource);
         }
 
         public Setting<T> Get<T>()
@@ -42,12 +40,24 @@ namespace Guppy.Providers
             throw new ArgumentException();
         }
 
-        public IEnumerator<Setting> GetEnumerator()
+        public bool TryGet<T>([MaybeNullWhen(false)] out Setting<T> setting)
         {
-            return _settings.Values.GetEnumerator();
+            return this.TryGet<T>(SettingDefinition.GetKey<T>(null), out setting);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public bool TryGet<T>(string key, [MaybeNullWhen(false)] out Setting<T> setting)
+        {
+            if (_settings[key] is Setting<T> casted)
+            {
+                setting = casted;
+                return true;
+            }
+
+            setting = null;
+            return false;
+        }
+
+        public override IEnumerator<ISetting> GetEnumerator()
         {
             return _settings.Values.GetEnumerator();
         }

@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    public interface ISettingProvider : IEnumerable<Setting>
+    public interface ISettingProvider : IResourceProvider<ISetting>
     {
-        Setting this[string key] { get; }
-
         Setting<T> Get<T>();
         Setting<T> Get<T>(string key);
     }

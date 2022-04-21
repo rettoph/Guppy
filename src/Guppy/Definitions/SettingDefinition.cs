@@ -18,7 +18,7 @@ namespace Guppy.Definitions
 
         }
 
-        public abstract Setting BuildSetting(ISettingSerializerProvider serializers);
+        public abstract ISetting BuildSetting(ISettingSerializerProvider serializers);
 
         public static string GetKey<T>(string? key)
         {
@@ -30,7 +30,7 @@ namespace Guppy.Definitions
     {
         public abstract T DefaultValue { get; }
 
-        public override Setting BuildSetting(ISettingSerializerProvider serializers)
+        public override ISetting BuildSetting(ISettingSerializerProvider serializers)
         {
             if(serializers.TryGet<T>(out var serializer))
             {

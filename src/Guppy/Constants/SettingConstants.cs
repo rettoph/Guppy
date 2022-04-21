@@ -9,6 +9,5 @@ namespace Guppy.Constants
     public static class SettingConstants
     {
         public const string CurrentLanguage = "current_language";
-        public const string DefaultLanguage = LanguageConstants.EN_US;
     }
 }

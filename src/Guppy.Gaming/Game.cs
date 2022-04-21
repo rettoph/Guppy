@@ -10,12 +10,17 @@ using System.Threading.Tasks;
 
 namespace Guppy.Gaming
 {
-    public abstract class Game : Frameable, IAsyncable
+    public abstract class Game : Frameable, IAsyncable, ISubscribableFrameable
     {
         public readonly IEntityService Entities;
         public readonly ISceneService Scenes;
 
-        public Game(ISceneService scenes, IEntityService entities)
+        public event ISubscribableFrameable.Step? OnDraw;
+        public event ISubscribableFrameable.Step? OnUpdate;
+
+        public Game(
+            ISceneService scenes, 
+            IEntityService entities)
         {
             this.Entities = entities;
             this.Scenes = scenes;
@@ -28,11 +33,15 @@ namespace Guppy.Gaming
             base.Draw(gameTime);
 
             this.Scenes.Scene?.Draw(gameTime);
+
+            this.OnDraw?.Invoke(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.OnUpdate?.Invoke(gameTime);
 
             this.Scenes.Scene?.Update(gameTime);
         }

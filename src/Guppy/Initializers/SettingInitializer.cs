@@ -37,7 +37,7 @@ namespace Guppy.Initializers
             services.AddSingleton<ISettingSerializerProvider, SettingSerializerProvider>();
             services.AddSingleton<ISettingProvider, SettingProvider>();
 
-            services.AddSetting<string>(SettingConstants.CurrentLanguage, SettingConstants.DefaultLanguage, true);
+            services.AddSetting<string>(SettingConstants.CurrentLanguage, LanguageConstants.EN_US, true);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Guppy.Example.Library
 {
     public class ExampleScene : Scene
     {
-        public ExampleScene(ISettingProvider settings, ITextProvider text, IEntityService entities) : base(entities)
+        public ExampleScene(ISettingProvider settings, ILanguageProvider languages, IEntityService entities) : base(entities)
         {
         }
     }

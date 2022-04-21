@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static partial class IServiceCollectionExtensions
     {
         public static IServiceCollection AddScene<TScene>(this IServiceCollection services)
             where TScene : Scene

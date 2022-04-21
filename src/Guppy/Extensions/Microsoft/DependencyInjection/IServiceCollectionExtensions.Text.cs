@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static partial class ServiceCollectionExtensions
+    public static partial class IServiceCollectionExtensions
     {
         public static IServiceCollection AddText(this IServiceCollection services, Type textDefinitionType)
         {

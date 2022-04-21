@@ -26,21 +26,14 @@ namespace Guppy.EntityComponent.Providers
 
         public bool TryCreate(IServiceProvider provider, IEntity entity)
         {
-            try
-            {
-                bool result = true;
+            bool result = true;
 
-                foreach (Setup setup in _setups[entity.GetType()])
-                {
-                    result &= setup.TryCreate(provider, entity);
-                }
-
-                return result;
-            }
-            catch (Exception e)
+            foreach (Setup setup in _setups[entity.GetType()])
             {
-                return false;
+                result &= setup.TryCreate(provider, entity);
             }
+
+            return result;
         }
 
         public bool TryDestroy(IServiceProvider provider, IEntity entity)

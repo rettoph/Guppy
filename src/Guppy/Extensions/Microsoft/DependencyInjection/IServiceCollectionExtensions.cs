@@ -1,9 +1,5 @@
-﻿using Guppy;
-using Guppy.Definitions;
-using Guppy.Definitions.Settings;
-using Guppy.Definitions.SettingSerializers;
-using Guppy.Providers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy.Providers;
+using Minnow.System.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,68 +8,58 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IServiceCollectionExtensions
+    public static partial class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddSetting<T>(this IServiceCollection services, string key, T defaultValue, bool exportable, params string[] tags)
+        public static IServiceCollection AddActivated<T, TService>(this IServiceCollection services, bool singleton = false)
+            where TService : class, T
         {
-            var descriptor = new RuntimeSettingDefinition<T>(key, defaultValue, exportable, tags);
-            return services.AddSetting(descriptor);
+            var factory = ActivatorUtilitiesHelper.BuildFactory<TService>();
+
+            return services.AddActivated<T, TService>(factory, singleton);
         }
 
-        public static IServiceCollection AddSetting<T>(this IServiceCollection services, T defaultValue, bool exportable, params string[] tags)
+        public static IServiceCollection AddActivated<T, TService>(this IServiceCollection services, Func<IServiceProvider, TService> factory, bool singleton = false)
+            where TService : class, T
         {
-            var descriptor = new RuntimeSettingDefinition<T>(SettingDefinition.GetKey<T>(null), defaultValue, exportable, tags);
-            return services.AddSetting(descriptor);
+            var ancestors = typeof(TService).GetAncestors<T>().Except(typeof(TService).Yield());
+
+            if(singleton)
+            {
+                services.AddSingleton<TService>(p => p.GetRequiredService<ActivatedServiceProvider<T>>().TryActivate(factory));
+            }
+            else
+            {
+                services.AddScoped<TService>(p => p.GetRequiredService<ActivatedServiceProvider<T>>().TryActivate(factory));
+            }
+
+            foreach(Type ancestor in ancestors)
+            {
+                if(!services.Any(x => x.ServiceType == ancestor))
+                {
+                    if (singleton)
+                    {
+                        services.AddSingleton(ancestor, p => p.GetRequiredService<ActivatedServiceProvider<T>>().Instance!);
+                    }
+                    else
+                    {
+                        services.AddScoped(ancestor, p => p.GetRequiredService<ActivatedServiceProvider<T>>().Instance!);
+                    }
+                }
+            }
+
+            return services;
         }
 
-        public static IServiceCollection AddSetting(this IServiceCollection services, SettingDefinition definition)
+        public static IServiceCollection RemoveBy(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, out ServiceDescriptor[] removed)
         {
-            return services.AddSingleton<SettingDefinition>(definition);
-        }
+            removed = services.Where(predicate).ToArray();
 
-        public static IServiceCollection AddSetting<T>(this IServiceCollection services)
-            where T : SettingDefinition
-        {
-            return services.AddSingleton<SettingDefinition, T>();
-        }
+            foreach(ServiceDescriptor remove in removed)
+            {
+                services.Remove(remove);
+            }
 
-        public static IServiceCollection AddSetting<T>(this IServiceCollection services, Func<IServiceProvider, T> factory)
-            where T : SettingDefinition
-        {
-            return services.AddSingleton<SettingDefinition, T>(factory);
-        }
-
-        public static IServiceCollection AddSetting(this IServiceCollection services, Type setting)
-        {
-            return services.AddSingleton(typeof(SettingDefinition), setting);
-        }
-
-        public static IServiceCollection AddSettingSerializer<T>(this IServiceCollection services, Func<T, string> serialize, Func<string, T> deserialize)
-        {
-            var definition = new RuntimeSettingSerializerDefinition<T>(serialize, deserialize);
-            return services.AddSettingSerializer(definition);
-        }
-
-        public static IServiceCollection AddSettingSerializer(this IServiceCollection services, SettingSerializerDefinition definition)
-        {
-            return services.AddSingleton<SettingSerializerDefinition>(definition);
-        }
-
-        public static IServiceCollection AddSettingSerializer<T>(this IServiceCollection services)
-            where T : SettingSerializerDefinition
-        {
-            return services.AddSingleton<SettingSerializerDefinition, T>();
-        }
-
-        public static IServiceCollection AddSettingSerializer<T>(this IServiceCollection services, Func<IServiceProvider, T> factory)
-            where T : SettingSerializerDefinition
-        {
-            return services.AddSingleton<SettingSerializerDefinition, T>(factory);
-        }
-
-        public static IServiceCollection AddSettingSerializer(this IServiceCollection services, Type serializer)
-        {
-            return services.AddSingleton(typeof(SettingSerializerDefinition), serializer);
+            return services;
         }
     }
 }

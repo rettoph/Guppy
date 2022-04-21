@@ -1,4 +1,5 @@
 ﻿using Guppy.Gaming;
+using Guppy.Gaming.Initializers;
 using Guppy.Gaming.Loaders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -22,7 +23,8 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.AddLoader(new GamingServiceLoader<TGame>())
+            return guppy.AddInitializer(new CommandInitializer())
+                .AddLoader(new GamingServiceLoader<TGame>())
                 .ConfigureEntityComponent()
                 .AddTag(nameof(ConfigureGame));
         }
@@ -40,6 +42,9 @@ namespace Guppy
             }
 
             return guppy.ConfigureGame<TGame>()
+                .AddInitializer(new InputInitializer())
+                .AddInitializer(new ColorInitializer())
+                .AddInitializer(new ContentInitializer())
                 .AddLoader(new MonoGameServiceLoader(graphics, content, window))
                 .AddTag(nameof(ConfigureMonoGame));
         }
