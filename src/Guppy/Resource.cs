@@ -15,6 +15,8 @@ namespace Guppy
 
         string IResource.Key => this.Key;
 
+        public Type ValueType { get; } = typeof(T);
+
         protected Resource(string key, T defaultValue)
         {
             this.Key = key;

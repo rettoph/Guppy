@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Guppy.Gaming.Definitions.CommandDefinitions
 {
     [AutoLoad]
-    internal class Guppy : CommandDefinition
+    public class Guppy : CommandDefinition
     {
         public override ICommandHandler? Publisher(IBroker broker)
         {

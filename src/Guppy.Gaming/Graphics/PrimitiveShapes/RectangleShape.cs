@@ -5,34 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XnaColor = Microsoft.Xna.Framework.Color;
 
 namespace Guppy.Gaming.Graphics.PrimitiveShapes
 {
-    public sealed class RectangleShape : PrimitivePolygon
+    public sealed class RectangleShape : PolygonShape
     {
         private float _width;
         private float _height;
-        private Vector2 _position;
-        private float _rotation;
-
-        public Vector2 Position
-        {
-            get => _position;
-            set
-            {
-                _position = value;
-                this.dirty |= DirtyFlags.Vertices | DirtyFlags.Transformation;
-            }
-        }
-        public float Rotation
-        {
-            get => _rotation;
-            set
-            {
-                _rotation = value;
-                this.dirty |= DirtyFlags.Transformation;
-            }
-        }
 
         public float Width
         {
@@ -40,7 +20,7 @@ namespace Guppy.Gaming.Graphics.PrimitiveShapes
             set
             {
                 _width = value;
-                this.dirty |= DirtyFlags.Vertices | DirtyFlags.Transformation;
+                this.dirty |= DirtyFlags.LocalVertices;
             }
         }
         public float Height
@@ -49,31 +29,27 @@ namespace Guppy.Gaming.Graphics.PrimitiveShapes
             set
             {
                 _height = value;
-                this.dirty |= DirtyFlags.Vertices | DirtyFlags.Transformation;
+                this.dirty |= DirtyFlags.LocalVertices;
             }
         }
 
-        public RectangleShape(Vector2 position, float rotation, float width, float height, Color color) : base(4)
+        public RectangleShape(float x, float y, float rotation, float width, float height, XnaColor color) : base(new Vector2(x, y), rotation, color, new Vector3[4])
         {
-            this.Position = position;
-            this.Rotation = rotation;
             this.Width = width;
             this.Height = height;
-            this.Color = color;
+        }
+        public RectangleShape(Vector2 position, float rotation, float width, float height, XnaColor color) : base(position, rotation, color, new Vector3[4])
+        {
+            this.Width = width;
+            this.Height = height;
         }
 
-
-        protected override void CleanTransformation(ref Matrix transformation)
+        protected override void CleanLocalVertices(in Vector3[] localVertices)
         {
-            transformation = Matrix.CreateTranslation(_position.X, _position.Y, 0) * Matrix.CreateRotationZ(_rotation);
-        }
-
-        protected override void CleanVertices(ref Vector3[] vertices)
-        {
-            vertices[0] = new Vector3(0, 0, 0);
-            vertices[1] = new Vector3(0 + _width, 0, 0);
-            vertices[2] = new Vector3(0 + _width, 0 + _height, 0);
-            vertices[3] = new Vector3(0, 0 + _height, 0);
+            localVertices[0] = new Vector3(0, 0, 0);
+            localVertices[1] = new Vector3(0 + _width, 0, 0);
+            localVertices[2] = new Vector3(0 + _width, 0 + _height, 0);
+            localVertices[3] = new Vector3(0, 0 + _height, 0);
         }
     }
 }

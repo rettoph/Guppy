@@ -16,10 +16,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XnaColor = Microsoft.Xna.Framework.Color;
 
 namespace Guppy.Gaming.Services
 {
-    internal sealed class TerminalService : ITerminalService, ISubscriber<TerminalActionMessage>
+    internal sealed partial class TerminalService : ITerminalService, ISubscriber<TerminalActionMessage>
     {
         private SpriteBatch _spriteBatch;
         private PrimitiveBatch<VertexPositionColor> _primitiveBatch;
@@ -28,18 +29,25 @@ namespace Guppy.Gaming.Services
         private ICommandService _commands;
         private IColorProvider _colors;
         private IContentProvider _content;
+        private ITimerProvider _timers;
         private bool _active;
-        private Buffer<string> _lines;
+        private Buffer<Line> _lines;
         private Buffer<string> _history;
         private int _historyPos;
         private GameWindow _window;
         private int _inputHeight;
-        private Color _backgroundTextColor;
+        private Color _outTextColor;
+        private Color _errorTextColor;
         private Color _inputTextColor;
         private RectangleShape _inputBackground;
         private RectangleShape _background;
+        private PathShape _carret;
+        private Timer _carretTimer;
+        private bool _carretVisible;
         private Content<SpriteFont> _font;
         private string _input;
+        private Vector2 _padding;
+        private Rectangle _consoleScissorBounds;
 
         public TerminalService(
             SpriteBatch spriteBatch,
@@ -49,7 +57,8 @@ namespace Guppy.Gaming.Services
             ICommandService commands,
             ISettingProvider settings,
             IColorProvider colors,
-            IContentProvider content)
+            IContentProvider content,
+            ITimerProvider timers)
         {
             _spriteBatch = spriteBatch;
             _primitiveBatch = primitiveBatch;
@@ -58,20 +67,23 @@ namespace Guppy.Gaming.Services
             _commands = commands;
             _colors = colors;
             _content = content;
+            _timers = timers;
             _settings = settings;
-            _lines = new Buffer<string>(_settings.Get<int>(SettingConstants.TerminalBufferLength).Value);
+            _lines = new Buffer<Line>(_settings.Get<int>(SettingConstants.TerminalBufferLength).Value);
             _history = new Buffer<string>(_settings.Get<int>(SettingConstants.TerminalBufferLength).Value);
             _historyPos = 0;
             _active = false;
             _input = string.Empty;
+            _padding = new Vector2(7, 3);
 
             _camera.Center = false;
 
             _font = _content.Get<SpriteFont>(ContentConstants.DiagnosticsFont);
-            _inputHeight = (int)_font.Value.LineSpacing + 6;
+            _inputHeight = (int)(_font.Value.LineSpacing + _padding.Y + _padding.Y);
 
             _inputTextColor = _colors[ColorConstants.TerminalInputTextColor];
-            _backgroundTextColor = _colors[ColorConstants.TerminalBackgroundTextColor];
+            _outTextColor = _colors[ColorConstants.TerminalOutTextColor];
+            _errorTextColor = _colors[ColorConstants.TerminalErrorTextColor];
 
             _inputBackground = new RectangleShape(
                 position: new Vector2(0, _window.ClientBounds.Height - _inputHeight),
@@ -85,9 +97,23 @@ namespace Guppy.Gaming.Services
                 width: _window.ClientBounds.Width,
                 height: _window.ClientBounds.Height,
                 color: _colors[ColorConstants.TerminalBackgroundColor]);
+            _carret = new PathShape(
+                position: new Vector2(100, _window.ClientBounds.Height - _inputHeight + _padding.Y),
+                rotation: 0,
+                color: _inputTextColor,
+                localVertices: new[]
+                {
+                    new Vector3(0, 0, 0),
+                    new Vector3(0, _font.Value.LineSpacing, 0)
+                });
+            _carretTimer = _timers.Create(TimerConstants.TerminalCarret, 750, false);
+            _carretTimer.OnInterval += (t, gt) => _carretVisible = !_carretVisible;
 
             _commands.Subscribe(this);
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
+
+            Console.SetOut(new TerminalTextWriter(this, _outTextColor));
+            Console.SetError(new TerminalTextWriter(this, _errorTextColor));
         }
 
         public void Dispose()
@@ -107,11 +133,14 @@ namespace Guppy.Gaming.Services
                     {
                         _window.TextInput += this.HandleTextInput;
                         _input = string.Empty;
+                        _carretVisible = false;
+                        _carretTimer.Reset(true);
                     }
 
                     if (!_active)
                     {
                         _window.TextInput -= this.HandleTextInput;
+                        _carretTimer.Reset(false);
                     }
                     break;
                 case TerminalAction.Prev:
@@ -134,6 +163,10 @@ namespace Guppy.Gaming.Services
                 return;
             }
 
+            var pos = new Vector2(_padding.X, _window.ClientBounds.Height - _inputHeight + _padding.Y);
+            var size = _font.Value.MeasureString(_input);
+            _carret.Position = new Vector2(pos.X + size.X + 2, _carret.Position.Y);
+
             _camera.TryClean(gameTime);
 
             // Draw background...
@@ -142,12 +175,25 @@ namespace Guppy.Gaming.Services
             _primitiveBatch.Fill(_background);
             _primitiveBatch.Fill(_inputBackground);
 
+            if(_carretVisible)
+            {
+                _primitiveBatch.Trace(_carret);
+            }
+
             _primitiveBatch.End();
 
             // Draw text...
             _spriteBatch.Begin();
 
-            _spriteBatch.DrawString(_font, _input, Vector2.One * 20, _backgroundTextColor);
+            Vector2 linePos = new Vector2(_padding.X, _window.ClientBounds.Height - _inputHeight - _font.Value.LineSpacing);
+
+            foreach(Line line in _lines)
+            {
+                _spriteBatch.DrawString(_font, line.Text, linePos, line.Color);
+                linePos.Y += _font.Value.LineSpacing;
+            }
+
+            _spriteBatch.DrawString(_font, _input, pos, _inputTextColor);
 
             _spriteBatch.End();
         }
@@ -158,6 +204,11 @@ namespace Guppy.Gaming.Services
             {
                 return;
             }
+        }
+
+        public void WriteLine(string text, XnaColor color)
+        {
+            _lines.Add(new Line(text, color));
         }
 
         private void HandleTextInput(object? sender, TextInputEventArgs e)
@@ -177,6 +228,8 @@ namespace Guppy.Gaming.Services
                     _history.Add(_input);
                     _historyPos++;
                     _input = string.Empty;
+                    _carretTimer.Reset();
+                    _carretVisible = false;
                     break;
                 default:
                     if(_font.Value.Characters.Contains(e.Character))
@@ -194,6 +247,8 @@ namespace Guppy.Gaming.Services
 
             _background.Width = _window.ClientBounds.Width;
             _background.Height = _window.ClientBounds.Height;
+
+            _carret.Position = new Vector2(10, _window.ClientBounds.Height - _inputHeight - _padding.Y);
         }
     }
 }

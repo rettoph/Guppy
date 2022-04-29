@@ -62,6 +62,7 @@ namespace Guppy.Example.Client
                 .ConfigureThreading()
                 .ConfigureNetwork(channelsCount: 1)
                 .ConfigureMonoGame<ClientExampleGame>(this.graphics, this.Content, this.Window)
+                .ConfigureUI()
                 .BuildServiceProvider()
                 .GetRequiredService<ClientExampleGame>();
 #if WINDOWS

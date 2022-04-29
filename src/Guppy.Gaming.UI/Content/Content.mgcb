@@ -10,13 +10,12 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\Guppy.Gaming.Content\bin\Debug\netcoreapp3.1\Guppy.Gaming.Content.dll
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Fonts/DiagnosticsFont.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Fonts/DiagnosticsFont.spritefont
+#begin Fonts/DiagnosticsFont.ttf
+/importer:TrueTypeFontImporter
+/processor:TrueTypeFontProcessor
+/build:Fonts/DiagnosticsFont.ttf
 

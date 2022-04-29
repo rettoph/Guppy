@@ -41,17 +41,15 @@ namespace Guppy.Gaming.Loaders
             services.AddTransient(typeof(PrimitiveBatch<>));
             services.AddTransient<Camera2D>();
 
-            services.AddSingleton<ITerminalService, TerminalService>();
             services.AddComponent<Game, GameMonoGameServiceComponent>();
 
             services.AddSetting<int>(SettingConstants.TerminalBufferLength, 256, true, SettingConstants.GamingTag);
 
             services.AddColor(ColorConstants.TerminalBackgroundColor, XnaColor.Lerp(XnaColor.Transparent, XnaColor.Black, 0.5f));
-            services.AddColor(ColorConstants.TerminalBackgroundTextColor, XnaColor.White);
+            services.AddColor(ColorConstants.TerminalOutTextColor, XnaColor.White);
+            services.AddColor(ColorConstants.TerminalErrorTextColor, XnaColor.Red);
             services.AddColor(ColorConstants.TerminalInputBackgroundColor, XnaColor.Lerp(XnaColor.Transparent, XnaColor.LightGray, 0.75f));
-            services.AddColor(ColorConstants.TerminalInputTextColor, XnaColor.Black);
-
-            services.AddContent<SpriteFont>(ContentConstants.DiagnosticsFont, "Fonts/DiagnosticsFont");
+            services.AddColor(ColorConstants.TerminalInputTextColor, XnaColor.White);
         }
     }
 }

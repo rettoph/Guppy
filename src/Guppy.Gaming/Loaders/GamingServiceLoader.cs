@@ -1,12 +1,9 @@
-﻿using Guppy.Gaming.Services;
+﻿using Guppy.Gaming.Components;
+using Guppy.Gaming.Providers;
+using Guppy.Gaming.Services;
 using Guppy.Loaders;
 using Guppy.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Gaming.Loaders
 {
@@ -19,6 +16,10 @@ namespace Guppy.Gaming.Loaders
 
             services.AddSingleton<ISceneService, SceneService>();
             services.AddScoped<Bus>();
+            services.AddScoped<ITimerProvider, TimerProvider>();
+
+            services.AddComponent<Game, UpdateTimersComponent<Game>>();
+            services.AddComponent<Scene, UpdateTimersComponent<Scene>>();
         }
     }
 }
