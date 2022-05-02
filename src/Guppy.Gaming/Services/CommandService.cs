@@ -15,7 +15,10 @@ namespace Guppy.Gaming.Services
 
         public CommandService(IEnumerable<CommandDefinition> definitions)
         {
-            _root = new RootCommand();
+            _root = new RootCommand()
+            {
+                Name = ">"
+            };
 
             // Build all defined commands...
             var commands = definitions.ToDictionary(x => x, x => x.BuildCommand(this));
