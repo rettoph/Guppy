@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file contains an xml description of a font, and will be read by the XNA
+Framework Content Pipeline. Follow the comments to customize the appearance
+of the font in your game, and to change the characters which are available to draw
+with.
+-->
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="ImGui:Font">
+
+    <!--
+    Modify this string to change the font that will be imported.
+    -->
+    <TTFPath>src/SpaceMono-Regular.ttf</TTFPath>
+
+    <!--
+    Size is a float value, measured in points. Modify this value to change
+    the size of the font.
+    -->
+    <SizePixels>20</SizePixels>
+	  
+  </Asset>
+</XnaContent>

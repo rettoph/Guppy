@@ -1,35 +1,41 @@
-﻿using Guppy.DependencyInjection;
-using Guppy.Example.Library.Scenes;
-using Guppy.Extensions.DependencyInjection;
+﻿using Guppy.EntityComponent;
+using Guppy.EntityComponent.Services;
+using Guppy.Gaming;
+using Guppy.Gaming.Services;
 using Guppy.Network.Peers;
+using Guppy.Threading;
+using LiteNetLib;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Guppy.Example.Library
 {
     public class ExampleGame : Game
     {
-        #region Private Fields
+        private Bus _bus;
         private Peer _peer;
-        #endregion
 
-        #region Lifecycle Methods
-        protected override void Initialize(GuppyServiceProvider provider)
+        public ExampleGame(
+            Bus bus, 
+            Peer peer,
+            ISceneService scenes, 
+            IEntityService entities) : base(scenes, entities)
         {
-            base.Initialize(provider);
+            _bus = bus;
+            _peer = peer;
 
-            provider.Service(out _peer);
-
-            this.Scenes.Create<ExampleScene>();
+            this.Scenes.TryCreate<ExampleScene>(out var scene);
         }
-        #endregion
 
-        #region Frame Methods
-        protected override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
+            _peer.PollEvents();
+            _bus.PublishEnqueued();
+
             base.Update(gameTime);
-
-            _peer?.TryUpdate(gameTime);
         }
-        #endregion
     }
 }

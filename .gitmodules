@@ -1,6 +1,9 @@
 [submodule "libraries/lidgren-network-gen3"]
 	path = libraries/lidgren-network-gen3
 	url = https://github.com/lidgren/lidgren-network-gen3
-[submodule "libraries/DotNetUtils"]
-	path = libraries/DotNetUtils
-	url = https://github.com/rettoph/DotNetUtils
+[submodule "libraries/Minnow"]
+	path = libraries/Minnow
+	url = https://github.com/rettoph/Minnow
+[submodule "libraries/LiteNetLib"]
+	path = libraries/LiteNetLib
+	url = https://github.com/RevenantX/LiteNetLib

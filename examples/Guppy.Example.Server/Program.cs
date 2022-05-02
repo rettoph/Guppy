@@ -1,18 +1,22 @@
-﻿using System;
+﻿using Guppy;
+using Guppy.EntityComponent;
 using Guppy.Example.Library;
-using Guppy.Extensions;
+using Guppy.Example.Server;
+using Guppy.Gaming;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Guppy.Example.Server
-{
-    class Program
+var game = new GuppyEngine(
+    libraries: new[]
     {
-        static void Main(string[] args)
-        {
-            var game = new GuppyLoader()
-                .Initialize()
-                .BuildGame<ExampleGame>();
+        typeof(ExampleScene).Assembly
+    })
+    .ConfigureThreading()
+    .ConfigureNetwork(channelsCount: 1)
+    .ConfigureGame<ServerExampleGame>()
+    .BuildServiceProvider()
+    .GetRequiredService<ServerExampleGame>();
 
-            game.TryStart(false);
-        }
-    }
-}
+var token = new CancellationTokenSource();
+game.StartAsync(token.Token);
+
+Console.ReadLine();
