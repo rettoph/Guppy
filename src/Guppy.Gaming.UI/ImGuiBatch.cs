@@ -2,6 +2,8 @@
 using Guppy.Gaming.Graphics;
 using Guppy.Gaming.Providers;
 using Guppy.Gaming.Services;
+using Guppy.Gaming.UI.Definitions;
+using Guppy.Gaming.UI.Providers;
 using Guppy.Gaming.UI.Structs;
 using Guppy.Threading;
 using ImGuiNET;
@@ -17,9 +19,9 @@ namespace Guppy.Gaming.UI
     /// <summary>
     /// ImGui renderer for use with XNA-likes (FNA & MonoGame)
     /// </summary>
-    public sealed class ImGuiRenderer
+    public sealed class ImGuiBatch
     {
-        private GraphicsDevice _graphicsDevice;
+        private GraphicsDevice _graphics;
         private GameWindow _window;
         private IContentProvider _content;
 
@@ -36,32 +38,35 @@ namespace Guppy.Gaming.UI
         private int _indexBufferSize;
 
         // Textures
+        private IntPtr? _fontTextureId;
         private Dictionary<IntPtr, Texture2D> _loadedTextures;
 
         private int _textureId;
 
         // Input
         private int _scrollWheelValue;
-
-        // Fonts
-        private Map<ImFontPtr, string> _fonts;
-
         private List<int> _keys = new List<int>();
 
-        public ImGuiRenderer(
+        public readonly IntPtr Context;
+        public readonly ImGuiIOPtr IO;
+        public readonly IFontProvider Fonts;
+
+        public ImGuiBatch(
             GameWindow window, 
             GraphicsDevice graphics,
-            IContentProvider content)
+            IContentProvider content,
+            IEnumerable<FontDefinition> fonts)
         {
-            var context = ImGui.CreateContext();
-            ImGui.SetCurrentContext(context);
+            this.Context = ImGui.CreateContext();
+            ImGui.SetCurrentContext(this.Context);
+            this.IO = ImGui.GetIO();
+            this.Fonts = new FontProvider(content, this.IO, fonts);
 
             _window = window;
-            _graphicsDevice = graphics;
+            _graphics = graphics;
             _content = content;
 
             _loadedTextures = new Dictionary<IntPtr, Texture2D>();
-            _fonts = new Map<ImFontPtr, string>();
 
             _rasterizerState = new RasterizerState()
             {
@@ -74,40 +79,44 @@ namespace Guppy.Gaming.UI
             
             };
 
-            _effect = new BasicEffect(_graphicsDevice);
+            _effect = new BasicEffect(_graphics);
             _vertexData = Array.Empty<byte>();
-            _vertexBuffer = new VertexBuffer(_graphicsDevice, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
+            _vertexBuffer = new VertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
             _indexData = Array.Empty<byte>();
-            _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
+            _indexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
             
-            // this.SetupFonts();
             this.SetupInput();
+            this.RebuildFontAtlas();
         }
 
         #region ImGuiRenderer
-        // private unsafe void SetupFonts()
-        // {
-        //     var io = ImGui.GetIO();
-        // 
-        //     foreach (IContent content in _content)
-        //     {
-        //         if(content.ValueType == typeof(TrueTypeFont) && content is Content<TrueTypeFont> casted)
-        //         {
-        //             int dataSize = casted.Value.Data.Length * sizeof(byte);
-        //             IntPtr dataPtr = Marshal.AllocHGlobal(dataSize);
-        //             byte* data = (byte*)dataPtr;
-        // 
-        //             for(int i=0; i< casted.Value.Data.Length; i++)
-        //             {
-        //                 data[i] = casted.Value.Data[i];
-        //             }
-        // 
-        //             _fonts.Add(io.Fonts.AddFontFromMemoryTTF(dataPtr, dataSize, 20), casted.Key);
-        //         }
-        //     }
-        // 
-        //     this.RebuildFontAtlas();
-        // }
+        public unsafe void RebuildFontAtlas()
+        {
+            // Get font texture from ImGui
+            var io = ImGui.GetIO();
+            io.Fonts.GetTexDataAsRGBA32(out byte* pixelData, out int width, out int height, out int bytesPerPixel);
+
+            // Copy the data to a managed array
+            var pixels = new byte[width * height * bytesPerPixel];
+            unsafe { Marshal.Copy(new IntPtr(pixelData), pixels, 0, pixels.Length); }
+
+            // Create and register the texture as an XNA texture
+            var tex2d = new Texture2D(_graphics, width, height, false, SurfaceFormat.Color);
+            tex2d.SetData(pixels);
+
+            // Should a texture already have been build previously, unbind it first so it can be deallocated
+            if (_fontTextureId.HasValue)
+            {
+                this.UnbindTexture(_fontTextureId.Value);
+            }
+
+            // Bind the new texture to an ImGui-friendly id
+            _fontTextureId = this.BindTexture(tex2d);
+
+            // Let ImGui know where to find the texture
+            io.Fonts.SetTexID(_fontTextureId.Value);
+            io.Fonts.ClearTexData(); // Clears CPU side texture data
+        }
 
         /// <summary>
         /// Creates a pointer to a texture, which can be passed through ImGui calls such as <see cref="UI.Image" />. That pointer is then used by ImGui to let us know what texture to draw
@@ -132,9 +141,11 @@ namespace Guppy.Gaming.UI
         /// <summary>
         /// Sets up ImGui for a new frame, should be called at frame start
         /// </summary>
-        public void BeforeLayout(GameTime gameTime)
+        public void Begin(GameTime gameTime)
         {
-            ImGui.GetIO().DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            ImGui.SetCurrentContext(this.Context);
+
+            this.IO.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             UpdateInput();
 
@@ -144,7 +155,7 @@ namespace Guppy.Gaming.UI
         /// <summary>
         /// Asks ImGui for the generated geometry data and sends it to the graphics pipeline, should be called after the UI is drawn using ImGui.** calls
         /// </summary>
-        public void AfterLayout()
+        public void End()
         {
             ImGui.Render();
 
@@ -160,35 +171,33 @@ namespace Guppy.Gaming.UI
         /// </summary>
         private void SetupInput()
         {
-            var io = ImGui.GetIO();
-
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Tab] = (int)Keys.Tab);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Keys.Left);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.RightArrow] = (int)Keys.Right);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.UpArrow] = (int)Keys.Up);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.DownArrow] = (int)Keys.Down);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.PageUp] = (int)Keys.PageUp);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.PageDown] = (int)Keys.PageDown);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Home] = (int)Keys.Home);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.End] = (int)Keys.End);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Delete] = (int)Keys.Delete);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Backspace] = (int)Keys.Back);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Enter] = (int)Keys.Enter);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Escape] = (int)Keys.Escape);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Space] = (int)Keys.Space);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.A] = (int)Keys.A);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.C] = (int)Keys.C);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.V] = (int)Keys.V);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.X] = (int)Keys.X);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Y] = (int)Keys.Y);
-            _keys.Add(io.KeyMap[(int)ImGuiKey.Z] = (int)Keys.Z);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Tab] = (int)Keys.Tab);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Keys.Left);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.RightArrow] = (int)Keys.Right);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.UpArrow] = (int)Keys.Up);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.DownArrow] = (int)Keys.Down);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.PageUp] = (int)Keys.PageUp);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.PageDown] = (int)Keys.PageDown);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Home] = (int)Keys.Home);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.End] = (int)Keys.End);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Delete] = (int)Keys.Delete);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Backspace] = (int)Keys.Back);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Enter] = (int)Keys.Enter);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Escape] = (int)Keys.Escape);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Space] = (int)Keys.Space);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.A] = (int)Keys.A);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.C] = (int)Keys.C);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.V] = (int)Keys.V);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.X] = (int)Keys.X);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Y] = (int)Keys.Y);
+            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Z] = (int)Keys.Z);
 
             // MonoGame-specific //////////////////////
             _window.TextInput += (s, a) =>
             {
                 if (a.Character == '\t') return;
 
-                io.AddInputCharacter(a.Character);
+                this.IO.AddInputCharacter(a.Character);
             };
             ///////////////////////////////////////////
 
@@ -201,7 +210,7 @@ namespace Guppy.Gaming.UI
             //};
             ///////////////////////////////////////////
 
-            ImGui.GetIO().Fonts.AddFontDefault();
+            //_io.Fonts.AddFontDefault();
         }
 
         /// <summary>
@@ -209,11 +218,9 @@ namespace Guppy.Gaming.UI
         /// </summary>
         private Effect UpdateEffect(Texture2D texture)
         {
-            var io = ImGui.GetIO();
-
             _effect.World = Matrix.Identity;
             _effect.View = Matrix.Identity;
-            _effect.Projection = Matrix.CreateOrthographicOffCenter(0f, io.DisplaySize.X, io.DisplaySize.Y, 0f, -1f, 1f);
+            _effect.Projection = Matrix.CreateOrthographicOffCenter(0f, this.IO.DisplaySize.X, this.IO.DisplaySize.Y, 0f, -1f, 1f);
             _effect.TextureEnabled = true;
             _effect.Texture = texture;
             _effect.VertexColorEnabled = true;
@@ -226,32 +233,30 @@ namespace Guppy.Gaming.UI
         /// </summary>
         private void UpdateInput()
         {
-            var io = ImGui.GetIO();
-
             var mouse = Mouse.GetState();
             var keyboard = Keyboard.GetState();
 
             for (int i = 0; i < _keys.Count; i++)
             {
-                io.KeysDown[_keys[i]] = keyboard.IsKeyDown((Keys)_keys[i]);
+                this.IO.KeysDown[_keys[i]] = keyboard.IsKeyDown((Keys)_keys[i]);
             }
 
-            io.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
-            io.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
-            io.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
-            io.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
+            this.IO.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
+            this.IO.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
+            this.IO.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
+            this.IO.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
 
-            io.DisplaySize = new System.Numerics.Vector2(_graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight);
-            io.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
+            this.IO.DisplaySize = new System.Numerics.Vector2(_graphics.PresentationParameters.BackBufferWidth, _graphics.PresentationParameters.BackBufferHeight);
+            this.IO.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
-            io.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
+            this.IO.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
 
-            io.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
-            io.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
-            io.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
+            this.IO.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
+            this.IO.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
+            this.IO.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
 
             var scrollDelta = mouse.ScrollWheelValue - _scrollWheelValue;
-            io.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
+            this.IO.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
             _scrollWheelValue = mouse.ScrollWheelValue;
         }
 
@@ -265,27 +270,27 @@ namespace Guppy.Gaming.UI
         private void RenderDrawData(ImDrawDataPtr drawData)
         {
             // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers
-            var lastViewport = _graphicsDevice.Viewport;
-            var lastScissorBox = _graphicsDevice.ScissorRectangle;
+            var lastViewport = _graphics.Viewport;
+            var lastScissorBox = _graphics.ScissorRectangle;
 
-            _graphicsDevice.BlendFactor = XnaColor.White;
-            _graphicsDevice.BlendState = BlendState.NonPremultiplied;
-            _graphicsDevice.RasterizerState = _rasterizerState;
-            _graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+            _graphics.BlendFactor = XnaColor.White;
+            _graphics.BlendState = BlendState.NonPremultiplied;
+            _graphics.RasterizerState = _rasterizerState;
+            _graphics.DepthStencilState = DepthStencilState.DepthRead;
 
             // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
-            drawData.ScaleClipRects(ImGui.GetIO().DisplayFramebufferScale);
+            drawData.ScaleClipRects(this.IO.DisplayFramebufferScale);
 
             // Setup projection
-            _graphicsDevice.Viewport = new Viewport(0, 0, _graphicsDevice.PresentationParameters.BackBufferWidth, _graphicsDevice.PresentationParameters.BackBufferHeight);
+            _graphics.Viewport = new Viewport(0, 0, _graphics.PresentationParameters.BackBufferWidth, _graphics.PresentationParameters.BackBufferHeight);
 
             UpdateBuffers(drawData);
 
             RenderCommandLists(drawData);
 
             // Restore modified state
-            _graphicsDevice.Viewport = lastViewport;
-            _graphicsDevice.ScissorRectangle = lastScissorBox;
+            _graphics.Viewport = lastViewport;
+            _graphics.ScissorRectangle = lastScissorBox;
         }
 
         private unsafe void UpdateBuffers(ImDrawDataPtr drawData)
@@ -301,7 +306,7 @@ namespace Guppy.Gaming.UI
                 _vertexBuffer?.Dispose();
 
                 _vertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
-                _vertexBuffer = new VertexBuffer(_graphicsDevice, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
+                _vertexBuffer = new VertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
                 _vertexData = new byte[_vertexBufferSize * DrawVertDeclaration.Size];
             }
 
@@ -310,7 +315,7 @@ namespace Guppy.Gaming.UI
                 _indexBuffer?.Dispose();
 
                 _indexBufferSize = (int)(drawData.TotalIdxCount * 1.5f);
-                _indexBuffer = new IndexBuffer(_graphicsDevice, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
+                _indexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
                 _indexData = new byte[_indexBufferSize * sizeof(ushort)];
             }
 
@@ -340,8 +345,8 @@ namespace Guppy.Gaming.UI
 
         private unsafe void RenderCommandLists(ImDrawDataPtr drawData)
         {
-            _graphicsDevice.SetVertexBuffer(_vertexBuffer);
-            _graphicsDevice.Indices = _indexBuffer;
+            _graphics.SetVertexBuffer(_vertexBuffer);
+            _graphics.Indices = _indexBuffer;
 
             int vtxOffset = 0;
             int idxOffset = 0;
@@ -364,7 +369,7 @@ namespace Guppy.Gaming.UI
                         throw new InvalidOperationException($"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings");
                     }
 
-                    _graphicsDevice.ScissorRectangle = new Rectangle(
+                    _graphics.ScissorRectangle = new Rectangle(
                         (int)drawCmd.ClipRect.X,
                         (int)drawCmd.ClipRect.Y,
                         (int)(drawCmd.ClipRect.Z - drawCmd.ClipRect.X),
@@ -378,7 +383,7 @@ namespace Guppy.Gaming.UI
                         pass.Apply();
 
 #pragma warning disable CS0618 // // FNA does not expose an alternative method.
-                        _graphicsDevice.DrawIndexedPrimitives(
+                        _graphics.DrawIndexedPrimitives(
                             primitiveType: PrimitiveType.TriangleList,
                             baseVertex: (int)drawCmd.VtxOffset + vtxOffset,
                             minVertexIndex: 0,

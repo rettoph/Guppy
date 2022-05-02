@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Gaming.Messages
 {
-    internal struct TerminalActionMessage
+    public struct TerminalActionMessage
     {
         public readonly TerminalAction Action;
 

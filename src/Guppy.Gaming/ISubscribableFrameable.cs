@@ -11,7 +11,12 @@ namespace Guppy.Gaming
     {
         public delegate void Step(GameTime gameTime);
 
+        public event Step? OnPreDraw;
         public event Step? OnDraw;
+        public event Step? OnPostDraw;
+
+        public event Step? OnPreUpdate;
         public event Step? OnUpdate;
+        public event Step? OnPostUpdate;
     }
 }

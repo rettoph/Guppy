@@ -22,11 +22,10 @@ namespace Guppy.Gaming.UI.Loaders
         {
             services.AddContent<TrueTypeFont>(ContentConstants.DiagnosticsTTF, "Fonts/DiagnosticsFont");
 
-            services.AddFont(FontConstants.DiagnosticsFont, ContentConstants.DiagnosticsTTF, 50);
+            services.AddFont(FontConstants.DiagnosticsFont, ContentConstants.DiagnosticsTTF, 18);
 
             services.AddSingleton<ITerminalService, TerminalService>();
-            services.AddSingleton<IFontProvider, FontProvider>();
-            services.AddSingleton<ImGuiRenderer>();
+            services.AddSingleton<ImGuiBatch>();
 
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();
 

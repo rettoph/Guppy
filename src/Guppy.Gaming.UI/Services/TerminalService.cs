@@ -3,47 +3,158 @@ using Guppy.Gaming.UI.Constants;
 using Guppy.Gaming.UI.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
+using Minnow.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ImGuiNet = ImGuiNET.ImGui;
+using XnaColor = Microsoft.Xna.Framework.Color;
+using SysVector4 = System.Numerics.Vector4;
+using SysVector2 = System.Numerics.Vector2;
+using Guppy.Gaming.Services;
+using Guppy.Threading;
+using Guppy.Gaming.Messages;
+using Guppy.Gaming.Enums;
 
 namespace Guppy.Gaming.UI.Services
 {
-    internal sealed class TerminalService : BaseTerminalService
+    internal sealed partial class TerminalService : BaseTerminalService, ISubscriber<TerminalActionMessage>
     {
-        private ImGuiRenderer _renderer;
+        private ImGuiBatch _guiRenderer;
         private ImFontPtr _font;
+        private GameWindow _window;
+        private string _input;
+        private Buffer<(string text, SysVector4 color)> _output;
+        private bool _scrollLocked;
+        private ICommandService _commands;
+        private bool _focusInput;
+        private bool _visible;
 
-        public TerminalService(ImGuiRenderer stage, IFontProvider fonts)
+        public TerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands)
         {
-            _renderer = stage;
+            _guiRenderer = imGuiBatch;
+            _window = window;
             // _renderer.RebuildFontAtlas();
             // _font = _renderer.BindFont(@"C:\Users\Anthony\source\repos\VoidHuntersRevived\libraries\Guppy\src\Guppy.Gaming\Content\Fonts\src\SpaceMono-Regular.ttf", 50);
-            _font = fonts[FontConstants.DiagnosticsFont];
+            _font = imGuiBatch.Fonts[FontConstants.DiagnosticsFont].Value;
+            _input = string.Empty;
+            _output = new Buffer<(string text, SysVector4 color)>(2048);
+            _scrollLocked = true;
+            _commands = commands;
+            _focusInput = true;
+
+            Console.SetOut(new TerminalService.TextWriter(this, null));
+            Console.SetError(new TerminalService.TextWriter(this, XnaColor.Red));
+
+            _commands.Subscribe(this);
         }
 
-        public override void WriteLine(string text, Microsoft.Xna.Framework.Color color)
+        public override void WriteLine(string text, XnaColor color)
         {
-            throw new NotImplementedException();
+            _output.Add((text, color.ToNumericsVector4()));
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            _renderer.BeforeLayout(gameTime);
+            _guiRenderer.Begin(gameTime);
 
-            ImGuiNet.PushFont(_font);
-            ImGuiNet.Text("Hello, world!");
-            ImGuiNet.PopFont();
+            if (_visible)
+            {
+                this.DrawTerminal();
+            }
 
-            _renderer.AfterLayout();
+            _guiRenderer.End();
+        }
+
+        private void DrawTerminal()
+        {
+            var windowSize = new SysVector2(_window.ClientBounds.Width, _window.ClientBounds.Height);
+            var inputHeight = 24;
+            var outputContainerSize = new SysVector2(windowSize.X, windowSize.Y - inputHeight);
+            var inputContainerSize = new SysVector2(windowSize.X, inputHeight);
+
+            ImGui.SetNextWindowFocus();
+            ImGui.SetNextWindowPos(new SysVector2(0, 0));
+            ImGui.SetNextWindowSize(windowSize);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new SysVector2(0, 0));
+            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new SysVector2(0, 0));
+            ImGui.PushFont(_font);
+            ImGui.Begin("terminal", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove);
+
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new SysVector2(15, 15));
+            ImGui.BeginChild("output-container", outputContainerSize, false, ImGuiWindowFlags.AlwaysVerticalScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
+
+            foreach ((string text, SysVector4 color) in _output)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Text, color);
+                ImGui.TextWrapped(text);
+                ImGui.PopStyleColor();
+            }
+
+            if (_scrollLocked != (ImGui.GetScrollY() == ImGui.GetScrollMaxY()))
+            {
+                _scrollLocked = !_scrollLocked;
+            }
+
+            if (_scrollLocked)
+            {
+                ImGui.SetScrollHereY(1);
+            }
+
+            ImGui.EndChild();
+            ImGui.PopStyleVar();
+
+
+            ImGui.BeginChild("input-container", inputContainerSize, false);
+
+            ImGui.PushItemWidth(-1);
+            if (_focusInput)
+            {
+                ImGui.SetKeyboardFocusHere(0);
+                _focusInput = false;
+            }
+
+            if (ImGui.InputText("input", ref _input, 200, ImGuiInputTextFlags.EnterReturnsTrue))
+            {
+                _focusInput = true;
+
+                if(_input != string.Empty)
+                {
+                    _commands.Invoke(_input);
+                    _input = string.Empty;
+                }
+            }
+            ImGui.PopItemWidth();
+
+            ImGui.EndChild();
+
+            ImGui.End();
+            ImGui.PopFont();
+            ImGui.PopStyleVar();
         }
 
         protected override void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
+        }
+
+        public bool Process(in TerminalActionMessage message)
+        {
+            switch (message.Action)
+            {
+                case TerminalAction.Toggle:
+                    _input = string.Empty;
+                    _focusInput = true;
+                    _visible = !_visible;
+                    break;
+                case TerminalAction.Prev:
+                    break;
+                case TerminalAction.Next:
+                    break;
+            }
+
+            return true;
         }
     }
 }

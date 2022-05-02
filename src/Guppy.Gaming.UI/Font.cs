@@ -14,9 +14,6 @@ namespace Guppy.Gaming.UI
         public Content<TrueTypeFont> TrueTypeFont { get; }
         public int SizePixels { get; }
 
-        public ImFontPtr ImFontPtr;
-
-
         public Font(string key, Content<TrueTypeFont> trueTypeFont, int sizePixels, ImFontPtr defaultValue) : base(key, defaultValue)
         {
             this.TrueTypeFont = trueTypeFont;

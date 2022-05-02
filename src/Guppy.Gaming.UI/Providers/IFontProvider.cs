@@ -10,6 +10,5 @@ namespace Guppy.Gaming.UI.Providers
 {
     public interface IFontProvider : IResourceProvider<Font>
     {
-        unsafe void RebuildFontAtlas();
     }
 }
