@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Providers;
+using Guppy.Threading;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,15 @@ namespace Guppy.Network
 {
     public abstract class NetIncomingMessage
     {
-        public byte RoomId;
+        public byte ScopeId;
+        public ushort TargetNetId;
 
         public abstract IEnumerable<NetDeserialized> Appendages { get; }
 
         public abstract IEnumerable<NetDeserialized> Data { get; }
 
         internal abstract void Read(NetDataReader reader);
+
         public abstract void Recycle();
     }
 
@@ -28,7 +31,7 @@ namespace Guppy.Network
 
         public readonly NetMessenger<T> Messenger;
 
-        public NetDeserialized<T> Content = default!;
+        public NetDeserialized<T> Content = null!;
 
         public override IEnumerable<NetDeserialized> Appendages => _appendages;
         public override IEnumerable<NetDeserialized> Data
@@ -58,7 +61,8 @@ namespace Guppy.Network
 
         internal override void Read(NetDataReader reader)
         {
-            this.RoomId = reader.GetByte();
+            this.ScopeId = reader.GetByte();
+            this.TargetNetId = reader.GetUShort();
             this.Content = _serializer.Deserialize(reader);
 
             while (!reader.EndOfData)

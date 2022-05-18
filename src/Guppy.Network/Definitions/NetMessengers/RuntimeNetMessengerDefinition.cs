@@ -17,6 +17,7 @@ namespace Guppy.Network.Definitions.NetMessengers
 
         public override int OutgoingPriority { get; }
 
+
         public RuntimeNetMessengerDefinition(DeliveryMethod deliveryMethod, byte outgoingChannel, int outgoingPriority)
         {
             this.DeliveryMethod = deliveryMethod;

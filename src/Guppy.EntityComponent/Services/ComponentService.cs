@@ -1,6 +1,7 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,13 @@ namespace Guppy.EntityComponent.Services
 {
     internal sealed class ComponentService : IComponentService
     {
-        private Dictionary<Type, IComponent> _components;
+        private readonly IEntity _entity;
+        private readonly Dictionary<Type, IComponent> _components;
 
-        public ComponentService(Dictionary<Type, IComponent> components)
+        public ComponentService(IEntity entity, int capacity)
         {
-            _components = components;
+            _entity = entity;
+            _components = new Dictionary<Type, IComponent>(capacity);
         }
 
         public void Dispose()
@@ -22,6 +25,32 @@ namespace Guppy.EntityComponent.Services
             foreach(IComponent component in _components.Values)
             {
                 component.Dispose();
+            }
+        }
+
+        public void Add<T>(T component)
+            where T : class, IComponent
+        {
+            if (_components.TryAdd(typeof(T), component))
+            {
+                component.Initialize(_entity);
+            }
+        }
+
+        public void Add(Type type, IComponent component)
+        {
+            if (_components.TryAdd(type, component))
+            {
+                component.Initialize(_entity);
+            }
+        }
+
+        public void Remove<T>()
+            where T : class, IComponent
+        {
+            if(_components.Remove(typeof(T), out IComponent? instance))
+            {
+                instance.Uninitilaize();
             }
         }
 
@@ -48,6 +77,16 @@ namespace Guppy.EntityComponent.Services
 
             component = default;
             return false;
+        }
+
+        public IEnumerator<IComponent> GetEnumerator()
+        {
+            return _components.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

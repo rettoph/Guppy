@@ -12,9 +12,11 @@ namespace Guppy.EntityComponent.Providers
 {
     internal sealed class ComponentProvider : IComponentProvider
     {
+        private IServiceProvider _provider;
         private Dictionary<Type, EntityComponentFilters[]> _ecfs;
 
         public ComponentProvider(
+            IServiceProvider provider,
             ITypeProvider<IEntity> entities,
             IEnumerable<ComponentDefinition> components,
             IEnumerable<ComponentFilterDefinition> filterDefinitions)
@@ -22,6 +24,7 @@ namespace Guppy.EntityComponent.Providers
             var filters = filterDefinitions.Select(x => x.BuildComponentFilter());
             var ecfs = new List<EntityComponentFilters>();
 
+            _provider = provider;
             _ecfs = new Dictionary<Type, EntityComponentFilters[]>(entities.Count());
 
             foreach (Type entity in entities)
@@ -40,20 +43,20 @@ namespace Guppy.EntityComponent.Providers
             }
         }
 
-        public IComponentService Create(IServiceProvider provider, IEntity entity)
+        public IComponentService Create(IEntity entity)
         {
             EntityComponentFilters[] ecfs = _ecfs[entity.GetType()];
-            Dictionary<Type, IComponent> components = new Dictionary<Type, IComponent>(ecfs.Length);
+            IComponentService components = new ComponentService(entity, ecfs.Length);
             foreach(EntityComponentFilters ecf in ecfs)
             {
-                if(ecf.Filter(provider, entity))
+                if(ecf.Filter(_provider, entity))
                 {
-                    IComponent component = ecf.ComponentDescriptor.BuildComponent(provider, entity);
+                    IComponent component = ecf.ComponentDescriptor.BuildComponent(_provider);
                     components.Add(ecf.ComponentDescriptor.ComponentType, component);
                 }
             }
 
-            return new ComponentService(components);
+            return components;
         }
     }
 }

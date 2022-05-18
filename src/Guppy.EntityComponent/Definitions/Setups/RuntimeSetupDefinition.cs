@@ -13,13 +13,13 @@ namespace Guppy.EntityComponent.Definitions.Setups
 
         public override int Order { get; }
 
-        private readonly Func<IServiceProvider, TEntity, bool> _create;
-        private readonly Func<IServiceProvider, TEntity, bool> _destroy;
+        private readonly Func<TEntity, bool> _create;
+        private readonly Func<TEntity, bool> _destroy;
 
 
         public RuntimeSetupDefinition(
-            Func<IServiceProvider, TEntity, bool> create,
-            Func<IServiceProvider, TEntity, bool> destroy,
+            Func<TEntity, bool> create,
+            Func<TEntity, bool> destroy,
             int order)
         {
             _create = create;
@@ -28,14 +28,14 @@ namespace Guppy.EntityComponent.Definitions.Setups
             this.Order = order;
         }
 
-        protected override bool TryCreate(IServiceProvider provider, IEntity entity)
+        protected override bool TryCreate(IEntity entity)
         {
-            return entity is TEntity casted && _create(provider, casted);
+            return entity is TEntity casted && _create(casted);
         }
 
-        protected override bool TryDestroy(IServiceProvider provider, IEntity entity)
+        protected override bool TryDestroy(IEntity entity)
         {
-            return entity is TEntity casted && _destroy(provider, casted);
+            return entity is TEntity casted && _destroy(casted);
         }
     }
 }

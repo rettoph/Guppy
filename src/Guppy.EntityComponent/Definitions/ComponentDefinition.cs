@@ -13,34 +13,18 @@ namespace Guppy.EntityComponent.Definitions
 
         public abstract Type EntityType { get; }
         public abstract Type ComponentType { get; }
-        public abstract Func<IServiceProvider, IEntity, IComponent> BuildComponent { get; }
+        public abstract Func<IServiceProvider, IComponent> BuildComponent { get; }
 
-        public static Func<IServiceProvider, IEntity, TComponent> DynamicFactory<TEntity, TComponent>()
-            where TEntity : class, IEntity
+        public static Func<IServiceProvider, TComponent> DynamicFactory<TComponent>()
             where TComponent : class, IComponent
         {
-            try
+            ObjectFactory factoryWithoutEntity = ActivatorUtilities.CreateFactory(typeof(TComponent), Array.Empty<Type>());
+            TComponent FactoryMethod(IServiceProvider provider)
             {
-                ObjectFactory factoryWithEntity = ActivatorUtilities.CreateFactory(typeof(TComponent), new[] { typeof(TEntity) });
-                object[] argBuffer = new object[1];
-                TComponent FactoryWithEntity(IServiceProvider provider, IEntity entity)
-                {
-                    argBuffer[0] = entity;
-                    return factoryWithEntity(provider, argBuffer) as TComponent ?? throw new Exception();
-                }
-
-                return FactoryWithEntity;
+                return factoryWithoutEntity(provider, EmptyArgs) as TComponent ?? throw new Exception();
             }
-            catch
-            {
-                ObjectFactory factoryWithoutEntity = ActivatorUtilities.CreateFactory(typeof(TComponent), Array.Empty<Type>());
-                TComponent FactoryWithoutEntity(IServiceProvider provider, IEntity entity)
-                {
-                    return factoryWithoutEntity(provider, EmptyArgs) as TComponent ?? throw new Exception();
-                }
 
-                return FactoryWithoutEntity;
-            }
+            return FactoryMethod;
         }
     }
 
@@ -48,20 +32,20 @@ namespace Guppy.EntityComponent.Definitions
         where TEntity : class, IEntity
         where TComponent : class, IComponent
     {
-        private Func<IServiceProvider, IEntity, TComponent> _factory = ComponentDefinition.DynamicFactory<TEntity, TComponent>();
+        private Func<IServiceProvider, TComponent> _factory = ComponentDefinition.DynamicFactory<TComponent>();
 
         public override Type EntityType { get; } = typeof(TEntity);
         public override Type ComponentType { get; } = typeof(TComponent);
-        public override Func<IServiceProvider, IEntity, IComponent> BuildComponent { get; }
+        public override Func<IServiceProvider, IComponent> BuildComponent { get; }
 
         public ComponentDefinition()
         {
             this.BuildComponent = this.Factory;
         }
 
-        public virtual TComponent Factory(IServiceProvider provider, IEntity entity)
+        public virtual TComponent Factory(IServiceProvider provider)
         {
-            return _factory(provider, entity);
+            return _factory(provider);
         }
     }
 }

@@ -16,21 +16,21 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddSetup(this IServiceCollection services, Type setupDefinitionType)
         {
-            return services.AddSingleton(typeof(SetupDefinition), setupDefinitionType);
+            return services.AddScoped(typeof(SetupDefinition), setupDefinitionType);
         }
 
         public static IServiceCollection AddSetup<TDefinition>(this IServiceCollection services)
             where TDefinition : SetupDefinition
         {
-            return services.AddSingleton<SetupDefinition, TDefinition>();
+            return services.AddScoped<SetupDefinition, TDefinition>();
         }
 
         public static IServiceCollection AddSetup(this IServiceCollection services, SetupDefinition definition)
         {
-            return services.AddSingleton<SetupDefinition>(definition);
+            return services.AddScoped<SetupDefinition>(p => definition);
         }
 
-        public static IServiceCollection AddSetup<TEntity>(this IServiceCollection services, Func<IServiceProvider, TEntity, bool> create, Func<IServiceProvider, TEntity, bool> destroy, int order)
+        public static IServiceCollection AddSetup<TEntity>(this IServiceCollection services, Func<TEntity, bool> create, Func<TEntity, bool> destroy, int order)
             where TEntity : class, IEntity
         {
             return services.AddSetup(new RuntimeSetupDefinition<TEntity>(create, destroy, order));
@@ -59,30 +59,20 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddComponent(this IServiceCollection services, Type componentDefinitionType)
         {
-            return services.AddSingleton(typeof(ComponentDefinition), componentDefinitionType);
+            return services.AddScoped(typeof(ComponentDefinition), componentDefinitionType);
         }
 
         public static IServiceCollection AddComponen<TDefinition>(this IServiceCollection services)
             where TDefinition : ComponentDefinition
         {
-            return services.AddSingleton<ComponentDefinition, TDefinition>();
+            return services.AddScoped<ComponentDefinition, TDefinition>();
         }
 
         public static IServiceCollection AddComponent(this IServiceCollection services, ComponentDefinition definition)
         {
-            return services.AddSingleton<ComponentDefinition>(definition);
+            return services.AddScoped<ComponentDefinition>(p => definition);
         }
-        public static IServiceCollection AddComponent<TEntity, TComponent>(this IServiceCollection services, Func<IServiceProvider, TEntity, TComponent> factory)
-            where TEntity : class, IEntity
-            where TComponent : class, IComponent
-        {
-            return services.AddComponent(new RuntimeComponentDefinition(
-                typeof(TEntity),
-                typeof(TComponent),
-                (p, e) => factory(p, (TEntity)e)));
-        }
-
-        public static IServiceCollection AddComponent<TEntity, TComponent>(this IServiceCollection services, Func<IServiceProvider, IEntity, TComponent> factory)
+        public static IServiceCollection AddComponent<TEntity, TComponent>(this IServiceCollection services, Func<IServiceProvider, TComponent> factory)
             where TEntity : class, IEntity
             where TComponent : class, IComponent
         {
@@ -98,7 +88,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddComponent(new RuntimeComponentDefinition(
                 typeof(TEntity),
                 typeof(TComponent),
-                ComponentDefinition.DynamicFactory<TEntity, TComponent>()));
+                ComponentDefinition.DynamicFactory<TComponent>()));
         }
     }
 }

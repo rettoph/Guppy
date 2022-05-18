@@ -61,7 +61,7 @@ namespace Guppy.Network
 
             if (!serializers.TryGetSerializer<T>(out _serializer!))
             {
-                throw new Exception($"{nameof(NetMessenger)}<{typeof(T).GetPrettyName()}> - Missing required {nameof(NetSerializer)}. Please ensure a matching {nameof(NetSerializerDefinition)} is defined.");
+                throw new Exception($"Missing required {nameof(NetSerializer)}. Please ensure a matching {nameof(NetSerializerDefinition)} is defined.");
             }
 
             _incomingFactory = new Factory<NetIncomingMessage<T>>(() => new NetIncomingMessage<T>(_serializers, _serializer, this));
@@ -76,10 +76,10 @@ namespace Guppy.Network
             return incoming;
         }
 
-        public NetOutgoingMessage<T> CreateOutgoing(Room room, in T content)
+        public NetOutgoingMessage<T> CreateOutgoing(NetScope scope, INetTarget target, in T content)
         {
             NetOutgoingMessage<T> outgoing = _outgoingFactory.GetInstance();
-            outgoing.Write(room, in content);
+            outgoing.Write(scope, target, in content);
 
             return outgoing;
         }

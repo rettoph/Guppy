@@ -9,23 +9,28 @@ using System.Threading.Tasks;
 
 namespace Guppy.Gaming.Components
 {
-    internal sealed class GameMonoGameServiceComponent : IComponent
+    internal sealed class GameMonoGameServiceComponent : Component<Game>
     {
         private Game _game;
         private ITerminalService _terminal;
         private IInputService _inputs;
 
-        public GameMonoGameServiceComponent(Game game, ITerminalService terminal, IInputService inputs)
+        public GameMonoGameServiceComponent(ITerminalService terminal, IInputService inputs)
         {
-            _game = game;
             _terminal = terminal;
             _inputs = inputs;
+            _game = null!;
+        }
+
+        protected override void Initialize(Game entity)
+        {
+            _game = entity;
 
             _game.OnUpdate += this.Update;
             _game.OnDraw += this.Draw;
         }
 
-        public void Dispose()
+        protected override void Uninitilaize()
         {
             _game.OnUpdate -= this.Update;
             _game.OnDraw -= this.Draw;

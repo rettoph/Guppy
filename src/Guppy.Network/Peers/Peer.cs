@@ -1,7 +1,7 @@
 ﻿using Guppy.Network.Enums;
 using Guppy.Network.Providers;
 using Guppy.Network.Security;
-using Guppy.Network.Security.Services;
+using Guppy.Network.Security.Providers;
 using Guppy.Providers;
 using Guppy.Threading;
 using LiteNetLib;
@@ -15,41 +15,39 @@ namespace Guppy.Network.Peers
 {
     public abstract class Peer : IDisposable
     {
-        private readonly IRoomProvider _rooms;
         private readonly INetMessengerProvider _messengers;
-        private readonly IUserService _users;
+        private readonly IUserProvider _users;
         private readonly EventBasedNetListener _listener;
         private readonly NetManager _manager;
-        private readonly Bus _bus;
         private User? _currentUser;
 
-        public IRoomProvider Rooms => _rooms;
-        public Room? Room;
-
-        public IUserService Users => _users;
+        public readonly NetScope Scope;
+        public readonly INetScopeProvider Scopes;
+        public IUserProvider Users => _users;
         public User? CurrentUser
         {
             get => _currentUser;
-            set => this.OnCurrentUserChanged.InvokeIf(value != _currentUser, this, ref _currentUser, value);
+            set => this.OnCurrentUserChanged!.InvokeIf(value != _currentUser, this, ref _currentUser, value);
         }
 
         public event OnChangedEventDelegate<Peer, User?>? OnCurrentUserChanged;
 
         public Peer(
-            IRoomProvider rooms,
+            INetScopeProvider scopes,
             INetMessengerProvider messengers,
-            IUserService users,
+            IUserProvider users,
             ISettingProvider settings,
             EventBasedNetListener listener,
             NetManager manager,
-            Bus bus)
+            NetScope scope)
         {
-            _rooms = rooms;
             _messengers = messengers;
             _users = users;
             _listener = listener;
             _manager = manager;
-            _bus = bus;
+
+            this.Scope = scope;
+            this.Scopes = scopes;
 
             this.OnCurrentUserChanged += this.HandleCurrentUserChanged;
             _listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
@@ -67,8 +65,7 @@ namespace Guppy.Network.Peers
 
         protected virtual void Start()
         {
-            this.Room = _rooms.Get(0);
-            this.Room.Messages.AttachBus(_bus);
+            this.Scope.Start(0);
         }
 
         /// <summary>
@@ -78,13 +75,22 @@ namespace Guppy.Network.Peers
         public void PollEvents()
         {
             _manager.PollEvents();
-            this.Room!.Messages.SendEnqueued(100);
+            this.Scope.Clean();
         }
 
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
-            NetIncomingMessage message = _messengers.ReadIncoming(reader);
-            _rooms.ProcessIncoming(message);
+            NetIncomingMessage message = _messengers.CreateIncoming(reader);
+            
+            if(this.Scopes.TryGet(message.ScopeId, out NetScope? room))
+            {
+                room.Incoming.Enqueue(message);
+            }
+            else
+            {
+                // When the room doesnt exist i think we should cache the messages for later
+                throw new Exception();
+            }
         }
 
         private void HandleCurrentUserChanged(Peer sender, User? old, User? value)

@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Services
 {
-    public interface ICollectionService<TId, T> : IEnumerable<T>
+    public interface ICollectionService<TKey, T> : IEnumerable<T>
         where T : class
     {
-        T this[TId id] { get; }
+        T this[TKey key] { get; }
 
-        bool TryGetById(TId id, [MaybeNullWhen(false)] out T item);
+        bool TryGet(TKey key, [MaybeNullWhen(false)] out T item);
+        T Get(TKey key);
 
         bool Contains(T item);
     }

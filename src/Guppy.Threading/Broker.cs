@@ -106,7 +106,7 @@ namespace Guppy.Threading
         /// Publish an incoming message.
         /// </summary>
         /// <param name="message"></param>
-        public bool Publish(in object message)
+        public bool Publish(object message)
         {
             if (_subscribers.TryGetValue(message.GetType(), out TypeSubscribers? subscribers))
             {
@@ -116,7 +116,7 @@ namespace Guppy.Threading
             return false;
         }
 
-        public bool Publish<T>(in T message)
+        public bool PublishKnown<T>(in T message)
         {
             if (_subscribers.TryGetValue(typeof(T), out TypeSubscribers? subscribers) && subscribers is TypeSubscribers<T> casted)
             {

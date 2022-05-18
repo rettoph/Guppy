@@ -16,10 +16,10 @@ namespace Guppy.Network.Providers
 {
     internal sealed class NetMessengerProvider : INetMessengerProvider
     {
-        private INetSerializerProvider _serializers;
-        private ISettingProvider _settings;
-        private DynamicIdProvider _ids;
-        private DoubleDictionary<Type, ushort, NetMessenger> _messengers;
+        private readonly INetSerializerProvider _serializers;
+        private readonly ISettingProvider _settings;
+        private readonly DynamicIdProvider _ids;
+        private readonly DoubleDictionary<Type, ushort, NetMessenger> _messengers;
 
         public NetMessengerProvider(
             INetSerializerProvider serializers,
@@ -36,21 +36,31 @@ namespace Guppy.Network.Providers
                     keySelector2: s => s.Id.Value);
         }
 
-        public NetIncomingMessage ReadIncoming(NetDataReader reader)
+        public NetIncomingMessage CreateIncoming(NetDataReader reader)
         {
             var id = _ids.Read(reader);
             var messenger = _messengers[id];
             var incoming = messenger.ReadIncoming(reader);
-
+        
             return incoming;
         }
-
-        public NetOutgoingMessage<T> CreateOutgoing<T>(Room room, in T content)
+        
+        public NetOutgoingMessage<T> CreateOutgoing<T>(NetScope scope, INetTarget target, in T content)
         {
             var messenger = (_messengers[typeof(T)] as NetMessenger<T>)!;
-            var outgoing = messenger.CreateOutgoing(room, in content);
-
+            var outgoing = messenger.CreateOutgoing(scope, target, in content);
+        
             return outgoing;
+        }
+
+        public NetMessenger<T> GetMessenger<T>()
+        {
+            return (NetMessenger<T>)_messengers[typeof(T)];
+        }
+
+        public NetMessenger GetMessenger(ushort id)
+        {
+            return _messengers[id];
         }
 
         public bool TryGetMessenger<T>([MaybeNullWhen(false)] out NetMessenger<T> messenger)

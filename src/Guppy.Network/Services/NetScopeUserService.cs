@@ -1,0 +1,68 @@
+﻿using Guppy.Network.Security;
+using Guppy.Services.Common;
+using LiteNetLib;
+using Minnow.Collections;
+
+namespace Guppy.Network.Services
+{
+    public sealed class NetScopeUserService : CollectionService<int, User>
+    {
+        private int _capacity;
+        private List<NetPeer> _peers;
+
+        public readonly NetScope Room;
+        public IEnumerable<NetPeer> NetPeers => _peers;
+
+        public event OnEventDelegate<NetScopeUserService, User>? OnUserJoined;
+        public event OnEventDelegate<NetScopeUserService, User>? OnUserLeft;
+
+        internal NetScopeUserService(NetScope room, int capacity) : base(capacity)
+        {
+            _capacity = capacity;
+            _peers = new List<NetPeer>(capacity);
+
+            this.Room = room;
+        }
+
+        protected override int GetKey(User item)
+        {
+            return item.Id;
+        }
+
+        public bool TryJoin(User user)
+        {
+            if(this.items.Count < _capacity && this.items.TryAdd(this.GetKey(user), user))
+            {
+                user.AddToRoom(this.Room);
+
+                if(user.NetPeer is not null)
+                {
+                    _peers.Add(user.NetPeer);
+                }
+
+                this.OnUserJoined?.Invoke(this, user);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool TryLeave(User user)
+        {
+            if(this.items.Remove(this.GetKey(user)))
+            {
+                if(user.NetPeer is not null)
+                {
+                    _peers.Remove(user.NetPeer);
+                }
+
+                user.RemoveFromRoom(this.Room);
+
+                this.OnUserLeft?.Invoke(this, user);
+                return true;
+            }
+
+            return false;
+        }
+    }
+}

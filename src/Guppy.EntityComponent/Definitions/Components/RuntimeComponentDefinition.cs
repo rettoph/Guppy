@@ -12,9 +12,9 @@ namespace Guppy.EntityComponent.Definitions.Components
 
         public override Type ComponentType { get; }
 
-        public override Func<IServiceProvider, IEntity, IComponent> BuildComponent { get; }
+        public override Func<IServiceProvider, IComponent> BuildComponent { get; }
 
-        public RuntimeComponentDefinition(Type entityType, Type componentType, Func<IServiceProvider, IEntity, IComponent> factory)
+        public RuntimeComponentDefinition(Type entityType, Type componentType, Func<IServiceProvider, IComponent> factory)
         {
             this.EntityType = entityType;
             this.ComponentType = componentType;

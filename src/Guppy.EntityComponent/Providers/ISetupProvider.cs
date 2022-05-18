@@ -9,7 +9,8 @@ namespace Guppy.EntityComponent.Providers
 {
     public interface ISetupProvider
     {
-        bool TryCreate(IServiceProvider provider, IEntity entity);
-        bool TryDestroy(IServiceProvider provider, IEntity entity);
+        void Initialize();
+        bool TryCreate(IEntity entity);
+        bool TryDestroy(IEntity entity);
     }
 }

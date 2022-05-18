@@ -12,10 +12,13 @@ namespace Guppy.EntityComponent.Providers
     internal sealed class SetupProvider : ISetupProvider
     {
         private Dictionary<Type, Setup[]> _setups;
+        private readonly IServiceProvider _provider;
 
-        public SetupProvider(ITypeProvider<IEntity> entities, IEnumerable<SetupDefinition> definitions)
+        public SetupProvider(IServiceProvider provider, ITypeProvider<IEntity> entities, IEnumerable<SetupDefinition> definitions)
         {
-            var setups = definitions.Select(x => x.BuildSetup()).ToArray();
+            _provider = provider;
+
+            var setups = definitions.Select(x => x.BuildSetup()).OrderBy(x => x.Order).ToArray();
 
             _setups = new Dictionary<Type, Setup[]>(entities.Count());
             foreach(Type entity in entities)
@@ -24,19 +27,27 @@ namespace Guppy.EntityComponent.Providers
             }
         }
 
-        public bool TryCreate(IServiceProvider provider, IEntity entity)
+        public void Initialize()
+        {
+            foreach(Setup setup in _setups.Values.SelectMany(x => x).Distinct())
+            {
+                setup.Initialize(_provider);
+            }
+        }
+
+        public bool TryCreate(IEntity entity)
         {
             bool result = true;
 
             foreach (Setup setup in _setups[entity.GetType()])
             {
-                result &= setup.TryCreate(provider, entity);
+                result &= setup.TryCreate(entity);
             }
 
             return result;
         }
 
-        public bool TryDestroy(IServiceProvider provider, IEntity entity)
+        public bool TryDestroy(IEntity entity)
         {
             try
             {
@@ -44,7 +55,7 @@ namespace Guppy.EntityComponent.Providers
 
                 foreach (Setup setup in _setups[entity.GetType()])
                 {
-                    result &= setup.TryDestroy(provider, entity);
+                    result &= setup.TryDestroy(entity);
                 }
 
                 return result;

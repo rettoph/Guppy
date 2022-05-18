@@ -8,5 +8,7 @@ namespace Guppy.EntityComponent
 {
     public interface IComponent : IDisposable
     {
+        void Initialize(IEntity entity);
+        void Uninitilaize();
     }
 }

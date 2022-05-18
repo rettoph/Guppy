@@ -1,6 +1,6 @@
 ﻿using Guppy.Gaming.Definitions;
-using Guppy.Gaming.Definitions.ColorDefinitions;
-using Guppy.Gaming.Definitions.ContentDefinitions;
+using Guppy.Gaming.Definitions.Colors;
+using Guppy.Gaming.Definitions.Content;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

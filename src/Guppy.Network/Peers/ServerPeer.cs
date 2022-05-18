@@ -1,8 +1,9 @@
-﻿using Guppy.Network.Enums;
+﻿using Guppy.EntityComponent.Services;
+using Guppy.Network.Enums;
 using Guppy.Network.Providers;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Messages;
-using Guppy.Network.Security.Services;
+using Guppy.Network.Security.Providers;
 using Guppy.Network.Security.Structs;
 using Guppy.Providers;
 using Guppy.Threading;
@@ -25,13 +26,14 @@ namespace Guppy.Network.Peers
         public event ValidateEventDelegate<ServerPeer, ConnectionRequestMessage>? ValidateUserConnectionRequest;
 
         public ServerPeer(
-            IRoomProvider rooms,
+            INetScopeProvider rooms,
             INetMessengerProvider messengers,
-            IUserService users,
+            IUserProvider users,
             ISettingProvider settings,
             EventBasedNetListener listener,
             NetManager manager,
-            Bus bus) : base(rooms, messengers, users, settings, listener, manager, bus)
+            Bus bus,
+            NetScope scope) : base(rooms, messengers, users, settings, listener, manager, scope)
         {
             _listener = listener;
             _manager = manager;
@@ -59,7 +61,7 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
-            this.Room!.Users.TryJoin(this.CurrentUser);
+            this.Scope!.Users.TryJoin(this.CurrentUser);
 
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
@@ -75,7 +77,7 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
-            this.Room!.Users.TryJoin(this.CurrentUser);
+            this.Scope!.Users.TryJoin(this.CurrentUser);
 
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
@@ -89,7 +91,7 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
-            this.Room!.Users.TryJoin(this.CurrentUser);
+            this.Scope!.Users.TryJoin(this.CurrentUser);
 
             return _manager.Start(port);
         }
@@ -111,12 +113,13 @@ namespace Guppy.Network.Peers
                 client.Id, 
                 user.Claims.ToArray());
 
-            this.Room!.Messages.CreateOutgoing<ConnectionResponseMessage>(in response, client)
+            this.Scope.Messenger!.Messages.CreateOutgoing<ConnectionResponseMessage>(in response)
+                .AddRecipient(client)
                 .Send()
                 .Recycle();
 
             // Add the new user to the primary room.
-            this.Room.Users.TryJoin(user);
+            this.Scope.Users.TryJoin(user);
         }
     }
 }

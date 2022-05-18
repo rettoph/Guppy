@@ -11,8 +11,11 @@ namespace Guppy.Network.Providers
 {
     public interface INetMessengerProvider : IEnumerable<NetMessenger>
     {
-        NetIncomingMessage ReadIncoming(NetDataReader reader);
-        NetOutgoingMessage<T> CreateOutgoing<T>(Room room, in T content);
+        NetIncomingMessage CreateIncoming(NetDataReader reader);
+        NetOutgoingMessage<T> CreateOutgoing<T>(NetScope scope, INetTarget target, in T content);
+
+        NetMessenger<T> GetMessenger<T>();
+        NetMessenger GetMessenger(ushort id);
 
         bool TryGetMessenger<T>([MaybeNullWhen(false)] out NetMessenger<T> messenger);
         bool TryGetMessenger(ushort id, [MaybeNullWhen(false)] out NetMessenger messenger);

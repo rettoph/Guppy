@@ -1,4 +1,5 @@
-﻿using LiteNetLib;
+﻿using Guppy.Threading;
+using LiteNetLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,17 +8,37 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Services
 {
-    public abstract class MessageService : IDisposable
+    internal sealed class MessageService : Broker, IMessageService
     {
-        public abstract void Dispose();
+        private readonly INetTarget _target;
+        private readonly NetScope _scope;
 
-        public virtual NetOutgoingMessage<T> CreateOutgoing<T>(T message)
+        public MessageService(
+            INetTarget target,
+            NetScope scope)
         {
-            return this.CreateOutgoing<T>(in message);
+            _target = target;
+            _scope = scope;
         }
 
-        public abstract NetOutgoingMessage<T> CreateOutgoing<T>(in T message);
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
 
-        public abstract void ProcessIncoming(NetIncomingMessage message);
+        public NetOutgoingMessage<T> CreateOutgoing<T>(in T content)
+        {
+            return _scope.Outgoing.Create<T>(_target, in content);
+        }
+
+        public void ProcessIncoming(NetIncomingMessage message)
+        {
+            this.Publish(message);
+
+            foreach(NetDeserialized data in message.Data)
+            {
+                this.Publish(data);
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ using Guppy.Network.Loaders;
 using Guppy.Network.Security.Definitions.NetMessengers;
 using Guppy.Network.Security.Definitions.NetSerializers;
 using Guppy.Network.Security.Messages;
-using Guppy.Network.Security.Services;
+using Guppy.Network.Security.Providers;
 using Guppy.Threading;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +21,7 @@ namespace Guppy.Network.Security.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<IUserProvider, UserProvider>();
 
             services.AddNetSerializer<ConnectionResponseMessageNetSerializerDefinition>();
 

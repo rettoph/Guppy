@@ -2,7 +2,7 @@
 using Guppy.Network.Providers;
 using Guppy.Network.Security;
 using Guppy.Network.Security.Messages;
-using Guppy.Network.Security.Services;
+using Guppy.Network.Security.Providers;
 using Guppy.Network.Security.Structs;
 using Guppy.Providers;
 using Guppy.Threading;
@@ -25,13 +25,14 @@ namespace Guppy.Network.Peers
         private Bus _bus;
 
         public ClientPeer(
-            IRoomProvider rooms,
+            INetScopeProvider rooms,
             INetMessengerProvider messengers,
-            IUserService users,
+            IUserProvider users,
             ISettingProvider settings,
             EventBasedNetListener listener,
             NetManager manager,
-            Bus bus) : base(rooms, messengers, users, settings, listener, manager, bus)
+            Bus bus,
+            NetScope scope) : base(rooms, messengers, users, settings, listener, manager, scope)
         {
             _manager = manager;
             _listener = listener;

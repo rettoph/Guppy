@@ -27,7 +27,7 @@ namespace Guppy.EntityComponent.Initializers
                 services.AddSetup(setup);
             }
 
-            services.AddSingleton<ISetupProvider, SetupProvider>();
+            services.AddScoped<ISetupProvider, SetupProvider>();
         }
     }
 }

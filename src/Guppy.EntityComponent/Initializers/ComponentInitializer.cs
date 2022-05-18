@@ -35,7 +35,7 @@ namespace Guppy.EntityComponent.Initializers
                 services.AddComponent(component);
             }
 
-            services.AddSingleton<IComponentProvider, ComponentProvider>();
+            services.AddScoped<IComponentProvider, ComponentProvider>();
         }
     }
 }

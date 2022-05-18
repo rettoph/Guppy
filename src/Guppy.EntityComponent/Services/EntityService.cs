@@ -1,105 +1,76 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.Providers;
+using Guppy.Services.Common;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.EntityComponent.Services
 {
-    internal sealed class EntityService : IEntityService, IDisposable
+    internal sealed class EntityService : ListService<Guid, IEntity>, IEntityService, IDisposable
     {
-        private IServiceProvider _provider;
         private ISetupProvider _setups;
-        private List<IEntity> _list;
+        private IServiceProvider _provider;
 
-        public event OnEventDelegate<IEntityService, IEntity>? OnEntityAdded;
-        public event OnEventDelegate<IEntityService, IEntity>? OnEntityRemoved;
-
-        public EntityService(IServiceProvider provider, ISetupProvider setups)
+        public EntityService(IServiceProvider provider, ISetupProvider setups) : base(provider)
         {
-            _provider = provider;
             _setups = setups;
-            _list = new List<IEntity>();
+        }
+
+        public void Initialize()
+        {
+            _setups.Initialize();
         }
 
         public void Dispose()
         {
-            while (_list.Any())
+            while (this.items.Any())
             {
-                this.TryRemove(_list.First());
+                this.TryRemove(this.items.First().Value);
             }
         }
 
-        public bool TryAdd(IEntity entity)
+        protected override Guid GetKey(IEntity item)
         {
-            if(_setups.TryCreate(_provider, entity))
+            return item.Id;
+        }
+
+        protected override bool TryAdd(Guid key, IEntity item)
+        {
+            if (_setups.TryCreate(item) && base.TryAdd(key, item))
             {
-                _list.Add(entity);
-
-                this.OnEntityAdded?.Invoke(this, entity);
-
+                item.OnDisposed += this.HandleItemDisposed;
                 return true;
             }
 
             return false;
         }
 
-        public TEntity Create<TEntity>()
-            where TEntity : IEntity
+        protected override bool TryRemove(Guid key, IEntity item)
         {
-            TEntity entity = _provider.GetRequiredService<TEntity>();
-           
-            if(!this.TryAdd(entity))
-            {
-                throw new ArgumentException("Unable to add requested entity instance.", nameof(TEntity));
-            }
-
-            return entity;
-        }
-
-        public IEntity Create(Type type)
-        {
-            typeof(IEntity).ValidateAssignableFrom(type);
-
-            IEntity? entity = _provider.GetRequiredService(type) as IEntity;
-
-            if(entity is null || !this.TryAdd(entity))
-            {
-                throw new ArgumentException("Unable to add requested entity instance.", nameof(type));
-            }
-
-            return entity;
-        }
-
-        public bool TryRemove(IEntity entity)
-        {
-            if(!_list.Remove(entity))
+            if (!base.TryRemove(key, item))
             {
                 return false;
             }
 
-            if(_setups.TryDestroy(_provider, entity))
+            if (!_setups.TryDestroy(item))
             {
-                this.OnEntityRemoved?.Invoke(this, entity);
-
-                return true;
+                return false;
             }
 
-            return false;
+            item.OnDisposed -= this.HandleItemDisposed;
+
+            return true;
         }
 
-        public IEnumerator<IEntity> GetEnumerator()
+        private void HandleItemDisposed(IEntity entity)
         {
-            return _list.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
+            this.TryRemove(entity);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Guppy.Gaming.UI.Definitions.CommandDefinitions
             {
                 return CommandHandler.Create<ImGuiKey, ButtonState>((which, state) =>
                 {
-                    broker.Publish<ImGuiKeyState>(new ImGuiKeyState(which, state));
+                    broker.PublishKnown<ImGuiKeyState>(new ImGuiKeyState(which, state));
                 });
             }
         }

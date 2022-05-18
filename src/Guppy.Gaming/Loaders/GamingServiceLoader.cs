@@ -1,4 +1,5 @@
 ﻿using Guppy.Gaming.Components;
+using Guppy.Gaming.Definitions.Setups;
 using Guppy.Gaming.Providers;
 using Guppy.Gaming.Services;
 using Guppy.Loaders;
@@ -15,11 +16,17 @@ namespace Guppy.Gaming.Loaders
             services.AddGame<TGame>();
 
             services.AddSingleton<ISceneService, SceneService>();
-            services.AddScoped<Bus>();
+            services.AddScoped<ILayerService, LayerService>();
+            services.AddScoped<ILayerableService, LayerableService>();
+            services.AddSingleton<Bus>();
             services.AddScoped<ITimerProvider, TimerProvider>();
 
             services.AddComponent<Game, UpdateTimersComponent<Game>>();
+            services.AddComponent<Game, GameCommandsComponent>();
             services.AddComponent<Scene, UpdateTimersComponent<Scene>>();
+
+            services.AddSetup<LayerableSetupDefinition>();
+            services.AddSetup<LayerSetupDefinition>();
         }
     }
 }

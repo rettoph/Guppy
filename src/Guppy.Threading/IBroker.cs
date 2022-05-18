@@ -26,12 +26,12 @@ namespace Guppy.Threading
         /// Publish an incoming message.
         /// </summary>
         /// <param name="message"></param>
-        public bool Publish(in object message);
+        public bool Publish(object message);
 
         /// <summary>
         /// Publish an incoming message.
         /// </summary>
         /// <param name="message"></param>
-        public bool Publish<T>(in T message);
+        public bool PublishKnown<T>(in T message);
     }
 }

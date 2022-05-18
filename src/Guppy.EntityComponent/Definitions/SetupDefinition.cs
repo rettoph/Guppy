@@ -12,12 +12,17 @@ namespace Guppy.EntityComponent.Definitions
         public virtual Type EntityType { get; } = typeof(IEntity);
         public virtual int Order { get; } = 0;
 
-        protected abstract bool TryCreate(IServiceProvider provider, IEntity entity);
-        protected abstract bool TryDestroy(IServiceProvider provider, IEntity entity);
+        protected virtual void Initialize(IServiceProvider provider)
+        {
+            // 
+        }
+
+        protected abstract bool TryCreate(IEntity entity);
+        protected abstract bool TryDestroy(IEntity entity);
 
         public virtual Setup BuildSetup()
         {
-            return new Setup(this.EntityType, this.TryCreate, this.TryDestroy, this.Order);
+            return new Setup(this.EntityType, this.Initialize, this.TryCreate, this.TryDestroy, this.Order);
         }
     }
 
@@ -26,17 +31,17 @@ namespace Guppy.EntityComponent.Definitions
     {
         public override Type EntityType { get; } = typeof(TEntity);
 
-        protected override bool TryCreate(IServiceProvider provider, IEntity entity)
+        protected override bool TryCreate(IEntity entity)
         {
-            return entity is TEntity casted && this.TryCreate(provider, casted);
+            return entity is TEntity casted && this.TryCreate(casted);
         }
 
-        protected override bool TryDestroy(IServiceProvider provider, IEntity entity)
+        protected override bool TryDestroy(IEntity entity)
         {
-            return entity is TEntity casted && this.TryDestroy(provider, casted);
+            return entity is TEntity casted && this.TryDestroy(casted);
         }
 
-        protected abstract bool TryCreate(IServiceProvider provider, TEntity entity);
-        protected abstract bool TryDestroy(IServiceProvider provider, TEntity entity);
+        protected abstract bool TryCreate(TEntity entity);
+        protected abstract bool TryDestroy(TEntity entity);
     }
 }

@@ -10,21 +10,25 @@ using System.Threading.Tasks;
 
 namespace Guppy.Gaming.Components
 {
-    internal sealed class UpdateTimersComponent<TSubscribableFrameable> : IComponent
-        where TSubscribableFrameable : ISubscribableFrameable
+    internal sealed class UpdateTimersComponent<TSubscribableFrameable> : Component<TSubscribableFrameable>
+        where TSubscribableFrameable : Frameable, ISubscribableFrameable
     {
         private TSubscribableFrameable _subscribable;
         private ITimerProvider _timers;
 
-        public UpdateTimersComponent(TSubscribableFrameable subscribable, ITimerProvider timers)
+        public UpdateTimersComponent(ITimerProvider timers)
         {
-            _subscribable = subscribable;
             _timers = timers;
+            _subscribable = null!;
+        }
 
+        protected override void Initialize(TSubscribableFrameable entity)
+        {
+            _subscribable = entity;
             _subscribable.OnUpdate += this.Update;
         }
 
-        public void Dispose()
+        protected override void Uninitilaize()
         {
             _subscribable.OnUpdate -= this.Update;
         }

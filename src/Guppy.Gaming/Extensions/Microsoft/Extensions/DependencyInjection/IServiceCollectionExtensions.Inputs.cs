@@ -3,7 +3,7 @@ using Guppy.Definitions;
 using Guppy.Definitions.Settings;
 using Guppy.Definitions.SettingSerializers;
 using Guppy.Gaming.Definitions;
-using Guppy.Gaming.Definitions.InputDefinitions;
+using Guppy.Gaming.Definitions.Inputs;
 using Guppy.Gaming.Structs;
 using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;

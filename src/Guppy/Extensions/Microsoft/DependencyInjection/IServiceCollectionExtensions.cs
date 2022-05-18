@@ -10,6 +10,15 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static partial class IServiceCollectionExtensions
     {
+        public static IServiceCollection AddActivated<T, TService, TImplementation>(this IServiceCollection services, bool singleton = false)
+            where TService : class, T
+            where TImplementation : class, TService
+        {
+            var factory = ActivatorUtilitiesHelper.BuildFactory<TImplementation>();
+
+            return services.AddActivated<T, TService>(factory, singleton);
+        }
+
         public static IServiceCollection AddActivated<T, TService>(this IServiceCollection services, bool singleton = false)
             where TService : class, T
         {

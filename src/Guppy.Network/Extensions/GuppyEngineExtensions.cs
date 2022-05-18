@@ -31,6 +31,7 @@ namespace Guppy
                 .AddLoader(new LiteNetLibServiceLoader(channelsCount))
                 .AddLoader(new NetworkServiceLoader())
                 .AddLoader(new SettingsServiceLoader())
+                .AddLoader(new SetupsServiceLoader())
                 .AddLoader(new NetMessageServiceLoader())
                 .AddLoader(new BusServiceLoader())
                 .AddLoader(new SecurityLoader())

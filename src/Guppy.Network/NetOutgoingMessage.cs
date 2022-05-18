@@ -35,7 +35,7 @@ namespace Guppy.Network
         public abstract NetOutgoingMessage Send();
 
         /// <summary>
-        /// Enqueue the message to be sent once the target <see cref="Room"/>'s
+        /// Enqueue the message to be sent once the target <see cref="NetScope"/>'s
         /// <see cref="Services.RoomMessageService.SendEnqueued"/>
         /// is called.
         /// </summary>
@@ -52,8 +52,9 @@ namespace Guppy.Network
 
         public readonly new NetMessenger<T> Messenger;
 
-        public Room Room = default!;
-        public NetSerialized<T> Content = default!;
+        public NetScope Scope = null!;
+        public NetSerialized<T> Content = null!;
+        public INetTarget Target = null!;
 
         public override IEnumerable<NetSerialized> Appendages => _appendages;
 
@@ -76,11 +77,14 @@ namespace Guppy.Network
             _writer.Put(this.Messenger.Id.Bytes);
         }
 
-        internal void Write(Room room, in T content)
+        internal void Write(NetScope scope, INetTarget target, in T content)
         {
-            _writer.Put(room.Id);
+            this.Scope = scope;
+            _writer.Put(scope.id);
 
-            this.Room = room;
+            this.Target = target;
+            _writer.Put(target.NetId);
+
             this.Content = _serializer.Serialize(in content, _writer);
         }
 
@@ -129,7 +133,7 @@ namespace Guppy.Network
 
         public override NetOutgoingMessage<T> EnqueueSend()
         {
-            this.Room.Messages.EnqueueOutgoing(this);
+            this.Scope.Outgoing.Enqueue(this);
 
             return this;
         }

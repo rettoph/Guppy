@@ -12,7 +12,7 @@ namespace Guppy.Gaming.Definitions
 {
     public abstract class CommandDefinition
     {
-        public static readonly Type Guppy = typeof(CommandDefinitions.Guppy);
+        public static readonly Type Guppy = typeof(Commands.Guppy);
 
         public virtual Type? Parent { get; } = null;
         public virtual string Name => this.GetType().Name.ToLower();

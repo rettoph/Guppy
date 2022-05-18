@@ -8,34 +8,39 @@ using System.Threading.Tasks;
 
 namespace Guppy.Services.Common
 {
-    public abstract class CollectionService<TId, T> : ICollectionService<TId, T>
-        where TId : notnull
+    public abstract class CollectionService<TKey, T> : ICollectionService<TKey, T>
+        where TKey : notnull
         where T : class
     {
-        protected Dictionary<TId, T> items;
+        protected Dictionary<TKey, T> items;
 
-        public virtual T this[TId id] => this.items[id];
+        public virtual T this[TKey key] => this.items[key];
 
         public CollectionService(int capacity = 0)
         {
-            this.items = new Dictionary<TId, T>(capacity);
+            this.items = new Dictionary<TKey, T>(capacity);
         }
         public CollectionService(IEnumerable<T> items)
         {
-            this.items = new Dictionary<TId, T>(items.Select(x => new KeyValuePair<TId, T>(this.GetId(x), x)));
+            this.items = new Dictionary<TKey, T>(items.Select(x => new KeyValuePair<TKey, T>(this.GetKey(x), x)));
         }
 
-        protected abstract TId GetId(T item);
+        protected abstract TKey GetKey(T item);
 
-        public bool TryGetById(TId id, [MaybeNullWhen(false)] out T item)
+        public virtual bool TryGet(TKey key, [MaybeNullWhen(false)] out T item)
         {
-            return this.items.TryGetValue(id, out item);
+            return this.items.TryGetValue(key, out item);
         }
 
-        public bool Contains(T item)
+        public virtual T Get(TKey key)
         {
-            var id = this.GetId(item);
-            return this.items.ContainsKey(id);
+            return this.items[key];
+        }
+
+        public virtual bool Contains(T item)
+        {
+            var key = this.GetKey(item);
+            return this.items.ContainsKey(key);
         }
 
         public IEnumerator<T> GetEnumerator()

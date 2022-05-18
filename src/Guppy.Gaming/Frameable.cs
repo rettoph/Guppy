@@ -16,13 +16,13 @@ namespace Guppy.Gaming
         public bool Enabled
         {
             get => _enabled;
-            set => this.OnEnabledChanged.InvokeIf(value != _enabled, this, ref _enabled, value);
+            set => this.OnEnabledChanged!.InvokeIf(value != _enabled, this, ref _enabled, value);
         }
 
         public bool Visible
         {
             get => _visible;
-            set => this.OnVisibleChanged.InvokeIf(value != _visible, this, ref _visible, value);
+            set => this.OnVisibleChanged!.InvokeIf(value != _visible, this, ref _visible, value);
         }
 
         public event OnEventDelegate<IFrameable, bool>? OnEnabledChanged;

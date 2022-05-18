@@ -1,5 +1,5 @@
 ﻿using Guppy.Network.Security.Messages;
-using Guppy.Network.Security.Services;
+using Guppy.Network.Security.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

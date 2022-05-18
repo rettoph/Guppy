@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Gaming
 {
-    public abstract class Game : Frameable, IAsyncable, ISubscribableFrameable
+    public abstract class Game : Frameable, IAsyncable, IPreSubscribableFrameable, ISubscribableFrameable, IPostSubscribableFrameable
     {
         public readonly IEntityService Entities;
         public readonly ISceneService Scenes;
@@ -29,6 +29,7 @@ namespace Guppy.Gaming
             this.Entities = entities;
             this.Scenes = scenes;
 
+            this.Entities.Initialize();
             this.Entities.TryAdd(this);
         }
 

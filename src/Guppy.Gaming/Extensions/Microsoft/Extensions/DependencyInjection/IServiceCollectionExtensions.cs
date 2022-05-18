@@ -22,6 +22,20 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddActivated<Scene, TScene>(factory);
         }
 
+        public static IServiceCollection AddScene<TScene, TImplementation>(this IServiceCollection services)
+            where TScene : Scene
+            where TImplementation : TScene
+        {
+            return services.AddActivated<Scene, TScene, TImplementation>();
+        }
+
+        public static IServiceCollection AddScene<TScene, TImplementation>(this IServiceCollection services, Func<IServiceProvider, TImplementation> factory)
+            where TScene : Scene
+            where TImplementation : TScene
+        {
+            return services.AddActivated<Scene, TScene>(factory);
+        }
+
         public static IServiceCollection AddGame<TGame>(this IServiceCollection services)
             where TGame : Game
         {
