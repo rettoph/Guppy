@@ -13,11 +13,13 @@ namespace Guppy.Network
     {
         public readonly Type Type;
         public readonly DynamicId Id;
+        public readonly int InitialSize;
 
-        protected NetSerializer(Type type, DynamicId id)
+        protected NetSerializer(Type type, DynamicId id, int initialSize)
         {
             this.Type = type;
             this.Id = id;
+            this.InitialSize = initialSize;
         }
 
         public abstract NetDeserialized Deserialize(NetDataReader reader);
@@ -31,7 +33,7 @@ namespace Guppy.Network
         private Factory<NetDeserialized<T>> _deserializedFactory;
         private Factory<NetSerialized<T>> _serializedFactory;
 
-        public NetSerializer(DynamicId id, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize) : base(typeof(T), id)
+        public NetSerializer(DynamicId id, int initialSize, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize) : base(typeof(T), id, initialSize)
         {
             _serialize = serialize;
             _deserialize = deserialize;

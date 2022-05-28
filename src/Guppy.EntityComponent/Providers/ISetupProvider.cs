@@ -9,8 +9,24 @@ namespace Guppy.EntityComponent.Providers
 {
     public interface ISetupProvider
     {
-        void Initialize();
-        bool TryCreate(IEntity entity);
-        bool TryDestroy(IEntity entity);
+        /// <summary>
+        /// Invoke <see cref="Setup.Load"/> on all
+        /// internal <see cref="Setup"/> instances.
+        /// </summary>
+        void Load();
+
+        /// <summary>
+        /// Initialize a specific entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        bool TryInitialize(IEntity entity);
+
+        /// <summary>
+        /// Uninitialize a specific entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        bool TryUninitialize(IEntity entity);
     }
 }

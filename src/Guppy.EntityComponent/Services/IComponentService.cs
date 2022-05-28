@@ -17,7 +17,7 @@ namespace Guppy.EntityComponent.Services
         void Remove<T>()
             where T : class, IComponent;
 
-        T? Get<T>()
+        T Get<T>()
             where T : class, IComponent;
 
         bool Has<T>()

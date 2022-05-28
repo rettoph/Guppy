@@ -1,7 +1,8 @@
 ﻿using Guppy.EntityComponent;
 using Guppy.EntityComponent.Services;
+using Guppy.Network.Components;
 using Guppy.Network.Constants;
-using Guppy.Network.Entities;
+using Guppy.Network;
 using Guppy.Network.Enums;
 using Guppy.Network.Providers;
 using Guppy.Network.Services;
@@ -9,7 +10,9 @@ using Guppy.Providers;
 using Guppy.Threading;
 using LiteNetLib.Utils;
 using Microsoft.Extensions.DependencyInjection;
+using Minnow.Collections;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,76 +20,114 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope : Entity
+    public sealed class NetScope : IDisposable
     {
-        private NetScopeState _state;
-        private readonly IServiceProvider _provider;
+        private NetState _state;
+        private readonly IEntityService _entities;
+        private readonly INetScopeProvider _scopes;
+        private readonly DoubleDictionary<int, Type, ConcurrentQueue<NetOutgoingMessage>> _outgoing;
+        private readonly Queue<NetIncomingMessage> _incoming;
 
         internal byte id;
 
-        public new byte Id => this.id;
-        public NetScopeState State
+        public byte Id => this.id;
+        public NetState State
         {
             get => _state;
             set => this.OnStateChanged!.InvokeIf(value != _state, this, ref _state, value);
         }
 
-        public readonly NetScopeUserService Users;
-        public readonly INetScopeIncomingMessageService Incoming;
-        public readonly INetScopeOutgoingMessageService Outgoing;
+        public readonly INetMessengerService Messengers;
 
-        public NetSystemMessenger? Messenger { get; private set; }
+        public Room? Room { get; private set; }
 
-        public event OnChangedEventDelegate<NetScope, NetScopeState>? OnStateChanged;
+        public event OnChangedEventDelegate<NetScope, NetState>? OnStateChanged;
 
-        public NetScope(IServiceProvider provider, ISettingProvider settings, INetTargetService targets, INetMessengerProvider messengers)
+        public NetScope(INetScopeProvider scopes, IEntityService entities, INetMessengerService messengers, INetMessageProvider messages)
         {
-            _provider = provider;
+            _scopes = scopes;
+            _entities = entities;
+            _incoming = new Queue<NetIncomingMessage>();
+            _outgoing = messages.OrderBy(x => x.OutgoingPriority)
+                 .ToDoubleDictionary(
+                     keySelector1: x => x.OutgoingPriority,
+                     keySelector2: x => x.Type,
+                     elementSelector: x => new ConcurrentQueue<NetOutgoingMessage>());
 
-            this.Users = new NetScopeUserService(this, settings.Get<int>(SettingConstants.MaxRoomUsers).Value);
-            this.Incoming = new NetScopeIncomingMessageService(targets);
-            this.Outgoing = new NetScopeOutgoingMessageService(this, messengers);
-            this.State = NetScopeState.Stopped;
+            this.Messengers = messengers;
+            this.State = NetState.Stopped;
+
+            _scopes.TryAdd(this);
         }
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
-
             this.Stop();
+            _scopes.TryRemove(this);
         }
 
         public void Start(byte id)
         {
-            if(this.State != NetScopeState.Stopped)
+            if(this.State != NetState.Stopped)
             {
                 return;
             }
 
             this.id = id;
-            this.State = NetScopeState.Started;
+            this.State = NetState.Started;
 
             // Create the scopes system messenger...
-            var entities = _provider.GetRequiredService<IEntityService>();
-            entities.TryAdd(this);
-            entities.TryCreate<NetSystemMessenger>(out var messenger);
-            this.Messenger = messenger;
+            this.Room = _entities.Create<Room>();
         }
 
         public void Stop()
         {
-            if (this.State != NetScopeState.Started)
+            if (this.State != NetState.Started)
             {
                 return;
             }
 
-            this.State = NetScopeState.Stopped;
+            this.State = NetState.Stopped;
+        }
+
+        internal void Enqueue(NetIncomingMessage message)
+        {
+            _incoming.Enqueue(message);
+        }
+
+        internal void Enqueue(NetOutgoingMessage message)
+        {
+            _outgoing[message.Factory.Type].Enqueue(message);
         }
 
         public void Clean()
         {
-            this.Incoming.Read();
-            this.Outgoing.Send(100); // TODO: Update this.
+            // Read incoming messages
+            while (_incoming.TryDequeue(out NetIncomingMessage? im))
+            {
+                if (this.Messengers.TryGet(im.MessengerId, out NetMessenger? messenger))
+                {
+                    messenger.Publish(im);
+                }
+                else
+                {
+                    // This should log gracefully
+                    throw new Exception();
+                }
+            }
+
+            // Send outgoing messages...
+            int maximum = 100;
+            int count = 0;
+
+            foreach (ConcurrentQueue<NetOutgoingMessage> queue in _outgoing.Values)
+            {
+                while (count++ < maximum && queue.TryDequeue(out NetOutgoingMessage? message))
+                {
+                    message.Send();
+                    message.Recycle();
+                }
+            }
         }
     }
 }

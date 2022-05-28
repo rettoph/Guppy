@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Messages
 {
-    public struct UserActionMessage
+    public class UserActionMessage
     {
         public readonly int Id;
         public readonly IEnumerable<Claim> Claims;

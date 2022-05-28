@@ -13,6 +13,6 @@ namespace Guppy.Threading
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        Boolean Process(in T message);
+        bool Process(in T message);
     }
 }

@@ -18,7 +18,7 @@ namespace Guppy.EntityComponent.Providers
         public ComponentProvider(
             IServiceProvider provider,
             ITypeProvider<IEntity> entities,
-            IEnumerable<ComponentDefinition> components,
+            IEnumerable<ComponentDefinition> componentDefinitions,
             IEnumerable<ComponentFilterDefinition> filterDefinitions)
         {
             var filters = filterDefinitions.Select(x => x.BuildComponentFilter());
@@ -29,7 +29,7 @@ namespace Guppy.EntityComponent.Providers
 
             foreach (Type entity in entities)
             {
-                var entityComponents = components.Where(c => c.EntityType.IsAssignableFrom(entity));
+                var entityComponents = componentDefinitions.Where(c => c.EntityType.IsAssignableFrom(entity));
 
                 foreach (ComponentDefinition component in entityComponents)
                 {
@@ -51,8 +51,8 @@ namespace Guppy.EntityComponent.Providers
             {
                 if(ecf.Filter(_provider, entity))
                 {
-                    IComponent component = ecf.ComponentDescriptor.BuildComponent(_provider);
-                    components.Add(ecf.ComponentDescriptor.ComponentType, component);
+                    IComponent component = ecf.ComponentDefinition.BuildComponent(_provider);
+                    components.Add(ecf.ComponentDefinition.ComponentType, component);
                 }
             }
 

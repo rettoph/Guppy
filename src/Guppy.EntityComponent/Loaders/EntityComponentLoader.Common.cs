@@ -18,6 +18,7 @@ namespace Guppy.EntityComponent.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSetup<ComponentSetupDefinition>();
+            services.AddSetup<InitializableSetupDefinition>();
         }
     }
 }

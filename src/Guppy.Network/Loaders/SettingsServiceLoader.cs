@@ -23,7 +23,6 @@ namespace Guppy.Network.Loaders
 
             services.AddSetting(SettingConstants.MaxNetOutgoingMessageRecipients, 256, false, SettingConstants.NetworkTag);
             services.AddSetting(SettingConstants.MaxRoomUsers, 256, false, SettingConstants.NetworkTag);
-            services.AddSetting(SettingConstants.MaxPipeUsers, 256, false, SettingConstants.NetworkTag);
         }
     }
 }

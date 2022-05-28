@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Constants;
+﻿using Guppy.Network.Components;
+using Guppy.Network.Constants;
 using Guppy.Network.Providers;
 using Guppy.Providers;
 using LiteNetLib;
@@ -13,48 +14,37 @@ namespace Guppy.Network
 {
     public abstract class NetOutgoingMessage
     {
-        public readonly NetMessenger Messenger;
+        public readonly NetMessageFactory Factory;
 
         public abstract IEnumerable<NetSerialized> Appendages { get; }
         public abstract IEnumerable<NetPeer> Recipients { get; }
 
-        protected NetOutgoingMessage(NetMessenger mesenger)
+        protected NetOutgoingMessage(NetMessageFactory factory)
         {
-            this.Messenger = mesenger;
+            this.Factory = factory;
         }
 
         public abstract NetOutgoingMessage Append<TAppendage>(in TAppendage appendage);
         public abstract NetOutgoingMessage AddRecipient(NetPeer recipient);
         public abstract NetOutgoingMessage AddRecipients(IEnumerable<NetPeer> recipients);
 
-        public abstract NetOutgoingMessage EnqueueSend();
-
-        /// <summary>
-        /// Send the message immidiately.
-        /// </summary>
         public abstract NetOutgoingMessage Send();
-
-        /// <summary>
-        /// Enqueue the message to be sent once the target <see cref="NetScope"/>'s
-        /// <see cref="Services.RoomMessageService.SendEnqueued"/>
-        /// is called.
-        /// </summary>
+        public abstract NetOutgoingMessage Enqueue();
         public abstract NetOutgoingMessage Recycle();
     }
 
     public sealed class NetOutgoingMessage<T> : NetOutgoingMessage
     {
         private readonly Buffer<NetPeer> _recipients;
-        private readonly NetDataWriter _writer;
         private readonly List<NetSerialized> _appendages;
         private readonly INetSerializerProvider _serializers;
         private readonly NetSerializer<T> _serializer;
 
-        public readonly new NetMessenger<T> Messenger;
+        public readonly new NetMessageFactory<T> Factory;
+        public readonly NetDataWriter Writer;
 
-        public NetScope Scope = null!;
+        public NetMessenger? Messenger;
         public NetSerialized<T> Content = null!;
-        public INetTarget Target = null!;
 
         public override IEnumerable<NetSerialized> Appendages => _appendages;
 
@@ -64,33 +54,32 @@ namespace Guppy.Network
             INetSerializerProvider serializers,
             NetSerializer<T> serializer,
             int recipientsBufferSize,
-            NetMessenger<T> messenger) : base(messenger)
+            NetMessageFactory<T> messenger) : base(messenger)
         {
             _serializers = serializers;
             _serializer = serializer;
-            _writer = new NetDataWriter();
             _appendages = new List<NetSerialized>();
             _recipients = new Buffer<NetPeer>(recipientsBufferSize);
 
-            this.Messenger = messenger;
+            this.Factory = messenger;
+            this.Writer = new NetDataWriter();
 
-            _writer.Put(this.Messenger.Id.Bytes);
+            this.Writer.Put(this.Factory.Id.Bytes);
         }
 
-        internal void Write(NetScope scope, INetTarget target, in T content)
+        internal void Write(NetMessenger messenger, in T content)
         {
-            this.Scope = scope;
-            _writer.Put(scope.id);
+            this.Messenger = messenger;
 
-            this.Target = target;
-            _writer.Put(target.NetId);
+            this.Writer.Put(this.Messenger.Scope.Id);
+            this.Writer.Put(this.Messenger.Id);
 
-            this.Content = _serializer.Serialize(in content, _writer);
+            this.Content = _serializer.Serialize(in content, this.Writer);
         }
 
         public override NetOutgoingMessage<T> Append<TAppendage>(in TAppendage appendage)
         {
-            NetSerialized serialized = _serializers.Serialize(in appendage, _writer);
+            NetSerialized serialized = _serializers.Serialize(in appendage, this.Writer);
             _appendages.Add(serialized);
 
             return this;
@@ -111,29 +100,8 @@ namespace Guppy.Network
             _appendages.Clear();
             _recipients.Reset();
 
-            _writer.SetPosition(this.Messenger.Id.Bytes.Length);
-
-            this.Messenger.TryRecycle(this);
-
-            return this;
-        }
-
-        public override NetOutgoingMessage<T> Send()
-        {
-            foreach(NetPeer recipient in _recipients)
-            {
-                recipient.Send(
-                    _writer, 
-                    this.Messenger.OutgoingChannel, 
-                    this.Messenger.DeliveryMethod);
-            }
-
-            return this;
-        }
-
-        public override NetOutgoingMessage<T> EnqueueSend()
-        {
-            this.Scope.Outgoing.Enqueue(this);
+            this.Writer.SetPosition(this.Factory.Id.Bytes.Length);
+            this.Factory.TryRecycle(this);
 
             return this;
         }
@@ -148,6 +116,23 @@ namespace Guppy.Network
         public override NetOutgoingMessage<T> AddRecipients(IEnumerable<NetPeer> recipients)
         {
             _recipients.AddRange(recipients);
+
+            return this;
+        }
+
+        public override NetOutgoingMessage<T> Send()
+        {
+            foreach(NetPeer recipient in _recipients)
+            {
+                recipient.Send(this.Writer, this.Factory.OutgoingChannel, this.Factory.DeliveryMethod);
+            }
+
+            return this;
+        }
+
+        public override NetOutgoingMessage<T> Enqueue()
+        {
+            this.Messenger!.Scope.Enqueue(this);
 
             return this;
         }

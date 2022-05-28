@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Services
 {
-    public interface INetScopeOutgoingMessageService
+    public interface INetMessageService
     {
-        NetOutgoingMessage<T> Create<T>(INetTarget target, in T content);
-
+        void Send(NetOutgoingMessage message);
         void Enqueue(NetOutgoingMessage message);
-        void Send(int maximum);
+        void Enqueue(NetIncomingMessage message);
+        NetOutgoingMessage<T> Create<T>(NetTarget target, in T message);
     }
 }

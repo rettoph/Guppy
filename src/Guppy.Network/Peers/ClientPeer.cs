@@ -26,7 +26,7 @@ namespace Guppy.Network.Peers
 
         public ClientPeer(
             INetScopeProvider rooms,
-            INetMessengerProvider messengers,
+            INetMessageProvider messengers,
             IUserProvider users,
             ISettingProvider settings,
             EventBasedNetListener listener,

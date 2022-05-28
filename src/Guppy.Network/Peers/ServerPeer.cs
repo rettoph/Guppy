@@ -1,4 +1,5 @@
 ﻿using Guppy.EntityComponent.Services;
+using Guppy.Network.Components;
 using Guppy.Network.Enums;
 using Guppy.Network.Providers;
 using Guppy.Network.Security;
@@ -27,7 +28,7 @@ namespace Guppy.Network.Peers
 
         public ServerPeer(
             INetScopeProvider rooms,
-            INetMessengerProvider messengers,
+            INetMessageProvider messengers,
             IUserProvider users,
             ISettingProvider settings,
             EventBasedNetListener listener,
@@ -61,7 +62,7 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
-            this.Scope!.Users.TryJoin(this.CurrentUser);
+            this.Scope.Room!.Users.TryJoin(this.CurrentUser);
 
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
@@ -77,7 +78,7 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
-            this.Scope!.Users.TryJoin(this.CurrentUser);
+            this.Scope.Room!.Users.TryJoin(this.CurrentUser);
 
             return _manager.Start(addressIPv4, addressIPv6, port);
         }
@@ -91,7 +92,7 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.CurrentUser = this.Users.UpdateOrCreate(-1, claims, null);
-            this.Scope!.Users.TryJoin(this.CurrentUser);
+            this.Scope.Room!.Users.TryJoin(this.CurrentUser);
 
             return _manager.Start(port);
         }
@@ -113,13 +114,13 @@ namespace Guppy.Network.Peers
                 client.Id, 
                 user.Claims.ToArray());
 
-            this.Scope.Messenger!.Messages.CreateOutgoing<ConnectionResponseMessage>(in response)
+            this.Scope.Room!.Components.Get<NetMessenger>().Create<ConnectionResponseMessage>(in response)
                 .AddRecipient(client)
                 .Send()
                 .Recycle();
 
             // Add the new user to the primary room.
-            this.Scope.Users.TryJoin(user);
+            this.Scope.Room.Users.TryJoin(user);
         }
     }
 }

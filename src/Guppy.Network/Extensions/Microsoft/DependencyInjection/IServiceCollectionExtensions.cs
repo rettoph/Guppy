@@ -1,5 +1,5 @@
 ﻿using Guppy.Network.Definitions;
-using Guppy.Network.Definitions.NetMessengers;
+using Guppy.Network.Definitions.NetMessageFactories;
 using Guppy.Network.Definitions.NetSerializers;
 using Guppy.Network.Delegates;
 using LiteNetLib;
@@ -36,23 +36,23 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddNetMessenger(this IServiceCollection services, Type netMessengerDefinitionType)
         {
-            return services.AddSingleton(typeof(NetMessengerDefinition), netMessengerDefinitionType);
+            return services.AddSingleton(typeof(NetMessageFactoryDefinition), netMessengerDefinitionType);
         }
 
         public static IServiceCollection AddNetMessenger<TDefinition>(this IServiceCollection services)
-            where TDefinition : NetMessengerDefinition
+            where TDefinition : NetMessageFactoryDefinition
         {
-            return services.AddSingleton<NetMessengerDefinition, TDefinition>();
+            return services.AddSingleton<NetMessageFactoryDefinition, TDefinition>();
         }
 
-        public static IServiceCollection AddNetMessenger(this IServiceCollection services, NetMessengerDefinition definition)
+        public static IServiceCollection AddNetMessenger(this IServiceCollection services, NetMessageFactoryDefinition definition)
         {
-            return services.AddSingleton<NetMessengerDefinition>(definition);
+            return services.AddSingleton<NetMessageFactoryDefinition>(definition);
         }
 
         public static IServiceCollection AddNetMessenger<T>(this IServiceCollection services, DeliveryMethod deliveryMethod, byte outgoingChannel, int outgoingPriority)
         {
-            return services.AddNetMessenger(new RuntimeNetMessengerDefinition<T>(deliveryMethod, outgoingChannel, outgoingPriority));
+            return services.AddNetMessenger(new RuntimeNetMessageFactoryDefinition<T>(deliveryMethod, outgoingChannel, outgoingPriority));
         }
     }
 }

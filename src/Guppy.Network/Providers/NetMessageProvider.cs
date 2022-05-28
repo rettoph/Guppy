@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Definitions;
+﻿using Guppy.Network.Components;
+using Guppy.Network.Definitions;
 using Guppy.Network.Utilities;
 using Guppy.Providers;
 using LiteNetLib;
@@ -14,58 +15,58 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Providers
 {
-    internal sealed class NetMessengerProvider : INetMessengerProvider
+    internal sealed class NetMessageProvider : INetMessageProvider
     {
         private readonly INetSerializerProvider _serializers;
         private readonly ISettingProvider _settings;
         private readonly DynamicIdProvider _ids;
-        private readonly DoubleDictionary<Type, ushort, NetMessenger> _messengers;
+        private readonly DoubleDictionary<Type, ushort, NetMessageFactory> _factories;
 
-        public NetMessengerProvider(
+        public NetMessageProvider(
             INetSerializerProvider serializers,
             ISettingProvider settings,
-            IEnumerable<NetMessengerDefinition> definitions)
+            IEnumerable<NetMessageFactoryDefinition> definitions)
         {
             _serializers = serializers;
             _settings = settings;
             _ids = new DynamicIdProvider((ushort)definitions.Count());
-            _messengers = _ids.All()
+            _factories = _ids.All()
                 .Zip(definitions, (id, desc) => desc.BuildNetMessenger(id, _serializers, _settings))
                 .ToDoubleDictionary(
                     keySelector1: s => s.Type,
                     keySelector2: s => s.Id.Value);
         }
 
-        public NetIncomingMessage CreateIncoming(NetDataReader reader)
+        public NetIncomingMessage CreateIncoming(NetPeer sender, NetDataReader reader)
         {
             var id = _ids.Read(reader);
-            var messenger = _messengers[id];
-            var incoming = messenger.ReadIncoming(reader);
+            var messenger = _factories[id];
+            var incoming = messenger.CreateIncoming(sender, reader);
         
             return incoming;
         }
         
-        public NetOutgoingMessage<T> CreateOutgoing<T>(NetScope scope, INetTarget target, in T content)
+        public NetOutgoingMessage<T> CreateOutgoing<T>(NetMessenger messenger, in T content)
         {
-            var messenger = (_messengers[typeof(T)] as NetMessenger<T>)!;
-            var outgoing = messenger.CreateOutgoing(scope, target, in content);
+            var factory = (_factories[typeof(T)] as NetMessageFactory<T>)!;
+            var outgoing = factory.CreateOutgoing(messenger, in content);
         
             return outgoing;
         }
 
-        public NetMessenger<T> GetMessenger<T>()
+        public NetMessageFactory<T> GetFactory<T>()
         {
-            return (NetMessenger<T>)_messengers[typeof(T)];
+            return (NetMessageFactory<T>)_factories[typeof(T)];
         }
 
-        public NetMessenger GetMessenger(ushort id)
+        public NetMessageFactory GetFactory(ushort id)
         {
-            return _messengers[id];
+            return _factories[id];
         }
 
-        public bool TryGetMessenger<T>([MaybeNullWhen(false)] out NetMessenger<T> messenger)
+        public bool TryGetFactory<T>([MaybeNullWhen(false)] out NetMessageFactory<T> messenger)
         {
-            if (_messengers.TryGetValue(typeof(T), out NetMessenger? value) && value is NetMessenger<T> casted)
+            if (_factories.TryGetValue(typeof(T), out NetMessageFactory? value) && value is NetMessageFactory<T> casted)
             {
                 messenger = casted;
                 return true;
@@ -75,14 +76,14 @@ namespace Guppy.Network.Providers
             return false;
         }
 
-        public bool TryGetMessenger(ushort id, [MaybeNullWhen(false)] out NetMessenger messenger)
+        public bool TryGetFactory(ushort id, [MaybeNullWhen(false)] out NetMessageFactory messenger)
         {
-            return _messengers.TryGetValue(id, out messenger);
+            return _factories.TryGetValue(id, out messenger);
         }
 
-        public IEnumerator<NetMessenger> GetEnumerator()
+        public IEnumerator<NetMessageFactory> GetEnumerator()
         {
-            return _messengers.Values.GetEnumerator();
+            return _factories.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

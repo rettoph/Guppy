@@ -18,14 +18,14 @@ namespace Guppy.EntityComponent.Definitions.Setups
             _components = components;
         }
 
-        protected override bool TryCreate(IEntity entity)
+        protected override bool TryInitialize(IEntity entity)
         {
             entity.Components = _components.Create(entity);
 
             return true;
         }
 
-        protected override bool TryDestroy(IEntity entity)
+        protected override bool TryUninitialize(IEntity entity)
         {
             entity.Components.Dispose();
 

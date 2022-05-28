@@ -10,13 +10,13 @@ namespace Guppy.EntityComponent
     internal sealed class EntityComponentFilters
     {
         public readonly Type EntityType;
-        public readonly ComponentDefinition ComponentDescriptor;
+        public readonly ComponentDefinition ComponentDefinition;
         public readonly ComponentFilter[] Filters;
 
         public EntityComponentFilters(Type entityType, ComponentDefinition component, ComponentFilter[] filters)
         {
             this.EntityType = entityType;
-            this.ComponentDescriptor = component;
+            this.ComponentDefinition = component;
             this.Filters = filters;
         }
 
@@ -26,7 +26,7 @@ namespace Guppy.EntityComponent
 
             foreach(ComponentFilter filter in this.Filters)
             {
-                result &= filter.EntityFilter(provider, entity, this.ComponentDescriptor);
+                result &= filter.EntityFilter(provider, entity, this.ComponentDefinition);
             }
 
             return result;

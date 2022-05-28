@@ -30,10 +30,10 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddScoped<SetupDefinition>(p => definition);
         }
 
-        public static IServiceCollection AddSetup<TEntity>(this IServiceCollection services, Func<TEntity, bool> create, Func<TEntity, bool> destroy, int order)
+        public static IServiceCollection AddSetup<TEntity>(this IServiceCollection services, Func<TEntity, bool> initialize, Func<TEntity, bool> uninitialize, int order)
             where TEntity : class, IEntity
         {
-            return services.AddSetup(new RuntimeSetupDefinition<TEntity>(create, destroy, order));
+            return services.AddSetup(new RuntimeSetupDefinition<TEntity>(initialize, uninitialize, order));
         }
 
         public static IServiceCollection AddComponentFilter(this IServiceCollection services, Type componentFilterDefinitionType)

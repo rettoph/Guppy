@@ -9,6 +9,8 @@ namespace Guppy.Network.Providers
 {
     public interface INetScopeProvider : IEnumerable<NetScope>
     {
+        NetScope Get(byte id);
+
         bool TryGet(byte id, [MaybeNullWhen(false)] out NetScope room);
 
         internal bool TryAdd(NetScope room);

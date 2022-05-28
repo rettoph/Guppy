@@ -1,12 +1,13 @@
 ﻿using Guppy.Loaders;
-using Guppy.Network.Components;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Guppy.Network.Definitions.ComponentFilters;
 using Guppy.Network.Services;
 using Minnow.Providers;
-using Guppy.Network.Entities;
+using Guppy.Network;
+using Guppy.Network.Utilities;
+using Guppy.Network.Components;
 
 namespace Guppy.Network.Loaders
 {
@@ -16,8 +17,10 @@ namespace Guppy.Network.Loaders
         {
             services.AddSingleton<INetScopeProvider, NetScopeProvider>();
             services.AddScoped<NetScope>();
-            services.AddScoped<INetTargetService, NetTargetService>();
-            services.AddScoped<NetSystemMessenger>();
+            services.AddScoped<INetMessengerService, NetMessengerService>();
+            services.AddScoped<Room>();
+            services.AddScoped<RequestAuthorizer>();
+            services.AddScoped<NetIdProvider>();
 
             services.AddActivated<Peer, ServerPeer>(singleton: true);
             services.AddActivated<Peer, ClientPeer>(singleton: true);
@@ -25,8 +28,7 @@ namespace Guppy.Network.Loaders
             services.AddComponentFilter<HostTypeRequiredComponentFilter>();
             services.AddComponentFilter<NetworkAuthorizationRequiredComponentFilter>();
 
-            services.AddComponent<NetSystemMessenger, NetSystemMessengerRemoteMasterComponent>();
-            services.AddComponent<NetSystemMessenger, NetSystemMessengerRemoteSlaveComponent>();
+            services.AddComponent<INetTarget, NetMessenger>();
 
             services.AddSingleton<ITypeProvider<INetTarget>>(p => p.GetRequiredService<IAssemblyProvider>().GetTypes<INetTarget>(t => t.IsConcrete()));
         }

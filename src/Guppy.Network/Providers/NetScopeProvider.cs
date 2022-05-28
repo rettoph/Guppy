@@ -22,6 +22,11 @@ namespace Guppy.Network.Providers
             _started = new Dictionary<byte, NetScope>();
         }
 
+        public NetScope Get(byte id)
+        {
+            return _started[id];
+        }
+
         public bool TryGet(byte id, [MaybeNullWhen(false)] out NetScope room)
         {
             return _started.TryGetValue(id, out room);
@@ -31,7 +36,11 @@ namespace Guppy.Network.Providers
         {
             if(_scopes.Add(scope))
             {
-                this.CleanRoomState(scope, scope.State);
+                if(scope.State == NetState.Started)
+                {
+                    this.CleanRoomState(scope, scope.State);
+                }
+                
                 scope.OnStateChanged += this.HandleRoomStateChanged;
 
                 return true;
@@ -44,7 +53,7 @@ namespace Guppy.Network.Providers
         {
             if(_scopes.Remove(scope))
             {
-                this.CleanRoomState(scope, NetScopeState.Stopped);
+                this.CleanRoomState(scope, NetState.Stopped);
                 scope.OnStateChanged -= this.HandleRoomStateChanged;
 
                 return true;
@@ -53,22 +62,22 @@ namespace Guppy.Network.Providers
             return false;
         }
 
-        private void CleanRoomState(NetScope scope, NetScopeState state)
+        private void CleanRoomState(NetScope scope, NetState state)
         {
-            if (state == NetScopeState.Started)
+            if (state == NetState.Started)
             {
                 _started.Add(scope.Id, scope);
                 return;
             }
 
-            if (state == NetScopeState.Stopped)
+            if (state == NetState.Stopped)
             {
                 _started.Remove(scope.Id);
                 return;
             }
         }
 
-        private void HandleRoomStateChanged(NetScope sender, NetScopeState old, NetScopeState value)
+        private void HandleRoomStateChanged(NetScope sender, NetState old, NetState value)
         {
             this.CleanRoomState(sender, value);
         }

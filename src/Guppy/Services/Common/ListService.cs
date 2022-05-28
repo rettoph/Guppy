@@ -94,6 +94,24 @@ namespace Guppy.Services.Common
             return item;
         }
 
+        public bool TryCreate([MaybeNullWhen(false)] out T item)
+        {
+            if (this.TryCreate<T>(this.GetFactoryServiceProvider(_provider), out item))
+            {
+                return this.TryAdd(item);
+            }
+
+            return false;
+        }
+
+        public T Create()
+        {
+            var item = this.Create<T>(this.GetFactoryServiceProvider(_provider));
+            this.TryAdd(item);
+
+            return item;
+        }
+
         protected virtual bool TryCreate<TItem>(IServiceProvider provider, [MaybeNullWhen(false)] out TItem item)
             where TItem : class, T
         {

@@ -10,7 +10,9 @@ namespace Guppy.Network.Definitions.NetSerializers
 {
     internal sealed class RuntimeNetSerializerDefinition<T> : NetSerializerDefinition
     {
-        public override Type Type => throw new NotImplementedException();
+        public override Type Type => typeof(T);
+
+        public override int InitialSize => 0;
 
         private NetSerializeDelegate<T> _serialize;
         private NetDeserializeDelegate<T> _deserialize;
@@ -23,7 +25,7 @@ namespace Guppy.Network.Definitions.NetSerializers
 
         public override NetSerializer BuildNetSerializer(DynamicId id)
         {
-            return new NetSerializer<T>(id, _serialize, _deserialize);
+            return new NetSerializer<T>(id, this.InitialSize, _serialize, _deserialize);
         }
     }
 }

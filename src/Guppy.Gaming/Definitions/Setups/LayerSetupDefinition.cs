@@ -18,14 +18,14 @@ namespace Guppy.Gaming.Definitions.Setups
             _layers = layers;
         }
 
-        protected override bool TryCreate(ILayer entity)
+        protected override bool TryInitialize(ILayer entity)
         {
             _layers.Add(entity);
 
             return true;
         }
 
-        protected override bool TryDestroy(ILayer entity)
+        protected override bool TryUninitialize(ILayer entity)
         {
             _layers.Remove(entity);
 

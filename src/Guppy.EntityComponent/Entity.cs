@@ -26,6 +26,7 @@ namespace Guppy.EntityComponent
 
         protected virtual void Dispose(bool disposing)
         {
+            //
         }
 
         public void Dispose()

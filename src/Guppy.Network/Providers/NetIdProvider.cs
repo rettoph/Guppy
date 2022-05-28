@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Providers
 {
-    internal class NetIdProvider
+    public class NetIdProvider
     {
         private ushort _next;
         private Queue<ushort> _released;

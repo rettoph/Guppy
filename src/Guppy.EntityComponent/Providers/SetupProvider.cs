@@ -27,43 +27,36 @@ namespace Guppy.EntityComponent.Providers
             }
         }
 
-        public void Initialize()
+        public void Load()
         {
             foreach(Setup setup in _setups.Values.SelectMany(x => x).Distinct())
             {
-                setup.Initialize(_provider);
+                setup.Load(_provider);
             }
         }
 
-        public bool TryCreate(IEntity entity)
+        public bool TryInitialize(IEntity entity)
         {
             bool result = true;
 
             foreach (Setup setup in _setups[entity.GetType()])
             {
-                result &= setup.TryCreate(entity);
+                result &= setup.TryInitialize(entity);
             }
 
             return result;
         }
 
-        public bool TryDestroy(IEntity entity)
+        public bool TryUninitialize(IEntity entity)
         {
-            try
-            {
-                bool result = true;
+            bool result = true;
 
-                foreach (Setup setup in _setups[entity.GetType()])
-                {
-                    result &= setup.TryDestroy(entity);
-                }
-
-                return result;
-            }
-            catch (Exception e)
+            foreach (Setup setup in _setups[entity.GetType()])
             {
-                return false;
+                result &= setup.TryUninitialize(entity);
             }
+
+            return result;
         }
     }
 }

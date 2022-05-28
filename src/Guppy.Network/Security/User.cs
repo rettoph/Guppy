@@ -13,13 +13,13 @@ namespace Guppy.Network.Security
     {
 
         private Dictionary<String, Claim> _claims;
-        private List<NetScope> _rooms;
+        private List<Room> _rooms;
 
         public readonly int Id;
         public readonly DateTime CreatedAt;
 
         public IEnumerable<Claim> Claims => _claims.Values;
-        public IEnumerable<NetScope> Rooms => _rooms;
+        public IEnumerable<Room> Rooms => _rooms;
         public Boolean IsCurrentUser { get; internal set; }
         public DateTime UpdatedAt { get; private set; }
         public NetPeer? NetPeer { get; internal set; }
@@ -33,7 +33,7 @@ namespace Guppy.Network.Security
             this.NetPeer = peer;
 
             _claims = claims.ToDictionary(c => c.Key);
-            _rooms = new List<NetScope>();
+            _rooms = new List<Room>();
 
             this.CreatedAt = DateTime.Now;
             this.UpdatedAt = DateTime.Now;
@@ -56,14 +56,14 @@ namespace Guppy.Network.Security
             this.UpdatedAt = DateTime.Now;
         }
 
-        internal void AddToRoom(NetScope room)
+        internal void AddToRoom(Room room)
         {
             _rooms.Add(room);
 
             this.UpdatedAt = DateTime.Now;
         }
 
-        internal void RemoveFromRoom(NetScope room)
+        internal void RemoveFromRoom(Room room)
         {
             _rooms.Remove(room);
 

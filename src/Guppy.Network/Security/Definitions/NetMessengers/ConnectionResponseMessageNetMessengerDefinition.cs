@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Security.Definitions.NetMessengers
 {
-    internal sealed class ConnectionResponseMessageNetMessengerDefinition : NetMessengerDefinition<ConnectionResponseMessage>
+    internal sealed class ConnectionResponseMessageNetMessengerDefinition : NetMessageFactoryDefinition<ConnectionResponseMessage>
     {
         public override DeliveryMethod DeliveryMethod => MessengerConstants.PeerDeliveryMethod;
 

@@ -11,10 +11,19 @@ namespace Guppy.Network.Loaders
 {
     internal sealed class SetupsServiceLoader : IServiceLoader
     {
+        private readonly bool _autoStartNetMessengers;
+
+        public SetupsServiceLoader(bool autoStartNetMessengers)
+        {
+            _autoStartNetMessengers = autoStartNetMessengers;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSetup<NetScopeSetupDefinition>();
-            services.AddSetup<NetTargetSetupDefinition>();
+            if(_autoStartNetMessengers)
+            {
+                services.AddSetup<NetTargetSetupDefinition>();
+            }
         }
     }
 }

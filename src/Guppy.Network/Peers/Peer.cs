@@ -15,7 +15,7 @@ namespace Guppy.Network.Peers
 {
     public abstract class Peer : IDisposable
     {
-        private readonly INetMessengerProvider _messengers;
+        private readonly INetMessageProvider _messengers;
         private readonly IUserProvider _users;
         private readonly EventBasedNetListener _listener;
         private readonly NetManager _manager;
@@ -34,7 +34,7 @@ namespace Guppy.Network.Peers
 
         public Peer(
             INetScopeProvider scopes,
-            INetMessengerProvider messengers,
+            INetMessageProvider messengers,
             IUserProvider users,
             ISettingProvider settings,
             EventBasedNetListener listener,
@@ -80,11 +80,11 @@ namespace Guppy.Network.Peers
 
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
-            NetIncomingMessage message = _messengers.CreateIncoming(reader);
+            NetIncomingMessage message = _messengers.CreateIncoming(peer, reader);
             
-            if(this.Scopes.TryGet(message.ScopeId, out NetScope? room))
+            if(this.Scopes.TryGet(message.ScopeId, out NetScope? scope))
             {
-                room.Incoming.Enqueue(message);
+                scope.Enqueue(message);
             }
             else
             {

@@ -9,17 +9,17 @@ namespace Guppy.EntityComponent
     public sealed class Setup
     {
         public readonly Type EntityType;
-        public Action<IServiceProvider> Initialize;
-        public Func<IEntity, bool> TryCreate;
-        public Func<IEntity, bool> TryDestroy;
+        public Action<IServiceProvider> Load;
+        public Func<IEntity, bool> TryInitialize;
+        public Func<IEntity, bool> TryUninitialize;
         public readonly int Order;
 
-        public Setup(Type entityType, Action<IServiceProvider> initialize, Func<IEntity, bool> tryCreate, Func<IEntity, bool> tryDestroy, int order)
+        public Setup(Type entityType, Action<IServiceProvider> load, Func<IEntity, bool> tryInitialize, Func<IEntity, bool> tryUninitialize, int order)
         {
             this.EntityType = entityType;
-            this.Initialize = initialize;
-            this.TryCreate = tryCreate;
-            this.TryDestroy = tryDestroy;
+            this.Load = load;
+            this.TryInitialize = tryInitialize;
+            this.TryUninitialize = tryUninitialize;
             this.Order = order;
         }
     }

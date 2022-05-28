@@ -1,5 +1,5 @@
 ﻿using Guppy.Loaders;
-using Guppy.Network.Definitions.NetMessengers;
+using Guppy.Network.Definitions.NetMessageFactories;
 using Guppy.Network.Definitions.NetSerializers;
 using Guppy.Network.Security.Definitions.NetMessengers;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +16,10 @@ namespace Guppy.Network.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddNetSerializer<UserActionMessageNetSerializerDefinition>();
+            services.AddNetSerializer<NetTargetActionMessageNetSerializerDefinition>();
 
-            services.AddNetMessenger<UserActionMessageNetMessengerDefinition>();
+            services.AddNetMessenger<UserActionMessageNetMessageFactoryDefinition>();
+            services.AddNetMessenger<NetTargetActionMessageNetMessageFactoryDefinition>();
         }
     }
 }

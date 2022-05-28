@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Constants;
+﻿using Guppy.Network.Components;
+using Guppy.Network.Constants;
 using Guppy.Network.Definitions;
 using Guppy.Network.Loaders;
 using Guppy.Network.Providers;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public abstract class NetMessenger
+    public abstract class NetMessageFactory
     {
         public readonly Type Type;
         public readonly DynamicId Id;
@@ -22,7 +23,7 @@ namespace Guppy.Network
         public readonly byte OutgoingChannel;
         public readonly int OutgoingPriority;
 
-        protected internal NetMessenger(
+        protected internal NetMessageFactory(
             DynamicId id,
             Type type,
             DeliveryMethod deliveryMethod,
@@ -36,10 +37,10 @@ namespace Guppy.Network
             this.OutgoingPriority = outgoingPriority;
         }
 
-        public abstract NetIncomingMessage ReadIncoming(NetDataReader reader);
+        public abstract NetIncomingMessage CreateIncoming(NetPeer sender, NetDataReader reader);
     }
 
-    public sealed class NetMessenger<T> : NetMessenger
+    public sealed class NetMessageFactory<T> : NetMessageFactory
     {
         private readonly INetSerializerProvider _serializers;
         private readonly NetSerializer<T> _serializer;
@@ -47,7 +48,7 @@ namespace Guppy.Network
         private readonly Factory<NetOutgoingMessage<T>> _outgoingFactory;
         private readonly int _recipientsBufferSize;
 
-        public NetMessenger(
+        public NetMessageFactory(
             DynamicId id, 
             DeliveryMethod 
             deliveryMethod, 
@@ -68,18 +69,18 @@ namespace Guppy.Network
             _outgoingFactory = new Factory<NetOutgoingMessage<T>>(() => new NetOutgoingMessage<T>(_serializers, _serializer, _recipientsBufferSize, this));
         }
 
-        public override NetIncomingMessage<T> ReadIncoming(NetDataReader reader)
+        public override NetIncomingMessage<T> CreateIncoming(NetPeer sender, NetDataReader reader)
         {
             NetIncomingMessage<T> incoming = _incomingFactory.GetInstance();
-            incoming.Read(reader);
+            incoming.Read(sender, reader);
 
             return incoming;
         }
 
-        public NetOutgoingMessage<T> CreateOutgoing(NetScope scope, INetTarget target, in T content)
+        public NetOutgoingMessage<T> CreateOutgoing(NetMessenger messenger, in T content)
         {
             NetOutgoingMessage<T> outgoing = _outgoingFactory.GetInstance();
-            outgoing.Write(scope, target, in content);
+            outgoing.Write(messenger, in content);
 
             return outgoing;
         }

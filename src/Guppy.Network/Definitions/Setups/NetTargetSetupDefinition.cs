@@ -1,7 +1,8 @@
 ﻿using Guppy.EntityComponent.Definitions;
+using Guppy.Network.Components;
+using Guppy.Network.Constants;
+using Guppy.Network.Enums;
 using Guppy.Network.Providers;
-using Guppy.Network.Services;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,46 +13,36 @@ namespace Guppy.Network.Definitions.Setups
 {
     internal sealed class NetTargetSetupDefinition : SetupDefinition<INetTarget>
     {
-        private INetTargetService _targets;
-        private NetScope _scope;
         private NetIdProvider _ids;
 
-        public override int Order => -1;
+        public override int Order => SetupConstants.NetTargetSetupOrder;
 
-        public NetTargetSetupDefinition()
+        public NetTargetSetupDefinition(NetIdProvider ids)
         {
-            _targets = null!;
-            _scope = null!;
-            _ids = null!;
+            _ids = ids;
         }
 
-        protected override void Initialize(IServiceProvider provider)
+        protected override bool TryInitialize(INetTarget entity)
         {
-            base.Initialize(provider);
+            var messenger = entity.Components.Get<NetMessenger>();
 
-            _targets = provider.GetRequiredService<INetTargetService>();
-            _scope = provider.GetRequiredService<NetScope>();
-            _ids = new NetIdProvider();
-        }
-
-        protected override bool TryCreate(INetTarget entity)
-        {
-            if(entity.NetId == default)
+            if(messenger.State != NetState.Stopped)
             {
-                entity.NetId = _ids.Reserve();
+                return true;
             }
-            
-            entity.Messages = new MessageService(entity, _scope);
 
-            return _targets.TryAdd(entity);
+            messenger.Start(_ids.Reserve());
+
+            return true;
         }
 
-        protected override bool TryDestroy(INetTarget entity)
+        protected override bool TryUninitialize(INetTarget entity)
         {
-            _ids.Release(entity.NetId);
-            entity.Messages.Dispose();
+            var messenger = entity.Components.Get<NetMessenger>();
 
-            return _targets.TryRemove(entity);
+            messenger.Stop();
+
+            return true;
         }
     }
 }

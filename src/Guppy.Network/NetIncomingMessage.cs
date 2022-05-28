@@ -1,5 +1,7 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.EntityComponent;
+using Guppy.Network.Providers;
 using Guppy.Threading;
+using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,13 +14,14 @@ namespace Guppy.Network
     public abstract class NetIncomingMessage
     {
         public byte ScopeId;
-        public ushort TargetNetId;
+        public ushort MessengerId;
+        public NetPeer? Sender;
 
         public abstract IEnumerable<NetDeserialized> Appendages { get; }
 
         public abstract IEnumerable<NetDeserialized> Data { get; }
 
-        internal abstract void Read(NetDataReader reader);
+        internal abstract void Read(NetPeer sender, NetDataReader reader);
 
         public abstract void Recycle();
     }
@@ -29,7 +32,7 @@ namespace Guppy.Network
         private readonly INetSerializerProvider _serializers;
         private readonly NetSerializer<T> _serializer;
 
-        public readonly NetMessenger<T> Messenger;
+        public readonly NetMessageFactory<T> Factory;
 
         public NetDeserialized<T> Content = null!;
 
@@ -50,19 +53,20 @@ namespace Guppy.Network
         public NetIncomingMessage(
             INetSerializerProvider serializers,
             NetSerializer<T> serializer,
-            NetMessenger<T> messenger)
+            NetMessageFactory<T> messenger)
         {
             _serializers = serializers;
             _serializer = serializer;
             _appendages = new List<NetDeserialized>();
 
-            this.Messenger = messenger;
+            this.Factory = messenger;
         }
 
-        internal override void Read(NetDataReader reader)
+        internal override void Read(NetPeer sender, NetDataReader reader)
         {
             this.ScopeId = reader.GetByte();
-            this.TargetNetId = reader.GetUShort();
+            this.MessengerId = reader.GetUShort();
+            this.Sender = sender;
             this.Content = _serializer.Deserialize(reader);
 
             while (!reader.EndOfData)
@@ -82,7 +86,7 @@ namespace Guppy.Network
 
             _appendages.Clear();
 
-            this.Messenger.TryRecycle(this);
+            this.Factory.TryRecycle(this);
         }
     }
 }

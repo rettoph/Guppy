@@ -22,5 +22,8 @@ namespace Guppy.Services
 
         bool TryCreate(Type type, [MaybeNullWhen(false)] out T item);
         T Create(Type type);
+
+        bool TryCreate([MaybeNullWhen(false)] out T item);
+        T Create();
     }
 }

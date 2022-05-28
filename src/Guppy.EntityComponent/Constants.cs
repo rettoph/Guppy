@@ -10,7 +10,8 @@ namespace Guppy.EntityComponent
     {
         public static class SetupOrders
         {
-            public const int ComponentSetupOrder = 0;
+            public const int ComponentSetupOrder = -10;
+            public const int InitializableSetupOrder = 1;
         }
     }
 }

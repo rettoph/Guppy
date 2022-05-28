@@ -15,7 +15,6 @@ namespace Guppy.EntityComponent.Services
     internal sealed class EntityService : ListService<Guid, IEntity>, IEntityService, IDisposable
     {
         private ISetupProvider _setups;
-        private IServiceProvider _provider;
 
         public EntityService(IServiceProvider provider, ISetupProvider setups) : base(provider)
         {
@@ -24,7 +23,7 @@ namespace Guppy.EntityComponent.Services
 
         public void Initialize()
         {
-            _setups.Initialize();
+            _setups.Load();
         }
 
         public void Dispose()
@@ -42,7 +41,7 @@ namespace Guppy.EntityComponent.Services
 
         protected override bool TryAdd(Guid key, IEntity item)
         {
-            if (_setups.TryCreate(item) && base.TryAdd(key, item))
+            if (_setups.TryInitialize(item) && base.TryAdd(key, item))
             {
                 item.OnDisposed += this.HandleItemDisposed;
                 return true;
@@ -58,7 +57,7 @@ namespace Guppy.EntityComponent.Services
                 return false;
             }
 
-            if (!_setups.TryDestroy(item))
+            if (!_setups.TryUninitialize(item))
             {
                 return false;
             }

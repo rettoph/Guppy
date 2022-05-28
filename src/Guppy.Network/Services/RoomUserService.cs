@@ -5,18 +5,18 @@ using Minnow.Collections;
 
 namespace Guppy.Network.Services
 {
-    public sealed class NetScopeUserService : CollectionService<int, User>
+    public sealed class RoomUserService : CollectionService<int, User>
     {
         private int _capacity;
         private List<NetPeer> _peers;
 
-        public readonly NetScope Room;
+        public readonly Room Room;
         public IEnumerable<NetPeer> NetPeers => _peers;
 
-        public event OnEventDelegate<NetScopeUserService, User>? OnUserJoined;
-        public event OnEventDelegate<NetScopeUserService, User>? OnUserLeft;
+        public event OnEventDelegate<RoomUserService, User>? OnUserJoined;
+        public event OnEventDelegate<RoomUserService, User>? OnUserLeft;
 
-        internal NetScopeUserService(NetScope room, int capacity) : base(capacity)
+        internal RoomUserService(Room room, int capacity) : base(capacity)
         {
             _capacity = capacity;
             _peers = new List<NetPeer>(capacity);

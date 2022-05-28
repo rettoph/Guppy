@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.Definitions.NetMessengers
+namespace Guppy.Network.Definitions.NetMessageFactories
 {
-    internal sealed class RuntimeNetMessengerDefinition<T> : NetMessengerDefinition<T>
+    internal sealed class RuntimeNetMessageFactoryDefinition<T> : NetMessageFactoryDefinition<T>
     {
         public override DeliveryMethod DeliveryMethod { get; }
 
@@ -18,7 +18,7 @@ namespace Guppy.Network.Definitions.NetMessengers
         public override int OutgoingPriority { get; }
 
 
-        public RuntimeNetMessengerDefinition(DeliveryMethod deliveryMethod, byte outgoingChannel, int outgoingPriority)
+        public RuntimeNetMessageFactoryDefinition(DeliveryMethod deliveryMethod, byte outgoingChannel, int outgoingPriority)
         {
             this.DeliveryMethod = deliveryMethod;
             this.OutgoingChannel = outgoingChannel;

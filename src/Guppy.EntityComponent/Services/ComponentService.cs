@@ -54,10 +54,10 @@ namespace Guppy.EntityComponent.Services
             }
         }
 
-        public T? Get<T>() 
+        public T Get<T>() 
             where T : class, IComponent
         {
-            return _components[typeof(T)] as T;
+            return (T)_components[typeof(T)];
         }
 
         public bool Has<T>() 

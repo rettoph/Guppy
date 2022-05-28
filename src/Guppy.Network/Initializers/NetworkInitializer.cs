@@ -25,7 +25,7 @@ namespace Guppy.Network.Initializers
                 services.AddNetSerializer(serializer);
             }
 
-            var messengers = assemblies.GetAttributes<NetMessengerDefinition, AutoLoadAttribute>().Types;
+            var messengers = assemblies.GetAttributes<NetMessageFactoryDefinition, AutoLoadAttribute>().Types;
 
             foreach (Type messenger in messengers)
             {
@@ -33,7 +33,7 @@ namespace Guppy.Network.Initializers
             }
 
             services.AddSingleton<INetSerializerProvider, NetSerializerProvider>();
-            services.AddSingleton<INetMessengerProvider, NetMessengerProvider>();
+            services.AddSingleton<INetMessageProvider, NetMessageProvider>();
         }
     }
 }

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.Enums
+namespace Guppy.EntityComponent
 {
-    public enum NetScopeState
+    public interface IInitializable : IEntity
     {
-        Stopped,
-        Started
+        void Initialize();
+        void Uninitialize();
     }
 }
