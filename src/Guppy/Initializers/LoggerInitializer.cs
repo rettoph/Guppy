@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
-using Minnow.Providers;
 using Serilog;
 using Serilog.Core;
 using System;

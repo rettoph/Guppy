@@ -1,4 +1,5 @@
 ﻿using Guppy.Example.Library;
+using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,8 +14,9 @@ namespace Guppy.Example.Client
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        GuppyEngine guppy;
-        ExampleGame? game;
+        GuppyEngine engine;
+        IGuppyProvider? guppies;
+        ExampleGuppy? guppy;
 
 #if WINDOWS
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -26,10 +28,10 @@ namespace Guppy.Example.Client
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            guppy = new GuppyEngine(
+            engine = new GuppyEngine(
                 libraries: new[]
                 {
-                    typeof(ExampleGame).Assembly
+                    typeof(ExampleGuppy).Assembly
                 });
 
             this.IsMouseVisible = true;
@@ -58,13 +60,12 @@ namespace Guppy.Example.Client
 
             base.Initialize();
 
-            this.game = guppy
-                .ConfigureThreading()
-                .ConfigureNetwork(channelsCount: 1)
-                .ConfigureMonoGame<ClientExampleGame>(this.graphics, this.Content, this.Window)
+            this.guppies = engine.ConfigureMonoGame(this, this.graphics, this.Content, this.Window)
                 .ConfigureUI()
-                .BuildServiceProvider()
-                .GetRequiredService<ClientExampleGame>();
+                .Build();
+
+            this.guppy = this.guppies.Create<ExampleGuppy>();
+
 #if WINDOWS
             SDL_MaximizeWindow(Window.Handle);
 #endif
@@ -105,7 +106,7 @@ namespace Guppy.Example.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            game?.Update(gameTime);
+            this.guppy!.Update(gameTime);
         }
 
         /// <summary>
@@ -118,7 +119,7 @@ namespace Guppy.Example.Client
 
             base.Draw(gameTime);
 
-            game?.Draw(gameTime);
+            this.guppy!.Draw(gameTime);
         }
     }
 }

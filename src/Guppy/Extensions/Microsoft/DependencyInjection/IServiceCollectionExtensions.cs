@@ -1,5 +1,5 @@
-﻿using Guppy.Providers;
-using Minnow.System.Helpers;
+﻿using Guppy.Common.Helpers;
+using Guppy.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,48 +10,56 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static partial class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddActivated<T, TService, TImplementation>(this IServiceCollection services, bool singleton = false)
+        public static IServiceCollection AddFaceted<T, TService, TImplementation>(this IServiceCollection services, ServiceLifetime lifetime)
             where TService : class, T
             where TImplementation : class, TService
         {
             var factory = ActivatorUtilitiesHelper.BuildFactory<TImplementation>();
 
-            return services.AddActivated<T, TService>(factory, singleton);
+            return services.AddFaceted<T, TService>(factory, lifetime);
         }
 
-        public static IServiceCollection AddActivated<T, TService>(this IServiceCollection services, bool singleton = false)
+        public static IServiceCollection AddFaceted<T, TService>(this IServiceCollection services, ServiceLifetime lifetime)
             where TService : class, T
         {
             var factory = ActivatorUtilitiesHelper.BuildFactory<TService>();
 
-            return services.AddActivated<T, TService>(factory, singleton);
+            return services.AddFaceted<T, TService>(factory, lifetime);
         }
 
-        public static IServiceCollection AddActivated<T, TService>(this IServiceCollection services, Func<IServiceProvider, TService> factory, bool singleton = false)
+        public static IServiceCollection AddFaceted<T, TService>(this IServiceCollection services, Func<IServiceProvider, TService> factory, ServiceLifetime lifetime)
             where TService : class, T
         {
             var ancestors = typeof(TService).GetAncestors<T>().Except(typeof(TService).Yield());
 
-            if(singleton)
+            switch (lifetime)
             {
-                services.AddSingleton<TService>(p => p.GetRequiredService<ActivatedServiceProvider<T>>().TryActivate(factory));
-            }
-            else
-            {
-                services.AddScoped<TService>(p => p.GetRequiredService<ActivatedServiceProvider<T>>().TryActivate(factory));
+                case ServiceLifetime.Singleton:
+                    services.AddSingleton<Faceted<T>>();
+                    services.AddSingleton<TService>(p => p.GetRequiredService<Faceted<T>>().Activate(factory));
+                    break;
+                case ServiceLifetime.Scoped:
+                    services.AddScoped<Faceted<T>>();
+                    services.AddScoped<TService>(p => p.GetRequiredService<Faceted<T>>().Activate(factory));
+                    break;
+                case ServiceLifetime.Transient:
+                    throw new NotImplementedException();
             }
 
             foreach(Type ancestor in ancestors)
             {
                 if(!services.Any(x => x.ServiceType == ancestor))
                 {
-                    if (singleton)
+                    switch (lifetime)
                     {
-                        services.AddSingleton(ancestor, p => p.GetRequiredService<ActivatedServiceProvider<T>>().Instance!);
-                    }
-                    else
-                    {
-                        services.AddScoped(ancestor, p => p.GetRequiredService<ActivatedServiceProvider<T>>().Instance!);
+                        case ServiceLifetime.Singleton:
+                            services.AddSingleton(ancestor, p => p.GetRequiredService<Faceted<T>>().Instance!);
+                            break;
+                        case ServiceLifetime.Scoped:
+                            services.AddScoped(ancestor, p => p.GetRequiredService<Faceted<T>>().Instance!);
+                            break;
+                        case ServiceLifetime.Transient:
+                            throw new NotImplementedException();
                     }
                 }
             }

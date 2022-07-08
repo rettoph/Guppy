@@ -1,7 +1,7 @@
-﻿using Guppy.Initializers;
+﻿using Guppy.Common.Providers;
+using Guppy.Initializers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
-using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

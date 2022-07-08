@@ -1,8 +1,8 @@
 ﻿using Guppy;
 using Guppy.Attributes;
+using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
-using Minnow.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

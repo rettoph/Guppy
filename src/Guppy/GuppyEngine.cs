@@ -1,11 +1,15 @@
 ﻿using Guppy.Attributes;
-using Guppy;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Reflection;
+using Guppy.Common.Providers;
 using Guppy.Initializers;
 using Guppy.Loaders;
-using Minnow.Providers;
+using Guppy.Providers;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Guppy
 {
@@ -15,28 +19,27 @@ namespace Guppy
         private List<IGuppyLoader> _loaders;
 
         public IAssemblyProvider Assemblies { get; private init; }
-
         public HashSet<string> Tags { get; private set; }
 
         public GuppyEngine(
-            Assembly? entry = null, 
+            Assembly? entry = null,
             IEnumerable<Assembly>? libraries = null)
         {
+            _initializers = new List<IGuppyInitializer>();
+            _loaders = new List<IGuppyLoader>();
+
+            this.Tags = new HashSet<string>();
+
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
             {
-                typeof(IGuppyInitializer).Assembly,
+                typeof(GuppyEngine).Assembly,
             });
-
-            _initializers = new List<IGuppyInitializer>();
-            _loaders = new List<IGuppyLoader>();
 
             this.Assemblies = new AssemblyProvider(libraries);
             this.Assemblies.OnAssemblyLoaded += this.HandleAssemblyLoaded;
 
             this.Assemblies.Load(entry ?? Assembly.GetEntryAssembly() ?? throw new InvalidOperationException());
-
-            this.Tags = new HashSet<string>();
         }
 
         public GuppyEngine AddInitializer(IGuppyInitializer initializer)
@@ -64,7 +67,7 @@ namespace Guppy
         {
             services.AddSingleton(this.Assemblies);
 
-            foreach(IGuppyInitializer initializer in _initializers)
+            foreach (IGuppyInitializer initializer in _initializers)
             {
                 initializer.Initialize(this.Assemblies, services, _loaders);
             }
@@ -72,26 +75,40 @@ namespace Guppy
             return this;
         }
 
-        public IServiceProvider BuildServiceProvider()
+        public IGuppyProvider Build()
         {
             var services = new ServiceCollection();
 
             this.ConfigureServices(services);
 
-            return services.BuildServiceProvider();
+            var provider = services.BuildServiceProvider();
+
+            return provider.GetRequiredService<IGuppyProvider>();
         }
 
         private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
         {
-            assembly.GetTypes().GetTypesWithAttribute<IGuppyInitializer, AutoLoadAttribute>()
-                .OrderBy(t => t.GetAttribute<AutoLoadAttribute>()?.Order ?? 0)
-                .Select(t => Activator.CreateInstance(t) as IGuppyInitializer)
-                .ForEach(i => this.AddInitializer(i!));
+            var initializers = assembly.GetTypes()
+                .AssignableFrom<IGuppyInitializer>()
+                .WithAttribute<AutoLoadAttribute>(true)
+                .OrderBy(t => t.GetCustomAttribute<AutoLoadAttribute>()!.Order)
+                .Select(t => Activator.CreateInstance(t) as IGuppyInitializer ?? throw new Exception());
 
-            assembly.GetTypes().GetTypesWithAttribute<IGuppyLoader, AutoLoadAttribute>()
-                .OrderBy(t => t.GetAttribute<AutoLoadAttribute>()?.Order ?? 0)
-                .Select(t => Activator.CreateInstance(t) as IGuppyLoader)
-                .ForEach(l => this.AddLoader(l!));
+            var loaders = assembly.GetTypes()
+                .AssignableFrom<IGuppyLoader>()
+                .WithAttribute<AutoLoadAttribute>(true)
+                .OrderBy(t => t.GetCustomAttribute<AutoLoadAttribute>()!.Order)
+                .Select(t => Activator.CreateInstance(t) as IGuppyLoader ?? throw new Exception());
+
+            foreach(IGuppyInitializer initializer in initializers)
+            {
+                this.AddInitializer(initializer);
+            }
+
+            foreach (IGuppyLoader loader in loaders)
+            {
+                this.AddLoader(loader);
+            }
         }
     }
 }
