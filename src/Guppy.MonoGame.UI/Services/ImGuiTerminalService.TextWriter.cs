@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.MonoGame.UI.Services
 {
-    internal partial class TerminalService
+    internal partial class ImGuiTerminalService
     {
         public class TextWriter : System.IO.TextWriter
         {
@@ -17,11 +17,11 @@ namespace Guppy.MonoGame.UI.Services
 
             private string _line;
             private XnaColor? _color;
-            private TerminalService _terminal;
+            private ImGuiTerminalService _terminal;
 
             public override Encoding Encoding { get; } = Encoding.Default;
 
-            public TextWriter(TerminalService terminal, XnaColor? color)
+            public TextWriter(ImGuiTerminalService terminal, XnaColor? color)
             {
                 _line = string.Empty;
                 _color = color;

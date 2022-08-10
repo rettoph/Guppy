@@ -22,6 +22,7 @@ namespace Guppy
             return guppy.ConfigureECS()
                 .ConfigureResources()
                 .AddInitializer(new CommandInitializer())
+                .AddLoader(new GameLoader())
                 .AddLoader(new JsonLoader())
                 .AddLoader(new ResourceLoader())
                 .AddTag(nameof(ConfigureGame));

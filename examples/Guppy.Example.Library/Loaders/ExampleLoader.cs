@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Loaders;
+using Guppy.Network;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace Guppy.Example.Library.Loaders
 
             services.AddStringResource("test");
             services.AddColorResource("ShipHull");
+
+            NetIncomingMessage<object> message;
         }
     }
 }

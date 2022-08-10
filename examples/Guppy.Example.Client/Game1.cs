@@ -62,9 +62,10 @@ namespace Guppy.Example.Client
 
             this.guppies = engine.ConfigureMonoGame(this, this.graphics, this.Content, this.Window)
                 .ConfigureUI()
+                .ConfigureNetwork(1)
                 .Build();
 
-            this.guppy = this.guppies.Create<ExampleGuppy>();
+            this.guppy = this.guppies.Create<ClientExampleGuppy>();
 
 #if WINDOWS
             SDL_MaximizeWindow(Window.Handle);

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />
   </ItemGroup>
 

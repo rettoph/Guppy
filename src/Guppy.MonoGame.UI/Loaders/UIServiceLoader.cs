@@ -26,7 +26,7 @@ namespace Guppy.MonoGame.UI.Loaders
 
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
 
-            services.AddSingleton<ITerminalService, TerminalService>();
+            services.AddSingleton<ITerminalService, ImGuiTerminalService>();
             services.AddSingleton<ImGuiBatch>();
 
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();

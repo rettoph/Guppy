@@ -15,13 +15,11 @@ namespace Guppy.Example.Library
     public class ExampleGuppy : FrameableGuppy
     {
         private ITerminalService _terminal;
-        private IInputService _inputs;
 
 
-        public ExampleGuppy(ITerminalService terminal, IInputService inputs, World world) : base(world)
+        public ExampleGuppy(ITerminalService terminal, World world) : base(world)
         {
             _terminal = terminal;
-            _inputs = inputs;
         }
 
         public override void Update(GameTime gameTime)
@@ -29,7 +27,6 @@ namespace Guppy.Example.Library
             base.Update(gameTime);
 
             _terminal.Update(gameTime);
-            _inputs.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)

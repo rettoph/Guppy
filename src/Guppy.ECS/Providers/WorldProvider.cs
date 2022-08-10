@@ -33,7 +33,9 @@ namespace Guppy.ECS.Providers
                 }
             }
 
-            return builder.Build();
+            World world = builder.Build();
+
+            return world;
         }
     }
 }

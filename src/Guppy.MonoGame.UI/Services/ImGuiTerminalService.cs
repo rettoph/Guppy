@@ -16,7 +16,7 @@ using Guppy.MonoGame.UI.Constants;
 
 namespace Guppy.MonoGame.UI.Services
 {
-    internal sealed partial class TerminalService : ITerminalService, ISubscriber<ToggleTerminal>
+    internal sealed partial class ImGuiTerminalService : ITerminalService, ISubscriber<ToggleTerminal>
     {
         private ImGuiBatch _guiRenderer;
         private ImFontPtr _font;
@@ -28,7 +28,7 @@ namespace Guppy.MonoGame.UI.Services
         private bool _focusInput;
         private bool _visible;
 
-        public TerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands)
+        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands)
         {
             _guiRenderer = imGuiBatch;
             _window = window;
@@ -41,8 +41,8 @@ namespace Guppy.MonoGame.UI.Services
             _commands = commands;
             _focusInput = true;
 
-            Console.SetOut(new TerminalService.TextWriter(this, null));
-            Console.SetError(new TerminalService.TextWriter(this, XnaColor.Red));
+            Console.SetOut(new ImGuiTerminalService.TextWriter(this, null));
+            Console.SetError(new ImGuiTerminalService.TextWriter(this, XnaColor.Red));
 
             _commands.Subscribe(this);
         }

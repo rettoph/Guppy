@@ -1,22 +1,21 @@
 ﻿using Guppy;
-using Guppy.EntityComponent;
 using Guppy.Example.Library;
 using Guppy.Example.Server;
-using Guppy.Gaming;
+using Guppy.MonoGame.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 
-var game = new GuppyEngine(
+var guppy = new GuppyEngine(
     libraries: new[]
     {
-        typeof(ExampleScene).Assembly
+        typeof(ExampleGuppy).Assembly
     })
-    .ConfigureThreading()
-    .ConfigureNetwork(channelsCount: 1)
-    .ConfigureGame<ServerExampleGame>()
-    .BuildServiceProvider()
-    .GetRequiredService<ServerExampleGame>();
+    .ConfigureGame()
+    .ConfigureNetwork(1)
+    .Build()
+    .Create<ServerExampleGuppy>();
 
 var token = new CancellationTokenSource();
-game.StartAsync(token.Token);
-
-Console.ReadLine();
+TaskHelper.CreateLoop(gt =>
+{
+    guppy.Update(gt);
+}, 16, token.Token).GetAwaiter().GetResult();

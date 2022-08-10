@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.Providers;
+using Guppy.Resources;
 using Guppy.Resources.Definitions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
