@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\Minnow\src\Minnow\Minnow.csproj" />
     <ProjectReference Include="..\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>

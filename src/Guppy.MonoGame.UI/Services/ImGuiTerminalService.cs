@@ -9,10 +9,10 @@ using XnaColor = Microsoft.Xna.Framework.Color;
 using SysVector4 = System.Numerics.Vector4;
 using SysVector2 = System.Numerics.Vector2;
 using Guppy.MonoGame.Services;
-using Minnow.Collections;
 using Guppy.Common;
 using Guppy.MonoGame.Commands;
 using Guppy.MonoGame.UI.Constants;
+using Guppy.Common.Collections;
 
 namespace Guppy.MonoGame.UI.Services
 {
