@@ -11,7 +11,7 @@ namespace Guppy.Resources.Providers
     {
         bool Provides(Type type);
 
-        void Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources);
+        bool Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources, bool strict);
 
         IResource? Get(string name);
     }

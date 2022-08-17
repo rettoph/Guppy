@@ -39,25 +39,12 @@ namespace Guppy.Network.Providers
             return message;
         }
 
-        public NetOutgoingMessage<THeader> Write<THeader>(in THeader header)
+        public NetOutgoingMessage<THeader> Create<THeader>(in THeader header, NetScope scope)
         {
             if(_types[typeof(THeader)] is NetMessageType<THeader> factory)
             {
                 var message = factory.CreateOutgoing();
-                message.Write(in header);
-
-                return message;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public NetOutgoingMessage<THeader> Write<THeader>(THeader header)
-        {
-            if (_types[typeof(THeader)] is NetMessageType<THeader> factory)
-            {
-                var message = factory.CreateOutgoing();
-                message.Write(in header);
+                message.Write(in header, scope);
 
                 return message;
             }

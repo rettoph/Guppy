@@ -137,11 +137,12 @@ namespace Guppy.MonoGame.UI
         /// <summary>
         /// Sets up ImGui for a new frame, should be called at frame start
         /// </summary>
-        public void Begin(GameTime gameTime)
+        public void Begin(GameTime gameTime, bool updateIO = true)
         {
             ImGui.SetCurrentContext(this.Context);
 
             this.IO.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
 
             UpdateInput();
 

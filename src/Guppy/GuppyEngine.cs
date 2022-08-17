@@ -17,18 +17,16 @@ namespace Guppy
     {
         private List<IGuppyInitializer> _initializers;
         private List<IGuppyLoader> _loaders;
+        private bool _initialized;
 
         public IAssemblyProvider Assemblies { get; private init; }
         public HashSet<string> Tags { get; private set; }
 
-        public GuppyEngine(
-            Assembly? entry = null,
-            IEnumerable<Assembly>? libraries = null)
+        public GuppyEngine(IEnumerable<Assembly>? libraries = null)
         {
             _initializers = new List<IGuppyInitializer>();
             _loaders = new List<IGuppyLoader>();
-
-            this.Tags = new HashSet<string>();
+            _initialized = false;
 
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
@@ -36,10 +34,19 @@ namespace Guppy
                 typeof(GuppyEngine).Assembly,
             });
 
+            this.Tags = new HashSet<string>();
+
             this.Assemblies = new AssemblyProvider(libraries);
             this.Assemblies.OnAssemblyLoaded += this.HandleAssemblyLoaded;
+        }
 
+        public GuppyEngine Initialize(Assembly? entry = null)
+        {
             this.Assemblies.Load(entry ?? Assembly.GetEntryAssembly() ?? throw new InvalidOperationException());
+
+            _initialized = true;
+
+            return this;
         }
 
         public GuppyEngine AddInitializer(IGuppyInitializer initializer)
@@ -77,6 +84,11 @@ namespace Guppy
 
         public IGuppyProvider Build()
         {
+            if(!_initialized)
+            {
+                this.Initialize();
+            }
+
             var services = new ServiceCollection();
 
             this.ConfigureServices(services);

@@ -1,5 +1,7 @@
 ﻿using Guppy.MonoGame;
 using Guppy.MonoGame.Services;
+using Guppy.Network;
+using Guppy.Network.Peers;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -14,26 +16,13 @@ namespace Guppy.Example.Library
 {
     public class ExampleGuppy : FrameableGuppy
     {
-        private ITerminalService _terminal;
+        protected readonly NetScope scope;
 
-
-        public ExampleGuppy(ITerminalService terminal, World world) : base(world)
+        public ExampleGuppy(NetScope scope, ITerminalService terminal, IDebuggerService debugger, World world) : base(terminal, debugger, world)
         {
-            _terminal = terminal;
-        }
+            this.scope = scope;
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            _terminal.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-
-            _terminal.Draw(gameTime);
+            this.scope.Start(0);
         }
     }
 }

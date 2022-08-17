@@ -28,7 +28,7 @@ namespace Guppy.MonoGame.UI.Providers.ResourcePackTypeProviders
             return null;
         }
 
-        public void Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources)
+        public bool Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources, bool strict)
         {
             var fonts = new List<Resource<TrueTypeFont>>();
 
@@ -53,7 +53,13 @@ namespace Guppy.MonoGame.UI.Providers.ResourcePackTypeProviders
                 }
             }
 
+            if(!fonts.Any())
+            {
+                return false;
+            }
+
             _fonts = fonts.ToDictionary(x => x.Name);
+            return true;
         }
 
         public bool Provides(Type type)

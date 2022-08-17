@@ -13,11 +13,11 @@ namespace Guppy.MonoGame.UI
             _data = data;
         }
 
-        public unsafe byte* GetDataPtr()
+        public unsafe IntPtr GetDataPtr()
         {
             fixed(byte* ptr = _data)
             {
-                return ptr;
+                return (IntPtr)ptr;
             }
         }
 

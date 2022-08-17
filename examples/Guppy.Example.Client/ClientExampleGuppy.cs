@@ -9,6 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Guppy.Network.Peers;
 using Guppy.Network.Identity.Claims;
+using Guppy.MonoGame.UI.Services;
+using Guppy.Network;
+using Guppy.Resources.Providers;
+using Guppy.Example.Library.Constants;
 
 namespace Guppy.Example.Client
 {
@@ -17,8 +21,11 @@ namespace Guppy.Example.Client
         private IInputService _inputs;
         private ClientPeer _client;
 
-        public ClientExampleGuppy(ClientPeer client, IInputService inputs, ITerminalService terminal, World world) : base(terminal, world)
+        public ClientExampleGuppy(IResourceProvider resources, ClientPeer client, NetScope scope, IInputService inputs, ITerminalService terminal, IDebuggerService debugger, World world) : base(scope, terminal, debugger, world)
         {
+
+            var test = resources.Get<Color>(ColorConstants.ShipColor1);
+
             _inputs = inputs;
             _client = client;
 

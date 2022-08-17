@@ -27,9 +27,10 @@ namespace Guppy.Resources.Providers
             _strings = null!;
         }
 
-        public void Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources)
+        public bool Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources, bool strict)
         {
             Dictionary<string, List<Resource<string>>> strings = new Dictionary<string, List<Resource<string>>>();
+            var any = false;
 
             foreach(string path in pack.SearchForFiles("*lang*.json"))
             {
@@ -49,15 +50,22 @@ namespace Guppy.Resources.Providers
 
                     foreach(var kvp in fileStrings.Values)
                     {
-                        if(resources.Any(x => x.Name == kvp.Key))
+                        if(resources.Any(x => x.Name == kvp.Key) || !strict)
                         {
+                            any = true;
                             strings[fileStrings.LanguageIdentifier].Add(new Resource<string>(kvp.Value, kvp.Key, path, pack));
                         }
                     }
                 }
             }
 
+            if(!any)
+            {
+                return false;
+            }
+
             _strings = strings.ToDictionary(x => x.Key, x => x.Value.ToDictionary(s => s.Name));
+            return true;
         }
 
         public IResource? Get(string name)

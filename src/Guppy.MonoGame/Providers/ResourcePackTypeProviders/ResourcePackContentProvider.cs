@@ -32,11 +32,12 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
             return default;
         }
 
-        public void Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources)
+        public bool Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources, bool strict)
         {
             _manager.RootDirectory = pack.Path;
 
             var content = new List<ContentResource<T>>();
+            var any = false;
 
             foreach(IResourceDefinition resource in resources)
             {
@@ -49,6 +50,7 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
 
                 if (pack.SearchForFiles($"{resource.Source}.*").Any())
                 {
+                    any = true;
                     content.Add(new ContentResource<T>(
                         _manager.Load<T>(resource.Source),
                         resource.Name,
@@ -57,7 +59,13 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
                 }
             }
 
+            if(!any)
+            {
+                return false;
+            }
+
             _content = content.ToDictionary(x => x.Name);
+            return true;
         }
 
         public bool Provides(Type type)

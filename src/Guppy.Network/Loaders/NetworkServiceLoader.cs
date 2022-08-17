@@ -1,7 +1,10 @@
 ﻿using Guppy.Loaders;
+using Guppy.Network.Enums;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
+using Guppy.Resources;
+using Guppy.Resources.SettingSerializers;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,7 +39,9 @@ namespace Guppy.Network.Loaders
                     return manager;
                 })
                 .AddFaceted<Peer, ClientPeer>(ServiceLifetime.Singleton)
-                .AddFaceted<Peer, ServerPeer>(ServiceLifetime.Singleton);
+                .AddFaceted<Peer, ServerPeer>(ServiceLifetime.Singleton)
+                .AddSingleton<ISettingTypeSerializer, EnumSettingSerializer<NetAuthorization>>()
+                .AddSetting(NetAuthorization.Master, false);
         }
     }
 }

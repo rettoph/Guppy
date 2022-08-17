@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.Resources
 {
-    public interface ISettingSerializer
+    public interface ISettingTypeSerializer
     {
         Type Type { get; }
     }
 
-    public interface ISettingSerializer<T> : ISettingSerializer
+    public interface ISettingSerializer<T> : ISettingTypeSerializer
     {
         string Serialize(T value);
         T Deserialize(string serialized);

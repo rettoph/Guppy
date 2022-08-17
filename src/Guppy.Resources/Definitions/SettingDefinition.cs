@@ -19,7 +19,7 @@ namespace Guppy.Resources.Definitions
 
         public abstract object DefaultValue { get; }
 
-        public ISetting Build(IEnumerable<ISettingSerializer> serializers)
+        public ISetting Build(IEnumerable<ISettingTypeSerializer> serializers)
         {
             return new Setting<T>(
                 this.Key, 

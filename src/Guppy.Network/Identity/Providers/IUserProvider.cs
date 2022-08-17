@@ -14,6 +14,8 @@ namespace Guppy.Network.Identity.Providers
         event OnEventDelegate<IUserProvider, User>? OnUserConnected;
         event OnEventDelegate<IUserProvider, User>? OnUserDisconnected;
 
+        public User? Current { get; internal set; }
+
         IEnumerable<NetPeer> Peers { get;}
 
         User Update(int id, params Claim[] claims);

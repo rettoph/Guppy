@@ -1,10 +1,12 @@
 ﻿using Guppy.Loaders;
+using Guppy.MonoGame.Commands;
 using Guppy.MonoGame.Providers.ResourcePackTypeProviders;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +41,16 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
+
+            services.AddInput("toggle_terminal", Keys.OemTilde, new[]
+{
+                (ButtonState.Pressed, new ToggleWindow() { Window = ToggleWindow.Windows.Terminal })
+            });
+
+            services.AddInput("toggle_debugger", Keys.F1, new[]
+{
+                (ButtonState.Pressed, new ToggleWindow() { Window = ToggleWindow.Windows.Debugger })
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
@@ -6,6 +7,7 @@ using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;
+using Guppy.Resources.Providers;
 using LiteNetLib;
 using System;
 using System.Collections.Generic;
@@ -17,16 +19,18 @@ namespace Guppy.Network.Peers
 {
     public class ClientPeer : Peer, ISubscriber<NetIncomingMessage<UserAction>>
     {
-        private NetPeer _peer;
+        private NetPeer? _peer;
 
         public ClientPeer(
+            ISettingProvider settings,
             INetScopeProvider scopes, 
             INetMessageProvider messages, 
             IUserProvider users,
             EventBasedNetListener listener, 
             NetManager manager, 
-            NetScope scope) : base(scopes, messages, users, listener, manager, scope)
+            NetScope scope) : base(settings, scopes, messages, users, listener, manager, scope)
         {
+            this.Authorization = NetAuthorization.Slave;
         }
 
         public new void Start()
@@ -43,7 +47,7 @@ namespace Guppy.Network.Peers
             var user = new User(-1, claims);
             var action = user.CreateAction(UserAction.Actions.ConnectionRequest, ClaimAccessibility.Protected);
 
-            using(var request = messages.Write(in action))
+            using(var request = this.Scope.Create(in action))
             {
                 _peer = this.manager.Connect(address, port, request.Writer);
             }
@@ -57,10 +61,8 @@ namespace Guppy.Network.Peers
                     this.Users.UpdateOrCreate(message.Header.Id, message.Header.Claims);
                     break;
                 case UserAction.Actions.CurrentUserConnected:
-                    this.CurrentUser = this.Users.UpdateOrCreate(message.Header.Id, _peer, message.Header.Claims);
+                    this.Users.Current = this.Users.UpdateOrCreate(message.Header.Id, _peer, message.Header.Claims);
                     break;
-                default:
-                    throw new NotImplementedException();
             }
         }
     }

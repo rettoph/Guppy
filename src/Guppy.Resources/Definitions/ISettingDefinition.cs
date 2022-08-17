@@ -14,6 +14,6 @@ namespace Guppy.Resources.Definitions
         Type Type { get; }
         object DefaultValue { get; }
 
-        ISetting Build(IEnumerable<ISettingSerializer> serializers);
+        ISetting Build(IEnumerable<ISettingTypeSerializer> serializers);
     }
 }

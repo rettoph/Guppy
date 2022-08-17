@@ -11,7 +11,6 @@ namespace Guppy.Network.Providers
     {
         INetIncomingMessage Read(NetDataReader reader);
 
-        NetOutgoingMessage<THeader> Write<THeader>(in THeader header);
-        NetOutgoingMessage<THeader> Write<THeader>(THeader header);
+        NetOutgoingMessage<THeader> Create<THeader>(in THeader header, NetScope scope);
     }
 }

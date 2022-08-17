@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Commands
+namespace Guppy.ECS
 {
-    public struct ToggleTerminal : ICommandData
+    public record EntityTag(string Name)
     {
     }
 }

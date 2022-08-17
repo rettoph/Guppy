@@ -2,6 +2,7 @@
 using Guppy.Common.Providers;
 using Guppy.ECS.Definitions;
 using Guppy.ECS.Providers;
+using Guppy.ECS.Services;
 using Guppy.Initializers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,9 +19,18 @@ namespace Guppy.ECS.Initializers
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var definitions = assemblies.GetTypes<ISystemDefinition>().WithAttribute<AutoLoadAttribute>(false);
+            var components = assemblies.GetTypes<IComponentDefinition>().WithAttribute<AutoLoadAttribute>(false);
 
-            foreach(Type definition in definitions)
+            foreach (Type definition in components)
+            {
+                services.AddComponent(definition);
+            }
+
+            services.AddScoped<IEntityService, EntityService>();
+
+            var systems = assemblies.GetTypes<ISystemDefinition>().WithAttribute<AutoLoadAttribute>(false);
+
+            foreach(Type definition in systems)
             {
                 services.AddSystem(definition);
             }

@@ -14,6 +14,7 @@ namespace Guppy.MonoGame.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ITerminalService, ConsoleTerminalService>();
+            services.AddScoped<IDebuggerService, DefaultDebuggerService>();
         }
     }
 }

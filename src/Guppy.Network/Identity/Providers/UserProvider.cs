@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Identity.Claims;
+using Guppy.Network.Identity.Enums;
 using LiteNetLib;
 using System;
 using System.Collections;
@@ -26,6 +27,8 @@ namespace Guppy.Network.Identity.Providers
                 }
             }
         }
+
+        User? IUserProvider.Current { get; set; }
 
         public event OnEventDelegate<IUserProvider, User>? OnUserConnected;
         public event OnEventDelegate<IUserProvider, User>? OnUserDisconnected;
@@ -92,6 +95,7 @@ namespace Guppy.Network.Identity.Providers
         {
             if(_users.Remove(id, out var user))
             {
+                user.State = UserState.Disconnected;
                 this.OnUserDisconnected?.Invoke(this, user);
             }
         }
@@ -99,6 +103,7 @@ namespace Guppy.Network.Identity.Providers
         public void Add(User user)
         {
             _users.Add(user.Id, user);
+            user.State = UserState.Connected;
             this.OnUserConnected?.Invoke(this, user);
         }
 

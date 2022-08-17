@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -29,6 +30,8 @@ namespace Guppy.Common.Providers
             {
                 return;
             }
+
+            Debug.WriteLine($"Preparing to load: {assembly.FullName}");
 
             // Recersively attempt to load all references assemblies as well...
             foreach (Assembly reference in assembly.GetReferencedAssemblies().Select(an => Assembly.Load(an)))

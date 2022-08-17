@@ -11,14 +11,14 @@ namespace Guppy.Resources.Providers
     {
         private Dictionary<string, ISetting> _settings;
 
-        public SettingProvider(IEnumerable<ISettingDefinition> settings, IEnumerable<ISettingSerializer> serializers)
+        public SettingProvider(IEnumerable<ISettingDefinition> settings, IEnumerable<ISettingTypeSerializer> serializers)
         {
             _settings = settings.GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Build(serializers));
         }
 
         public ISetting<T> Get<T>()
         {
-            return this.Get<T>(nameof(T));
+            return this.Get<T>(typeof(T).FullName!);
         }
 
         public ISetting<T> Get<T>(string key)

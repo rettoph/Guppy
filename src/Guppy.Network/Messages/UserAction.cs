@@ -13,7 +13,9 @@ namespace Guppy.Network.Messages
         {
             ConnectionRequest,
             Connected,
-            CurrentUserConnected
+            CurrentUserConnected,
+            UserJoined,
+            UserLeft
         }
 
         public int Id { get; init; }

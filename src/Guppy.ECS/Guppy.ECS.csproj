@@ -4,14 +4,21 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="K4os.Hash.xxHash" Version="1.0.7" />
     <PackageReference Include="MonoGame.Extended.Entities" Version="3.8.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Loaders\" />
   </ItemGroup>
 
 </Project>

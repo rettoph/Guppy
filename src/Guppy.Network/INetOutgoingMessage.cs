@@ -14,5 +14,7 @@ namespace Guppy.Network
         INetOutgoingMessage AddRecipients(IEnumerable<NetPeer> recipients);
 
         INetOutgoingMessage Send();
+
+        INetOutgoingMessage Enqueue();
     }
 }

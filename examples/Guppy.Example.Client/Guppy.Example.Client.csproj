@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Guppy.MonoGame.UI\Guppy.MonoGame.UI.csproj" />
     <ProjectReference Include="..\..\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Network.UI\Guppy.Network.UI.csproj" />
     <ProjectReference Include="..\Guppy.Example.Library\Guppy.Example.Library.csproj" />
   </ItemGroup>
 

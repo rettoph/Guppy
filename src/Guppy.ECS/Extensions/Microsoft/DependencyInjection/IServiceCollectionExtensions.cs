@@ -1,4 +1,5 @@
-﻿using Guppy.ECS.Definitions;
+﻿using Guppy.ECS;
+using Guppy.ECS.Definitions;
 using Microsoft.Extensions.DependencyInjection;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -11,12 +12,28 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="definitionType"><see cref="ISystemDefinition"/> type.</param>
-        /// <returns></returns>
+        public static IServiceCollection ConfigureEntity(this IServiceCollection services, EntityKey key, params EntityTag[] tags)
+        {
+            return services.AddSingleton<IEntityTypeDefinition>(new EntityTypeDefinition(key, tags));
+        }
+
+        public static IServiceCollection AddComponent<T>(this IServiceCollection services, Func<IServiceProvider, T> factory, params EntityTag[] tags)
+            where T : class
+        {
+            return services.AddScoped<IComponentDefinition>(p => new RuntimeComponentDefinition<T>(p, factory, tags));
+        }
+
+        public static IServiceCollection AddComponent(this IServiceCollection services, Type definitionType)
+        {
+            return services.AddScoped(typeof(IComponentDefinition), definitionType);
+        }
+
+        public static IServiceCollection AddComponent<TDefinition>(this IServiceCollection services)
+            where TDefinition : class, IComponentDefinition
+        {
+            return services.AddScoped<IComponentDefinition, TDefinition>();
+        }
+
         public static IServiceCollection AddSystem(this IServiceCollection services, Type definitionType)
         {
             return services.AddSingleton(typeof(ISystemDefinition), definitionType);

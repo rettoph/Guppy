@@ -22,7 +22,7 @@ namespace Guppy.Resources
 
         public Type Type => typeof(T);
 
-        ISettingSerializer ISetting.Serializer => this.Serializer;
+        ISettingTypeSerializer ISetting.Serializer => this.Serializer;
 
         public Setting(string key, T defaultValue, ISettingSerializer<T> serializer, bool exportable, string[] tags)
         {

@@ -8,8 +8,8 @@ namespace Guppy.Example.Library.Constants
 {
     public static class ColorConstants
     {
-        public const string PlayerOnePaddle = "player_1_paddle_color";
-        public const string PlayerTwoPaddle = "player_2_paddle_color";
-        public const string Ball = "ball_color";
+        public const string ShipColor1 = "ship_color_1";
+        public const string ShipColor2 = "ship_color_2";
+        public const string ShipColor3 = "ship_color_3";
     }
 }

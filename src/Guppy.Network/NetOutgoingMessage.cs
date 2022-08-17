@@ -12,6 +12,7 @@ namespace Guppy.Network
 {
     public class NetOutgoingMessage<THeader> : NetMessage<THeader>, INetOutgoingMessage
     {
+        private NetScope _scope;
         private NetDataWriter _writer;
         private readonly NetSerializer<THeader> _serializer;
         private readonly INetDatumProvider _dataProvider;
@@ -41,9 +42,14 @@ namespace Guppy.Network
             this.Type.Id.Write(_writer);
         }
 
-        public void Write(in THeader header)
+        public void Write(in THeader header, NetScope scope)
         {
+            _scope = scope;
+            this.ScopeId = scope.id;
+
             this.Header = header;
+
+            _writer.Put(scope.id);
             _serializer.Serialize(_writer, in header);
         }
 
@@ -94,6 +100,13 @@ namespace Guppy.Network
             {
                 recipient.Send(_writer, this.Type.OutgoingChannel, this.Type.DeliveryMethod);
             }
+
+            return this;
+        }
+
+        public INetOutgoingMessage Enqueue()
+        {
+            _scope.Enqueue(this);
 
             return this;
         }

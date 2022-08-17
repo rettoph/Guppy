@@ -12,7 +12,7 @@ namespace Guppy.Resources
         bool Exportable { get; }
         string[] Tags { get; }
         Type Type { get; }
-        ISettingSerializer Serializer { get; }
+        ISettingTypeSerializer Serializer { get; }
     }
 
     public interface ISetting<T> : ISetting

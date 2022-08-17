@@ -26,7 +26,7 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
             _colors = null!;
         }
 
-        public void Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources)
+        public bool Load(IResourcePack pack, IEnumerable<IResourceDefinition> resources, bool strict)
         {
             List<Resource<Color>> colors = new List<Resource<Color>>();
 
@@ -43,7 +43,7 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
 
                     foreach(var kvp in fileColors)
                     {
-                        if(resources.Any(x => x.Name == kvp.Key))
+                        if(resources.Any(x => x.Name == kvp.Key)|| !strict)
                         {
                             colors.Add(new Resource<Color>(kvp.Value, kvp.Key, path, pack));
                         }
@@ -51,7 +51,13 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
                 }
             }
 
-            _colors = colors.ToDictionary(x => x.Name);
+            if(colors.Any())
+            {
+                _colors = colors.ToDictionary(x => x.Name);
+                return true;
+            }
+
+            return false;
         }
 
         public IResource? Get(string name)

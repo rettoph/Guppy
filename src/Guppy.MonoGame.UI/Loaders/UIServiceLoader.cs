@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using Guppy.MonoGame.UI.Services;
 using Guppy.Resources.Providers;
 using Guppy.MonoGame.UI.Providers.ResourcePackTypeProviders;
+using System.Reflection;
+using Guppy.Common.Helpers;
+using System.Runtime.InteropServices;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -20,14 +23,25 @@ namespace Guppy.MonoGame.UI.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            // Load the cimgui natives
+            var nativesPath = Path.Combine(Directory.GetCurrentDirectory(), PathConstants.Natives);
+            Directory.GetFiles(nativesPath, "cimgui.*")
+                .Concat(Directory.GetFiles(nativesPath, "cimplot.*"))
+                .Select(x => NativeLibrary.Load(x))
+                .ToList();
+
+            
+
             services.AddTransient<IResourcePackTypeProvider, ResourcePackTrueTypeFontProvider>();
 
             services.AddResource<TrueTypeFont>(ResourceConstants.DiagnosticsTTF, "Fonts/DiagnosticsFont.ttf");
 
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
+            services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 24);
 
+            services.AddScoped<IDebuggerService, ImGuiDebuggerService>();
             services.AddSingleton<ITerminalService, ImGuiTerminalService>();
-            services.AddSingleton<ImGuiBatch>();
+            services.AddTransient<ImGuiBatch>();
 
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();
 

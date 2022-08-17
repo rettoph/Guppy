@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XnaColor = Microsoft.Xna.Framework.Color;
-using SysVector4 = System.Numerics.Vector4;
-using SysVector2 = System.Numerics.Vector2;
+using NumVector4 = System.Numerics.Vector4;
+using NumVector2 = System.Numerics.Vector2;
 using Guppy.MonoGame.Services;
 using Guppy.Common;
 using Guppy.MonoGame.Commands;
@@ -16,35 +16,34 @@ using Guppy.Common.Collections;
 
 namespace Guppy.MonoGame.UI.Services
 {
-    internal sealed partial class ImGuiTerminalService : ITerminalService, ISubscriber<ToggleTerminal>
+    internal sealed partial class ImGuiTerminalService : BaseWindowService, ITerminalService
     {
-        private ImGuiBatch _guiRenderer;
+        private ImGuiBatch _imGuiBatch;
         private ImFontPtr _font;
         private GameWindow _window;
         private string _input;
-        private Buffer<(string text, SysVector4 color)> _output;
+        private Buffer<(string text, NumVector4 color)> _output;
         private bool _scrollLocked;
         private ICommandService _commands;
         private bool _focusInput;
-        private bool _visible;
 
-        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands)
+        public override ToggleWindow.Windows Window => ToggleWindow.Windows.Terminal;
+
+        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands) : base(commands, false)
         {
-            _guiRenderer = imGuiBatch;
+            _imGuiBatch = imGuiBatch;
             _window = window;
             // _renderer.RebuildFontAtlas();
             // _font = _renderer.BindFont(@"C:\Users\Anthony\source\repos\VoidHuntersRevived\libraries\Guppy\src\Guppy.Gaming\Content\Fonts\src\SpaceMono-Regular.ttf", 50);
             _font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont].Ptr;
             _input = string.Empty;
-            _output = new Buffer<(string text, SysVector4 color)>(2048);
+            _output = new Buffer<(string text, NumVector4 color)>(2048);
             _scrollLocked = true;
             _commands = commands;
             _focusInput = true;
 
             Console.SetOut(new ImGuiTerminalService.TextWriter(this, null));
             Console.SetError(new ImGuiTerminalService.TextWriter(this, XnaColor.Red));
-
-            _commands.Subscribe(this);
         }
 
         public void WriteLine(string text, XnaColor color)
@@ -52,37 +51,34 @@ namespace Guppy.MonoGame.UI.Services
             _output.Add((text, color.ToNumericsVector4()));
         }
 
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
-            _guiRenderer.Begin(gameTime);
+            _imGuiBatch.Begin(gameTime);
 
-            if (_visible)
-            {
-                this.DrawTerminal();
-            }
+            base.Draw(gameTime);
 
-            _guiRenderer.End();
+            _imGuiBatch.End();
         }
 
-        private void DrawTerminal()
+        protected override void InnerDraw(GameTime gameTime)
         {
-            var windowSize = new SysVector2(_window.ClientBounds.Width, _window.ClientBounds.Height);
+            var windowSize = new NumVector2(_window.ClientBounds.Width, _window.ClientBounds.Height);
             var inputHeight = 24;
-            var outputContainerSize = new SysVector2(windowSize.X, windowSize.Y - inputHeight);
-            var inputContainerSize = new SysVector2(windowSize.X, inputHeight);
+            var outputContainerSize = new NumVector2(windowSize.X, windowSize.Y - inputHeight);
+            var inputContainerSize = new NumVector2(windowSize.X, inputHeight);
 
             ImGui.SetNextWindowFocus();
-            ImGui.SetNextWindowPos(new SysVector2(0, 0));
+            ImGui.SetNextWindowPos(new NumVector2(0, 0));
             ImGui.SetNextWindowSize(windowSize);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new SysVector2(0, 0));
-            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new SysVector2(0, 0));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new NumVector2(0, 0));
+            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new NumVector2(0, 0));
             ImGui.PushFont(_font);
             ImGui.Begin("terminal", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove);
 
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new SysVector2(15, 15));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new NumVector2(15, 15));
             ImGui.BeginChild("output-container", outputContainerSize, false, ImGuiWindowFlags.AlwaysVerticalScrollbar | ImGuiWindowFlags.AlwaysUseWindowPadding);
 
-            foreach ((string text, SysVector4 color) in _output)
+            foreach ((string text, NumVector4 color) in _output)
             {
                 ImGui.PushStyleColor(ImGuiCol.Text, color);
                 ImGui.TextWrapped(text);
@@ -128,19 +124,12 @@ namespace Guppy.MonoGame.UI.Services
 
             ImGui.End();
             ImGui.PopFont();
-            ImGui.PopStyleVar();
+            ImGui.PopStyleVar(2);
         }
 
         public void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
-        }
-
-        public void Process(in ToggleTerminal message)
-        {
-            _input = string.Empty;
-            _focusInput = true;
-            _visible = !_visible;
         }
     }
 }

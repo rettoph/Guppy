@@ -1,9 +1,11 @@
-﻿using Guppy.Network.Extensions.Identity;
+﻿using Guppy.Network.Enums;
+using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;
+using Guppy.Resources.Providers;
 using LiteNetLib;
 using System;
 using System.Collections.Generic;
@@ -20,13 +22,16 @@ namespace Guppy.Network.Peers
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
         public ServerPeer(
+            ISettingProvider settings,
             INetScopeProvider scopes,
             INetMessageProvider messages,
             IUserProvider users,
             EventBasedNetListener listener,
             NetManager manager,
-            NetScope scope) : base(scopes, messages, users, listener, manager, scope)
+            NetScope scope) : base(settings, scopes, messages, users, listener, manager, scope)
         {
+            this.Authorization = NetAuthorization.Master;
+
             this.listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
             this.listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
 
@@ -42,10 +47,7 @@ namespace Guppy.Network.Peers
 
         private void HandleUserConnected(IUserProvider sender, User newUser)
         {
-            this.messages.Write(newUser.CreateAction(UserAction.Actions.Connected, ClaimAccessibility.Public))
-                .AddRecipients(sender.Peers)
-                .Send()
-                .Recycle();
+            this.Scope.Users.Add(newUser);
         }
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
@@ -70,7 +72,7 @@ namespace Guppy.Network.Peers
 
                         var user = this.Users.UpdateOrCreate(peer.Id, peer, casted.Header.Claims);
 
-                        this.messages.Write(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
+                        this.Scope.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
                             .AddRecipient(peer)
                             .Send()
                             .Recycle();

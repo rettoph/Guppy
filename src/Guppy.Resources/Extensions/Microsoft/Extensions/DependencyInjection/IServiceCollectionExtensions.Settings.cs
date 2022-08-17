@@ -29,5 +29,11 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             return services.AddSingleton<ISettingDefinition>(new RuntimeSettingDefinition<T>(key, defaultValue, exportable, tags));
         }
+
+        public static IServiceCollection AddSetting<T>(this IServiceCollection services, T defaultValue, bool exportable, params string[] tags)
+            where T : notnull
+        {
+            return services.AddSingleton<ISettingDefinition>(new RuntimeSettingDefinition<T>(typeof(T).FullName ?? throw new Exception(), defaultValue, exportable, tags));
+        }
     }
 }

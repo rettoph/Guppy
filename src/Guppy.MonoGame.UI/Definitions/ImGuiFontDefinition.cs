@@ -12,7 +12,8 @@ namespace Guppy.MonoGame.UI.Definitions
         public virtual unsafe ImGuiFont BuildFont(IResourceProvider resources, ImGuiIOPtr io)
         {
             var ttf = resources.Get<TrueTypeFont>(this.TrueTypeFontResourceName);
-            var fontPtr = io.Fonts.AddFontFromMemoryTTF((IntPtr)ttf.GetDataPtr(), ttf.GetDataSize(), this.SizePixels);
+            var ptr = ttf.GetDataPtr();
+            var fontPtr = io.Fonts.AddFontFromMemoryTTF(ptr, ttf.GetDataSize(), this.SizePixels);
             var font = new ImGuiFont(this.Key, ttf, this.SizePixels, fontPtr);
 
             return font;

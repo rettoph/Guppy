@@ -13,11 +13,22 @@ namespace Guppy.Network.Identity
 {
     public class User : IEnumerable<Claim>
     {
+        public static readonly User DefaultUser = new User(0);
+
+        private UserState _state;
+
         private Dictionary<string, Claim> _claims;
 
         public int Id { get; }
         public NetPeer? NetPeer { get; internal set; }
         public DateTime CreatedAt { get; }
+        public UserState State
+        {
+            get => _state;
+            internal set => this.OnStateChanged!.InvokeIf(_state != value, this, ref _state, value);
+        }
+
+        public event OnChangedEventDelegate<User, UserState> OnStateChanged;
 
         public User(int id, params Claim[] claims) : this(id, null, claims)
         {
@@ -28,6 +39,7 @@ namespace Guppy.Network.Identity
             this.Id = id;
             this.NetPeer = netPeer;
             this.CreatedAt = DateTime.UtcNow;
+            this.State = UserState.Disconnected;
 
             _claims = claims.ToDictionary(x => x.Key);
         }

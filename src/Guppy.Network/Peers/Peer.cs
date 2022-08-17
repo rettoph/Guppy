@@ -1,7 +1,10 @@
 ﻿using Guppy.Network.Constants;
+using Guppy.Network.Enums;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Providers;
+using Guppy.Resources;
+using Guppy.Resources.Providers;
 using LiteNetLib;
 using System;
 using System.Collections.Generic;
@@ -13,6 +16,8 @@ namespace Guppy.Network.Peers
 {
     public class Peer : IDisposable
     {
+        private readonly ISetting<NetAuthorization> _authorization;
+
         protected readonly INetScopeProvider scopes;
         protected readonly INetMessageProvider messages;
         protected readonly EventBasedNetListener listener;
@@ -22,9 +27,14 @@ namespace Guppy.Network.Peers
 
         public IUserProvider Users { get; }
 
-        public User? CurrentUser { get; protected set; }
+        public NetAuthorization Authorization
+        {
+            get => _authorization.Value;
+            set => _authorization.Value = value;
+        }
 
         public Peer(
+            ISettingProvider settings,
             INetScopeProvider scopes,
             INetMessageProvider messages,
             IUserProvider users,
@@ -39,6 +49,8 @@ namespace Guppy.Network.Peers
 
             this.Scope = scope;
             this.Users = users;
+
+            _authorization = settings.Get<NetAuthorization>();
 
             this.listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }

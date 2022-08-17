@@ -24,11 +24,16 @@ namespace Guppy.Resources
 
             var types = resources.Select(x => x.Type).Distinct().ToList();
 
-            _providers = types.ToDictionary(x => x, x => providers.First(p => p.Provides(x)));
+            _providers = new Dictionary<Type, IResourcePackTypeProvider>();
 
             foreach(Type type in types)
             {
-                _providers[type].Load(this, resources.Where(x => x.Type == type));
+                var provider = providers.First(p => p.Provides(type));
+
+                if(provider.Load(this, resources.Where(x => x.Type == type), true))
+                {
+                    _providers.Add(type, provider);
+                }
             }
         }
 
