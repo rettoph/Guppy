@@ -1,6 +1,6 @@
 [submodule "libraries/LiteNetLib"]
 	path = libraries/LiteNetLib
 	url = https://github.com/RevenantX/LiteNetLib
-[submodule "libraries\\ImGui.NET"]
-	path = libraries\\ImGui.NET
+[submodule "libraries/ImGui.NET"]
+	path = libraries/ImGui.NET
 	url = https://github.com/mellinoe/imgui.net
