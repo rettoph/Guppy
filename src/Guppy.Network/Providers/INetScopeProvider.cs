@@ -12,9 +12,6 @@ namespace Guppy.Network.Providers
         NetScope Get(byte id);
         bool TryGet(byte id, [MaybeNullWhen(false)] out NetScope scope);
 
-        void Enqueue(INetIncomingMessage message);
-        void Enqueue(INetOutgoingMessage message);
-
         NetScope Create();
     }
 }

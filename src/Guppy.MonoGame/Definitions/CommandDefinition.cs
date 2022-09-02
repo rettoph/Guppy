@@ -99,7 +99,7 @@ namespace Guppy.MonoGame.Definitions
             {
                 if (command is not null)
                 {
-                    commands.Publish(command);
+                    commands.Publish<TData>(command);
                 }
             }, new CommandDataBinder(this.BindData));
 

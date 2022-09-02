@@ -76,9 +76,7 @@ namespace Guppy.Network.Peers
         {
             while(!reader.EndOfData)
             {
-                var message = this.messages.Read(reader);
-
-                this.scopes.Enqueue(message);
+                this.messages.Read(reader).Enqueue(this.scopes);
             }
         }
     }

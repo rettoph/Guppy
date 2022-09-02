@@ -70,7 +70,7 @@ namespace Guppy.Network.Peers
                     {
                         var peer = request.Accept();
 
-                        var user = this.Users.UpdateOrCreate(peer.Id, peer, casted.Header.Claims);
+                        var user = this.Users.UpdateOrCreate(peer.Id, peer, casted.Body.Claims);
 
                         this.Scope.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
                             .AddRecipient(peer)

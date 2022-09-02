@@ -11,6 +11,6 @@ namespace Guppy.ECS.Definitions
     {
         int Order { get; }
         Type Type { get; }
-        bool Filter(IServiceProvider provider);
+        Type[] Filters { get; }
     }
 }

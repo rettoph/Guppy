@@ -1,4 +1,5 @@
-﻿using LiteNetLib.Utils;
+﻿using Guppy.Network.Providers;
+using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Guppy.Network
     public interface INetIncomingMessage : INetMessage
     {
         public void Read(NetDataReader reader);
+        INetIncomingMessage Enqueue(INetScopeProvider scopes);
     }
 }

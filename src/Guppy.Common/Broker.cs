@@ -40,9 +40,9 @@ namespace Guppy.Common
             }
         }
 
-        public void Publish(in TMessage message)
+        public void Publish(Type type, in TMessage message)
         {
-            if (_publishers.TryGetValue(message.GetType(), out IPublisher<TMessage>? publishers))
+            if (_publishers.TryGetValue(type, out IPublisher<TMessage>? publishers))
             {
                 publishers.Publish(in message);
             }

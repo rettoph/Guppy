@@ -15,6 +15,7 @@ namespace Guppy.Example.Library.Constants
         {
             public static readonly EntityTag Ship = new EntityTag("paddle");
             public static readonly EntityTag Movable = new EntityTag("movable");
+            public static readonly EntityTag Network = new EntityTag("network");
         }
     }
 }

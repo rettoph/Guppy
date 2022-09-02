@@ -26,7 +26,7 @@ namespace Guppy.ECS.Providers
 
             foreach(ISystemDefinition definition in _definitions)
             {
-                if(definition.Filter(provider))
+                if (definition.Filter(provider))
                 {
                     ISystem system = (ISystem)ActivatorUtilities.CreateInstance(provider, definition.Type);
                     builder.AddSystem(system);

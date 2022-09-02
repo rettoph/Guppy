@@ -10,26 +10,27 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public class NetOutgoingMessage<THeader> : NetMessage<THeader>, INetOutgoingMessage
+    public class NetOutgoingMessage<TBody> : NetMessage<TBody>, INetOutgoingMessage
     {
         private NetScope _scope;
         private NetDataWriter _writer;
-        private readonly NetSerializer<THeader> _serializer;
+        private readonly NetSerializer<TBody> _serializer;
         private readonly INetDatumProvider _dataProvider;
 
         private List<NetDatum> _data;
         private List<NetPeer> _recipients;
 
-        public new readonly NetMessageType<THeader> Type;
+        public new readonly NetMessageType<TBody> Type;
 
         public override IEnumerable<NetDatum> Data => _data;
         public NetDataWriter Writer => _writer;
 
         internal NetOutgoingMessage(
-            NetMessageType<THeader> type,
-            NetSerializer<THeader> serializer,
+            NetMessageType<TBody> type,
+            NetSerializer<TBody> serializer,
             INetDatumProvider dataProvider) : base(type)
         {
+            _scope = default!;
             _serializer = serializer;
             _dataProvider = dataProvider;
 
@@ -42,15 +43,15 @@ namespace Guppy.Network
             this.Type.Id.Write(_writer);
         }
 
-        public void Write(in THeader header, NetScope scope)
+        public void Write(in TBody body, NetScope scope)
         {
             _scope = scope;
             this.ScopeId = scope.id;
 
-            this.Header = header;
+            this.Body = body;
 
             _writer.Put(scope.id);
-            _serializer.Serialize(_writer, in header);
+            _serializer.Serialize(_writer, in body);
         }
 
         public override IEnumerator<NetDatum> GetEnumerator()

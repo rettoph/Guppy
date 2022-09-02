@@ -39,12 +39,14 @@ namespace Guppy.Network.Providers
             return message;
         }
 
-        public NetOutgoingMessage<THeader> Create<THeader>(in THeader header, NetScope scope)
+        public NetOutgoingMessage<TBody> Create<TBody>(in TBody body, NetScope scope)
         {
-            if(_types[typeof(THeader)] is NetMessageType<THeader> factory)
+            if(_types[typeof(TBody)] is NetMessageType<TBody> factory)
             {
                 var message = factory.CreateOutgoing();
-                message.Write(in header, scope);
+                message.Write(in body, scope);
+
+                scope.Publish(in message);
 
                 return message;
             }

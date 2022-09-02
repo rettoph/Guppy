@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope : Broker<INetIncomingMessage>, ISubscriber<NetIncomingMessage<UserAction>>, IDisposable
+    public sealed class NetScope : Broker<INetMessage>, ISubscriber<NetIncomingMessage<UserAction>>, IDisposable
     {
         private NetState _state;
         private readonly ConcurrentQueue<INetIncomingMessage> _incoming;
@@ -102,7 +102,7 @@ namespace Guppy.Network
         {
             while (_incoming.TryDequeue(out INetIncomingMessage? im))
             {
-                this.Publish(im);
+                this.Publish(im.GetType(), im);
                 im.Recycle();
             }
 
@@ -113,13 +113,13 @@ namespace Guppy.Network
             }
         }
 
-        public NetOutgoingMessage<THeader> Create<THeader>(in THeader header)
+        public NetOutgoingMessage<TBody> Create<TBody>(in TBody body)
         {
-            return _messages.Create(in header, this);
+            return _messages.Create(in body, this);
         }
-        public NetOutgoingMessage<THeader> Create<THeader>(THeader header)
+        public NetOutgoingMessage<TBody> Create<TBody>(TBody body)
         {
-            return _messages.Create(in header, this);
+            return _messages.Create(in body, this);
         }
 
         void ISubscriber<NetIncomingMessage<UserAction>>.Process(in NetIncomingMessage<UserAction> message)
@@ -129,9 +129,9 @@ namespace Guppy.Network
                 return;
             }
 
-            var user = _users.UpdateOrCreate(message.Header.Id, message.Header.Claims);
+            var user = _users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
 
-            switch (message.Header.Action)
+            switch (message.Body.Action)
             {
                 case UserAction.Actions.UserJoined:
                     this.Users.Add(user);

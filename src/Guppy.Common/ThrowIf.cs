@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    internal static class ThrowIf
+    public static class ThrowIf
     {
         public static class Type
         {

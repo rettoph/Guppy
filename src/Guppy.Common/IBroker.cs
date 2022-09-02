@@ -31,7 +31,7 @@ namespace Guppy.Common
         /// Publish an incoming message.
         /// </summary>
         /// <param name="message"></param>
-        public void Publish(in TMessage message);
+        public void Publish(Type type, in TMessage message);
 
         /// <summary>
         /// Publish an incoming message.

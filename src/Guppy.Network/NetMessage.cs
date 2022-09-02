@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public abstract class NetMessage<THeader> : IEnumerable<NetDatum>, INetMessage
+    public abstract class NetMessage<TBody> : IEnumerable<NetDatum>, INetMessage
     {
         public readonly NetMessageType Type;
 
         public byte ScopeId;
-        public THeader Header;
+        public TBody Body;
 
         public abstract IEnumerable<NetDatum> Data { get; }
 
@@ -23,7 +23,7 @@ namespace Guppy.Network
         {
             this.Type = type;
 
-            this.Header = default!;
+            this.Body = default!;
         }
 
         public abstract IEnumerator<NetDatum> GetEnumerator();

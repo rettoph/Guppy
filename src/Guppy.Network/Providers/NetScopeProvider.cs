@@ -38,16 +38,6 @@ namespace Guppy.Network.Providers
             return _started.TryGetValue(id, out scope);
         }
 
-        public void Enqueue(INetIncomingMessage message)
-        {
-            _started[message.ScopeId].Enqueue(message);
-        }
-
-        public void Enqueue(INetOutgoingMessage message)
-        {
-            _started[message.ScopeId].Enqueue(message);
-        }
-
         public NetScope Create()
         {
             var scope = new NetScope(_authorization, _messages, _users);

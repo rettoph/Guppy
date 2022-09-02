@@ -55,13 +55,13 @@ namespace Guppy.Network.Peers
 
         public void Process(in NetIncomingMessage<UserAction> message)
         {
-            switch (message.Header.Action)
+            switch (message.Body.Action)
             {
                 case UserAction.Actions.Connected:
-                    this.Users.UpdateOrCreate(message.Header.Id, message.Header.Claims);
+                    this.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
                     break;
                 case UserAction.Actions.CurrentUserConnected:
-                    this.Users.Current = this.Users.UpdateOrCreate(message.Header.Id, _peer, message.Header.Claims);
+                    this.Users.Current = this.Users.UpdateOrCreate(message.Body.Id, _peer, message.Body.Claims);
                     break;
             }
         }

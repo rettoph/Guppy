@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Guppy.MonoGame\Guppy.MonoGame.csproj" />
+    <ProjectReference Include="..\..\src\Guppy.Network.ECS\Guppy.Network.ECS.csproj" />
     <ProjectReference Include="..\..\src\Guppy.Network\Guppy.Network.csproj" />
     <ProjectReference Include="..\..\src\Guppy\Guppy.csproj" />
   </ItemGroup>
@@ -17,10 +18,6 @@
     <None Update="Content\Default\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Definitions\Systems\" />
   </ItemGroup>
 
 </Project>

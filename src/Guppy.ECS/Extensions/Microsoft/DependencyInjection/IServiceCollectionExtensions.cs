@@ -1,4 +1,5 @@
-﻿using Guppy.ECS;
+﻿using Guppy.Attributes;
+using Guppy.ECS;
 using Guppy.ECS.Definitions;
 using Microsoft.Extensions.DependencyInjection;
 using MonoGame.Extended.Entities.Systems;
@@ -45,15 +46,15 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddSingleton<ISystemDefinition, TDefinition>();
         }
 
-        public static IServiceCollection AddSystem(this IServiceCollection services, Type type, Func<IServiceProvider, bool> filter, int order)
+        public static IServiceCollection AddSystem(this IServiceCollection services, Type type, int order, params Type[] filters)
         {
-            return services.AddSingleton<ISystemDefinition>(new RuntimeSystemDefinition(type, filter, order));
+            return services.AddSingleton<ISystemDefinition>(new RuntimeSystemDefinition(type, order, filters));
         }
 
-        public static IServiceCollection AddSystem<TSystem>(this IServiceCollection services, Func<IServiceProvider, bool> filter, int order)
+        public static IServiceCollection AddSystem<TSystem>(this IServiceCollection services, int order, params Type[] filters)
             where TSystem : class, ISystem
         {
-            return services.AddSingleton<ISystemDefinition>(new RuntimeSystemDefinition(typeof(TSystem), filter, order));
+            return services.AddSingleton<ISystemDefinition>(new RuntimeSystemDefinition(typeof(TSystem), order, filters));
         }
     }
 }

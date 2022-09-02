@@ -77,7 +77,7 @@ namespace Guppy.MonoGame
 
             if(this.Data.TryGetValue(_state, out TData? data))
             {
-                _commands.Publish(data);
+                _commands.Publish<TData>(data);
                 return;
             }
         }

@@ -10,19 +10,19 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public class NetIncomingMessage<THeader> : NetMessage<THeader>, INetIncomingMessage
+    public class NetIncomingMessage<TBody> : NetMessage<TBody>, INetIncomingMessage
     {
-        private readonly NetSerializer<THeader> _serializer;
+        private readonly NetSerializer<TBody> _serializer;
         private readonly INetDatumProvider _dataProvider;
         private List<NetDatum> _data;
 
-        public new readonly NetMessageType<THeader> Type;
+        public new readonly NetMessageType<TBody> Type;
 
         public override IEnumerable<NetDatum> Data => _data;
 
         internal NetIncomingMessage(
-            NetMessageType<THeader> type,
-            NetSerializer<THeader> serializer, 
+            NetMessageType<TBody> type,
+            NetSerializer<TBody> serializer, 
             INetDatumProvider dataProvider) : base(type)
         {
             _serializer = serializer;
@@ -36,7 +36,7 @@ namespace Guppy.Network
         public void Read(NetDataReader reader)
         {
             this.ScopeId = reader.GetByte();
-            _serializer.Deserialize(reader, out this.Header);
+            _serializer.Deserialize(reader, out this.Body);
 
             while(!reader.EndOfData)
             {
@@ -54,6 +54,16 @@ namespace Guppy.Network
             _data.Clear();
 
             this.Type.Recycle(this);
+        }
+
+        public INetIncomingMessage Enqueue(INetScopeProvider scopes)
+        {
+            if(scopes.TryGet(this.ScopeId, out var scope))
+            {
+                scope.Enqueue(this);
+            }
+
+            return this;
         }
     }
 }
