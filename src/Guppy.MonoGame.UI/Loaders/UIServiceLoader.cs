@@ -24,13 +24,10 @@ namespace Guppy.MonoGame.UI.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             // Load the cimgui natives
-            var nativesPath = Path.Combine(Directory.GetCurrentDirectory(), PathConstants.Natives);
-            Directory.GetFiles(nativesPath, "cimgui.*")
-                .Concat(Directory.GetFiles(nativesPath, "cimplot.*"))
-                .Select(x => NativeLibrary.Load(x))
-                .ToList();
+            var directory = Path.Combine(Directory.GetCurrentDirectory(), PathConstants.Natives);
+            NativeHelper.Load(directory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
-            
+
 
             services.AddTransient<IResourcePackTypeProvider, ResourcePackTrueTypeFontProvider>();
 
