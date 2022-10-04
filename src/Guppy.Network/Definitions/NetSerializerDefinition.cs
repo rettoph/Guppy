@@ -1,5 +1,4 @@
-﻿using Guppy.Network.Structs;
-using LiteNetLib.Utils;
+﻿using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace Guppy.Network.Definitions
     public abstract class NetSerializerDefinition
     {
         public abstract Type Type { get; }
-        public abstract NetSerializer Build(NetId id);
+        public abstract NetSerializer Build(INetId id);
     }
 
     public abstract class NetSerializerDefinition<T> : NetSerializerDefinition
@@ -22,7 +21,7 @@ namespace Guppy.Network.Definitions
 
         public abstract void Deserialize(NetDataReader reader, out T instance);
 
-        public override NetSerializer Build(NetId id)
+        public override NetSerializer Build(INetId id)
         {
             return new NetSerializer<T>(id, this.Serialize, this.Deserialize);
         }

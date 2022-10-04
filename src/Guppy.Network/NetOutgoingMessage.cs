@@ -1,5 +1,4 @@
 ﻿using Guppy.Network.Providers;
-using Guppy.Network.Structs;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
@@ -61,7 +60,7 @@ namespace Guppy.Network
 
         public override void Recycle()
         {
-            _writer.SetPosition(NetId.SizeInBytes);
+            _writer.SetPosition(NetId.Byte.SizeInBytes);
 
             foreach(NetDatum datum in _data)
             {

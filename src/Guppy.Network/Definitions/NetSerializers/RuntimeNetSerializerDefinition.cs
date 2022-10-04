@@ -1,5 +1,4 @@
 ﻿using Guppy.Network.Delegates;
-using Guppy.Network.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace Guppy.Network.Definitions.NetSerializers
             _deserialize = deserialize;
         }
 
-        public override NetSerializer Build(NetId id)
+        public override NetSerializer Build(INetId id)
         {
             return new NetSerializer<T>(id, _serialize, _deserialize);
         }

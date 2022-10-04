@@ -1,5 +1,4 @@
 ﻿using Guppy.Network.Definitions;
-using Guppy.Network.Structs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -17,10 +16,10 @@ namespace Guppy.Network.Providers
         {
             _serializers = new Dictionary<Type, NetSerializer>(definitions.Count());
 
-            NetId id = 0;
+            byte id = 0;
             foreach(var definition in definitions)
             {
-                _serializers.Add(definition.Type, definition.Build(id));
+                _serializers.Add(definition.Type, definition.Build(NetId.Create(id)));
                 id += 1;
             }
         }

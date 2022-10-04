@@ -1,6 +1,5 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Definitions;
-using Guppy.Network.Structs;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,19 +11,19 @@ namespace Guppy.Network.Providers
 {
     internal sealed class NetMessageProvider : INetMessageProvider
     {
-        private DoubleDictionary<NetId, Type, NetMessageType> _types;
+        private DoubleDictionary<INetId, Type, NetMessageType> _types;
 
         public NetMessageProvider(
             INetSerializerProvider serializers,
             INetDatumProvider data,
             IEnumerable<NetMessageTypeDefinition> definitions)
         {
-            _types = new DoubleDictionary<NetId, Type, NetMessageType>();
+            _types = new DoubleDictionary<INetId, Type, NetMessageType>();
 
-            NetId id = 0;
+            byte id = 0;
             foreach(NetMessageTypeDefinition definition in definitions)
             {
-                var type = definition.BuildType(id, serializers, data);
+                var type = definition.BuildType(NetId.Create(id), serializers, data);
                 id += 1;
 
                 _types.TryAdd(type.Id, type.Header, type);
@@ -33,7 +32,8 @@ namespace Guppy.Network.Providers
 
         public INetIncomingMessage Read(NetDataReader reader)
         {
-            var message = _types[NetId.Read(reader)].CreateIncoming();
+            var id = NetId.Byte.Read(reader);
+            var message = _types[id].CreateIncoming();
             message.Read(reader);
 
             return message;

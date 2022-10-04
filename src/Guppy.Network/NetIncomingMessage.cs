@@ -1,5 +1,4 @@
 ﻿using Guppy.Network.Providers;
-using Guppy.Network.Structs;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;

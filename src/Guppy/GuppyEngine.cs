@@ -22,7 +22,7 @@ namespace Guppy
         public IAssemblyProvider Assemblies { get; private init; }
         public HashSet<string> Tags { get; private set; }
 
-        public GuppyEngine(IEnumerable<Assembly>? libraries = null)
+        public GuppyEngine(IEnumerable<Assembly>? libraries = default)
         {
             _initializers = new List<IGuppyInitializer>();
             _loaders = new List<IGuppyLoader>();

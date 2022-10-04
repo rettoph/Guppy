@@ -1,5 +1,4 @@
 ﻿using Guppy.Common.Collections;
-using Guppy.Network.Structs;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Guppy.Network.Providers
 {
     internal sealed class NetDatumProvider : INetDatumProvider
     {
-        private DoubleDictionary<NetId, Type, NetDatumType> _types;
+        private DoubleDictionary<INetId, Type, NetDatumType> _types;
 
         public NetDatumProvider(INetSerializerProvider serializers)
         {
@@ -20,7 +19,7 @@ namespace Guppy.Network.Providers
 
         public NetDatum Deserialize(NetDataReader reader)
         {
-            var datum = _types[NetId.Read(reader)].Create();
+            var datum = _types[NetId.Byte.Read(reader)].Create();
             datum.Deserialize(reader);
 
             return datum;

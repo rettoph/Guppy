@@ -72,7 +72,7 @@ namespace Guppy.Network.Peers
             this.Scope.Flush();
         }
 
-        private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+        private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             while(!reader.EndOfData)
             {

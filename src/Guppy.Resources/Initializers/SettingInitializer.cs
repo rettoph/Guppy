@@ -28,6 +28,8 @@ namespace Guppy.Resources.Initializers
             services.AddSingleton<ISettingProvider, SettingProvider>();
 
             services.AddSingleton<ISettingTypeSerializer, StringSettingSerializer>();
+
+            services.AddSingleton<ISettingTypeSerializer, Int32SettingSerializer>();
         }
     }
 }

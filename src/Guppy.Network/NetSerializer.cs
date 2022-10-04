@@ -1,6 +1,5 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Delegates;
-using Guppy.Network.Structs;
 using LiteNetLib.Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +11,9 @@ namespace Guppy.Network
     public abstract class NetSerializer
     {
         public readonly Type Type;
-        public readonly NetId Id;
+        public readonly INetId Id;
 
-        internal NetSerializer(Type type, NetId id)
+        internal NetSerializer(Type type, INetId id)
         {
             this.Type = type;
             this.Id = id;
@@ -28,7 +27,7 @@ namespace Guppy.Network
         public NetSerializeDelegate<T> Serialize;
         public NetDeserializeDelegate<T> Deserialize;
 
-        internal NetSerializer(NetId id, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize) : base(typeof(T), id)
+        internal NetSerializer(INetId id, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize) : base(typeof(T), id)
         {
             this.Serialize = serialize;
             this.Deserialize = deserialize;

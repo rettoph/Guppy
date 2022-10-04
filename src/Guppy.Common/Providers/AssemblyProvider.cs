@@ -26,7 +26,7 @@ namespace Guppy.Common.Providers
 
         public void Load(Assembly assembly)
         {
-            if(!this.ShouldLoad(assembly) || !_assemblies.Add(assembly))
+            if(!this.ShouldLoad(assembly))
             {
                 return;
             }
@@ -46,17 +46,17 @@ namespace Guppy.Common.Providers
         {
             if (this.Libraries.Count() == 0)
             {
-                return true;
+                return _assemblies.Add(assembly);
             }
 
             if (this.Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(assembly.GetName(), r)))
             { // Check if the recieved assembly is an existing library...
-                return true;
+                return _assemblies.Add(assembly);
             }
 
             if (assembly.GetReferencedAssemblies().Any(nan => this.Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(nan, r))))
             { // Ensure the assembly references a required library...
-                return true;
+                return _assemblies.Add(assembly);
             }
 
             return false;

@@ -1,6 +1,5 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Providers;
-using Guppy.Network.Structs;
 using LiteNetLib;
 using System;
 using System.Collections.Generic;
@@ -12,12 +11,12 @@ namespace Guppy.Network
 {
     public abstract class NetMessageType
     {
-        public readonly NetId Id;
+        public readonly INetId Id;
         public readonly Type Header;
         public readonly DeliveryMethod DeliveryMethod;
         public readonly byte OutgoingChannel;
 
-        protected NetMessageType(NetId id, Type header, DeliveryMethod deliveryMethod, byte outgoingChannel)
+        protected NetMessageType(INetId id, Type header, DeliveryMethod deliveryMethod, byte outgoingChannel)
         {
             this.Id = id;
             this.Header = header;
@@ -36,7 +35,7 @@ namespace Guppy.Network
         private readonly Factory<NetOutgoingMessage<THeader>> _outgoingFactory;
 
         public NetMessageType(
-            NetId id, 
+            INetId id, 
             Type header, 
             DeliveryMethod deliveryMethod, 
             byte outgoingChannel, 

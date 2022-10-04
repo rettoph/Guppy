@@ -142,26 +142,26 @@ namespace Guppy.Network
             }
         }
 
-        private void HandleUserJoined(IUserService sender, User users)
+        private void HandleUserJoined(IUserService sender, User user)
         {
             if(this.Authorization.Value != NetAuthorization.Master)
             {
                 return;
             }
 
-            this.Create(users.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+            this.Create(user.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
         }
 
-        private void HandleUserLeft(IUserService sender, User users)
+        private void HandleUserLeft(IUserService sender, User user)
         {
             if (this.Authorization.Value != NetAuthorization.Master)
             {
                 return;
             }
 
-            this.Create(users.CreateAction(UserAction.Actions.UserLeft, ClaimAccessibility.Public))
+            this.Create(user.CreateAction(UserAction.Actions.UserLeft, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
         }

@@ -3,7 +3,6 @@ using Guppy.ECS;
 using Guppy.Example.Library.Components;
 using Guppy.Example.Library.Messages;
 using Guppy.Network;
-using Guppy.Network.ECS.Attributes;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -15,7 +14,6 @@ using System.Threading.Tasks;
 namespace Guppy.Example.Library.Systems
 {
     [AutoLoad]
-    [WithMasterAuthorizationFilter]
     internal class MasterCreateNetworkedSystem : EntitySystem
     {
         private NetScope _scope;
