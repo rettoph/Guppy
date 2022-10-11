@@ -18,7 +18,10 @@ namespace Guppy.MonoGame
 
         protected World world => _world;
 
-        public FrameableGuppy(ITerminalService terminal, IDebuggerService debugger, World world)
+        public FrameableGuppy(
+            ITerminalService terminal, 
+            IDebuggerService debugger, 
+            World world)
         {
             _terminal = terminal;
             _debugger = debugger;

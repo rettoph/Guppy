@@ -1,5 +1,6 @@
 ﻿using Guppy.Loaders;
 using Guppy.MonoGame.Services;
+using Guppy.MonoGame.Systems;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Guppy.MonoGame.Loaders
         {
             services.AddSingleton<ITerminalService, ConsoleTerminalService>();
             services.AddScoped<IDebuggerService, DefaultDebuggerService>();
+
+            services.AddSystem<TerminalSystem>(0);
+            services.AddSystem<DebuggerSystem>(0);
         }
     }
 }

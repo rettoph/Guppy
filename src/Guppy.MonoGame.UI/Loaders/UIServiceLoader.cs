@@ -25,13 +25,13 @@ namespace Guppy.MonoGame.UI.Loaders
         {
             // Load the cimgui natives
             var directory = Path.Combine(Directory.GetCurrentDirectory(), PathConstants.Natives);
-            NativeHelper.Load(directory, NativeConstants.cImGui, NativeConstants.cImPlot);
+            NativeHelper.Load(directory, FileConstants.cImGui, FileConstants.cImPlot);
 
 
 
             services.AddTransient<IResourcePackTypeProvider, ResourcePackTrueTypeFontProvider>();
 
-            services.AddResource<TrueTypeFont>(ResourceConstants.DiagnosticsTTF, "Fonts/DiagnosticsFont.ttf");
+            services.AddResource<TrueTypeFont>(ResourceConstants.DiagnosticsTTF, FileConstants.DiagnosticsTTF);
 
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 24);
