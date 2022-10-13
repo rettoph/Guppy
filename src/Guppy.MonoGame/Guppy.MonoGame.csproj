@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Constants\" />
-  </ItemGroup>
-
 </Project>

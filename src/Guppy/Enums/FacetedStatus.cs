@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.Common.Enums
 {
-    public interface IFilter<T>
+    public enum FacetedStatus
     {
-        bool Invoke(T arg);
+        Inactive,
+        Activating,
+        Activated
     }
 }

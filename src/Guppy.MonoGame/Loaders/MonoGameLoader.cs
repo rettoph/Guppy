@@ -1,5 +1,6 @@
 ﻿using Guppy.Loaders;
 using Guppy.MonoGame.Commands;
+using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers.ResourcePackTypeProviders;
 using Guppy.MonoGame.Systems;
 using Guppy.Resources.Providers;
@@ -43,14 +44,14 @@ namespace Guppy.MonoGame.Loaders
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
 
-            services.AddSystem<InputSystem>(0);
+            services.AddSystem<InputSystem>(SystemConstants.DefaultOrder);
 
-            services.AddInput("toggle_terminal", Keys.OemTilde, new[]
+            services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {
                 (ButtonState.Pressed, new ToggleWindow() { Window = ToggleWindow.Windows.Terminal })
             });
 
-            services.AddInput("toggle_debugger", Keys.F1, new[]
+            services.AddInput(InputConstants.ToggleDebugger, Keys.F1, new[]
             {
                 (ButtonState.Pressed, new ToggleWindow() { Window = ToggleWindow.Windows.Debugger })
             });

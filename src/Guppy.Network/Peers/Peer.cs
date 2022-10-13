@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Constants;
+﻿using Guppy.Common;
+using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Providers;
@@ -38,16 +39,16 @@ namespace Guppy.Network.Peers
             INetScopeProvider scopes,
             INetMessageProvider messages,
             IUserProvider users,
+            IScoped<NetScope> scope,
             EventBasedNetListener listener,
-            NetManager manager, 
-            NetScope scope)
+            NetManager manager)
         {
             this.scopes = scopes;
             this.messages = messages;
             this.listener = listener;
             this.manager = manager;
 
-            this.Scope = scope;
+            this.Scope = scope.Instance;
             this.Users = users;
 
             _authorization = settings.Get<NetAuthorization>();

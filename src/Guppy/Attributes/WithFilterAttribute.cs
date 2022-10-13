@@ -13,7 +13,7 @@ namespace Guppy.Attributes
 
         public WithFilterAttribute(Type type)
         {
-            ThrowIf.Type.IsNotAssignableFrom<IFilter>(type);
+            ThrowIf.Type.IsNotGenericTypeImplementation(typeof(IFilter<>), type);
 
             this.Type = type;
         }

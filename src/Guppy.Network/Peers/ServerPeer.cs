@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Enums;
+﻿using Guppy.Common;
+using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
@@ -26,9 +27,9 @@ namespace Guppy.Network.Peers
             INetScopeProvider scopes,
             INetMessageProvider messages,
             IUserProvider users,
+            IScoped<NetScope> scope,
             EventBasedNetListener listener,
-            NetManager manager,
-            NetScope scope) : base(settings, scopes, messages, users, listener, manager, scope)
+            NetManager manager) : base(settings, scopes, messages, users, scope, listener, manager)
         {
             this.Authorization = NetAuthorization.Master;
 

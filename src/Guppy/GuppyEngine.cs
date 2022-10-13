@@ -93,7 +93,7 @@ namespace Guppy
 
             this.ConfigureServices(services);
 
-            var provider = services.BuildServiceProvider();
+            var provider = services.BuildServiceProvider(validateScopes: true);
 
             return provider.GetRequiredService<IGuppyProvider>();
         }

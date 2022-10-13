@@ -22,6 +22,24 @@ namespace Guppy.Common
             {
                 ThrowIf.Type.IsNotAssignableFrom(typeof(TParent), child);
             }
+
+            public static void IsNotGenericTypeImplementation(System.Type genericTypeDefinition, System.Type implementation)
+            {
+                if(!genericTypeDefinition.IsGenericTypeDefinition)
+                {
+                    throw new ArgumentException($"{nameof(genericTypeDefinition)} value of {genericTypeDefinition.Name} is not a valid Generic Type Definition.");
+                }
+
+                foreach(var interfaceType in implementation.GetInterfaces())
+                {
+                    if(interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericTypeDefinition)
+                    {
+                        return;
+                    }
+                }
+
+                throw new ArgumentException($"{nameof(implementation)} value of {implementation.Name} does not implement generic type definition {genericTypeDefinition.Name}.");
+            }
         }
     }
 }

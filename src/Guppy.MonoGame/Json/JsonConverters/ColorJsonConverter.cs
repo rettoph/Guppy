@@ -66,7 +66,7 @@ namespace Guppy.MonoGame.Json.JsonConverters
         {
             reader.CheckToken(JsonTokenType.String, true);
 
-            var htmlValue = reader.GetString();
+            var htmlValue = reader.GetString() ?? throw new Exception();
             var drawingColor = System.Drawing.ColorTranslator.FromHtml(htmlValue);
             return System.Drawing.ColorExtensions.ToXnaColor(drawingColor);
         }

@@ -14,15 +14,15 @@ namespace Guppy.ECS.Definitions
     {
         public static bool Filter(this ISystemDefinition definition, IServiceProvider provider)
         {
-            IFilter? filter;
+            IFilter<ISystemDefinition>? filter;
 
             foreach (Type filterType in definition.Filters)
             {
-                ThrowIf.Type.IsNotAssignableFrom<IFilter>(filterType);
+                ThrowIf.Type.IsNotAssignableFrom<IFilter<ISystemDefinition>>(filterType);
 
-                filter = (provider.GetService(filterType) ?? ActivatorUtilities.CreateInstance(provider, filterType)) as IFilter;
+                filter = (provider.GetService(filterType) ?? ActivatorUtilities.CreateInstance(provider, filterType)) as IFilter<ISystemDefinition>;
                 
-                if(filter?.Invoke() == false)
+                if(filter?.Invoke(definition) == false)
                 {
                     return false;
                 }

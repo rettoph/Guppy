@@ -24,7 +24,7 @@ namespace Guppy.Resources.Initializers
                 services.AddResource(definition);
             }
 
-            services.AddScoped<IResourceProvider, ResourceProvider>();
+            services.AddSingleton<IResourceProvider, ResourceProvider>();
         }
     }
 }

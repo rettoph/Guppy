@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Providers;
 using Guppy.ECS.Definitions;
+using Guppy.ECS.Filters;
 using Guppy.ECS.Providers;
 using Guppy.ECS.Services;
 using Guppy.Initializers;
@@ -35,6 +36,8 @@ namespace Guppy.ECS.Initializers
                 services.AddSystem(definition);
             }
 
+            services.AddScoped(typeof(GuppySystemFilter<>));
+            services.AddSingleton<SingletonSystemFilter>();
             services.AddSingleton<IWorldProvider, WorldProvider>();
             services.AddScoped<World>(p => p.GetRequiredService<IWorldProvider>().Create(p));
         }

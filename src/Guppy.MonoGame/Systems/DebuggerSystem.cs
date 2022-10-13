@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.ECS.Attributes;
+using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Systems
 {
+    [SingletonSystem]
     internal sealed class DebuggerSystem : IUpdateSystem, IDrawSystem
     {
         private IDebuggerService _debugger;

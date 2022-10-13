@@ -1,4 +1,6 @@
 ﻿using Guppy.Loaders;
+using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Systems;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +19,8 @@ namespace Guppy.MonoGame.Loaders
             services.AddSingleton<ITerminalService, ConsoleTerminalService>();
             services.AddScoped<IDebuggerService, DefaultDebuggerService>();
 
-            services.AddSystem<TerminalSystem>(0);
-            services.AddSystem<DebuggerSystem>(0);
+            services.AddSystem<TerminalSystem>(SystemConstants.DefaultOrder);
+            services.AddSystem<DebuggerSystem>(SystemConstants.DefaultOrder);
         }
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.MonoGame.Constants
 {
-    public interface IFilter<T>
+    public static class SystemConstants
     {
-        bool Invoke(T arg);
+        public const int DefaultOrder = -10;
     }
 }

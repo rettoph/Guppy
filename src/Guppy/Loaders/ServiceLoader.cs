@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Loaders;
 using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,7 @@ namespace Guppy.Loaders
         {
             services.AddSingleton<IGuppyProvider, GuppyProvider>();
             services.AddTransient(typeof(Lazy<>), typeof(Lazier<>));
+            services.AddTransient(typeof(IScoped<>), typeof(Scoped<>));
         }
     }
 }

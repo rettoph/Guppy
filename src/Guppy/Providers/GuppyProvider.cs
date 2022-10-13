@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy.Common;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,38 +9,39 @@ using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    internal sealed class GuppyProvider : IGuppyProvider
+    internal sealed class GuppyProvider : IGuppyProvider, IEnumerable<IScoped<IGuppy>>
     {
         private IServiceProvider _provider;
-        private List<IGuppy> _guppies;
+        private IList<IScoped<IGuppy>> _guppies;
 
         public GuppyProvider(IServiceProvider provider)
         {
-            _guppies = new List<IGuppy>();
+            _guppies = new List<IScoped<IGuppy>>();
             _provider = provider;
         }
 
-        TGuppy IGuppyProvider.Create<TGuppy>()
+        IScoped<T> IGuppyProvider.Create<T>()
         {
-            var guppy = _provider.CreateScope().ServiceProvider.GetRequiredService<TGuppy>();
+            //var guppy = _provider.CreateScope().ServiceProvider.GetRequiredService<T>();
+            var guppy = new Scoped<T>(_provider);
 
             _guppies.Add(guppy);
 
             return guppy;
         }
 
-        IEnumerable<TGuppy> IGuppyProvider.Get<TGuppy>()
+        IEnumerable<IScoped<T>> IGuppyProvider.All<T>()
         {
-            foreach(IGuppy guppy in _guppies)
+            foreach(IScoped<IGuppy> guppy in _guppies)
             {
-                if(guppy is TGuppy casted)
+                if(guppy is IScoped<T> casted)
                 {
                     yield return casted;
                 }
             }
         }
 
-        public IEnumerator<IGuppy> GetEnumerator()
+        public IEnumerator<IScoped<IGuppy>> GetEnumerator()
         {
             return _guppies.GetEnumerator();
         }
