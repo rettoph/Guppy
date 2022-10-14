@@ -26,20 +26,27 @@ namespace Guppy.MonoGame.Utilities
             this.Interval = interval;
         }
 
-        public bool Step(GameTime gameTime, bool locked, [MaybeNullWhen(false)] out TimeSpan elapsedTime)
+        public bool Step(GameTime gameTime, out int count, [MaybeNullWhen(false)] out TimeSpan elapsedTime)
+        {
+            return this.Step(gameTime, false, out count, out elapsedTime);
+        }
+
+        public bool Step(GameTime gameTime, bool locked, out int count, [MaybeNullWhen(false)] out TimeSpan elapsedTime)
         {
             _elapsedTime += gameTime.ElapsedGameTime;
 
-            if (_elapsedTime >= _interval && !locked)
+            if (locked || _elapsedTime < _interval)
             {
-                elapsedTime = _elapsedTime;
-                _elapsedTime -= _interval;
-
-                return true;
+                elapsedTime = TimeSpan.Zero;
+                count = 0;
+                return false;
             }
 
-            elapsedTime = TimeSpan.Zero;
-            return false;
+            count = (int)Math.Floor(_elapsedTime / _interval);
+            elapsedTime = _elapsedTime;
+            _elapsedTime -= _interval * count;
+
+            return true;
         }
     }
 }

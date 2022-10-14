@@ -19,19 +19,18 @@ namespace Guppy.MonoGame.Helpers
         /// <param name="interval">The minimum time in milliseconds between each frame</param>
         /// <param name="token">a cancellation token</param>
         /// <returns>A cancelation token source for the loop.</returns>
-        public static Task CreateLoop(Action<GameTime> frame, int interval, CancellationToken token)
+        public static Task CreateLoop(Action<GameTime> frame, TimeSpan interval, CancellationToken token)
         {
             return Task.Run(async () =>
             {
                 DateTime start = DateTime.Now;
-                DateTime now = DateTime.Now;
+                DateTime now = start;
                 DateTime last = default;
                 GameTime gameTime = new GameTime();
+                PeriodicTimer _timer = new PeriodicTimer(interval);
 
-                while (!token.IsCancellationRequested)
+                while (await _timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested)
                 {
-                    await Task.Delay(interval);
-
                     last = now;
                     now = DateTime.Now;
 

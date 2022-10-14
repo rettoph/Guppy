@@ -22,7 +22,6 @@ namespace Guppy.Providers
 
         IScoped<T> IGuppyProvider.Create<T>()
         {
-            //var guppy = _provider.CreateScope().ServiceProvider.GetRequiredService<T>();
             var guppy = new Scoped<T>(_provider);
 
             _guppies.Add(guppy);

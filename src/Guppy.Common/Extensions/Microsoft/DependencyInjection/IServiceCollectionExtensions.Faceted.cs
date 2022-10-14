@@ -1,4 +1,4 @@
-﻿using Guppy;
+﻿using Guppy.Common;
 using Guppy.Common.Helpers;
 using System;
 using System.Collections.Generic;
@@ -46,9 +46,9 @@ namespace Microsoft.Extensions.DependencyInjection
                     throw new NotImplementedException();
             }
 
-            foreach(Type ancestor in ancestors)
+            foreach (Type ancestor in ancestors)
             {
-                if(!services.Any(x => x.ServiceType == ancestor))
+                if (!services.Any(x => x.ServiceType == ancestor))
                 {
                     switch (lifetime)
                     {
@@ -62,18 +62,6 @@ namespace Microsoft.Extensions.DependencyInjection
                             throw new NotImplementedException();
                     }
                 }
-            }
-
-            return services;
-        }
-
-        public static IServiceCollection RemoveBy(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, out ServiceDescriptor[] removed)
-        {
-            removed = services.Where(predicate).ToArray();
-
-            foreach(ServiceDescriptor remove in removed)
-            {
-                services.Remove(remove);
             }
 
             return services;

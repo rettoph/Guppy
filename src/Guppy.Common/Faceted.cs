@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common
 {
     /// <summary>
     /// Some services are what im calling "faceted".
@@ -31,23 +31,23 @@ namespace Guppy
         public TImplementation Activate<TImplementation>(Func<IServiceProvider, TImplementation> factory)
             where TImplementation : T
         {
-            if (this.Status != FacetedStatus.Inactive)
+            if (Status != FacetedStatus.Inactive)
             {
                 throw new InvalidOperationException();
             }
 
-            this.Status = FacetedStatus.Activating;
-            this.Type = typeof(TImplementation);
-            this.Instance = factory(_provider);
-            this.Status = FacetedStatus.Activated;
+            Status = FacetedStatus.Activating;
+            Type = typeof(TImplementation);
+            Instance = factory(_provider);
+            Status = FacetedStatus.Activated;
 
-            return this.Get<TImplementation>();
+            return Get<TImplementation>();
         }
 
         public TService Get<TService>()
             where TService : T
         {
-            if (this.Instance is TService service)
+            if (Instance is TService service)
             {
                 return service;
             }
