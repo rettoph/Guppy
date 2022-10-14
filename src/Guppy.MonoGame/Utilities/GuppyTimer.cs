@@ -10,8 +10,8 @@ namespace Guppy.MonoGame.Utilities
 {
     public sealed class GuppyTimer
     {
-        private TimeSpan _elapsedTime;
         private TimeSpan _interval;
+        private GameTime _gameTime;
 
         public TimeSpan Interval
         {
@@ -19,34 +19,24 @@ namespace Guppy.MonoGame.Utilities
             set => _interval = value;
         }
 
-        public TimeSpan ElapsedTime => _elapsedTime;
+        public TimeSpan ElapsedTime => _gameTime.ElapsedGameTime;
 
         public GuppyTimer(TimeSpan interval)
         {
             this.Interval = interval;
+
+            _gameTime = new GameTime();
         }
 
-        public bool Step(GameTime gameTime, out int count, [MaybeNullWhen(false)] out TimeSpan elapsedTime)
+        public void Step(GameTime gameTime, Func<GameTime, bool> step)
         {
-            return this.Step(gameTime, false, out count, out elapsedTime);
-        }
+            _gameTime.TotalGameTime = gameTime.TotalGameTime;
+            _gameTime.ElapsedGameTime += gameTime.ElapsedGameTime;
 
-        public bool Step(GameTime gameTime, bool locked, out int count, [MaybeNullWhen(false)] out TimeSpan elapsedTime)
-        {
-            _elapsedTime += gameTime.ElapsedGameTime;
-
-            if (locked || _elapsedTime < _interval)
+            while (_gameTime.ElapsedGameTime >= _interval && step(_gameTime))
             {
-                elapsedTime = TimeSpan.Zero;
-                count = 0;
-                return false;
+                _gameTime.ElapsedGameTime -= _interval;
             }
-
-            count = (int)Math.Floor(_elapsedTime / _interval);
-            elapsedTime = _elapsedTime;
-            _elapsedTime -= _interval * count;
-
-            return true;
         }
     }
 }

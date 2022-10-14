@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    internal abstract class Publisher<TMessage> : IPublisher<TMessage>
-        where TMessage : notnull
+    internal abstract class Publisher<T> : IPublisher<T>
+        where T : notnull
     {
         public Type Type { get; }
 
@@ -16,12 +16,12 @@ namespace Guppy.Common
             this.Type = type;
         }
 
-        public abstract void Publish(in TMessage message);
+        public abstract void Publish(in T message);
     }
 
-    internal class Publisher<T, TMessage> : Publisher<TMessage>, IPublisher<T, TMessage>
-        where TMessage : notnull
-        where T : TMessage
+    internal class Publisher<T, TBase> : Publisher<TBase>, IPublisher<T, TBase>
+        where TBase : notnull
+        where T : TBase
     {
         private delegate void ProcessDelegate(in T message);
 
@@ -32,7 +32,7 @@ namespace Guppy.Common
             _subscribers = subscriber.Process;
         }
 
-        public override void Publish(in TMessage message)
+        public override void Publish(in TBase message)
         {
             if(message is T casted)
             {
