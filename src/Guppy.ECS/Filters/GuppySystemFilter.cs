@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Providers;
 using Guppy.ECS.Definitions;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ namespace Guppy.ECS.Filters
     internal sealed class GuppySystemFilter<T> : IFilter<ISystemDefinition>
         where T : IGuppy
     {
-        private Faceted<IGuppy> _guppy;
+        private FacetedProvider<IGuppy> _guppy;
 
-        public GuppySystemFilter(Faceted<IGuppy> guppy)
+        public GuppySystemFilter(FacetedProvider<IGuppy> guppy)
         {
             _guppy = guppy;
         }
