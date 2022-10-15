@@ -22,7 +22,7 @@ namespace Guppy.Common
         public void Subscribe<T>(ISubscriber<T> subscriber) 
             where T : TBase
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publishers) && publishers is IPublisher<T, TBase> casted)
+            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<T, TBase> casted)
             {
                 casted.Subscribe(subscriber);
                 return;
@@ -34,7 +34,7 @@ namespace Guppy.Common
         public void Unsubscribe<T>(ISubscriber<T> processor) 
             where T : TBase
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publishers) && publishers is IPublisher<T, TBase> casted)
+            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<T, TBase> casted)
             {
                 casted.Unsubscribe(processor);
             }
@@ -42,16 +42,16 @@ namespace Guppy.Common
 
         public void Publish(Type type, in TBase message)
         {
-            if (_publishers.TryGetValue(type, out IPublisher<TBase>? publishers))
+            if (_publishers.TryGetValue(type, out IPublisher<TBase>? publisher))
             {
-                publishers.Publish(in message);
+                publisher.Publish(in message);
             }
         }
 
         public void Publish<T>(in T message)
             where T : TBase
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publishers) && publishers is IPublisher<T, TBase> casted)
+            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<T, TBase> casted)
             {
                 casted.Publish(in message);
             }

@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Attributes
 {
-    public sealed class SingletonSystemAttribute : WithFilterAttribute
+    public sealed class SingletonSystemAttribute : SystemFilterAttribute
     {
-        public SingletonSystemAttribute() : base(typeof(SingletonSystemFilter))
+        protected override object GetInstance(Type classType, Type returnType)
         {
+            return SingletonSystemFilter.Instance;
         }
     }
 }

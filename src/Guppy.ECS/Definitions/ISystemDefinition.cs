@@ -1,4 +1,5 @@
-﻿using MonoGame.Extended.Entities.Systems;
+﻿using Guppy.Common;
+using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace Guppy.ECS.Definitions
     {
         int Order { get; }
         Type Type { get; }
-        Type[] Filters { get; }
+        IFilter<ISystemDefinition>[] Filters { get; }
     }
 }

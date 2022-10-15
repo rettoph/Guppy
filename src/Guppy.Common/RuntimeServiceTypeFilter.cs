@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    internal sealed class RuntimeServiceTypeFilter<T, TImplementation> : IServiceTypeFilter<T>, IFilter<IServiceProvider>
+    internal sealed class RuntimeServiceTypeFilter<T, TImplementation> : IServiceTypeFilter<T>, IFilter
         where T : class
         where TImplementation : T
     {

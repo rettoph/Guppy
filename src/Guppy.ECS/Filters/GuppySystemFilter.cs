@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.ECS.Definitions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,27 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Filters
 {
-    internal sealed class GuppySystemFilter<T> : IFilter<ISystemDefinition>
-        where T : IGuppy
+    internal sealed class GuppySystemFilter : IFilter<ISystemDefinition>
     {
-        private Faceted<IGuppy> _guppy;
+        public readonly Type Type;
 
-        public GuppySystemFilter(Faceted<IGuppy> guppy)
+        public GuppySystemFilter(Type type)
         {
-            _guppy = guppy;
+            ThrowIf.Type.IsNotAssignableFrom<IGuppy>(type);
+
+            this.Type = type;
         }
 
-        public bool Invoke(ISystemDefinition arg)
+        public bool Invoke(IServiceProvider provider, ISystemDefinition arg)
         {
-            var result = typeof(T).IsAssignableFrom(_guppy.Type);
+            var guppy = provider.GetRequiredService<Faceted<IGuppy>>();
+
+            if(guppy.Type is null)
+            {
+                return false;
+            }
+
+            var result = this.Type.IsAssignableFrom(guppy.Type);
 
             return result;
         }

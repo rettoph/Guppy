@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.ECS;
 using Guppy.ECS.Definitions;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,15 +47,27 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddSingleton<ISystemDefinition, TDefinition>();
         }
 
-        public static IServiceCollection AddSystem(this IServiceCollection services, Type type, int order, params Type[] filters)
+        public static IServiceCollection AddSystem(this IServiceCollection services, Type type, int order, params IFilter<ISystemDefinition>[] filters)
         {
-            return services.AddSingleton<ISystemDefinition>(new RuntimeSystemDefinition(type, order, filters));
+            var definition = new RuntimeSystemDefinition(type, order, filters);
+
+            return services.AddSingleton<ISystemDefinition>(definition);
         }
 
-        public static IServiceCollection AddSystem<TSystem>(this IServiceCollection services, int order, params Type[] filters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TSystem"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="order"></param>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddSystem<TSystem>(this IServiceCollection services, int order, params IFilter<ISystemDefinition>[] filters)
             where TSystem : class, ISystem
         {
-            return services.AddSingleton<ISystemDefinition>(new RuntimeSystemDefinition(typeof(TSystem), order, filters));
+            var definition = new RuntimeSystemDefinition(typeof(TSystem), order, filters);
+
+            return services.AddSingleton<ISystemDefinition>(definition);
         }
     }
 }

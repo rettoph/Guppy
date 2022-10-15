@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,13 @@ namespace Guppy.ECS.Definitions
 
         public Type Type { get; }
 
-        public Type[] Filters { get; }
+        public IFilter<ISystemDefinition>[] Filters { get; }
 
-        public RuntimeSystemDefinition(Type type, int order, Type[] filters)
+        public RuntimeSystemDefinition(Type type, int order, IFilter<ISystemDefinition>[] filters)
         {
             this.Order = order;
             this.Type = type;
-            this.Filters = filters.Concat(WithFilterAttribute.GetTypes(type)).ToArray();
+            this.Filters = filters.Concat(FactoryAttribute.GetInstances<IFilter<ISystemDefinition>>(type)).ToArray();
         }
     }
 }

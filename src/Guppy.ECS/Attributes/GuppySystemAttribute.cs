@@ -1,4 +1,6 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.ECS.Definitions;
 using Guppy.ECS.Filters;
 using System;
 using System.Collections.Generic;
@@ -8,10 +10,18 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Attributes
 {
-    public sealed class GuppySystemAttribute : WithFilterAttribute
+    public sealed class GuppySystemAttribute : SystemFilterAttribute
     {
-        public GuppySystemAttribute(Type type) : base(typeof(GuppySystemFilter<>).MakeGenericType(type))
+        private GuppySystemFilter _filter;
+
+        public GuppySystemAttribute(Type guppy) : base()
         {
+            _filter = new GuppySystemFilter(guppy);
+        }
+
+        protected override object GetInstance(Type classType, Type returnType)
+        {
+            return _filter;
         }
     }
 }

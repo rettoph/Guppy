@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IFilter<T>
+    public interface IFilter
     {
-        bool Invoke(T arg);
+        bool Invoke(IServiceProvider provider);
+    }
+
+    public interface IFilter<in T>
+    {
+        bool Invoke(IServiceProvider provider, T arg);
     }
 }

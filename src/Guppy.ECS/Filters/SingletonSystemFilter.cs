@@ -11,14 +11,11 @@ namespace Guppy.ECS.Filters
 {
     internal sealed class SingletonSystemFilter : IFilter<ISystemDefinition>
     {
-        private HashSet<int> _definitions;
+        private static HashSet<int> _definitions = new HashSet<int>();
 
-        public SingletonSystemFilter()
-        {
-            _definitions = new HashSet<int>();
-        }
+        public static SingletonSystemFilter Instance = new SingletonSystemFilter();
 
-        public bool Invoke(ISystemDefinition arg)
+        public bool Invoke(IServiceProvider provider, ISystemDefinition arg)
         {
             var response = _definitions.Add(arg.GetHashCode());
 
