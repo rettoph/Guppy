@@ -13,9 +13,9 @@ namespace Guppy.ECS.Filters
     internal sealed class GuppySystemFilter<T> : IFilter<ISystemDefinition>
         where T : IGuppy
     {
-        private FacetedProvider<IGuppy> _guppy;
+        private Faceted<IGuppy> _guppy;
 
-        public GuppySystemFilter(FacetedProvider<IGuppy> guppy)
+        public GuppySystemFilter(Faceted<IGuppy> guppy)
         {
             _guppy = guppy;
         }

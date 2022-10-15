@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common
 {
     /// <summary>
     /// Some services are what im calling "faceted".
@@ -14,7 +14,7 @@ namespace Guppy.Common.Providers
     /// and will not return any results until one specific
     /// implementation type is activated & requested.
     /// </summary>
-    public sealed class FacetedProvider<T>
+    public sealed class Faceted<T>
     {
         private IServiceProvider _provider;
 
@@ -23,7 +23,7 @@ namespace Guppy.Common.Providers
         public Type? Type;
         public T? Instance;
 
-        public FacetedProvider(IServiceProvider provider)
+        public Faceted(IServiceProvider provider)
         {
             _provider = provider;
         }

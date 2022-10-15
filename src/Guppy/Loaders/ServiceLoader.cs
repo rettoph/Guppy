@@ -18,7 +18,8 @@ namespace Guppy.Loaders
         {
             services.AddSingleton<IGuppyProvider, GuppyProvider>()
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
-                    .AddTransient(typeof(IScoped<>), typeof(Scoped<>));
+                    .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
+                    .AddTransient(typeof(IFiltered<>), typeof(Filtered<>));
         }
     }
 }
