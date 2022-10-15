@@ -21,7 +21,7 @@ namespace Guppy.Common
         {
             _filter = filter;
 
-            Order = order;
+            this.Order = order;
         }
 
         public bool Invoke(IServiceProvider arg)

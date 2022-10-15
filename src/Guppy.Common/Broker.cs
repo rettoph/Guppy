@@ -1,63 +1,58 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace Guppy.Common
 {
-    public class Broker<TBase> : IBroker<TBase>
-        where TBase : notnull
+    public class Broker<T> : IBroker<T>
+        where T : notnull
     {
-        private Dictionary<Type, IPublisher<TBase>> _publishers;
+        private Dictionary<Type, IPublisher<T>> _publishers;
 
-        public IPublisher<TBase> this[Type type] => _publishers[type];
+        public IPublisher<T> this[Type type] => _publishers[type];
 
         public Broker()
         {
-            _publishers = new Dictionary<Type, IPublisher<TBase>>();
+            _publishers = new Dictionary<Type, IPublisher<T>>();
         }
 
-        public void Subscribe<T>(ISubscriber<T> subscriber) 
-            where T : TBase
+        public void Subscribe<TMessage>(ISubscriber<TMessage> subscriber) 
+            where TMessage : T
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<T, TBase> casted)
+            if (_publishers.TryGetValue(typeof(TMessage), out IPublisher<T>? publisher) && publisher is IPublisher<TMessage, T> casted)
             {
                 casted.Subscribe(subscriber);
                 return;
             }
 
-            _publishers.Add(typeof(T), new Publisher<T, TBase>(subscriber));
+            _publishers.Add(typeof(TMessage), new Publisher<TMessage, T>(subscriber));
         }
 
-        public void Unsubscribe<T>(ISubscriber<T> processor) 
-            where T : TBase
+        public void Unsubscribe<TMessage>(ISubscriber<TMessage> processor) 
+            where TMessage : T
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<T, TBase> casted)
+            if (_publishers.TryGetValue(typeof(TMessage), out IPublisher<T>? publisher) && publisher is IPublisher<TMessage, T> casted)
             {
                 casted.Unsubscribe(processor);
             }
         }
 
-        public void Publish(Type type, in TBase message)
+        public void Publish(Type type, in T message)
         {
-            if (_publishers.TryGetValue(type, out IPublisher<TBase>? publisher))
+            if (_publishers.TryGetValue(type, out IPublisher<T>? publisher))
             {
                 publisher.Publish(in message);
             }
         }
 
-        public void Publish<T>(in T message)
-            where T : TBase
+        public void Publish<TMessage>(in TMessage message)
+            where TMessage : T
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<T, TBase> casted)
+            if (_publishers.TryGetValue(typeof(TMessage), out IPublisher<T>? publisher) && publisher is IPublisher<TMessage, T> casted)
             {
                 casted.Publish(in message);
             }
         }
 
-        public IEnumerator<IPublisher<TBase>> GetEnumerator()
+        public IEnumerator<IPublisher<T>> GetEnumerator()
         {
             return _publishers.Values.GetEnumerator();
         }
