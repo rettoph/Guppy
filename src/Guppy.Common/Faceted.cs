@@ -31,17 +31,17 @@ namespace Guppy.Common
         public TImplementation Activate<TImplementation>(Func<IServiceProvider, TImplementation> factory)
             where TImplementation : T
         {
-            if (Status != FacetedStatus.Inactive)
+            if (this.Status != FacetedStatus.Inactive)
             {
                 throw new InvalidOperationException();
             }
 
-            Status = FacetedStatus.Activating;
-            Type = typeof(TImplementation);
-            Instance = factory(_provider);
-            Status = FacetedStatus.Activated;
+            this.Status = FacetedStatus.Activating;
+            this.Type = typeof(TImplementation);
+            this.Instance = factory(_provider);
+            this.Status = FacetedStatus.Activated;
 
-            return Get<TImplementation>();
+            return this.Get<TImplementation>();
         }
 
         public TService Get<TService>()
