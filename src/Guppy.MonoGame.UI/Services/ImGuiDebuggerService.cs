@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Services;
 using ImGuiNET;
 using ImPlotNET;
 using Microsoft.Xna.Framework;
@@ -16,7 +17,7 @@ namespace Guppy.MonoGame.UI.Services
         private ImGuiBatch _imGuiBatch;
         private IntPtr _context;
 
-        public ImGuiDebuggerService(ImGuiBatch imGuiBatch, ICommandService commands, IEnumerable<IDebugger> debuggers) : base(commands, debuggers)
+        public ImGuiDebuggerService(ImGuiBatch imGuiBatch, IGlobal<IBus> bus, IEnumerable<IDebugger> debuggers) : base(bus, debuggers)
         {
             _imGuiBatch = imGuiBatch;
             _context = ImPlot.CreateContext();

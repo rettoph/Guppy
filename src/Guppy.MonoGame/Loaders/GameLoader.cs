@@ -21,6 +21,7 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddSystem<TerminalSystem>(SystemConstants.DefaultOrder);
             services.AddSystem<DebuggerSystem>(SystemConstants.DefaultOrder);
+            services.AddSystem<GlobalSystem>(SystemConstants.DefaultOrder);
         }
     }
 }

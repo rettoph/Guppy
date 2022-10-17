@@ -29,7 +29,7 @@ namespace Guppy.MonoGame.UI.Services
 
         public override ToggleWindow.Windows Window => ToggleWindow.Windows.Terminal;
 
-        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands) : base(commands, false)
+        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands, IGlobal<IBus> bus) : base(bus, false)
         {
             _imGuiBatch = imGuiBatch;
             _window = window;

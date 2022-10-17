@@ -9,6 +9,8 @@ namespace Guppy.Common
     public interface IBus<T> : IBroker<T>
         where T : notnull
     {
+        Guid Id { get; }
+
         void Flush();
     }
 

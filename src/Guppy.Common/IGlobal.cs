@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Guppy.Common
 {
     public interface IGlobal<T>
+        where T : notnull
     {
         T Instance { get; }
     }

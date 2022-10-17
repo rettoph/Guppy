@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    public interface ICommandService : IBroker<ICommandData>
+    public interface ICommandService
     {
         void Invoke(string input);
     }

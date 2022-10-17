@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Services;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -23,7 +24,7 @@ namespace Guppy.MonoGame.Definitions
         public IEnumerable<Option> Options => this.GetPropertyValues<Option>();
         public IEnumerable<Argument> Arguments => this.GetPropertyValues<Argument>();
 
-        public virtual Command BuildCommand(ICommandService commands)
+        public virtual Command BuildCommand(IBus bus, ICommandService commands)
         {
             var command = new Command(this.Name, this.Description);
 
@@ -91,15 +92,15 @@ namespace Guppy.MonoGame.Definitions
             return default(TData)!;
         }
 
-        public override Command BuildCommand(ICommandService commands)
+        public override Command BuildCommand(IBus bus, ICommandService commands)
         {
-            var command = base.BuildCommand(commands);
+            var command = base.BuildCommand(bus, commands);
 
-            command.SetHandler((command) =>
+            command.SetHandler((data) =>
             {
-                if (command is not null)
+                if (data is not null)
                 {
-                    commands.Publish<TData>(command);
+                    bus.Publish<TData>(data);
                 }
             }, new CommandDataBinder(this.BindData));
 

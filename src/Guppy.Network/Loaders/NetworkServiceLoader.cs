@@ -26,7 +26,7 @@ namespace Guppy.Network.Loaders
                 .AddSingleton<INetMessageProvider, NetMessageProvider>()
                 .AddSingleton<INetScopeProvider, NetScopeProvider>()
                 .AddSingleton<IUserProvider, UserProvider>()
-                .AddScoped<NetScope>(p => p.GetRequiredService<INetScopeProvider>().Create())
+                .AddScoped<NetScope>(p => p.GetRequiredService<INetScopeProvider>().Create(p))
                 .AddSingleton<EventBasedNetListener>()
                 .AddSingleton<NetManager>(p =>
                 {
@@ -34,6 +34,7 @@ namespace Guppy.Network.Loaders
                     var manager = new NetManager(listener)
                     {
                         ChannelsCount = _channelsCount,
+                        DisconnectTimeout = 60000
                     };
 
                     return manager;

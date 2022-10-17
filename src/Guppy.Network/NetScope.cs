@@ -8,6 +8,7 @@ using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using Guppy.Resources;
+using Guppy.Resources.Providers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,11 +18,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope : Broker<INetMessage>, ISubscriber<NetIncomingMessage<UserAction>>, IDisposable
+    public sealed class NetScope : Broker<INetMessage>, 
+        ISubscriber<INetOutgoingMessage>,
+        ISubscriber<NetIncomingMessage<UserAction>>, 
+        IDisposable
     {
         private NetState _state;
-        private readonly ConcurrentQueue<INetIncomingMessage> _incoming;
-        private readonly ConcurrentQueue<INetOutgoingMessage> _outgoing;
         private readonly INetMessageProvider _messages;
         private readonly IUserProvider _users;
 
@@ -34,23 +36,29 @@ namespace Guppy.Network
             set => this.OnStateChanged!.InvokeIf(value != _state, this, ref _state, value);
         }
 
-        public IUserService Users { get; set; }
+        public IUserService Users { get; }
         public ISetting<NetAuthorization> Authorization { get; }
+
+        public readonly IBus Bus;
 
         public event OnChangedEventDelegate<NetScope, NetState>? OnStateChanged;
 
-        internal NetScope(ISetting<NetAuthorization> authorization, INetMessageProvider messages, IUserProvider users)
+        public NetScope(
+            ISettingProvider settings, 
+            INetMessageProvider messages,
+            IUserProvider users,
+            IBus bus)
         {
             _state = NetState.Stopped;
-            _incoming = new ConcurrentQueue<INetIncomingMessage>();
-            _outgoing = new ConcurrentQueue<INetOutgoingMessage>();
             _messages = messages;
             _users = users;
 
             this.Users = new UserService();
-            this.Authorization = authorization;
+            this.Authorization = settings.Get<NetAuthorization>();
+            this.Bus = bus;
 
-            this.Subscribe(this);
+            this.Bus.Subscribe<INetOutgoingMessage>(this);
+            this.Bus.Subscribe<NetIncomingMessage<UserAction>>(this);
 
             this.Users.OnUserJoined += this.HandleUserJoined;
             this.Users.OnUserLeft += this.HandleUserLeft;
@@ -58,7 +66,8 @@ namespace Guppy.Network
 
         public void Dispose()
         {
-            this.Unsubscribe(this);
+            this.Bus.Unsubscribe<INetOutgoingMessage>(this);
+            this.Bus.Unsubscribe<NetIncomingMessage<UserAction>>(this);
 
             this.Users.OnUserJoined -= this.HandleUserJoined;
             this.Users.OnUserLeft -= this.HandleUserLeft;
@@ -88,31 +97,6 @@ namespace Guppy.Network
             this.State = NetState.Stopped;
         }
 
-        public void Enqueue(INetIncomingMessage message)
-        {
-            _incoming.Enqueue(message);
-        }
-
-        public void Enqueue(INetOutgoingMessage message)
-        {
-            _outgoing.Enqueue(message);
-        }
-
-        public void Flush()
-        {
-            while (_incoming.TryDequeue(out INetIncomingMessage? im))
-            {
-                this.Publish(im.GetType(), im);
-                im.Recycle();
-            }
-
-            while(_outgoing.TryDequeue(out INetOutgoingMessage? om))
-            {
-                om.Send();
-                om.Recycle();
-            }
-        }
-
         public NetOutgoingMessage<TBody> Create<TBody>(in TBody body)
         {
             return _messages.Create(in body, this);
@@ -120,6 +104,11 @@ namespace Guppy.Network
         public NetOutgoingMessage<TBody> Create<TBody>(TBody body)
         {
             return _messages.Create(in body, this);
+        }
+
+        void ISubscriber<INetOutgoingMessage>.Process(in INetOutgoingMessage message)
+        {
+            message.Send();
         }
 
         void ISubscriber<NetIncomingMessage<UserAction>>.Process(in NetIncomingMessage<UserAction> message)

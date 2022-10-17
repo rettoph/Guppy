@@ -70,7 +70,7 @@ namespace Guppy.Network.Peers
         {
             this.manager.PollEvents();
 
-            this.Scope.Flush();
+            this.Scope.Bus.Flush();
         }
 
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)

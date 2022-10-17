@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Enums;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework.Input;
@@ -15,7 +16,7 @@ namespace Guppy.MonoGame
     {
         private InputSource _source;
         private ButtonState _state;
-        private readonly ICommandService _commands;
+        private readonly IGlobal<IBus> _bus;
 
         public string Key { get; }
         public InputSource DefaultSource { get; }
@@ -47,9 +48,9 @@ namespace Guppy.MonoGame
             string key,
             InputSource defaultSource,
             (ButtonState state, TData data)[] data,
-            ICommandService commands)
+            IGlobal<IBus> bus)
         {
-            _commands = commands;
+            _bus = bus;
 
             this.Key = key;
             this.DefaultSource = defaultSource;
@@ -77,7 +78,7 @@ namespace Guppy.MonoGame
 
             if(this.Data.TryGetValue(_state, out TData? data))
             {
-                _commands.Publish<TData>(data);
+                _bus.Instance.Publish<TData>(data);
                 return;
             }
         }

@@ -7,13 +7,21 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    internal sealed class Global<T> : IGlobal<T>
+    internal sealed class Global<T> : IGlobal<T>, IDisposable
+        where T : notnull
     {
-        public T Instance { get; }
+        private IScoped<T> _scoped;
 
-        public Global(T instance)
+        public T Instance => _scoped.Instance;
+
+        public Global(IScoped<T> scoped)
         {
-            this.Instance = instance;
+            _scoped = scoped;
+        }
+
+        public void Dispose()
+        {
+            _scoped.Dispose();
         }
     }
 }

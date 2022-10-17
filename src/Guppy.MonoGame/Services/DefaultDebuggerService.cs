@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Commands;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Commands;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Guppy.MonoGame.Services
 
         public override ToggleWindow.Windows Window => ToggleWindow.Windows.Debugger;
 
-        public DefaultDebuggerService(ICommandService commands, IEnumerable<IDebugger> debuggers) : base(commands, true)
+        public DefaultDebuggerService(IGlobal<IBus> bus, IEnumerable<IDebugger> debuggers) : base(bus, true)
         {
             _debuggers = debuggers.ToArray();
         }

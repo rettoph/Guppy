@@ -10,7 +10,7 @@ namespace Guppy.Common
         where T : notnull
     {
         int Id { get; }
-        void Enqueue(T message);
+        void Enqueue(Type type, T message);
         void Flush(IBroker<T> broker);
     }
 }

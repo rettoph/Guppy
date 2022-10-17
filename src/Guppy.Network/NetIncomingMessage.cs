@@ -59,7 +59,7 @@ namespace Guppy.Network
         {
             if(scopes.TryGet(this.ScopeId, out var scope))
             {
-                scope.Enqueue(this);
+                scope.Bus.Publish(typeof(NetIncomingMessage<TBody>), this);
             }
 
             return this;

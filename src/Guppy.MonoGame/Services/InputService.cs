@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Definitions;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Definitions;
 using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework;
@@ -19,7 +20,7 @@ namespace Guppy.MonoGame.Services
         private HashSet<IInput> _mouseInputs;
         private HashSet<IInput> _keyboardInputs;
 
-        public InputService(ICommandService commands, IEnumerable<IInputDefinition> definitions)
+        public InputService(IGlobal<IBus> bus, IEnumerable<IInputDefinition> definitions)
         {
             _mouseInputs = new HashSet<IInput>();
             _keyboardInputs = new HashSet<IInput>();
@@ -28,7 +29,7 @@ namespace Guppy.MonoGame.Services
 
             foreach (IInputDefinition definition in definitions)
             {
-                var input = definition.BuildInput(commands);
+                var input = definition.BuildInput(bus);
                 this.ConfigureInput(input);
 
                 _inputs.Add(input.Key, input);

@@ -13,16 +13,16 @@ namespace Guppy.MonoGame.Services
     internal abstract class BaseWindowService : ISubscriber<ToggleWindow>
     {
         private bool _visible;
-        private ICommandService _commands;
+        private IGlobal<IBus> _bus;
 
         public abstract ToggleWindow.Windows Window { get; }
 
-        public BaseWindowService(ICommandService commands, bool visible)
+        public BaseWindowService(IGlobal<IBus> bus, bool visible)
         {
             _visible = visible;
-            _commands = commands;
+            _bus = bus;
 
-            _commands.Subscribe(this);
+            _bus.Instance.Subscribe(this);
         }
 
         public virtual void Draw(GameTime gameTime)

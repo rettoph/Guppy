@@ -12,6 +12,6 @@ namespace Guppy.Network.Providers
         NetScope Get(byte id);
         bool TryGet(byte id, [MaybeNullWhen(false)] out NetScope scope);
 
-        NetScope Create();
+        NetScope Create(IServiceProvider provider);
     }
 }

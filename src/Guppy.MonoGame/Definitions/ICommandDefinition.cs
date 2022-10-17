@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Services;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -17,6 +18,6 @@ namespace Guppy.MonoGame.Definitions
         public IEnumerable<Option> Options { get; }
         public IEnumerable<Argument> Arguments { get; }
 
-        Command BuildCommand(ICommandService commands);
+        Command BuildCommand(IBus bus, ICommandService commands);
     }
 }

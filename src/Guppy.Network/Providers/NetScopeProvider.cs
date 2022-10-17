@@ -2,6 +2,7 @@
 using Guppy.Network.Identity.Providers;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,17 +14,11 @@ namespace Guppy.Network.Providers
 {
     internal sealed class NetScopeProvider : INetScopeProvider
     {
-        private INetMessageProvider _messages;
-        private IUserProvider _users;
-        private ISetting<NetAuthorization> _authorization;
         private HashSet<NetScope> _scopes;
         private Dictionary<byte, NetScope> _started;
 
-        public NetScopeProvider(INetMessageProvider messages, IUserProvider users, ISettingProvider settings)
+        public NetScopeProvider(ISettingProvider settings)
         {
-            _messages = messages;
-            _users = users;
-            _authorization = settings.Get<NetAuthorization>();
             _scopes = new HashSet<NetScope>();
             _started = new Dictionary<byte, NetScope>();
         }
@@ -38,9 +33,9 @@ namespace Guppy.Network.Providers
             return _started.TryGetValue(id, out scope);
         }
 
-        public NetScope Create()
+        public NetScope Create(IServiceProvider provider)
         {
-            var scope = new NetScope(_authorization, _messages, _users);
+            var scope = ActivatorUtilities.CreateInstance<NetScope>(provider);
 
             this.Add(scope);
 

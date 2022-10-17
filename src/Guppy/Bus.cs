@@ -20,6 +20,8 @@ namespace Guppy.Common
 
         public IPublisher<T> this[Type type] => _broker[type];
 
+        public Guid Id { get; } = Guid.NewGuid();
+
         public Bus(IEnumerable<BusConfiguration> config)
         {
             _broker = new Broker<T>();
@@ -49,13 +51,13 @@ namespace Guppy.Common
 
         public void Publish(Type type, in T message)
         {
-            this.GetQueue(type).Enqueue(message);
+            this.GetQueue(type).Enqueue(type, message);
         }
 
         public void Publish<TMessage>(in TMessage message) 
             where TMessage : T
         {
-            this.GetQueue(message.GetType()).Enqueue(message);
+            this.Publish(typeof(TMessage), message);
         }
 
         public void Subscribe<TMessage>(ISubscriber<TMessage> subscriber) 

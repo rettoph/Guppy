@@ -12,16 +12,18 @@ namespace Guppy.MonoGame.Services
     internal sealed class CommandService : Broker<ICommandData>, ICommandService
     {
         private RootCommand _root;
+        private IGlobal<IBus> _bus;
 
-        public CommandService(IEnumerable<ICommandDefinition> definitions)
+        public CommandService(IGlobal<IBus> bus, IEnumerable<ICommandDefinition> definitions)
         {
+            _bus = bus;
             _root = new RootCommand()
             {
                 Name = ">"
             };
 
             // Build all defined commands...
-            var commands = definitions.ToDictionary(x => x, x => x.BuildCommand(this));
+            var commands = definitions.ToDictionary(x => x, x => x.BuildCommand(_bus.Instance, this));
             // Add all subcommands into the new commands...
             foreach (var command in commands)
             {

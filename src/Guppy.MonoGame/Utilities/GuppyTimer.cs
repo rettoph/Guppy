@@ -28,15 +28,34 @@ namespace Guppy.MonoGame.Utilities
             _gameTime = new GameTime();
         }
 
-        public void Step(GameTime gameTime, Func<GameTime, bool> step)
+        public void Update(GameTime gameTime)
         {
             _gameTime.TotalGameTime = gameTime.TotalGameTime;
             _gameTime.ElapsedGameTime += gameTime.ElapsedGameTime;
+        }
 
+        public void Step(Func<GameTime, bool> step)
+        {
             while (_gameTime.ElapsedGameTime >= _interval && step(_gameTime))
             {
                 _gameTime.ElapsedGameTime -= _interval;
+
+                step(_gameTime);
             }
+        }
+
+        public bool Step([MaybeNullWhen(false)] out GameTime gameTime)
+        {
+            if (_gameTime.ElapsedGameTime >= _interval)
+            {
+                _gameTime.ElapsedGameTime -= _interval;
+
+                gameTime = _gameTime;
+                return true;
+            }
+
+            gameTime = null;
+            return false;
         }
     }
 }

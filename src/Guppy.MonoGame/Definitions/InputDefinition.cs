@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -18,9 +19,9 @@ namespace Guppy.MonoGame.Definitions
 
         public abstract (ButtonState, TData)[] Data { get; }
 
-        public IInput BuildInput(ICommandService commands)
+        public IInput BuildInput(IGlobal<IBus> bus)
         {
-            return new Input<TData>(this.Key, this.DefaultSource, this.Data, commands);
+            return new Input<TData>(this.Key, this.DefaultSource, this.Data, bus);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Structs;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,6 @@ namespace Guppy.MonoGame.Definitions
         string Key { get; }
         InputSource DefaultSource { get; }
 
-        IInput BuildInput(ICommandService commands);
+        IInput BuildInput(IGlobal<IBus> bus);
     }
 }
