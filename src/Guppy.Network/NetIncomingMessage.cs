@@ -35,7 +35,7 @@ namespace Guppy.Network
         public void Read(NetDataReader reader)
         {
             this.ScopeId = reader.GetByte();
-            _serializer.Deserialize(reader, out this.Body);
+            _serializer.Deserialize(reader, _dataProvider, out this.Body);
 
             while(!reader.EndOfData)
             {

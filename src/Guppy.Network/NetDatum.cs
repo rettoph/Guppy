@@ -1,4 +1,5 @@
-﻿using LiteNetLib.Utils;
+﻿using Guppy.Network.Providers;
+using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,10 @@ namespace Guppy.Network
             this.Serializer = serializer;
         }
 
-        internal abstract void Serialize(NetDataWriter writer);
+        public abstract object? GetValue();
 
-        internal abstract void Deserialize(NetDataReader reader);
+        internal abstract void Deserialize(NetDataReader reader, INetDatumProvider datum);
+        internal abstract void Serialize(NetDataWriter writer, INetDatumProvider datum, bool sign, in object value);
 
         public abstract void Recycle();
 
@@ -30,13 +32,13 @@ namespace Guppy.Network
         }
     }
 
-    public sealed class NetDatum<TValue> : NetDatum
+    public sealed class NetDatum<T> : NetDatum
     {
-        public new readonly NetSerializer<TValue> Serializer;
-        public new readonly NetDatumType<TValue> Type;
-        public TValue Value;
+        public new readonly NetSerializer<T> Serializer;
+        public new readonly NetDatumType<T> Type;
+        public T Value;
 
-        internal NetDatum(NetDatumType<TValue> type, NetSerializer<TValue> serializer) : base(type, serializer)
+        internal NetDatum(NetDatumType<T> type, NetSerializer<T> serializer) : base(type, serializer)
         {
             this.Type = type;
             this.Serializer = serializer;
@@ -44,19 +46,39 @@ namespace Guppy.Network
             this.Value = default!; 
         }
 
-        internal override void Serialize(NetDataWriter writer)
+        internal override void Serialize(NetDataWriter writer, INetDatumProvider datum, bool sign, in object value)
         {
-            this.Serializer.Serialize(writer, in this.Value);
+            if(value is T casted)
+            {
+                this.Serialize(writer, datum, sign, in casted);
+            }
         }
 
-        internal override void Deserialize(NetDataReader reader)
+        internal void Serialize(NetDataWriter writer, INetDatumProvider datum, bool sign, in T value)
         {
-            this.Serializer.Deserialize(reader, out this.Value);
+            this.Value = value;
+
+            if (sign)
+            {
+                this.Serializer.Id.Write(writer);
+            }
+
+            this.Serializer.Serialize(writer, datum, in this.Value);
+        }
+
+        internal override void Deserialize(NetDataReader reader, INetDatumProvider datum)
+        {
+            this.Serializer.Deserialize(reader, datum, out this.Value);
         }
 
         public override void Recycle()
         {
             this.Type.Recycle(this);
+        }
+
+        public override object? GetValue()
+        {
+            return this.Value;
         }
     }
 }

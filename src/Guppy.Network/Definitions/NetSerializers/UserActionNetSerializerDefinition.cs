@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Messages;
+using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Guppy.Network.Definitions.NetSerializers
     [AutoLoad]
     internal sealed class UserActionNetSerializerDefinition : NetSerializerDefinition<UserAction>
     {
-        public override void Deserialize(NetDataReader reader, out UserAction instance)
+        public override void Deserialize(NetDataReader reader, INetDatumProvider datum, out UserAction instance)
         {
             instance = new UserAction()
             {
@@ -28,7 +29,7 @@ namespace Guppy.Network.Definitions.NetSerializers
             }
         }
 
-        public override void Serialize(NetDataWriter writer, in UserAction instance)
+        public override void Serialize(NetDataWriter writer, INetDatumProvider datum, in UserAction instance)
         {
             writer.Put(instance.Id);
             writer.Put(instance.Action);

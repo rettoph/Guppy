@@ -14,7 +14,7 @@ namespace Guppy.Network
         private NetScope _scope;
         private NetDataWriter _writer;
         private readonly NetSerializer<TBody> _serializer;
-        private readonly INetDatumProvider _dataProvider;
+        private readonly INetDatumProvider _datumProvider;
 
         private List<NetDatum> _data;
         private List<NetPeer> _recipients;
@@ -31,7 +31,7 @@ namespace Guppy.Network
         {
             _scope = default!;
             _serializer = serializer;
-            _dataProvider = dataProvider;
+            _datumProvider = dataProvider;
 
             this.Type = type;
 
@@ -50,7 +50,7 @@ namespace Guppy.Network
             this.Body = body;
 
             _writer.Put(scope.id);
-            _serializer.Serialize(_writer, in body);
+            _serializer.Serialize(_writer, _datumProvider, in body);
         }
 
         public override IEnumerator<NetDatum> GetEnumerator()
@@ -75,7 +75,7 @@ namespace Guppy.Network
 
         public INetOutgoingMessage Append<TValue>(in TValue value)
         {
-            _data.Add(_dataProvider.Serialize(_writer, in value));
+            _data.Add(_datumProvider.Serialize(_writer, true, in value));
 
             return this;
         }

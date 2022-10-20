@@ -44,7 +44,7 @@ namespace Guppy.Network
 
             public static INetId Read(NetDataReader reader)
             {
-                return Create(reader.GetByte());
+                return NetId.Byte.Create(reader.GetByte());
             }
 
             public static INetId<byte> Create(byte value)
@@ -69,7 +69,7 @@ namespace Guppy.Network
 
             public static INetId Read(NetDataReader reader)
             {
-                return Create(reader.GetUShort());
+                return NetId.UShort.Create(reader.GetUShort());
             }
 
             public static INetId<ushort> Create(ushort value)

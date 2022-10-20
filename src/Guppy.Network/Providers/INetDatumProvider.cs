@@ -9,8 +9,10 @@ namespace Guppy.Network.Providers
 {
     public interface INetDatumProvider
     {
-        NetDatum<T> Serialize<T>(NetDataWriter writer, in T value);
+        NetDatum<T> Serialize<T>(NetDataWriter writer, bool sign, in T value);
+        NetDatum Serialize(NetDataWriter writer, bool sign, Type type, object value);
 
+        NetDatum<T> Deserialize<T>(NetDataReader reader);
         NetDatum Deserialize(NetDataReader reader);
     }
 }
