@@ -21,9 +21,7 @@ namespace Guppy.Network.Loaders
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<INetSerializerProvider, NetSerializerProvider>()
-                .AddSingleton<INetDatumProvider, NetDatumProvider>()
-                .AddSingleton<INetMessageProvider, NetMessageProvider>()
+            services.AddScoped<INetSerializerProvider, NetSerializerProvider>()
                 .AddSingleton<INetScopeProvider, NetScopeProvider>()
                 .AddSingleton<IUserProvider, UserProvider>()
                 .AddScoped<NetScope>(p => p.GetRequiredService<INetScopeProvider>().Create(p))

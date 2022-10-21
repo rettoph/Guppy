@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.Common;
+using Guppy.Network.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
@@ -9,60 +10,74 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public class NetIncomingMessage<TBody> : NetMessage<TBody>, INetIncomingMessage
+    public class NetIncomingMessage<T> : INetIncomingMessage<T>
+        where T : notnull
     {
-        private readonly NetSerializer<TBody> _serializer;
-        private readonly INetDatumProvider _dataProvider;
-        private List<NetDatum> _data;
+        private readonly NetScope _scope;
+        private readonly NetMessageType<T> _type;
+        private readonly INetSerializerProvider _serializers;
+        private readonly INetSerializer<T> _serializer;
+        private T _body;
+        private IList<object> _data;
 
-        public new readonly NetMessageType<TBody> Type;
+        public IEnumerable<object> Data => _data;
 
-        public override IEnumerable<NetDatum> Data => _data;
+        T INetIncomingMessage<T>.Body => _body;
+
+        NetMessageType<T> INetIncomingMessage<T>.Type => _type;
+
+        object INetIncomingMessage.Body => _body;
+
+        NetMessageType INetIncomingMessage.Type => _type;
+
+        Type IMessage.PublishType { get; } = typeof(INetIncomingMessage<T>);
 
         internal NetIncomingMessage(
-            NetMessageType<TBody> type,
-            NetSerializer<TBody> serializer, 
-            INetDatumProvider dataProvider) : base(type)
+            NetMessageType<T> type,
+            NetScope scope,
+            INetSerializerProvider serializers)
         {
-            _serializer = serializer;
-            _dataProvider = dataProvider;
+            _body = default!;
+            _type = type;
+            _scope = scope;
+            _serializers = serializers;
+            _serializer = _serializers.Get<T>();
 
-            this.Type = type;
-
-            _data = new List<NetDatum>();
+            _data = new List<object>();
         }
 
         public void Read(NetDataReader reader)
         {
-            this.ScopeId = reader.GetByte();
-            _serializer.Deserialize(reader, _dataProvider, out this.Body);
+            _body = _serializer.Deserialize(reader, _serializers);
 
             while(!reader.EndOfData)
             {
-                _data.Add(_dataProvider.Deserialize(reader));
+                _data.Add(_serializers.Deserialize(reader));
             }
         }
 
-        public override IEnumerator<NetDatum> GetEnumerator()
-        {
-            return _data.GetEnumerator();
-        }
-
-        public override void Recycle()
+        public void Recycle()
         {
             _data.Clear();
 
-            this.Type.Recycle(this);
+            _type.Recycle(this);
         }
 
-        public INetIncomingMessage Enqueue(INetScopeProvider scopes)
+        public INetIncomingMessage<T> Enqueue()
         {
-            if(scopes.TryGet(this.ScopeId, out var scope))
-            {
-                scope.Bus.Publish(typeof(NetIncomingMessage<TBody>), this);
-            }
+            _scope.Bus.Publish(this);
 
             return this;
+        }
+
+        INetIncomingMessage INetIncomingMessage.Enqueue()
+        {
+            return this.Enqueue();
+        }
+
+        void IDisposable.Dispose()
+        {
+            this.Recycle();
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Guppy.Common
 {
     public class Bus<T> : IBus<T>, IBroker<T>
-        where T : notnull
+        where T : notnull, IMessage
     {
         private const int DefaultQueue = 0;
 
@@ -49,15 +49,9 @@ namespace Guppy.Common
             }
         }
 
-        public void Publish(Type type, in T message)
+        public void Publish(in T message)
         {
-            this.GetQueue(type).Enqueue(type, message);
-        }
-
-        public void Publish<TMessage>(in TMessage message) 
-            where TMessage : T
-        {
-            this.Publish(typeof(TMessage), message);
+            this.GetQueue(message.PublishType).Enqueue(message);
         }
 
         public void Subscribe<TMessage>(ISubscriber<TMessage> subscriber) 
@@ -103,7 +97,7 @@ namespace Guppy.Common
         }
     }
 
-    internal sealed class Bus : Bus<object>, IBus
+    internal sealed class Bus : Bus<IMessage>, IBus
     {
         public Bus(IEnumerable<BusConfiguration> config) : base(config)
         {

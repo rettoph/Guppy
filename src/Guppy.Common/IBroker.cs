@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Guppy.Common
 {
     public interface IBroker<T> : IEnumerable<IPublisher<T>>
-        where T : notnull
+        where T : notnull, IMessage
     {
         IPublisher<T> this[Type type] { get; }
 
@@ -31,13 +31,6 @@ namespace Guppy.Common
         /// Publish an incoming message.
         /// </summary>
         /// <param name="message"></param>
-        public void Publish(Type type, in T message);
-
-        /// <summary>
-        /// Publish an incoming message.
-        /// </summary>
-        /// <param name="message"></param>
-        public void Publish<TMessage>(in TMessage message)
-            where TMessage : T;
+        public void Publish(in T message);
     }
 }

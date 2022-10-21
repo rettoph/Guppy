@@ -16,7 +16,7 @@ namespace Guppy.Network.Initializers
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var serializers = assemblies.GetAttributes<NetSerializerDefinition, AutoLoadAttribute>().Types;
+            var serializers = assemblies.GetAttributes<INetSerializer, AutoLoadAttribute>().Types;
 
             foreach (Type serializer in serializers)
             {

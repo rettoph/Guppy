@@ -1,5 +1,6 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Delegates;
+using Guppy.Network.Providers;
 using LiteNetLib.Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,34 +9,44 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public abstract class NetSerializer
+    public abstract class NetSerializer<T> : INetSerializer<T>, INetSerializer
+        where T : notnull
     {
-        public readonly Type Type;
-        public readonly INetId Id;
+        private INetId _id = default!;
 
-        internal NetSerializer(Type type, INetId id)
+        INetId INetSerializer.Id
         {
-            this.Type = type;
-            this.Id = id;
+            get => _id;
+            set => _id = value;
         }
 
-        internal abstract NetDatumType BuildDatumType();
-    }
+        public INetId Id => _id;
 
-    public sealed class NetSerializer<T> : NetSerializer
-    {
-        public NetSerializeDelegate<T> Serialize;
-        public NetDeserializeDelegate<T> Deserialize;
+        public Type Type { get; } = typeof(T);
 
-        internal NetSerializer(INetId id, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize) : base(typeof(T), id)
+
+        public virtual void Initialize(INetSerializerProvider provider)
         {
-            this.Serialize = serialize;
-            this.Deserialize = deserialize;
         }
 
-        internal override NetDatumType BuildDatumType()
+        public abstract void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in T instance);
+
+        public abstract T Deserialize(NetDataReader reader, INetSerializerProvider serializers);
+
+        void INetSerializer.Serialize(NetDataWriter writer, INetSerializerProvider serializers, in object instance)
         {
-            return new NetDatumType<T>(this);
+            if(instance is T casted)
+            {
+                this.Serialize(writer, serializers, in casted);
+                return;
+            }
+
+            throw new ArgumentException(nameof(instance));
+        }
+
+        object INetSerializer.Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        {
+            return this.Deserialize(reader, serializers);
         }
     }
 }

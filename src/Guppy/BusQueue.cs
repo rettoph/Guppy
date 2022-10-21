@@ -18,15 +18,9 @@ namespace Guppy.Common
     /// </summary>
     /// <typeparam name="T"></typeparam>
     internal sealed class BusQueue<T> : IBusQueue<T>
-        where T : notnull
+        where T : notnull, IMessage
     {
-        private struct TypeMessage
-        {
-            public Type Type;
-            public T Message;
-        }
-
-        private ConcurrentQueue<TypeMessage> _queue;
+        private ConcurrentQueue<T> _queue;
 
         public int Id { get; }
 
@@ -34,16 +28,12 @@ namespace Guppy.Common
         {
             this.Id = id;
 
-            _queue = new ConcurrentQueue<TypeMessage>();
+            _queue = new ConcurrentQueue<T>();
         }
 
-        public void Enqueue(Type type, T message)
+        public void Enqueue(in T message)
         {
-            _queue.Enqueue(new TypeMessage()
-            {
-                Type = type,
-                Message = message
-            });
+            _queue.Enqueue(message);
         }
 
         public void Flush(IBroker<T> broker)
@@ -52,18 +42,18 @@ namespace Guppy.Common
             
             while(_queue.Count != 0 && errors != 5)
             {
-                if(_queue.TryDequeue(out var typeMessage))
+                if(_queue.TryDequeue(out var message))
                 {
-                    if(typeMessage.Message is IDisposable disposable)
+                    if(message is IDisposable disposable)
                     {
                         using (disposable)
                         {
-                            broker.Publish(typeMessage.Type, in typeMessage.Message);
+                            broker.Publish(in message);
                             continue;
                         }
                     }
 
-                    broker.Publish(typeMessage.Type, in typeMessage.Message);
+                    broker.Publish(message);
                     continue;
                 }
             

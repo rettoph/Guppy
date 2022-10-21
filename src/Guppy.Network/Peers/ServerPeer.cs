@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
@@ -18,18 +19,17 @@ namespace Guppy.Network.Peers
 {
     public class ServerPeer : Peer
     {
-        public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, NetIncomingMessage<UserAction> data);
+        public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, INetIncomingMessage<UserAction> data);
 
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
         public ServerPeer(
             ISettingProvider settings,
             INetScopeProvider scopes,
-            INetMessageProvider messages,
             IUserProvider users,
             IScoped<NetScope> scope,
             EventBasedNetListener listener,
-            NetManager manager) : base(settings, scopes, messages, users, scope, listener, manager)
+            NetManager manager) : base(settings, scopes, users, scope, listener, manager)
         {
             this.Authorization = NetAuthorization.Master;
 
@@ -53,9 +53,17 @@ namespace Guppy.Network.Peers
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            using (var data = this.messages.Read(request.Data))
+            var scopeId = request.Data.GetByte();
+
+            if(scopeId != NetScopeConstants.PeerScopeId)
             {
-                if (data is NetIncomingMessage<UserAction> casted)
+                // request.Reject();
+                throw new NotImplementedException();
+            }
+
+            using (var data = this.Scope.Read(request.Data))
+            {
+                if (data is INetIncomingMessage<UserAction> casted)
                 {
                     var accepted = true;
 

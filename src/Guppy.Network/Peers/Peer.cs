@@ -20,7 +20,6 @@ namespace Guppy.Network.Peers
         private readonly ISetting<NetAuthorization> _authorization;
 
         protected readonly INetScopeProvider scopes;
-        protected readonly INetMessageProvider messages;
         protected readonly EventBasedNetListener listener;
         protected readonly NetManager manager;
 
@@ -37,14 +36,12 @@ namespace Guppy.Network.Peers
         public Peer(
             ISettingProvider settings,
             INetScopeProvider scopes,
-            INetMessageProvider messages,
             IUserProvider users,
             IScoped<NetScope> scope,
             EventBasedNetListener listener,
             NetManager manager)
         {
             this.scopes = scopes;
-            this.messages = messages;
             this.listener = listener;
             this.manager = manager;
 
@@ -77,7 +74,10 @@ namespace Guppy.Network.Peers
         {
             while(!reader.EndOfData)
             {
-                this.messages.Read(reader).Enqueue(this.scopes);
+                var scopeId = reader.GetByte();
+                var scope = this.scopes.Get(scopeId);
+
+                scope.Read(reader).Enqueue();
             }
         }
     }

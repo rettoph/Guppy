@@ -1,5 +1,7 @@
-﻿using Guppy.Network.Definitions;
+﻿using Guppy.Common.Collections;
+using Guppy.Network.Definitions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -10,43 +12,51 @@ namespace Guppy.Network.Providers
 {
     internal sealed class NetSerializerProvider : INetSerializerProvider
     {
-        private Dictionary<Type, NetSerializer> _serializers;
+        private DoubleDictionary<INetId, Type, INetSerializer> _serializers;
 
-        public NetSerializerProvider(IEnumerable<NetSerializerDefinition> definitions)
+        public NetSerializerProvider(IEnumerable<INetSerializer> serializers)
         {
-            _serializers = new Dictionary<Type, NetSerializer>(definitions.Count());
+            _serializers = new DoubleDictionary<INetId, Type, INetSerializer>(serializers.Count());
 
             byte id = 0;
-            foreach(var definition in definitions)
+            foreach(var serializer in serializers)
             {
-                _serializers.Add(definition.Type, definition.Build(NetId.Create(id)));
-                id += 1;
+                if(_serializers.TryAdd(NetId.Create(id), serializer.Type, serializer))
+                {
+                    serializer.Id = NetId.Create(id);
+                    id += 1;
+                }
+            }
+
+            foreach(var serializer in _serializers.Values)
+            {
+                serializer.Initialize(this);
             }
         }
 
-        public NetSerializer<T> Get<T>()
+        public INetSerializer<T> Get<T>() where T : notnull
         {
-            return (NetSerializer<T>)_serializers[typeof(T)];
+            return (INetSerializer<T>)_serializers[typeof(T)];
         }
 
-        public bool TryGet<T>([MaybeNullWhen(false)] out NetSerializer<T> serializer)
+        public INetSerializer Get(Type type)
         {
-            if(_serializers.TryGetValue(typeof(T), out NetSerializer? uncasted) && uncasted is NetSerializer<T> casted)
-            {
-                serializer = casted;
-                return true;
-            }
-
-            serializer = null;
-            return false;
+            return _serializers[type];
         }
 
-        public IEnumerable<NetDatumType> BuildDatumTypes()
+        public INetSerializer Get(INetId id)
         {
-            foreach(NetSerializer serializer in _serializers.Values)
-            {
-                yield return serializer.BuildDatumType();
-            }
+            return _serializers[id];
+        }
+
+        public IEnumerator<INetSerializer> GetEnumerator()
+        {
+            return _serializers.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

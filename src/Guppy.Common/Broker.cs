@@ -3,7 +3,7 @@
 namespace Guppy.Common
 {
     public class Broker<T> : IBroker<T>
-        where T : notnull
+        where T : notnull, IMessage
     {
         private Dictionary<Type, IPublisher<T>> _publishers;
 
@@ -35,20 +35,11 @@ namespace Guppy.Common
             }
         }
 
-        public void Publish(Type type, in T message)
+        public void Publish(in T message)
         {
-            if (_publishers.TryGetValue(type, out IPublisher<T>? publisher))
+            if (_publishers.TryGetValue(message.PublishType, out IPublisher<T>? publisher))
             {
                 publisher.Publish(in message);
-            }
-        }
-
-        public void Publish<TMessage>(in TMessage message)
-            where TMessage : T
-        {
-            if (_publishers.TryGetValue(typeof(TMessage), out IPublisher<T>? publisher) && publisher is IPublisher<TMessage, T> casted)
-            {
-                casted.Publish(in message);
             }
         }
 

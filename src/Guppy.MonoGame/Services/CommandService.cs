@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    internal sealed class CommandService : Broker<ICommandData>, ICommandService
+    internal sealed class CommandService : ICommandService
     {
         private RootCommand _root;
         private IGlobal<IBus> _bus;

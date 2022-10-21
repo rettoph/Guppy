@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Delegates
 {
-    public delegate void NetSerializeDelegate<T>(NetDataWriter writer, INetDatumProvider datum, in T instance);
+    public delegate void NetSerializeDelegate<T>(NetDataWriter writer, INetSerializerProvider serializers, in T instance);
 }

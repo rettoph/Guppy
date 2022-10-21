@@ -9,63 +9,58 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public class NetOutgoingMessage<TBody> : NetMessage<TBody>, INetOutgoingMessage
+    internal sealed class NetOutgoingMessage<T> : INetOutgoingMessage<T>
+        where T : notnull
     {
         private NetScope _scope;
         private NetDataWriter _writer;
-        private readonly NetSerializer<TBody> _serializer;
-        private readonly INetDatumProvider _datumProvider;
-
-        private List<NetDatum> _data;
+        private readonly NetMessageType<T> _type;
+        private readonly INetSerializer<T> _serializer;
+        private readonly INetSerializerProvider _serializers;
+        private List<object> _data;
         private List<NetPeer> _recipients;
+        private T _body;
 
-        public new readonly NetMessageType<TBody> Type;
 
-        public override IEnumerable<NetDatum> Data => _data;
+        object INetOutgoingMessage.Body => _body;
+        NetMessageType INetOutgoingMessage.Type => _type;
+        public T Body => _body;
+        public NetMessageType<T> Type => _type;
+        public IEnumerable<object> Data => _data;
         public NetDataWriter Writer => _writer;
 
+        public Type PublishType { get; } = typeof(INetOutgoingMessage);
+
         internal NetOutgoingMessage(
-            NetMessageType<TBody> type,
-            NetSerializer<TBody> serializer,
-            INetDatumProvider dataProvider) : base(type)
+            NetMessageType<T> type,
+            NetScope scope,
+            INetSerializerProvider serializers)
         {
-            _scope = default!;
-            _serializer = serializer;
-            _datumProvider = dataProvider;
+            _body = default!;
+            _scope = scope;
+            _serializers = serializers;
+            _serializer = _serializers.Get<T>();
 
-            this.Type = type;
+            _type = type;
 
-            _data = new List<NetDatum>();
+            _data = new List<object>();
             _recipients = new List<NetPeer>();
             _writer = new NetDataWriter();
 
-            this.Type.Id.Write(_writer);
+            _writer.Put(_scope.id);
+            _type.Id.Write(_writer);
         }
 
-        public void Write(in TBody body, NetScope scope)
+        public void Write(in T body)
         {
-            _scope = scope;
-            this.ScopeId = scope.id;
+            _body = body;
 
-            this.Body = body;
-
-            _writer.Put(scope.id);
-            _serializer.Serialize(_writer, _datumProvider, in body);
+            _serializer.Serialize(_writer, _serializers, in body);
         }
 
-        public override IEnumerator<NetDatum> GetEnumerator()
+        public void Recycle()
         {
-            return _data.GetEnumerator();
-        }
-
-        public override void Recycle()
-        {
-            _writer.SetPosition(NetId.Byte.SizeInBytes);
-
-            foreach(NetDatum datum in _data)
-            {
-                datum.Recycle();
-            }
+            _writer.SetPosition(1 + NetId.Byte.SizeInBytes);
 
             _data.Clear();
             _recipients.Clear();
@@ -73,28 +68,30 @@ namespace Guppy.Network
             this.Type.Recycle(this);
         }
 
-        public INetOutgoingMessage Append<TValue>(in TValue value)
+        public INetOutgoingMessage<T> Append<TData>(in TData value)
+            where TData : notnull
         {
-            _data.Add(_datumProvider.Serialize(_writer, true, in value));
+            _serializers.Serialize(_writer, true, in value);
+            _data.Add(value);
 
             return this;
         }
 
-        public INetOutgoingMessage AddRecipient(NetPeer recipient)
+        public INetOutgoingMessage<T> AddRecipient(NetPeer recipient)
         {
             _recipients.Add(recipient);
 
             return this;
         }
 
-        public INetOutgoingMessage AddRecipients(IEnumerable<NetPeer> recipients)
+        public INetOutgoingMessage<T> AddRecipients(IEnumerable<NetPeer> recipients)
         {
             _recipients.AddRange(recipients);
 
             return this;
         }
 
-        public INetOutgoingMessage Send()
+        public INetOutgoingMessage<T> Send()
         {
             foreach (NetPeer recipient in _recipients)
             {
@@ -104,11 +101,41 @@ namespace Guppy.Network
             return this;
         }
 
-        public INetOutgoingMessage Enqueue()
+        public INetOutgoingMessage<T> Enqueue()
         {
-            _scope.Bus.Publish(typeof(INetOutgoingMessage), this);
+            _scope.Bus.Publish(this);
 
             return this;
+        }
+
+        public void Dispose()
+        {
+            this.Recycle();
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.Append<TData>(in TData value)
+        {
+            return this.Append(in value);
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.AddRecipient(NetPeer recipient)
+        {
+            return this.AddRecipient(recipient);
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.AddRecipients(IEnumerable<NetPeer> recipients)
+        {
+            return this.AddRecipients(recipients);
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.Send()
+        {
+            return this.Send();
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.Enqueue()
+        {
+            return this.Enqueue();
         }
     }
 }

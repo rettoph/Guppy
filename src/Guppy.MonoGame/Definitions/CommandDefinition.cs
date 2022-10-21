@@ -96,11 +96,11 @@ namespace Guppy.MonoGame.Definitions
         {
             var command = base.BuildCommand(bus, commands);
 
-            command.SetHandler((data) =>
+            command.SetHandler((input) =>
             {
-                if (data is not null)
+                if (input is ICommandData casted)
                 {
-                    bus.Publish<TData>(data);
+                    bus.Publish(casted);
                 }
             }, new CommandDataBinder(this.BindData));
 

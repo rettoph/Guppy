@@ -1,4 +1,5 @@
-﻿using ImGuiNET;
+﻿using Guppy.Common;
+using ImGuiNET;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.UI.Commands
 {
-    public struct ImGuiKeyState : ICommandData
+    public class ImGuiKeyState : Message, ICommandData
     {
         public readonly ImGuiKey Key;
         public readonly ButtonState State;

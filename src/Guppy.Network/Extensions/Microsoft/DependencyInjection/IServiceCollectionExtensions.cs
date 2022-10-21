@@ -1,7 +1,9 @@
-﻿using Guppy.Network.Definitions;
+﻿using Guppy.Common;
+using Guppy.Network;
+using Guppy.Network.Definitions;
 using Guppy.Network.Definitions.NetMessageTypes;
-using Guppy.Network.Definitions.NetSerializers;
 using Guppy.Network.Delegates;
+using Guppy.Network.NetSerializers;
 using LiteNetLib;
 using System;
 using System.Collections.Generic;
@@ -13,25 +15,25 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddNetSerializer(this IServiceCollection services, Type netSerializerDefinitionType)
+        public static IServiceCollection AddNetSerializer(this IServiceCollection services, Type netSerializerType)
         {
-            return services.AddSingleton(typeof(NetSerializerDefinition), netSerializerDefinitionType);
+            ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), netSerializerType);
+
+            return services.AddScoped(typeof(INetSerializer), netSerializerType);
         }
 
-        public static IServiceCollection AddNetSerializer<TDefinition>(this IServiceCollection services)
-            where TDefinition : NetSerializerDefinition
+        public static IServiceCollection AddNetSerializer<T>(this IServiceCollection services)
+            where T : class, INetSerializer
         {
-            return services.AddSingleton<NetSerializerDefinition, TDefinition>();
-        }
+            ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), typeof(T));
 
-        public static IServiceCollection AddNetSerializer(this IServiceCollection services, NetSerializerDefinition definition)
-        {
-            return services.AddSingleton<NetSerializerDefinition>(definition);
+            return services.AddScoped<INetSerializer, T>();
         }
 
         public static IServiceCollection AddNetSerializer<T>(this IServiceCollection services, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
+            where T : notnull
         {
-            return services.AddNetSerializer(new RuntimeNetSerializerDefinition<T>(serialize, deserialize));
+            return services.AddScoped<INetSerializer>(p => new RuntimeNetSerializer<T>(serialize, deserialize));
         }
 
         public static IServiceCollection AddNetMessageType(this IServiceCollection services, Type netMessengerDefinitionType)

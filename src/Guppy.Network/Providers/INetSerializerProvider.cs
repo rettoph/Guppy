@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiteNetLib.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Providers
 {
-    public interface INetSerializerProvider
+    public interface INetSerializerProvider : IEnumerable<INetSerializer>
     {
-        NetSerializer<T> Get<T>();
-        bool TryGet<T>([MaybeNullWhen(false)] out NetSerializer<T> serializer);
+        INetSerializer<T> Get<T>()
+            where T : notnull;
 
-        IEnumerable<NetDatumType> BuildDatumTypes();
+        INetSerializer Get(Type type);
+
+        INetSerializer Get(INetId id);
     }
 }

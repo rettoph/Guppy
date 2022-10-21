@@ -14,16 +14,16 @@ namespace Guppy.Network.Definitions
         public abstract DeliveryMethod DeliveryMethod { get; }
         public abstract byte OutgoingChannel { get; }
 
-        internal abstract NetMessageType BuildType(INetId id, INetSerializerProvider serializers, INetDatumProvider data);
+        internal abstract NetMessageType BuildType(INetId id, INetSerializerProvider serializers, NetScope scope);
     }
 
     public abstract class NetMessageTypeDefinition<TBody> : NetMessageTypeDefinition
     {
         public override Type Body => typeof(TBody);
 
-        internal override NetMessageType BuildType(INetId id, INetSerializerProvider serializers, INetDatumProvider data)
+        internal override NetMessageType BuildType(INetId id, INetSerializerProvider serializers, NetScope scope)
         {
-            return new NetMessageType<TBody>(id, this.Body, this.DeliveryMethod, this.OutgoingChannel, serializers, data);
+            return new NetMessageType<TBody>(id, this.Body, this.DeliveryMethod, this.OutgoingChannel, serializers, scope);
         }
     }
 }

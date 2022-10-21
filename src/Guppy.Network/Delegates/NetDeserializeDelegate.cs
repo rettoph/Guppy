@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Delegates
 {
-    public delegate void NetDeserializeDelegate<T>(NetDataReader reader, INetDatumProvider datum, out T instance);
+    public delegate T NetDeserializeDelegate<T>(NetDataReader reader, INetSerializerProvider serializers);
 }

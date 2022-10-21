@@ -17,18 +17,17 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Peers
 {
-    public class ClientPeer : Peer, ISubscriber<NetIncomingMessage<UserAction>>
+    public class ClientPeer : Peer, ISubscriber<INetIncomingMessage<UserAction>>
     {
         private NetPeer? _peer;
 
         public ClientPeer(
             ISettingProvider settings,
             INetScopeProvider scopes, 
-            INetMessageProvider messages, 
             IUserProvider users,
             IScoped<NetScope> scope,
             EventBasedNetListener listener, 
-            NetManager manager) : base(settings, scopes, messages, users, scope, listener, manager)
+            NetManager manager) : base(settings, scopes, users, scope, listener, manager)
         {
             this.Authorization = NetAuthorization.Slave;
         }
@@ -53,7 +52,7 @@ namespace Guppy.Network.Peers
             }
         }
 
-        public void Process(in NetIncomingMessage<UserAction> message)
+        public void Process(in INetIncomingMessage<UserAction> message)
         {
             switch (message.Body.Action)
             {

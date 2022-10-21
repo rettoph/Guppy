@@ -9,33 +9,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.Definitions.NetSerializers
+namespace Guppy.Network.NetSerializers
 {
     [AutoLoad]
-    internal sealed class UserActionNetSerializerDefinition : NetSerializerDefinition<UserAction>
+    internal sealed class UserActionNetSerializer : NetSerializer<UserAction>
     {
-        public override void Deserialize(NetDataReader reader, INetDatumProvider datum, out UserAction instance)
+        public override UserAction Deserialize(NetDataReader reader, INetSerializerProvider serializers)
         {
-            instance = new UserAction()
+            var instance = new UserAction()
             {
                 Id = reader.GetInt(),
                 Action = reader.GetEnum<UserAction.Actions>(),
                 Claims = new Claim[reader.GetInt()]
             };
 
-            for(var i=0; i<instance.Claims.Length; i++)
+            for (var i = 0; i < instance.Claims.Length; i++)
             {
                 instance.Claims[i] = Claim.Deserialize(reader);
             }
+
+            return instance;
         }
 
-        public override void Serialize(NetDataWriter writer, INetDatumProvider datum, in UserAction instance)
+        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in UserAction instance)
         {
             writer.Put(instance.Id);
             writer.Put(instance.Action);
             writer.Put(instance.Claims.Length);
 
-            foreach(Claim claim in instance.Claims)
+            foreach (Claim claim in instance.Claims)
             {
                 claim.Serialize(writer);
             }

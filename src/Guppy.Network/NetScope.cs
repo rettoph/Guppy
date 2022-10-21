@@ -1,4 +1,6 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
+using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
@@ -9,23 +11,27 @@ using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
+using LiteNetLib.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Guppy.Common.ThrowIf;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace Guppy.Network
 {
     public sealed class NetScope : Broker<INetMessage>, 
         ISubscriber<INetOutgoingMessage>,
-        ISubscriber<NetIncomingMessage<UserAction>>, 
+        ISubscriber<INetIncomingMessage<UserAction>>, 
         IDisposable
     {
         private NetState _state;
-        private readonly INetMessageProvider _messages;
         private readonly IUserProvider _users;
+        private readonly INetSerializerProvider _serializers;
+        private readonly DoubleDictionary<INetId, System.Type, NetMessageType> _messages;
 
         internal byte id;
 
@@ -45,20 +51,32 @@ namespace Guppy.Network
 
         public NetScope(
             ISettingProvider settings, 
-            INetMessageProvider messages,
             IUserProvider users,
-            IBus bus)
+            IBus bus,
+            INetSerializerProvider serializers,
+            IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _state = NetState.Stopped;
-            _messages = messages;
+            _serializers = serializers;
             _users = users;
+
+            _messages = new DoubleDictionary<INetId, System.Type, NetMessageType>(definitions.Count());
+
+            byte id = 0;
+            foreach (NetMessageTypeDefinition definition in definitions)
+            {
+                var type = definition.BuildType(NetId.Create(id), serializers, this);
+                id += 1;
+
+                _messages.TryAdd(type.Id, type.Body, type);
+            }
 
             this.Users = new UserService();
             this.Authorization = settings.Get<NetAuthorization>();
             this.Bus = bus;
 
             this.Bus.Subscribe<INetOutgoingMessage>(this);
-            this.Bus.Subscribe<NetIncomingMessage<UserAction>>(this);
+            this.Bus.Subscribe<INetIncomingMessage<UserAction>>(this);
 
             this.Users.OnUserJoined += this.HandleUserJoined;
             this.Users.OnUserLeft += this.HandleUserLeft;
@@ -67,7 +85,7 @@ namespace Guppy.Network
         public void Dispose()
         {
             this.Bus.Unsubscribe<INetOutgoingMessage>(this);
-            this.Bus.Unsubscribe<NetIncomingMessage<UserAction>>(this);
+            this.Bus.Unsubscribe<INetIncomingMessage<UserAction>>(this);
 
             this.Users.OnUserJoined -= this.HandleUserJoined;
             this.Users.OnUserLeft -= this.HandleUserLeft;
@@ -97,13 +115,29 @@ namespace Guppy.Network
             this.State = NetState.Stopped;
         }
 
-        public NetOutgoingMessage<TBody> Create<TBody>(in TBody body)
+        public INetIncomingMessage Read(NetDataReader reader)
         {
-            return _messages.Create(in body, this);
+            var id = NetId.Byte.Read(reader);
+            var message = _messages[id].CreateIncoming();
+            message.Read(reader);
+
+            return message;
         }
-        public NetOutgoingMessage<TBody> Create<TBody>(TBody body)
+
+        public INetOutgoingMessage<T> Create<T>(in T body)
+            where T : notnull
         {
-            return _messages.Create(in body, this);
+            if (_messages[typeof(T)] is NetMessageType<T> type)
+            {
+                var message = type.CreateOutgoing();
+                message.Write(in body);
+
+                this.Publish(message);
+
+                return message;
+            }
+
+            throw new NotImplementedException();
         }
 
         void ISubscriber<INetOutgoingMessage>.Process(in INetOutgoingMessage message)
@@ -111,7 +145,7 @@ namespace Guppy.Network
             message.Send();
         }
 
-        void ISubscriber<NetIncomingMessage<UserAction>>.Process(in NetIncomingMessage<UserAction> message)
+        void ISubscriber<INetIncomingMessage<UserAction>>.Process(in INetIncomingMessage<UserAction> message)
         {
             if (this.Authorization.Value != NetAuthorization.Slave)
             {

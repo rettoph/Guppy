@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Guppy.Common
 {
     public interface IBusQueue<T>
-        where T : notnull
+        where T : notnull, IMessage
     {
         int Id { get; }
-        void Enqueue(Type type, T message);
+        void Enqueue(in T message);
         void Flush(IBroker<T> broker);
     }
 }
