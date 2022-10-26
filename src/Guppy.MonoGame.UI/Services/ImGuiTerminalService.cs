@@ -10,9 +10,9 @@ using NumVector4 = System.Numerics.Vector4;
 using NumVector2 = System.Numerics.Vector2;
 using Guppy.MonoGame.Services;
 using Guppy.Common;
-using Guppy.MonoGame.Commands;
 using Guppy.MonoGame.UI.Constants;
 using Guppy.Common.Collections;
+using Guppy.MonoGame.Messages.Inputs;
 
 namespace Guppy.MonoGame.UI.Services
 {
@@ -27,7 +27,7 @@ namespace Guppy.MonoGame.UI.Services
         private ICommandService _commands;
         private bool _focusInput;
 
-        public override ToggleWindow.Windows Window => ToggleWindow.Windows.Terminal;
+        public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Terminal;
 
         public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands, IGlobal<IBus> bus) : base(bus, false)
         {

@@ -15,6 +15,8 @@ namespace Guppy
 
         public IEnumerable<T> Items => _items;
 
+        public T Instance => _items[0];
+
         public Filtered(
             IServiceProvider provider,
             IEnumerable<T> items,
@@ -29,16 +31,6 @@ namespace Guppy
                     _items.Add(casted);
                 }
             }
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
     }
 }

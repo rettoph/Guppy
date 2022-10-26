@@ -3,6 +3,7 @@ using Guppy.Common.Collections;
 using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
+using Guppy.Network.Factories;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Providers;
@@ -32,6 +33,7 @@ namespace Guppy.Network
         private readonly IUserProvider _users;
         private readonly INetSerializerProvider _serializers;
         private readonly DoubleDictionary<INetId, System.Type, NetMessageType> _messages;
+        private readonly INetOutgoingMessageFactory _factory;
 
         internal byte id;
 
@@ -54,11 +56,13 @@ namespace Guppy.Network
             IUserProvider users,
             IBus bus,
             INetSerializerProvider serializers,
+            IFiltered<INetOutgoingMessageFactory> factories,
             IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _state = NetState.Stopped;
             _serializers = serializers;
             _users = users;
+            _factory = factories.Instance;
 
             _messages = new DoubleDictionary<INetId, System.Type, NetMessageType>(definitions.Count());
 
@@ -101,6 +105,8 @@ namespace Guppy.Network
                 return;
             }
 
+            _factory.Initialize(_messages);
+
             this.id = id;
             this.State = NetState.Started;
         }
@@ -127,17 +133,7 @@ namespace Guppy.Network
         public INetOutgoingMessage<T> Create<T>(in T body)
             where T : notnull
         {
-            if (_messages[typeof(T)] is NetMessageType<T> type)
-            {
-                var message = type.CreateOutgoing();
-                message.Write(in body);
-
-                this.Publish(message);
-
-                return message;
-            }
-
-            throw new NotImplementedException();
+            return _factory.Create(in body);
         }
 
         void ISubscriber<INetOutgoingMessage>.Process(in INetOutgoingMessage message)

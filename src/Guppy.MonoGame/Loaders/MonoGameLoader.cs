@@ -1,6 +1,6 @@
 ﻿using Guppy.Loaders;
-using Guppy.MonoGame.Commands;
 using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.Messages.Inputs;
 using Guppy.MonoGame.Providers.ResourcePackTypeProviders;
 using Guppy.MonoGame.Systems;
 using Guppy.Resources.Providers;
@@ -48,12 +48,12 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {
-                (ButtonState.Pressed, new ToggleWindow() { Window = ToggleWindow.Windows.Terminal })
+                (ButtonState.Pressed, new ToggleWindowInput() { Window = ToggleWindowInput.Windows.Terminal })
             });
 
             services.AddInput(InputConstants.ToggleDebugger, Keys.F1, new[]
             {
-                (ButtonState.Pressed, new ToggleWindow() { Window = ToggleWindow.Windows.Debugger })
+                (ButtonState.Pressed, new ToggleWindowInput() { Window = ToggleWindowInput.Windows.Debugger })
             });
         }
     }

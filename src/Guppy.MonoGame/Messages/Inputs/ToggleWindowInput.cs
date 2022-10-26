@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Messages.Inputs
 {
-    public class ToggleWindow : Message
+    public class ToggleWindowInput : Message
     {
         public enum Windows
         {

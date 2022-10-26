@@ -1,6 +1,5 @@
 ﻿using Guppy.MonoGame.Services;
 using Guppy.MonoGame.UI.Constants;
-using Guppy.MonoGame.UI.Commands;
 using Guppy.Loaders;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +15,7 @@ using Guppy.MonoGame.UI.Providers.ResourcePackTypeProviders;
 using System.Reflection;
 using Guppy.Common.Helpers;
 using System.Runtime.InteropServices;
+using Guppy.MonoGame.UI.Messages.Inputs;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -71,8 +71,8 @@ namespace Guppy.MonoGame.UI.Loaders
                 defaultKey,
                 new[]
                 {
-                    (ButtonState.Pressed, new ImGuiKeyState(mapping, ButtonState.Pressed)),
-                    (ButtonState.Released, new ImGuiKeyState(mapping, ButtonState.Released))
+                    (ButtonState.Pressed, new ImGuiKeyStateInput(mapping, ButtonState.Pressed)),
+                    (ButtonState.Released, new ImGuiKeyStateInput(mapping, ButtonState.Released))
                 });
         }
     }

@@ -1,5 +1,8 @@
-﻿using Guppy.Loaders;
+﻿using Guppy.Common;
+using Guppy.Loaders;
 using Guppy.Network.Enums;
+using Guppy.Network.Factories;
+using Guppy.Network.Factories.NetOutgoingMessageFactories;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
@@ -40,7 +43,23 @@ namespace Guppy.Network.Loaders
                 .AddFaceted<Peer, ClientPeer>(ServiceLifetime.Singleton)
                 .AddFaceted<Peer, ServerPeer>(ServiceLifetime.Singleton)
                 .AddSingleton<ISettingTypeSerializer, EnumSettingSerializer<NetAuthorization>>()
-                .AddSetting(NetAuthorization.Master, false);
+                .AddSetting(NetAuthorization.Master, false)
+                .AddScoped<ClientNetOutgoingMessageFactory>()
+                .AddScoped<ServerNetOutgoingMessageFactory>()
+                .AddFilter<INetOutgoingMessageFactory, ClientNetOutgoingMessageFactory>(PeerFilter<ClientPeer>(), 0)
+                .AddFilter<INetOutgoingMessageFactory, ClientNetOutgoingMessageFactory>(PeerFilter<ServerPeer>(), 0);
+        }
+
+        private Func<IServiceProvider, bool> PeerFilter<T>()
+            where T : Peer
+        {
+            bool Filter(IServiceProvider provider)
+            {
+                var instance = provider.GetRequiredService<Faceted<Peer>>();
+                return instance.Type?.IsAssignableTo(typeof(T)) ?? false;
+            }
+
+            return Filter;
         }
     }
 }
