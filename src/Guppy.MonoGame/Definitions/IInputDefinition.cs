@@ -14,6 +14,6 @@ namespace Guppy.MonoGame.Definitions
         string Key { get; }
         InputSource DefaultSource { get; }
 
-        IInput BuildInput(IGlobal<IBus> bus);
+        IInput BuildInput();
     }
 }

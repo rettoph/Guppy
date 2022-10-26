@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Implementations;
 using Guppy.MonoGame.Definitions;
 using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Structs;
@@ -13,14 +14,14 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    internal sealed class InputService : IInputService
+    internal sealed class InputService : BusPublisher, IInputService
     {
         private Dictionary<string, IInput> _inputs;
 
         private HashSet<IInput> _mouseInputs;
         private HashSet<IInput> _keyboardInputs;
 
-        public InputService(IGlobal<IBus> bus, IEnumerable<IInputDefinition> definitions)
+        public InputService(IGlobal<IBus> bus, IEnumerable<IInputDefinition> definitions) : base(bus.Instance.Yield())
         {
             _mouseInputs = new HashSet<IInput>();
             _keyboardInputs = new HashSet<IInput>();
@@ -29,7 +30,7 @@ namespace Guppy.MonoGame.Services
 
             foreach (IInputDefinition definition in definitions)
             {
-                var input = definition.BuildInput(bus);
+                var input = definition.BuildInput();
                 this.ConfigureInput(input);
 
                 _inputs.Add(input.Key, input);
@@ -53,12 +54,17 @@ namespace Guppy.MonoGame.Services
 
         public void Update(GameTime gameTime)
         {
+            // TODO: Refactor such that input states can be passed by 
+            // some managing service
             var kState = Keyboard.GetState();
             var mState = Mouse.GetState();
 
             foreach (IInput input in _inputs.Values)
             {
-                input.Update(ref kState, ref mState);
+                if(input.Update(ref kState, ref mState, out IMessage? data))
+                {
+                    this.Publish(data);
+                }
             }
         }
 

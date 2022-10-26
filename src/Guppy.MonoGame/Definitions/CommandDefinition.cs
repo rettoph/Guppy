@@ -24,7 +24,7 @@ namespace Guppy.MonoGame.Definitions
         public IEnumerable<Option> Options => this.GetPropertyValues<Option>();
         public IEnumerable<Argument> Arguments => this.GetPropertyValues<Argument>();
 
-        public virtual Command BuildCommand(IBus bus, ICommandService commands)
+        public virtual Command BuildCommand(ICommandService commands)
         {
             var command = new Command(this.Name, this.Description);
 
@@ -70,7 +70,7 @@ namespace Guppy.MonoGame.Definitions
     }
 
     public abstract class CommandDefinition<TData> : CommandDefinition, ICommandDefinition
-        where TData : notnull, ICommandData
+        where TData : notnull, IMessage
     {
         private class CommandDataBinder : BinderBase<TData>
         {
@@ -92,15 +92,15 @@ namespace Guppy.MonoGame.Definitions
             return default(TData)!;
         }
 
-        public override Command BuildCommand(IBus bus, ICommandService commands)
+        public override Command BuildCommand(ICommandService commands)
         {
-            var command = base.BuildCommand(bus, commands);
+            var command = base.BuildCommand(commands);
 
             command.SetHandler((input) =>
             {
-                if (input is ICommandData casted)
+                if (input is IMessage casted)
                 {
-                    bus.Publish(casted);
+                    commands.Publish(casted);
                 }
             }, new CommandDataBinder(this.BindData));
 

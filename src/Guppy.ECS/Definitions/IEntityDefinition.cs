@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Definitions
 {
-    public interface IEntityTypeDefinition
+    public interface IEntityDefinition
     {
         EntityKey Key { get; }
 

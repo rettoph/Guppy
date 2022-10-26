@@ -1,5 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.MonoGame.Commands;
+using Guppy.MonoGame.Messages.Inputs;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Guppy.MonoGame.Services
 
         protected IDebugger[] debuggers => _debuggers;
 
-        public override ToggleWindow.Windows Window => ToggleWindow.Windows.Debugger;
+        public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Debugger;
 
         public DefaultDebuggerService(IGlobal<IBus> bus, IEnumerable<IDebugger> debuggers) : base(bus, true)
         {

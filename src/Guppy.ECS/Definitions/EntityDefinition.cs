@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Definitions
 {
-    internal sealed class EntityTypeDefinition : IEntityTypeDefinition
+    internal sealed class EntityDefinition : IEntityDefinition
     {
         public EntityKey Key { get; }
         public EntityTag[] Tags { get; }
 
-        public EntityTypeDefinition(EntityKey key, EntityTag[] tags)
+        public EntityDefinition(EntityKey key, EntityTag[] tags)
         {
             this.Key = key;
             this.Tags = tags;

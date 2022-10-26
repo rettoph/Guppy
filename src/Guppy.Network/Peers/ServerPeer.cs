@@ -3,6 +3,7 @@ using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
+using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Messages;
@@ -39,9 +40,11 @@ namespace Guppy.Network.Peers
             this.Users.OnUserConnected += this.HandleUserConnected;
         }
 
-        public void Start(int port)
+        public void Start(int port, params Claim[] claims)
         {
             base.Start();
+
+            this.Users.Current = this.Users.UpdateOrCreate(-1, claims);
 
             this.manager.Start(port);
         }

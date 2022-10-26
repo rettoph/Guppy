@@ -5,6 +5,7 @@ using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,10 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame
 {
     public sealed class Input<TData> : IInput
-        where TData : ICommandData
+        where TData : IMessage
     {
         private InputSource _source;
         private ButtonState _state;
-        private readonly IGlobal<IBus> _bus;
 
         public string Key { get; }
         public InputSource DefaultSource { get; }
@@ -47,11 +47,8 @@ namespace Guppy.MonoGame
         public Input(
             string key,
             InputSource defaultSource,
-            (ButtonState state, TData data)[] data,
-            IGlobal<IBus> bus)
+            (ButtonState state, TData data)[] data)
         {
-            _bus = bus;
-
             this.Key = key;
             this.DefaultSource = defaultSource;
             this.Data = data.ToDictionary(x => x.state, x => x.data);
@@ -60,7 +57,7 @@ namespace Guppy.MonoGame
             this.State = ButtonState.Released;
         }
 
-        public void Update(ref KeyboardState kState, ref MouseState mState)
+        public bool Update(ref KeyboardState kState, ref MouseState mState, [MaybeNullWhen(false)] out IMessage data)
         {
             var changed = _source.Type switch
             {
@@ -71,16 +68,20 @@ namespace Guppy.MonoGame
 
             if (!changed)
             {
-                return;
+                data = null;
+                return false;
             }
 
             this.State = _state == ButtonState.Pressed ? ButtonState.Released : ButtonState.Pressed;
 
-            if(this.Data.TryGetValue(_state, out TData? data))
+            if(this.Data.TryGetValue(_state, out TData? message))
             {
-                _bus.Instance.Publish(data);
-                return;
+                data = message;
+                return true;
             }
+
+            data = null;
+            return false;
         }
     }
 }

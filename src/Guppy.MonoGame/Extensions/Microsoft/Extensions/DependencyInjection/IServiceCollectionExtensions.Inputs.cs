@@ -1,4 +1,5 @@
 ﻿using Guppy;
+using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Definitions;
 using Guppy.MonoGame.Definitions.Inputs;
@@ -28,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddInput<TData>(this IServiceCollection services, string key, InputSource defaultSource, (ButtonState, TData)[] data)
-            where TData : ICommandData
+            where TData : IMessage
         {
             return services.AddSingleton(typeof(IInputDefinition), new RuntimeInputDefinition<TData>(key, defaultSource, data));
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Definitions
 {
     public abstract class InputDefinition<TData> : IInputDefinition
-        where TData : ICommandData
+        where TData : IMessage
     {
         public abstract string Key { get; }
 
@@ -19,9 +19,9 @@ namespace Guppy.MonoGame.Definitions
 
         public abstract (ButtonState, TData)[] Data { get; }
 
-        public IInput BuildInput(IGlobal<IBus> bus)
+        public IInput BuildInput()
         {
-            return new Input<TData>(this.Key, this.DefaultSource, this.Data, bus);
+            return new Input<TData>(this.Key, this.DefaultSource, this.Data);
         }
     }
 }

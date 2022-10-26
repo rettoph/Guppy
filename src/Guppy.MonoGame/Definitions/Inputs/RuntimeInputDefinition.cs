@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Structs;
+﻿using Guppy.Common;
+using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Definitions.Inputs
 {
     internal sealed class RuntimeInputDefinition<TData> : InputDefinition<TData>
-        where TData : ICommandData
+        where TData : IMessage
     {
         public override string Key { get; }
 

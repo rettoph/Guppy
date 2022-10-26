@@ -7,17 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.UI.Commands
+namespace Guppy.MonoGame.UI.Messages.Inputs
 {
-    public class ImGuiKeyState : Message, ICommandData
+    public class ImGuiKeyStateInput : Message
     {
         public readonly ImGuiKey Key;
         public readonly ButtonState State;
 
-        public ImGuiKeyState(ImGuiKey key, ButtonState state)
+        public ImGuiKeyStateInput(ImGuiKey key, ButtonState state)
         {
-            this.Key = key;
-            this.State = state;
+            Key = key;
+            State = state;
         }
     }
 }

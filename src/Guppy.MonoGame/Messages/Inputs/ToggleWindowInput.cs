@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Commands
+namespace Guppy.MonoGame.Messages.Inputs
 {
-    public class ToggleWindow : Message, ICommandData
+    public class ToggleWindow : Message
     {
         public enum Windows
         {

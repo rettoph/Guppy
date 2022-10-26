@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection ConfigureEntity(this IServiceCollection services, EntityKey key, params EntityTag[] tags)
         {
-            return services.AddSingleton<IEntityTypeDefinition>(new EntityTypeDefinition(key, tags));
+            return services.AddSingleton<IEntityDefinition>(new EntityDefinition(key, tags));
         }
 
         public static IServiceCollection AddComponent<T>(this IServiceCollection services, Func<IServiceProvider, T> factory, params EntityTag[] tags)

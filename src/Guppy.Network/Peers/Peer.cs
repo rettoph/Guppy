@@ -2,6 +2,7 @@
 using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
+using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Providers;
 using Guppy.Resources;
@@ -61,6 +62,7 @@ namespace Guppy.Network.Peers
         protected virtual void Start()
         {
             this.Scope.Start(NetScopeConstants.PeerScopeId);
+            
         }
 
         public void Flush()

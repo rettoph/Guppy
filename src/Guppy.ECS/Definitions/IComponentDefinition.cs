@@ -12,8 +12,8 @@ namespace Guppy.ECS.Definitions
         Type Type { get; }
         EntityTag[] Tags { get; }
 
-        public abstract void AttachTo(Entity entity, object instance);
+        void AttachTo(Entity entity, object instance);
 
-        public abstract void CreateFor(Entity entity);
+        void CreateFor(Entity entity);
     }
 }

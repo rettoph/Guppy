@@ -16,7 +16,7 @@ namespace Guppy.ECS.Services
         
         public EntityService(
             World world, 
-            IEnumerable<IEntityTypeDefinition> types, 
+            IEnumerable<IEntityDefinition> types, 
             IEnumerable<IComponentDefinition> components)
         {
             _world = world;

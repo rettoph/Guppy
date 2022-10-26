@@ -1,5 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.MonoGame.Commands;
+using Guppy.MonoGame.Messages.Inputs;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    internal abstract class BaseWindowService : ISubscriber<ToggleWindow>
+    internal abstract class BaseWindowService : ISubscriber<ToggleWindowInput>
     {
         private bool _visible;
         private IGlobal<IBus> _bus;
 
-        public abstract ToggleWindow.Windows Window { get; }
+        public abstract ToggleWindowInput.Windows Window { get; }
 
         public BaseWindowService(IGlobal<IBus> bus, bool visible)
         {
@@ -40,7 +40,7 @@ namespace Guppy.MonoGame.Services
 
         }
 
-        public void Process(in ToggleWindow message)
+        public void Process(in ToggleWindowInput message)
         {
             if(message.Window == this.Window)
             {

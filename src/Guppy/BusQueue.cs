@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Collections;
+﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy
 {
     /// <summary>
     /// TODO: Refactor this, TypeMessage struct and

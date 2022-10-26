@@ -18,6 +18,6 @@ namespace Guppy.MonoGame.Definitions
         public IEnumerable<Option> Options { get; }
         public IEnumerable<Argument> Arguments { get; }
 
-        Command BuildCommand(IBus bus, ICommandService commands);
+        Command BuildCommand(ICommandService commands);
     }
 }

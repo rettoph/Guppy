@@ -8,9 +8,11 @@ using Guppy.Initializers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using MonoGame.Extended.Entities;
+using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,11 +31,18 @@ namespace Guppy.ECS.Initializers
 
             services.AddScoped<IEntityService, EntityService>();
 
-            var systems = assemblies.GetTypes<ISystemDefinition>().WithAttribute<AutoLoadAttribute>(false);
+            var systemsDefinitions = assemblies.GetTypes<ISystemDefinition>().WithAttribute<AutoLoadAttribute>(false);
 
-            foreach(Type definition in systems)
+            foreach(Type definition in systemsDefinitions)
             {
                 services.AddSystem(definition);
+            }
+
+            var systems = assemblies.GetTypes<ISystem>().WithAttribute<AutoLoadAttribute>(false);
+
+            foreach (Type system in systems)
+            {
+                services.AddSystem(system, system.GetCustomAttribute<AutoLoadAttribute>()!.Order);
             }
 
             services.AddSingleton<IWorldProvider, WorldProvider>();

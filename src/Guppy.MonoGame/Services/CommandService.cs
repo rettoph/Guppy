@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Implementations;
 using Guppy.MonoGame.Definitions;
 using System;
 using System.Collections.Generic;
@@ -9,21 +10,19 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    internal sealed class CommandService : ICommandService
+    internal sealed class CommandService : BusPublisher, ICommandService
     {
         private RootCommand _root;
-        private IGlobal<IBus> _bus;
 
-        public CommandService(IGlobal<IBus> bus, IEnumerable<ICommandDefinition> definitions)
+        public CommandService(IGlobal<IBus> bus, IEnumerable<ICommandDefinition> definitions) : base(bus.Instance.Yield())
         {
-            _bus = bus;
             _root = new RootCommand()
             {
                 Name = ">"
             };
 
             // Build all defined commands...
-            var commands = definitions.ToDictionary(x => x, x => x.BuildCommand(_bus.Instance, this));
+            var commands = definitions.ToDictionary(x => x, x => x.BuildCommand(this));
             // Add all subcommands into the new commands...
             foreach (var command in commands)
             {
@@ -42,6 +41,11 @@ namespace Guppy.MonoGame.Services
         public void Invoke(string command)
         {
             _root.Invoke(command);
+        }
+
+        void ICommandService.Publish(IMessage command)
+        {
+            base.Publish(command);
         }
     }
 }

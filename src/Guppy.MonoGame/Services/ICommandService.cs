@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    public interface ICommandService
+    public interface ICommandService : IBusPublisher
     {
         void Invoke(string input);
+        void Publish(IMessage command);
     }
 }
