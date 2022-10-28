@@ -11,6 +11,8 @@ namespace Guppy
     internal sealed class Scoped<T> : IScoped<T>, IDisposable
         where T : notnull
     {
+        public event OnEventDelegate<IDisposable>? OnDispose;
+
         public T Instance { get; private set; }
 
         public IServiceScope Scope { get; private set; }
@@ -21,8 +23,12 @@ namespace Guppy
             this.Instance = this.Scope.ServiceProvider.GetRequiredService<T>();
         }
 
+        
+
         public void Dispose()
         {
+            this.OnDispose?.Invoke(this);
+
             this.Scope.Dispose();
         }
     }

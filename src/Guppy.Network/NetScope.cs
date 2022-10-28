@@ -12,11 +12,13 @@ using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
+using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using static Guppy.Common.ThrowIf;
@@ -121,11 +123,11 @@ namespace Guppy.Network
             this.State = NetState.Stopped;
         }
 
-        public INetIncomingMessage Read(NetDataReader reader)
+        public INetIncomingMessage Read(NetPeer? peer, NetDataReader reader)
         {
             var id = NetId.Byte.Read(reader);
             var message = _messages[id].CreateIncoming();
-            message.Read(reader);
+            message.Read(peer, reader);
 
             return message;
         }

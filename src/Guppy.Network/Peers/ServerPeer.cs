@@ -64,7 +64,7 @@ namespace Guppy.Network.Peers
                 throw new NotImplementedException();
             }
 
-            using (var data = this.Scope.Read(request.Data))
+            using (var data = this.Scope.Read(null, request.Data))
             {
                 if (data is INetIncomingMessage<UserAction> casted)
                 {

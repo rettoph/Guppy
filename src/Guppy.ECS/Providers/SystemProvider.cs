@@ -1,9 +1,7 @@
 ﻿using Guppy.ECS.Definitions;
 using Microsoft.Extensions.DependencyInjection;
-using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,31 +9,29 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Providers
 {
-    internal sealed class WorldProvider : IWorldProvider
+    public class SystemProvider : ISystemProvider
     {
         private ISystemDefinition[] _definitions;
 
-        public WorldProvider(IEnumerable<ISystemDefinition> definitions)
+        public SystemProvider(IEnumerable<ISystemDefinition> definitions)
         {
             _definitions = definitions.OrderBy(d => d.Order).ToArray();
         }
 
-        public World Create(IServiceProvider provider)
+        public IEnumerable<ISystem> Create(IServiceProvider provider)
         {
-            WorldBuilder builder = new WorldBuilder();
+            var systems = new List<ISystem>();
 
-            foreach(ISystemDefinition definition in _definitions)
+            foreach (ISystemDefinition definition in _definitions)
             {
                 if (definition.Filter(provider))
                 {
                     ISystem system = (ISystem)ActivatorUtilities.CreateInstance(provider, definition.Type);
-                    builder.AddSystem(system);
+                    systems.Add(system);
                 }
             }
 
-            World world = builder.Build();
-
-            return world;
+            return systems;
         }
     }
 }

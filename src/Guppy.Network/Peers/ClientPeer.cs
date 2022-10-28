@@ -38,7 +38,7 @@ namespace Guppy.Network.Peers
 
             this.manager.Start();
 
-            this.Scope.Subscribe(this);
+            this.Scope.Bus.Subscribe(this);
         }
 
         public void Connect(string address, int port, params Claim[] claims)

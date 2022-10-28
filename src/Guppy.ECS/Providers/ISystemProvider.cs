@@ -1,4 +1,4 @@
-﻿using MonoGame.Extended.Entities;
+﻿using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.ECS.Providers
 {
-    public interface IWorldProvider
+    public interface ISystemProvider
     {
-        World Create(IServiceProvider provider);
+        IEnumerable<ISystem> Create(IServiceProvider provider);
     }
 }

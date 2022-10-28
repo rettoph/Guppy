@@ -17,6 +17,7 @@ namespace Guppy.Network
         private readonly NetMessageType<T> _type;
         private readonly INetSerializerProvider _serializers;
         private readonly INetSerializer<T> _serializer;
+        private NetPeer? _peer;
         private T _body;
         private IList<object> _data;
 
@@ -25,6 +26,8 @@ namespace Guppy.Network
         T INetIncomingMessage<T>.Body => _body;
 
         NetMessageType<T> INetIncomingMessage<T>.Type => _type;
+
+        NetPeer? INetIncomingMessage.Peer => _peer!;
 
         object INetIncomingMessage.Body => _body;
 
@@ -46,8 +49,9 @@ namespace Guppy.Network
             _data = new List<object>();
         }
 
-        public void Read(NetDataReader reader)
+        public void Read(NetPeer? peer, NetDataReader reader)
         {
+            _peer = peer;
             _body = _serializer.Deserialize(reader, _serializers);
 
             while(!reader.EndOfData)

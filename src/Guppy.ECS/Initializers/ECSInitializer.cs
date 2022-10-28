@@ -45,8 +45,10 @@ namespace Guppy.ECS.Initializers
                 services.AddSystem(system, system.GetCustomAttribute<AutoLoadAttribute>()!.Order);
             }
 
-            services.AddSingleton<IWorldProvider, WorldProvider>();
-            services.AddScoped<World>(p => p.GetRequiredService<IWorldProvider>().Create(p));
+            services.AddSingleton<ISystemProvider, SystemProvider>();
+            services.AddScoped<IEnumerable<ISystem>>(p => p.GetRequiredService<ISystemProvider>().Create(p));
+            services.AddScoped<IWorldService, WorldService>();
+            services.AddScoped<World>(p => p.GetRequiredService<IWorldService>().Instance);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Guppy.Network.Peers
                 var scopeId = reader.GetByte();
                 var scope = this.scopes.Get(scopeId);
 
-                scope.Read(reader).Enqueue();
+                scope.Read(peer, reader).Enqueue();
             }
         }
     }

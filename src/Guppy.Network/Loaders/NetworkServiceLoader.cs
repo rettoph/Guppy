@@ -47,7 +47,7 @@ namespace Guppy.Network.Loaders
                 .AddScoped<ClientNetOutgoingMessageFactory>()
                 .AddScoped<ServerNetOutgoingMessageFactory>()
                 .AddFilter<INetOutgoingMessageFactory, ClientNetOutgoingMessageFactory>(PeerFilter<ClientPeer>(), 0)
-                .AddFilter<INetOutgoingMessageFactory, ClientNetOutgoingMessageFactory>(PeerFilter<ServerPeer>(), 0);
+                .AddFilter<INetOutgoingMessageFactory, ServerNetOutgoingMessageFactory>(PeerFilter<ServerPeer>(), 0);
         }
 
         private Func<IServiceProvider, bool> PeerFilter<T>()

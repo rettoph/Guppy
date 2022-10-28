@@ -24,9 +24,21 @@ namespace Guppy.Providers
         {
             var guppy = new Scoped<T>(_provider);
 
+            guppy.OnDispose += this.HandleGuppyDisposed;
+
             _guppies.Add(guppy);
 
             return guppy;
+        }
+
+        private void HandleGuppyDisposed(IDisposable args)
+        {
+            if(args is IScoped<IGuppy> guppy)
+            {
+                guppy.OnDispose -= this.HandleGuppyDisposed;
+
+                _guppies.Remove(guppy);
+            }
         }
 
         IEnumerable<IScoped<T>> IGuppyProvider.All<T>()

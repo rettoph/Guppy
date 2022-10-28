@@ -1,22 +1,17 @@
 ﻿using Guppy.Common;
-using Guppy.Network.Providers;
+using LiteNetLib;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Guppy.Network
 {
     public interface INetIncomingMessage : IMessage, INetMessage, IRecyclable
     {
+        NetPeer? Peer { get; }
         object Body { get; }
         IEnumerable<object> Data { get; }
         NetMessageType Type { get; }
 
-        public void Read(NetDataReader reader);
+        public void Read(NetPeer? peer, NetDataReader reader);
         INetIncomingMessage Enqueue();
     }
 
