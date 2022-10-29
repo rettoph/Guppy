@@ -20,6 +20,12 @@ namespace Guppy.Commong.Collections
 
         public int Count => _forward.Count;
 
+        public Map()
+        {
+            _forward = new Dictionary<T1, T2>();
+            _reverse = new Dictionary<T2, T1>();
+        }
+
         public Map(IEnumerable<T1> first, IEnumerable<T2> second) : this(first.Zip(second))
         {
         }
@@ -43,6 +49,22 @@ namespace Guppy.Commong.Collections
                 {
                     _forward.Remove(t1);
                 }
+            }
+        }
+
+        public void Remove(T1 t1)
+        {
+            if(_forward.Remove(t1, out var t2))
+            {
+                _reverse.Remove(t2);
+            }
+        }
+
+        public void Remove(T2 t2)
+        {
+            if (_reverse.Remove(t2, out var t1))
+            {
+                _forward.Remove(t1);
             }
         }
     }
