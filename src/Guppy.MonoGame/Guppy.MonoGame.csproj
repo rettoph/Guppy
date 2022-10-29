@@ -9,12 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\Guppy.ECS\Guppy.ECS.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
