@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IServiceTypeFilter<T> : IFilter
-        where T : class
+    public interface IServiceFilter : IFilter
     {
-        int Order { get; }
-        Type ImplementationType { get; }
+        Type Type { get; }
     }
 }

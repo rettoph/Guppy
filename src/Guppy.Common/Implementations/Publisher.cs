@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.Common.Implementations
 {
     internal abstract class Publisher : IPublisher
     {
@@ -12,7 +12,7 @@ namespace Guppy.Common
 
         public Publisher(Type type)
         {
-            this.Type = type;
+            Type = type;
         }
 
         public abstract void Publish(in IMessage message);
@@ -33,9 +33,9 @@ namespace Guppy.Common
 
         public override void Publish(in IMessage message)
         {
-            if(message is T casted)
+            if (message is T casted)
             {
-                this.Publish(casted);
+                Publish(casted);
                 return;
             }
 

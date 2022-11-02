@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common
 {
     public class BusConfiguration
     {
@@ -14,8 +14,8 @@ namespace Guppy
 
         public BusConfiguration(Type type, int queue)
         {
-            this.Queue = queue;
-            this.Type = type;
+            Queue = queue;
+            Type = type;
         }
     }
 

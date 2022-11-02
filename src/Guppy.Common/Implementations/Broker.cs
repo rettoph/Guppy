@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Guppy.Common
+namespace Guppy.Common.Implementations
 {
     public class Broker : IBroker
     {
@@ -13,7 +13,7 @@ namespace Guppy.Common
             _publishers = new Dictionary<Type, IPublisher>();
         }
 
-        public void Subscribe<T>(ISubscriber<T> subscriber) 
+        public void Subscribe<T>(ISubscriber<T> subscriber)
             where T : notnull, IMessage
         {
             if (_publishers.TryGetValue(typeof(T), out IPublisher? publisher) && publisher is IPublisher<T> casted)
@@ -44,7 +44,7 @@ namespace Guppy.Common
 
         public void Dispose()
         {
-            foreach(IPublisher publisher in _publishers.Values)
+            foreach (IPublisher publisher in _publishers.Values)
             {
                 publisher.Dispose();
             }

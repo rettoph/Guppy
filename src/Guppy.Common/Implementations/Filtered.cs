@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Providers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common.Implementations
 {
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class
@@ -18,19 +19,11 @@ namespace Guppy
         public T Instance => _items[0];
 
         public Filtered(
+            IAliasProvider aliases,
             IServiceProvider provider,
-            IEnumerable<T> items,
-            IEnumerable<IServiceTypeFilter<T>> filters)
+            IEnumerable<T> items)
         {
-            _items = new List<T>(items);
-
-            foreach(var filter in filters)
-            {
-                if(filter.Invoke(provider) && provider.GetService(filter.ImplementationType) is T casted)
-                {
-                    _items.Add(casted);
-                }
-            }
+            _items = new List<T>(items.Concat(aliases.GetImplementations<T>(provider)));
         }
     }
 }

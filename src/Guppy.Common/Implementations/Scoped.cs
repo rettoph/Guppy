@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common.Implementations
 {
     internal sealed class Scoped<T> : IScoped<T>, IDisposable
         where T : notnull

@@ -1,5 +1,4 @@
-﻿using Guppy.Common;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common.Implementations
 {
-    public class Bus : IBus, IBroker, IDisposable
+    internal class Bus : IBus, IBroker, IDisposable
     {
         private const int DefaultQueue = 0;
 

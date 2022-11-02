@@ -22,7 +22,7 @@ namespace Guppy.Providers
 
         IScoped<T> IGuppyProvider.Create<T>()
         {
-            var guppy = new Scoped<T>(_provider);
+            var guppy = _provider.GetRequiredService<IScoped<T>>();
 
             guppy.OnDispose += this.HandleGuppyDisposed;
 

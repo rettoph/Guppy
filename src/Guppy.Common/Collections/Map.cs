@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guppy.Commong.Collections
+namespace Guppy.Common.Collections
 {
     public class Map<T1, T2>
         where T1 : notnull

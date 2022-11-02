@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common.Implementations
 {
     internal sealed class Global<T> : IGlobal<T>, IDisposable
         where T : notnull

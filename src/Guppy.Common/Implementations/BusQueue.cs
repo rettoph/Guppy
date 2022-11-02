@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.Common.Implementations
 {
     /// <summary>
     /// TODO: Refactor this, TypeMessage struct and

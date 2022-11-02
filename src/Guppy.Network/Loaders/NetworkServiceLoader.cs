@@ -3,6 +3,7 @@ using Guppy.Loaders;
 using Guppy.Network.Enums;
 using Guppy.Network.Factories;
 using Guppy.Network.Factories.NetOutgoingMessageFactories;
+using Guppy.Network.Filters;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
@@ -46,20 +47,9 @@ namespace Guppy.Network.Loaders
                 .AddSetting(NetAuthorization.Master, false)
                 .AddScoped<ClientNetOutgoingMessageFactory>()
                 .AddScoped<ServerNetOutgoingMessageFactory>()
-                .AddFilter<INetOutgoingMessageFactory, ClientNetOutgoingMessageFactory>(PeerFilter<ClientPeer>(), 0)
-                .AddFilter<INetOutgoingMessageFactory, ServerNetOutgoingMessageFactory>(PeerFilter<ServerPeer>(), 0);
-        }
-
-        private Func<IServiceProvider, bool> PeerFilter<T>()
-            where T : Peer
-        {
-            bool Filter(IServiceProvider provider)
-            {
-                var instance = provider.GetRequiredService<Faceted<Peer>>();
-                return instance.Type?.IsAssignableTo(typeof(T)) ?? false;
-            }
-
-            return Filter;
+                .AddAliases(Alias.ForMany<INetOutgoingMessageFactory>(typeof(ClientNetOutgoingMessageFactory), typeof(ServerNetOutgoingMessageFactory)))
+                .AddFilter(new PeerFilter<ClientPeer, ClientNetOutgoingMessageFactory>())
+                .AddFilter(new PeerFilter<ServerPeer, ServerNetOutgoingMessageFactory>());
         }
     }
 }
