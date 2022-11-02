@@ -45,7 +45,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddFilter(
             this IServiceCollection services,
-            IServiceFilter filter)
+            IFilter filter)
         {
             services.AddSingleton(filter);
 
@@ -54,7 +54,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddFilters(
             this IServiceCollection services,
-            IEnumerable<IServiceFilter> filters)
+            IEnumerable<IFilter> filters)
         {
             foreach (var filter in filters)
             {
@@ -66,7 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IServiceCollection AddFilters(
             this IServiceCollection services,
-            params IServiceFilter[] filters)
+            params IFilter[] filters)
         {
             foreach (var filter in filters)
             {

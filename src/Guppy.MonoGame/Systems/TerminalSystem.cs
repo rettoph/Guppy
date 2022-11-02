@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Systems
 {
-    [SingletonSystem]
+    [SingletonFilter]
     internal sealed class TerminalSystem : IUpdateSystem, IDrawSystem
     {
         private ITerminalService _terminal;

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Systems
 {
-    [SingletonSystem]
+    [SingletonFilter]
     internal sealed class GlobalSystem : IUpdateSystem, IDrawSystem
     {
         private IGlobal<IBus> _bus;

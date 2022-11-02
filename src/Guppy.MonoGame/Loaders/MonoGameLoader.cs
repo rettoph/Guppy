@@ -44,7 +44,7 @@ namespace Guppy.MonoGame.Loaders
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
 
-            services.AddSystem<InputSystem>(SystemConstants.DefaultOrder);
+            services.AddSingleton<InputSystem>().AddSystem<InputSystem>();
 
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {

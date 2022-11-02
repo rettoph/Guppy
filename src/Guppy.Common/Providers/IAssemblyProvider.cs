@@ -45,7 +45,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TType"></typeparam>
         /// <typeparam name="TAttribute"></typeparam>
         /// <returns></returns>
-        IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>()
+        IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate)
+        IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TType"></typeparam>
         /// <typeparam name="TAttribute"></typeparam>
         /// <returns></returns>
-        IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>()
+        IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(bool inherit)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate)
+        IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute;
     }
 }

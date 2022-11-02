@@ -8,11 +8,16 @@ namespace Guppy.Common
 {
     public interface IFilter
     {
-        bool Invoke(IServiceProvider provider);
-    }
+        void Initialize(IServiceProvider provider);
 
-    public interface IFilter<in T>
-    {
-        bool Invoke(IServiceProvider provider, T arg);
+        /// <summary>
+        /// Indicates the filter should be applied to
+        /// aliases of the input <see cref="Type"/>.
+        /// </summary>
+        /// <param name="implementationType"></param>
+        /// <returns></returns>
+        bool AppliesTo(Type implementationType);
+
+        bool Invoke(IServiceProvider provider, Type implementationType);
     }
 }

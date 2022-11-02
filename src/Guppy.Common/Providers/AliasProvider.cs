@@ -24,9 +24,9 @@ namespace Guppy.Common.Providers
         {
             public readonly Type Type;
             public readonly Type AliasType;
-            public readonly IServiceFilter[] Filters;
+            public readonly IFilter[] Filters;
 
-            public FilterableImplementation(Type type, Type aliasType, IServiceFilter[] filters)
+            public FilterableImplementation(Type type, Type aliasType, IFilter[] filters)
             {
                 this.Type = type;
                 this.AliasType = aliasType;
@@ -35,9 +35,9 @@ namespace Guppy.Common.Providers
 
             public bool Filter(IServiceProvider provider)
             {
-                foreach(IServiceFilter filter in this.Filters)
+                foreach(IFilter filter in this.Filters)
                 {
-                    if(!filter.Invoke(provider))
+                    if(!filter.Invoke(provider, this.Type))
                     {
                         return false;
                     }
@@ -49,7 +49,7 @@ namespace Guppy.Common.Providers
 
         private Dictionary<Type, FilterableImplementation[]> _aliases;
 
-        public AliasProvider(IEnumerable<Alias> aliases, IEnumerable<IServiceFilter> filters)
+        public AliasProvider(IEnumerable<Alias> aliases, IEnumerable<IFilter> filters)
         {
             // Load distinct alias types
             var keys = aliases.Select(x => x.Type).Distinct().ToArray();
@@ -71,7 +71,7 @@ namespace Guppy.Common.Providers
                         filteredAliases.Add(new FilterableImplementation(
                             type: implementation.Type,
                             aliasType: alias,
-                            filters: filters.Where(x => x.Type == implementation.Type).ToArray()));
+                            filters: filters.Where(x => x.AppliesTo(implementation.Type)).ToArray()));
                     }
                 }
 

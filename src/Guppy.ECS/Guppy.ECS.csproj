@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="K4os.Hash.xxHash" Version="1.0.7" />
-    <PackageReference Include="MonoGame.Extended.Entities" Version="3.8.0" />
   </ItemGroup>
 
   <ItemGroup>

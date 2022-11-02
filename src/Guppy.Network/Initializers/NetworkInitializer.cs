@@ -16,14 +16,14 @@ namespace Guppy.Network.Initializers
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var serializers = assemblies.GetAttributes<INetSerializer, AutoLoadAttribute>().Types;
+            var serializers = assemblies.GetAttributes<INetSerializer, AutoLoadAttribute>(true).Types;
 
             foreach (Type serializer in serializers)
             {
                 services.AddNetSerializer(serializer);
             }
 
-            var messageTypes = assemblies.GetAttributes<NetMessageTypeDefinition, AutoLoadAttribute>().Types;
+            var messageTypes = assemblies.GetAttributes<NetMessageTypeDefinition, AutoLoadAttribute>(true).Types;
 
             foreach (Type messenger in messageTypes)
             {

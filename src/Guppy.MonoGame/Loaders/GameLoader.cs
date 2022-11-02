@@ -19,9 +19,9 @@ namespace Guppy.MonoGame.Loaders
             services.AddSingleton<ITerminalService, ConsoleTerminalService>();
             services.AddScoped<IDebuggerService, DefaultDebuggerService>();
 
-            services.AddSystem<TerminalSystem>(SystemConstants.DefaultOrder);
-            services.AddSystem<DebuggerSystem>(SystemConstants.DefaultOrder);
-            services.AddSystem<GlobalSystem>(SystemConstants.DefaultOrder);
+            services.AddSystem<TerminalSystem>()
+                .AddSystem<DebuggerSystem>()
+                .AddSystem<GlobalSystem>();
         }
     }
 }

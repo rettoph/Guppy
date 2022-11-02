@@ -72,30 +72,30 @@ namespace Guppy.Common.Providers
             return new TypeProvider<T>(_assemblies.SelectMany(x => x.GetTypes().Where(x => typeof(T).IsAssignableFrom(x)).Where(predicate)));
         }
 
-        public IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>()
+        public IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
             where TAttribute : Attribute
         {
-            var types = this.GetTypes<TType>(x => x.HasCustomAttribute<TAttribute>());
+            var types = this.GetTypes<TType>(x => x.HasCustomAttribute<TAttribute>(inherit));
             return new AttributeProvider<TType, TAttribute>(types);
         }
 
-        public IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate)
+        public IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute
         {
-            var types = this.GetTypes<TType>(x => predicate(x) && x.HasCustomAttribute<TAttribute>());
+            var types = this.GetTypes<TType>(x => predicate(x) && x.HasCustomAttribute<TAttribute>(inherit));
             return new AttributeProvider<TType, TAttribute>(types);
         }
 
-        public IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>()
+        public IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(bool inherit)
             where TAttribute : Attribute
         {
-            return this.GetAttributes<object, TAttribute>();
+            return this.GetAttributes<object, TAttribute>(inherit);
         }
 
-        public IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate)
+        public IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute
         {
-            return this.GetAttributes<object, TAttribute>(predicate);
+            return this.GetAttributes<object, TAttribute>(predicate, inherit);
         }
 
         public IEnumerator<Assembly> GetEnumerator()

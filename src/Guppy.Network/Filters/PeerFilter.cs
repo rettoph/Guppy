@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Filters;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,10 +10,14 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Filters
 {
-    public class PeerFilter<TPeer, TImplementation> : ServiceFilter<TImplementation>
+    public class PeerFilter<TPeer, TImplementation> : SimpleFilter
         where TPeer : Peer
     {
-        public override bool Invoke(IServiceProvider provider)
+        public PeerFilter() : base(typeof(TImplementation))
+        {
+        }
+
+        public override bool Invoke(IServiceProvider provider, Type implementationType)
         {
             var instance = provider.GetRequiredService<Faceted<Peer>>();
             return instance.Type?.IsAssignableTo(typeof(TPeer)) ?? false;

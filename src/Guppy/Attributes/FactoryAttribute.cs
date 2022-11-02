@@ -16,16 +16,16 @@ namespace Guppy.Attributes
             this.Type = type;
         }
 
-        public TOut GetInstance<TOut>(Type classType)
+        public T GetInstance<T>(Type classType)
         {
-            ThrowIf.Type.IsNotAssignableFrom<TOut>(this.Type);
+            ThrowIf.Type.IsNotAssignableFrom<T>(this.Type);
 
-            var instance = (TOut)this.GetInstance(classType, typeof(TOut));
+            var instance = (T)this.GetInstance(typeof(T), classType);
 
             return instance;
         }
 
-        protected abstract object GetInstance(Type classType, Type returnType);
+        protected abstract object GetInstance(Type serviceType, Type classType);
 
         /// <summary>
         /// Return all <see cref="FactoryAttribute.Type"/> values on inherited attributes
