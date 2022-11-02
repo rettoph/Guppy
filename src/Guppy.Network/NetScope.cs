@@ -26,7 +26,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope : Broker<INetMessage>, 
+    public sealed class NetScope : Broker, 
         ISubscriber<INetOutgoingMessage>,
         ISubscriber<INetIncomingMessage<UserAction>>, 
         IDisposable

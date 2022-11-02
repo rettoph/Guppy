@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface ISubscriber<T>
+    public interface ISubscriber
+    {
+
+    }
+
+    public interface ISubscriber<T> : ISubscriber
+        where T : IMessage
     {
         /// <summary>
         /// Process an incoming <paramref name="message"/>

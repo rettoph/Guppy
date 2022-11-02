@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IBusQueue<T>
-        where T : notnull, IMessage
+    public interface IBusQueue
     {
         int Id { get; }
-        void Enqueue(in T message);
-        void Flush(IBroker<T> broker);
+        void Enqueue(in IMessage message);
+        void Flush(IBroker broker);
     }
 }

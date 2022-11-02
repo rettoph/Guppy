@@ -6,16 +6,10 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IBus<T> : IBroker<T>
-        where T : notnull, IMessage
+    public interface IBus : IBroker
     {
         Guid Id { get; }
 
         void Flush();
-    }
-
-    public interface IBus : IBus<IMessage>
-    {
-
     }
 }

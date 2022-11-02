@@ -6,15 +6,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IBusPublisher<T> : IDisposable
-        where T : notnull, IMessage
+    public interface IBusPublisher : IDisposable
     {
-        void Subscribe(IBus<T> bus);
-        void Unsubscribe(IBus<T> bus);
-    }
-
-    public interface IBusPublisher : IBusPublisher<IMessage>
-    { 
-    
+        void Subscribe(IBus bus);
+        void Unsubscribe(IBus bus);
     }
 }

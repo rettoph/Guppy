@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public interface INetId
+    public interface INetId : IEquatable<INetId>
     {
         void Write(NetDataWriter writer);
+
+        INetId Next();
 
         // static abstract INetId Read(NetDataReader reader);
     }
@@ -17,6 +19,8 @@ namespace Guppy.Network
     public interface INetId<T> : INetId
     {
         T Value { get; }
+
+        new INetId<T> Next();
 
         // static abstract INetId<T> Read(NetDataReader reader);
         // static abstract INetId<T> Create(T value);

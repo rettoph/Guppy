@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IPublisher<T>
-        where T : notnull
+    public interface IPublisher : IDisposable
     {
         Type Type { get; }
 
-        void Publish(in T message);
+        void Publish(in IMessage message);
     }
 
-    public interface IPublisher<T, TBase> : IPublisher<TBase>
-        where TBase : notnull
-        where T : TBase
+    public interface IPublisher<T> : IPublisher
+        where T : notnull, IMessage
     {
         void Publish(in T message);
 

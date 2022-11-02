@@ -18,10 +18,9 @@ namespace Guppy
     /// thats even beneficial. More testing needed.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal sealed class BusQueue<T> : IBusQueue<T>
-        where T : notnull, IMessage
+    internal sealed class BusQueue : IBusQueue
     {
-        private ConcurrentQueue<T> _queue;
+        private ConcurrentQueue<IMessage> _queue;
 
         public int Id { get; }
 
@@ -29,15 +28,15 @@ namespace Guppy
         {
             this.Id = id;
 
-            _queue = new ConcurrentQueue<T>();
+            _queue = new ConcurrentQueue<IMessage>();
         }
 
-        public void Enqueue(in T message)
+        public void Enqueue(in IMessage message)
         {
             _queue.Enqueue(message);
         }
 
-        public void Flush(IBroker<T> broker)
+        public void Flush(IBroker broker)
         {
             int errors = 0;
             

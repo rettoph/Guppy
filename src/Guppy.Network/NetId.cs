@@ -54,6 +54,29 @@ namespace Guppy.Network
                     Value = value
                 };
             }
+
+            public bool Equals(INetId? other)
+            {
+                if(other is NetId.Byte casted)
+                {
+                    return casted.Value == this.Value;
+                }
+
+                return false;
+            }
+
+            public INetId<byte> Next()
+            {
+                return new NetId.Byte()
+                {
+                    Value = (byte)(this.Value + 1)
+                };
+            }
+
+            INetId INetId.Next()
+            {
+                return this.Next();
+            }
         }
 
         public readonly struct UShort : INetId<ushort>
@@ -78,6 +101,29 @@ namespace Guppy.Network
                 {
                     Value = value
                 };
+            }
+
+            public bool Equals(INetId? other)
+            {
+                if (other is NetId.UShort casted)
+                {
+                    return casted.Value == this.Value;
+                }
+
+                return false;
+            }
+
+            public INetId<ushort> Next()
+            {
+                return new NetId.UShort()
+                {
+                    Value = (ushort)(this.Value + 1)
+                };
+            }
+
+            INetId INetId.Next()
+            {
+                return this.Next();
             }
         }
     }
