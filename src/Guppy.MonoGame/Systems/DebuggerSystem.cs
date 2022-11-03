@@ -1,4 +1,5 @@
-﻿using Guppy.ECS.Attributes;
+﻿using Guppy.Attributes;
+using Guppy.Attributes;
 using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Systems
 {
-    [SingletonFilter]
+    [GlobalScopeFilter]
     internal sealed class DebuggerSystem : IUpdateSystem, IDrawSystem
     {
         private IDebuggerService _debugger;

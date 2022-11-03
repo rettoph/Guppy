@@ -8,7 +8,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection RegisterGuppyCommon(this IServiceCollection services)
         {
-            return services.AddSingleton(typeof(IGlobal<>), typeof(Global<>))
+            return services.AddSingleton<Global>()
+                    .AddSingleton(typeof(IGlobal<>), typeof(Global<>))
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>))

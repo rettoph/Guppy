@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.ECS.Attributes
+namespace Guppy.Attributes
 {
-    public sealed class SingletonFilterAttribute : FilterAttribute
+    public sealed class GlobalScopeFilterAttribute : FilterAttribute
     {
         public override void Initialize(IServiceCollection services, Type classType)
         {
             base.Initialize(services, classType);
 
-            services.AddFilter(new SingletonFilter(classType));
+            services.AddFilter(new GlobalScopeFilter(classType));
         }
     }
 }

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Filters
 {
-    public class SingletonFilter : SimpleFilter
+    public class GlobalScopeFilter : SimpleFilter
     {
         private bool _invoked;
 
-        public SingletonFilter(Type implementationType) : base(implementationType)
+        public GlobalScopeFilter(Type implementationType) : base(implementationType)
         {
         }
 
@@ -24,13 +24,13 @@ namespace Guppy.Filters
                 return false;
             }
 
-            _invoked = true;
+            _invoked = provider.GetRequiredService<Global>().Scope.Instance.GetHashCode() == provider.GetHashCode();
 
-            return true;
+            return _invoked;
         }
     }
 
-    public class SingletonFilter<TImplementation> : SingletonFilter
+    public class SingletonFilter<TImplementation> : GlobalScopeFilter
     {
         public SingletonFilter() : base(typeof(TImplementation))
         {

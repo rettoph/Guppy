@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,21 +8,16 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Implementations
 {
-    internal sealed class Global<T> : IGlobal<T>, IDisposable
+    internal sealed class Global<T> : IGlobal<T>
         where T : notnull
     {
-        private IScoped<T> _scoped;
+        private readonly T _instance;
 
-        public T Instance => _scoped.Instance;
+        public T Instance => _instance;
 
-        public Global(IScoped<T> scoped)
+        public Global(Global global)
         {
-            _scoped = scoped;
-        }
-
-        public void Dispose()
-        {
-            _scoped.Dispose();
+            _instance = global.Scope.Instance.GetRequiredService<T>();
         }
     }
 }

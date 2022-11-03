@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.ECS.Attributes
+namespace Guppy.Attributes
 {
     public sealed class GuppyFilterAttribute : FilterAttribute
     {
