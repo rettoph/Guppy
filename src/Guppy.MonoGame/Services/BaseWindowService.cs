@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame.Messages.Inputs;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,19 +11,17 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
+    [AutoSubscribe]
+    [GlobalScopeFilter]
     internal abstract class BaseWindowService : ISubscriber<ToggleWindowInput>
     {
         private bool _visible;
-        private IGlobal<IBus> _bus;
 
         public abstract ToggleWindowInput.Windows Window { get; }
 
-        public BaseWindowService(IGlobal<IBus> bus, bool visible)
+        public BaseWindowService(bool visible)
         {
             _visible = visible;
-            _bus = bus;
-
-            _bus.Instance.Subscribe(this);
         }
 
         public virtual void Draw(GameTime gameTime)

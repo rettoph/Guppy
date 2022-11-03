@@ -12,7 +12,7 @@ namespace Guppy.MonoGame.Services
 {
     internal sealed class CommandService : BusPublisher, ICommandService
     {
-        private RootCommand _root;
+        private readonly RootCommand _root;
 
         public CommandService(IGlobal<IBus> bus, IEnumerable<ICommandDefinition> definitions) : base(bus.Instance.Yield())
         {

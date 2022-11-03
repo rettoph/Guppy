@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Guppy.Network.Definitions.NetMessageTypes
 {
     internal sealed class RuntimeNetMessageTypeDefinition<T> : NetMessageTypeDefinition<T>
+        where T : notnull
     {
         public RuntimeNetMessageTypeDefinition(DeliveryMethod deliveryMethod, byte outgoingChannel)
         {

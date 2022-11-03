@@ -6,6 +6,7 @@ using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,8 +16,8 @@ namespace Guppy
 {
     public sealed class GuppyEngine
     {
-        private List<IGuppyInitializer> _initializers;
-        private List<IGuppyLoader> _loaders;
+        private readonly List<IGuppyInitializer> _initializers;
+        private readonly List<IGuppyLoader> _loaders;
         private bool _initialized;
 
         public IAssemblyProvider Assemblies { get; private init; }

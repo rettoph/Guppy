@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -16,9 +17,9 @@ namespace Guppy.MonoGame.Systems
     {
         private IInputService _inputs;
 
-        public InputSystem(IInputService terminal)
+        public InputSystem(IInputService inputs)
         {
-            _inputs = terminal;
+            _inputs = inputs;
         }
 
         public void Initialize(World world)

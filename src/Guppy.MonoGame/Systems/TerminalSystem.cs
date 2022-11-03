@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -14,9 +15,9 @@ namespace Guppy.MonoGame.Systems
     [GlobalScopeFilter]
     internal sealed class TerminalSystem : IUpdateSystem, IDrawSystem
     {
-        private ITerminalService _terminal;
+        private IFiltered<ITerminalService> _terminal;
 
-        public TerminalSystem(ITerminalService terminal)
+        public TerminalSystem(IFiltered<ITerminalService> terminal)
         {
             _terminal = terminal;
         }
@@ -33,12 +34,12 @@ namespace Guppy.MonoGame.Systems
 
         public void Update(GameTime gameTime)
         {
-            _terminal.Update(gameTime);
+            _terminal.Instance.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime)
         {
-            _terminal.Draw(gameTime);
+            _terminal.Instance.Draw(gameTime);
         }
     }
 }

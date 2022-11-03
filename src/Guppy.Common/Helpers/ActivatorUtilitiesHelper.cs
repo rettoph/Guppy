@@ -9,8 +9,8 @@ namespace Guppy.Common.Helpers
 {
     public static class ActivatorUtilitiesHelper
     {
-        private static Type[] EmptyTypeArray = Array.Empty<Type>();
-        private static object[] EmptyObjectArray = Array.Empty<object>();
+        private static readonly Type[] EmptyTypeArray = Array.Empty<Type>();
+        private static readonly object[] EmptyObjectArray = Array.Empty<object>();
 
         public static Func<IServiceProvider, T> BuildFactory<T>()
             where T : class
@@ -27,6 +27,7 @@ namespace Guppy.Common.Helpers
 
         public static Func<IServiceProvider, TArg1, T> BuildFactory<TArg1, T>()
             where T : class
+            where TArg1 : notnull
         {
             Type[] args = new Type[] { typeof(TArg1) };
             ObjectFactory factory = ActivatorUtilities.CreateFactory(typeof(T), args);

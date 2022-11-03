@@ -12,7 +12,8 @@ namespace Guppy.Common.Providers
         public static IEnumerable<TAlias> GetImplementations<TAlias>(this IAliasProvider aliases, IServiceProvider provider)
             where TAlias : class
         {
-            foreach(Type implementation in aliases.GetImplementationTypes(typeof(TAlias), provider))
+            var implementations = aliases.GetImplementationTypes(typeof(TAlias), provider);
+            foreach (Type implementation in implementations)
             {
                 yield return (TAlias)provider.GetRequiredService(implementation);
             }

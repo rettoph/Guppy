@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    public abstract class FilterAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public abstract class InitializableAttribute : Attribute
     {
-        public FilterAttribute()
+        public InitializableAttribute()
         {
         }
 

@@ -11,7 +11,7 @@ namespace Guppy.Common.Providers
 {
     public sealed class AssemblyProvider : IAssemblyProvider
     {
-        private HashSet<Assembly> _assemblies;
+        private readonly HashSet<Assembly> _assemblies;
 
         public AssemblyName[] Libraries { get; private set; }
 
@@ -44,7 +44,7 @@ namespace Guppy.Common.Providers
 
         private bool ShouldLoad(Assembly assembly)
         {
-            if (this.Libraries.Count() == 0)
+            if (this.Libraries.Length == 0)
             {
                 return _assemblies.Add(assembly);
             }

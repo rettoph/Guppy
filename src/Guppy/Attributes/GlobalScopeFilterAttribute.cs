@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    public sealed class GlobalScopeFilterAttribute : FilterAttribute
+    [AttributeUsage(AttributeTargets.Class)]
+    public sealed class GlobalScopeFilterAttribute : InitializableAttribute
     {
         public override void Initialize(IServiceCollection services, Type classType)
         {

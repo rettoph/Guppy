@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class)]
     public sealed class AliasAttribute : Attribute
     {
         public readonly Type Alias;

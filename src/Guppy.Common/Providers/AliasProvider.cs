@@ -47,7 +47,7 @@ namespace Guppy.Common.Providers
             }
         }
 
-        private Dictionary<Type, FilterableImplementation[]> _aliases;
+        private readonly Dictionary<Type, FilterableImplementation[]> _aliases;
 
         public AliasProvider(IEnumerable<Alias> aliases, IEnumerable<IFilter> filters)
         {

@@ -16,10 +16,9 @@ namespace Guppy.MonoGame.Services
 {
     internal sealed class InputService : BusPublisher, IInputService
     {
-        private Dictionary<string, IInput> _inputs;
-
-        private HashSet<IInput> _mouseInputs;
-        private HashSet<IInput> _keyboardInputs;
+        private readonly Dictionary<string, IInput> _inputs;
+        private readonly HashSet<IInput> _mouseInputs;
+        private readonly HashSet<IInput> _keyboardInputs;
 
         public InputService(IGlobal<IBus> bus, IEnumerable<IInputDefinition> definitions) : base(bus.Instance.Yield())
         {

@@ -18,18 +18,18 @@ namespace Guppy.MonoGame.UI.Services
 {
     internal sealed partial class ImGuiTerminalService : BaseWindowService, ITerminalService
     {
-        private ImGuiBatch _imGuiBatch;
-        private ImFontPtr _font;
-        private GameWindow _window;
-        private string _input;
-        private Buffer<(string text, NumVector4 color)> _output;
-        private bool _scrollLocked;
-        private ICommandService _commands;
+        private readonly ImGuiBatch _imGuiBatch;
+        private readonly ImFontPtr _font;
+        private readonly GameWindow _window;
+        private readonly Buffer<(string text, NumVector4 color)> _output;
+        private readonly Lazy<ICommandService> _commands;
         private bool _focusInput;
+        private string _input;
+        private bool _scrollLocked;
 
         public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Terminal;
 
-        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, ICommandService commands, IGlobal<IBus> bus) : base(bus, false)
+        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, Lazy<ICommandService> commands) : base(false)
         {
             _imGuiBatch = imGuiBatch;
             _window = window;
@@ -114,7 +114,7 @@ namespace Guppy.MonoGame.UI.Services
 
                 if(_input != string.Empty)
                 {
-                    _commands.Invoke(_input);
+                    _commands.Value.Invoke(_input);
                     _input = string.Empty;
                 }
             }
@@ -125,11 +125,6 @@ namespace Guppy.MonoGame.UI.Services
             ImGui.End();
             ImGui.PopFont();
             ImGui.PopStyleVar(2);
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
         }
     }
 }

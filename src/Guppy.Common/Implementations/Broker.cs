@@ -42,7 +42,7 @@ namespace Guppy.Common.Implementations
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             foreach (IPublisher publisher in _publishers.Values)
             {

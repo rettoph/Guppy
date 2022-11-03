@@ -53,6 +53,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         public static IServiceCollection AddNetMessageType<T>(this IServiceCollection services, DeliveryMethod deliveryMethod, byte outgoingChannel)
+            where T : notnull
         {
             return services.AddNetMessageType(new RuntimeNetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
         }

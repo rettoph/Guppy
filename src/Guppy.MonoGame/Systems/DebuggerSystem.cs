@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
@@ -14,11 +15,11 @@ namespace Guppy.MonoGame.Systems
     [GlobalScopeFilter]
     internal sealed class DebuggerSystem : IUpdateSystem, IDrawSystem
     {
-        private readonly IDebuggerService _debugger;
+        private readonly IFiltered<IDebuggerService> _debugger;
 
-        public DebuggerSystem(IDebuggerService terminal)
+        public DebuggerSystem(IFiltered<IDebuggerService> debugger)
         {
-            _debugger = terminal;
+            _debugger = debugger;
         }
 
         public void Initialize(World world)
@@ -33,12 +34,12 @@ namespace Guppy.MonoGame.Systems
 
         public void Update(GameTime gameTime)
         {
-            _debugger.Update(gameTime);
+            _debugger.Instance.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime)
         {
-            _debugger.Draw(gameTime);
+            _debugger.Instance.Draw(gameTime);
         }
     }
 }

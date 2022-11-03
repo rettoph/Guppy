@@ -89,8 +89,10 @@ namespace Guppy.Network
             this.Users.OnUserLeft += this.HandleUserLeft;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
+
             this.Bus.Unsubscribe<INetOutgoingMessage>(this);
             this.Bus.Unsubscribe<INetIncomingMessage<UserAction>>(this);
 

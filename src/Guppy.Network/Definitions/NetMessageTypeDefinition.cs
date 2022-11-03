@@ -18,6 +18,7 @@ namespace Guppy.Network.Definitions
     }
 
     public abstract class NetMessageTypeDefinition<TBody> : NetMessageTypeDefinition
+        where TBody : notnull
     {
         public override Type Body => typeof(TBody);
 

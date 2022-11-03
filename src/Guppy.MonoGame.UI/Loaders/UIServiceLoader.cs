@@ -16,6 +16,7 @@ using System.Reflection;
 using Guppy.Common.Helpers;
 using System.Runtime.InteropServices;
 using Guppy.MonoGame.UI.Messages.Inputs;
+using Guppy.Common;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -36,8 +37,12 @@ namespace Guppy.MonoGame.UI.Loaders
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 24);
 
-            services.AddScoped<IDebuggerService, ImGuiDebuggerService>();
-            services.AddSingleton<ITerminalService, ImGuiTerminalService>();
+            services.AddSingleton<ImGuiDebuggerService>()
+                .AddAlias(Alias.Create<IDebuggerService, ImGuiDebuggerService>());
+
+            services.AddSingleton<ImGuiTerminalService>()
+                .AddAlias(Alias.Create<ITerminalService, ImGuiTerminalService>());
+
             services.AddTransient<ImGuiBatch>();
 
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();

@@ -11,22 +11,15 @@ namespace Guppy.Filters
 {
     public class GlobalScopeFilter : SimpleFilter
     {
-        private bool _invoked;
-
         public GlobalScopeFilter(Type implementationType) : base(implementationType)
         {
         }
 
         public override bool Invoke(IServiceProvider provider, Type implementationType)
         {
-            if(_invoked)
-            {
-                return false;
-            }
+            var result = provider.GetRequiredService<Global>().Scope.Instance.GetHashCode() == provider.GetHashCode();
 
-            _invoked = provider.GetRequiredService<Global>().Scope.Instance.GetHashCode() == provider.GetHashCode();
-
-            return _invoked;
+            return result;
         }
     }
 

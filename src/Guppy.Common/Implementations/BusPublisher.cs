@@ -20,7 +20,7 @@ namespace Guppy.Common.Implementations
             _busses = new HashSet<IBus>();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _busses.Clear();
         }

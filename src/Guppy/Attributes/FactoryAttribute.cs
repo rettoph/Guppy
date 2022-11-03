@@ -7,6 +7,7 @@ using Guppy.Common;
 
 namespace Guppy.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class)]
     public abstract class FactoryAttribute : Attribute
     {
         public readonly Type Type;

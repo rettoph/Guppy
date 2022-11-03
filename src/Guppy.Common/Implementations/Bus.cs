@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common.Extensions;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -12,20 +13,22 @@ namespace Guppy.Common.Implementations
     {
         private const int DefaultQueue = 0;
 
-        private IBroker _broker;
-        private IBusQueue[] _queues;
-        private Dictionary<Type, IBusQueue> _typeMap;
-        private IBusQueue _default;
+        private readonly IBroker _broker;
+        private readonly IBusQueue[] _queues;
+        private readonly Dictionary<Type, IBusQueue> _typeMap;
+        private readonly IBusQueue _default;
+        private readonly IFiltered<ISubscriber> _subscribers;
 
         public IPublisher this[Type type] => _broker[type];
 
         public Guid Id { get; } = Guid.NewGuid();
 
-        public Bus(IEnumerable<BusConfiguration> config)
+        public Bus(
+            IFiltered<ISubscriber> subscribers,
+            IEnumerable<BusConfiguration> config)
         {
+            _subscribers = subscribers;
             _broker = new Broker();
-
-            config = this.Filter(config);
 
             _queues = config.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
@@ -38,10 +41,20 @@ namespace Guppy.Common.Implementations
             _typeMap = config.ToDictionary(
                 keySelector: x => x.Type,
                 elementSelector: x => this.GetQueue(x.Queue));
+
+            foreach(ISubscriber subscriber in _subscribers.Items)
+            {
+                this.SubscribeAll(subscriber);
+            }
         }
 
         public void Dispose()
         {
+            foreach (ISubscriber subscriber in _subscribers.Items)
+            {
+                this.UnsubscribeAll(subscriber);
+            }
+
             _broker.Dispose();
         }
 
@@ -84,11 +97,6 @@ namespace Guppy.Common.Implementations
         private IBusQueue GetQueue(int id)
         {
             return _queues.FirstOrDefault(x => x.Id == id) ?? _default;
-        }
-
-        private IEnumerable<BusConfiguration> Filter(IEnumerable<BusConfiguration> config)
-        {
-            return config;
         }
     }
 }

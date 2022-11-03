@@ -1,4 +1,5 @@
-﻿using Guppy.Loaders;
+﻿using Guppy.Common;
+using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
@@ -16,8 +17,10 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITerminalService, ConsoleTerminalService>();
-            services.AddScoped<IDebuggerService, DefaultDebuggerService>();
+            services.AddSingleton<ConsoleTerminalService>()
+                .AddAlias(Alias.Create<ITerminalService, ConsoleTerminalService>());
+            services.AddSingleton<DefaultDebuggerService>()
+                .AddAlias(Alias.Create<IDebuggerService, DefaultDebuggerService>());
 
             services.AddSystem<TerminalSystem>()
                 .AddSystem<DebuggerSystem>()
