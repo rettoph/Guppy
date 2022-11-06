@@ -12,7 +12,7 @@ namespace Guppy.Common.Implementations
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class
     {
-        private IList<T> _items;
+        private readonly IList<T> _items;
 
         public IEnumerable<T> Items => _items;
 

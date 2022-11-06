@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Providers;
+using Guppy.ECS.Attributes;
 using Guppy.ECS.Services;
 using Guppy.Initializers;
 using Guppy.Loaders;
@@ -25,6 +26,13 @@ namespace Guppy.ECS.Initializers
             foreach (Type system in systems)
             {
                 services.AddSystem(system);
+            }
+
+            var components = assemblies.GetAttributes<ComponentTypeAttribute>(true);
+
+            foreach((Type component, _) in components)
+            {
+                services.AddComponentType(component);
             }
 
             services.AddScoped<IWorldService, WorldService>();

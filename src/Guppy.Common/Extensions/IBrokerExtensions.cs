@@ -9,8 +9,8 @@ namespace Guppy.Common.Extensions
 {
     public static class IBrokerExtensions
     {
-        private static MethodInfo SubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Subscribe)) ?? throw new NotImplementedException();
-        private static MethodInfo UnsubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Unsubscribe)) ?? throw new NotImplementedException();
+        private static readonly MethodInfo SubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Subscribe)) ?? throw new NotImplementedException();
+        private static readonly MethodInfo UnsubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Unsubscribe)) ?? throw new NotImplementedException();
 
         /// <summary>
         /// Using reflection, subscribe all <see cref="ISubscriber{T}"/>
