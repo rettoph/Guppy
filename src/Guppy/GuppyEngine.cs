@@ -83,7 +83,7 @@ namespace Guppy
             return this;
         }
 
-        public IGuppyProvider Build()
+        public IServiceProvider Build()
         {
             if(!_initialized)
             {
@@ -96,7 +96,7 @@ namespace Guppy
 
             var provider = services.BuildServiceProvider(validateScopes: true);
 
-            return provider.GetRequiredService<IGuppyProvider>();
+            return provider;
         }
 
         private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)

@@ -1,8 +1,8 @@
 ﻿using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.GameComponents;
 using Guppy.MonoGame.Messages.Inputs;
 using Guppy.MonoGame.Providers.ResourcePackTypeProviders;
-using Guppy.MonoGame.Systems;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -44,7 +44,7 @@ namespace Guppy.MonoGame.Loaders
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
 
-            services.AddSingleton<InputSystem>().AddSystem<InputSystem>();
+            services.AddGameComponent<InputGameComponent>();
 
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {

@@ -10,6 +10,8 @@ namespace Guppy.Common
     {
         Guid Id { get; }
 
+        void Initialize();
+
         void Flush();
     }
 }

@@ -11,21 +11,21 @@ namespace Guppy.MonoGame
 {
     public abstract class FrameableGuppy : IGuppy
     {
-        public readonly World World;
+        public readonly IGameComponentService Components;
 
-        public FrameableGuppy(World world)
+        public FrameableGuppy(IGameComponentService components)
         {
-            this.World = world;
+            this.Components = components;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            this.World.Update(gameTime);
+            this.Components.Update(gameTime);
         }
 
         public virtual void Draw(GameTime gameTime)
         {
-            this.World.Draw(gameTime);
+            this.Components.Draw(gameTime);
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Guppy.Common;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.GameComponents;
 using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
-using Guppy.MonoGame.Systems;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,14 +17,17 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ConsoleTerminalService>()
-                .AddAlias(Alias.Create<ITerminalService, ConsoleTerminalService>());
             services.AddSingleton<DefaultDebuggerService>()
                 .AddAlias(Alias.Create<IDebuggerService, DefaultDebuggerService>());
 
-            services.AddSystem<TerminalSystem>()
-                .AddSystem<DebuggerSystem>()
-                .AddSystem<GlobalSystem>();
+            services.AddSingleton<ConsoleTerminalService>()
+                .AddAlias(Alias.Create<ITerminalService, ConsoleTerminalService>());
+
+            services.AddScoped<IGameComponentService, GameComponentService>();
+
+            services.AddGameComponent<GlobalBusGameComponent>()
+                .AddGameComponent<TerminalGameComponent>()
+                .AddGameComponent<DebuggerGameComponent>();
         }
     }
 }

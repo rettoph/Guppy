@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,18 +9,7 @@ namespace Guppy.Common.Providers
 {
     internal sealed class AliasProvider : IAliasProvider
     {
-        private class ImplementationAliases
-        {
-            public readonly Type Type;
-            public readonly Type[] AliasTypes;
-
-            public ImplementationAliases(Type implementationType, Type[] aliasTypes)
-            {
-                this.Type = implementationType;
-                this.AliasTypes = aliasTypes;
-            }
-        }
-
+        [DebuggerDisplay("Type: {Type.Name}, Aliase: {AliasType.Name}, Filters: {Filters.Length}")]
         private class FilterableImplementation
         {
             public readonly Type Type;
@@ -54,28 +44,23 @@ namespace Guppy.Common.Providers
             // Load distinct alias types
             var keys = aliases.Select(x => x.Type).Distinct().ToArray();
 
-            // Break all aliases by implementaion type and map the distinct alias types to each implementation
-            var implementations = aliases.GroupBy(x => x.ImplementationType)
-                .Select(g => new ImplementationAliases(g.Key, g.Select(x => x.Type).Distinct().ToArray()))
-                .ToArray();
-
             _aliases = new Dictionary<Type, FilterableImplementation[]>(keys.Length);
 
             var filteredAliases = new List<FilterableImplementation>();
-            foreach (Type alias in keys)
+            foreach (Type key in keys)
             {
-                foreach(ImplementationAliases implementation in implementations)
+                foreach(Alias alias in aliases)
                 {
-                    if(implementation.AliasTypes.Contains(alias))
+                    if(alias.Type == key)
                     {
                         filteredAliases.Add(new FilterableImplementation(
-                            type: implementation.Type,
-                            aliasType: alias,
-                            filters: filters.Where(x => x.AppliesTo(implementation.Type)).ToArray()));
+                            type: alias.ImplementationType,
+                            aliasType: key,
+                            filters: filters.Where(x => x.AppliesTo(alias.ImplementationType)).ToArray()));
                     }
                 }
 
-                _aliases.Add(alias, filteredAliases.ToArray());
+                _aliases.Add(key, filteredAliases.ToArray());
                 filteredAliases.Clear();
             }
         }

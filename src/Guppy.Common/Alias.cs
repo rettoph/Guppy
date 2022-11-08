@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
+    [DebuggerDisplay("Alias: {Type.Name}, Implementation: {ImplementationType.Name}")]
     public sealed class Alias
     {
         public readonly Type Type;

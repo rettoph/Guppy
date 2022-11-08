@@ -12,18 +12,29 @@ namespace Guppy.Common.Implementations
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class
     {
-        private readonly IList<T> _items;
+        private readonly Lazy<IList<T>> _items;
+        private readonly Lazy<T?> _instance;
 
-        public IEnumerable<T> Items => _items;
+        public IEnumerable<T> Items => _items.Value;
 
-        public T Instance => _items[0];
+        public T? Instance => _instance.Value;
 
         public Filtered(
             IAliasProvider aliases,
             IServiceProvider provider,
             IEnumerable<T> items)
         {
-            _items = new List<T>(items.Concat(aliases.GetImplementations<T>(provider)));
+            _items = new Lazy<IList<T>>(() =>
+            {
+                var list = new List<T>(items.Concat(aliases.GetImplementations<T>(provider)));
+
+                return list;
+            });
+
+            _instance = new Lazy<T?>(() =>
+            {
+                return aliases.GetImplementation<T>(provider) ?? items.LastOrDefault();
+            });
         }
     }
 }

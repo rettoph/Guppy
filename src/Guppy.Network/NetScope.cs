@@ -34,7 +34,6 @@ namespace Guppy.Network
     {
         private NetState _state;
         private readonly IUserProvider _users;
-        private readonly INetSerializerProvider _serializers;
         private readonly DoubleDictionary<INetId, System.Type, NetMessageType> _messages;
         private readonly INetOutgoingMessageFactory _factory;
 
@@ -63,9 +62,8 @@ namespace Guppy.Network
             IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _state = NetState.Stopped;
-            _serializers = serializers;
             _users = users;
-            _factory = factories.Instance;
+            _factory = factories.Instance ?? throw new InvalidOperationException();
 
             _messages = new DoubleDictionary<INetId, System.Type, NetMessageType>(definitions.Count());
 
@@ -166,16 +164,35 @@ namespace Guppy.Network
             }
         }
 
-        private void HandleUserJoined(IUserService sender, User user)
+        private void HandleUserJoined(IUserService sender, User newUser)
         {
             if(this.Authorization.Value != NetAuthorization.Master)
             {
                 return;
             }
 
-            this.Create(user.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+            // Alert all users of the new user.
+            this.Create(newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
+
+            if(newUser.NetPeer is null)
+            {
+                return;
+            }
+
+            // Alert the new user of all existing users.
+            foreach (User oldUser in this.Users)
+            {
+                if(oldUser.Id == newUser.Id)
+                {
+                    continue;
+                }
+
+                this.Create(oldUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+                    .AddRecipient(newUser.NetPeer)
+                    .Enqueue();
+            }
         }
 
         private void HandleUserLeft(IUserService sender, User user)

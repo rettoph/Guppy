@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using MonoGame.Extended.Entities;
 using MonoGame.Extended.Entities.Systems;
 using System;
@@ -10,29 +11,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Systems
+namespace Guppy.MonoGame.GameComponents
 {
     [GlobalScopeFilter]
-    internal sealed class InputSystem : IUpdateSystem
+    internal sealed class InputGameComponent : SimpleGameComponent
     {
         private IInputService _inputs;
 
-        public InputSystem(IInputService inputs)
+        public InputGameComponent(IInputService inputs)
         {
             _inputs = inputs;
         }
 
-        public void Initialize(World world)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            // throw new NotImplementedException();
-        }
-
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _inputs.Update(gameTime);
         }

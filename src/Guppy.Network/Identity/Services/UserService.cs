@@ -2,6 +2,7 @@
 using Guppy.Network.Identity.Providers;
 using LiteNetLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -87,6 +88,16 @@ namespace Guppy.Network.Identity.Services
             }
 
             this.Remove(sender);
+        }
+
+        public IEnumerator<User> GetEnumerator()
+        {
+            return _users.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

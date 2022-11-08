@@ -15,7 +15,7 @@ namespace Guppy.Common
         where T : IMessage
     {
         /// <summary>
-        /// Process an incoming <paramref name="message"/>
+        /// Consume an incoming <paramref name="message"/>
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>

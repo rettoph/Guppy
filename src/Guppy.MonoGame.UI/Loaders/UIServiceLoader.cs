@@ -29,7 +29,6 @@ namespace Guppy.MonoGame.UI.Loaders
             NativeHelper.Load(directory, FileConstants.cImGui, FileConstants.cImPlot);
 
 
-
             services.AddTransient<IResourcePackTypeProvider, ResourcePackTrueTypeFontProvider>();
 
             services.AddResource<TrueTypeFont>(ResourceConstants.DiagnosticsTTF, FileConstants.DiagnosticsTTF);

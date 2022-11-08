@@ -41,8 +41,11 @@ namespace Guppy.Common.Implementations
             _typeMap = config.ToDictionary(
                 keySelector: x => x.Type,
                 elementSelector: x => this.GetQueue(x.Queue));
+        }
 
-            foreach(ISubscriber subscriber in _subscribers.Items)
+        public void Initialize()
+        {
+            foreach (ISubscriber subscriber in _subscribers.Items)
             {
                 this.SubscribeAll(subscriber);
             }

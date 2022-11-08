@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Identity.Services
 {
-    public interface IUserService : IDisposable
+    public interface IUserService : IEnumerable<User>, IDisposable
     {
         IEnumerable<NetPeer> Peers { get; }
 
