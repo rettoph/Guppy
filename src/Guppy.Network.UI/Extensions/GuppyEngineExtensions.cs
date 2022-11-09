@@ -13,7 +13,7 @@ namespace Guppy
             }
 
             return guppy.ConfigureUI()
-                .AddLoader(new NetworkUIServiceLoader())
+                .AddLoader(new NetworkUIServiceLoader(), 0)
                 .AddTag(nameof(ConfigureNetworkUI));
         }
     }

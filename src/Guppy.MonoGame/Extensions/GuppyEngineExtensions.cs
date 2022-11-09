@@ -21,10 +21,10 @@ namespace Guppy
 
             return guppy.ConfigureECS()
                 .ConfigureResources()
-                .AddInitializer(new CommandInitializer())
-                .AddLoader(new GameLoader())
-                .AddLoader(new JsonLoader())
-                .AddLoader(new ResourceLoader())
+                .AddInitializer(new CommandInitializer(), 0)
+                .AddLoader(new GameLoader(), 0)
+                .AddLoader(new JsonLoader(), 0)
+                .AddLoader(new ResourceLoader(), 0)
                 .AddTag(nameof(ConfigureGame));
         }
 
@@ -41,8 +41,8 @@ namespace Guppy
             }
 
             return guppy.ConfigureGame()
-                .AddInitializer(new InputInitializer())
-                .AddLoader(new MonoGameLoader(game, graphics, content, window))
+                .AddInitializer(new InputInitializer(), 0)
+                .AddLoader(new MonoGameLoader(game, graphics, content, window), 0)
                 .AddTag(nameof(ConfigureMonoGame));
         }
     }

@@ -15,6 +15,16 @@ namespace Guppy.Attributes
         {
         }
 
+        public virtual bool ShouldInitialize(IServiceCollection services, Type classType)
+        {
+            if(services.Any(x => x.ServiceType == classType))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public virtual void Initialize(IServiceCollection services, Type classType)
         {
 

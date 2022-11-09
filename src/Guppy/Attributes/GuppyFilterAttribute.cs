@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public sealed class GuppyFilterAttribute : InitializableAttribute
     {
         public readonly Type GuppyType;

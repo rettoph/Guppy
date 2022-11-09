@@ -23,7 +23,7 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.AddLoader(new UIServiceLoader())
+            return guppy.AddLoader(new UIServiceLoader(), 0)
                 .AddTag(nameof(ConfigureUI));
         }
     }

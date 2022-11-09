@@ -16,9 +16,9 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.AddInitializer(new ResourcePackInitializer())
-                .AddInitializer(new ResourceInitializer())
-                .AddInitializer(new SettingInitializer())
+            return guppy.AddInitializer(new ResourcePackInitializer(), 0)
+                .AddInitializer(new ResourceInitializer(), 0)
+                .AddInitializer(new SettingInitializer(), 0)
                 .AddTag(nameof(ConfigureResources));
         }
     }

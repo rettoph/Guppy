@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.Initializers;
 using Guppy.Loaders;
@@ -16,8 +17,8 @@ namespace Guppy
 {
     public sealed class GuppyEngine
     {
-        private readonly List<IGuppyInitializer> _initializers;
-        private readonly List<IGuppyLoader> _loaders;
+        private readonly OrderedList<IGuppyInitializer> _initializers;
+        private readonly OrderedList<IGuppyLoader> _loaders;
         private bool _initialized;
 
         public IAssemblyProvider Assemblies { get; private init; }
@@ -25,8 +26,8 @@ namespace Guppy
 
         public GuppyEngine(IEnumerable<Assembly>? libraries = default)
         {
-            _initializers = new List<IGuppyInitializer>();
-            _loaders = new List<IGuppyLoader>();
+            _initializers = new OrderedList<IGuppyInitializer>();
+            _loaders = new OrderedList<IGuppyLoader>();
             _initialized = false;
 
             libraries ??= Enumerable.Empty<Assembly>();
@@ -50,16 +51,16 @@ namespace Guppy
             return this;
         }
 
-        public GuppyEngine AddInitializer(IGuppyInitializer initializer)
+        public GuppyEngine AddInitializer(IGuppyInitializer initializer, int order)
         {
-            _initializers.Add(initializer);
+            _initializers.Add(initializer, order);
 
             return this;
         }
 
-        public GuppyEngine AddLoader(IGuppyLoader loader)
+        public GuppyEngine AddLoader(IGuppyLoader loader, int order)
         {
-            _loaders.Add(loader);
+            _loaders.Add(loader, order);
 
             return this;
         }
@@ -104,23 +105,21 @@ namespace Guppy
             var initializers = assembly.GetTypes()
                 .AssignableFrom<IGuppyInitializer>()
                 .WithAttribute<AutoLoadAttribute>(true)
-                .OrderBy(t => t.GetCustomAttribute<AutoLoadAttribute>()!.Order)
                 .Select(t => Activator.CreateInstance(t) as IGuppyInitializer ?? throw new Exception());
 
             var loaders = assembly.GetTypes()
                 .AssignableFrom<IGuppyLoader>()
                 .WithAttribute<AutoLoadAttribute>(true)
-                .OrderBy(t => t.GetCustomAttribute<AutoLoadAttribute>()!.Order)
                 .Select(t => Activator.CreateInstance(t) as IGuppyLoader ?? throw new Exception());
 
             foreach(IGuppyInitializer initializer in initializers)
             {
-                this.AddInitializer(initializer);
+                this.AddInitializer(initializer, initializer.GetType()?.GetCustomAttribute<AutoLoadAttribute>(true)?.Order ?? 0);
             }
 
             foreach (IGuppyLoader loader in loaders)
             {
-                this.AddLoader(loader);
+                this.AddLoader(loader, loader.GetType()?.GetCustomAttribute<AutoLoadAttribute>(true)?.Order ?? 0);
             }
         }
     }

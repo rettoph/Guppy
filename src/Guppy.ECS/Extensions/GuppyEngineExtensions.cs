@@ -16,7 +16,7 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.AddInitializer(new ECSInitializer())
+            return guppy.AddInitializer(new ECSInitializer(), 0)
                 .AddTag(nameof(ConfigureECS));
         }
     }

@@ -17,8 +17,8 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.AddInitializer(new NetworkInitializer())
-                .AddLoader(new NetworkServiceLoader(channelsCount))
+            return guppy.AddInitializer(new NetworkInitializer(), 0)
+                .AddLoader(new NetworkServiceLoader(channelsCount), 0)
                 .AddTag(nameof(ConfigureNetwork));
         }
     }

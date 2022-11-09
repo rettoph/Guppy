@@ -19,6 +19,13 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddSingleton(alias);
         }
 
+        public static IServiceCollection AddAlias<T, TImplementation>(
+            this IServiceCollection services)
+                where TImplementation : T
+        {
+            return services.AddAlias(Alias.Create<T, TImplementation>());
+        }
+
         public static IServiceCollection AddAliases(
             this IServiceCollection services, 
             IEnumerable<Alias> aliases)
