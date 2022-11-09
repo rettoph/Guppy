@@ -11,24 +11,23 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.GameComponents
 {
-    [GlobalScopeFilter]
-    internal sealed class GlobalBusGameComponent : SimpleGameComponent
+    internal sealed class BusGameComponent : SimpleGameComponent
     {
-        private IGlobal<IBus> _bus;
+        private IBus _bus;
 
-        public GlobalBusGameComponent(IGlobal<IBus> bus)
+        public BusGameComponent(IBus bus)
         {
             _bus = bus;
         }
 
         public override void Initialize()
         {
-            _bus.Instance.Initialize();
+            _bus.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            _bus.Instance.Flush();
+            _bus.Flush();
         }
     }
 }

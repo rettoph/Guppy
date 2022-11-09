@@ -25,7 +25,7 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddScoped<IGameComponentService, GameComponentService>();
 
-            services.AddGameComponent<GlobalBusGameComponent>()
+            services.AddGameComponent<BusGameComponent>()
                 .AddGameComponent<TerminalGameComponent>()
                 .AddGameComponent<DebuggerGameComponent>();
         }

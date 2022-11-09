@@ -11,6 +11,8 @@ namespace Guppy.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public abstract class InitializableAttribute : Attribute
     {
+        protected virtual ServiceLifetime DefaultServiceLifetime => ServiceLifetime.Scoped;
+
         public InitializableAttribute()
         {
         }
@@ -19,6 +21,23 @@ namespace Guppy.Attributes
         {
             if(services.Any(x => x.ServiceType == classType))
             {
+                return true;
+            }
+
+            if(classType.IsAbstract)
+            {
+                return false;
+            }
+
+            if(classType.IsInterface)
+            {
+                return false;
+            }
+
+            if(classType.IsClass)
+            {
+                services.Add(ServiceDescriptor.Describe(classType, classType, this.DefaultServiceLifetime));
+
                 return true;
             }
 
