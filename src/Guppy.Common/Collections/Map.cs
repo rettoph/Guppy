@@ -9,8 +9,8 @@ namespace Guppy.Common.Collections
         where T1 : notnull
         where T2 : notnull
     {
-        private Dictionary<T1, T2> _forward = new Dictionary<T1, T2>();
-        private Dictionary<T2, T1> _reverse = new Dictionary<T2, T1>();
+        private readonly Dictionary<T1, T2> _forward;
+        private readonly Dictionary<T2, T1> _reverse;
 
         public ICollection<T1> Values1 => _forward.Keys;
         public ICollection<T2> Values2 => _reverse.Keys;

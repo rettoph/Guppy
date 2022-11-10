@@ -11,7 +11,7 @@ namespace Guppy.MonoGame.Utilities
     public sealed class GuppyTimer
     {
         private TimeSpan _interval;
-        private GameTime _gameTime;
+        private readonly GameTime _gameTime;
 
         public TimeSpan Interval
         {
@@ -19,8 +19,22 @@ namespace Guppy.MonoGame.Utilities
             set => _interval = value;
         }
 
-        public TimeSpan ElapsedTime => _gameTime.ElapsedGameTime;
+        public TimeSpan ElapsedTime
+        {
+            get => _gameTime.ElapsedGameTime;
+            set
+            {
+                TimeSpan diff = _gameTime.ElapsedGameTime - value;
 
+                _gameTime.ElapsedGameTime = value;
+                _gameTime.TotalGameTime -= diff;
+            }
+        }
+
+        public GuppyTimer() : this(TimeSpan.FromSeconds(1))
+        {
+
+        }
         public GuppyTimer(TimeSpan interval)
         {
             this.Interval = interval;
