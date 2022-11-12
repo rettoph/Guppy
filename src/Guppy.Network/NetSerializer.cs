@@ -25,28 +25,28 @@ namespace Guppy.Network
         public Type Type { get; } = typeof(T);
 
 
-        public virtual void Initialize(INetSerializerProvider provider)
+        public virtual void Initialize(INetSerializerProvider serializers)
         {
         }
 
-        public abstract void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in T instance);
+        public abstract void Serialize(NetDataWriter writer, in T instance);
 
-        public abstract T Deserialize(NetDataReader reader, INetSerializerProvider serializers);
+        public abstract T Deserialize(NetDataReader reader);
 
-        void INetSerializer.Serialize(NetDataWriter writer, INetSerializerProvider serializers, in object instance)
+        void INetSerializer.Serialize(NetDataWriter writer, in object instance)
         {
             if(instance is T casted)
             {
-                this.Serialize(writer, serializers, in casted);
+                this.Serialize(writer, in casted);
                 return;
             }
 
-            throw new ArgumentException(nameof(instance));
+            throw new ArgumentException($"Unable to cast {instance.GetType().Name} to {typeof(T).Name}");
         }
 
-        object INetSerializer.Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        object INetSerializer.Deserialize(NetDataReader reader)
         {
-            return this.Deserialize(reader, serializers);
+            return this.Deserialize(reader);
         }
     }
 }

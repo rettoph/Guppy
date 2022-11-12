@@ -12,13 +12,13 @@ namespace Guppy.Network
     internal sealed class NetOutgoingMessage<T> : INetOutgoingMessage<T>
         where T : notnull
     {
-        private NetScope _scope;
-        private NetDataWriter _writer;
+        private readonly NetScope _scope;
+        private readonly NetDataWriter _writer;
         private readonly NetMessageType<T> _type;
         private readonly INetSerializer<T> _serializer;
         private readonly INetSerializerProvider _serializers;
-        private List<object> _data;
-        private List<NetPeer> _recipients;
+        private readonly List<object> _data;
+        private readonly List<NetPeer> _recipients;
         private T _body;
 
 
@@ -55,7 +55,7 @@ namespace Guppy.Network
         {
             _body = body;
 
-            _serializer.Serialize(_writer, _serializers, in body);
+            _serializer.Serialize(_writer, in body);
         }
 
         public void Recycle()

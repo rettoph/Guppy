@@ -16,7 +16,7 @@ namespace Guppy.Network.Providers
 
             SignIfShould(sign, serializer.Id, writer);
 
-            serializer.Serialize(writer, serializers, in instance);
+            serializer.Serialize(writer, in instance);
         }
 
         public static void Serialize(this INetSerializerProvider serializers, NetDataWriter writer, in object instance)
@@ -25,7 +25,7 @@ namespace Guppy.Network.Providers
 
             SignIfShould(true, serializer.Id, writer);
 
-            serializer.Serialize(writer, serializers, in instance);
+            serializer.Serialize(writer, in instance);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Guppy.Network.Providers
         {
             var serializer = serializers.Get<T>();
 
-            return serializer.Deserialize(reader, serializers);
+            return serializer.Deserialize(reader);
         }
 
         /// <summary>
@@ -54,12 +54,12 @@ namespace Guppy.Network.Providers
             var id = NetId.Byte.Read(reader);
             var serializer = serializers.Get(id);
 
-            return serializer.Deserialize(reader, serializers);
+            return serializer.Deserialize(reader);
         }
 
-        private static void SignIfShould(bool shouldSign, INetId id, NetDataWriter writer)
+        private static void SignIfShould(bool should, INetId id, NetDataWriter writer)
         {
-            if(shouldSign)
+            if(should)
             {
                 id.Write(writer);
             }

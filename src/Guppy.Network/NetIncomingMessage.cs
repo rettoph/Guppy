@@ -52,7 +52,7 @@ namespace Guppy.Network
         public void Read(NetPeer? peer, NetDataReader reader)
         {
             _peer = peer;
-            _body = _serializer.Deserialize(reader, _serializers);
+            _body = _serializer.Deserialize(reader);
 
             while(!reader.EndOfData)
             {

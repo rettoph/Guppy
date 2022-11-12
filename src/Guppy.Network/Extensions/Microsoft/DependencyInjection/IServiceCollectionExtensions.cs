@@ -19,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), netSerializerType);
 
-            return services.AddScoped(typeof(INetSerializer), netSerializerType);
+            return services.AddSingleton(typeof(INetSerializer), netSerializerType);
         }
 
         public static IServiceCollection AddNetSerializer<T>(this IServiceCollection services)
@@ -27,13 +27,13 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), typeof(T));
 
-            return services.AddScoped<INetSerializer, T>();
+            return services.AddSingleton<INetSerializer, T>();
         }
 
         public static IServiceCollection AddNetSerializer<T>(this IServiceCollection services, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
             where T : notnull
         {
-            return services.AddScoped<INetSerializer>(p => new RuntimeNetSerializer<T>(serialize, deserialize));
+            return services.AddSingleton<INetSerializer>(p => new RuntimeNetSerializer<T>(serialize, deserialize));
         }
 
         public static IServiceCollection AddNetMessageType(this IServiceCollection services, Type netMessengerDefinitionType)

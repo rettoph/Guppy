@@ -21,14 +21,14 @@ namespace Guppy.Network.NetSerializers
             _deserialize = deserialize;
         }
 
-        public override T Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        public override T Deserialize(NetDataReader reader)
         {
-            return _deserialize(reader, serializers);
+            return _deserialize(reader);
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in T instance)
+        public override void Serialize(NetDataWriter writer, in T instance)
         {
-            _serialize(writer, serializers, in instance);
+            _serialize(writer, in instance);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Guppy.Network.NetSerializers
     [AutoLoad]
     internal sealed class UserActionNetSerializer : NetSerializer<UserAction>
     {
-        public override UserAction Deserialize(NetDataReader reader, INetSerializerProvider serializers)
+        public override UserAction Deserialize(NetDataReader reader)
         {
             var instance = new UserAction()
             {
@@ -31,7 +31,7 @@ namespace Guppy.Network.NetSerializers
             return instance;
         }
 
-        public override void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in UserAction instance)
+        public override void Serialize(NetDataWriter writer, in UserAction instance)
         {
             writer.Put(instance.Id);
             writer.Put(instance.Action);

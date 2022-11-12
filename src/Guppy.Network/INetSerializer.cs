@@ -14,17 +14,17 @@ namespace Guppy.Network
 
         Type Type { get; }
 
-        void Initialize(INetSerializerProvider provider);
+        void Initialize(INetSerializerProvider serializers);
 
-        void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in object instance);
+        void Serialize(NetDataWriter writer, in object instance);
 
-        object Deserialize(NetDataReader reader, INetSerializerProvider serializers);
+        object Deserialize(NetDataReader reader);
     }
 
     public interface INetSerializer<T> : INetSerializer
         where T : notnull
     {
-        void Serialize(NetDataWriter writer, INetSerializerProvider serializers, in T instance);
-        new T Deserialize(NetDataReader reader, INetSerializerProvider serializers);
+        void Serialize(NetDataWriter writer, in T instance);
+        new T Deserialize(NetDataReader reader);
     }
 }
