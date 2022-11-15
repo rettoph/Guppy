@@ -18,7 +18,7 @@ namespace Guppy.MonoGame.UI.Services
         private ImGuiBatch _imGuiBatch;
         private IntPtr _context;
 
-        public ImGuiDebuggerService(ImGuiBatch imGuiBatch, IEnumerable<IDebugger> debuggers) : base(debuggers)
+        public ImGuiDebuggerService(ImGuiBatch imGuiBatch, IFiltered<IDebugger> debuggers) : base(debuggers)
         {
             _imGuiBatch = imGuiBatch;
             _context = ImPlot.CreateContext();

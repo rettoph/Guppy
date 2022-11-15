@@ -13,7 +13,7 @@ namespace Guppy.Network.UI.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IDebugger, UsersDebugger>();
+            services.AddScoped<IDebugger, UsersDebugger>();
         }
     }
 }

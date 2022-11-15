@@ -18,9 +18,9 @@ namespace Guppy.MonoGame.Services
 
         public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Debugger;
 
-        public DefaultDebuggerService(IEnumerable<IDebugger> debuggers) : base(false)
+        public DefaultDebuggerService(IFiltered<IDebugger> debuggers) : base(false)
         {
-            _debuggers = debuggers.ToArray();
+            _debuggers = debuggers.Items.ToArray();
         }
 
         public override void Update(GameTime gameTime)
