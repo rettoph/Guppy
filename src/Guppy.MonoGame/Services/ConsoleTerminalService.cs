@@ -1,5 +1,7 @@
-﻿using Guppy.MonoGame.Helpers;
+﻿using Guppy.Attributes;
+using Guppy.MonoGame.Helpers;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
+    [GlobalScopeFilter]
     internal sealed class ConsoleTerminalService : ITerminalService
     {
         private readonly ICommandService _commands;
@@ -41,16 +44,6 @@ namespace Guppy.MonoGame.Services
                 _commands.Invoke(input);
             }
 
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            // throw new NotImplementedException();
         }
 
         public void WriteLine(string text, Color color)

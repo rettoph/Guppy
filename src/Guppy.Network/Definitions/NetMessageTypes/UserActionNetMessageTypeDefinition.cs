@@ -13,8 +13,8 @@ namespace Guppy.Network.Definitions.NetMessageTypes
     [AutoLoad]
     internal sealed class UserActionNetMessageTypeDefinition : NetMessageTypeDefinition<UserAction>
     {
-        public override DeliveryMethod DeliveryMethod => DeliveryMethod.ReliableOrdered;
+        public override DeliveryMethod DefaultDeliveryMethod => DeliveryMethod.ReliableOrdered;
 
-        public override byte OutgoingChannel => PeerConstants.OutgoingChannel;
+        public override byte DefaultOutgoingChannel => PeerConstants.OutgoingChannel;
     }
 }

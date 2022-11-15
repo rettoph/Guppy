@@ -18,7 +18,7 @@ namespace Guppy.MonoGame.Services
 
         public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Debugger;
 
-        public DefaultDebuggerService(IEnumerable<IDebugger> debuggers) : base(true)
+        public DefaultDebuggerService(IEnumerable<IDebugger> debuggers) : base(false)
         {
             _debuggers = debuggers.ToArray();
         }
@@ -31,7 +31,7 @@ namespace Guppy.MonoGame.Services
             }
         }
 
-        protected override void InnerDraw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             foreach (IDebugger debugger in _debuggers)
             {

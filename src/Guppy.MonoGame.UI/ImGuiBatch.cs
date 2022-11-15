@@ -71,7 +71,7 @@ namespace Guppy.MonoGame.UI
                 MultiSampleAntiAlias = false,
                 ScissorTestEnable = true,
                 SlopeScaleDepthBias = 0
-            
+
             };
 
             _effect = new BasicEffect(_graphics);
@@ -79,7 +79,7 @@ namespace Guppy.MonoGame.UI
             _vertexBuffer = new VertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
             _indexData = Array.Empty<byte>();
             _indexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
-            
+
             this.SetupInput();
             this.RebuildFontAtlas();
         }
@@ -141,7 +141,6 @@ namespace Guppy.MonoGame.UI
             ImGui.SetCurrentContext(this.Context);
 
             this.IO.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
 
             UpdateInput();
 

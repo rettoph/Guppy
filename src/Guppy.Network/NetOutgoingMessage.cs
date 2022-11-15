@@ -20,11 +20,15 @@ namespace Guppy.Network
         private readonly List<object> _data;
         private readonly List<NetPeer> _recipients;
         private T _body;
+        private byte _outgoingChannel;
+        private DeliveryMethod _deliveryMethod;
 
 
         object INetOutgoingMessage.Body => _body;
         NetMessageType INetOutgoingMessage.Type => _type;
         public T Body => _body;
+        public byte OutgoingChannel => _outgoingChannel;
+        public DeliveryMethod DeliveryMethod => _deliveryMethod;
         public NetMessageType<T> Type => _type;
         public IEnumerable<object> Data => _data;
         public NetDataWriter Writer => _writer;
@@ -65,6 +69,9 @@ namespace Guppy.Network
             _data.Clear();
             _recipients.Clear();
 
+            _outgoingChannel = this.Type.DefaultOutgoingChannel;
+            _deliveryMethod = this.Type.DefaultDeliveryMethod;
+
             this.Type.Recycle(this);
         }
 
@@ -91,11 +98,25 @@ namespace Guppy.Network
             return this;
         }
 
+        public INetOutgoingMessage<T> SetOutgoingChannel(byte outgoingChannel)
+        {
+            _outgoingChannel = outgoingChannel;
+
+            return this;
+        }
+
+        public INetOutgoingMessage<T> SetDeliveryMethod(DeliveryMethod deliveryMethod)
+        {
+            _deliveryMethod = deliveryMethod;
+
+            return this;
+        }
+
         public INetOutgoingMessage<T> Send()
         {
             foreach (NetPeer recipient in _recipients)
             {
-                recipient.Send(_writer, this.Type.OutgoingChannel, this.Type.DeliveryMethod);
+                recipient.Send(_writer, _outgoingChannel, _deliveryMethod);
             }
 
             return this;
@@ -126,6 +147,16 @@ namespace Guppy.Network
         INetOutgoingMessage INetOutgoingMessage.AddRecipients(IEnumerable<NetPeer> recipients)
         {
             return this.AddRecipients(recipients);
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.SetOutgoingChannel(byte outgoingChannel)
+        {
+            return this.SetOutgoingChannel(outgoingChannel);
+        }
+
+        INetOutgoingMessage INetOutgoingMessage.SetDeliveryMethod(DeliveryMethod deliveryMethod)
+        {
+            return this.SetDeliveryMethod(deliveryMethod);
         }
 
         INetOutgoingMessage INetOutgoingMessage.Send()

@@ -47,7 +47,7 @@ namespace Guppy.Network.Loaders
                 .AddSetting(NetAuthorization.Master, false)
                 .AddScoped<ClientNetOutgoingMessageFactory>()
                 .AddScoped<ServerNetOutgoingMessageFactory>()
-                .AddAliases(Alias.ForMany<INetOutgoingMessageFactory>(typeof(ClientNetOutgoingMessageFactory), typeof(ServerNetOutgoingMessageFactory)))
+                .AddAliases(Alias.ManyFor<INetOutgoingMessageFactory>(typeof(ClientNetOutgoingMessageFactory), typeof(ServerNetOutgoingMessageFactory)))
                 .AddFilter(new PeerFilter<ClientPeer, ClientNetOutgoingMessageFactory>())
                 .AddFilter(new PeerFilter<ServerPeer, ServerNetOutgoingMessageFactory>());
         }

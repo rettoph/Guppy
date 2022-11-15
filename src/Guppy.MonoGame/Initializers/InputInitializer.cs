@@ -5,6 +5,7 @@ using Guppy.Loaders;
 using Guppy.MonoGame.Definitions;
 using Guppy.MonoGame.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,9 @@ namespace Guppy.MonoGame.Initializers
                 services.AddInput(definition);
             }
 
-            services.AddSingleton<IInputService, InputService>();
+            services.AddSingleton<InputService>()
+                .AddMap<IInputService, InputService>()
+                .AddAlias<IGameComponent, InputService>();
         }
     }
 }

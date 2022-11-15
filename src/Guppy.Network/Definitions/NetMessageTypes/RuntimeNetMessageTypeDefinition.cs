@@ -12,12 +12,12 @@ namespace Guppy.Network.Definitions.NetMessageTypes
     {
         public RuntimeNetMessageTypeDefinition(DeliveryMethod deliveryMethod, byte outgoingChannel)
         {
-            this.DeliveryMethod = deliveryMethod;
-            this.OutgoingChannel = outgoingChannel;
+            this.DefaultDeliveryMethod = deliveryMethod;
+            this.DefaultOutgoingChannel = outgoingChannel;
         }
 
-        public override DeliveryMethod DeliveryMethod { get; }
+        public override DeliveryMethod DefaultDeliveryMethod { get; }
 
-        public override byte OutgoingChannel { get; }
+        public override byte DefaultOutgoingChannel { get; }
     }
 }

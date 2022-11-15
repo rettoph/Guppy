@@ -124,11 +124,11 @@ namespace Guppy.Network
             this.State = NetState.Stopped;
         }
 
-        public INetIncomingMessage Read(NetPeer? peer, NetDataReader reader)
+        public INetIncomingMessage Read(NetPeer? peer, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             var id = NetId.Byte.Read(reader);
             var message = _messages[id].CreateIncoming();
-            message.Read(peer, reader);
+            message.Read(peer, reader, ref channel, ref deliveryMethod);
 
             return message;
         }

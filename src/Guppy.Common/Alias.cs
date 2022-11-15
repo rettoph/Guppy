@@ -26,7 +26,7 @@ namespace Guppy.Common
             return new Alias(typeof(T), typeof(TImplementation));
         }
 
-        public static IEnumerable<Alias> FromMany<TImplementation>(params Type[] aliases)
+        public static IEnumerable<Alias> ManyFrom<TImplementation>(params Type[] aliases)
         {
             foreach(Type alias in aliases)
             {
@@ -34,7 +34,7 @@ namespace Guppy.Common
             }
         }
 
-        public static IEnumerable<Alias> ForMany<TAlias>(params Type[] implementations)
+        public static IEnumerable<Alias> ManyFor<TAlias>(params Type[] implementations)
         {
             foreach (Type implementation in implementations)
             {

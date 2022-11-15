@@ -17,22 +17,20 @@ namespace Guppy.MonoGame.UI.Services
 
             private string _line;
             private XnaColor? _color;
-            private ImGuiTerminalService _terminal;
 
             public override Encoding Encoding { get; } = Encoding.Default;
 
-            public TextWriter(ImGuiTerminalService terminal, XnaColor? color)
+            public TextWriter(XnaColor? color)
             {
                 _line = string.Empty;
                 _color = color;
-                _terminal = terminal;
             }
 
             public override void Write(char value)
             {
                 if(value == NewLineChar)
                 {
-                    _terminal.WriteLine(_line, _color ?? TextWriter.GetColor(Console.ForegroundColor));
+                    ImGuiTerminalService.WriteLine(_line, _color ?? TextWriter.GetColor(Console.ForegroundColor));
                     _line = string.Empty;
                     return;
                 }

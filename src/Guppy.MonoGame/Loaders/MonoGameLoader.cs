@@ -44,8 +44,6 @@ namespace Guppy.MonoGame.Loaders
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
             services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
 
-            services.AddGameComponent<InputGameComponent>();
-
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {
                 (ButtonState.Pressed, new ToggleWindowInput() { Window = ToggleWindowInput.Windows.Terminal })

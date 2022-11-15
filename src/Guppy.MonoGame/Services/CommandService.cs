@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    internal sealed class CommandService : BusPublisher, ICommandService
+    internal sealed class CommandService : ICommandService
     {
         private readonly RootCommand _root;
+        private readonly IGlobalBroker _broker;
 
-        public CommandService(IGlobal<IBus> bus, IEnumerable<ICommandDefinition> definitions) : base(bus.Instance.Yield())
+        public CommandService(IGlobalBroker broker, IEnumerable<ICommandDefinition> definitions)
         {
+            _broker = broker;
             _root = new RootCommand()
             {
                 Name = ">"
@@ -45,7 +47,7 @@ namespace Guppy.MonoGame.Services
 
         void ICommandService.Publish(IMessage command)
         {
-            base.Publish(command);
+            _broker.Publish(command);
         }
     }
 }

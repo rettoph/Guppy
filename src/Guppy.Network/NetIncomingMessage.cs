@@ -19,11 +19,17 @@ namespace Guppy.Network
         private readonly INetSerializer<T> _serializer;
         private NetPeer? _peer;
         private T _body;
+        private byte _channel;
+        private DeliveryMethod _deliveryMethod;
         private IList<object> _data;
 
         public IEnumerable<object> Data => _data;
 
         T INetIncomingMessage<T>.Body => _body;
+
+        public byte Channel => _channel;
+
+        public DeliveryMethod DeliveryMethod => _deliveryMethod;
 
         NetMessageType<T> INetIncomingMessage<T>.Type => _type;
 
@@ -49,12 +55,14 @@ namespace Guppy.Network
             _data = new List<object>();
         }
 
-        public void Read(NetPeer? peer, NetDataReader reader)
+        public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
         {
             _peer = peer;
             _body = _serializer.Deserialize(reader);
+            _channel = channel;
+            _deliveryMethod = deliveryMethod;
 
-            while(!reader.EndOfData)
+            while (!reader.EndOfData)
             {
                 _data.Add(_serializers.Deserialize(reader));
             }

@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    public interface IDebuggerService
+    public interface IDebuggerService : IGameComponent, IDrawable, IUpdateable
     {
-        void Update(GameTime gameTime);
-        void Draw(GameTime gameTime);
     }
 }

@@ -8,10 +8,13 @@ namespace Guppy.Network
     {
         NetPeer? Peer { get; }
         object Body { get; }
+        byte Channel { get; }
+        DeliveryMethod DeliveryMethod { get; }
         IEnumerable<object> Data { get; }
         NetMessageType Type { get; }
 
-        public void Read(NetPeer? peer, NetDataReader reader);
+        public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod);
+
         INetIncomingMessage Enqueue();
     }
 

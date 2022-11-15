@@ -8,6 +8,8 @@ namespace Guppy.Network
     public interface INetOutgoingMessage : IMessage, INetMessage, IRecyclable
     {
         object Body { get; }
+        byte OutgoingChannel { get; }
+        DeliveryMethod DeliveryMethod { get; }
         IEnumerable<object> Data { get; }
         NetDataWriter Writer { get; }
         NetMessageType Type { get; }
@@ -18,6 +20,10 @@ namespace Guppy.Network
         INetOutgoingMessage AddRecipient(NetPeer recipient);
 
         INetOutgoingMessage AddRecipients(IEnumerable<NetPeer> recipients);
+
+        INetOutgoingMessage SetOutgoingChannel(byte outgoingChannel);
+
+        INetOutgoingMessage SetDeliveryMethod(DeliveryMethod deliveryMethod);
 
         INetOutgoingMessage Send();
 
@@ -39,6 +45,10 @@ namespace Guppy.Network
         new INetOutgoingMessage<T> AddRecipient(NetPeer recipient);
 
         new INetOutgoingMessage<T> AddRecipients(IEnumerable<NetPeer> recipients);
+
+        new INetOutgoingMessage<T> SetOutgoingChannel(byte outgoingChannel);
+
+        new INetOutgoingMessage<T> SetDeliveryMethod(DeliveryMethod deliveryMethod);
 
         new INetOutgoingMessage<T> Send();
 

@@ -13,19 +13,26 @@ using Guppy.Common;
 using Guppy.MonoGame.UI.Constants;
 using Guppy.Common.Collections;
 using Guppy.MonoGame.Messages.Inputs;
+using Guppy.Attributes;
 
 namespace Guppy.MonoGame.UI.Services
 {
     internal sealed partial class ImGuiTerminalService : BaseWindowService, ITerminalService
     {
+        private readonly static Buffer<(string text, NumVector4 color)> _output;
+        private readonly static TextWriter _outWriter;
+        private readonly static TextWriter _errWriter;
+
         private readonly ImGuiBatch _imGuiBatch;
         private readonly ImFontPtr _font;
         private readonly GameWindow _window;
-        private readonly Buffer<(string text, NumVector4 color)> _output;
+        
         private readonly Lazy<ICommandService> _commands;
         private bool _focusInput;
         private string _input;
         private bool _scrollLocked;
+
+
 
         public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Terminal;
 
@@ -33,20 +40,30 @@ namespace Guppy.MonoGame.UI.Services
         {
             _imGuiBatch = imGuiBatch;
             _window = window;
-            // _renderer.RebuildFontAtlas();
-            // _font = _renderer.BindFont(@"C:\Users\Anthony\source\repos\VoidHuntersRevived\libraries\Guppy\src\Guppy.Gaming\Content\Fonts\src\SpaceMono-Regular.ttf", 50);
             _font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont].Ptr;
             _input = string.Empty;
-            _output = new Buffer<(string text, NumVector4 color)>(2048);
             _scrollLocked = true;
             _commands = commands;
             _focusInput = true;
-
-            Console.SetOut(new ImGuiTerminalService.TextWriter(this, null));
-            Console.SetError(new ImGuiTerminalService.TextWriter(this, XnaColor.Red));
         }
 
-        public void WriteLine(string text, XnaColor color)
+        static ImGuiTerminalService()
+        {
+            _output = new Buffer<(string text, NumVector4 color)>(2048);
+
+            _outWriter = new ImGuiTerminalService.TextWriter(null);
+            _errWriter = new ImGuiTerminalService.TextWriter(XnaColor.Red);
+
+            Console.SetOut(_outWriter);
+            Console.SetError(_errWriter);
+        }
+
+        void ITerminalService.WriteLine(string text, XnaColor color)
+        {
+            ImGuiTerminalService.WriteLine(text, color);
+        }
+
+        internal static void WriteLine(string text, XnaColor color)
         {
             _output.Add((text, color.ToNumericsVector4()));
         }
@@ -55,13 +72,6 @@ namespace Guppy.MonoGame.UI.Services
         {
             _imGuiBatch.Begin(gameTime);
 
-            base.Draw(gameTime);
-
-            _imGuiBatch.End();
-        }
-
-        protected override void InnerDraw(GameTime gameTime)
-        {
             var windowSize = new NumVector2(_window.ClientBounds.Width, _window.ClientBounds.Height);
             var inputHeight = 24;
             var outputContainerSize = new NumVector2(windowSize.X, windowSize.Y - inputHeight);
@@ -125,6 +135,13 @@ namespace Guppy.MonoGame.UI.Services
             ImGui.End();
             ImGui.PopFont();
             ImGui.PopStyleVar(2);
+
+            _imGuiBatch.End();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            // throw new NotImplementedException();
         }
     }
 }

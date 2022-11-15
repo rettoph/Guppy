@@ -1,10 +1,12 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Implementations;
 using Guppy.MonoGame.Definitions;
 using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,14 +16,17 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    internal sealed class InputService : BusPublisher, IInputService
+    [GlobalScopeFilter]
+    internal sealed class InputService : SimpleGameComponent, IInputService
     {
         private readonly Dictionary<string, IInput> _inputs;
         private readonly HashSet<IInput> _mouseInputs;
         private readonly HashSet<IInput> _keyboardInputs;
+        private readonly IGlobalBroker _broker;
 
-        public InputService(IGlobal<IBus> bus, IEnumerable<IInputDefinition> definitions) : base(bus.Instance.Yield())
+        public InputService(IGlobalBroker broker, IEnumerable<IInputDefinition> definitions)
         {
+            _broker = broker;
             _mouseInputs = new HashSet<IInput>();
             _keyboardInputs = new HashSet<IInput>();
 
@@ -51,7 +56,7 @@ namespace Guppy.MonoGame.Services
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             // TODO: Refactor such that input states can be passed by 
             // some managing service
@@ -62,7 +67,7 @@ namespace Guppy.MonoGame.Services
             {
                 if(input.Update(ref kState, ref mState, out IMessage? data))
                 {
-                    this.Publish(data);
+                    _broker.Publish(data);
                 }
             }
         }

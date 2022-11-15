@@ -10,7 +10,5 @@ namespace Guppy.MonoGame.Services
     public interface ITerminalService
     {
         void WriteLine(string text, Color color);
-        void Update(GameTime gameTime);
-        void Draw(GameTime gameTime);
     }
 }

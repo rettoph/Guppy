@@ -11,8 +11,8 @@ namespace Guppy.Network.Definitions
     public abstract class NetMessageTypeDefinition
     {
         public abstract Type Body { get; }
-        public abstract DeliveryMethod DeliveryMethod { get; }
-        public abstract byte OutgoingChannel { get; }
+        public abstract DeliveryMethod DefaultDeliveryMethod { get; }
+        public abstract byte DefaultOutgoingChannel { get; }
 
         internal abstract NetMessageType BuildType(INetId id, INetSerializerProvider serializers, NetScope scope);
     }
@@ -24,7 +24,7 @@ namespace Guppy.Network.Definitions
 
         internal override NetMessageType BuildType(INetId id, INetSerializerProvider serializers, NetScope scope)
         {
-            return new NetMessageType<TBody>(id, this.Body, this.DeliveryMethod, this.OutgoingChannel, serializers, scope);
+            return new NetMessageType<TBody>(id, this.Body, this.DefaultDeliveryMethod, this.DefaultOutgoingChannel, serializers, scope);
         }
     }
 }

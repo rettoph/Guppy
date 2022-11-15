@@ -9,10 +9,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    internal sealed class GuppyProvider : IGuppyProvider, IEnumerable<IScoped<IGuppy>>
+    internal sealed class GuppyProvider : IGuppyProvider
     {
         private IServiceProvider _provider;
         private IList<IScoped<IGuppy>> _guppies;
+
+        public event OnEventDelegate<IGuppyProvider, IScoped<IGuppy>>? OnAdded;
+        public event OnEventDelegate<IGuppyProvider, IScoped<IGuppy>>? OnRemoved;
 
         public GuppyProvider(IServiceProvider provider)
         {
@@ -28,6 +31,8 @@ namespace Guppy.Providers
 
             _guppies.Add(guppy);
 
+            this.OnAdded?.Invoke(this, guppy);
+
             return guppy;
         }
 
@@ -38,7 +43,14 @@ namespace Guppy.Providers
                 guppy.OnDispose -= this.HandleGuppyDisposed;
 
                 _guppies.Remove(guppy);
+
+                this.OnRemoved?.Invoke(this, guppy);
             }
+        }
+
+        IEnumerable<IScoped<IGuppy>> IGuppyProvider.All()
+        {
+            return _guppies;
         }
 
         IEnumerable<IScoped<T>> IGuppyProvider.All<T>()
@@ -50,16 +62,6 @@ namespace Guppy.Providers
                     yield return casted;
                 }
             }
-        }
-
-        public IEnumerator<IScoped<IGuppy>> GetEnumerator()
-        {
-            return _guppies.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
     }
 }

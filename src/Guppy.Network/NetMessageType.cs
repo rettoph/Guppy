@@ -13,15 +13,15 @@ namespace Guppy.Network
     {
         public readonly INetId Id;
         public readonly Type Body;
-        public readonly DeliveryMethod DeliveryMethod;
-        public readonly byte OutgoingChannel;
+        public readonly DeliveryMethod DefaultDeliveryMethod;
+        public readonly byte DefaultOutgoingChannel;
 
-        protected NetMessageType(INetId id, Type header, DeliveryMethod deliveryMethod, byte outgoingChannel)
+        protected NetMessageType(INetId id, Type header, DeliveryMethod defaultDeliveryMethod, byte defaultOutgoingChannel)
         {
             this.Id = id;
             this.Body = header;
-            this.DeliveryMethod = deliveryMethod;
-            this.OutgoingChannel = outgoingChannel;
+            this.DefaultDeliveryMethod = defaultDeliveryMethod;
+            this.DefaultOutgoingChannel = defaultOutgoingChannel;
         }
 
         public abstract INetIncomingMessage CreateIncoming();
@@ -38,10 +38,10 @@ namespace Guppy.Network
         public NetMessageType(
             INetId id, 
             Type body, 
-            DeliveryMethod deliveryMethod, 
-            byte outgoingChannel, 
+            DeliveryMethod defaultDeliveryMethod, 
+            byte defaultOutgoingChannel, 
             INetSerializerProvider serializers,
-            NetScope scope) : base(id, body, deliveryMethod, outgoingChannel)
+            NetScope scope) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
         {
             _scope = scope;
             _serializers = serializers;
