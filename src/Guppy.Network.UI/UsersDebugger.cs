@@ -1,6 +1,8 @@
 ﻿using Guppy.MonoGame;
 using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
+using Guppy.MonoGame.UI.Elements;
+using Guppy.MonoGame.UI.Extensions.Elements;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Providers;
@@ -15,74 +17,68 @@ namespace Guppy.Network.UI
     public class UsersDebugger : IImGuiDebugger
     {
         private IUserProvider _users;
-        private Num.Vector4 _textColor;
-        private ImFontPtr _font;
-        private ImFontPtr _fontHeader;
+        private Window _window;
+        private Dictionary<User, Element> _renderedUsers;
+        private ImGuiFont _fontHeader;
 
         public UsersDebugger(IUserProvider users)
         {
             _users = users;
-            _textColor = Color.White.ToNumericsVector4();
+            _window = new Window("Users");
+            _renderedUsers = new Dictionary<User, Element>();
+            _fontHeader = default!;
+
+            _users.OnUserConnected += this.HandleUserConnected;
         }
 
         public void Initialize(ImGuiBatch imGuiBatch)
         {
-            _fontHeader = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFontHeader].Ptr;
-            _font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont].Ptr;
+            _fontHeader = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFontHeader];
+
+            _window.AddStyleColor(ImGuiCol.Text, Color.White)
+                .AddStyleVar(ImGuiStyleVar.WindowMinSize, new Num.Vector2(400, 0))
+                .SetFont(imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont]);
         }
 
         public void Draw(GameTime gameTime)
         {
-            ImGui.PushStyleColor(ImGuiCol.Text, _textColor);
-            ImGui.PushFont(_font);
-
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Num.Vector2(400, 0));
-            if (ImGui.Begin($"Users ({_users.Count()})"))
-            {
-                foreach(User user in _users)
-                {
-                    if(ImGui.CollapsingHeader($"Id: {user.Id}, Claims: {user.Count()}{(_users.Current?.Id == user.Id ? " - Current User" : "")}"))
-                    {
-                        if(ImGui.BeginTable("claims", 4))
-                        {
-                            ImGui.PushFont(_fontHeader);
-                            ImGui.TableNextColumn();
-                            ImGui.Text("Key");
-                            ImGui.TableNextColumn();
-                            ImGui.Text("Value");
-                            ImGui.TableNextColumn();
-                            ImGui.Text("Type");
-                            ImGui.TableNextColumn();
-                            ImGui.Text("Accessibility");
-                            ImGui.PopFont();
-
-                            foreach (Claim claim in user)
-                            {
-                                ImGui.TableNextRow();
-                                ImGui.TableNextColumn();
-                                ImGui.TextWrapped($"{claim.Key}");
-                                ImGui.TableNextColumn();
-                                ImGui.TextWrapped($"{claim.GetValue()}");
-                                ImGui.TableNextColumn();
-                                ImGui.TextWrapped($"{claim.GetValue()?.GetType().Name ?? "null"}");
-                                ImGui.TableNextColumn();
-                                ImGui.TextWrapped($"{claim.Accessiblity}");
-                            }
-                        }
-                        ImGui.EndTable();
-                    }
-                }
-            }
-            ImGui.End();
-            ImGui.PopStyleVar();
-
-            ImGui.PopFont();
-            ImGui.PopStyleColor();
+            _window.Draw(gameTime);
         }
 
         public void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
+        }
+
+        private void HandleUserConnected(IUserProvider sender, User user)
+        {
+            _window.AddChild(() =>
+            {
+                var container = new CollapsingHeader($"Id: {user.Id} Claims: {user.Count()}");
+
+                container.AddChild(() =>
+                {
+                    var claims = new Table("claims", 4)
+                        .AddText("Key", t => t.SetFont(_fontHeader))
+                        .AddText("Value", t => t.SetFont(_fontHeader))
+                        .AddText("Type", t => t.SetFont(_fontHeader))
+                        .AddText("Accessability", t => t.SetFont(_fontHeader));
+
+                    foreach (Claim claim in user)
+                    {
+                        claims.AddTextWrapped(claim.Key)
+                            .AddTextWrapped(claim.GetValue()?.ToString() ?? string.Empty)
+                            .AddTextWrapped(claim.GetValue()?.GetType().Name ?? "null")
+                            .AddTextWrapped(claim.Accessiblity.ToString());
+                    }
+
+                    return claims;
+                });
+
+                _renderedUsers.Add(user, container);
+
+                return container;
+            });
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Guppy.MonoGame.UI.Loaders
             services.AddResource<TrueTypeFont>(ResourceConstants.DiagnosticsTTF, FileConstants.DiagnosticsTTF);
 
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
-            services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 24);
+            services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 20);
 
             services.AddScoped<ImGuiDebuggerService>()
                 .AddAliases(Alias.ManyFrom<ImGuiDebuggerService>(typeof(IGameComponent), typeof(IDebuggerService)));
