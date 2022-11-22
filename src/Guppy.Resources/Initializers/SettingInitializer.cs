@@ -4,13 +4,16 @@ using Guppy.Initializers;
 using Guppy.Loaders;
 using Guppy.Resources.Definitions;
 using Guppy.Resources.Providers;
-using Guppy.Resources.SettingSerializers;
+using Guppy.Resources.Serialization.Json;
+using Guppy.Resources.Serialization.Json.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using STJ = System.Text.Json;
 
 namespace Guppy.Resources.Initializers
 {
@@ -26,9 +29,8 @@ namespace Guppy.Resources.Initializers
             }
 
             services.AddSingleton<ISettingProvider, SettingProvider>()
-                    .AddSingleton<ISettingTypeSerializer, StringSettingSerializer>()
-                    .AddSingleton<ISettingTypeSerializer, Int32SettingSerializer>()
-                    .AddSingleton<ISettingTypeSerializer, TimeSpanSerializer>();
+                    .AddSingleton<IJsonSerializer, JsonSerializer>()
+                    .AddSingleton<JsonConverter>(new JsonStringEnumConverter(STJ.JsonNamingPolicy.CamelCase));
         }
     }
 }

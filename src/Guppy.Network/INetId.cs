@@ -9,11 +9,17 @@ namespace Guppy.Network
 {
     public interface INetId : IEquatable<INetId>
     {
+        static virtual INetId Zero => throw new NotImplementedException();
+        static virtual byte SizeInBytes => throw new NotImplementedException();
+
         void Write(NetDataWriter writer);
 
         INetId Next();
 
-        // static abstract INetId Read(NetDataReader reader);
+        static virtual INetId Read(NetDataReader reader)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public interface INetId<T> : INetId
@@ -21,8 +27,5 @@ namespace Guppy.Network
         T Value { get; }
 
         new INetId<T> Next();
-
-        // static abstract INetId<T> Read(NetDataReader reader);
-        // static abstract INetId<T> Create(T value);
     }
 }

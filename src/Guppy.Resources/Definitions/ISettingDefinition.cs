@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Resources.Serialization.Json;
 
 namespace Guppy.Resources.Definitions
 {
@@ -14,6 +15,6 @@ namespace Guppy.Resources.Definitions
         Type Type { get; }
         object DefaultValue { get; }
 
-        ISetting Build(IEnumerable<ISettingTypeSerializer> serializers);
+        ISetting Build(IJsonSerializer json);
     }
 }

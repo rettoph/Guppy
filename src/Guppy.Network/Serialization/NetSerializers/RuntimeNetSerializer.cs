@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.NetSerializers
+namespace Guppy.Network.Serialization.NetSerializers
 {
     internal sealed class RuntimeNetSerializer<T> : NetSerializer<T>
         where T : notnull

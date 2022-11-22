@@ -1,4 +1,5 @@
-﻿using LiteNetLib.Utils;
+﻿using Guppy.Resources.Attributes;
+using LiteNetLib.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,14 @@ namespace Guppy.Network
 {
     public static class NetId
     {
-        public static INetId Create<T>(T value)
+        public static INetId<T> Create<T>(T value)
         {
             if(typeof(T) == typeof(byte))
             {
                 return new NetId.Byte()
                 {
                     Value = Convert.ToByte(value)
-                };
+                } as INetId<T> ?? throw new Exception();
             }
 
             if (typeof(T) == typeof(ushort))
@@ -25,15 +26,18 @@ namespace Guppy.Network
                 return new NetId.UShort()
                 {
                     Value = Convert.ToUInt16(value)
-                };
+                } as INetId<T> ?? throw new Exception();
             }
 
             throw new ArgumentException();
         }
 
+        [PolymorphicJsonType(nameof(Byte))]
         public readonly struct Byte : INetId<byte>
         {
-            public static int SizeInBytes { get; } = 1;
+            public static INetId Zero { get; } = Create(0);
+
+            public static byte SizeInBytes { get; } = 1;
 
             public byte Value { get; init; }
 
@@ -42,7 +46,7 @@ namespace Guppy.Network
                 writer.Put(this.Value);
             }
 
-            public static INetId Read(NetDataReader reader)
+            public static INetId<byte> Read(NetDataReader reader)
             {
                 return NetId.Byte.Create(reader.GetByte());
             }
@@ -79,9 +83,12 @@ namespace Guppy.Network
             }
         }
 
+        [PolymorphicJsonType(nameof(UShort))]
         public readonly struct UShort : INetId<ushort>
         {
-            public static int SizeInBytes { get; } = 2;
+            public static INetId Zero { get; } = Create(0);
+
+            public static byte SizeInBytes { get; } = 2;
 
             public ushort Value { get; init; }
 

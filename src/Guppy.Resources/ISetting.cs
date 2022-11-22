@@ -12,13 +12,15 @@ namespace Guppy.Resources
         bool Exportable { get; }
         string[] Tags { get; }
         Type Type { get; }
-        ISettingTypeSerializer Serializer { get; }
+
+        void Import(string value);
+
+        string Export();
     }
 
     public interface ISetting<T> : ISetting
     {
         T Value { get; set; }
         T DefaultValue { get; }
-        new ISettingSerializer<T> Serializer { get; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Guppy.Resources.Definitions;
+using Guppy.Resources.Serialization.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace Guppy.Resources.Providers
 {
     internal sealed class SettingProvider : ISettingProvider
     {
-        private Dictionary<string, ISetting> _settings;
+        private readonly Dictionary<string, ISetting> _settings;
 
-        public SettingProvider(IEnumerable<ISettingDefinition> settings, IEnumerable<ISettingTypeSerializer> serializers)
+        public SettingProvider(IEnumerable<ISettingDefinition> settings, IJsonSerializer json)
         {
-            _settings = settings.GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Build(serializers));
+            _settings = settings.GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Build(json));
         }
 
         public ISetting<T> Get<T>()

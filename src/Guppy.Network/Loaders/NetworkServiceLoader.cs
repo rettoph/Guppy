@@ -7,10 +7,12 @@ using Guppy.Network.Filters;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
+using Guppy.Network.Serialization.Json;
 using Guppy.Resources;
-using Guppy.Resources.SettingSerializers;
+using Guppy.Resources.Serialization.Json.Converters;
 using LiteNetLib;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 namespace Guppy.Network.Loaders
 {
@@ -43,13 +45,18 @@ namespace Guppy.Network.Loaders
                 })
                 .AddFaceted<Peer, ClientPeer>(ServiceLifetime.Singleton)
                 .AddFaceted<Peer, ServerPeer>(ServiceLifetime.Singleton)
-                .AddSingleton<ISettingTypeSerializer, EnumSettingSerializer<NetAuthorization>>()
                 .AddSetting(NetAuthorization.Master, false)
                 .AddScoped<ClientNetOutgoingMessageFactory>()
                 .AddScoped<ServerNetOutgoingMessageFactory>()
                 .AddAliases(Alias.ManyFor<INetOutgoingMessageFactory>(typeof(ClientNetOutgoingMessageFactory), typeof(ServerNetOutgoingMessageFactory)))
                 .AddFilter(new PeerFilter<ClientPeer, ClientNetOutgoingMessageFactory>())
                 .AddFilter(new PeerFilter<ServerPeer, ServerNetOutgoingMessageFactory>());
+
+            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<INetId>>()
+                    .AddSingleton<JsonConverter, ByteNetIdJsonConverter>()
+                    .AddSingleton<JsonConverter, UShortNetIdJsonConverter>()
+                    .AddSingleton<JsonConverter, ClaimJsonConverter>()
+                    .AddSingleton<JsonConverter, ClaimTypeJsonConverter>();
         }
     }
 }

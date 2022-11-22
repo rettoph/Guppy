@@ -1,6 +1,7 @@
 ﻿using Guppy.Resources.Constants;
 using Guppy.Resources.Definitions;
 using Guppy.Resources.Models;
+using Guppy.Resources.Serialization.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,7 @@ namespace Guppy.Resources.Providers
         private readonly ISetting<string> _lang;
         private Dictionary<string, Dictionary<string, Resource<string>>> _strings;
 
-        public int Order => 0;
-
-        public ResourcePackStringProvider(ISettingProvider settings)
+        public ResourcePackStringProvider(ISettingProvider settings, IJsonSerializer serializer)
         {
             _settings = settings;
 

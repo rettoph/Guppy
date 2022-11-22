@@ -3,7 +3,7 @@ using Guppy.Network;
 using Guppy.Network.Definitions;
 using Guppy.Network.Definitions.NetMessageTypes;
 using Guppy.Network.Delegates;
-using Guppy.Network.NetSerializers;
+using Guppy.Network.Serialization.NetSerializers;
 using LiteNetLib;
 using System;
 using System.Collections.Generic;

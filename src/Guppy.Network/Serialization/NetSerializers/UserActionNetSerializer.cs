@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Network.NetSerializers
+namespace Guppy.Network.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class UserActionNetSerializer : NetSerializer<UserAction>

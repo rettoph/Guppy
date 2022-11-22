@@ -18,8 +18,6 @@ namespace Guppy.MonoGame.Providers.ResourcePackTypeProviders
         private readonly JsonSerializerOptions _jsonOptions;
         private Dictionary<string, Resource<Color>> _colors;
 
-        public int Order => 0;
-
         public ResourcePackColorProvider(JsonSerializerOptions jsonOptions)
         {
             _jsonOptions = jsonOptions;
