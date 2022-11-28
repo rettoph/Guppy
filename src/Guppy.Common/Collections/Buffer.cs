@@ -21,15 +21,25 @@ namespace Guppy.Common.Collections
 
         public T this[int index] => _buffer[index];
 
+        public T[] Items => _buffer;
+
         public Buffer(int length)
         {
             _buffer = new T[length];
             _position = 0;
         }
 
-        public void Add(T item)
+        public void Add(T value)
         {
-            _buffer[_position++ % this.Length] = item;
+            _buffer[_position++ % this.Length] = value;
+        }
+
+        public void Add(T value, out T old)
+        {
+            int index = _position++ % this.Length;
+
+            old = _buffer[index];
+            _buffer[index] = value;
         }
 
         public void AddRange(IEnumerable<T> items)
