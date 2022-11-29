@@ -8,10 +8,10 @@ namespace Guppy.MonoGame.UI
 {
     public interface IImGuiDebugger : IDebugger
     {
-        string Label { get; }
-
-        bool Open { get; set; }
+        string ButtonLabel { get; }
 
         void Initialize(ImGuiBatch imGuiBatch);
+
+        void Toggle();
     }
 }

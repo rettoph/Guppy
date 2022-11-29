@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using Guppy.MonoGame.UI.Messages.Inputs;
 using Guppy.Common;
 using Microsoft.Xna.Framework;
+using Guppy.MonoGame.UI.Debuggers;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -42,6 +43,9 @@ namespace Guppy.MonoGame.UI.Loaders
 
             services.AddScoped<ImGuiTerminalService>()
                 .AddAliases(Alias.ManyFrom<ImGuiTerminalService>(typeof(IGameComponent), typeof(ITerminalService)));
+
+            services.AddScoped<FpsDebugger>()
+                .AddAlias<IDebugger, FpsDebugger>();
 
             services.AddTransient<ImGuiBatch>();
 

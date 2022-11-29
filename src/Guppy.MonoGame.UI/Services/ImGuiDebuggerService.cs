@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.MonoGame.Services;
+using Guppy.MonoGame.UI.Collections;
 using Guppy.MonoGame.UI.Constants;
 using ImGuiNET;
 using ImPlotNET;
@@ -17,6 +18,8 @@ namespace Guppy.MonoGame.UI.Services
 {
     internal sealed class ImGuiDebuggerService : DefaultDebuggerService
     {
+        
+
         private ImGuiBatch _imGuiBatch;
         private IntPtr _context;
         private ImFontPtr _font;
@@ -25,25 +28,17 @@ namespace Guppy.MonoGame.UI.Services
         private Num.Vector2 _menuPosition = new Num.Vector2(0, 0);
         private Num.Vector2 _menuSize = new Num.Vector2(0, 0);
         private Num.Vector2 _menuSpacing = new Num.Vector2(12, 12);
-        private IList<IImGuiDebugger> _imGuiDebuggers;
+        private ImGuiDebuggerCollection _imGuiDebuggers;
         private GameWindow _window;
 
-        public ImGuiDebuggerService(GameWindow window, ImGuiBatch imGuiBatch, IFiltered<IDebugger> debuggers) : base(debuggers)
+        public ImGuiDebuggerService(GameWindow window, ImGuiBatch imGuiBatch, IFiltered<IDebugger> debuggers) : base(debuggers, new ImGuiDebuggerCollection())
         {
             _imGuiBatch = imGuiBatch;
             _context = ImPlot.CreateContext();
-            _imGuiDebuggers = new List<IImGuiDebugger>();
             _font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont].Ptr;
             _window = window;
-
-            foreach (IDebugger  debugger in this.debuggers)
-            {
-                if(debugger is IImGuiDebugger imGuiDebugger)
-                {
-                    imGuiDebugger.Initialize(_imGuiBatch);
-                    _imGuiDebuggers.Add(imGuiDebugger);
-                }
-            }
+            _imGuiDebuggers = this.debuggers.GetManagedCollection<ImGuiDebuggerCollection>();
+            _imGuiDebuggers.Initialize(_imGuiBatch);
 
             this.CleanMenuDimensions();
 
@@ -74,29 +69,16 @@ namespace Guppy.MonoGame.UI.Services
             {
                 foreach(IImGuiDebugger debugger in _imGuiDebuggers)
                 {
-                    if(ImGui.Button(debugger.Label, _buttonSize))
+                    if(ImGui.Button(debugger.ButtonLabel, _buttonSize))
                     {
-                        debugger.Open = !debugger.Open;
+                        debugger.Toggle();
                     }
                 }
             }
             ImGui.End();
             ImGui.PopStyleVar(2);
 
-            foreach (IDebugger debugger in this.debuggers)
-            {
-                if(debugger is IImGuiDebugger imGuiDebugger)
-                {
-                    if(imGuiDebugger.Open)
-                    {
-                        imGuiDebugger.Draw(gameTime);
-                    }
-                }
-                else
-                {
-                    debugger.Draw(gameTime);
-                }
-            }
+            base.Draw(gameTime);
 
             ImGui.PopFont();
             ImGui.PopStyleColor();

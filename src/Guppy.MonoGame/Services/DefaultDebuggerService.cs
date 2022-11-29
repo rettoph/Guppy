@@ -1,5 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Collections;
+using Guppy.MonoGame.Collections;
 using Guppy.MonoGame.Messages.Inputs;
 using Microsoft.Xna.Framework;
 using System;
@@ -12,31 +14,36 @@ namespace Guppy.MonoGame.Services
 {
     internal class DefaultDebuggerService : BaseWindowService, IDebuggerService
     {
-        private IDebugger[] _debuggers;
+        private DrawableCollection _drawables;
+        private UpdateableCollection _updateables;
 
-        protected IDebugger[] debuggers => _debuggers;
+        protected readonly CollectionManager<IDebugger> debuggers;
 
         public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Debugger;
 
-        public DefaultDebuggerService(IFiltered<IDebugger> debuggers) : base(false)
+        public DefaultDebuggerService(IFiltered<IDebugger> debuggers) : this(debuggers, Array.Empty<IManagedCollection>())
         {
-            _debuggers = debuggers.Items.ToArray();
+        }
+        protected DefaultDebuggerService(IFiltered<IDebugger> debuggers, params IManagedCollection[] collections) : base(false)
+        {
+            this.debuggers = new CollectionManager<IDebugger>(debuggers.Items, collections.Concat(new IManagedCollection[]
+            {
+                new DrawableCollection(),
+                new UpdateableCollection()
+            }).ToArray());
+
+            _drawables = this.debuggers.GetManagedCollection<DrawableCollection>();
+            _updateables = this.debuggers.GetManagedCollection<UpdateableCollection>();
         }
 
         public override void Update(GameTime gameTime)
         {
-            foreach (IDebugger debugger in _debuggers)
-            {
-                debugger.Update(gameTime);
-            }
+            _updateables.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            foreach (IDebugger debugger in _debuggers)
-            {
-                debugger.Draw(gameTime);
-            }
+            _drawables.Draw(gameTime);
         }
     }
 }

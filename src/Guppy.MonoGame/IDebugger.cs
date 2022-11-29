@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame
 {
-    public interface IDebugger
+    public interface IDebugger  : IDrawable, IUpdateable
     {
-        void Update(GameTime gameTime);
-        void Draw(GameTime gameTime);
     }
 }

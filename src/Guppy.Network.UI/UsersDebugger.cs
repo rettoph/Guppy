@@ -1,6 +1,7 @@
 ﻿using Guppy.MonoGame;
 using Guppy.MonoGame.UI;
 using Guppy.MonoGame.UI.Constants;
+using Guppy.MonoGame.UI.Debuggers;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Providers;
@@ -12,26 +13,20 @@ using Num = System.Numerics;
 
 namespace Guppy.Network.UI
 {
-    public class UsersDebugger : IImGuiDebugger
+    public class UsersDebugger : SimpleDebugger, IImGuiDebugger
     {
         private IUserProvider _users;
         private ImFontPtr _fontHeader;
-        private bool _open;
 
-        public string Label { get; }
-
-        public bool Open
-        {
-            get => _open;
-            set => _open = value;
-        }
+        public string ButtonLabel { get; }
 
         public UsersDebugger(IUserProvider users)
         {
             _users = users;
-            _open = false;
+            this.IsEnabled = false;
+            this.Visible = false;
 
-            this.Label = "Users";
+            this.ButtonLabel = "Users";
         }
 
         public void Initialize(ImGuiBatch imGuiBatch)
@@ -39,10 +34,10 @@ namespace Guppy.Network.UI
             _fontHeader = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFontHeader].Ptr;
         }
 
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Num.Vector2(400, 0));
-            if (ImGui.Begin($"Users ({_users.Count()})", ref _open))
+            if (ImGui.Begin($"Users ({_users.Count()})"))
             {
                 foreach (User user in _users)
                 {
@@ -83,9 +78,14 @@ namespace Guppy.Network.UI
             ImGui.PopStyleVar();
         }
 
-        public void Update(GameTime gameTime)
+        public void Toggle()
         {
-            // throw new NotImplementedException();
+            this.Visible = !this.Visible;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }
