@@ -1,5 +1,5 @@
 ﻿using Guppy.MonoGame.Definitions;
-using Guppy.MonoGame.UI.Messages.Inputs;
+using Guppy.MonoGame.UI.Messages;
 using ImGuiNET;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -15,18 +15,18 @@ namespace Guppy.MonoGame.UI.Definitions.CommandDefinitions
 {
     internal sealed class UI : CommandDefinition
     {
-        internal sealed class Key : CommandDefinition<ImGuiKeyStateInput>
+        internal sealed class Key : CommandDefinition<ImGuiKeyEvent>
         {
             public override Type? Parent => CommandDefinition.Guppy;
 
-            public Option<ImGuiKey> Which => new Option<ImGuiKey>("--which");
-            public Option<ButtonState> State => new Option<ButtonState>("--state");
+            public Option<ImGuiKey> Which { get; } = new Option<ImGuiKey>("--which");
+            public Option<bool> Down { get; } = new Option<bool>("--down");
 
-            public override ImGuiKeyStateInput BindData(BindingContext context)
+            public override ImGuiKeyEvent BindData(BindingContext context)
             {
-                return new ImGuiKeyStateInput(
+                return new ImGuiKeyEvent(
                     key: context.ParseResult.GetValueForOption(this.Which),
-                    state: context.ParseResult.GetValueForOption(this.State));
+                    down: context.ParseResult.GetValueForOption(this.Down));
             }
         }
     }

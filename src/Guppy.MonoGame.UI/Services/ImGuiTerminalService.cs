@@ -32,8 +32,6 @@ namespace Guppy.MonoGame.UI.Services
         private string _input;
         private bool _scrollLocked;
 
-
-
         public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Terminal;
 
         public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, Lazy<ICommandService> commands) : base(false)
@@ -118,7 +116,7 @@ namespace Guppy.MonoGame.UI.Services
                 _focusInput = false;
             }
 
-            if (ImGui.InputText("input", ref _input, 200, ImGuiInputTextFlags.EnterReturnsTrue))
+            if (ImGui.InputText("terminal-input", ref _input, 200, ImGuiInputTextFlags.EnterReturnsTrue))
             {
                 _focusInput = true;
 

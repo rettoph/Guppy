@@ -10,8 +10,8 @@ namespace Guppy.Common.Helpers
     public static class NumberHelper<T>
         where T : INumber<T>
     {
-        public static readonly T Two = Get(2);
-        public static readonly T Three = Get(3);
+        public static readonly T Two = T.CreateChecked(2);
+        public static readonly T Three = T.CreateChecked(3);
 
         public static T SmoothStep(T lower, T upper, T amount)
         {
@@ -32,41 +32,17 @@ namespace Guppy.Common.Helpers
             return amount * amount * (Three - Two * amount);
         }
 
-        public static T Min(T v1, T v2)
+        public static T Lerp<TAmount>(T lower, T upper, T amount)
         {
-            if(v1 < v2)
-            {
-                return v1;
-            }
-
-            return v2;
+            return lower + (upper - lower) * amount;
         }
 
-        public static T Max(T v1, T v2)
+        public static T Lerp<TAmount>(T lower, T upper, TAmount amount)
+            where TAmount : INumber<TAmount>
         {
-            if (v1 > v2)
-            {
-                return v1;
-            }
+            TAmount result = TAmount.CreateSaturating(lower + (upper - lower)) * amount;
 
-            return v2;
-        }
-
-        private static T Get(int value)
-        {
-            if (value < 0)
-            {
-                return T.Zero;
-            }
-
-            T result = T.Zero;
-
-            for (int i = 0; i < value; i++)
-            {
-                result += T.One;
-            }
-
-            return result;
+            return T.CreateChecked(result);
         }
     }
 }

@@ -1,28 +1,33 @@
-﻿using Guppy.MonoGame.Services;
+﻿using Guppy.Common;
 using Guppy.MonoGame.UI.Definitions;
+using Guppy.MonoGame.UI.Messages;
 using Guppy.MonoGame.UI.Providers;
+using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Runtime.InteropServices;
 using XnaColor = Microsoft.Xna.Framework.Color;
-using Guppy.Resources.Providers;
 
 namespace Guppy.MonoGame.UI
 {
     /// <summary>
     /// ImGui renderer for use with XNA-likes (FNA & MonoGame)
     /// </summary>
-    public sealed class ImGuiBatch
+    public sealed class ImGuiBatch : ISubscriber<ImGuiKeyEvent>, ISubscriber<ImGuiMouseButtonEvent>, IDisposable
     {
-        private GraphicsDevice _graphics;
-        private GameWindow _window;
-        private IResourceProvider _resources;
+        public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
+
+        private readonly GraphicsDevice _graphics;
+        private readonly GameWindow _window;
+        private readonly IResourceProvider _resources;
+        private readonly IBus _bus;
+        private DateTime _begin;
 
         // Graphics
-        private BasicEffect _effect;
-        private RasterizerState _rasterizerState;
+        private readonly BasicEffect _effect;
+        private readonly RasterizerState _rasterizerState;
 
         private byte[] _vertexData;
         private VertexBuffer _vertexBuffer;
@@ -34,21 +39,41 @@ namespace Guppy.MonoGame.UI
 
         // Textures
         private IntPtr? _fontTextureId;
-        private Dictionary<IntPtr, Texture2D> _loadedTextures;
+        private readonly Dictionary<IntPtr, Texture2D> _loadedTextures;
 
         private int _textureId;
 
         // Input
         private int _scrollWheelValue;
-        private List<int> _keys = new List<int>();
+        private readonly List<int> _keys = new();
+        private readonly Queue<char> _inputs;
+        private readonly Queue<ImGuiKeyEvent> _keyEvents;
+        private readonly Queue<ImGuiMouseButtonEvent> _mouseButtonEvents;
 
         public readonly IntPtr Context;
         public readonly ImGuiIOPtr IO;
         public readonly IImGuiFontProvider Fonts;
 
+        public bool Stale
+        {
+            get => DateTime.Now - _begin > StaleTime;
+            set
+            {
+                if(value)
+                {
+                    _begin = DateTime.MinValue;
+                }
+                else
+                {
+                    _begin = DateTime.Now;
+                }
+            }
+        }
+
         public ImGuiBatch(
             GameWindow window, 
             GraphicsDevice graphics,
+            IBus bus,
             IResourceProvider resources,
             IEnumerable<IImGuiFontDefinition> fonts)
         {
@@ -57,9 +82,14 @@ namespace Guppy.MonoGame.UI
             this.IO = ImGui.GetIO();
             this.Fonts = new ImGuiFontProvider(resources, this.IO, fonts);
 
+            _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
+            _keyEvents = new Queue<ImGuiKeyEvent>();
+            _inputs = new Queue<char>();
+            _begin = DateTime.MinValue;
             _window = window;
             _graphics = graphics;
             _resources = resources;
+            _bus = bus;
 
             _loadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -82,6 +112,13 @@ namespace Guppy.MonoGame.UI
 
             this.SetupInput();
             this.RebuildFontAtlas();
+        }
+
+        public void Dispose()
+        {
+            _window.TextInput -= this.HandleTextInput;
+            _bus.Unsubscribe<ImGuiKeyEvent>(this);
+            _bus.Unsubscribe<ImGuiMouseButtonEvent>(this);
         }
 
         #region ImGuiRenderer
@@ -136,8 +173,17 @@ namespace Guppy.MonoGame.UI
         /// <summary>
         /// Sets up ImGui for a new frame, should be called at frame start
         /// </summary>
-        public void Begin(GameTime gameTime, bool updateIO = true)
+        public void Begin(GameTime gameTime)
         {
+            if(this.Stale)
+            {
+                _inputs.Clear();
+                _keyEvents.Clear();
+                _mouseButtonEvents.Clear();
+            }
+
+            _begin = DateTime.Now;
+
             ImGui.SetCurrentContext(this.Context);
 
             this.IO.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -166,44 +212,10 @@ namespace Guppy.MonoGame.UI
         /// </summary>
         private void SetupInput()
         {
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Tab] = (int)Keys.Tab);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.LeftArrow] = (int)Keys.Left);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.RightArrow] = (int)Keys.Right);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.UpArrow] = (int)Keys.Up);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.DownArrow] = (int)Keys.Down);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.PageUp] = (int)Keys.PageUp);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.PageDown] = (int)Keys.PageDown);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Home] = (int)Keys.Home);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.End] = (int)Keys.End);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Delete] = (int)Keys.Delete);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Backspace] = (int)Keys.Back);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Enter] = (int)Keys.Enter);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Escape] = (int)Keys.Escape);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Space] = (int)Keys.Space);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.A] = (int)Keys.A);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.C] = (int)Keys.C);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.V] = (int)Keys.V);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.X] = (int)Keys.X);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Y] = (int)Keys.Y);
-            _keys.Add(this.IO.KeyMap[(int)ImGuiKey.Z] = (int)Keys.Z);
+            _bus.Subscribe<ImGuiKeyEvent>(this);
+            _bus.Subscribe<ImGuiMouseButtonEvent>(this);
 
-            // MonoGame-specific //////////////////////
-            _window.TextInput += (s, a) =>
-            {
-                if (a.Character == '\t') return;
-
-                this.IO.AddInputCharacter(a.Character);
-            };
-            ///////////////////////////////////////////
-
-            // FNA-specific ///////////////////////////
-            //TextInputEXT.TextInput += c =>
-            //{
-            //    if (c == '\t') return;
-
-            //    ImGui.GetIO().AddInputCharacter(c);
-            //};
-            ///////////////////////////////////////////
+            _window.TextInput += this.HandleTextInput;
 
             //_io.Fonts.AddFontDefault();
         }
@@ -228,27 +240,27 @@ namespace Guppy.MonoGame.UI
         /// </summary>
         private void UpdateInput()
         {
-            var mouse = Mouse.GetState();
-            var keyboard = Keyboard.GetState();
-
-            for (int i = 0; i < _keys.Count; i++)
+            while (_inputs.TryDequeue(out var input))
             {
-                this.IO.KeysDown[_keys[i]] = keyboard.IsKeyDown((Keys)_keys[i]);
+                this.IO.AddInputCharacter(input);
             }
 
-            this.IO.KeyShift = keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift);
-            this.IO.KeyCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
-            this.IO.KeyAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
-            this.IO.KeySuper = keyboard.IsKeyDown(Keys.LeftWindows) || keyboard.IsKeyDown(Keys.RightWindows);
+            while (_keyEvents.TryDequeue(out var keyEvent))
+            {
+                this.IO.AddKeyEvent(keyEvent.Key, keyEvent.Down);
+            }
+
+            while (_mouseButtonEvents.TryDequeue(out var mouseButtonEvent))
+            {
+                this.IO.AddMouseButtonEvent(mouseButtonEvent.Button, mouseButtonEvent.Down);
+            }
+
+            var mouse = Mouse.GetState();
 
             this.IO.DisplaySize = new System.Numerics.Vector2(_graphics.PresentationParameters.BackBufferWidth, _graphics.PresentationParameters.BackBufferHeight);
             this.IO.DisplayFramebufferScale = new System.Numerics.Vector2(1f, 1f);
 
             this.IO.MousePos = new System.Numerics.Vector2(mouse.X, mouse.Y);
-
-            this.IO.MouseDown[0] = mouse.LeftButton == ButtonState.Pressed;
-            this.IO.MouseDown[1] = mouse.RightButton == ButtonState.Pressed;
-            this.IO.MouseDown[2] = mouse.MiddleButton == ButtonState.Pressed;
 
             var scrollDelta = mouse.ScrollWheelValue - _scrollWheelValue;
             this.IO.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
@@ -396,5 +408,40 @@ namespace Guppy.MonoGame.UI
         }
 
         #endregion Internals
+
+        public void Process(in ImGuiKeyEvent message)
+        {
+            if(this.Stale)
+            {
+                return;
+            }
+
+            _keyEvents.Enqueue(message);
+        }
+
+        public void Process(in ImGuiMouseButtonEvent message)
+        {
+            if (this.Stale)
+            {
+                return;
+            }
+
+            _mouseButtonEvents.Enqueue(message);
+        }
+
+        private void HandleTextInput(object? sender, TextInputEventArgs e)
+        {
+            if (this.Stale)
+            {
+                return;
+            }
+
+            if (e.Character == '\t')
+            {
+                return;
+            }
+
+            _inputs.Enqueue(e.Character);
+        }
     }
 }

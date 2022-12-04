@@ -15,10 +15,11 @@ using Guppy.MonoGame.UI.Providers.ResourcePackTypeProviders;
 using System.Reflection;
 using Guppy.Common.Helpers;
 using System.Runtime.InteropServices;
-using Guppy.MonoGame.UI.Messages.Inputs;
+using Guppy.MonoGame.UI.Messages;
 using Guppy.Common;
 using Microsoft.Xna.Framework;
 using Guppy.MonoGame.UI.Debuggers;
+using Guppy.MonoGame.Enums;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -51,37 +52,61 @@ namespace Guppy.MonoGame.UI.Loaders
 
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();
 
-            AddImGuiInputMap(services, InputConstants.UI_Tab, Keys.Tab, ImGuiKey.Tab);
-            AddImGuiInputMap(services, InputConstants.UI_LeftArrow, Keys.Left, ImGuiKey.LeftArrow);
-            AddImGuiInputMap(services, InputConstants.UI_RightArrow, Keys.Right, ImGuiKey.RightArrow);
-            AddImGuiInputMap(services, InputConstants.UI_UpArrow, Keys.Up, ImGuiKey.UpArrow);
-            AddImGuiInputMap(services, InputConstants.UI_DownArrow, Keys.Down, ImGuiKey.DownArrow);
-            AddImGuiInputMap(services, InputConstants.UI_PageUp, Keys.PageUp, ImGuiKey.PageUp);
-            AddImGuiInputMap(services, InputConstants.UI_PageDown, Keys.PageDown, ImGuiKey.PageDown);
-            AddImGuiInputMap(services, InputConstants.UI_Home, Keys.Home, ImGuiKey.Home);
-            AddImGuiInputMap(services, InputConstants.UI_End, Keys.End, ImGuiKey.End);
-            AddImGuiInputMap(services, InputConstants.UI_Delete, Keys.Delete, ImGuiKey.Delete);
-            AddImGuiInputMap(services, InputConstants.UI_Backspace, Keys.Back, ImGuiKey.Backspace);
-            AddImGuiInputMap(services, InputConstants.UI_Enter, Keys.Enter, ImGuiKey.Enter);
-            AddImGuiInputMap(services, InputConstants.UI_Escape, Keys.Escape, ImGuiKey.Escape);
-            AddImGuiInputMap(services, InputConstants.UI_Space, Keys.Space, ImGuiKey.Space);
-            AddImGuiInputMap(services, InputConstants.UI_A, Keys.A, ImGuiKey.A);
-            AddImGuiInputMap(services, InputConstants.UI_C, Keys.C, ImGuiKey.C);
-            AddImGuiInputMap(services, InputConstants.UI_V, Keys.V, ImGuiKey.V);
-            AddImGuiInputMap(services, InputConstants.UI_X, Keys.X, ImGuiKey.X);
-            AddImGuiInputMap(services, InputConstants.UI_Y, Keys.Y, ImGuiKey.Y);
-            AddImGuiInputMap(services, InputConstants.UI_Z, Keys.Z, ImGuiKey.Z);
+            AddImGuiKeyEvent(services, InputConstants.UI_Tab, Keys.Tab, ImGuiKey.Tab);
+            AddImGuiKeyEvent(services, InputConstants.UI_LeftArrow, Keys.Left, ImGuiKey.LeftArrow);
+            AddImGuiKeyEvent(services, InputConstants.UI_RightArrow, Keys.Right, ImGuiKey.RightArrow);
+            AddImGuiKeyEvent(services, InputConstants.UI_UpArrow, Keys.Up, ImGuiKey.UpArrow);
+            AddImGuiKeyEvent(services, InputConstants.UI_DownArrow, Keys.Down, ImGuiKey.DownArrow);
+            AddImGuiKeyEvent(services, InputConstants.UI_PageUp, Keys.PageUp, ImGuiKey.PageUp);
+            AddImGuiKeyEvent(services, InputConstants.UI_PageDown, Keys.PageDown, ImGuiKey.PageDown);
+            AddImGuiKeyEvent(services, InputConstants.UI_Home, Keys.Home, ImGuiKey.Home);
+            AddImGuiKeyEvent(services, InputConstants.UI_End, Keys.End, ImGuiKey.End);
+            AddImGuiKeyEvent(services, InputConstants.UI_Delete, Keys.Delete, ImGuiKey.Delete);
+            AddImGuiKeyEvent(services, InputConstants.UI_Backspace, Keys.Back, ImGuiKey.Backspace);
+            AddImGuiKeyEvent(services, InputConstants.UI_Enter, Keys.Enter, ImGuiKey.Enter);
+            AddImGuiKeyEvent(services, InputConstants.UI_Escape, Keys.Escape, ImGuiKey.Escape);
+            AddImGuiKeyEvent(services, InputConstants.UI_Space, Keys.Space, ImGuiKey.Space);
+            AddImGuiKeyEvent(services, InputConstants.UI_A, Keys.A, ImGuiKey.A);
+            AddImGuiKeyEvent(services, InputConstants.UI_C, Keys.C, ImGuiKey.C);
+            AddImGuiKeyEvent(services, InputConstants.UI_V, Keys.V, ImGuiKey.V);
+            AddImGuiKeyEvent(services, InputConstants.UI_X, Keys.X, ImGuiKey.X);
+            AddImGuiKeyEvent(services, InputConstants.UI_Y, Keys.Y, ImGuiKey.Y);
+            AddImGuiKeyEvent(services, InputConstants.UI_Z, Keys.Z, ImGuiKey.Z);
+            AddImGuiKeyEvent(services, InputConstants.UI_LeftShift, Keys.LeftShift, ImGuiKey.LeftShift);
+            AddImGuiKeyEvent(services, InputConstants.UI_RightShift, Keys.RightShift, ImGuiKey.RightShift);
+            AddImGuiKeyEvent(services, InputConstants.UI_LeftCtrl, Keys.LeftControl, ImGuiKey.LeftCtrl);
+            AddImGuiKeyEvent(services, InputConstants.UI_RightCtrl, Keys.RightControl, ImGuiKey.RightCtrl);
+            AddImGuiKeyEvent(services, InputConstants.UI_LeftAlt, Keys.LeftAlt, ImGuiKey.LeftAlt);
+            AddImGuiKeyEvent(services, InputConstants.UI_RightAlt, Keys.RightAlt, ImGuiKey.RightAlt);
+            AddImGuiKeyEvent(services, InputConstants.UI_LeftSuper, Keys.LeftWindows, ImGuiKey.LeftSuper);
+            AddImGuiKeyEvent(services, InputConstants.UI_RightSuper, Keys.RightWindows, ImGuiKey.RightSuper);
+
+            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton01, MouseButtons.Left, 0);
+            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton02, MouseButtons.Middle, 1);
+            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton03, MouseButtons.Right, 2);
         }
 
-        private static void AddImGuiInputMap(IServiceCollection services, string key, Keys defaultKey, ImGuiKey mapping)
+        private static void AddImGuiKeyEvent(IServiceCollection services, string key, Keys defaultKey, ImGuiKey mapping)
         {
             services.AddInput(
                 key, 
                 defaultKey,
                 new[]
                 {
-                    (ButtonState.Pressed, new ImGuiKeyStateInput(mapping, ButtonState.Pressed)),
-                    (ButtonState.Released, new ImGuiKeyStateInput(mapping, ButtonState.Released))
+                    (ButtonState.Pressed, new ImGuiKeyEvent(mapping, true)),
+                    (ButtonState.Released, new ImGuiKeyEvent(mapping, false))
+                });
+        }
+
+        private static void AddImGuiMouseButtonEvent(IServiceCollection services, string key, MouseButtons defaultButton, int mapping)
+        {
+            services.AddInput(
+                key,
+                defaultButton,
+                new[]
+                {
+                    (ButtonState.Pressed, new ImGuiMouseButtonEvent(mapping, true)),
+                    (ButtonState.Released, new ImGuiMouseButtonEvent(mapping, false))
                 });
         }
     }

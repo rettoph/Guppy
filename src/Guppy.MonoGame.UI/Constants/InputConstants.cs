@@ -31,5 +31,17 @@ namespace Guppy.MonoGame.UI.Constants
         public const string UI_X           = "ui_cut";
         public const string UI_Y           = "ui_redo";
         public const string UI_Z           = "ui_undo";
+        public const string UI_LeftShift   = "ui_left_shift";
+        public const string UI_RightShift  = "ui_right_shift";
+        public const string UI_LeftCtrl    = "ui_left_ctrl";
+        public const string UI_RightCtrl   = "ui_right_ctrl";
+        public const string UI_LeftAlt     = "ui_left_alt";
+        public const string UI_RightAlt    = "ui_right_alt";
+        public const string UI_LeftSuper   = "ui_left_super";
+        public const string UI_RightSuper  = "ui_right_super";
+
+        public const string UI_MouseButton01 = "ui_mouse_button_01";
+        public const string UI_MouseButton02 = "ui_mouse_button_02";
+        public const string UI_MouseButton03 = "ui_mouse_button_03";
     }
 }

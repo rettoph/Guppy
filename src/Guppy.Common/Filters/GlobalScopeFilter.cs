@@ -23,9 +23,9 @@ namespace Guppy.Filters
         }
     }
 
-    public class SingletonFilter<TImplementation> : GlobalScopeFilter
+    public class GlobalScopeFilter<TImplementation> : GlobalScopeFilter
     {
-        public SingletonFilter() : base(typeof(TImplementation))
+        public GlobalScopeFilter() : base(typeof(TImplementation))
         {
         }
     }
