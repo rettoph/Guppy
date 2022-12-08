@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.Extensions;
+using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -24,11 +25,12 @@ namespace Guppy.Common.Implementations
         public Guid Id { get; } = Guid.NewGuid();
 
         public Bus(
+            ILogger log,
             IFiltered<ISubscriber> subscribers,
             IEnumerable<BusConfiguration> config)
         {
             _subscribers = subscribers;
-            _broker = new Broker();
+            _broker = new Broker(log);
 
             _queues = config.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()

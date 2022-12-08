@@ -15,6 +15,7 @@ using Guppy.Resources;
 using Guppy.Resources.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -54,12 +55,13 @@ namespace Guppy.Network
         public event OnChangedEventDelegate<NetScope, NetState>? OnStateChanged;
 
         public NetScope(
+            ILogger log,
             ISettingProvider settings, 
             IUserProvider users,
             IBus bus,
             INetSerializerProvider serializers,
             IFiltered<INetOutgoingMessageFactory> factories,
-            IEnumerable<NetMessageTypeDefinition> definitions)
+            IEnumerable<NetMessageTypeDefinition> definitions) : base(log)
         {
             _state = NetState.Stopped;
             _users = users;

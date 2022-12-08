@@ -51,6 +51,9 @@ namespace Guppy.Network
             _recipients = new List<NetPeer>();
             _writer = new NetDataWriter();
 
+            _outgoingChannel = this.Type.DefaultOutgoingChannel;
+            _deliveryMethod = this.Type.DefaultDeliveryMethod;
+
             _writer.Put(_scope.id);
             _type.Id.Write(_writer);
         }

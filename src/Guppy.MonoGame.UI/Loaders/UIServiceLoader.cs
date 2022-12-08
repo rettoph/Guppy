@@ -20,6 +20,8 @@ using Guppy.Common;
 using Microsoft.Xna.Framework;
 using Guppy.MonoGame.UI.Debuggers;
 using Guppy.MonoGame.Enums;
+using Guppy.MonoGame.Constants;
+using InputConstants = Guppy.MonoGame.UI.Constants.InputConstants;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
