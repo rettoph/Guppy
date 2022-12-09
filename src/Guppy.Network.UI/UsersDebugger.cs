@@ -66,7 +66,7 @@ namespace Guppy.Network.UI
                                 ImGui.TableNextColumn();
                                 ImGui.TextWrapped($"{claim.GetValue()?.GetType().Name ?? "null"}");
                                 ImGui.TableNextColumn();
-                                ImGui.TextWrapped($"{claim.Accessiblity}");
+                                ImGui.TextWrapped($"{claim.Accessibility}");
                             }
                         }
                         ImGui.EndTable();

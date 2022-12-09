@@ -17,7 +17,7 @@ namespace Guppy.Network.Extensions.Identity
             {
                 Id = user.Id,
                 Action = action,
-                Claims = user.Where(x => x.Accessiblity <= accessibility).ToArray(),
+                Claims = user.Where(x => x.Accessibility <= accessibility).ToArray(),
             };
         }
     }

@@ -10,14 +10,36 @@ namespace System.Text.Json
 {
     public static class Utf8JsonReaderExtensions
     {
+        private static bool FalseOrException(bool exception)
+        {
+            if(exception)
+            {
+                throw new JsonException();
+            }
+
+            return false;
+        }
+
+        public static bool CheckToken(ref this Utf8JsonReader reader, JsonTokenType tokenType, bool required)
+        {
+            if (reader.TokenType != tokenType)
+            {
+                return FalseOrException(required);
+            }
+
+            return true;
+        }
+
         public static bool CheckPropertyName(ref this Utf8JsonReader reader, string value, bool required)
         {
-            if (reader.TokenType != JsonTokenType.PropertyName || reader.GetString() != value)
+            if(!reader.CheckToken(JsonTokenType.PropertyName, required))
             {
-                if (required)
-                    throw new JsonException();
+                return FalseOrException(required);
+            }
 
-                return false;
+            if(reader.GetString() != value)
+            {
+                return FalseOrException(required);
             }
 
             return true;
@@ -29,22 +51,9 @@ namespace System.Text.Json
             return reader.CheckPropertyName(property.ToString(), required);
         }
 
-        public static bool CheckToken(ref this Utf8JsonReader reader, JsonTokenType tokenType, bool required)
-        {
-            if (reader.TokenType != tokenType)
-            {
-                if (required)
-                    throw new JsonException();
-
-                return false;
-            }
-
-            return true;
-        }
-
         public static bool ReadPropertyName(ref this Utf8JsonReader reader, [MaybeNullWhen(false)] out string propertyName)
         {
-            if (reader.TokenType != JsonTokenType.PropertyName)
+            if (!reader.CheckToken(JsonTokenType.PropertyName, false))
             {
                 propertyName = default;
                 return false;

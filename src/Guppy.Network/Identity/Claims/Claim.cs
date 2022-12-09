@@ -12,13 +12,13 @@ namespace Guppy.Network.Identity.Claims
     {
         public string Key { get; }
         public abstract ClaimType Type { get; }
-        public ClaimAccessibility Accessiblity { get; }
-        public DateTime CreatedAt { get; }
+        public ClaimAccessibility Accessibility { get; }
+        public DateTime CreatedAt { get; internal set; }
 
         internal Claim(string key, ClaimAccessibility accessibility)
         {
             this.Key = key;
-            this.Accessiblity = accessibility;
+            this.Accessibility = accessibility;
             this.CreatedAt = DateTime.UtcNow;
         }
 
@@ -50,7 +50,7 @@ namespace Guppy.Network.Identity.Claims
 
             writer.Put(this.Key);
             this.Type.SerializeValue(writer, this.GetValue());
-            writer.Put(this.Accessiblity);
+            writer.Put(this.Accessibility);
         }
 
         public static Claim Deserialize(NetDataReader reader)

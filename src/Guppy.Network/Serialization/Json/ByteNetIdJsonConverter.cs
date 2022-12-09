@@ -12,7 +12,9 @@ namespace Guppy.Network.Serialization.Json
     {
         public override NetId.Byte Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            byte value = reader.ReadByte();
+
+            return (NetId.Byte)NetId.Byte.Create(value);
         }
 
         public override void Write(Utf8JsonWriter writer, NetId.Byte value, JsonSerializerOptions options)
