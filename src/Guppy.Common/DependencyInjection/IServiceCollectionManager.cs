@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.DependencyInjection
 {
-    public interface IServiceDescriptorProvider
+    public interface IServiceCollectionManager
     {
-        IEnumerable<ServiceDescriptor> GetDescriptors();
+        int Order => 0;
+
+        void Refresh(IServiceCollection services);
     }
 }

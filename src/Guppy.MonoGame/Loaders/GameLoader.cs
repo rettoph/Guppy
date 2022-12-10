@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.GameComponents;
@@ -20,14 +21,15 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IGlobalBroker, GlobalBroker<TGlobalBrokerPublishStrategy>>()
-                .AddSingleton<TGlobalBrokerPublishStrategy>();
+            services.AddSingleton<IGlobalBroker, GlobalBroker>(); ;
 
-            services.AddScoped<DefaultDebuggerService>()
-                .AddAlias(Alias.Create<IDebuggerService, DefaultDebuggerService>());
+            services.AddSingleton<PublishStrategy, TGlobalBrokerPublishStrategy>();
 
-            services.AddScoped<ConsoleTerminalService>()
-                .AddAlias(Alias.Create<ITerminalService, ConsoleTerminalService>());
+            services.AddScopedService<DefaultDebuggerService>()
+                .AddAlias<IDebuggerService>();
+
+            services.AddScopedService<ConsoleTerminalService>()
+                .AddAlias<ITerminalService>();
 
             services.AddScoped<IGameComponentService, GameComponentService>();
 

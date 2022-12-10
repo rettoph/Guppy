@@ -81,6 +81,8 @@ namespace Guppy
                 initializer.Initialize(this.Assemblies, services, _loaders);
             }
 
+            services.RefreshManagers();
+
             return this;
         }
 

@@ -1,5 +1,5 @@
-﻿using Guppy.Common;
-using Guppy.Common.Helpers;
+﻿using Guppy.Common.Helpers;
+using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
 using System;
 using System.Collections.Generic;
@@ -36,12 +36,12 @@ namespace Microsoft.Extensions.DependencyInjection
             switch (lifetime)
             {
                 case ServiceLifetime.Singleton:
-                    services.AddSingleton<Faceted<T>>();
-                    services.AddSingleton<TService>(p => p.GetRequiredService<Faceted<T>>().Activate(factory));
+                    services.AddSingleton<ServiceActivator<T>>();
+                    services.AddSingleton<TService>(p => p.GetRequiredService<ServiceActivator<T>>().Activate(factory));
                     break;
                 case ServiceLifetime.Scoped:
-                    services.AddScoped<Faceted<T>>();
-                    services.AddScoped<TService>(p => p.GetRequiredService<Faceted<T>>().Activate(factory));
+                    services.AddScoped<ServiceActivator<T>>();
+                    services.AddScoped<TService>(p => p.GetRequiredService<ServiceActivator<T>>().Activate(factory));
                     break;
                 case ServiceLifetime.Transient:
                     throw new NotImplementedException();
@@ -54,10 +54,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     switch (lifetime)
                     {
                         case ServiceLifetime.Singleton:
-                            services.AddSingleton(ancestor, p => p.GetRequiredService<Faceted<T>>().Instance!);
+                            services.AddSingleton(ancestor, p => p.GetRequiredService<ServiceActivator<T>>().Instance!);
                             break;
                         case ServiceLifetime.Scoped:
-                            services.AddScoped(ancestor, p => p.GetRequiredService<Faceted<T>>().Instance!);
+                            services.AddScoped(ancestor, p => p.GetRequiredService<ServiceActivator<T>>().Instance!);
                             break;
                         case ServiceLifetime.Transient:
                             throw new NotImplementedException();

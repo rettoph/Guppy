@@ -5,25 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.Common.Implementations
 {
     /// <summary>
-    /// Some services are what im calling "faceted".
+    /// Some services are what im calling "activated".
     /// That is, multiple types can be pulled by more than
     /// just one type value. These type values can overlap
     /// and will not return any results until one specific
     /// implementation type is activated & requested.
     /// </summary>
-    public sealed class Faceted<T>
+    public sealed class ServiceActivator<T>
     {
         private IServiceProvider _provider;
 
-        public FacetedStatus Status { get; private set; }
+        public ActivationStatus Status { get; private set; }
 
         public Type? Type;
         public T? Instance;
 
-        public Faceted(IServiceProvider provider)
+        public ServiceActivator(IServiceProvider provider)
         {
             _provider = provider;
         }
@@ -31,23 +31,23 @@ namespace Guppy.Common
         public TImplementation Activate<TImplementation>(Func<IServiceProvider, TImplementation> factory)
             where TImplementation : T
         {
-            if (this.Status != FacetedStatus.Inactive)
+            if (this.Status != ActivationStatus.Inactive)
             {
                 throw new InvalidOperationException();
             }
 
-            this.Status = FacetedStatus.Activating;
+            this.Status = ActivationStatus.Activating;
             this.Type = typeof(TImplementation);
             this.Instance = factory(_provider);
-            this.Status = FacetedStatus.Activated;
+            this.Status = ActivationStatus.Activated;
 
-            return this.Get<TImplementation>();
+            return Get<TImplementation>();
         }
 
         public TService Get<TService>()
             where TService : T
         {
-            if (Instance is TService service)
+            if (this.Instance is TService service)
             {
                 return service;
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Enums
 {
-    public enum FacetedStatus
+    public enum ActivationStatus
     {
         Inactive,
         Activating,

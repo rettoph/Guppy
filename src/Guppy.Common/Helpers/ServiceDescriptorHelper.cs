@@ -12,26 +12,6 @@ namespace Guppy.Common.Helpers
     {
         public static ServiceDescriptor Describe(Type serviceType, ServiceLifetime lifetime, Type? implementationType = null, Func<IServiceProvider, object>? factory = null, object? instance = null)
         {
-            int nullPropertyCount = implementationType is null ? 0 : 1;
-            nullPropertyCount += factory is null ? 0 : 1;
-            nullPropertyCount += instance is null ? 0 : 1;
-
-            if (nullPropertyCount > 1)
-            {
-                throw new ArgumentException($"{nameof(ServiceDescriptorHelper)}::{nameof(Describe)} - Only up to 1 of the following arguments may not be null: '{nameof(implementationType)}', '{nameof(factory)}', and '{nameof(instance)}'. Found {nullPropertyCount}.");
-            }
-
-            if (instance is not null && lifetime != ServiceLifetime.Singleton)
-            {
-                throw new ArgumentException($"{nameof(ServiceDescriptorHelper)}::{nameof(Describe)} - {nameof(instance)} must not be defined unless {nameof(lifetime)} is {nameof(ServiceLifetime.Singleton)}. {lifetime} given.");
-            }
-
-            if (implementationType is not null)
-            {
-                ThrowIf.Type.IsNotAssignableFrom(implementationType, serviceType);
-                ThrowIf.Type.IsNotClass(serviceType);
-            }
-
             if (factory is not null)
             {
                 return new ServiceDescriptor(serviceType, factory, lifetime);
@@ -39,7 +19,18 @@ namespace Guppy.Common.Helpers
 
             if (instance is not null)
             {
+                if (lifetime != ServiceLifetime.Singleton)
+                {
+                    throw new ArgumentException($"{nameof(ServiceDescriptorHelper)}::{nameof(Describe)} - {nameof(instance)} must not be defined unless {nameof(lifetime)} is {nameof(ServiceLifetime.Singleton)}. {lifetime} given.");
+                }
+
                 return new ServiceDescriptor(serviceType, instance);
+            }
+
+            if (implementationType is not null)
+            {
+                ThrowIf.Type.IsNotAssignableFrom(serviceType, implementationType);
+                ThrowIf.Type.IsNotClass(implementationType);
             }
 
             return new ServiceDescriptor(serviceType, implementationType ?? serviceType, lifetime);

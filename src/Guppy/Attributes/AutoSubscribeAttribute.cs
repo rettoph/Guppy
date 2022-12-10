@@ -14,7 +14,7 @@ namespace Guppy.Attributes
         {
             base.Initialize(services, classType);
 
-            services.AddAlias(new Alias(typeof(ISubscriber), classType));
+            services.GetService(classType).AddAlias<ISubscriber>();
         }
     }
 }

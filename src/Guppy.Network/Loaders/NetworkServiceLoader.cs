@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Guppy.Network.Enums;
 using Guppy.Network.Factories;
@@ -46,9 +47,14 @@ namespace Guppy.Network.Loaders
                 .AddFaceted<Peer, ClientPeer>(ServiceLifetime.Singleton)
                 .AddFaceted<Peer, ServerPeer>(ServiceLifetime.Singleton)
                 .AddSetting(NetAuthorization.Master, false)
-                .AddScoped<ClientNetOutgoingMessageFactory>()
-                .AddScoped<ServerNetOutgoingMessageFactory>()
-                .AddAliases(Alias.ManyFor<INetOutgoingMessageFactory>(typeof(ClientNetOutgoingMessageFactory), typeof(ServerNetOutgoingMessageFactory)))
+                .ConfigureCollection(manager =>
+                {
+                    manager.AddScoped<ClientNetOutgoingMessageFactory>()
+                        .AddAlias<INetOutgoingMessageFactory>();
+
+                    manager.AddScoped<ServerNetOutgoingMessageFactory>()
+                        .AddAlias<INetOutgoingMessageFactory>();
+                })
                 .AddFilter(new PeerFilter<ClientPeer, ClientNetOutgoingMessageFactory>())
                 .AddFilter(new PeerFilter<ServerPeer, ServerNetOutgoingMessageFactory>());
 

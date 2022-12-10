@@ -1,5 +1,5 @@
-﻿using Guppy.Common;
-using Guppy.Common.Filters;
+﻿using Guppy.Common.Filters;
+using Guppy.Common.Implementations;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,7 +19,7 @@ namespace Guppy.Network.Filters
 
         public override bool Invoke(IServiceProvider provider, Type implementationType)
         {
-            var instance = provider.GetRequiredService<Faceted<Peer>>();
+            var instance = provider.GetRequiredService<ServiceActivator<Peer>>();
             return instance.Type?.IsAssignableTo(typeof(TPeer)) ?? false;
         }
     }

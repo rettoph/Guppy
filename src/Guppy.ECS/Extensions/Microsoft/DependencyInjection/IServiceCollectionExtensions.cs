@@ -21,18 +21,26 @@ namespace Microsoft.Extensions.DependencyInjection
                 bindingAttr: BindingFlags.Public | BindingFlags.Static,
                 types: new[]
                 {
-                            typeof(IServiceCollection)
+                    typeof(IServiceCollection)
                 }) ?? throw new NotImplementedException();
 
         public static IServiceCollection AddSystem<TSystem>(this IServiceCollection services)
             where TSystem : class, ISystem
         {
-            return services.AddScoped<TSystem>().AddAlias(Alias.Create<ISystem, TSystem>());
+            services.GetService<TSystem>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .AddAlias<ISystem>();
+
+            return services;
         }
 
         public static IServiceCollection AddSystem(this IServiceCollection services, Type implementationType)
         {
-            return services.AddScoped(implementationType).AddAlias(new Alias(typeof(ISystem), implementationType));
+            services.GetService(implementationType)
+                .SetLifetime(ServiceLifetime.Scoped)
+                .AddAlias<ISystem>();
+
+            return services;
         }
 
         public static IServiceCollection AddComponentType(this IServiceCollection services, Type type)
@@ -47,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddComponentType<T>(this IServiceCollection services)
             where T : class
         {
-            services.AddSingleton<ComponentType>(ComponentType.Create<T>());
+            services.AddSingletonService<ComponentType>().SetInstance(ComponentType.Create<T>());
 
             return services;
         }

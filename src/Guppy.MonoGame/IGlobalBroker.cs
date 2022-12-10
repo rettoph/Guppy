@@ -10,7 +10,7 @@ namespace Guppy.MonoGame
 {
     public interface IGlobalBroker
     {
-        PublishStrategy PublishStrategy { get; }
+        PublishStrategy Strategy { get; }
         public abstract void Publish(in IMessage message);
     }
 }

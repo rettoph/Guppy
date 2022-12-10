@@ -22,6 +22,7 @@ using Guppy.MonoGame.UI.Debuggers;
 using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Constants;
 using InputConstants = Guppy.MonoGame.UI.Constants.InputConstants;
+using Guppy.Common.DependencyInjection;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -41,14 +42,14 @@ namespace Guppy.MonoGame.UI.Loaders
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 20);
 
-            services.AddScoped<ImGuiDebuggerService>()
-                .AddAliases(Alias.ManyFrom<ImGuiDebuggerService>(typeof(IGameComponent), typeof(IDebuggerService)));
+            services.AddScopedService<ImGuiDebuggerService>()
+                .AddAliases(AliasType.Filtered, typeof(IGameComponent), typeof(IDebuggerService));
 
-            services.AddScoped<ImGuiTerminalService>()
-                .AddAliases(Alias.ManyFrom<ImGuiTerminalService>(typeof(IGameComponent), typeof(ITerminalService)));
+            services.AddScopedService<ImGuiTerminalService>()
+                .AddAliases(AliasType.Filtered, typeof(IGameComponent), typeof(ITerminalService));
 
-            services.AddScoped<FpsDebugger>()
-                .AddAlias<IDebugger, FpsDebugger>();
+            services.AddScopedService<FpsDebugger>()
+                .AddAlias<IDebugger>();
 
             services.AddTransient<ImGuiBatch>();
 

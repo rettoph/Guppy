@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.Common.DependencyInjection;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,31 +20,131 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddScoped<BusConfiguration>();
         }
 
-        /// <summary>
-        /// Add all <see cref="ServiceDescriptor"/> instances returned by
-        /// <see cref="IServiceDescriptorProvider.GetDescriptors"/>
-        /// </summary>
-        /// <typeparam name="TServiceDescriptorProvider"></typeparam>
-        /// <param name="services"></param>
-        /// <param name="provider"></param>
-        /// <returns></returns>
-        public static IServiceCollection Add<TServiceDescriptorProvider>(this IServiceCollection services, TServiceDescriptorProvider provider)
-            where TServiceDescriptorProvider : IServiceDescriptorProvider
+        private static readonly ConditionalWeakTable<IServiceCollection, IList<IServiceCollectionManager>> _managers = new();
+        
+        public static TManager GetManager<TManager>(this IServiceCollection services)
+            where TManager : IServiceCollectionManager, new()
         {
-            foreach (var descriptor in provider.GetDescriptors())
+            if (!_managers.TryGetValue(services, out var managers))
             {
-                services.Add(descriptor);
+                managers = new List<IServiceCollectionManager>();
+                _managers.Add(services, managers);
+            }
+
+            var instance = managers.FirstOrDefault(x => x is TManager);
+
+            if(instance is null)
+            {
+                instance = new TManager();
+                managers.Add(instance);
+            }
+
+            return (TManager)instance;
+        }
+
+        public static IServiceCollection RefreshManagers(this IServiceCollection services)
+        {
+            if (!_managers.TryGetValue(services, out var managers))
+            {
+                return services;
+            }
+
+            foreach(IServiceCollectionManager manager in managers.OrderBy(x => x.Order))
+            {
+                manager.Refresh(services);
             }
 
             return services;
         }
 
-        public static IServiceCollection ConfigureDescriptors(this IServiceCollection services, Action<ServiceDescriptorProvider> configure)
+        public static IServiceCollection ConfigureCollection(this IServiceCollection services, Action<ServiceCollectionManager> configure)
         {
-            var provider = new ServiceDescriptorProvider();
-            configure(provider);
+            var manager = services.GetManager<ServiceCollectionManager>();
+            configure(manager);
 
-            return services.Add(provider);
+            return services;
+        }
+
+        public static IServiceConfiguration AddService(this IServiceCollection services, Type serviceType)
+        {
+            var manager = services.GetManager<ServiceCollectionManager>();
+
+            return manager.AddService(serviceType);
+        }
+
+        public static ServiceConfiguration<T> AddService<T>(this IServiceCollection services)
+            where T : class
+        {
+            return (ServiceConfiguration<T>)services.AddService(typeof(T));
+        }
+
+        public static ServiceConfiguration<T> AddSingletonService<T>(this IServiceCollection services)
+            where T : class
+        {
+            return services.AddService<T>().SetLifetime(ServiceLifetime.Singleton);
+        }
+
+        public static ServiceConfiguration<T> AddScopedService<T>(this IServiceCollection services)
+            where T : class
+        {
+            return services.AddService<T>().SetLifetime(ServiceLifetime.Scoped);
+        }
+
+        public static ServiceConfiguration<T> AddTransientService<T>(this IServiceCollection services)
+            where T : class
+        {
+            return services.AddService<T>().SetLifetime(ServiceLifetime.Singleton);
+        }
+
+        public static ServiceConfiguration<T> AddSingletonService<T, TImplementation>(this IServiceCollection services)
+            where T : class
+            where TImplementation : class, T
+        {
+            return services.AddSingletonService<T>().SetImplementationType<TImplementation>();
+        }
+
+        public static ServiceConfiguration<T> AddScopedService<T, TImplementation>(this IServiceCollection services)
+            where T : class
+            where TImplementation : class, T
+        {
+            return services.AddScopedService<T>().SetImplementationType<TImplementation>();
+        }
+
+        public static ServiceConfiguration<T> AddTransientService<T, TImplementation>(this IServiceCollection services)
+            where T : class
+            where TImplementation : class, T
+        {
+            return services.AddTransientService<T>().SetImplementationType<TImplementation>();
+        }
+
+        public static IServiceConfiguration GetService(this IServiceCollection services, Type serviceType)
+        {
+            var manager = services.GetManager<ServiceCollectionManager>();
+
+            return manager.GetService(serviceType);
+        }
+
+        public static IServiceConfiguration GetService(this IServiceCollection services, Type serviceType, Func<IServiceConfiguration, bool> predicate)
+        {
+            var manager = services.GetManager<ServiceCollectionManager>();
+
+            return manager.GetService(serviceType, predicate);
+        }
+
+        public static ServiceConfiguration<TService> GetService<TService>(this IServiceCollection services)
+            where TService : class
+        {
+            var manager = services.GetManager<ServiceCollectionManager>();
+
+            return manager.GetService<TService>();
+        }
+
+        public static ServiceConfiguration<TService> GetService<TService>(this IServiceCollection services, Func<ServiceConfiguration<TService>, bool> predicate)
+            where TService : class
+        {
+            var manager = services.GetManager<ServiceCollectionManager>();
+
+            return manager.GetService<TService>(predicate);
         }
 
         public static IServiceCollection RemoveBy(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, out ServiceDescriptor[] removed)

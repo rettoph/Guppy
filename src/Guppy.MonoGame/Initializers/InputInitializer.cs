@@ -26,11 +26,12 @@ namespace Guppy.MonoGame.Initializers
                 services.AddInput(definition);
             }
 
-            services.ConfigureDescriptors(descriptors =>
+            services.ConfigureCollection(manager =>
             {
-                descriptors.AddSingleton<InputService>()
-                    .WithAlias<IInputService>(AliasType.Unfiltered)
-                    .WithAlias<IGameComponent>(AliasType.Filtered);
+                manager.GetService<InputService>()
+                    .SetLifetime(ServiceLifetime.Singleton)
+                    .AddAlias<IInputService>(AliasType.Unfiltered)
+                    .AddAlias<IGameComponent>(AliasType.Filtered);
             });
         }
     }

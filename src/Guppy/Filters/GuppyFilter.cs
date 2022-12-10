@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Filters;
+using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -24,7 +25,7 @@ namespace Guppy.Filters
 
         public override bool Invoke(IServiceProvider provider, Type implementationType)
         {
-            var guppy = provider.GetRequiredService<Faceted<IGuppy>>();
+            var guppy = provider.GetRequiredService<ServiceActivator<IGuppy>>();
 
             if (guppy.Type is null)
             {

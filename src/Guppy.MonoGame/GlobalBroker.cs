@@ -9,21 +9,18 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame
 {
-    internal sealed class GlobalBroker<TPublishStrategy> : IGlobalBroker
-        where TPublishStrategy : PublishStrategy
+    internal sealed class GlobalBroker : IGlobalBroker
     {
-        private readonly TPublishStrategy _strategy;
+        public PublishStrategy Strategy { get; }
 
-        public PublishStrategy PublishStrategy => _strategy;
-
-        public GlobalBroker(TPublishStrategy strategy, IServiceProvider provider)
+        public GlobalBroker(PublishStrategy strategy)
         {
-            _strategy = strategy;
+            this.Strategy = strategy;
         }
 
         public void Publish(in IMessage message)
         {
-            _strategy.Publish(in message);
+            this.Strategy.Publish(in message);
         }
     }
 }
