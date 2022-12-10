@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.Implementations;
 using Guppy.Common;
 using Guppy.Common.Providers;
+using Guppy.Common.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,28 +15,35 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>))
                     .AddSingleton<IAliasProvider, AliasProvider>()
-                    .AddScoped<IBus, Bus>(); ;
+                    .AddScoped<IBus, Bus>()
+                    .AddScoped<BusConfiguration>();
         }
 
-        public static IServiceCollection AddMap<T, TImplementation>(this IServiceCollection services, ServiceLifetime? lifetime = null)
-            where T : class
-            where TImplementation : T
-
+        /// <summary>
+        /// Add all <see cref="ServiceDescriptor"/> instances returned by
+        /// <see cref="IServiceDescriptorProvider.GetDescriptors"/>
+        /// </summary>
+        /// <typeparam name="TServiceDescriptorProvider"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public static IServiceCollection Add<TServiceDescriptorProvider>(this IServiceCollection services, TServiceDescriptorProvider provider)
+            where TServiceDescriptorProvider : IServiceDescriptorProvider
         {
-            if(lifetime is null)
+            foreach (var descriptor in provider.GetDescriptors())
             {
-                lifetime = services.FirstOrDefault(x => x.ServiceType == typeof(TImplementation))?.Lifetime;
+                services.Add(descriptor);
             }
 
-            Func<Func<IServiceProvider, T>, IServiceCollection> addFunc = lifetime switch
-            {
-                ServiceLifetime.Transient => services.AddTransient<T>,
-                ServiceLifetime.Scoped => services.AddTransient<T>,
-                ServiceLifetime.Singleton => services.AddSingleton<T>,
-                _ => throw new InvalidOperationException()
-            };
+            return services;
+        }
 
-            return addFunc(p => p.GetRequiredService<TImplementation>());
+        public static IServiceCollection ConfigureDescriptors(this IServiceCollection services, Action<ServiceDescriptorProvider> configure)
+        {
+            var provider = new ServiceDescriptorProvider();
+            configure(provider);
+
+            return services.Add(provider);
         }
 
         public static IServiceCollection RemoveBy(this IServiceCollection services, Func<ServiceDescriptor, bool> predicate, out ServiceDescriptor[] removed)

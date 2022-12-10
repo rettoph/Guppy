@@ -40,6 +40,14 @@ namespace Guppy.Common
 
                 throw new ArgumentException($"{nameof(implementation)} value of {implementation.Name} does not implement generic type definition {genericTypeDefinition.Name}.");
             }
+
+            public static void IsNotClass(System.Type type)
+            {
+                if (!type.IsClass)
+                {
+                    throw new ArgumentException($"'{type.FullName}' is not a class.");
+                }
+            }
         }
     }
 }

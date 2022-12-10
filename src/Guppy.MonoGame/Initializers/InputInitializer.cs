@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.DependencyInjection;
 using Guppy.Common.Providers;
 using Guppy.Initializers;
 using Guppy.Loaders;
@@ -25,9 +26,12 @@ namespace Guppy.MonoGame.Initializers
                 services.AddInput(definition);
             }
 
-            services.AddSingleton<InputService>()
-                .AddMap<IInputService, InputService>()
-                .AddAlias<IGameComponent, InputService>();
+            services.ConfigureDescriptors(descriptors =>
+            {
+                descriptors.AddSingleton<InputService>()
+                    .WithAlias<IInputService>(AliasType.Unfiltered)
+                    .WithAlias<IGameComponent>(AliasType.Filtered);
+            });
         }
     }
 }

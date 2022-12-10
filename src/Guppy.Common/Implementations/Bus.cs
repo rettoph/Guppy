@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.Extensions;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Collections;
@@ -27,12 +28,12 @@ namespace Guppy.Common.Implementations
         public Bus(
             ILogger log,
             IFiltered<ISubscriber> subscribers,
-            IEnumerable<BusConfiguration> config)
+            IOptions<BusConfiguration> config)
         {
             _subscribers = subscribers;
             _broker = new Broker(log);
 
-            _queues = config.Select(x => x.Queue).Concat(DefaultQueue.Yield())
+            _queues = config.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
                 .OrderBy(x => x)
                 .Select(x => new BusQueue(x))
@@ -40,7 +41,7 @@ namespace Guppy.Common.Implementations
 
             _default = this.GetQueue(DefaultQueue);
 
-            _typeMap = config.ToDictionary(
+            _typeMap = config.Value.TypeQueues.ToDictionary(
                 keySelector: x => x.Type,
                 elementSelector: x => this.GetQueue(x.Queue));
         }

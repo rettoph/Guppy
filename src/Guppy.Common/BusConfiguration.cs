@@ -8,22 +8,37 @@ namespace Guppy.Common
 {
     public class BusConfiguration
     {
-        public Type Type { get; init; }
-
-        public int Queue { get; init; }
-
-        public BusConfiguration(Type type, int queue)
+        internal sealed class TypeQueueConfiguration
         {
-            Queue = queue;
-            Type = type;
+            public required Type Type { get; init; }
+
+            public required int Queue { get; init; }
         }
-    }
 
-    public sealed class BusConfiguration<T> : BusConfiguration
-        where T : notnull
-    {
-        public BusConfiguration(int queue) : base(typeof(T), queue)
+        internal IList<TypeQueueConfiguration> TypeQueues { get; }
+
+        public BusConfiguration()
         {
+            this.TypeQueues = new List<TypeQueueConfiguration>();
+        }
+
+        public BusConfiguration SetTypeQueue(Type type, int queue)
+        {
+            ThrowIf.Type.IsNotAssignableFrom<IMessage>(type);
+
+            this.TypeQueues.Add(new TypeQueueConfiguration()
+            {
+                Type = type,
+                Queue = queue
+            });
+
+            return this;
+        }
+
+        public BusConfiguration SetTypeQueue<T>(int queue)
+            where T : IMessage
+        {
+            return this.SetTypeQueue(typeof(T), queue);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Guppy.Common.Implementations
         {
             int errors = 0;
             
-            while(_queue.Count != 0 && errors != 5)
+            while(!_queue.IsEmpty && errors != 5)
             {
                 if(_queue.TryDequeue(out var message))
                 {
