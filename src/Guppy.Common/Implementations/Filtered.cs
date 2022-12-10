@@ -26,14 +26,14 @@ namespace Guppy.Common.Implementations
         {
             _items = new Lazy<IList<T>>(() =>
             {
-                var list = new List<T>(items.Concat(aliases.GetImplementations<T>(provider)));
+                var list = new List<T>(items.Concat(aliases.GetServices<T>(provider)));
 
                 return list;
             });
 
             _instance = new Lazy<T?>(() =>
             {
-                return aliases.GetImplementation<T>(provider) ?? items.LastOrDefault();
+                return aliases.GetService<T>(provider) ?? items.LastOrDefault();
             });
         }
     }

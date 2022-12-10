@@ -39,5 +39,7 @@ namespace Guppy.Common.DependencyInjection
         IServiceConfiguration AddAliases(AliasType type = AliasType.Filtered, params Type[] aliases);
 
         IServiceConfiguration AddInterfaceAliases(AliasType type = AliasType.Filtered);
+
+        IEnumerable<AliasDescriptor> GetAliasDescriptors(AliasType type);
     }
 }

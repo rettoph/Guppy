@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Guppy.Common.DependencyInjection;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Common.Providers
 {
@@ -12,14 +8,14 @@ namespace Guppy.Common.Providers
         [DebuggerDisplay("Type: {Type.Name}, Aliase: {AliasType.Name}, Filters: {Filters.Length}")]
         private class FilterableImplementation
         {
-            public readonly Type Type;
-            public readonly Type AliasType;
+            public readonly IServiceConfiguration Service;
+            public readonly AliasDescriptor Alias;
             public readonly IFilter[] Filters;
 
-            public FilterableImplementation(Type type, Type aliasType, IFilter[] filters)
+            public FilterableImplementation(IServiceConfiguration service, AliasDescriptor alias, IFilter[] filters)
             {
-                this.Type = type;
-                this.AliasType = aliasType;
+                this.Service = service;
+                this.Alias = alias;
                 this.Filters = filters;
             }
 
@@ -27,7 +23,7 @@ namespace Guppy.Common.Providers
             {
                 foreach(IFilter filter in this.Filters)
                 {
-                    if(!filter.Invoke(provider, this.Type))
+                    if(!filter.Invoke(provider, this.Service.Type))
                     {
                         return false;
                     }
@@ -39,33 +35,36 @@ namespace Guppy.Common.Providers
 
         private readonly Dictionary<Type, FilterableImplementation[]> _aliases;
 
-        public AliasProvider(IEnumerable<Alias> aliases, IEnumerable<IFilter> filters)
+        public AliasProvider(IEnumerable<IServiceConfiguration> services, IEnumerable<IFilter> filters)
         {
             // Load distinct alias types
-            var keys = aliases.Select(x => x.Type).Distinct().ToArray();
+            var keys = services.SelectMany(x => x.GetAliasDescriptors(AliasType.Filtered))
+                .Select(x => x.Alias)
+                .Distinct()
+                .ToArray();
 
             _aliases = new Dictionary<Type, FilterableImplementation[]>(keys.Length);
 
             var filteredAliases = new List<FilterableImplementation>();
-            foreach (Type key in keys)
+            foreach (Type alias in keys)
             {
-                foreach(Alias alias in aliases)
+                foreach(IServiceConfiguration service in services)
                 {
-                    if(alias.Type == key)
+                    if(service.Aliases.ContainsKey(alias))
                     {
                         filteredAliases.Add(new FilterableImplementation(
-                            type: alias.ImplementationType,
-                            aliasType: key,
-                            filters: filters.Where(x => x.AppliesTo(alias.ImplementationType)).ToArray()));
+                            service: service,
+                            alias: service.Aliases[alias],
+                            filters: filters.Where(x => x.AppliesTo(service.Type)).ToArray()));
                     }
                 }
 
-                _aliases.Add(key, filteredAliases.ToArray());
+                _aliases.Add(alias, filteredAliases.ToArray());
                 filteredAliases.Clear();
             }
         }
 
-        public IEnumerable<Type> GetImplementationTypes(Type alias, IServiceProvider provider)
+        public IEnumerable<Type> GetServiceTypes(Type alias, IServiceProvider provider)
         {
             if(_aliases.TryGetValue(alias, out FilterableImplementation[]? implementations))
             {
@@ -73,7 +72,7 @@ namespace Guppy.Common.Providers
                 {
                     if(implementation.Filter(provider))
                     {
-                        yield return implementation.Type;
+                        yield return implementation.Service.ServiceType;
                     }
                 }
             }

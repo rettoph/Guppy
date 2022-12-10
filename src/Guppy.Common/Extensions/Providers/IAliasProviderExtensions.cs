@@ -9,20 +9,20 @@ namespace Guppy.Common.Providers
 {
     public static class IAliasProviderExtensions
     {
-        public static IEnumerable<TAlias> GetImplementations<TAlias>(this IAliasProvider aliases, IServiceProvider provider)
+        public static IEnumerable<TAlias> GetServices<TAlias>(this IAliasProvider aliases, IServiceProvider provider)
             where TAlias : class
         {
-            var implementations = aliases.GetImplementationTypes(typeof(TAlias), provider);
+            var implementations = aliases.GetServiceTypes(typeof(TAlias), provider);
             foreach (Type implementation in implementations)
             {
                 yield return (TAlias)provider.GetRequiredService(implementation);
             }
         }
 
-        public static TAlias? GetImplementation<TAlias>(this IAliasProvider aliases, IServiceProvider provider)
+        public static TAlias? GetService<TAlias>(this IAliasProvider aliases, IServiceProvider provider)
             where TAlias : class
         {
-            var implementation = aliases.GetImplementationTypes(typeof(TAlias), provider).LastOrDefault();
+            var implementation = aliases.GetServiceTypes(typeof(TAlias), provider).LastOrDefault();
 
             if(implementation is null)
             {

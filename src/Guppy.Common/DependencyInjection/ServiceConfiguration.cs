@@ -167,7 +167,7 @@ namespace Guppy.Common.DependencyInjection
             }
         }
 
-        private IEnumerable<AliasDescriptor> GetAliasDescriptors(AliasType type)
+        public IEnumerable<AliasDescriptor> GetAliasDescriptors(AliasType type)
         {
             return this.Aliases.Values.Where(x => x.Type == type);
         }
