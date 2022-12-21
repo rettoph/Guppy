@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Resources.Definitions.ResourcePacks
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class GuppyResourcePack : ResourcePackDefinition
     {
         public override string Name => nameof(Guppy);

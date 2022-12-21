@@ -25,10 +25,13 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddSingleton<PublishStrategy, TGlobalBrokerPublishStrategy>();
 
-            services.AddScopedService<DefaultDebuggerService>()
-                .AddAlias<IDebuggerService>();
+            services.AddService<DefaultDebuggerService>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .AddAlias<IDebuggerService>()
+                .AddAlias<ISubscriber>();
 
-            services.AddScopedService<ConsoleTerminalService>()
+            services.AddService<ConsoleTerminalService>()
+                .SetLifetime(ServiceLifetime.Scoped)
                 .AddAlias<ITerminalService>();
 
             services.AddScoped<IGameComponentService, GameComponentService>();

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Initializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class ServiceInitializer : GuppyInitializer<IServiceLoader>
     {
         protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IServiceLoader> loaders)

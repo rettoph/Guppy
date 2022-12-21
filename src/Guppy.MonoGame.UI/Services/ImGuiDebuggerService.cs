@@ -18,8 +18,6 @@ namespace Guppy.MonoGame.UI.Services
 {
     internal sealed class ImGuiDebuggerService : DefaultDebuggerService
     {
-        
-
         private ImGuiBatch _imGuiBatch;
         private IntPtr _context;
         private ImFontPtr _font;

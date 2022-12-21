@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Initializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class AssemblyInitializer : GuppyInitializer<IAssemblyLoader>
     {
         protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IAssemblyLoader> loaders)

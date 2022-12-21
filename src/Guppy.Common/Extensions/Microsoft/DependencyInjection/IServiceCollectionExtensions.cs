@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.Common.DependencyInjection;
 using System.Runtime.CompilerServices;
+using Guppy.Common.DependencyInjection.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -57,7 +58,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection ConfigureCollection(this IServiceCollection services, Action<ServiceCollectionManager> configure)
+        public static IServiceCollection ConfigureCollection(this IServiceCollection services, Action<IServiceCollectionManager> configure)
         {
             var manager = services.GetManager<ServiceCollectionManager>();
             configure(manager);
@@ -76,45 +77,6 @@ namespace Microsoft.Extensions.DependencyInjection
             where T : class
         {
             return (ServiceConfiguration<T>)services.AddService(typeof(T));
-        }
-
-        public static ServiceConfiguration<T> AddSingletonService<T>(this IServiceCollection services)
-            where T : class
-        {
-            return services.AddService<T>().SetLifetime(ServiceLifetime.Singleton);
-        }
-
-        public static ServiceConfiguration<T> AddScopedService<T>(this IServiceCollection services)
-            where T : class
-        {
-            return services.AddService<T>().SetLifetime(ServiceLifetime.Scoped);
-        }
-
-        public static ServiceConfiguration<T> AddTransientService<T>(this IServiceCollection services)
-            where T : class
-        {
-            return services.AddService<T>().SetLifetime(ServiceLifetime.Singleton);
-        }
-
-        public static ServiceConfiguration<T> AddSingletonService<T, TImplementation>(this IServiceCollection services)
-            where T : class
-            where TImplementation : class, T
-        {
-            return services.AddSingletonService<T>().SetImplementationType<TImplementation>();
-        }
-
-        public static ServiceConfiguration<T> AddScopedService<T, TImplementation>(this IServiceCollection services)
-            where T : class
-            where TImplementation : class, T
-        {
-            return services.AddScopedService<T>().SetImplementationType<TImplementation>();
-        }
-
-        public static ServiceConfiguration<T> AddTransientService<T, TImplementation>(this IServiceCollection services)
-            where T : class
-            where TImplementation : class, T
-        {
-            return services.AddTransientService<T>().SetImplementationType<TImplementation>();
         }
 
         public static IServiceConfiguration GetService(this IServiceCollection services, Type serviceType)

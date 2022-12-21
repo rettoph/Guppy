@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Initializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class LoggerInitializer : GuppyInitializer<ILoggerLoader>
     {
         protected override void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<ILoggerLoader> loaders)

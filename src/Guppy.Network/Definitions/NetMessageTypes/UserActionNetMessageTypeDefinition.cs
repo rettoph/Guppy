@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Definitions.NetMessageTypes
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class UserActionNetMessageTypeDefinition : NetMessageTypeDefinition<UserAction>
     {
         public override DeliveryMethod DefaultDeliveryMethod => DeliveryMethod.ReliableOrdered;

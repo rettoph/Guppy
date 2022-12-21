@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Serialization.NetSerializers
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class UserActionNetSerializer : NetSerializer<UserAction>
     {
         public override UserAction Deserialize(NetDataReader reader)

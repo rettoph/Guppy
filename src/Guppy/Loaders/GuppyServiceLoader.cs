@@ -6,7 +6,7 @@ using Serilog;
 
 namespace Guppy.Loaders
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

@@ -9,9 +9,16 @@ namespace Guppy.ECS.Services
     {
         public World Instance { get; }
 
-        public WorldService(IEnumerable<ComponentType> componentTypes, IFiltered<ISystem> systems)
+        public WorldService(IFiltered<ISystem> systems)
         {
-            this.Instance = new World(componentTypes, systems.Items);
+            var builder = new WorldBuilder();
+
+            foreach(var system in systems.Items)
+            {
+                builder.AddSystem(system);
+            }
+
+            this.Instance = builder.Build();
         }
     }
 }

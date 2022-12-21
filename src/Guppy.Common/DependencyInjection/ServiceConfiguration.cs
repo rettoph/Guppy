@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Helpers;
+﻿using Guppy.Common.DependencyInjection.Interfaces;
+using Guppy.Common.Helpers;
 using Guppy.Common.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,15 +11,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.DependencyInjection
 {
-    public class ServiceConfiguration<T> : IServiceConfiguration
-        where T : class
+    public class ServiceConfiguration<TService> : IServiceConfiguration
+        where TService : class
     {
-        private const ServiceLifetime DefaultLifetime = ServiceLifetime.Transient;
+        public const ServiceLifetime DefaultLifetime = ServiceLifetime.Transient;
 
         private bool _dirty;
         private List<ServiceDescriptor> _descriptors;
-        private readonly ServiceCollectionManager _manager;
-        private readonly Dictionary<Type, AliasDescriptor> _aliases;
 
         public Type ServiceType { get; set; }
 
@@ -28,24 +27,23 @@ namespace Guppy.Common.DependencyInjection
 
         public ServiceLifetime? Lifetime { get; set; }
 
-        public Func<IServiceProvider, T>? Factory { get; set; }
+        public Func<IServiceProvider, TService>? Factory { get; set; }
 
-        public IReadOnlyDictionary<Type, AliasDescriptor> Aliases => _aliases;
+        public AliasesConfiguration Aliases { get; }
 
         Func<IServiceProvider, object>? IServiceConfiguration.Factory => this.Factory;
 
-        public ServiceConfiguration(ServiceCollectionManager manager)
+        public ServiceConfiguration()
         {
-            _manager = manager;
-            _aliases = new Dictionary<Type, AliasDescriptor>();
             _dirty = true;
             _descriptors = new List<ServiceDescriptor>();
 
-            this.ServiceType = typeof(T);
+            this.ServiceType = typeof(TService);
+            this.Aliases = new AliasesConfiguration(this);
         }
 
 
-        public ServiceConfiguration<T> SetImplementationType(Type? implementationType)
+        public ServiceConfiguration<TService> SetImplementationType(Type? implementationType)
         {
             _dirty = true;
             this.ImplementationType = implementationType;
@@ -54,13 +52,13 @@ namespace Guppy.Common.DependencyInjection
             return this;
         }
 
-        public ServiceConfiguration<T> SetImplementationType<TImplementation>()
+        public ServiceConfiguration<TService> SetImplementationType<TImplementation>()
             where TImplementation : class
         {
             return this.SetImplementationType(typeof(TImplementation));
         }
 
-        public ServiceConfiguration<T> SetLifetime(ServiceLifetime? lifetime)
+        public ServiceConfiguration<TService> SetLifetime(ServiceLifetime? lifetime)
         {
             _dirty = true;
             this.Lifetime = lifetime;
@@ -68,7 +66,7 @@ namespace Guppy.Common.DependencyInjection
             return this;
         }
 
-        public ServiceConfiguration<T> SetInstance(T? instance)
+        public ServiceConfiguration<TService> SetInstance(TService? instance)
         {
             _dirty = true;
             this.Factory = instance is null ? null : p => instance;
@@ -76,7 +74,7 @@ namespace Guppy.Common.DependencyInjection
             return this;
         }
 
-        public ServiceConfiguration<T> SetFactory(Func<IServiceProvider, T>? factory)
+        public ServiceConfiguration<TService> SetFactory(Func<IServiceProvider, TService>? factory)
         {
             _dirty = true;
             this.Factory = factory;
@@ -84,48 +82,44 @@ namespace Guppy.Common.DependencyInjection
             return this;
         }
 
-        public ServiceConfiguration<T> AddAlias(Type alias, AliasType type = AliasType.Filtered)
+        public ServiceConfiguration<TService> AddAlias(Type type, Action<AliasConfiguration>? configure = null)
         {
-            ThrowIf.Type.IsNotAssignableFrom(alias, this.ServiceType);
+            ThrowIf.Type.IsNotAssignableFrom(type, this.ServiceType);
 
             _dirty = true;
+            var alias = new AliasConfiguration(type);
+            configure?.Invoke(alias);
 
-            if (_aliases.TryGetValue(alias, out var descriptor))
-            {
-                descriptor.Type = type;
-                return this;
-            }
+            this.Aliases.Add(alias);
 
-
-            _aliases[alias] = new AliasDescriptor(alias, type);
             return this;
         }
-        public ServiceConfiguration<T> AddAlias<TAlias>(AliasType type = AliasType.Filtered)
+        public ServiceConfiguration<TService> AddAlias<TAlias>(Action<AliasConfiguration>? configure = null)
         {
-            return this.AddAlias(typeof(TAlias), type);
+            return this.AddAlias(typeof(TAlias), configure);
         }
 
-        public ServiceConfiguration<T> AddAliases(AliasType type = AliasType.Filtered, params Type[] aliases)
+        public ServiceConfiguration<TService> AddAliases(Action<AliasConfiguration>? configure = null, params Type[] types)
         {
-            foreach(Type alias in aliases)
+            foreach(Type alias in types)
             {
-                this.AddAlias(alias, type);
+                this.AddAlias(alias, configure);
             }
 
             return this;
         }
 
-        public ServiceConfiguration<T> AddInterfaceAliases(AliasType type = AliasType.Filtered)
+        public ServiceConfiguration<TService> AddInterfaceAliases(Action<AliasConfiguration>? configure = null)
         {
-            foreach (Type alias in this.Type.GetInterfaces())
+            foreach (Type alias in this.Type.GetInterfaces().Distinct())
             {
-                this.AddAlias(alias, type);
+                this.AddAlias(alias, configure);
             }
 
             return this;
         }
 
-        void IServiceCollectionManager.Refresh(IServiceCollection services)
+        void IServiceConfiguration.Refresh(IServiceCollection services)
         {
             if(!_dirty)
             {
@@ -158,23 +152,10 @@ namespace Guppy.Common.DependencyInjection
                 implementationType: this.ImplementationType,
                 factory: this.Factory);
 
-            foreach (AliasDescriptor descriptor in this.GetAliasDescriptors(AliasType.Unfiltered))
+            foreach (ServiceDescriptor descriptor in this.Aliases.GetDescriptors())
             {
-                yield return ServiceDescriptorHelper.Describe(
-                    serviceType: descriptor.Alias,
-                    lifetime: this.Lifetime ?? DefaultLifetime,
-                    factory: this.UnfilteredAliasFactory);
+                yield return descriptor;
             }
-        }
-
-        public IEnumerable<AliasDescriptor> GetAliasDescriptors(AliasType type)
-        {
-            return this.Aliases.Values.Where(x => x.Type == type);
-        }
-
-        private object UnfilteredAliasFactory(IServiceProvider provider)
-        {
-            return provider.GetRequiredService(this.ServiceType);
         }
 
         IServiceConfiguration IServiceConfiguration.SetImplementationType(Type? implementationType)
@@ -194,7 +175,7 @@ namespace Guppy.Common.DependencyInjection
                 return this.SetInstance(null);
             }
 
-            if (instance is T casted)
+            if (instance is TService casted)
             {
                 return this.SetInstance(casted);
             }
@@ -209,7 +190,7 @@ namespace Guppy.Common.DependencyInjection
                 return this.SetFactory(null);
             }
 
-            if (factory is Func<IServiceProvider, T> casted)
+            if (factory is Func<IServiceProvider, TService> casted)
             {
                 return this.SetFactory(casted);
             }
@@ -217,24 +198,24 @@ namespace Guppy.Common.DependencyInjection
             throw new ArgumentException();
         }
 
-        IServiceConfiguration IServiceConfiguration.AddAlias(Type alias, AliasType type = AliasType.Filtered)
+        IServiceConfiguration IServiceConfiguration.AddAlias(Type alias, Action<AliasConfiguration>? configure = null)
         {
-            return this.AddAlias(alias, type);
+            return this.AddAlias(alias, configure);
         }
 
-        IServiceConfiguration IServiceConfiguration.AddAlias<TAlias>(AliasType type = AliasType.Filtered)
+        IServiceConfiguration IServiceConfiguration.AddAlias<TAlias>(Action<AliasConfiguration>? configure = null)
         {
-            return this.AddAlias<TAlias>(type);
+            return this.AddAlias<TAlias>(configure);
         }
 
-        IServiceConfiguration IServiceConfiguration.AddAliases(AliasType type = AliasType.Filtered, params Type[] aliases)
+        IServiceConfiguration IServiceConfiguration.AddAliases(Action<AliasConfiguration>? configure = null, params Type[] aliases)
         {
-            return this.AddAliases(type, aliases);
+            return this.AddAliases(configure, aliases);
         }
 
-        IServiceConfiguration IServiceConfiguration.AddInterfaceAliases(AliasType type = AliasType.Filtered)
+        IServiceConfiguration IServiceConfiguration.AddInterfaceAliases(Action<AliasConfiguration>? configure = null)
         {
-            return this.AddInterfaceAliases(type);
+            return this.AddInterfaceAliases(configure);
         }
 
         IServiceConfiguration IServiceConfiguration.SetImplementationType<TImplementation>()

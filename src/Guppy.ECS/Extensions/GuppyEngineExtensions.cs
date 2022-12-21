@@ -1,4 +1,4 @@
-﻿using Guppy.ECS.Initializers;
+﻿using Guppy.ECS.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Guppy
                 return guppy;
             }
 
-            return guppy.AddInitializer(new ECSInitializer(), 0)
+            return guppy.AddLoader(new ECSLoader(), 0)
                 .AddTag(nameof(ConfigureECS));
         }
     }

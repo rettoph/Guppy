@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.DependencyInjection;
+using Guppy.Common.DependencyInjection.Interfaces;
 using System.Diagnostics;
 
 namespace Guppy.Common.Providers
@@ -9,10 +10,10 @@ namespace Guppy.Common.Providers
         private class FilterableImplementation
         {
             public readonly IServiceConfiguration Service;
-            public readonly AliasDescriptor Alias;
+            public readonly AliasConfiguration Alias;
             public readonly IFilter[] Filters;
 
-            public FilterableImplementation(IServiceConfiguration service, AliasDescriptor alias, IFilter[] filters)
+            public FilterableImplementation(IServiceConfiguration service, AliasConfiguration alias, IFilter[] filters)
             {
                 this.Service = service;
                 this.Alias = alias;
@@ -38,8 +39,8 @@ namespace Guppy.Common.Providers
         public AliasProvider(IEnumerable<IServiceConfiguration> services, IEnumerable<IFilter> filters)
         {
             // Load distinct alias types
-            var keys = services.SelectMany(x => x.GetAliasDescriptors(AliasType.Filtered))
-                .Select(x => x.Alias)
+            var keys = services.SelectMany(x => x.Aliases)
+                .Select(x => x.Type)
                 .Distinct()
                 .ToArray();
 
@@ -50,11 +51,11 @@ namespace Guppy.Common.Providers
             {
                 foreach(IServiceConfiguration service in services)
                 {
-                    if(service.Aliases.ContainsKey(alias))
+                    if(service.Aliases.Contains(alias))
                     {
                         filteredAliases.Add(new FilterableImplementation(
                             service: service,
-                            alias: service.Aliases[alias],
+                            alias: service.Aliases.Get(alias),
                             filters: filters.Where(x => x.AppliesTo(service.Type)).ToArray()));
                     }
                 }

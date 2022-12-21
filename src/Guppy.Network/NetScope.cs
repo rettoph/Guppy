@@ -55,13 +55,12 @@ namespace Guppy.Network
         public event OnChangedEventDelegate<NetScope, NetState>? OnStateChanged;
 
         public NetScope(
-            ILogger log,
             ISettingProvider settings, 
             IUserProvider users,
             IBus bus,
             INetSerializerProvider serializers,
             IFiltered<INetOutgoingMessageFactory> factories,
-            IEnumerable<NetMessageTypeDefinition> definitions) : base(log)
+            IEnumerable<NetMessageTypeDefinition> definitions) : base()
         {
             _state = NetState.Stopped;
             _users = users;

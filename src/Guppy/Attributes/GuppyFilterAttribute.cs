@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Attributes;
 using Guppy.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public sealed class GuppyFilterAttribute : InitializableAttribute
     {
         public readonly Type GuppyType;

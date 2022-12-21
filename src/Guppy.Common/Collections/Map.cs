@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -66,6 +67,16 @@ namespace Guppy.Common.Collections
             {
                 _forward.Remove(t1);
             }
+        }
+
+        public bool TryGet(T1 key, [MaybeNullWhen(false)] out T2 value)
+        {
+            return _forward.TryGetValue(key, out value);
+        }
+
+        public bool TryGet(T2 key, [MaybeNullWhen(false)] out T1 value)
+        {
+            return _reverse.TryGetValue(key, out value);
         }
     }
 }

@@ -22,18 +22,19 @@ namespace Guppy.Common.Implementations
         public Filtered(
             IAliasProvider aliases,
             IServiceProvider provider,
-            IEnumerable<T> items)
+            Lazy<IEnumerable<T>> items)
+
         {
             _items = new Lazy<IList<T>>(() =>
             {
-                var list = new List<T>(items.Concat(aliases.GetServices<T>(provider)));
+                var list = new List<T>(items.Value.Concat(aliases.GetServices<T>(provider)));
 
                 return list;
             });
 
             _instance = new Lazy<T?>(() =>
             {
-                return aliases.GetService<T>(provider) ?? items.LastOrDefault();
+                return aliases.GetService<T>(provider) ?? items.Value.LastOrDefault();
             });
         }
     }

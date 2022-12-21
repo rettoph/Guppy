@@ -5,14 +5,12 @@ namespace Guppy.Common.Implementations
 {
     public class Broker : IBroker
     {
-        private readonly ILogger _log;
-        private Dictionary<Type, IPublisher> _publishers;
+        private readonly IDictionary<Type, IPublisher> _publishers;
 
         public IPublisher this[Type type] => _publishers[type];
 
-        public Broker(ILogger log)
+        public Broker()
         {
-            _log = log;
             _publishers = new Dictionary<Type, IPublisher>();
         }
 
@@ -44,8 +42,6 @@ namespace Guppy.Common.Implementations
                 publisher.Publish(in message);
                 return;
             }
-
-            _log.Warning($"{nameof(Broker)}::{nameof(Publish)} - No publisher found for {message.PublishType}.");
         }
 
         public virtual void Dispose()

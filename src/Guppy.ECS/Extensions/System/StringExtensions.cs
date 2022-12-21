@@ -8,7 +8,9 @@ namespace System
 {
     public static class StringExtensions
     {
+#pragma warning disable IDE1006 // Naming Styles
         public static uint xxHash(this string input)
+#pragma warning restore IDE1006 // Naming Styles
         {
             var bytes = Encoding.Default.GetBytes(input);
 

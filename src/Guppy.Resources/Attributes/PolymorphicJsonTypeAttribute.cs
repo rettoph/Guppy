@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Guppy.Resources.Serialization.Json;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,11 +18,6 @@ namespace Guppy.Resources.Attributes
         public PolymorphicJsonTypeAttribute(string key)
         {
             this.Key = key;
-        }
-
-        public override bool ShouldInitialize(IServiceCollection services, Type classType)
-        {
-            return true;
         }
 
         public override void Initialize(IServiceCollection services, Type classType)

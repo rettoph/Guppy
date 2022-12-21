@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.DependencyInjection
+namespace Guppy.Common.DependencyInjection.Interfaces
 {
-    public interface IServiceConfiguration : IServiceCollectionManager
+    public interface IServiceConfiguration
     {
         Type ServiceType { get; }
 
@@ -19,12 +19,12 @@ namespace Guppy.Common.DependencyInjection
 
         Func<IServiceProvider, object>? Factory { get; }
 
-        IReadOnlyDictionary<Type, AliasDescriptor> Aliases { get; }
+        AliasesConfiguration Aliases { get; }
 
         IServiceConfiguration SetImplementationType(Type? implementationType);
 
         IServiceConfiguration SetImplementationType<TImplementation>()
-            where TImplementation: class;
+            where TImplementation : class;
 
         IServiceConfiguration SetLifetime(ServiceLifetime? lifetime);
 
@@ -32,14 +32,13 @@ namespace Guppy.Common.DependencyInjection
 
         IServiceConfiguration SetFactory(Func<IServiceProvider, object>? factory);
 
-        IServiceConfiguration AddAlias(Type alias, AliasType type = AliasType.Filtered);
+        IServiceConfiguration AddAlias(Type alias, Action<AliasConfiguration>? configure = null);
 
-        IServiceConfiguration AddAlias<TAlias>(AliasType type = AliasType.Filtered);
+        IServiceConfiguration AddAlias<TAlias>(Action<AliasConfiguration>? configure = null);
 
-        IServiceConfiguration AddAliases(AliasType type = AliasType.Filtered, params Type[] aliases);
+        IServiceConfiguration AddAliases(Action<AliasConfiguration>? configure = null, params Type[] aliases);
 
-        IServiceConfiguration AddInterfaceAliases(AliasType type = AliasType.Filtered);
-
-        IEnumerable<AliasDescriptor> GetAliasDescriptors(AliasType type);
+        IServiceConfiguration AddInterfaceAliases(Action<AliasConfiguration>? configure = null);
+        internal void Refresh(IServiceCollection services);
     }
 }

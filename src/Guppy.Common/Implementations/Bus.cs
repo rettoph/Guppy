@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,12 +27,11 @@ namespace Guppy.Common.Implementations
         public Guid Id { get; } = Guid.NewGuid();
 
         public Bus(
-            ILogger log,
             IFiltered<ISubscriber> subscribers,
             IOptions<BusConfiguration> config)
         {
             _subscribers = subscribers;
-            _broker = new Broker(log);
+            _broker = new Broker();
 
             _queues = config.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
@@ -48,7 +48,7 @@ namespace Guppy.Common.Implementations
 
         public void Initialize()
         {
-            foreach (ISubscriber subscriber in _subscribers.Items)
+            foreach (ISubscriber subscriber in _subscribers.Items.Sort())
             {
                 this.SubscribeAll(subscriber);
             }

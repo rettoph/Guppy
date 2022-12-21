@@ -6,7 +6,6 @@ using MonoGame.Extended;
 
 namespace Guppy.MonoGame.Services
 {
-    [AutoSubscribe]
     internal abstract class BaseWindowService : SimpleDrawableGameComponent, ISubscriber<ToggleWindowInput>
     {
         public abstract ToggleWindowInput.Windows Window { get; }

@@ -45,6 +45,7 @@ namespace Guppy
 
             return guppy.ConfigureGame<TGlobalBrokerPublishStrategy>()
                 .AddInitializer(new InputInitializer(), 0)
+                .AddInitializer(new MonoGameInitializer(), 0)
                 .AddLoader(new MonoGameLoader(game, graphics, content, window), 0)
                 .AddTag(nameof(ConfigureMonoGame));
         }

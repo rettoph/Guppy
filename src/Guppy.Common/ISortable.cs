@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.ECS.Attributes
+namespace Guppy.Common
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public sealed class ComponentTypeAttribute : Attribute
+    public interface ISortable
     {
+        int GetOrder(Type enumerableType);
     }
 }

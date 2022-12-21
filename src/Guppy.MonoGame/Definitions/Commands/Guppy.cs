@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Definitions.Commands
 {
-    [AutoLoad]
+    [AutoLoad(0)]
     public class Guppy : CommandDefinition
     {
     }

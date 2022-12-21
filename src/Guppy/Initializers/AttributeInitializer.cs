@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Attributes;
 using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,17 +16,12 @@ namespace Guppy.Initializers
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var typesAttributes = assemblies.GetAttributes<InitializableAttribute>(true);
+            var typesInitializableAttributes = assemblies.GetAttributes<InitializableAttribute>(true);
 
-            foreach((Type type, InitializableAttribute[] attributes) in typesAttributes)
+            foreach((Type type, InitializableAttribute[] attributes) in typesInitializableAttributes)
             {
                 foreach(var attribute in attributes)
                 {
-                    if(!attribute.ShouldInitialize(services, type))
-                    {
-                        continue;
-                    }
-
                     attribute.Initialize(services, type);
                 }
             }

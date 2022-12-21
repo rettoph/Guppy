@@ -24,9 +24,9 @@ namespace Guppy.Common.Providers
             this.Libraries = libraries?.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
         }
 
-        public void Load(Assembly assembly)
+        public void Load(Assembly assembly, bool forced = false)
         {
-            if(!this.ShouldLoad(assembly))
+            if(!this.ShouldLoad(assembly, forced))
             {
                 return;
             }
@@ -42,8 +42,13 @@ namespace Guppy.Common.Providers
             this.OnAssemblyLoaded?.Invoke(this, assembly);
         }
 
-        private bool ShouldLoad(Assembly assembly)
+        private bool ShouldLoad(Assembly assembly, bool forced)
         {
+            if(forced)
+            {
+                return _assemblies.Add(assembly);
+            }
+
             if (this.Libraries.Length == 0)
             {
                 return _assemblies.Add(assembly);

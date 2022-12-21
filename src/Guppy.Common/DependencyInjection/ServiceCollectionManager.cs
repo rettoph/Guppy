@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy.Common.DependencyInjection.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.DependencyInjection
 {
-    public class ServiceCollectionManager : IServiceCollectionManager
+    internal sealed class ServiceCollectionManager : IServiceCollectionManager
     {
-        private IDictionary<Type, IList<IServiceConfiguration>> _services;
+        private readonly IDictionary<Type, IList<IServiceConfiguration>> _services;
 
         public ServiceCollectionManager()
         {
@@ -18,14 +19,11 @@ namespace Guppy.Common.DependencyInjection
 
         public IServiceConfiguration AddService(Type serviceType)
         {
-            if (!_services.TryGetValue(serviceType, out var configurations))
-            {
-                configurations = new List<IServiceConfiguration>();
-                _services.Add(serviceType, configurations);
-            }
+            var configurations = new List<IServiceConfiguration>();
+            _services.Add(serviceType, configurations);
 
             Type configurationType = typeof(ServiceConfiguration<>).MakeGenericType(serviceType);
-            var configuration = (IServiceConfiguration)Activator.CreateInstance(configurationType, new[] { this })!;
+            var configuration = (IServiceConfiguration)Activator.CreateInstance(configurationType, new object[] { })!;
             configurations.Add(configuration);
 
             return configuration;
@@ -53,7 +51,7 @@ namespace Guppy.Common.DependencyInjection
 
         public void Refresh(IServiceCollection services)
         {
-            foreach(IServiceCollectionManager service in _services.Values.SelectMany(x => x))
+            foreach(IServiceConfiguration service in _services.Values.SelectMany(x => x))
             {
                 service.Refresh(services);
             }

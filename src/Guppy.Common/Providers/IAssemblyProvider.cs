@@ -18,7 +18,8 @@ namespace Guppy.Common.Providers
         /// <see cref="Libraries"/>.
         /// </summary>
         /// <param name="assembly"></param>
-        void Load(Assembly assembly);
+        /// <param name="forced"></param>
+        void Load(Assembly assembly, bool forced = false);
 
         /// <summary>
         /// Create a <see cref="ITypeProvider{T}"/> for the requested
