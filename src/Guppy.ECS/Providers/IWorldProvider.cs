@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.ECS.Services
+namespace Guppy.ECS.Providers
 {
-    public interface IWorldService
+    public interface IWorldProvider
     {
-        World Instance { get; }
+        World Get(object? configuration);
     }
 }

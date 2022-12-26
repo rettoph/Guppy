@@ -10,6 +10,6 @@ namespace Guppy.Common
         where T : class
     {
         public T? Instance { get; }
-        public IEnumerable<T> Items { get; }
+        public IEnumerable<T> Instances { get; }
     }
 }

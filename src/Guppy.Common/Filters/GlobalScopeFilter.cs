@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Common.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,11 +12,11 @@ namespace Guppy.Filters
 {
     public class GlobalScopeFilter : SimpleFilter
     {
-        public GlobalScopeFilter(Type implementationType) : base(implementationType)
+        public GlobalScopeFilter(Type type) : base(type)
         {
         }
 
-        public override bool Invoke(IServiceProvider provider, Type implementationType)
+        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration)
         {
             var result = provider.GetRequiredService<Global>().Scope.Instance.GetHashCode() == provider.GetHashCode();
 
@@ -23,9 +24,9 @@ namespace Guppy.Filters
         }
     }
 
-    public class GlobalScopeFilter<TImplementation> : GlobalScopeFilter
+    public class GlobalScopeFilter<T> : GlobalScopeFilter
     {
-        public GlobalScopeFilter() : base(typeof(TImplementation))
+        public GlobalScopeFilter() : base(typeof(T))
         {
         }
     }

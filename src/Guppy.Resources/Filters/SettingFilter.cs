@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Filters;
+﻿using Guppy.Common.DependencyInjection.Interfaces;
+using Guppy.Common.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,17 +15,17 @@ namespace Guppy.Resources.Filters
         public readonly string Key;
         public readonly TSetting RequiredValue;
 
-        public SettingFilter(TSetting requiredValue, Type implementationType) : this(typeof(TSetting).FullName!, requiredValue, implementationType)
+        public SettingFilter(TSetting requiredValue, Type type) : this(typeof(TSetting).FullName!, requiredValue, type)
         {
         }
 
-        public SettingFilter(string key, TSetting requiredValue, Type implementationType) : base(implementationType)
+        public SettingFilter(string key, TSetting requiredValue, Type type) : base(type)
         {
             this.Key = key;
             this.RequiredValue = requiredValue;
         }
 
-        public override bool Invoke(IServiceProvider provider, Type implementationType)
+        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration)
         {
             var setting = provider.GetSetting<TSetting>(this.Key);
             var result = setting.Value.Equals(this.RequiredValue);

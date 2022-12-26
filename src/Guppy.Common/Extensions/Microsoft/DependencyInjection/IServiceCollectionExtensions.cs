@@ -15,10 +15,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddSingleton(typeof(IGlobal<>), typeof(Global<>))
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
-                    .AddTransient(typeof(IFiltered<>), typeof(Filtered<>))
                     .AddSingleton<IAliasProvider, AliasProvider>()
                     .AddScoped<IBus, Bus>()
-                    .AddScoped<BusConfiguration>();
+                    .AddScoped<BusConfiguration>()
+                    .AddScoped<IFilteredProvider, FilteredProvider>()
+                    .AddTransient(typeof(IFiltered<>), typeof(Filtered<>));
         }
 
         private static readonly ConditionalWeakTable<IServiceCollection, IList<IServiceCollectionManager>> _managers = new();

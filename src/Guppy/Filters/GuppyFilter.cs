@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Common.Filters;
 using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
@@ -16,14 +17,14 @@ namespace Guppy.Filters
     {
         public readonly Type GuppType;
 
-        public GuppyFilter(Type implementationType, Type guppyType) : base(implementationType)
+        public GuppyFilter(Type type, Type guppy) : base(type)
         {
-            ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
+            ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppy);
 
-            this.GuppType = guppyType;
+            this.GuppType = guppy;
         }
 
-        public override bool Invoke(IServiceProvider provider, Type implementationType)
+        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration)
         {
             var guppy = provider.GetRequiredService<ServiceActivator<IGuppy>>();
 
@@ -38,10 +39,10 @@ namespace Guppy.Filters
         }
     }
 
-    public class GuppyFilter<TImplementation, TGuppy> : GuppyFilter
+    public class GuppyFilter<T, TGuppy> : GuppyFilter
         where TGuppy : IGuppy
     {
-        public GuppyFilter() : base(typeof(TImplementation), typeof(TGuppy))
+        public GuppyFilter() : base(typeof(T), typeof(TGuppy))
         {
         }
     }

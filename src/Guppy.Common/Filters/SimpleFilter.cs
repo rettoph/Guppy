@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common.DependencyInjection.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Filters
 {
-    public abstract class SimpleFilter : IFilter
+    public abstract class SimpleFilter : IServiceFilter
     {
-        public readonly Type ImplementationType;
+        public readonly Type Type;
 
-        protected SimpleFilter(Type implementationType)
+        protected SimpleFilter(Type type)
         {
-            this.ImplementationType = implementationType;
+            this.Type = type;
         }
 
-        public virtual void Initialize(IServiceProvider provider)
+        public virtual void Initialize(IServiceProvider provier)
         {
-
+            //
         }
 
-        public virtual bool AppliesTo(Type implementationType)
+        public virtual bool AppliesTo(IServiceConfiguration service)
         {
-            var result = implementationType == this.ImplementationType;
+            var result = this.Type.IsAssignableFrom(service.Type);
 
             return result;
         }
 
-        public abstract bool Invoke(IServiceProvider provider, Type implementationType);
+        public abstract bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration);
     }
 }

@@ -6,18 +6,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using Guppy.Common.Collections;
 
 namespace Guppy.MonoGame.Utilities.Cameras
 {
     public class Camera2D : Camera, IDisposable
     {
+        private float _deltaTimeSum;
         private readonly GameWindow _window;
         private Vector2 _position;
+        private Vector2 _velocity;
         private float _zoom;
-        private float _zoomTarget;
-        private Vector2 _positionTarget;
+        private Vector2 _targetPosition;
+        private Vector2 _targetVelocity;
+        private float _targetZoom;
         private float _minZoom = float.Epsilon;
         private float _maxZoom = float.MaxValue;
+        private bool _dirtyViewportBounds;
+
+        /// <summary>
+        /// When true, the position of the camera will be centered on the viewport.
+        /// 
+        /// Otherwise, the position represents the top left corner of the viewport.
+        /// </summary>
+        public bool Center = true;
+
+        public float ZoomDamp = 1f;
+        public float MoveDamping = 1f;
 
         public RectangleF ViewportBounds { get; private set; }
 
@@ -27,39 +42,64 @@ namespace Guppy.MonoGame.Utilities.Cameras
             set
             {
                 _position = value;
-                _positionTarget = value;
-                this.dirty = true;
+                _targetPosition = value;
             }
         }
 
-        /// <summary>
-        /// When true, the position of the camera will be centered on the viewport.
-        /// 
-        /// Otherwise, the position represents the top left corner of the viewport.
-        /// </summary>
-        public bool Center { get; set; } = true;
-        public float ZoomLerpStrength = 0.015625f;
-        public float MoveLerpStrength = 0.015625f;
+        public Vector2 Velocity
+        {
+            get => _velocity;
+            set
+            {
+                _velocity = value;
+                _targetVelocity = value;
+            }
+        }
+
         public float Zoom
         {
             get => _zoom;
             set
             {
                 _zoom = value;
-                _zoomTarget = value;
-                this.dirty = true;
+                _targetZoom = value;
             }
         }
 
-        public float ZoomTarget { get => _zoomTarget; }
-        public Vector2 PositionTarget { get => _positionTarget; }
+        public Vector2 TargetPosition
+        {
+            get => _targetPosition;
+            set
+            {
+                _targetPosition = value;
+            }
+        }
+
+        public Vector2 TargetVelocity
+        {
+            get => _targetVelocity;
+            set
+            {
+                _targetVelocity = value;
+            }
+        }
+
+        public float TargetZoom
+        {
+            get => _targetZoom;
+            set
+            {
+                _targetZoom = value;
+            }
+        }
+
         public float MaxZoom
         {
             get => _maxZoom;
             set
             {
                 _maxZoom = value;
-                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
+                _targetZoom = MathHelper.Clamp(_targetZoom, this.MinZoom, this.MaxZoom);
                 this.Zoom = MathHelper.Clamp(this.Zoom, this.MinZoom, this.MaxZoom);
             }
         }
@@ -69,7 +109,7 @@ namespace Guppy.MonoGame.Utilities.Cameras
             set
             {
                 _minZoom = value;
-                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
+                _targetZoom = MathHelper.Clamp(_targetZoom, this.MinZoom, this.MaxZoom);
                 this.Zoom = MathHelper.Clamp(this.Zoom, this.MinZoom, this.MaxZoom);
             }
         }
@@ -77,6 +117,7 @@ namespace Guppy.MonoGame.Utilities.Cameras
         public Camera2D(GraphicsDevice graphics, GameWindow window) : base(graphics)
         {
             _window = window;
+            _dirtyViewportBounds = true;
 
             this.Zoom = 1;
             this.Position = Vector2.Zero;
@@ -89,27 +130,44 @@ namespace Guppy.MonoGame.Utilities.Cameras
             _window.ClientSizeChanged -= this.HandleClientBoundsChanged;
         }
 
-        public override bool Clean(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            this.ViewportBounds = this.BuildViewportBounds();
+            if(_dirtyViewportBounds)
+            {
+                this.ViewportBounds = this.BuildViewportBounds();
+                _dirtyViewportBounds = false;
+            }
 
-            base.Clean(gameTime);
+            base.Update(gameTime);
 
-            var elapsedMilliseconds = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            var delataTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (MathHelper.Distance(this.Zoom, _zoomTarget) > 0.0001f)
+            if (MathHelper.Distance(_zoom, _targetZoom) > 0.0001f)
             { // Lerp to the zoom target
-                _zoom = MathHelper.Lerp(this.Zoom, _zoomTarget, Math.Min(1, this.ZoomLerpStrength * elapsedMilliseconds));
-                return false;
+                _zoom = MathHelper.Lerp(
+                    value1: _zoom, 
+                    value2: _targetZoom, 
+                    amount: this.ZoomDamp * delataTime);
             }
 
-            if (Vector2.Distance(this.Position, _positionTarget) > 0.001f)
+            if(Vector2.Distance(_velocity, _targetVelocity) > 0.001f)
+            { // Lerp to velocity target
+                _velocity = Vector2.Lerp(
+                    value1: _velocity,
+                    value2: _targetVelocity,
+                    amount: this.MoveDamping * delataTime);
+            }
+
+            _position += _velocity * delataTime;
+            _targetPosition += _targetVelocity * delataTime;
+
+            if (Vector2.Distance(_position, _targetPosition) > 0.001f)
             { // Lerp to the position target
-                _position = Vector2.Lerp(this.Position, _positionTarget, Math.Min(1, this.MoveLerpStrength * elapsedMilliseconds));
-                return false;
+                _position = Vector2.Lerp(
+                    value1: _position, 
+                    value2: _targetPosition, 
+                    amount: this.MoveDamping * delataTime);
             }
-
-            return true;
         }
 
         protected override void SetWorld(ref Matrix world)
@@ -157,79 +215,9 @@ namespace Guppy.MonoGame.Utilities.Cameras
                 height: this.graphics.Viewport.Bounds.Height);
         }
 
-        public void MoveTo(float x, float y)
-        {
-            if (x != _position.X || y != _position.Y)
-            {
-                _positionTarget.X = x;
-                _positionTarget.Y = y;
-
-                this.dirty = true;
-            }
-        }
-        public void MoveTo(Vector2 pos)
-        {
-            if (pos.X != _positionTarget.X || pos.Y != _positionTarget.Y)
-            {
-                _positionTarget.X = pos.X;
-                _positionTarget.Y = pos.Y;
-
-                this.dirty = true;
-            }
-        }
-        public void MoveTo(ref Vector2 pos)
-        {
-            if (pos != _positionTarget)
-            {
-                _positionTarget = pos;
-
-                this.dirty = true;
-            }
-        }
-
-        public void MoveBy(float x, float y)
-        {
-            if (x != 0 || y != 0)
-            {
-                _positionTarget.X += x;
-                _positionTarget.Y += y;
-
-                this.dirty = true;
-            }
-        }
-        public void MoveBy(Vector2 pos)
-        {
-            if (pos != Vector2.Zero)
-            {
-                _positionTarget += pos;
-
-                this.dirty = true;
-            }
-        }
-
-        public void ZoomBy(float multiplier)
-        {
-            if (multiplier != 1)
-            {
-                _zoomTarget *= multiplier;
-                _zoomTarget = MathHelper.Clamp(_zoomTarget, this.MinZoom, this.MaxZoom);
-
-                this.dirty = true;
-            }
-        }
-        public void ZoomTo(float value)
-        {
-            if (value != _zoomTarget)
-            {
-                _zoomTarget = MathHelper.Clamp(value, this.MinZoom, this.MaxZoom);
-
-                this.dirty = true;
-            }
-        }
-
         private void HandleClientBoundsChanged(object? sender, EventArgs e)
         {
-            this.dirty = true;
+            _dirtyViewportBounds = true;
         }
     }
 }

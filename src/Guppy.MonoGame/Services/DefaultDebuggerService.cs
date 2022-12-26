@@ -26,7 +26,7 @@ namespace Guppy.MonoGame.Services
         }
         protected DefaultDebuggerService(IFiltered<IDebugger> debuggers, params IManagedCollection[] collections) : base(false)
         {
-            this.debuggers = new CollectionManager<IDebugger>(debuggers.Items, collections.Concat(new IManagedCollection[]
+            this.debuggers = new CollectionManager<IDebugger>(debuggers.Instances, collections.Concat(new IManagedCollection[]
             {
                 new DrawableCollection(),
                 new UpdateableCollection()

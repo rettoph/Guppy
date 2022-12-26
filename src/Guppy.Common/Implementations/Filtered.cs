@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Providers;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,30 +13,34 @@ namespace Guppy.Common.Implementations
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class
     {
-        private readonly Lazy<IList<T>> _items;
-        private readonly Lazy<T?> _instance;
+        private readonly IServiceProvider _provider;
+        private readonly IAliasProvider _aliases;
+        private readonly object? _configuration;
 
-        public IEnumerable<T> Items => _items.Value;
+        private IEnumerable<T>? _unfiltered;
+        private IEnumerable<T>? _items;
+        private T? _item;
 
-        public T? Instance => _instance.Value;
+        public IEnumerable<T> Unfiltered => _unfiltered ??= _provider.GetRequiredService<IEnumerable<T>>();
+        
+        public IEnumerable<T> Instances => _items ??= this.Unfiltered.Concat(_aliases.GetServices<T>(_provider, _configuration)).ToArray();
+
+        public T? Instance => _item ??= _aliases.GetService<T>(_provider, _configuration) ?? this.Unfiltered.LastOrDefault();
 
         public Filtered(
-            IAliasProvider aliases,
             IServiceProvider provider,
-            Lazy<IEnumerable<T>> items)
-
+            IAliasProvider aliases) : this(provider, aliases, null)
         {
-            _items = new Lazy<IList<T>>(() =>
-            {
-                var list = new List<T>(items.Value.Concat(aliases.GetServices<T>(provider)));
 
-                return list;
-            });
-
-            _instance = new Lazy<T?>(() =>
-            {
-                return aliases.GetService<T>(provider) ?? items.Value.LastOrDefault();
-            });
+        }
+        public Filtered(
+            IServiceProvider provider,
+            IAliasProvider aliases,
+            object? configuration)
+        {
+            _provider = provider;
+            _aliases = aliases;
+            _configuration = configuration;
         }
     }
 }

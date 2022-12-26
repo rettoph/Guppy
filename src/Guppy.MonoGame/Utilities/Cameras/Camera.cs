@@ -15,8 +15,6 @@ namespace Guppy.MonoGame.Utilities.Cameras
         private Matrix _view;
         private Matrix _projection;
 
-        protected bool dirty;
-
         protected readonly GraphicsDevice graphics;
 
         public Matrix World { get { return _world; } }
@@ -34,26 +32,16 @@ namespace Guppy.MonoGame.Utilities.Cameras
 
             this.Frustum = new BoundingFrustum(Matrix.Identity);
 
-            this.Clean(MiscConstants.EmptyGameTime);
+            this.Update(MiscConstants.EmptyGameTime);
         }
 
         public virtual void Update(GameTime gameTime)
-        {
-            if (this.dirty)
-            {
-                this.dirty = !this.Clean(gameTime);
-            }
-        }
-
-        public virtual bool Clean(GameTime gameTime)
         {
             this.SetWorld(ref _world);
             this.SetView(ref _view);
             this.SetProjection(ref _projection);
 
             this.Frustum.Matrix = this.View * this.Projection;
-
-            return true;
         }
 
         #region Matrix Methods

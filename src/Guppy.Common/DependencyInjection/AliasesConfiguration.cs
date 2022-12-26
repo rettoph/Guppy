@@ -27,6 +27,8 @@ namespace Guppy.Common.DependencyInjection
 
         public void Add(AliasConfiguration alias)
         {
+            ThrowIf.Type.IsNotAssignableFrom(alias.Type, _service.Type);
+
             _aliases.Add(alias.Type, alias);
         }
 

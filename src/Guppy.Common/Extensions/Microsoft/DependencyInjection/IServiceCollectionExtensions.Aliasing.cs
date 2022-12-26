@@ -1,5 +1,6 @@
 ﻿using Guppy;
 using Guppy.Common;
+using Guppy.Common.DependencyInjection.Interfaces;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
@@ -14,33 +15,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddFilter(
             this IServiceCollection services,
-            IFilter filter)
+            IServiceFilter filter)
         {
             services.AddSingleton(filter);
-
-            return services;
-        }
-
-        public static IServiceCollection AddFilters(
-            this IServiceCollection services,
-            IEnumerable<IFilter> filters)
-        {
-            foreach (var filter in filters)
-            {
-                services.AddFilter(filter);
-            }
-
-            return services;
-        }
-
-        public static IServiceCollection AddFilters(
-            this IServiceCollection services,
-            params IFilter[] filters)
-        {
-            foreach (var filter in filters)
-            {
-                services.AddFilter(filter);
-            }
 
             return services;
         }

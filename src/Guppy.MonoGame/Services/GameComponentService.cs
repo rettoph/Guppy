@@ -25,7 +25,7 @@ namespace Guppy.MonoGame.Services
         {
             _drawables = new DrawableCollection();
             _updatables = new UpdateableCollection();
-            _components = new CollectionManager<IGameComponent>(components.Items, _drawables, _updatables);
+            _components = new CollectionManager<IGameComponent>(components.Instances, _drawables, _updatables);
 
             foreach(IGameComponent component in _components)
             {
@@ -46,17 +46,6 @@ namespace Guppy.MonoGame.Services
         public void Update(GameTime gameTime)
         {
             _updatables.Update(gameTime);
-        }
-
-        private IEnumerable<T> GetAll<T>()
-        {
-            foreach (IGameComponent component in _components)
-            {
-                if (component is T casted)
-                {
-                    yield return casted;
-                }
-            }
         }
 
         public IEnumerator<IGameComponent> GetEnumerator()

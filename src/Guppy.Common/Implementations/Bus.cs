@@ -48,7 +48,7 @@ namespace Guppy.Common.Implementations
 
         public void Initialize()
         {
-            foreach (ISubscriber subscriber in _subscribers.Items.Sort())
+            foreach (ISubscriber subscriber in _subscribers.Instances.Sort())
             {
                 this.SubscribeAll(subscriber);
             }
@@ -56,7 +56,7 @@ namespace Guppy.Common.Implementations
 
         public void Dispose()
         {
-            foreach (ISubscriber subscriber in _subscribers.Items)
+            foreach (ISubscriber subscriber in _subscribers.Instances)
             {
                 this.UnsubscribeAll(subscriber);
             }
