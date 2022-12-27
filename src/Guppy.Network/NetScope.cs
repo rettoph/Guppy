@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Collections;
 using Guppy.Common.Implementations;
+using Guppy.Network.Constants;
 using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
@@ -15,6 +16,7 @@ using Guppy.Resources;
 using Guppy.Resources.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Collections.Concurrent;
@@ -28,7 +30,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope : Broker, 
+    public sealed class NetScope : 
         ISubscriber<INetOutgoingMessage>,
         ISubscriber<INetIncomingMessage<UserAction>>, 
         IDisposable
@@ -41,6 +43,7 @@ namespace Guppy.Network
         internal byte id;
 
         public byte Id => this.id;
+
         public NetState State
         {
             get => _state;
@@ -60,7 +63,7 @@ namespace Guppy.Network
             IBus bus,
             INetSerializerProvider serializers,
             IFiltered<INetOutgoingMessageFactory> factories,
-            IEnumerable<NetMessageTypeDefinition> definitions) : base()
+            IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _state = NetState.Stopped;
             _users = users;
@@ -88,10 +91,8 @@ namespace Guppy.Network
             this.Users.OnUserLeft += this.HandleUserLeft;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            base.Dispose();
-
             this.Bus.Unsubscribe<INetOutgoingMessage>(this);
             this.Bus.Unsubscribe<INetIncomingMessage<UserAction>>(this);
 

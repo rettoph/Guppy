@@ -1,4 +1,5 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.Common;
+using Guppy.Network.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System;
@@ -33,7 +34,7 @@ namespace Guppy.Network
         public IEnumerable<object> Data => _data;
         public NetDataWriter Writer => _writer;
 
-        public Type PublishType { get; } = typeof(INetOutgoingMessage);
+        Type IMessage.Type { get; } = typeof(INetOutgoingMessage<T>);
 
         internal NetOutgoingMessage(
             NetMessageType<T> type,

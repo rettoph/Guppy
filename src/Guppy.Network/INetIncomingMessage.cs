@@ -11,7 +11,7 @@ namespace Guppy.Network
         byte Channel { get; }
         DeliveryMethod DeliveryMethod { get; }
         IEnumerable<object> Data { get; }
-        NetMessageType Type { get; }
+        new NetMessageType Type { get; }
 
         public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod);
 

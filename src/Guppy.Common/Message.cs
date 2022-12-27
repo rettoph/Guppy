@@ -9,12 +9,23 @@ namespace Guppy.Common
 {
     public abstract class Message : IMessage
     {
-        [JsonIgnore]
-        public virtual Type PublishType { get; }
+        public Type Type { get; }
 
+        public Message(Type type)
+        {
+            this.Type = type;
+        }
         public Message()
         {
-            this.PublishType = this.GetType();
+            this.Type = this.GetType();
+        }
+    }
+
+    public abstract class Message<T> : Message
+    {
+        public Message() : base(typeof(T))
+        {
+
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Guppy.Network
 
         NetMessageType INetIncomingMessage.Type => _type;
 
-        Type IMessage.PublishType { get; } = typeof(INetIncomingMessage<T>);
+        Type IMessage.Type { get; } = typeof(INetIncomingMessage<T>);
 
         internal NetIncomingMessage(
             NetMessageType<T> type,

@@ -16,8 +16,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
                     .AddSingleton<IAliasProvider, AliasProvider>()
+                    .AddScoped<IBroker, Broker>()
                     .AddScoped<IBus, Bus>()
                     .AddScoped<BusConfiguration>()
+                    .AddScoped<BrokerConfiguration>()
                     .AddScoped<IFilteredProvider, FilteredProvider>()
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>));
         }

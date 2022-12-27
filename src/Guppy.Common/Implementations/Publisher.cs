@@ -35,11 +35,11 @@ namespace Guppy.Common.Implementations
         {
             if (message is T casted)
             {
-                Publish(casted);
+                this.Publish(casted);
                 return;
             }
 
-            throw new ArgumentException(nameof(message));
+            throw new ArgumentException($"{nameof(Publisher)}::{nameof(Publish)} - Unable to assign {typeof(T).Name} from {message.GetType().Name}", nameof(message));
         }
 
         public void Publish(in T message)

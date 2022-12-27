@@ -9,6 +9,6 @@ namespace Guppy.Common
 {
     public interface IMessage
     {
-        Type PublishType { get; }
+        Type Type { get; }
     }
 }

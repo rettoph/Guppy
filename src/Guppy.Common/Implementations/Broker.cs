@@ -1,17 +1,26 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.Options;
+using Serilog;
 using System.Collections;
 
 namespace Guppy.Common.Implementations
 {
     public class Broker : IBroker
     {
+        private readonly BrokerConfiguration _configuration;
         private readonly IDictionary<Type, IPublisher> _publishers;
+        private readonly IDictionary<Type, Type[]> _aliases;
 
         public IPublisher this[Type type] => _publishers[type];
 
-        public Broker()
+        public Broker(IOptions<BrokerConfiguration> configuration) : this(configuration.Value)
         {
+
+        }
+        protected Broker(BrokerConfiguration configuration)
+        {
+            _configuration = configuration;
             _publishers = new Dictionary<Type, IPublisher>();
+            _aliases = new Dictionary<Type, Type[]>();
         }
 
         public void Subscribe<T>(ISubscriber<T> subscriber)
@@ -37,15 +46,25 @@ namespace Guppy.Common.Implementations
 
         public void Publish(in IMessage message)
         {
-            if (_publishers.TryGetValue(message.PublishType, out IPublisher? publisher))
+            if(!_aliases.TryGetValue(message.Type, out Type[]? aliases))
             {
-                publisher.Publish(in message);
-                return;
+                aliases = _configuration.GetAliases(message);
+                _aliases.Add(message.Type, aliases);
+            }
+
+            foreach(Type alias in aliases)
+            {
+                if (_publishers.TryGetValue(alias, out IPublisher? publisher))
+                {
+                    publisher.Publish(in message);
+                }
             }
         }
 
         public virtual void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             foreach (IPublisher publisher in _publishers.Values)
             {
                 publisher.Dispose();

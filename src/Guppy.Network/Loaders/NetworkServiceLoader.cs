@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
+using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Factories;
 using Guppy.Network.Factories.NetOutgoingMessageFactories;
@@ -63,6 +64,11 @@ namespace Guppy.Network.Loaders
                     .AddSingleton<JsonConverter, UShortNetIdJsonConverter>()
                     .AddSingleton<JsonConverter, ClaimJsonConverter>()
                     .AddSingleton<JsonConverter, ClaimTypeJsonConverter>();
+
+            services.Configure<BrokerConfiguration>(configuration =>
+            {
+                configuration.AddMessageAlias<INetOutgoingMessage, INetOutgoingMessage>(true);
+            });
         }
     }
 }

@@ -10,17 +10,17 @@ namespace Guppy.Common
     {
         public static class Type
         {
-            public static void IsNotAssignableFrom(System.Type parent, System.Type child)
+            public static void IsNotAssignableFrom(System.Type to, System.Type from)
             {
-                if (!parent.IsAssignableFrom(child))
+                if (!to.IsAssignableFrom(from))
                 {
-                    throw new ArgumentException($"'{parent.FullName}' is not assignable from '{child.FullName}'.");
+                    throw new ArgumentException($"'{to.FullName}' is not assignable from '{from.FullName}'.");
                 }
             }
 
-            public static void IsNotAssignableFrom<TParent>(System.Type child)
+            public static void IsNotAssignableFrom<TTo>(System.Type from)
             {
-                ThrowIf.Type.IsNotAssignableFrom(typeof(TParent), child);
+                ThrowIf.Type.IsNotAssignableFrom(typeof(TTo), from);
             }
 
             public static void IsNotGenericTypeImplementation(System.Type genericTypeDefinition, System.Type implementation)

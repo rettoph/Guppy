@@ -12,7 +12,7 @@ namespace Guppy.Network
         DeliveryMethod DeliveryMethod { get; }
         IEnumerable<object> Data { get; }
         NetDataWriter Writer { get; }
-        NetMessageType Type { get; }
+        new NetMessageType Type { get; }
 
         INetOutgoingMessage Append<TData>(in TData value)
             where TData : notnull;

@@ -27,13 +27,14 @@ namespace Guppy.Common.Implementations
         public Guid Id { get; } = Guid.NewGuid();
 
         public Bus(
+            IBroker broker,
             IFiltered<ISubscriber> subscribers,
-            IOptions<BusConfiguration> config)
+            IOptions<BusConfiguration> configuration)
         {
             _subscribers = subscribers;
-            _broker = new Broker();
+            _broker = broker;
 
-            _queues = config.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
+            _queues = configuration.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
                 .OrderBy(x => x)
                 .Select(x => new BusQueue(x))
@@ -41,7 +42,7 @@ namespace Guppy.Common.Implementations
 
             _default = this.GetQueue(DefaultQueue);
 
-            _typeMap = config.Value.TypeQueues.ToDictionary(
+            _typeMap = configuration.Value.TypeQueues.ToDictionary(
                 keySelector: x => x.Type,
                 elementSelector: x => this.GetQueue(x.Queue));
         }
@@ -74,7 +75,7 @@ namespace Guppy.Common.Implementations
 
         public void Publish(in IMessage message)
         {
-            this.GetQueue(message.PublishType).Enqueue(message);
+            this.GetQueue(message.Type).Enqueue(message);
         }
 
         public void Subscribe<T>(ISubscriber<T> subscriber)
