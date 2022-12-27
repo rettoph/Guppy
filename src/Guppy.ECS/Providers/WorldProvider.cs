@@ -15,7 +15,7 @@ namespace Guppy.ECS.Providers
             _filteredProvider = filteredProvider;
         }
 
-        public World Get(object? configuration)
+        public World Get(object? configuration = null)
         {
             var systems = _filteredProvider.Instances<ISystem>(configuration);
             var builder = new WorldBuilder();

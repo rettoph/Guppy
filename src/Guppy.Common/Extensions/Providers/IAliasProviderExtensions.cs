@@ -15,7 +15,12 @@ namespace Guppy.Common.Providers
             var implementations = aliases.GetServiceTypes(typeof(TAlias), provider, configuration);
             foreach (Type implementation in implementations)
             {
-                yield return (TAlias)provider.GetRequiredService(implementation);
+                var instance = provider.GetRequiredService(implementation);
+
+                if(instance is TAlias casted)
+                {
+                    yield return casted;
+                }
             }
         }
 

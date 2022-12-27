@@ -9,14 +9,14 @@ namespace Guppy.Common.Collections
 {
     public abstract class CollectionManager
     {
-        public abstract IEnumerable<TItem> GetItems<TItem>();
+        public abstract IEnumerable<TItem> Items<TItem>();
     }
 
     public class CollectionManager<T> : CollectionManager, IEnumerable<T>
         where T : notnull
     {
-        private IList<T> _items;
-        private IManagedCollection[] _collections;
+        private readonly IList<T> _items;
+        private readonly IManagedCollection[] _collections;
 
         public CollectionManager(IEnumerable<T> items, params IManagedCollection[] collections)
         {
@@ -31,15 +31,9 @@ namespace Guppy.Common.Collections
             this.AddRange(items);
         }
 
-        public override IEnumerable<TItem> GetItems<TItem>()
+        public override IEnumerable<TItem> Items<TItem>()
         {
-            foreach (T item in _items)
-            {
-                if (item is TItem casted)
-                {
-                    yield return casted;
-                }
-            }
+            return _items.WhereAs<T, TItem>();
         }
 
         public int Add(T item)

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    public sealed class GuppyFilterAttribute : InitializableAttribute
+    public class GuppyFilterAttribute : InitializableAttribute
     {
         public readonly Type GuppyType;
 
@@ -26,5 +26,10 @@ namespace Guppy.Attributes
         {
             services.AddFilter(new GuppyFilter(classType, this.GuppyType));
         }
+    }
+
+    public class GuppyFilterAttribute<TGuppy> : GuppyFilterAttribute
+    {
+        public GuppyFilterAttribute() : base(typeof(TGuppy)) { }
     }
 }

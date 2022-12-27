@@ -29,7 +29,7 @@ namespace Guppy.MonoGame.Collections
             }
 
             this.items.Clear();
-            var clean = this.Clean(_manager.GetItems<T>());
+            var clean = this.Clean(_manager.Items<T>());
             this.items.AddRange(clean);
 
             this.dirty = false;

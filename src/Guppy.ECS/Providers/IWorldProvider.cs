@@ -9,6 +9,6 @@ namespace Guppy.ECS.Providers
 {
     public interface IWorldProvider
     {
-        World Get(object? configuration);
+        World Get(object? configuration = null);
     }
 }

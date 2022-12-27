@@ -60,5 +60,16 @@ namespace System.Collections.Generic
                 return defaultOrder;
             });
         }
+
+        public static IEnumerable<TAs> WhereAs<T, TAs>(this IEnumerable<T> items)
+        {
+            foreach(T item in items)
+            {
+                if(item is TAs casted)
+                {
+                    yield return casted;
+                }
+            }
+        }
     }
 }

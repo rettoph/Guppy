@@ -18,7 +18,7 @@ namespace System.Reflection
         public static bool HasCustomAttribute<T>(this MemberInfo member, bool inherit)
              where T : Attribute
         {
-            return member.GetCustomAttributes<T>(inherit).Count() > 0;
+            return member.GetCustomAttributes(inherit).Any(x => x is T);
         }
     }
 }

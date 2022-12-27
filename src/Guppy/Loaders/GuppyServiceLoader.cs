@@ -1,4 +1,7 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.DependencyInjection;
+using Guppy.Common.DependencyInjection.Interfaces;
+using Guppy.Filters;
 using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -20,6 +23,8 @@ namespace Guppy.Loaders
 
                 return logger;
             });
+
+            services.AddSingleton<DefaultServiceFilter>(new DefaultServiceFilter<ConfigurationFilter>(new ConfigurationFilter<object>(null)));
         }
     }
 }
