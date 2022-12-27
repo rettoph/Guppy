@@ -15,7 +15,7 @@ namespace Guppy.ECS.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IWorldProvider, WorldProvider>();
-            //services.AddScoped<World>(p => p.GetRequiredService<IWorldProvider>().Get(null));
+            services.AddScoped<World>(p => p.GetRequiredService<IWorldProvider>().Get(null));
         }
     }
 }

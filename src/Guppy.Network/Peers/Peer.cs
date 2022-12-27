@@ -56,6 +56,8 @@ namespace Guppy.Network.Peers
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
+
             this.listener.NetworkReceiveEvent -= this.HandleNetworkReceiveEvent;
         }
 
