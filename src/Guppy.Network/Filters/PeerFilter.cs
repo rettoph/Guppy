@@ -18,7 +18,7 @@ namespace Guppy.Network.Filters
         {
         }
 
-        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration)
+        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
         {
             var instance = provider.GetRequiredService<ServiceActivator<Peer>>();
             return instance.Type?.IsAssignableTo(typeof(TPeer)) ?? false;

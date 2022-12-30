@@ -15,7 +15,6 @@ namespace Guppy.Common.Implementations
     {
         private readonly IServiceProvider _provider;
         private readonly IAliasProvider _aliases;
-        private readonly object? _configuration;
 
         private IEnumerable<T>? _unfiltered;
         private IEnumerable<T>? _items;
@@ -23,24 +22,16 @@ namespace Guppy.Common.Implementations
 
         public IEnumerable<T> Unfiltered => _unfiltered ??= _provider.GetRequiredService<IEnumerable<T>>();
         
-        public IEnumerable<T> Instances => _items ??= this.Unfiltered.Concat(_aliases.GetServices<T>(_provider, _configuration)).ToArray();
+        public IEnumerable<T> Instances => _items ??= this.Unfiltered.Concat(_aliases.GetServices<T>(_provider)).ToArray();
 
-        public T? Instance => _item ??= _aliases.GetService<T>(_provider, _configuration) ?? this.Unfiltered.LastOrDefault();
+        public T? Instance => _item ??= _aliases.GetService<T>(_provider) ?? this.Unfiltered.LastOrDefault();
 
         public Filtered(
             IServiceProvider provider,
-            IAliasProvider aliases) : this(provider, aliases, null)
-        {
-
-        }
-        public Filtered(
-            IServiceProvider provider,
-            IAliasProvider aliases,
-            object? configuration)
+            IAliasProvider aliases)
         {
             _provider = provider;
             _aliases = aliases;
-            _configuration = configuration;
         }
     }
 }

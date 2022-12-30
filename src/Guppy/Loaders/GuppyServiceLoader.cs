@@ -23,8 +23,6 @@ namespace Guppy.Loaders
 
                 return logger;
             });
-
-            services.AddSingleton<DefaultServiceFilter>(new DefaultServiceFilter<ConfigurationFilter>(new ConfigurationFilter<object>(null)));
         }
     }
 }

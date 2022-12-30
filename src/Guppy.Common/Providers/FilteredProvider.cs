@@ -19,22 +19,22 @@ namespace Guppy.Common.Providers
             _aliases = aliases;
         }
 
-        public IFiltered<T> Get<T>(object? configuration)
+        public IFiltered<T> Get<T>()
             where T : class
         {
-            return new Filtered<T>(_provider, _aliases, configuration);
+            return new Filtered<T>(_provider, _aliases);
         }
 
-        public T? Instance<T>(object? configuration = null)
+        public T? Instance<T>()
             where T : class
         {
-            return this.Get<T>(configuration).Instance;
+            return this.Get<T>().Instance;
         }
 
-        public IEnumerable<T> Instances<T>(object? configuration = null)
+        public IEnumerable<T> Instances<T>()
             where T : class
         {
-            return this.Get<T>(configuration).Instances;
+            return this.Get<T>().Instances;
         }
     }
 }

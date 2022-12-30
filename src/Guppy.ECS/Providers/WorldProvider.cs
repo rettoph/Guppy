@@ -17,7 +17,7 @@ namespace Guppy.ECS.Providers
 
         public World Get(object? configuration = null)
         {
-            var systems = _filteredProvider.Instances<ISystem>(configuration);
+            var systems = _filteredProvider.Instances<ISystem>();
             var builder = new WorldBuilder();
 
             foreach (var system in systems)

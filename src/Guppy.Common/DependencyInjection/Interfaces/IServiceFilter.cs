@@ -12,6 +12,6 @@ namespace Guppy.Common.DependencyInjection.Interfaces
 
         bool AppliesTo(IServiceConfiguration service);
 
-        bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration);
+        bool Invoke(IServiceProvider provider, IServiceConfiguration service);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
-using Guppy.MonoGame.GameComponents;
 using Guppy.MonoGame.Messages.Inputs;
 using Guppy.MonoGame.Providers.ResourcePackTypeProviders;
 using Guppy.Resources.Providers;

@@ -8,6 +8,6 @@ namespace Guppy.Common.Providers
 {
     public interface IAliasProvider
     {
-        IEnumerable<Type> GetServiceTypes(Type alias, IServiceProvider provider, object? configuration);
+        IEnumerable<Type> GetServiceTypes(Type alias, IServiceProvider provider);
     }
 }

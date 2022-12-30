@@ -28,6 +28,6 @@ namespace Guppy.Common.Filters
             return result;
         }
 
-        public abstract bool Invoke(IServiceProvider provider, IServiceConfiguration service, object? configuration);
+        public abstract bool Invoke(IServiceProvider provider, IServiceConfiguration service);
     }
 }
