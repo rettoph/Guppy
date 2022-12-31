@@ -69,14 +69,14 @@ namespace Guppy.Common.Collections
             }
         }
 
-        public bool TryGet(T1 key, [MaybeNullWhen(false)] out T2 value)
+        public bool TryGet(T1 key1, [MaybeNullWhen(false)] out T2 value2)
         {
-            return _forward.TryGetValue(key, out value);
+            return _forward.TryGetValue(key1, out value2);
         }
 
-        public bool TryGet(T2 key, [MaybeNullWhen(false)] out T1 value)
+        public bool TryGet(T2 key2, [MaybeNullWhen(false)] out T1 value1)
         {
-            return _reverse.TryGetValue(key, out value);
+            return _reverse.TryGetValue(key2, out value1);
         }
     }
 }

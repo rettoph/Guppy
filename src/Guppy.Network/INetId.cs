@@ -12,6 +12,8 @@ namespace Guppy.Network
         static virtual INetId Zero => throw new NotImplementedException();
         static virtual byte SizeInBytes => throw new NotImplementedException();
 
+        int Value { get; }
+
         void Write(NetDataWriter writer);
 
         INetId Next();
@@ -24,7 +26,7 @@ namespace Guppy.Network
 
     public interface INetId<T> : INetId
     {
-        T Value { get; }
+        new T Value { get; }
 
         new INetId<T> Next();
     }

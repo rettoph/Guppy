@@ -41,6 +41,8 @@ namespace Guppy.Network
 
             public byte Value { get; init; }
 
+            int INetId.Value => this.Value;
+
             public void Write(NetDataWriter writer)
             {
                 writer.Put(this.Value);
@@ -91,6 +93,8 @@ namespace Guppy.Network
             public static byte SizeInBytes { get; } = 2;
 
             public ushort Value { get; init; }
+
+            int INetId.Value => this.Value;
 
             public void Write(NetDataWriter writer)
             {
