@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity;
@@ -8,68 +9,99 @@ using Guppy.Network.Providers;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
 using LiteNetLib;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.Network.Peers
 {
-    public class Peer : IDisposable
+    public abstract class Peer : IDisposable
     {
-        private readonly ISetting<NetAuthorization> _authorization;
+        private readonly IDictionary<byte, NetScope> _scopes;
 
-        protected readonly INetScopeProvider scopes;
-        protected readonly EventBasedNetListener listener;
-        protected readonly NetManager manager;
-
+        public readonly EventBasedNetListener Listener;
+        public readonly NetManager Manager;
         public readonly NetScope Scope;
 
         public IUserProvider Users { get; }
 
-        public NetAuthorization Authorization
-        {
-            get => _authorization.Value;
-            set => _authorization.Value = value;
-        }
+        public abstract PeerType Type { get; }
 
-        public Peer(
-            ISettingProvider settings,
-            INetScopeProvider scopes,
-            IUserProvider users,
-            IScoped<NetScope> scope,
-            EventBasedNetListener listener,
-            NetManager manager)
-        {
-            this.scopes = scopes;
-            this.listener = listener;
-            this.manager = manager;
+        public readonly IReadOnlyDictionary<byte, NetScope> Scopes;
 
+        public Peer(IScoped<NetScope> scope)
+        {
+            _scopes = new Dictionary<byte, NetScope>();
+
+            this.Listener = new EventBasedNetListener();
+            this.Manager = new NetManager(this.Listener);
             this.Scope = scope.Instance;
-            this.Users = users;
+            this.Users = new UserProvider();
+            this.Scopes = new ReadOnlyDictionary<byte, NetScope>(_scopes);
 
-            _authorization = settings.Get<NetAuthorization>();
-
-            this.listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
+            this.Listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
 
-            this.listener.NetworkReceiveEvent -= this.HandleNetworkReceiveEvent;
+            this.Listener.NetworkReceiveEvent -= this.HandleNetworkReceiveEvent;
         }
 
         protected virtual void Start()
         {
             this.Scope.Bus.Initialize();
-            this.Scope.Start(NetScopeConstants.PeerScopeId);
+            this.Bind(this.Scope, NetScopeConstants.PeerScopeId);
+        }
+
+        public void Bind(NetScope scope, byte id)
+        {
+            if(scope.Bound)
+            {
+                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Bind)} - {nameof(NetScope)} has already been bound to a {nameof(Peer)} instance.");
+            }
+
+            if(!_scopes.TryAdd(id, scope))
+            {
+                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Bind)} - Antoher {nameof(NetScope)} has already been bound to id '{id}'.");
+            }
+
+            scope.BindTo(this, id);
+        }
+
+        public void Unbind(NetScope scope)
+        {
+            if(!scope.Bound)
+            {
+                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Unbind)} - {nameof(NetScope)} is not bound to any {nameof(Peer)}.");
+            }
+
+            if(scope.Peer != this)
+            {
+                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Unbind)} - {nameof(NetScope)} is not bound to the current {nameof(Peer)}.");
+            }
+
+            if(!_scopes.Remove(scope.Id))
+            {
+                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Unbind)} - Unable to unbind {nameof(NetScope)} from {nameof(Peer)}.");
+            }
+
+            scope.Unbind();
+        }
+
+        public void Unbind(byte id)
+        {
+            _scopes.Remove(id);
         }
 
         public void Flush()
         {
-            this.manager.PollEvents();
+            this.Manager.PollEvents();
 
             this.Scope.Bus.Flush();
         }
@@ -78,10 +110,10 @@ namespace Guppy.Network.Peers
         {
             while(!reader.EndOfData)
             {
-                var scopeId = reader.GetByte();
-                var scope = this.scopes.Get(scopeId);
+                byte scopeId = reader.GetByte();
+                NetScope scope = _scopes[scopeId];
 
-                scope.Read(peer, reader, channel, deliveryMethod).Enqueue();
+                scope.Messages.Read(peer, reader, channel, deliveryMethod).Enqueue();
             }
         }
     }

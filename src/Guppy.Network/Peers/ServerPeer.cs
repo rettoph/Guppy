@@ -10,6 +10,7 @@ using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using Guppy.Resources.Providers;
 using LiteNetLib;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,22 +21,16 @@ namespace Guppy.Network.Peers
 {
     public class ServerPeer : Peer
     {
+        public override PeerType Type => PeerType.Server;
+
         public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, INetIncomingMessage<UserAction> data);
 
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
-        public ServerPeer(
-            ISettingProvider settings,
-            INetScopeProvider scopes,
-            IUserProvider users,
-            IScoped<NetScope> scope,
-            EventBasedNetListener listener,
-            NetManager manager) : base(settings, scopes, users, scope, listener, manager)
+        public ServerPeer(IScoped<NetScope> scope) : base(scope)
         {
-            this.Authorization = NetAuthorization.Master;
-
-            this.listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
-            this.listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
+            this.Listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
+            this.Listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
 
             this.Users.OnUserConnected += this.HandleUserConnected;
         }
@@ -46,7 +41,7 @@ namespace Guppy.Network.Peers
 
             this.Users.Current = this.Users.UpdateOrCreate(-1, claims);
 
-            this.manager.Start(port);
+            this.Manager.Start(port);
         }
 
         private void HandleUserConnected(IUserProvider sender, User newUser)
@@ -64,7 +59,7 @@ namespace Guppy.Network.Peers
                 throw new NotImplementedException();
             }
 
-            using (var data = this.Scope.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
+            using (var data = this.Scope.Messages.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
             {
                 if (data is INetIncomingMessage<UserAction> casted)
                 {
@@ -84,7 +79,7 @@ namespace Guppy.Network.Peers
 
                         var user = this.Users.UpdateOrCreate(peer.Id, peer, casted.Body.Claims);
 
-                        this.Scope.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
+                        this.Scope.Messages.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
                             .AddRecipient(peer)
                             .Send()
                             .Recycle();

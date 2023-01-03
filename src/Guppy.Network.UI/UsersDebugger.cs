@@ -5,6 +5,7 @@ using Guppy.MonoGame.UI.Debuggers;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Providers;
+using Guppy.Network.Peers;
 using ImGuiNET;
 using ImPlotNET;
 using Microsoft.Xna.Framework;
@@ -15,14 +16,16 @@ namespace Guppy.Network.UI
 {
     public class UsersDebugger : SimpleDebugger, IImGuiDebugger
     {
-        private IUserProvider _users;
+        private readonly NetScope _netScope;
+
         private ImFontPtr _fontHeader;
 
         public string ButtonLabel { get; }
 
-        public UsersDebugger(IUserProvider users)
+        public UsersDebugger(NetScope netScope)
         {
-            _users = users;
+            _netScope = netScope;
+
             this.IsEnabled = false;
             this.Visible = false;
 
@@ -37,11 +40,11 @@ namespace Guppy.Network.UI
         public override void Draw(GameTime gameTime)
         {
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, new Num.Vector2(400, 0));
-            if (ImGui.Begin($"Users ({_users.Count()})"))
+            if (ImGui.Begin($"Users ({_netScope.Users.Count()})"))
             {
-                foreach (User user in _users)
+                foreach (User user in _netScope.Users)
                 {
-                    if (ImGui.CollapsingHeader($"Id: {user.Id}, Claims: {user.Count()}{(_users.Current?.Id == user.Id ? " - Current User" : "")}"))
+                    if (ImGui.CollapsingHeader($"Id: {user.Id}, Claims: {user.Count()}"))
                     {
                         if (ImGui.BeginTable("claims", 4))
                         {

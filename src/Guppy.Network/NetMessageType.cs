@@ -11,12 +11,12 @@ namespace Guppy.Network
 {
     public abstract class NetMessageType
     {
-        public readonly INetId Id;
+        public readonly byte Id;
         public readonly Type Body;
         public readonly DeliveryMethod DefaultDeliveryMethod;
         public readonly byte DefaultOutgoingChannel;
 
-        protected NetMessageType(INetId id, Type header, DeliveryMethod defaultDeliveryMethod, byte defaultOutgoingChannel)
+        protected NetMessageType(byte id, Type header, DeliveryMethod defaultDeliveryMethod, byte defaultOutgoingChannel)
         {
             this.Id = id;
             this.Body = header;
@@ -36,7 +36,7 @@ namespace Guppy.Network
         private readonly Factory<INetOutgoingMessage<T>> _outgoingFactory;
 
         public NetMessageType(
-            INetId id, 
+            byte id, 
             Type body, 
             DeliveryMethod defaultDeliveryMethod, 
             byte defaultOutgoingChannel, 

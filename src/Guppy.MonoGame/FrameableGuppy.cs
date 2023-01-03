@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.MonoGame.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
 using System;
@@ -12,21 +13,33 @@ namespace Guppy.MonoGame
 {
     public abstract class FrameableGuppy : IGuppy
     {
-        public readonly IGameComponentService Components;
+        public IBus Bus { get; private set; }
+        public IGameComponentService Components { get; private set; }
 
-        public FrameableGuppy(IGameComponentService components)
+        public FrameableGuppy()
         {
-            this.Components = components;
+            this.Bus = default!;
+            this.Components = default!;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Initialize(IServiceProvider provider)
         {
-            this.Components.Update(gameTime);
+            this.Components = provider.GetRequiredService<IGameComponentService>();
+            this.Bus = provider.GetRequiredService<IBus>();
+
+            this.Bus.Initialize();
         }
 
         public virtual void Draw(GameTime gameTime)
         {
             this.Components.Draw(gameTime);
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            this.Components.Update(gameTime);
+
+            this.Bus.Flush();
         }
     }
 }

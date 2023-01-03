@@ -10,7 +10,7 @@ namespace Guppy
 {
     public static class GuppyEngineExtensions
     {
-        public static GuppyEngine ConfigureNetwork(this GuppyEngine guppy, byte channelsCount)
+        public static GuppyEngine ConfigureNetwork(this GuppyEngine guppy)
         {
             if (guppy.Tags.Contains(nameof(ConfigureNetwork)))
             {
@@ -18,7 +18,7 @@ namespace Guppy
             }
 
             return guppy.AddInitializer(new NetworkInitializer(), 0)
-                .AddLoader(new NetworkServiceLoader(channelsCount), 0)
+                .AddLoader(new NetworkServiceLoader(), 0)
                 .AddTag(nameof(ConfigureNetwork));
         }
     }

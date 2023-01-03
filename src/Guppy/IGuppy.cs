@@ -8,5 +8,6 @@ namespace Guppy
 {
     public interface IGuppy
     {
+        void Initialize(IServiceProvider provider);
     }
 }

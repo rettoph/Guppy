@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Enums
 {
-    public enum NetAuthorization
+    public enum PeerType
     {
-        Master,
-        Slave
+        Client,
+        Server
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Common.Filters;
 using Guppy.Common.Implementations;
+using Guppy.Network.Enums;
 using Guppy.Network.Peers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,17 +12,21 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Filters
 {
-    public class PeerFilter<TPeer, TImplementation> : SimpleFilter
-        where TPeer : Peer
+    public class PeerTypeFilter : SimpleFilter
     {
-        public PeerFilter() : base(typeof(TImplementation))
+        public readonly PeerType PeerType;
+
+        public PeerTypeFilter(PeerType peerType, Type type) : base(type)
         {
+            this.PeerType = peerType;
         }
 
         public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
         {
-            var instance = provider.GetRequiredService<ServiceActivator<Peer>>();
-            return instance.Type?.IsAssignableTo(typeof(TPeer)) ?? false;
+            var netScope = provider.GetRequiredService<NetScope>();
+            var result = netScope.Peer?.Type == this.PeerType;
+
+            return result;
         }
     }
 }

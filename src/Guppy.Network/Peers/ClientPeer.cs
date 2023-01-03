@@ -9,6 +9,7 @@ using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using Guppy.Resources.Providers;
 using LiteNetLib;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,22 +22,17 @@ namespace Guppy.Network.Peers
     {
         private NetPeer? _peer;
 
-        public ClientPeer(
-            ISettingProvider settings,
-            INetScopeProvider scopes, 
-            IUserProvider users,
-            IScoped<NetScope> scope,
-            EventBasedNetListener listener, 
-            NetManager manager) : base(settings, scopes, users, scope, listener, manager)
+        public override PeerType Type => PeerType.Client;
+
+        public ClientPeer(IScoped<NetScope> scope) : base(scope)
         {
-            this.Authorization = NetAuthorization.Slave;
         }
 
         public new void Start()
         {
             base.Start();
 
-            this.manager.Start();
+            this.Manager.Start();
 
             this.Scope.Bus.Subscribe(this);
         }
@@ -46,9 +42,9 @@ namespace Guppy.Network.Peers
             var user = new User(-1, claims);
             var action = user.CreateAction(UserAction.Actions.ConnectionRequest, ClaimAccessibility.Protected);
 
-            using(var request = this.Scope.Create(in action))
+            using(var request = this.Scope.Messages.Create(in action))
             {
-                _peer = this.manager.Connect(address, port, request.Writer);
+                _peer = this.Manager.Connect(address, port, request.Writer);
             }
         }
 

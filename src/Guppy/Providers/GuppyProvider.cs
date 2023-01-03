@@ -31,6 +31,8 @@ namespace Guppy.Providers
 
             _guppies.Add(guppy);
 
+            guppy.Instance.Initialize(guppy.Scope.ServiceProvider);
+
             this.OnAdded?.Invoke(this, guppy);
 
             return guppy;

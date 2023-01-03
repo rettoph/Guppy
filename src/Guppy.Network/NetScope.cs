@@ -5,13 +5,14 @@ using Guppy.Network.Constants;
 using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
-using Guppy.Network.Factories;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
+using Guppy.Network.Peers;
 using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
 using LiteNetLib;
@@ -21,12 +22,11 @@ using Serilog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
-using static Guppy.Common.ThrowIf;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Guppy.Network
 {
@@ -35,54 +35,28 @@ namespace Guppy.Network
         ISubscriber<INetIncomingMessage<UserAction>>, 
         IDisposable
     {
-        private NetState _state;
-        private readonly IUserProvider _users;
-        private readonly DoubleDictionary<INetId, System.Type, NetMessageType> _messages;
-        private readonly INetOutgoingMessageFactory _factory;
-
         internal byte id;
 
-        public byte Id => this.id;
-
-        public NetState State
+        public byte Id
         {
-            get => _state;
-            set => this.OnStateChanged!.InvokeIf(value != _state, this, ref _state, value);
+            get => this.id;
+            set => this.id = value;
         }
-
+        public Peer? Peer { get; private set; }
+        public bool Bound { get; private set; }
         public IUserService Users { get; }
-        public ISetting<NetAuthorization> Authorization { get; }
 
         public readonly IBus Bus;
 
-        public event OnChangedEventDelegate<NetScope, NetState>? OnStateChanged;
+        public readonly INetMessageService Messages;
 
         public NetScope(
-            ISettingProvider settings, 
-            IUserProvider users,
-            IBus bus,
-            INetSerializerProvider serializers,
-            IFiltered<INetOutgoingMessageFactory> factories,
-            IEnumerable<NetMessageTypeDefinition> definitions)
+            INetMessageService messages,
+            IBus bus)
         {
-            _state = NetState.Stopped;
-            _users = users;
-            _factory = factories.Instance ?? throw new InvalidOperationException();
-
-            _messages = new DoubleDictionary<INetId, System.Type, NetMessageType>(definitions.Count());
-
-            byte id = 0;
-            foreach (NetMessageTypeDefinition definition in definitions)
-            {
-                var type = definition.BuildType(NetId.Create(id), serializers, this);
-                id += 1;
-
-                _messages.TryAdd(type.Id, type.Body, type);
-            }
-
             this.Users = new UserService();
-            this.Authorization = settings.Get<NetAuthorization>();
             this.Bus = bus;
+            this.Messages = messages;
 
             this.Bus.Subscribe<INetOutgoingMessage>(this);
             this.Bus.Subscribe<INetIncomingMessage<UserAction>>(this);
@@ -99,46 +73,32 @@ namespace Guppy.Network
             this.Users.OnUserJoined -= this.HandleUserJoined;
             this.Users.OnUserLeft -= this.HandleUserLeft;
 
-            this.State = NetState.Disposed;
             this.Users.Dispose();
         }
 
-        public void Start(byte id)
+        internal void BindTo(Peer peer, byte id)
         {
-            if (this.State != NetState.Stopped)
+            if(this.Bound == true)
             {
-                return;
+                throw new UnreachableException();
             }
 
-            _factory.Initialize(_messages);
-
-            this.id = id;
-            this.State = NetState.Started;
+            this.Id = id;
+            this.Peer = peer;
+            this.Bound = true;
+            this.Messages.Initialize(this);
         }
 
-        public void Stop()
+        internal void Unbind()
         {
-            if (this.State != NetState.Started)
+            if(this.Bound == false)
             {
-                return;
+                throw new UnreachableException();
             }
 
-            this.State = NetState.Stopped;
-        }
-
-        public INetIncomingMessage Read(NetPeer? peer, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
-        {
-            var id = NetId.Byte.Read(reader);
-            var message = _messages[id].CreateIncoming();
-            message.Read(peer, reader, ref channel, ref deliveryMethod);
-
-            return message;
-        }
-
-        public INetOutgoingMessage<T> Create<T>(in T body)
-            where T : notnull
-        {
-            return _factory.Create(in body);
+            this.Id = default;
+            this.Peer = null;
+            this.Bound = false;
         }
 
         void ISubscriber<INetOutgoingMessage>.Process(in INetOutgoingMessage message)
@@ -148,12 +108,12 @@ namespace Guppy.Network
 
         void ISubscriber<INetIncomingMessage<UserAction>>.Process(in INetIncomingMessage<UserAction> message)
         {
-            if (this.Authorization.Value != NetAuthorization.Slave)
+            if (this.Peer!.Type != PeerType.Client)
             {
                 return;
             }
 
-            var user = _users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
+            var user = this.Peer.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
 
             switch (message.Body.Action)
             {
@@ -168,13 +128,13 @@ namespace Guppy.Network
 
         private void HandleUserJoined(IUserService sender, User newUser)
         {
-            if(this.Authorization.Value != NetAuthorization.Master)
+            if (this.Peer!.Type != PeerType.Server)
             {
                 return;
             }
 
             // Alert all users of the new user.
-            this.Create(newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+            this.Messages.Create(newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
 
@@ -191,7 +151,7 @@ namespace Guppy.Network
                     continue;
                 }
 
-                this.Create(oldUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+                this.Messages.Create(oldUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
                     .AddRecipient(newUser.NetPeer)
                     .Enqueue();
             }
@@ -199,12 +159,12 @@ namespace Guppy.Network
 
         private void HandleUserLeft(IUserService sender, User user)
         {
-            if (this.Authorization.Value != NetAuthorization.Master)
+            if (this.Peer!.Type != PeerType.Server)
             {
                 return;
             }
 
-            this.Create(user.CreateAction(UserAction.Actions.UserLeft, ClaimAccessibility.Public))
+            this.Messages.Create(user.CreateAction(UserAction.Actions.UserLeft, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
         }

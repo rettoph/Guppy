@@ -56,7 +56,7 @@ namespace Guppy.Network
             _deliveryMethod = this.Type.DefaultDeliveryMethod;
 
             _writer.Put(_scope.id);
-            _type.Id.Write(_writer);
+            _writer.Put(_type.Id);
         }
 
         public void Write(in T body)
