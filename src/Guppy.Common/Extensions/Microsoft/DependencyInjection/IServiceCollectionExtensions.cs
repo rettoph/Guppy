@@ -15,11 +15,11 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddSingleton(typeof(IGlobal<>), typeof(Global<>))
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
-                    .AddSingleton<IAliasProvider, AliasProvider>()
                     .AddScoped<IBroker, Broker>()
                     .AddScoped<IBus, Bus>()
                     .AddScoped<BusConfiguration>()
                     .AddScoped<BrokerConfiguration>()
+                    .AddScoped<IFilterProvider, FilterProvider>()
                     .AddScoped<IFilteredProvider, FilteredProvider>()
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>));
         }

@@ -8,21 +8,12 @@ namespace Guppy.Common.DependencyInjection
     public class AliasConfiguration
     {
         public Type Type { get; }
-        public bool Filterable { get; set; }
         public int Order { get; set; }
 
         public AliasConfiguration(Type type)
         {
             this.Type = type;
-            this.Filterable = true;
             this.Order = 0;
-        }
-
-        public AliasConfiguration SetFilterable(bool filtered)
-        {
-            this.Filterable = filtered;
-
-            return this;
         }
 
         public AliasConfiguration SetOrder(int order)
@@ -32,26 +23,20 @@ namespace Guppy.Common.DependencyInjection
             return this;
         }
 
-        internal bool TryGetDescriptor(IServiceConfiguration service, [MaybeNullWhen(false)] out ServiceDescriptor descriptor)
+        internal ServiceDescriptor GetDescriptor(IServiceConfiguration service)
         {
-            if(this.Filterable == true)
-            {
-                descriptor = null;
-                return false;
-            }
-
             var type = service.ServiceType;
             object Factory(IServiceProvider provider)
             {
                 return provider.GetRequiredService(type);
             }
 
-            descriptor = ServiceDescriptorHelper.Describe(
+            var descriptor = ServiceDescriptorHelper.Describe(
                 serviceType: this.Type,
                 lifetime: service.Lifetime ?? ServiceLifetime.Transient,
                 factory: Factory);
 
-            return true;
+            return descriptor;
         }
     }
 }

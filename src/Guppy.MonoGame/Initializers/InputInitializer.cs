@@ -30,7 +30,7 @@ namespace Guppy.MonoGame.Initializers
             {
                 manager.GetService<InputService>()
                     .SetLifetime(ServiceLifetime.Singleton)
-                    .AddAlias<IInputService>(alias => alias.Filterable = false)
+                    .AddAlias<IInputService>()
                     .AddAlias<IGameComponent>();
             });
         }

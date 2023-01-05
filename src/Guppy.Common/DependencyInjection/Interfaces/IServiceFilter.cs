@@ -10,8 +10,8 @@ namespace Guppy.Common.DependencyInjection.Interfaces
     {
         void Initialize(IServiceProvider provier);
 
-        bool AppliesTo(IServiceConfiguration service);
+        bool AppliesTo(Type type);
 
-        bool Invoke(IServiceProvider provider, IServiceConfiguration service);
+        bool Invoke(IServiceProvider provider, object service);
     }
 }

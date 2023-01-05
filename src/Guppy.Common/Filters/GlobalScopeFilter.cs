@@ -16,7 +16,7 @@ namespace Guppy.Filters
         {
         }
 
-        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
+        public override bool Invoke(IServiceProvider provider, object service)
         {
             var result = provider.GetRequiredService<Global>().Scope.Instance.GetHashCode() == provider.GetHashCode();
 

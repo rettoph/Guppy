@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Providers
 {
-    public interface IAliasProvider
+    public interface IFilterProvider
     {
-        IEnumerable<Type> GetServiceTypes(Type alias, IServiceProvider provider);
+        bool Filter(object service);
     }
 }

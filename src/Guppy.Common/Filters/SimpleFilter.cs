@@ -21,13 +21,13 @@ namespace Guppy.Common.Filters
             //
         }
 
-        public virtual bool AppliesTo(IServiceConfiguration service)
+        public virtual bool AppliesTo(Type type)
         {
-            var result = this.Type.IsAssignableFrom(service.Type);
+            var result = this.Type.IsAssignableFrom(type);
 
             return result;
         }
 
-        public abstract bool Invoke(IServiceProvider provider, IServiceConfiguration service);
+        public abstract bool Invoke(IServiceProvider provider, object service);
     }
 }

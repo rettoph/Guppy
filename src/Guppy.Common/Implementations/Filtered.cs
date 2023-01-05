@@ -13,25 +13,32 @@ namespace Guppy.Common.Implementations
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class
     {
-        private readonly IServiceProvider _provider;
-        private readonly IAliasProvider _aliases;
+        private readonly IFilterProvider _filters;
+        private readonly Lazy<IEnumerable<T>> _unfiltered;
 
-        private IEnumerable<T>? _unfiltered;
-        private IEnumerable<T>? _items;
-        private T? _item;
+        private T? _instance;
+        private T[]? _instances;
 
-        public IEnumerable<T> Unfiltered => _unfiltered ??= _provider.GetRequiredService<IEnumerable<T>>();
-        
-        public IEnumerable<T> Instances => _items ??= this.Unfiltered.Concat(_aliases.GetServices<T>(_provider)).ToArray();
+        public T Instance => _instance ??= this.GetInstance();
 
-        public T? Instance => _item ??= _aliases.GetService<T>(_provider) ?? this.Unfiltered.LastOrDefault();
+
+        public IEnumerable<T> Instances => _instances ??= this.GetInstances();
 
         public Filtered(
-            IServiceProvider provider,
-            IAliasProvider aliases)
+            IFilterProvider filters,
+            Lazy<IEnumerable<T>> unfiltered)
         {
-            _provider = provider;
-            _aliases = aliases;
+            _filters = filters;
+            _unfiltered = unfiltered;
+        }
+        private T GetInstance()
+        {
+            return _unfiltered.Value.First(_filters.Filter);
+        }
+
+        private T[] GetInstances()
+        {
+            return _unfiltered.Value.Where(_filters.Filter).ToArray();
         }
     }
 }

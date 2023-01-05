@@ -24,7 +24,7 @@ namespace Guppy.Filters
             this.GuppType = guppy;
         }
 
-        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
+        public override bool Invoke(IServiceProvider provider, object service)
         {
             var guppy = provider.GetRequiredService<ServiceActivator<IGuppy>>();
 

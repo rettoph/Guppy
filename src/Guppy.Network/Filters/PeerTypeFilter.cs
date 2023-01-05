@@ -21,7 +21,7 @@ namespace Guppy.Network.Filters
             this.PeerType = peerType;
         }
 
-        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
+        public override bool Invoke(IServiceProvider provider, object service)
         {
             var netScope = provider.GetRequiredService<NetScope>();
             var result = netScope.Peer?.Type == this.PeerType;

@@ -45,13 +45,7 @@ namespace Guppy.Common.DependencyInjection
 
         public IEnumerable<ServiceDescriptor> GetDescriptors()
         {
-            foreach(var alias in _aliases.Values)
-            {
-                if(alias.TryGetDescriptor(_service, out var descriptor))
-                {
-                    yield return descriptor;
-                }
-            }
+            return _aliases.Values.Select(a => a.GetDescriptor(_service));
         }
 
         IEnumerator<AliasConfiguration> IEnumerable<AliasConfiguration>.GetEnumerator()

@@ -25,7 +25,7 @@ namespace Guppy.Resources.Filters
             this.RequiredValue = requiredValue;
         }
 
-        public override bool Invoke(IServiceProvider provider, IServiceConfiguration service)
+        public override bool Invoke(IServiceProvider provider, object service)
         {
             var setting = provider.GetSetting<TSetting>(this.Key);
             var result = setting.Value.Equals(this.RequiredValue);
