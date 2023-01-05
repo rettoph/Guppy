@@ -26,17 +26,24 @@ namespace Guppy.Common.Providers
 
         public void Load(Assembly assembly, bool forced = false)
         {
-            if(!this.ShouldLoad(assembly, forced))
+            this.Load(assembly, forced, 0);
+        }
+
+        private void Load(Assembly assembly, bool forced, int depth)
+        {
+            if (!this.ShouldLoad(assembly, forced))
             {
                 return;
             }
 
-            Debug.WriteLine($"Preparing to load: {assembly.FullName}");
+            Debug.WriteLine($"{new string('\t', depth)}Loading: {assembly.FullName}...");
 
             // Recersively attempt to load all references assemblies as well...
-            foreach (Assembly reference in assembly.GetReferencedAssemblies().Select(an => Assembly.Load(an)))
+            foreach (AssemblyName referenceName in assembly.GetReferencedAssemblies())
             {
-                this.Load(reference);
+                Debug.WriteLine($"{new string('\t', depth + 1)}Checking: {referenceName.FullName}");
+                Assembly reference = Assembly.Load(referenceName);
+                this.Load(reference, false, depth + 1);
             }
 
             this.OnAssemblyLoaded?.Invoke(this, assembly);

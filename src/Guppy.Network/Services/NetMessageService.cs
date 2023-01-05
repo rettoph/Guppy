@@ -19,7 +19,7 @@ namespace Guppy.Network.Services
         private readonly INetSerializerProvider _serializers;
         private readonly IEnumerable<NetMessageTypeDefinition> _definitions;
 
-        private NetScope? _netScope;
+        private NetScope _netScope;
         private IDictionary<byte, NetMessageType> _messageIds;
         private IDictionary<Type, NetMessageType> _messageTypes;
 
@@ -32,6 +32,7 @@ namespace Guppy.Network.Services
 
             _messageIds = default!;
             _messageTypes = default!;
+            _netScope = default!;
         }
 
         void INetMessageService.Initialize(NetScope netScope)
@@ -45,6 +46,7 @@ namespace Guppy.Network.Services
                     netScope: netScope);
             }).ToList();
 
+            _netScope = netScope;
             _messageIds = messages.ToDictionary(x => x.Id, x => x);
             _messageTypes = messages.ToDictionary(x => x.Body, x => x);
         }
@@ -57,7 +59,14 @@ namespace Guppy.Network.Services
         public NetMessageType<T> Get<T>() 
             where T : notnull
         {
-            return (NetMessageType<T>)_messageTypes[typeof(T)]; 
+            try
+            {
+                return (NetMessageType<T>)_messageTypes[typeof(T)];
+            }
+            catch(KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"{nameof(NetMessageService)}::{nameof(Get)} - No {nameof(NetMessageType)} registered for type {typeof(T).Name}", e);
+            }
         }
 
         public INetIncomingMessage Read(NetPeer? peer, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
@@ -75,11 +84,12 @@ namespace Guppy.Network.Services
             var message = this.Get<T>().CreateOutgoing();
             message.Write(in body);
 
-            if (_netScope?.Peer!.Users.Current?.NetPeer is not null)
+            if (_netScope.Peer?.Users.Current?.NetPeer is null)
             {
-                message.AddRecipient(_netScope.Peer.Users.Current.NetPeer);
+                return message;
             }
 
+            message.AddRecipient(_netScope.Peer!.Users.Current!.NetPeer!);
             return message;
         }
     }

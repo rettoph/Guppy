@@ -36,17 +36,38 @@ namespace Guppy.Network.Providers
 
         public INetSerializer<T> Get<T>() where T : notnull
         {
-            return (INetSerializer<T>)_serializers[typeof(T)];
+            try
+            {
+                return (INetSerializer<T>)_serializers[typeof(T)];
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {typeof(T).Name}", e);
+            }
         }
 
         public INetSerializer Get(Type type)
         {
-            return _serializers[type];
+            try
+            {
+                return _serializers[type];
+            }
+            catch(KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {type.Name}", e);
+            }
         }
 
         public INetSerializer Get(INetId id)
         {
-            return _serializers[id];
+            try
+            {
+                return _serializers[id];
+            }
+            catch (KeyNotFoundException e)
+            {
+                throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for id {id.Value}", e);
+            }
         }
 
         public IEnumerator<INetSerializer> GetEnumerator()
