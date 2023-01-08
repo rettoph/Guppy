@@ -38,20 +38,6 @@ namespace Guppy.Common.Implementations
             _queue.Enqueue(message);
         }
 
-        public void Publish(in IMessage message)
-        {
-            if (message is IDisposable disposable)
-            {
-                using (disposable)
-                {
-                    _broker.Publish(in message);
-                    return;
-                }
-            }
-
-            _broker.Publish(message);
-        }
-
         public void Flush()
         {
             int errors = 0;
@@ -60,7 +46,7 @@ namespace Guppy.Common.Implementations
             {
                 if (_queue.TryDequeue(out var message))
                 {
-                    this.Publish(message);
+                    _broker.Publish(message);
                     continue;
                 }
 

@@ -56,6 +56,15 @@ namespace Guppy.Common.Implementations
             {
                 if (_publishers.TryGetValue(alias, out IPublisher? publisher))
                 {
+                    if(message is IDisposable disposable)
+                    {
+                        using (disposable)
+                        {
+                            publisher.Publish(message);
+                            return;
+                        }
+                    }
+
                     publisher.Publish(in message);
                 }
             }

@@ -80,7 +80,7 @@ namespace Guppy.Common.Implementations
 
         public void Publish(in IMessage message)
         {
-            this.GetQueue(message.Type).Publish(message);
+            _broker.Publish(message);
         }
 
         public void Subscribe<T>(ISubscriber<T> subscriber)
