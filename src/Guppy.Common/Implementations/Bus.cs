@@ -37,7 +37,7 @@ namespace Guppy.Common.Implementations
             _queues = configuration.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
                 .OrderBy(x => x)
-                .Select(x => new BusQueue(x))
+                .Select(x => new BusQueue(x, _broker))
                 .ToArray();
 
             _default = this.GetQueue(DefaultQueue);
@@ -69,13 +69,18 @@ namespace Guppy.Common.Implementations
         {
             foreach(var queue in _queues)
             {
-                queue.Flush(_broker);
+                queue.Flush();
             }
+        }
+
+        public void Enqueue(in IMessage message)
+        {
+            this.GetQueue(message.Type).Enqueue(message);
         }
 
         public void Publish(in IMessage message)
         {
-            this.GetQueue(message.Type).Enqueue(message);
+            this.GetQueue(message.Type).Publish(message);
         }
 
         public void Subscribe<T>(ISubscriber<T> subscriber)

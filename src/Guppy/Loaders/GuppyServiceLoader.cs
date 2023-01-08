@@ -15,7 +15,6 @@ namespace Guppy.Loaders
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterGuppyCommon().AddSingleton<IGuppyProvider, GuppyProvider>();
-
             services.AddSingleton<ILogger>(p =>
             {
                 var configuration = p.GetRequiredService<IOptions<LoggerConfiguration>>().Value;

@@ -77,7 +77,7 @@ namespace Guppy.Network
 
         public INetIncomingMessage<T> Enqueue()
         {
-            _scope.Bus.Publish(this);
+            _scope.Bus.Enqueue(this);
 
             return this;
         }

@@ -10,6 +10,7 @@ namespace Guppy.Common
     {
         int Id { get; }
         void Enqueue(in IMessage message);
-        void Flush(IBroker broker);
+        void Publish(in IMessage message);
+        void Flush();
     }
 }

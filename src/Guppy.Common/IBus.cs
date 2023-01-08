@@ -12,6 +12,8 @@ namespace Guppy.Common
 
         void Initialize();
 
+        void Enqueue(in IMessage message);
+
         void Flush();
     }
 }

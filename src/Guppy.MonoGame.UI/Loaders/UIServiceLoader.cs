@@ -43,6 +43,10 @@ namespace Guppy.MonoGame.UI.Loaders
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 20);
 
+            services.AddService<IImguiObjectViewer>()
+                .SetLifetime(ServiceLifetime.Singleton)
+                .SetImplementationType<ImguiObjectViewer>();
+
             services.AddService<ImGuiDebuggerService>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();

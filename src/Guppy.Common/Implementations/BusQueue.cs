@@ -20,15 +20,17 @@ namespace Guppy.Common.Implementations
     /// <typeparam name="T"></typeparam>
     internal sealed class BusQueue : IBusQueue
     {
+        private readonly IBroker _broker;
         private ConcurrentQueue<IMessage> _queue;
 
         public int Id { get; }
 
-        public BusQueue(int id)
+        public BusQueue(int id, IBroker broker)
         {
             this.Id = id;
 
             _queue = new ConcurrentQueue<IMessage>();
+            _broker = broker;
         }
 
         public void Enqueue(in IMessage message)
@@ -36,27 +38,32 @@ namespace Guppy.Common.Implementations
             _queue.Enqueue(message);
         }
 
-        public void Flush(IBroker broker)
+        public void Publish(in IMessage message)
+        {
+            if (message is IDisposable disposable)
+            {
+                using (disposable)
+                {
+                    _broker.Publish(in message);
+                    return;
+                }
+            }
+
+            _broker.Publish(message);
+        }
+
+        public void Flush()
         {
             int errors = 0;
             
             while(!_queue.IsEmpty && errors != 5)
             {
-                if(_queue.TryDequeue(out var message))
+                if (_queue.TryDequeue(out var message))
                 {
-                    if(message is IDisposable disposable)
-                    {
-                        using (disposable)
-                        {
-                            broker.Publish(in message);
-                            continue;
-                        }
-                    }
-
-                    broker.Publish(message);
+                    this.Publish(message);
                     continue;
                 }
-            
+
                 errors++;
             }
         }

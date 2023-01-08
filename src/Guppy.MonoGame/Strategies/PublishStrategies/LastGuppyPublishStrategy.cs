@@ -34,7 +34,7 @@ namespace Guppy.MonoGame.Strategies.PublishStrategies
 
         public override void Publish(in IMessage message)
         {
-            _bus?.Publish(in message);
+            _bus?.Enqueue(in message);
         }
 
         private void HandleGuppyAdded(IGuppyProvider sender, IScoped<IGuppy> args)
