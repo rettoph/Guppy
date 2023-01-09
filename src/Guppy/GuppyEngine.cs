@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Providers;
+using Guppy.Factories;
 using Guppy.Initializers;
 using Guppy.Loaders;
 using Guppy.Providers;
@@ -104,6 +105,11 @@ namespace Guppy
 
         private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
         {
+            var factories = assembly.GetTypes()
+                .AssignableFrom<IGuppyFactory>()
+                .WithAttribute<AutoLoadAttribute>(true)
+                .Select(t => Activator.CreateInstance(t) as IGuppyFactory ?? throw new Exception());
+
             var initializers = assembly.GetTypes()
                 .AssignableFrom<IGuppyInitializer>()
                 .WithAttribute<AutoLoadAttribute>(true)
@@ -114,7 +120,12 @@ namespace Guppy
                 .WithAttribute<AutoLoadAttribute>(true)
                 .Select(t => Activator.CreateInstance(t) as IGuppyLoader ?? throw new Exception());
 
-            foreach(IGuppyInitializer initializer in initializers)
+            foreach (IGuppyFactory factory in factories)
+            {
+                factory.Build(this);
+            }
+
+            foreach (IGuppyInitializer initializer in initializers)
             {
                 this.AddInitializer(initializer, initializer.GetType()?.GetCustomAttribute<AutoLoadAttribute>(true)?.Order ?? 0);
             }
