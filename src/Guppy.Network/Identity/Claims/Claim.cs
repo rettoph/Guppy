@@ -62,6 +62,20 @@ namespace Guppy.Network.Identity.Claims
                 value: type.DeserializeValue(reader),
                 accessibility: reader.GetEnum<ClaimAccessibility>());
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Claim claim &&
+                   Key == claim.Key &&
+                   EqualityComparer<ClaimType>.Default.Equals(Type, claim.Type) &&
+                   Accessibility == claim.Accessibility &&
+                   CreatedAt == claim.CreatedAt;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Key, Type, Accessibility, CreatedAt);
+        }
     }
 
     public class Claim<T> : Claim
@@ -79,6 +93,23 @@ namespace Guppy.Network.Identity.Claims
         public override object? GetValue()
         {
             return this.Value;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Claim<T> claim &&
+                   base.Equals(obj) &&
+                   Key == claim.Key &&
+                   EqualityComparer<ClaimType>.Default.Equals(Type, claim.Type) &&
+                   Accessibility == claim.Accessibility &&
+                   CreatedAt == claim.CreatedAt &&
+                   EqualityComparer<T>.Default.Equals(Value, claim.Value) &&
+                   EqualityComparer<ClaimType<T>>.Default.Equals(Type, claim.Type);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), Key, Type, Accessibility, CreatedAt, Value, Type);
         }
     }
 }

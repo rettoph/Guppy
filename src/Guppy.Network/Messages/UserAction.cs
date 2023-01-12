@@ -23,5 +23,18 @@ namespace Guppy.Network.Messages
         public Actions Action { get; init; }
 
         public Claim[] Claims { get; init; } = Array.Empty<Claim>();
+
+        public override bool Equals(object? obj)
+        {
+            return obj is UserAction action &&
+                   Id == action.Id &&
+                   Action == action.Action &&
+                   EqualityComparer<Claim[]>.Default.Equals(Claims, action.Claims);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Action, Claims);
+        }
     }
 }
