@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.Providers;
 using Guppy.Initializers;
 using Guppy.Loaders;
+using Guppy.MonoGame.Primitives;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
