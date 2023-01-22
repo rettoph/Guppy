@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,6 +54,16 @@ namespace Guppy.Common.Collections
             }
 
             return false;
+        }
+
+        public bool TryGet(TKey1 key1, [MaybeNullWhen(false)] out TValue value)
+        {
+            return _dic1.TryGetValue(key1, out value);
+        }
+
+        public bool TryGet(TKey2 key2, [MaybeNullWhen(false)] out TValue value)
+        {
+            return _dic2.TryGetValue(key2, out value);
         }
 
         public void Remove(TKey1 key1, TKey2 key2)
