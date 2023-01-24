@@ -18,7 +18,6 @@ namespace Guppy.Network
         private readonly NetMessageType<T> _type;
         private readonly INetSerializer<T> _serializer;
         private readonly INetSerializerProvider _serializers;
-        private readonly List<object> _data;
         private readonly List<NetPeer> _recipients;
         private T _body;
         private byte _outgoingChannel;
@@ -31,7 +30,6 @@ namespace Guppy.Network
         public byte OutgoingChannel => _outgoingChannel;
         public DeliveryMethod DeliveryMethod => _deliveryMethod;
         public NetMessageType<T> Type => _type;
-        public IEnumerable<object> Data => _data;
         public NetDataWriter Writer => _writer;
 
         Type IMessage.Type { get; } = typeof(INetOutgoingMessage<T>);
@@ -48,7 +46,6 @@ namespace Guppy.Network
 
             _type = type;
 
-            _data = new List<object>();
             _recipients = new List<NetPeer>();
             _writer = new NetDataWriter();
 
@@ -70,22 +67,12 @@ namespace Guppy.Network
         {
             _writer.SetPosition(1 + NetId.Byte.SizeInBytes);
 
-            _data.Clear();
             _recipients.Clear();
 
             _outgoingChannel = this.Type.DefaultOutgoingChannel;
             _deliveryMethod = this.Type.DefaultDeliveryMethod;
 
             this.Type.Recycle(this);
-        }
-
-        public INetOutgoingMessage<T> Append<TData>(in TData value)
-            where TData : notnull
-        {
-            _serializers.Serialize(_writer, true, in value);
-            _data.Add(value);
-
-            return this;
         }
 
         public INetOutgoingMessage<T> AddRecipient(NetPeer recipient)
@@ -136,11 +123,6 @@ namespace Guppy.Network
         public void Dispose()
         {
             this.Recycle();
-        }
-
-        INetOutgoingMessage INetOutgoingMessage.Append<TData>(in TData value)
-        {
-            return this.Append(in value);
         }
 
         INetOutgoingMessage INetOutgoingMessage.AddRecipient(NetPeer recipient)

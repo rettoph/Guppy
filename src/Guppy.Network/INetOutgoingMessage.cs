@@ -10,12 +10,8 @@ namespace Guppy.Network
         object Body { get; }
         byte OutgoingChannel { get; }
         DeliveryMethod DeliveryMethod { get; }
-        IEnumerable<object> Data { get; }
         NetDataWriter Writer { get; }
         new NetMessageType Type { get; }
-
-        INetOutgoingMessage Append<TData>(in TData value)
-            where TData : notnull;
 
         INetOutgoingMessage AddRecipient(NetPeer recipient);
 
@@ -38,9 +34,6 @@ namespace Guppy.Network
         new NetMessageType<T> Type { get; }
 
         void Write(in T body);
-
-        new INetOutgoingMessage<T> Append<TData>(in TData value)
-            where TData : notnull;
 
         new INetOutgoingMessage<T> AddRecipient(NetPeer recipient);
 

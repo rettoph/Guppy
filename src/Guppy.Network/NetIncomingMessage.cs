@@ -21,9 +21,6 @@ namespace Guppy.Network
         private T _body;
         private byte _channel;
         private DeliveryMethod _deliveryMethod;
-        private IList<object> _data;
-
-        public IEnumerable<object> Data => _data;
 
         T INetIncomingMessage<T>.Body => _body;
 
@@ -51,8 +48,6 @@ namespace Guppy.Network
             _scope = scope;
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
-
-            _data = new List<object>();
         }
 
         public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
@@ -61,17 +56,10 @@ namespace Guppy.Network
             _body = _serializer.Deserialize(reader);
             _channel = channel;
             _deliveryMethod = deliveryMethod;
-
-            while (!reader.EndOfData)
-            {
-                _data.Add(_serializers.Deserialize(reader));
-            }
         }
 
         public void Recycle()
         {
-            _data.Clear();
-
             _type.Recycle(this);
         }
 

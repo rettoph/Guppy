@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Attributes
 {
+    [AttributeUsage(validOn: AttributeTargets.Class, AllowMultiple = true)]
     public class SortableAttribute : InitializableAttribute
     {
         public readonly Type Type;
