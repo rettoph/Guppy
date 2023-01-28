@@ -31,7 +31,7 @@ namespace Guppy.MonoGame.Utilities.Cameras
         /// </summary>
         public bool Center = true;
 
-        public float ZoomDamp = 1f;
+        public float ZoomDamp = 5f;
         public float MoveDamping = 1f;
 
         public RectangleF ViewportBounds { get; private set; }
