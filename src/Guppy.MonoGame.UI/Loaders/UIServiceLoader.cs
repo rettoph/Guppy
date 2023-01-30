@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Guppy.MonoGame.UI.Services;
 using Guppy.Resources.Providers;
-using Guppy.MonoGame.UI.Providers.ResourcePackTypeProviders;
 using System.Reflection;
 using Guppy.Common.Helpers;
 using System.Runtime.InteropServices;
@@ -24,6 +23,12 @@ using Guppy.MonoGame.Constants;
 using InputConstants = Guppy.MonoGame.UI.Constants.InputConstants;
 using Guppy.Common.DependencyInjection;
 using MonoGame.Extended.Entities.Systems;
+using Guppy.MonoGame.UI.Serialization.Json.Converters;
+using System.Text.Json.Serialization;
+using Guppy.Resources.Definitions;
+using Guppy.Resources.Constants;
+using Guppy.Resources;
+using Guppy.Resources.Loaders;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -35,10 +40,9 @@ namespace Guppy.MonoGame.UI.Loaders
             var directory = Path.Combine(Directory.GetCurrentDirectory(), PathConstants.Natives);
             NativeHelper.Load(directory, FileConstants.cImGui, FileConstants.cImPlot);
 
+            services.AddSingleton<JsonConverter, TrueTypeFontResourceConverter>();
 
-            services.AddTransient<IResourcePackTypeProvider, ResourcePackTrueTypeFontProvider>();
-
-            services.AddResource<TrueTypeFont>(ResourceConstants.DiagnosticsTTF, FileConstants.DiagnosticsTTF);
+            services.AddSingleton<IPackLoader, PackLoader>();
 
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
             services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 20);

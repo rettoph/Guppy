@@ -27,7 +27,7 @@ namespace Guppy.Network.Loaders
                 .AddSingleton<ServerPeer>()
                 .AddScoped<INetMessageService, NetMessageService>();
 
-            services.AddSingleton<JsonConverter, PolymorphicJsonConverter<INetId>>()
+            services.AddSingleton<JsonConverter, PolymorphicConverter<INetId>>()
                     .AddSingleton<JsonConverter, ByteNetIdJsonConverter>()
                     .AddSingleton<JsonConverter, UShortNetIdJsonConverter>()
                     .AddSingleton<JsonConverter, ClaimJsonConverter>()

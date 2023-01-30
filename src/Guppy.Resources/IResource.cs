@@ -9,13 +9,18 @@ namespace Guppy.Resources
     public interface IResource
     {
         string Name { get; }
-        string? Source { get; }
-        Type Type { get; }
-        IResourcePack Pack { get; }
+
+        void Initialize(string path, IServiceProvider provider);
+        void Export(string path, IServiceProvider provider);
     }
 
-    public interface IResource<T> : IResource
+    public interface IResource<out TValue> : IResource
     {
-        T Value { get; }
+        TValue Value { get; }
+    }
+
+    public interface IResource<out TValue, TJson> : IResource<TValue>
+    {
+        TJson GetJson();
     }
 }

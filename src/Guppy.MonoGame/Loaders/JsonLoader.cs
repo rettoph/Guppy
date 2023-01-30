@@ -1,5 +1,5 @@
 ﻿using Guppy.Loaders;
-using Guppy.MonoGame.Json.JsonConverters;
+using Guppy.MonoGame.Serialization.Json.Converters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,9 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<JsonConverter, ColorJsonConverter>();
+            services.AddSingleton<JsonConverter, ColorConverter>();
+            services.AddSingleton<JsonConverter, Vector2Converter>();
+            services.AddSingleton<JsonConverter, ColorResourceConverter>();
 
             services.AddTransient<JsonSerializerOptions>(p =>
             {

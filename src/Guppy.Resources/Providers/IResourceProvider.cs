@@ -9,7 +9,9 @@ namespace Guppy.Resources.Providers
 {
     public interface IResourceProvider
     {
-        T Get<T>(string name);
-        bool TryGet<T>(string name, [MaybeNullWhen(false)] T resource);
+        IResource<T> Get<T>(string name);
+        bool TryGet<T>(string name, [MaybeNullWhen(false)] IResource<T> resource);
+        IEnumerable<T> GetAll<T>()
+            where T : IResource;
     }
 }

@@ -53,6 +53,17 @@ namespace System.Text.Json
 
         public static bool ReadPropertyName(ref this Utf8JsonReader reader, [MaybeNullWhen(false)] out string propertyName)
         {
+            if(reader.CheckToken(JsonTokenType.StartObject, false))
+            {
+                reader.Read();
+            }
+
+            if(reader.CheckToken(JsonTokenType.EndObject, false))
+            {
+                propertyName = default;
+                return false;
+            }
+
             if (!reader.CheckToken(JsonTokenType.PropertyName, false))
             {
                 propertyName = default;
@@ -66,11 +77,11 @@ namespace System.Text.Json
         }
 
         public static bool ReadProperty<T>(ref this Utf8JsonReader reader, [MaybeNullWhen(false)] out T property)
-            where T : Enum
+            where T : struct, Enum
         {
             if (reader.ReadPropertyName(out string? propertyName))
             {
-                property = (T)Enum.Parse(typeof(T), propertyName);
+                property = Enum.Parse<T>(propertyName);
                 return true;
             }
 

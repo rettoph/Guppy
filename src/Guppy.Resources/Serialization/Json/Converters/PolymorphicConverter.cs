@@ -12,7 +12,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Guppy.Resources.Serialization.Json.Converters
 {
-    public sealed class PolymorphicJsonConverter<T> : JsonConverter<T>
+    public sealed class PolymorphicConverter<T> : JsonConverter<T>
         where T : notnull
     {
         public const string TypePropertyKey = "Type";
@@ -20,9 +20,9 @@ namespace Guppy.Resources.Serialization.Json.Converters
 
         private Map<string, Type> _types;
 
-        public PolymorphicJsonConverter(IAssemblyProvider assembly, IEnumerable<PolymorphicJsonType> types)
+        public PolymorphicConverter(IAssemblyProvider assembly, IEnumerable<PolymorphicJsonType> types)
         {
-            var typeTuples = assembly.GetTypes<T>(x => !x.IsInterface && !x.IsAbstract).Select(x => (types.FirstOrDefault(t => t.Type == x)?.Key ?? x.Name!, x));
+            var typeTuples = types.Where(x => x.Type.IsAssignableTo(typeof(T))).Select(x => (x.Key, x.Type));
             _types = new Map<string, Type>(typeTuples);
         }
 

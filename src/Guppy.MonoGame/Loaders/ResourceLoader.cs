@@ -1,5 +1,4 @@
 ﻿using Guppy.Loaders;
-using Guppy.MonoGame.Providers.ResourcePackTypeProviders;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +8,7 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IResourcePackTypeProvider, ResourcePackColorProvider>();
+            // services.AddTransient<IResourcePackTypeProvider, ResourcePackColorProvider>();
         }
     }
 }

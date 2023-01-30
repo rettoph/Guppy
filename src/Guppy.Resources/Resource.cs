@@ -6,24 +6,47 @@ using System.Threading.Tasks;
 
 namespace Guppy.Resources
 {
-    public class Resource<T> : IResource<T>
+    public abstract class Resource<TValue, TJson> : IResource<TValue, TJson>
     {
-        public T Value { get; }
-
         public string Name { get; }
+        public virtual TValue Value { get; set; }
 
-        public string? Source { get; }
-
-        public Type Type => typeof(T);
-
-        public IResourcePack Pack { get; }
-
-        public Resource(T value, string name, string? source, IResourcePack pack)
+        public Resource(string name)
         {
-            this.Value = value;
             this.Name = name;
-            this.Pack = pack;
-            this.Source = source;
+            this.Value = default!;
+        }
+
+        public abstract void Initialize(string path, IServiceProvider services);
+        public abstract void Export(string path, IServiceProvider services);
+
+        public abstract TJson GetJson();
+    }
+
+    public abstract class Resource<T> : IResource<T, T>
+    {
+        public string Name { get; }
+        public T Value { get; set; }
+
+        public Resource(string name, T value)
+        {
+            this.Name = name;
+            this.Value = value;
+        }
+
+        public virtual void Initialize(string path, IServiceProvider services)
+        {
+            //
+        }
+
+        public virtual void Export(string path, IServiceProvider services)
+        {
+            //
+        }
+
+        public T GetJson()
+        {
+            return this.Value;
         }
     }
 }

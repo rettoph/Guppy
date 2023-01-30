@@ -31,9 +31,18 @@ namespace Guppy.Resources.Serialization.Json.Implementations
             return STJ.JsonSerializer.Deserialize<T>(json, _options);
         }
 
+        public T? Deserialize<T>(Stream utf8Json)
+        {
+            return STJ.JsonSerializer.Deserialize<T>(utf8Json, _options);
+        }
+
         public string Serialize<T>(T obj)
         {
             return STJ.JsonSerializer.Serialize(obj, _options);
+        }
+        public void Serialize<T>(Stream utf8Json, T obj)
+        {
+            STJ.JsonSerializer.Serialize(utf8Json, obj, _options);
         }
     }
 }

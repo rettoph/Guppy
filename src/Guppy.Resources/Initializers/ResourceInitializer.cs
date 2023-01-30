@@ -2,8 +2,7 @@
 using Guppy.Common.Providers;
 using Guppy.Initializers;
 using Guppy.Loaders;
-using Guppy.Resources.Definitions;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -17,14 +16,12 @@ namespace Guppy.Resources.Initializers
     {
         public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
         {
-            var definitions = assemblies.GetTypes<IResourceDefinition>().WithAttribute<AutoLoadAttribute>(false);
+            var packLoaders = assemblies.GetTypes<IPackLoader>().WithAttribute<AutoLoadAttribute>(true);
 
-            foreach(Type definition in definitions)
+            foreach (var packLoader in packLoaders)
             {
-                services.AddResource(definition);
+                services.AddSingleton(typeof(IPackLoader), packLoader);
             }
-
-            services.AddSingleton<IResourceProvider, ResourceProvider>();
         }
     }
 }

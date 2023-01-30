@@ -2,6 +2,7 @@
 using Guppy.Common.Providers;
 using Guppy.Initializers;
 using Guppy.Loaders;
+using Guppy.Resources.Constants;
 using Guppy.Resources.Definitions;
 using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json;
@@ -31,6 +32,8 @@ namespace Guppy.Resources.Initializers
             services.AddSingleton<ISettingProvider, SettingProvider>()
                     .AddSingleton<IJsonSerializer, JsonSerializer>()
                     .AddSingleton<JsonConverter>(new JsonStringEnumConverter(STJ.JsonNamingPolicy.CamelCase));
+
+            services.AddSetting(SettingConstants.CurrentLanguage, LanguageConstants.Default, true, nameof(Guppy));
         }
     }
 }

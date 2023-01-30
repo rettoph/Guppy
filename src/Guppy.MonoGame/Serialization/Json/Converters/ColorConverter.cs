@@ -8,9 +8,9 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DrawingColor = System.Drawing.Color;
 
-namespace Guppy.MonoGame.Json.JsonConverters
+namespace Guppy.MonoGame.Serialization.Json.Converters
 {
-    public sealed class ColorJsonConverter : JsonConverter<Color>
+    public sealed class ColorConverter : JsonConverter<Color>
     {
         private enum Properties
         {
@@ -39,16 +39,16 @@ namespace Guppy.MonoGame.Json.JsonConverters
 
         public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            switch(reader.TokenType)
+            switch (reader.TokenType)
             {
                 case JsonTokenType.StartObject:
-                    return this.ReadColorObject(ref reader, typeToConvert, options);
+                    return ReadColorObject(ref reader, typeToConvert, options);
                 case JsonTokenType.StartArray:
-                    return this.ReadColorArray(ref reader, typeToConvert, options);
+                    return ReadColorArray(ref reader, typeToConvert, options);
                 case JsonTokenType.String:
-                    return this.ReadColorString(ref reader, typeToConvert, options);
+                    return ReadColorString(ref reader, typeToConvert, options);
                 case JsonTokenType.Number:
-                    return this.ReadColorNumber(ref reader, typeToConvert, options);
+                    return ReadColorNumber(ref reader, typeToConvert, options);
 
             }
 
@@ -82,7 +82,7 @@ namespace Guppy.MonoGame.Json.JsonConverters
             g = reader.ReadByte();
             b = reader.ReadByte();
 
-            if(reader.CheckToken(JsonTokenType.Number, false))
+            if (reader.CheckToken(JsonTokenType.Number, false))
             {
                 a = reader.ReadByte();
             }

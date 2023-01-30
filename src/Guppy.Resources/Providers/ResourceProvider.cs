@@ -9,39 +9,67 @@ namespace Guppy.Resources.Providers
 {
     internal class ResourceProvider : IResourceProvider
     {
-        private IResourcePackProvider _packs;
+        private IPackProvider _packs;
+        private IDictionary<string, IResource> _cache;
 
-        public ResourceProvider(IResourcePackProvider packs)
+        public ResourceProvider(IPackProvider packs)
         {
             _packs = packs;
+            _cache = new Dictionary<string, IResource>();
         }
 
-        public T Get<T>(string name)
+        public IResource<T> Get<T>(string name)
         {
-            foreach(IResourcePack pack in _packs)
+            if(_cache.TryGetValue(name, out var uncasted) && uncasted is IResource<T> casted)
+            {
+                return casted;
+            }
+
+            foreach(Pack pack in _packs.GetAll())
             {
                 if(pack.TryGet<T>(name, out var resource))
                 {
-                    return resource.Value;
+                    _cache.Add(name, resource);
+                    return resource;
                 }
             }
 
-            return default(T) ?? throw new ArgumentException();
+            return default(IResource<T>) ?? throw new ArgumentException();
         }
 
-        public bool TryGet<T>(string name, [MaybeNullWhen(false)] T resource)
+        public bool TryGet<T>(string name, [MaybeNullWhen(false)] IResource<T> resource)
         {
-            foreach (IResourcePack pack in _packs)
+            if (_cache.TryGetValue(name, out var uncasted) && uncasted is IResource<T> casted)
+            {
+                resource = casted;
+                return true;
+            }
+
+            foreach (Pack pack in _packs.GetAll())
             {
                 if (pack.TryGet<T>(name, out var r))
                 {
-                    resource = r.Value;
+                    _cache.Add(name, r);
+                    resource = r;
                     return true;
                 }
             }
 
             resource = default;
             return false;
+        }
+
+        public IEnumerable<T> GetAll<T>()
+            where T : IResource
+        {
+            var output = new List<T>();
+
+            foreach(Pack pack in _packs.GetAll())
+            {
+                output.AddRange(pack.Resources.WhereAs<IResource, T>());
+            }
+
+            return output;
         }
     }
 }

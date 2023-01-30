@@ -2,7 +2,6 @@
 using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
-using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Extensions.DependencyInjection;
