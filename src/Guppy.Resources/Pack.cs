@@ -109,7 +109,7 @@ namespace Guppy.Resources
             this.Loaded = DateTime.Now;
         }
 
-        public void Add(string localization, params IResource[] resources)
+        public Pack Add(string localization, params IResource[] resources)
         {
             if(!this.localized.TryGetValue(localization, out IResourceCollection? localized))
             {
@@ -126,11 +126,13 @@ namespace Guppy.Resources
                     resource.Initialize(this.Directory, _provider);
                 }
             }
+
+            return this;
         }
 
-        public void Add(params IResource[] resources)
+        public Pack Add(params IResource[] resources)
         {
-            this.Add(LanguageConstants.Default, resources);
+            return this.Add(LanguageConstants.Default, resources);
         }
 
         public bool TryGet<T>(string name, [MaybeNullWhen(false)] out IResource<T> resource)

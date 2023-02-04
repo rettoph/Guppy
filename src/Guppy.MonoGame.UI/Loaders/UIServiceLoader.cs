@@ -29,6 +29,7 @@ using Guppy.Resources.Definitions;
 using Guppy.Resources.Constants;
 using Guppy.Resources;
 using Guppy.Resources.Loaders;
+using Guppy.MonoGame.UI.Providers;
 
 namespace Guppy.MonoGame.UI.Loaders
 {

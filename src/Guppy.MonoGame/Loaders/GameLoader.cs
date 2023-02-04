@@ -2,6 +2,7 @@
 using Guppy.Common.DependencyInjection;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
 using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,8 @@ namespace Guppy.MonoGame.Loaders
                 .AddAlias<ITerminalService>();
 
             services.AddScoped<IGameComponentService, GameComponentService>();
+
+            services.AddScoped<IMenuProvider, MenuProvider>();
         }
     }
 }
