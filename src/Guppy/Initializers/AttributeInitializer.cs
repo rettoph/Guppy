@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,11 +20,11 @@ namespace Guppy.Initializers
         {
             var typesInitializableAttributes = assemblies.GetAttributes<InitializableAttribute>(true);
 
-            foreach((Type type, InitializableAttribute[] attributes) in typesInitializableAttributes)
+            foreach((Type type, InitializableAttribute[] attributes) in typesInitializableAttributes.SortBy(x => x.Item1.GetType()))
             {
-                foreach(var attribute in attributes)
+                foreach (var attribute in attributes)
                 {
-                    attribute.Initialize(services, type);
+                    attribute.TryInitialize(services, type);
                 }
             }
         }

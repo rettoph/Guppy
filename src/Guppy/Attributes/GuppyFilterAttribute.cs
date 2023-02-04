@@ -22,7 +22,7 @@ namespace Guppy.Attributes
             this.GuppyType = guppyType;
         }
 
-        public override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(IServiceCollection services, Type classType)
         {
             services.AddFilter(new GuppyFilter(classType, this.GuppyType));
         }

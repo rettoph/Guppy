@@ -1,15 +1,10 @@
 ﻿using Guppy.Common.Attributes;
-using Guppy.Loaders;
 using Guppy.MonoGame.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.MonoGame.Loaders
 {
-    [Scoped<IMenuLoader>()]
+    [Service<IMenuLoader>(ServiceLifetime.Scoped, true)]
     public interface IMenuLoader
     {
         void Load(IMenuProvider menus);

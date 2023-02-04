@@ -13,10 +13,12 @@ namespace Guppy.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public sealed class GlobalScopeFilterAttribute : InitializableAttribute
     {
-        public override void Initialize(IServiceCollection services, Type classType)
+        public GlobalScopeFilterAttribute()
         {
-            base.Initialize(services, classType);
+        }
 
+        protected override void Initialize(IServiceCollection services, Type classType)
+        {
             services.AddFilter(new GlobalScopeFilter(classType));
         }
     }

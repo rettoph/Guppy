@@ -20,10 +20,8 @@ namespace Guppy.Resources.Attributes
             this.Key = key;
         }
 
-        public override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(IServiceCollection services, Type classType)
         {
-            base.Initialize(services, classType);
-
             services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType));
         }
     }

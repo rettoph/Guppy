@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Guppy.Common.Attributes
 {
     [AttributeUsage(validOn: AttributeTargets.Class, AllowMultiple = true)]
-    public class SortableAttribute : InitializableAttribute
+    public class SortableAttribute : Attribute
     {
         public readonly Type Type;
         public readonly int Order;

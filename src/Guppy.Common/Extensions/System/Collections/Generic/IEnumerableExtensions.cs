@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes.Common;
+using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Common.Collections;
 using System;
@@ -39,22 +40,39 @@ namespace System.Collections.Generic
 
         public static IOrderedEnumerable<T> Sort<T>(this IEnumerable<T> items, int defaultOrder = 0)
         {
+            return items.SortBy(x => x.GetType(), defaultOrder);
+        }
+
+        public static IOrderedEnumerable<T> SortBy<T>(this IEnumerable<T> items, Func<T, Type> getter, int defaultOrder = 0)
+        {
+            IList<int> orders = new List<int>();
+
             return items.OrderBy(item => {
-                var attributeOrders = item?.GetType().GetCustomAttributes()
-                    .Where(attr =>
-                    {
-                        if (attr is SortableAttribute sortable)
-                        {
-                            return sortable.Sorts(typeof(T));
-                        }
+                orders.Clear();
 
-                        return false;
-                    })
-                    .Select(attr => ((SortableAttribute)attr).Order) ?? Enumerable.Empty<int>();
-
-                if(attributeOrders.Any())
+                if(item is ISortable sortable && sortable.GetOrder(typeof(T), out int order))
                 {
-                    return attributeOrders.Last();
+                    orders.Add(order);
+                }
+
+                foreach(var attr in getter(item).GetCustomAttributes())
+                {
+                    if(attr is SortableAttribute sortableAttr && sortableAttr.Sorts(typeof(T)))
+                    {
+                        orders.Add(sortableAttr.Order);
+                        continue;
+                    }
+
+                    if (attr is AutoLoadAttribute autoLoadAttr)
+                    {
+                        orders.Add(autoLoadAttr.Order);
+                        continue;
+                    }
+                }
+
+                if (orders.Any())
+                {
+                    return orders.Min();
                 }
 
                 return defaultOrder;

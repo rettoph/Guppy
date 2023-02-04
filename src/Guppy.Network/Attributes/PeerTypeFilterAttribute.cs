@@ -20,10 +20,8 @@ namespace Guppy.Network.Attributes
             this.PeerType = peerType;
         }
 
-        public override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(IServiceCollection services, Type classType)
         {
-            base.Initialize(services, classType);
-
             services.AddFilter(new PeerTypeFilter(this.PeerType, classType));
         }
     }

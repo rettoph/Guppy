@@ -8,6 +8,6 @@ namespace Guppy.Common
 {
     public interface ISortable
     {
-        int GetOrder(Type enumerableType);
+        bool GetOrder(Type enumerableType, out int order);
     }
 }
