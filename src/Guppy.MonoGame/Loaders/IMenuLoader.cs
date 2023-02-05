@@ -1,4 +1,4 @@
-﻿using Guppy.Common.Attributes;
+﻿using Guppy.Attributes;
 using Guppy.MonoGame.Providers;
 using Microsoft.Extensions.DependencyInjection;
 

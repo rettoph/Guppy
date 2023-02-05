@@ -1,13 +1,7 @@
-﻿using Guppy.Common.Attributes;
-using Guppy.Filters;
+﻿using Guppy.Attributes;
 using Guppy.Network.Enums;
 using Guppy.Network.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Attributes
 {
@@ -20,9 +14,9 @@ namespace Guppy.Network.Attributes
             this.PeerType = peerType;
         }
 
-        protected override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(GuppyEngine engine, Type classType)
         {
-            services.AddFilter(new PeerTypeFilter(this.PeerType, classType));
+            engine.Services.AddFilter(new PeerTypeFilter(this.PeerType, classType));
         }
     }
 }

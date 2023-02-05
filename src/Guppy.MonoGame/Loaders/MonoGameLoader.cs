@@ -1,6 +1,10 @@
-﻿using Guppy.Loaders;
+﻿using Guppy.Common.DependencyInjection;
+using Guppy.Common.Providers;
+using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages.Inputs;
+using Guppy.MonoGame.Primitives;
+using Guppy.MonoGame.Services;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
@@ -51,6 +55,22 @@ namespace Guppy.MonoGame.Loaders
             {
                 (ButtonState.Pressed, new ToggleWindowInput() { Window = ToggleWindowInput.Windows.Debugger })
             });
+
+            services.ConfigureCollection(manager =>
+            {
+                manager.GetService<InputService>()
+                    .SetLifetime(ServiceLifetime.Singleton)
+                    .AddAlias<IInputService>()
+                    .AddAlias<IGameComponent>();
+            });
+
+            // Add descriptor for some primitive batch cameras
+            var vertexTypes = typeof(Game).Assembly.GetTypes().Where(x => x.IsAssignableTo(typeof(IVertexType)) && x.IsValueType);
+            foreach (Type vertexType in vertexTypes)
+            {
+                var primitiveBatchType = typeof(PrimitiveBatch<>).MakeGenericType(vertexType);
+                services.AddSingleton(primitiveBatchType);
+            }
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Guppy.Resources.Providers
 
             foreach(Pack pack in _packs.GetAll())
             {
-                output.AddRange(pack.Resources.WhereAs<IResource, T>());
+                output.AddRange(pack.Resources.OfType<T>());
             }
 
             return output;

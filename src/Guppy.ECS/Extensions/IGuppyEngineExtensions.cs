@@ -1,4 +1,6 @@
-﻿using Guppy.ECS.Loaders;
+﻿using Guppy.Common;
+using Guppy.Common.Extensions;
+using Guppy.ECS.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +13,12 @@ namespace Guppy
     {
         public static GuppyEngine ConfigureECS(this GuppyEngine guppy)
         {
-            if(guppy.Tags.Contains(nameof(ConfigureECS)))
+            if(guppy.HasTag(nameof(ConfigureECS)))
             {
                 return guppy;
             }
 
-            return guppy.AddLoader(new ECSLoader(), 0)
+            return guppy.AddServiceLoader(new ECSLoader())
                 .AddTag(nameof(ConfigureECS));
         }
     }

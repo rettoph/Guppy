@@ -1,14 +1,10 @@
-﻿using Guppy.Common;
-using Guppy.MonoGame.Services;
+﻿using Guppy.Attributes;
 using Guppy.MonoGame.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.MonoGame.Definitions
 {
+    [Service<IInputDefinition>(ServiceLifetime.Singleton, true)]
     public interface IInputDefinition
     {
         string Key { get; }

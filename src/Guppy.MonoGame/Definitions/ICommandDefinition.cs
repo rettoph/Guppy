@@ -1,14 +1,11 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
 using Guppy.MonoGame.Services;
-using System;
-using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Definitions
 {
+    [Service<ICommandDefinition>(ServiceLifetime.Singleton, true)]
     public interface ICommandDefinition
     {
         Type? Parent { get; }

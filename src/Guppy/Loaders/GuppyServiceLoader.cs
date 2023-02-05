@@ -1,8 +1,5 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes.Common;
 using Guppy.Common.DependencyInjection;
-using Guppy.Common.DependencyInjection.Interfaces;
-using Guppy.Filters;
 using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -10,7 +7,7 @@ using Serilog;
 
 namespace Guppy.Loaders
 {
-    [AutoLoad(0)]
+    [AutoLoad]
     internal sealed class GuppyServiceLoader : IServiceLoader
     {
         public void ConfigureServices(IServiceCollection services)

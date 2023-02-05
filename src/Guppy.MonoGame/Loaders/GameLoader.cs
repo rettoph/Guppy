@@ -36,6 +36,8 @@ namespace Guppy.MonoGame.Loaders
             services.AddScoped<IGameComponentService, GameComponentService>();
 
             services.AddScoped<IMenuProvider, MenuProvider>();
+
+            services.AddSingleton<ICommandService, CommandService>();
         }
     }
 }

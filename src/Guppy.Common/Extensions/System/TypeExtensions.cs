@@ -78,5 +78,20 @@ namespace System
         {
             return types.WithAttribute(typeof(TAttribute), inherit);
         }
+
+        /// <summary>
+        /// https://stackoverflow.com/questions/540749/can-a-c-sharp-class-inherit-attributes-from-its-interface
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> GetCustomAttributesIncludingInterfaces<T>(this Type type)
+        {
+            var attributeType = typeof(T);
+            return type.GetCustomAttributes(attributeType, true)
+              .Union(type.GetInterfaces().SelectMany(interfaceType =>
+                  interfaceType.GetCustomAttributes(attributeType, true)))
+              .Cast<T>();
+        }
     }
 }

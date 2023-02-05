@@ -1,10 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Attributes.Common;
-using Guppy.Common.Providers;
-using Guppy.Initializers;
-using Guppy.Loaders;
+﻿using Guppy.Loaders;
 using Guppy.Resources.Constants;
-using Guppy.Resources.Definitions;
 using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json;
 using Guppy.Resources.Serialization.Json.Implementations;
@@ -17,19 +12,12 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using STJ = System.Text.Json;
 
-namespace Guppy.Resources.Initializers
+namespace Guppy.Resources.Loaders
 {
-    internal sealed class SettingInitializer : IGuppyInitializer
+    internal sealed class SettingLoader : IServiceLoader
     {
-        public void Initialize(IAssemblyProvider assemblies, IServiceCollection services, IEnumerable<IGuppyLoader> loaders)
+        public void ConfigureServices(IServiceCollection services)
         {
-            var definitions = assemblies.GetTypes<ISettingDefinition>().WithAttribute<AutoLoadAttribute>(false);
-
-            foreach(Type definition in definitions)
-            {
-                services.AddSetting(definition);
-            }
-
             services.AddSingleton<ISettingProvider, SettingProvider>()
                     .AddSingleton<IJsonSerializer, JsonSerializer>()
                     .AddSingleton<JsonConverter>(new JsonStringEnumConverter(STJ.JsonNamingPolicy.CamelCase));

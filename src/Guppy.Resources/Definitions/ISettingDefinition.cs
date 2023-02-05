@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Guppy.Attributes;
 using Guppy.Resources.Serialization.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Resources.Definitions
 {
+    [Service<ISettingDefinition>(ServiceLifetime.Singleton, true)]
     public interface ISettingDefinition
     {
         string Key { get; }

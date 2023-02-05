@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Guppy.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Loaders
 {
-    public interface IServiceLoader : IGuppyLoader
+    [ServiceLoaderAutoLoad]
+    public interface IServiceLoader
     {
         void ConfigureServices(IServiceCollection services);
     }

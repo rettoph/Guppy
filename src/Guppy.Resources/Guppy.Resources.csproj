@@ -15,4 +15,8 @@
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Initializers\" />
+  </ItemGroup>
+
 </Project>

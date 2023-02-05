@@ -33,7 +33,7 @@ namespace Guppy.Common.Collections
 
         public override IEnumerable<TItem> Items<TItem>()
         {
-            return _items.WhereAs<T, TItem>();
+            return _items.OfType<TItem>();
         }
 
         public int Add(T item)

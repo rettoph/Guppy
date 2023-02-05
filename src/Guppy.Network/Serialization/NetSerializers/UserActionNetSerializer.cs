@@ -1,18 +1,11 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes.Common;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Messages;
-using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Serialization.NetSerializers
 {
-    [AutoLoad(0)]
+    [AutoLoad]
     internal sealed class UserActionNetSerializer : NetSerializer<UserAction>
     {
         public override UserAction Deserialize(NetDataReader reader)

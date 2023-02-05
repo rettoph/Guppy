@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.Extensions;
+using Guppy.Common.Utilities;
 using Microsoft.Extensions.Options;
 using Serilog;
 using System;
@@ -21,6 +22,7 @@ namespace Guppy.Common.Implementations
         private readonly Dictionary<Type, IBusQueue> _typeMap;
         private readonly IBusQueue _default;
         private readonly IFiltered<ISubscriber> _subscribers;
+        private List<Subscription> _subscriptions;
 
         public IPublisher this[Type type] => _broker[type];
 
@@ -33,6 +35,7 @@ namespace Guppy.Common.Implementations
         {
             _subscribers = subscribers;
             _broker = broker;
+            _subscriptions = default!;
 
             _queues = configuration.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
@@ -49,17 +52,23 @@ namespace Guppy.Common.Implementations
 
         public void Initialize()
         {
-            foreach (ISubscriber subscriber in _subscribers.Instances.Sort())
+            _subscriptions = _subscribers.Instances
+                .Select(x => x.GetSubscriptions())
+                .SelectMany(x => x)
+                .OrderBy(x => x.Order)
+                .ToList();
+
+            foreach (Subscription subscription in _subscriptions)
             {
-                this.SubscribeAll(subscriber);
+                subscription.Subscribe(this);
             }
         }
 
         public void Dispose()
         {
-            foreach (ISubscriber subscriber in _subscribers.Instances)
+            foreach (Subscription subscription in _subscriptions)
             {
-                this.UnsubscribeAll(subscriber);
+                subscription.Unsubscribe(this);
             }
 
             _broker.Dispose();

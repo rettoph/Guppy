@@ -1,4 +1,6 @@
-﻿using Guppy.Network.UI.Loaders;
+﻿using Guppy.Common;
+using Guppy.Common.Extensions;
+using Guppy.Network.UI.Loaders;
 
 namespace Guppy
 {
@@ -7,13 +9,13 @@ namespace Guppy
         public static GuppyEngine ConfigureNetworkUI(
             this GuppyEngine guppy)
         {
-            if(guppy.Tags.Contains(nameof(ConfigureNetworkUI)))
+            if(guppy.HasTag(nameof(ConfigureNetworkUI)))
             {
                 return guppy;
             }
 
             return guppy.ConfigureUI()
-                .AddLoader(new NetworkUIServiceLoader(), 0)
+                .AddServiceLoader(new NetworkUIServiceLoader())
                 .AddTag(nameof(ConfigureNetworkUI));
         }
     }

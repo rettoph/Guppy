@@ -1,13 +1,11 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.Attributes;
+using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network
 {
+    [Service<INetSerializer>(ServiceLifetime.Singleton, true)]
     public interface INetSerializer
     {
         INetId Id { get; internal set; }

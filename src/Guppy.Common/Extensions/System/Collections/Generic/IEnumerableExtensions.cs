@@ -1,13 +1,7 @@
-﻿using Guppy.Attributes.Common;
-using Guppy.Common;
+﻿using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Common.Collections;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace System.Collections.Generic
 {
@@ -38,56 +32,9 @@ namespace System.Collections.Generic
             return new DoubleDictionary<TKey1, TKey2, TValue>(kkvps);
         }
 
-        public static IOrderedEnumerable<T> Sort<T>(this IEnumerable<T> items, int defaultOrder = 0)
+        public static IOrderedEnumerable<T> Sort<T>(this IEnumerable<T> items)
         {
-            return items.SortBy(x => x.GetType(), defaultOrder);
-        }
-
-        public static IOrderedEnumerable<T> SortBy<T>(this IEnumerable<T> items, Func<T, Type> getter, int defaultOrder = 0)
-        {
-            IList<int> orders = new List<int>();
-
-            return items.OrderBy(item => {
-                orders.Clear();
-
-                if(item is ISortable sortable && sortable.GetOrder(typeof(T), out int order))
-                {
-                    orders.Add(order);
-                }
-
-                foreach(var attr in getter(item).GetCustomAttributes())
-                {
-                    if(attr is SortableAttribute sortableAttr && sortableAttr.Sorts(typeof(T)))
-                    {
-                        orders.Add(sortableAttr.Order);
-                        continue;
-                    }
-
-                    if (attr is AutoLoadAttribute autoLoadAttr)
-                    {
-                        orders.Add(autoLoadAttr.Order);
-                        continue;
-                    }
-                }
-
-                if (orders.Any())
-                {
-                    return orders.Min();
-                }
-
-                return defaultOrder;
-            });
-        }
-
-        public static IEnumerable<TAs> WhereAs<T, TAs>(this IEnumerable<T> items)
-        {
-            foreach(T item in items)
-            {
-                if(item is TAs casted)
-                {
-                    yield return casted;
-                }
-            }
+            return items.OrderBy(x => x.GetOrder());
         }
     }
 }

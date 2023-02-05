@@ -19,8 +19,11 @@ namespace Guppy.Common.DependencyInjection
 
         public IServiceConfiguration AddService(Type serviceType)
         {
-            var configurations = new List<IServiceConfiguration>();
-            _services.Add(serviceType, configurations);
+            if(!_services.TryGetValue(serviceType, out var configurations))
+            {
+                configurations = new List<IServiceConfiguration>();
+                _services.Add(serviceType, configurations);
+            }
 
             Type configurationType = typeof(ServiceConfiguration<>).MakeGenericType(serviceType);
             var configuration = (IServiceConfiguration)Activator.CreateInstance(configurationType, new object[] { })!;

@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddScoped<IFilterProvider, FilterProvider>()
                     .AddScoped<IFilteredProvider, FilteredProvider>()
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>))
-                    .AddTransient(typeof(ISorted<>), typeof(Sorted<>));
+                    .AddTransient(typeof(ISorted<>), typeof(Guppy.Common.Implementations.Sorted<>));
         }
 
         private static readonly ConditionalWeakTable<IServiceCollection, IList<IServiceCollectionManager>> _managers = new();

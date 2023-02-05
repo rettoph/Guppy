@@ -1,36 +1,24 @@
 ﻿using Guppy.Attributes;
-using Guppy.Attributes.Common;
-using Guppy.Common;
 using Guppy.Common.Providers;
-using Guppy.Factories;
-using Guppy.Initializers;
+using Guppy.Common.Utilities;
 using Guppy.Loaders;
-using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy
 {
     public sealed class GuppyEngine
     {
-        private readonly OrderedList<IGuppyInitializer> _initializers;
-        private readonly OrderedList<IGuppyLoader> _loaders;
-        private bool _initialized;
+        private bool _loaded;
+        private SortedList<int, Action<GuppyEngine>> _loaders;
 
-        public IAssemblyProvider Assemblies { get; private init; }
-        public HashSet<string> Tags { get; private set; }
+        public IAssemblyProvider Assemblies { get; private set; }
+        public IServiceCollection Services { get; private set; }
 
         public GuppyEngine(IEnumerable<Assembly>? libraries = default)
         {
-            _initializers = new OrderedList<IGuppyInitializer>();
-            _loaders = new OrderedList<IGuppyLoader>();
-            _initialized = false;
+            _loaded = false;
+            _loaders = new SortedList<int, Action<GuppyEngine>>(new DuplicateKeyComparer<int>());
 
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
@@ -38,102 +26,79 @@ namespace Guppy
                 typeof(GuppyEngine).Assembly,
             });
 
-            this.Tags = new HashSet<string>();
-
+            this.Services = new ServiceCollection();
             this.Assemblies = new AssemblyProvider(libraries);
+
             this.Assemblies.OnAssemblyLoaded += this.HandleAssemblyLoaded;
         }
 
-        public GuppyEngine Initialize(Assembly? entry = null)
+        public GuppyEngine AddLoader(Action<GuppyEngine> loader, int? order = null)
         {
-            this.Assemblies.Load(entry ?? Assembly.GetEntryAssembly() ?? throw new InvalidOperationException());
-
-            _initialized = true;
+            _loaders.Add(order ?? loader.GetOrder(), loader);
 
             return this;
         }
 
-        public GuppyEngine AddInitializer(IGuppyInitializer initializer, int order)
+        public GuppyEngine Load(Assembly? entry = null)
         {
-            _initializers.Add(initializer, order);
-
-            return this;
-        }
-
-        public GuppyEngine AddLoader(IGuppyLoader loader, int order)
-        {
-            _loaders.Add(loader, order);
-
-            return this;
-        }
-
-        public GuppyEngine AddTag(string tag)
-        {
-            this.Tags.Add(tag);
-
-            return this;
-        }
-
-        public GuppyEngine ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton(this.Assemblies);
-
-            foreach (IGuppyInitializer initializer in _initializers)
+            if(_loaded)
             {
-                initializer.Initialize(this.Assemblies, services, _loaders);
+                throw new InvalidOperationException();
             }
 
-            services.RefreshManagers();
+            this.Services.AddSingleton<IAssemblyProvider>(this.Assemblies);
+
+            this.Assemblies.Load(entry ?? Assembly.GetEntryAssembly() ?? throw new InvalidOperationException());
+
+            // Invoke all loaders
+            foreach(var loader in _loaders)
+            {
+                loader.Value.Invoke(this);
+            }
+
+            this.Services.RefreshManagers();
+
+            _loaded = true;
 
             return this;
         }
 
         public IServiceProvider Build()
         {
-            if(!_initialized)
+            if(!_loaded)
             {
-                this.Initialize();
+                this.Load();
             }
 
-            var services = new ServiceCollection();
-
-            this.ConfigureServices(services);
-
-            var provider = services.BuildServiceProvider(validateScopes: true);
+            var provider = this.Services.BuildServiceProvider(validateScopes: true);
 
             return provider;
         }
 
         private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
         {
-            var factories = assembly.GetTypes()
-                .AssignableFrom<IGuppyFactory>()
-                .WithAttribute<AutoLoadAttribute>(true)
-                .Select(t => Activator.CreateInstance(t) as IGuppyFactory ?? throw new Exception());
-
-            var initializers = assembly.GetTypes()
+            // First initialize all auto load initializers
+            var initialize = assembly.GetTypes()
                 .AssignableFrom<IGuppyInitializer>()
                 .WithAttribute<AutoLoadAttribute>(true)
                 .Select(t => Activator.CreateInstance(t) as IGuppyInitializer ?? throw new Exception());
 
-            var loaders = assembly.GetTypes()
-                .AssignableFrom<IGuppyLoader>()
-                .WithAttribute<AutoLoadAttribute>(true)
-                .Select(t => Activator.CreateInstance(t) as IGuppyLoader ?? throw new Exception());
-
-            foreach (IGuppyFactory factory in factories)
+            foreach (IGuppyInitializer initializer in initialize)
             {
-                factory.Build(this);
+                initializer.Initialize(this);
             }
 
-            foreach (IGuppyInitializer initializer in initializers)
-            {
-                this.AddInitializer(initializer, initializer.GetType()?.GetCustomAttribute<AutoLoadAttribute>(true)?.Order ?? 0);
-            }
+            // Initialize all initializable attributes
+            var typesWithInitializableAttributes = assembly.GetTypes()
+                .Select(x => (x, x.GetCustomAttributesIncludingInterfaces<InitializableAttribute>().ToArray()))
+                .Where(x => x.Item2.Any());
 
-            foreach (IGuppyLoader loader in loaders)
+            foreach ((Type type, InitializableAttribute[] attributes) in typesWithInitializableAttributes)
             {
-                this.AddLoader(loader, loader.GetType()?.GetCustomAttribute<AutoLoadAttribute>(true)?.Order ?? 0);
+                foreach (var attribute in attributes)
+                {
+                    attribute.TryInitialize(this, type);
+                }
             }
         }
     }

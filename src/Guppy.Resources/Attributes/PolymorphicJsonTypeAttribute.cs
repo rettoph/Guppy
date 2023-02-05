@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Resources.Serialization.Json;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,9 +21,9 @@ namespace Guppy.Resources.Attributes
             this.Key = key;
         }
 
-        protected override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(GuppyEngine engine, Type classType)
         {
-            services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType));
+            engine.Services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType));
         }
     }
 }

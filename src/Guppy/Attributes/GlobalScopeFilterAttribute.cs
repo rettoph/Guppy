@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,9 +18,9 @@ namespace Guppy.Attributes
         {
         }
 
-        protected override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(GuppyEngine engine, Type classType)
         {
-            services.AddFilter(new GlobalScopeFilter(classType));
+            engine.Services.AddFilter(new GlobalScopeFilter(classType));
         }
     }
 }

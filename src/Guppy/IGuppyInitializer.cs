@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Loaders
+namespace Guppy
 {
-    public interface IGuppyLoader
+    public interface IGuppyInitializer
     {
+        void Initialize(GuppyEngine engine);
     }
 }

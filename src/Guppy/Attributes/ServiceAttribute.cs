@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Attributes
+namespace Guppy.Attributes
 {
     public class ServiceAttribute : InitializableAttribute
     {
@@ -22,24 +22,24 @@ namespace Guppy.Common.Attributes
             this.RequireAutoLoadAttribute = requireAutoLoadAttribute;
         }
 
-        protected override bool ShouldInitialize(IServiceCollection services, Type classType)
+        protected override bool ShouldInitialize(GuppyEngine engine, Type classType)
         {
-            var result =  base.ShouldInitialize(services, classType);
+            var result =  base.ShouldInitialize(engine, classType);
 
             if(this.RequireAutoLoadAttribute)
             {
-                result &= classType.HasCustomAttribute<AutoLoadingAttribute>();
+                result &= classType.HasCustomAttribute<AutoLoadAttribute>();
             }
 
             return result;
         }
 
-        protected override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(GuppyEngine engine, Type classType)
         {
-            services.ConfigureCollection(sm =>
+            engine.Services.ConfigureCollection(sm =>
             {
-                sm.AddService(classType)
-                    .SetImplementationType(this.ServiceType ?? classType)
+                sm.AddService(this.ServiceType ?? classType)
+                    .SetImplementationType(classType)
                     .SetLifetime(this.Lifetime);
             });
         }

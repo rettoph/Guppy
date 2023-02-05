@@ -1,4 +1,5 @@
-﻿using Guppy.MonoGame.Initializers;
+﻿using Guppy.Common;
+using Guppy.Common.Extensions;
 using Guppy.MonoGame.Loaders;
 using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Xna.Framework;
@@ -16,17 +17,16 @@ namespace Guppy
         public static GuppyEngine ConfigureGame<TGlobalBrokerPublishStrategy>(this GuppyEngine guppy)
             where TGlobalBrokerPublishStrategy : PublishStrategy
         {
-            if (guppy.Tags.Contains(nameof(ConfigureGame)))
+            if (guppy.HasTag(nameof(ConfigureGame)))
             {
                 return guppy;
             }
 
             return guppy.ConfigureECS()
                 .ConfigureResources()
-                .AddInitializer(new CommandInitializer(), 0)
-                .AddLoader(new GameLoader<TGlobalBrokerPublishStrategy>(), 0)
-                .AddLoader(new JsonLoader(), 0)
-                .AddLoader(new ResourceLoader(), 0)
+                .AddServiceLoader(new GameLoader<TGlobalBrokerPublishStrategy>())
+                .AddServiceLoader(new JsonLoader())
+                .AddServiceLoader(new ResourceLoader())
                 .AddTag(nameof(ConfigureGame));
         }
 
@@ -38,15 +38,13 @@ namespace Guppy
             GameWindow window)
                 where TGlobalBrokerPublishStrategy : PublishStrategy
         {
-            if(guppy.Tags.Contains(nameof(ConfigureMonoGame)))
+            if(guppy.HasTag(nameof(ConfigureMonoGame)))
             {
                 return guppy;
             }
 
             return guppy.ConfigureGame<TGlobalBrokerPublishStrategy>()
-                .AddInitializer(new InputInitializer(), 0)
-                .AddInitializer(new MonoGameInitializer(), 0)
-                .AddLoader(new MonoGameLoader(game, graphics, content, window), 0)
+                .AddServiceLoader(new MonoGameLoader(game, graphics, content, window))
                 .AddTag(nameof(ConfigureMonoGame));
         }
     }

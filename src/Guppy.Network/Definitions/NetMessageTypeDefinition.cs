@@ -1,13 +1,11 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.Attributes;
+using Guppy.Network.Providers;
 using LiteNetLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Definitions
 {
+    [Service<NetMessageTypeDefinition>(ServiceLifetime.Singleton, true)]
     public abstract class NetMessageTypeDefinition
     {
         public abstract Type Body { get; }

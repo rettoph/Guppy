@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Guppy.Common.Attributes;
+using Guppy.Common;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -30,7 +32,7 @@ namespace System
         /// <returns></returns>
         public static TOut As<TOut>(this object instance)
             where TOut : class
-                => instance as TOut;
+                => (instance as TOut)!;
 
         /// <summary>
         /// Dynamically preform the cast via reflection
@@ -43,7 +45,7 @@ namespace System
             var methodInfo = typeof(ObjectExtensions).GetMethod(nameof(As), BindingFlags.Static | BindingFlags.Public);
             var genericArguments = new[] { type };
             var genericMethodInfo = methodInfo?.MakeGenericMethod(genericArguments);
-            return genericMethodInfo?.Invoke(null, new[] { o });
+            return genericMethodInfo?.Invoke(null, new[] { o })!;
         }
 
         /// <summary>
@@ -66,6 +68,25 @@ namespace System
         public static IEnumerable<T> Yield<T>(this T instance)
         {
             yield return instance;
+        }
+
+        public static int GetOrderAs<T>(this T item, Type type)
+        {
+            if (item is ISortable sortable && sortable.GetOrder(type, out int order))
+            {
+                return order;
+            }
+
+            return item!.GetType().GetCustomAttributes()
+                .OfType<SortableAttribute>()
+                .Where(attr => attr.Sorts(type))
+                .DefaultIfEmpty()
+                .Min(attr => attr?.Order ?? 0);
+        }
+
+        public static int GetOrder<T>(this T item)
+        {
+            return item.GetOrderAs(typeof(T));
         }
     }
 }

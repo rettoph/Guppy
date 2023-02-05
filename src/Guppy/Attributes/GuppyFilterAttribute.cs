@@ -22,9 +22,9 @@ namespace Guppy.Attributes
             this.GuppyType = guppyType;
         }
 
-        protected override void Initialize(IServiceCollection services, Type classType)
+        protected override void Initialize(GuppyEngine engine, Type classType)
         {
-            services.AddFilter(new GuppyFilter(classType, this.GuppyType));
+            engine.Services.AddFilter(new GuppyFilter(classType, this.GuppyType));
         }
     }
 
