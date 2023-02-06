@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.UI
+namespace Guppy.MonoGame.UI.Resources
 {
     [PolymorphicJsonType("TrueTypeFont")]
     internal sealed class TrueTypeFontResource : Resource<TrueTypeFont, string>
@@ -16,12 +16,12 @@ namespace Guppy.MonoGame.UI
 
         public TrueTypeFontResource(string name, string file) : base(name)
         {
-            this.File = file;
+            File = file;
         }
 
         public override void Initialize(string path, IServiceProvider services)
         {
-            var file = Path.Combine(path, this.File);
+            var file = Path.Combine(path, File);
 
             if (!System.IO.File.Exists(file))
             {
@@ -33,13 +33,13 @@ namespace Guppy.MonoGame.UI
                 byte[] buffer = new byte[stream.Length];
                 stream.Read(buffer, 0, buffer.Length);
 
-                this.Value = new TrueTypeFont(buffer);
+                Value = new TrueTypeFont(buffer);
             }
         }
 
         public override string GetJson()
         {
-            return this.File;
+            return File;
         }
 
         public override void Export(string path, IServiceProvider services)

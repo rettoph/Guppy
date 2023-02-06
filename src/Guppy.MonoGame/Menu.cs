@@ -9,27 +9,27 @@ namespace Guppy.MonoGame
 {
     public class Menu
     {
-        private IList<IMenuItem> _items;
+        private IList<MenuItem> _items;
 
         public readonly string Name;
 
-        public ReadOnlyCollection<IMenuItem> Items;
+        public ReadOnlyCollection<MenuItem> Items;
 
         public Menu(string name)
         {
-            _items = new List<IMenuItem>();
+            _items = new List<MenuItem>();
 
             this.Name = name;
 
-            this.Items = new ReadOnlyCollection<IMenuItem>(_items);
+            this.Items = new ReadOnlyCollection<MenuItem>(_items);
         }
 
-        public void Add(IMenuItem item)
+        public void Add(MenuItem item)
         {
             _items.Add(item);
         }
 
-        public Menu Add(params IMenuItem[] items)
+        public Menu Add(params MenuItem[] items)
         {
             foreach(var item in items)
             {

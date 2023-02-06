@@ -2,7 +2,7 @@
 using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
-using Guppy.MonoGame.Messages.Inputs;
+using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Primitives;
 using Guppy.MonoGame.Services;
 using Guppy.Resources.Providers;
@@ -11,12 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Guppy.MonoGame.Loaders
 {
@@ -48,18 +43,13 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {
-                (ButtonState.Pressed, new ToggleWindowInput() { Window = ToggleWindowInput.Windows.Terminal })
-            });
-
-            services.AddInput(InputConstants.ToggleDebugger, Keys.F1, new[]
-            {
-                (ButtonState.Pressed, new ToggleWindowInput() { Window = ToggleWindowInput.Windows.Debugger })
+                (ButtonState.Pressed, Toggle<ITerminalService>.Instance)
             });
 
             services.ConfigureCollection(manager =>
             {
                 manager.GetService<InputService>()
-                    .SetLifetime(ServiceLifetime.Singleton)
+                    .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<IInputService>()
                     .AddAlias<IGameComponent>();
             });

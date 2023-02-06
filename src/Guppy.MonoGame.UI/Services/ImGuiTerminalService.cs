@@ -12,12 +12,18 @@ using Guppy.MonoGame.Services;
 using Guppy.Common;
 using Guppy.MonoGame.UI.Constants;
 using Guppy.Common.Collections;
-using Guppy.MonoGame.Messages.Inputs;
 using Guppy.Attributes;
+using Microsoft.Extensions.Options;
+using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.UI.Providers;
+using MonoGame.Extended;
+using Guppy.MonoGame.Messages;
 
 namespace Guppy.MonoGame.UI.Services
 {
-    internal sealed partial class ImGuiTerminalService : BaseWindowService, ITerminalService
+    internal sealed partial class ImGuiTerminalService : SimpleDrawableGameComponent, 
+        ITerminalService,
+        ISubscriber<Toggle<ITerminalService>>
     {
         private readonly static Buffer<(string text, NumVector4 color)> _output;
         private readonly static TextWriter _outWriter;
@@ -32,17 +38,21 @@ namespace Guppy.MonoGame.UI.Services
         private string _input;
         private bool _scrollLocked;
 
-        public override ToggleWindowInput.Windows Window => ToggleWindowInput.Windows.Terminal;
-
-        public ImGuiTerminalService(ImGuiBatch imGuiBatch, GameWindow window, Lazy<ICommandService> commands) : base(false)
+        public ImGuiTerminalService(
+            IImGuiBatchProvider batches,
+            GameWindow window, 
+            Lazy<ICommandService> commands)
         {
-            _imGuiBatch = imGuiBatch;
+            _imGuiBatch = batches.Get(ImGuiBatchConstants.Debug);
             _window = window;
-            _font = imGuiBatch.Fonts[ImGuiFontConstants.DiagnosticsFont].Ptr;
+            _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
             _input = string.Empty;
             _scrollLocked = true;
             _commands = commands;
             _focusInput = true;
+
+            this.IsEnabled = false;
+            this.Visible = false;
         }
 
         static ImGuiTerminalService()
@@ -68,8 +78,6 @@ namespace Guppy.MonoGame.UI.Services
 
         public override void Draw(GameTime gameTime)
         {
-            _imGuiBatch.Begin(gameTime);
-
             var windowSize = new NumVector2(_window.ClientBounds.Width, _window.ClientBounds.Height);
             var inputHeight = 24;
             var outputContainerSize = new NumVector2(windowSize.X, windowSize.Y - inputHeight);
@@ -133,13 +141,16 @@ namespace Guppy.MonoGame.UI.Services
             ImGui.End();
             ImGui.PopFont();
             ImGui.PopStyleVar(2);
-
-            _imGuiBatch.End();
         }
 
         public override void Update(GameTime gameTime)
         {
             // throw new NotImplementedException();
+        }
+
+        public void Process(in Toggle<ITerminalService> message)
+        {
+            this.Visible = !this.Visible;
         }
     }
 }

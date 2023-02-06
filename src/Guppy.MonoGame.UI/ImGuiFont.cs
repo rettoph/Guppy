@@ -14,7 +14,6 @@ namespace Guppy.MonoGame.UI
         public readonly int SizePixels;
         public readonly ImFontPtr Ptr;
 
-
         public ImGuiFont(string name, TrueTypeFont trueTypeFontResource, int sizePixels, ImFontPtr ptr)
         {
             this.Name = name;

@@ -1,4 +1,5 @@
 ﻿using Guppy.MonoGame.UI.Definitions;
+using Guppy.MonoGame.UI.Resources;
 using Guppy.Resources.Providers;
 using ImGuiNET;
 using System;
@@ -12,20 +13,30 @@ namespace Guppy.MonoGame.UI.Providers
 {
     internal sealed class ImGuiFontProvider : IImGuiFontProvider
     {
+        private ImGuiIOPtr _io;
         private IResourceProvider _resources;
         private Dictionary<string, ImGuiFont> _fonts;
 
         public unsafe ImGuiFontProvider(
             IResourceProvider resources,
-            ImGuiIOPtr io,
-            IEnumerable<IImGuiFontDefinition> definitions)
+            ImGuiIOPtr io)
         {
             _resources = resources;
+            _io = io;
 
-            _fonts = definitions.ToDictionary(x => x.Key, x => x.BuildFont(resources, io));
+            _fonts = new Dictionary<string, ImGuiFont>();
         }
 
         public ImGuiFont this[string name] => _fonts[name];
+
+        public void Add(params string[] names)
+        {
+            foreach(string name in names)
+            {
+                var font = _resources.Get<ImGuiFontResource.ImGuiFontFactory>(name).Value(_io);
+                _fonts.Add(name, font);
+            }
+        }
 
         public ImGuiFont Get(string name)
         {

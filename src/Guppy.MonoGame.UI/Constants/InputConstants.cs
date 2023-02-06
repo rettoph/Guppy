@@ -8,6 +8,8 @@ namespace Guppy.MonoGame.UI.Constants
 {
     public static class InputConstants
     {
+        public const string ToggleDebugMenu = "toggle_debug_menu";
+
         public const string UI_LeftClick   = "ui_left_click";
         public const string UI_MiddleClick = "ui_middle_click";
         public const string UI_RightClick  = "ui_right_click";

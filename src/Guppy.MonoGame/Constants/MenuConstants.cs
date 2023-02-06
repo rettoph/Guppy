@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Constants
 {
-    public static class InputConstants
+    public static class MenuConstants
     {
-        public const string ToggleTerminal = "toggle_terminal";
+        public const string Debug = "menu:debug";
     }
 }

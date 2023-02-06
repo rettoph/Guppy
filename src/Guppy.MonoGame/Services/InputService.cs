@@ -16,17 +16,16 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    [GlobalScopeFilter]
     internal sealed class InputService : SimpleGameComponent, IInputService
     {
         private readonly Dictionary<string, IInput> _inputs;
         private readonly HashSet<IInput> _mouseInputs;
         private readonly HashSet<IInput> _keyboardInputs;
-        private readonly IGlobalBroker _broker;
+        private readonly IBus _bus;
 
-        public InputService(IGlobalBroker broker, IEnumerable<IInputDefinition> definitions)
+        public InputService(IBus bus, IEnumerable<IInputDefinition> definitions)
         {
-            _broker = broker;
+            _bus = bus;
             _mouseInputs = new HashSet<IInput>();
             _keyboardInputs = new HashSet<IInput>();
 
@@ -67,7 +66,7 @@ namespace Guppy.MonoGame.Services
             {
                 if(input.Update(ref kState, ref mState, out IMessage? data))
                 {
-                    _broker.Publish(data);
+                    _bus.Enqueue(data);
                 }
             }
         }

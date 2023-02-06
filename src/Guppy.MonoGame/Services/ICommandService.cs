@@ -11,5 +11,7 @@ namespace Guppy.MonoGame.Services
     {
         void Invoke(string input);
         void Publish(IMessage command);
+        void Subscribe(IBus bus);
+        void Unsubscribe(IBus bus);
     }
 }

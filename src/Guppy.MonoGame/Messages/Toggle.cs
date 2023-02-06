@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Strategies.PublishStrategies
+namespace Guppy.MonoGame.Messages
 {
-    public abstract class PublishStrategy
+    public class Toggle<T> : Message<Toggle<T>>
     {
-        public abstract void Publish(in IMessage message);
+        public static readonly Toggle<T> Instance = new Toggle<T>();
     }
 }

@@ -17,7 +17,6 @@ using System.Runtime.InteropServices;
 using Guppy.MonoGame.UI.Messages;
 using Guppy.Common;
 using Microsoft.Xna.Framework;
-using Guppy.MonoGame.UI.Debuggers;
 using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Constants;
 using InputConstants = Guppy.MonoGame.UI.Constants.InputConstants;
@@ -30,6 +29,10 @@ using Guppy.Resources.Constants;
 using Guppy.Resources;
 using Guppy.Resources.Loaders;
 using Guppy.MonoGame.UI.Providers;
+using Guppy.MonoGame.Loaders;
+using Guppy.MonoGame.UI.GameComponents;
+using Guppy.MonoGame.Messages;
+using System.Diagnostics;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
@@ -45,14 +48,26 @@ namespace Guppy.MonoGame.UI.Loaders
 
             services.AddSingleton<IPackLoader, PackLoader>();
 
-            services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFont, ResourceConstants.DiagnosticsTTF, 18);
-            services.AddImGuiFont(ImGuiFontConstants.DiagnosticsFontHeader, ResourceConstants.DiagnosticsTTF, 20);
-
             services.AddService<IImguiObjectViewer>()
                 .SetLifetime(ServiceLifetime.Singleton)
                 .SetImplementationType<ImguiObjectViewer>();
 
-            services.AddService<ImGuiDebuggerService>()
+            // services.AddService<ImGuiDebuggerService>()
+            //     .SetLifetime(ServiceLifetime.Scoped)
+            //     .AddInterfaceAliases();
+
+            services.AddScoped<IImGuiBatchProvider, ImGuiBatchProvider>();
+            services.AddScoped<IImGuiBatchLoader, DebugImGuiBatchLoader>();
+
+            services.AddService<BeginDebugImGuiBatch>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .AddInterfaceAliases();
+
+            services.AddService<EndDebugImGuiBatch>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .AddInterfaceAliases();
+
+            services.AddService<DebugMenuComponent>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
@@ -60,13 +75,16 @@ namespace Guppy.MonoGame.UI.Loaders
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<FpsDebugger>()
+            services.AddService<FpsComponent>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .AddAlias<IDebugger>();
-
-            services.AddTransient<ImGuiBatch>();
+                .AddInterfaceAliases();
 
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();
+
+            services.AddInput(InputConstants.ToggleDebugMenu, Keys.F1, new[]
+{
+                (ButtonState.Pressed, Toggle<DebugMenuComponent>.Instance)
+            });
 
             AddImGuiKeyEvent(services, InputConstants.UI_Tab, Keys.Tab, ImGuiKey.Tab);
             AddImGuiKeyEvent(services, InputConstants.UI_LeftArrow, Keys.Left, ImGuiKey.LeftArrow);

@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.UI
 {
-    public interface IImGuiDebugger : IDebugger
+    internal class ImGuiGuppy : FrameableGuppy
     {
-        string ButtonLabel { get; }
-
-        void Initialize(ImGuiBatch imGuiBatch);
-
-        void Toggle();
     }
 }

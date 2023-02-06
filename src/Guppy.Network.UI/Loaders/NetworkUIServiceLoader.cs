@@ -1,6 +1,7 @@
 ﻿using Guppy.Loaders;
 using Guppy.MonoGame;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,9 @@ namespace Guppy.Network.UI.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IDebugger, UsersDebugger>();
+            services.AddService<UsersDebugger>()
+                .SetLifetime(ServiceLifetime.Scoped)
+                .AddInterfaceAliases();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Implementations;
 using Guppy.MonoGame.Definitions;
+using Guppy.Providers;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -13,11 +14,11 @@ namespace Guppy.MonoGame.Services
     internal sealed class CommandService : ICommandService
     {
         private readonly RootCommand _root;
-        private readonly IGlobalBroker _broker;
+        private readonly HashSet<IBus> _busses;
 
-        public CommandService(IGlobalBroker broker, IEnumerable<ICommandDefinition> definitions)
+        public CommandService(IEnumerable<ICommandDefinition> definitions)
         {
-            _broker = broker;
+            _busses = new HashSet<IBus>();
             _root = new RootCommand()
             {
                 Name = ">"
@@ -45,9 +46,22 @@ namespace Guppy.MonoGame.Services
             _root.Invoke(command);
         }
 
+        public void Subscribe(IBus bus)
+        {
+            _busses.Add(bus);
+        }
+
+        public void Unsubscribe(IBus bus)
+        {
+            _busses.Remove(bus);
+        }
+
         void ICommandService.Publish(IMessage command)
         {
-            _broker.Publish(command);
+            foreach(var bus in _busses)
+            {
+                bus.Enqueue(command);
+            }
         }
     }
 }

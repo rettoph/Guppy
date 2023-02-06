@@ -11,8 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection RegisterGuppyCommon(this IServiceCollection services)
         {
-            return services.AddSingleton<Global>()
-                    .AddSingleton(typeof(IGlobal<>), typeof(Global<>))
+            return services
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
                     .AddScoped<IBroker, Broker>()

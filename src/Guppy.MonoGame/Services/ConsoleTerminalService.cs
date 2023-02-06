@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Services
 {
-    [GlobalScopeFilter]
     internal sealed class ConsoleTerminalService : ITerminalService
     {
         private readonly ICommandService _commands;

@@ -12,13 +12,11 @@ namespace Guppy.MonoGame.Providers
     {
         private readonly IDictionary<string, Menu> _menus;
 
-        public MenuProvider(
-            IEnumerable<Menu> menus, 
-            ISorted<IMenuLoader> loaders)
+        public MenuProvider(IEnumerable<Menu> menus, IEnumerable<IMenuLoader> loaders)
         {
             _menus = menus.ToDictionary(x => x.Name, x => x);
 
-            foreach(IMenuLoader loader in loaders)
+            foreach(var loader in loaders)
             {
                 loader.Load(this);
             }

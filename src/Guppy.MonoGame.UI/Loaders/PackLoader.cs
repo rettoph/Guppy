@@ -1,4 +1,5 @@
 ﻿using Guppy.MonoGame.UI.Constants;
+using Guppy.MonoGame.UI.Resources;
 using Guppy.Resources;
 using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
@@ -14,9 +15,11 @@ namespace Guppy.MonoGame.UI.Loaders
     {
         public void Load(IPackProvider packs)
         {
-            packs.GetById(GuppyPack.Id).Add(new[]
+            packs.GetById(GuppyPack.Id).Add(new IResource[]
             {
-                new TrueTypeFontResource(ResourceConstants.DiagnosticsTTF, FileConstants.DiagnosticsTTF)
+                new TrueTypeFontResource(ResourceConstants.DiagnosticsTTF, FileConstants.DiagnosticsTTF),
+                new ImGuiFontResource(ResourceConstants.DiagnosticsImGuiFont, ResourceConstants.DiagnosticsTTF, 18),
+                new ImGuiFontResource(ResourceConstants.DiagnosticsImGuiFontHeader, ResourceConstants.DiagnosticsTTF, 20),
             });
         }
     }

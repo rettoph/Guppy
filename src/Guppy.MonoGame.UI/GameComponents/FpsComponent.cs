@@ -1,15 +1,20 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Collections;
-using Guppy.MonoGame.UI;
+using Guppy.MonoGame.Constants;
+using Guppy.MonoGame.Messages;
+using Guppy.MonoGame.Providers;
+using Guppy.MonoGame.UI.Messages;
 using ImGuiNET;
 using ImPlotNET;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Num = System.Numerics;
 
-namespace Guppy.MonoGame.UI.Debuggers
+namespace Guppy.MonoGame.UI.GameComponents
 {
-    internal sealed class FpsDebugger : SimpleDebugger, IImGuiDebugger
+    internal sealed class FpsComponent : SimpleDrawableGameComponent, 
+        ISubscriber<Toggle<FpsComponent>>
     {
         private static readonly TimeSpan FpsInterval = TimeSpan.FromMilliseconds(100);
         private static readonly int FpsSize = (int)(TimeSpan.FromSeconds(10) / FpsInterval);
@@ -26,37 +31,34 @@ namespace Guppy.MonoGame.UI.Debuggers
         private TimeSpan _lastAdded;
         private bool _graph;
 
-        public string ButtonLabel { get; }
-
-        public FpsDebugger()
+        public FpsComponent(IMenuProvider menus)
         {
-            this.ButtonLabel = "FPS";
-
             _frames = new Buffer<double>(256);
             _fps = new Buffer<double>(FpsSize);
             _averages = new Buffer<double>(FpsSize);
 
-            this.IsEnabled = false;
-            this.Visible = false;
-        }
+            IsEnabled = false;
+            Visible = false;
 
-        public void Initialize(ImGuiBatch imGuiBatch)
-        {
-            //
+            menus.Get(MenuConstants.Debug).Add(new MenuItem()
+            {
+                Label = "FPS",
+                OnClick = Toggle<FpsComponent>.Instance
+            });
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if(ImGui.Begin("FPS", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
+            if (ImGui.Begin("FPS", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse))
             {
                 ImGui.Text($"Current: {_current.ToString("#,##0")}");
                 ImGui.Text($"Average: {_fpsAverage.ToString("#,##0")}");
                 ImGui.Text($"Minimum: {_minimum.ToString("#,##0")}");
                 ImGui.Text($"Maximum: {_maximum.ToString("#,##0")}");
 
-                if(ImGui.Button("Reset"))
+                if (ImGui.Button("Reset"))
                 {
-                    this.ResetBounds();
+                    ResetBounds();
                 }
 
                 if (ImGui.Button("Toggle Graph"))
@@ -98,7 +100,7 @@ namespace Guppy.MonoGame.UI.Debuggers
 
             _lastAdded += gameTime.ElapsedGameTime;
 
-            while(_lastAdded >= FpsInterval)
+            while (_lastAdded >= FpsInterval)
             {
                 _fps.Add(_current, out double oldFps);
                 _lastAdded -= FpsInterval;
@@ -113,10 +115,10 @@ namespace Guppy.MonoGame.UI.Debuggers
             }
         }
 
-        public void Toggle()
+        public void Process(in Toggle<FpsComponent> message)
         {
-            this.IsEnabled = !this.IsEnabled;
-            this.Visible = !this.Visible;
+            IsEnabled = !IsEnabled;
+            Visible = !Visible;
         }
     }
 }

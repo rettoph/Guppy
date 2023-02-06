@@ -1,7 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.MonoGame.Loaders;
-using Guppy.MonoGame.Strategies.PublishStrategies;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System;
@@ -14,8 +13,7 @@ namespace Guppy
 {
     public static class GuppyEngineExtensions
     {
-        public static GuppyEngine ConfigureGame<TGlobalBrokerPublishStrategy>(this GuppyEngine guppy)
-            where TGlobalBrokerPublishStrategy : PublishStrategy
+        public static GuppyEngine ConfigureGame(this GuppyEngine guppy)
         {
             if (guppy.HasTag(nameof(ConfigureGame)))
             {
@@ -24,26 +22,25 @@ namespace Guppy
 
             return guppy.ConfigureECS()
                 .ConfigureResources()
-                .AddServiceLoader(new GameLoader<TGlobalBrokerPublishStrategy>())
+                .AddServiceLoader(new GameLoader())
                 .AddServiceLoader(new JsonLoader())
                 .AddServiceLoader(new ResourceLoader())
                 .AddTag(nameof(ConfigureGame));
         }
 
-        public static GuppyEngine ConfigureMonoGame<TGlobalBrokerPublishStrategy>(
+        public static GuppyEngine ConfigureMonoGame(
             this GuppyEngine guppy, 
             Game game,
             GraphicsDeviceManager graphics, 
             ContentManager content, 
             GameWindow window)
-                where TGlobalBrokerPublishStrategy : PublishStrategy
         {
             if(guppy.HasTag(nameof(ConfigureMonoGame)))
             {
                 return guppy;
             }
 
-            return guppy.ConfigureGame<TGlobalBrokerPublishStrategy>()
+            return guppy.ConfigureGame()
                 .AddServiceLoader(new MonoGameLoader(game, graphics, content, window))
                 .AddTag(nameof(ConfigureMonoGame));
         }

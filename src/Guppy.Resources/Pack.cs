@@ -121,7 +121,7 @@ namespace Guppy.Resources
             {
                 localized.Add(resource);
 
-                if(this.Directory is not null)
+                if(this.Initialized && this.Directory is not null)
                 {
                     resource.Initialize(this.Directory, _provider);
                 }

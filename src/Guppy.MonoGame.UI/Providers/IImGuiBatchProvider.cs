@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.MonoGame.UI.Providers
 {
-    public interface IGlobal<T>
-        where T : notnull
+    public interface IImGuiBatchProvider
     {
-        T Instance { get; }
+        ImGuiBatch Get(string name);
     }
 }

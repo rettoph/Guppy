@@ -74,13 +74,12 @@ namespace Guppy.MonoGame.UI
             GameWindow window, 
             GraphicsDevice graphics,
             IBus bus,
-            IResourceProvider resources,
-            IEnumerable<IImGuiFontDefinition> fonts)
+            IResourceProvider resources)
         {
             this.Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(this.Context);
             this.IO = ImGui.GetIO();
-            this.Fonts = new ImGuiFontProvider(resources, this.IO, fonts);
+            this.Fonts = new ImGuiFontProvider(resources, this.IO);
 
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
@@ -125,6 +124,7 @@ namespace Guppy.MonoGame.UI
         public unsafe void RebuildFontAtlas()
         {
             // Get font texture from ImGui
+            ImGui.SetCurrentContext(this.Context);
             var io = ImGui.GetIO();
             io.Fonts.GetTexDataAsRGBA32(out byte* pixelData, out int width, out int height, out int bytesPerPixel);
 
