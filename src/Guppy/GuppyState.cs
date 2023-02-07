@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    public interface IGuppyInitializer
+    public enum GuppyState
     {
-        void Initialize(GuppyEngine engine);
+        NotReady,
+        Starting,
+        Ready
     }
 }

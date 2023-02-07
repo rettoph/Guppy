@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Configurations;
 using Guppy.Resources.Serialization.Json;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 namespace Guppy.Resources.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
-    public sealed class PolymorphicJsonTypeAttribute : InitializableAttribute
+    public sealed class PolymorphicJsonTypeAttribute : GuppyConfigurationAttribute
     {
         public readonly string Key;
 
@@ -21,9 +22,9 @@ namespace Guppy.Resources.Attributes
             this.Key = key;
         }
 
-        protected override void Initialize(GuppyEngine engine, Type classType)
+        protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            engine.Services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType));
+            configuration.Services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType));
         }
     }
 }

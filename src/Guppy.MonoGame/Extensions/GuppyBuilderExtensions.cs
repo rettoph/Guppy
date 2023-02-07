@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Extensions;
+using Guppy.Configurations;
 using Guppy.MonoGame.Loaders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -11,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    public static class GuppyEngineExtensions
+    public static class GuppyBuilderExtensions
     {
-        public static GuppyEngine ConfigureGame(this GuppyEngine guppy)
+        public static GuppyConfiguration ConfigureGame(this GuppyConfiguration builder)
         {
-            if (guppy.HasTag(nameof(ConfigureGame)))
+            if (builder.HasTag(nameof(ConfigureGame)))
             {
-                return guppy;
+                return builder;
             }
 
-            return guppy.ConfigureECS()
+            return builder.ConfigureECS()
                 .ConfigureResources()
                 .AddServiceLoader(new GameLoader())
                 .AddServiceLoader(new JsonLoader())
@@ -28,19 +29,19 @@ namespace Guppy
                 .AddTag(nameof(ConfigureGame));
         }
 
-        public static GuppyEngine ConfigureMonoGame(
-            this GuppyEngine guppy, 
+        public static GuppyConfiguration ConfigureMonoGame(
+            this GuppyConfiguration builder, 
             Game game,
             GraphicsDeviceManager graphics, 
             ContentManager content, 
             GameWindow window)
         {
-            if(guppy.HasTag(nameof(ConfigureMonoGame)))
+            if(builder.HasTag(nameof(ConfigureMonoGame)))
             {
-                return guppy;
+                return builder;
             }
 
-            return guppy.ConfigureGame()
+            return builder.ConfigureGame()
                 .AddServiceLoader(new MonoGameLoader(game, graphics, content, window))
                 .AddTag(nameof(ConfigureMonoGame));
         }

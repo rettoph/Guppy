@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Extensions;
+using Guppy.Configurations;
 using Guppy.ECS.Loaders;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    public static class GuppyEngineExtensions
+    public static class GuppyBuilderExtensions
     {
-        public static GuppyEngine ConfigureECS(this GuppyEngine guppy)
+        public static GuppyConfiguration ConfigureECS(this GuppyConfiguration engine)
         {
-            if(guppy.HasTag(nameof(ConfigureECS)))
+            if(engine.HasTag(nameof(ConfigureECS)))
             {
-                return guppy;
+                return engine;
             }
 
-            return guppy.AddServiceLoader(new ECSLoader())
+            return engine.AddServiceLoader(new ECSLoader())
                 .AddTag(nameof(ConfigureECS));
         }
     }

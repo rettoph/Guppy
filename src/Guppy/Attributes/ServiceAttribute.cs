@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.DependencyInjection;
+using Guppy.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    public class ServiceAttribute : InitializableAttribute
+    public class ServiceAttribute : GuppyConfigurationAttribute
     {
         public readonly Type? ServiceType;
         public readonly ServiceLifetime Lifetime;
@@ -22,9 +23,9 @@ namespace Guppy.Attributes
             this.RequireAutoLoadAttribute = requireAutoLoadAttribute;
         }
 
-        protected override bool ShouldInitialize(GuppyEngine engine, Type classType)
+        protected override bool ShouldConfigure(GuppyConfiguration builder, Type classType)
         {
-            var result =  base.ShouldInitialize(engine, classType);
+            var result =  base.ShouldConfigure(builder, classType);
 
             if(this.RequireAutoLoadAttribute)
             {
@@ -34,9 +35,9 @@ namespace Guppy.Attributes
             return result;
         }
 
-        protected override void Initialize(GuppyEngine engine, Type classType)
+        protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            engine.Services.ConfigureCollection(sm =>
+            configuration.Services.ConfigureCollection(sm =>
             {
                 sm.AddService(this.ServiceType ?? classType)
                     .SetImplementationType(classType)

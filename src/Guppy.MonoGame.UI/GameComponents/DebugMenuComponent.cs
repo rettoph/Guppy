@@ -47,6 +47,9 @@ namespace Guppy.MonoGame.UI.GameComponents
             CleanMenuDimensions();
 
             _window.ClientSizeChanged += HandleClientSizeChanged;
+
+            this.Visible = false;
+            this.IsEnabled = false;
         }
 
         public override void Initialize()
@@ -96,8 +99,7 @@ namespace Guppy.MonoGame.UI.GameComponents
 
         public override void Update(GameTime gameTime)
         {
-            //
-            // throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void Process(in Toggle<DebugMenuComponent> message)

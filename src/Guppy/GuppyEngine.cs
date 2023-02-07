@@ -1,7 +1,9 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
+using Guppy.Configurations;
 using Guppy.Loaders;
+using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -9,16 +11,15 @@ namespace Guppy
 {
     public sealed class GuppyEngine
     {
-        private bool _loaded;
-        private SortedList<int, Action<GuppyEngine>> _loaders;
+        public IEnumerable<Assembly> Libraries { get; private set; }
+        public IServiceProvider Provider { get; private set; }
+        public IGuppyProvider Guppies { get; private set; }
 
-        public IAssemblyProvider Assemblies { get; private set; }
-        public IServiceCollection Services { get; private set; }
+        public GuppyState State { get; private set; }
 
         public GuppyEngine(IEnumerable<Assembly>? libraries = default)
         {
-            _loaded = false;
-            _loaders = new SortedList<int, Action<GuppyEngine>>(new DuplicateKeyComparer<int>());
+            this.State = GuppyState.NotReady;
 
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
@@ -26,80 +27,36 @@ namespace Guppy
                 typeof(GuppyEngine).Assembly,
             });
 
-            this.Services = new ServiceCollection();
-            this.Assemblies = new AssemblyProvider(libraries);
-
-            this.Assemblies.OnAssemblyLoaded += this.HandleAssemblyLoaded;
+            this.Libraries = libraries;
+            this.Provider = default!;
+            this.Guppies = default!;
         }
 
-        public GuppyEngine AddLoader(Action<GuppyEngine> loader, int? order = null)
+        public GuppyEngine Start(
+            Action<GuppyConfiguration>? build = null,
+            Assembly? entry = null)
         {
-            _loaders.Add(order ?? loader.GetOrder(), loader);
-
-            return this;
-        }
-
-        public GuppyEngine Load(Assembly? entry = null)
-        {
-            if(_loaded)
+            if(this.State != GuppyState.NotReady)
             {
                 throw new InvalidOperationException();
             }
 
-            this.Services.AddSingleton<IAssemblyProvider>(this.Assemblies);
+            this.State = GuppyState.Starting;
 
-            this.Assemblies.Load(entry ?? Assembly.GetEntryAssembly() ?? throw new InvalidOperationException());
+            entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
+            var services = new ServiceCollection();
+            var assemblies = new AssemblyProvider(this.Libraries);
+            var builder = new GuppyConfiguration(services, assemblies);
 
-            // Invoke all loaders
-            foreach(var loader in _loaders)
-            {
-                loader.Value.Invoke(this);
-            }
+            build?.Invoke(builder);
+            builder.Build(entry);
 
-            this.Services.RefreshManagers();
+            this.Provider = services.BuildServiceProvider();
+            this.Guppies = this.Provider.GetRequiredService<IGuppyProvider>();
 
-            _loaded = true;
+            this.State = GuppyState.Ready;
 
             return this;
-        }
-
-        public IServiceProvider Build()
-        {
-            if(!_loaded)
-            {
-                this.Load();
-            }
-
-            var provider = this.Services.BuildServiceProvider(validateScopes: true);
-
-            return provider;
-        }
-
-        private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
-        {
-            // First initialize all auto load initializers
-            var initialize = assembly.GetTypes()
-                .AssignableFrom<IGuppyInitializer>()
-                .WithAttribute<AutoLoadAttribute>(true)
-                .Select(t => Activator.CreateInstance(t) as IGuppyInitializer ?? throw new Exception());
-
-            foreach (IGuppyInitializer initializer in initialize)
-            {
-                initializer.Initialize(this);
-            }
-
-            // Initialize all initializable attributes
-            var typesWithInitializableAttributes = assembly.GetTypes()
-                .Select(x => (x, x.GetCustomAttributesIncludingInterfaces<InitializableAttribute>().ToArray()))
-                .Where(x => x.Item2.Any());
-
-            foreach ((Type type, InitializableAttribute[] attributes) in typesWithInitializableAttributes)
-            {
-                foreach (var attribute in attributes)
-                {
-                    attribute.TryInitialize(this, type);
-                }
-            }
         }
     }
 }

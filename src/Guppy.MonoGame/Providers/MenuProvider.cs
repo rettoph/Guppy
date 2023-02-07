@@ -29,7 +29,13 @@ namespace Guppy.MonoGame.Providers
 
         public Menu Get(string name)
         {
-            return _menus[name];
+            if (!_menus.TryGetValue(name, out var menu))
+            {
+                menu = new Menu(name);
+                _menus.Add(name, menu);
+            }
+
+            return menu;
         }
     }
 }

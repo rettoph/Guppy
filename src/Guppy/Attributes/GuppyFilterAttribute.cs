@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Configurations;
 using Guppy.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
-    public class GuppyFilterAttribute : InitializableAttribute
+    public class GuppyFilterAttribute : GuppyConfigurationAttribute
     {
         public readonly Type GuppyType;
 
@@ -22,9 +23,9 @@ namespace Guppy.Attributes
             this.GuppyType = guppyType;
         }
 
-        protected override void Initialize(GuppyEngine engine, Type classType)
+        protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            engine.Services.AddFilter(new GuppyFilter(classType, this.GuppyType));
+            configuration.Services.AddFilter(new GuppyFilter(classType, this.GuppyType));
         }
     }
 
