@@ -98,7 +98,8 @@ namespace Guppy.Common.Collections
             return this.GetEnumerator();
         }
 
-        public TManagedCollection GetManagedCollection<TManagedCollection>()
+        public TManagedCollection GetCollection<TManagedCollection>()
+            where TManagedCollection : IManagedCollection
         {
             foreach(var collection in _collections)
             {

@@ -23,8 +23,6 @@ namespace Guppy.Common.Implementations
             this.Instance = this.Scope.ServiceProvider.GetRequiredService<T>();
         }
 
-        
-
         public void Dispose()
         {
             this.OnDispose?.Invoke(this);
