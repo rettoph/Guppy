@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.DependencyInjection;
+using Guppy.Filters;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
@@ -25,11 +26,13 @@ namespace Guppy.MonoGame.Loaders
             services.AddScoped<IGameComponentService, GameComponentService>();
 
             services.AddScoped<IMenuProvider, MenuProvider>();
-            services.AddScoped<IMenuLoader, DebugMenuLoader>();
+            services.AddScoped<IGuppyLoader, DebugMenuLoader>();
 
             services.AddSingleton<ICommandService, CommandService>();
 
-            services.AddSingleton<IEngineLoader, GuppyProviderLoader>();
+            services.AddSingleton<IGlobalLoader, GuppyProviderLoader>();
+
+            services.AddFilter(new GuppyFilter<IGameComponent, FrameableGuppy>());
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Guppy
             this.Provider = services.BuildServiceProvider();
             this.Guppies = this.Provider.GetRequiredService<IGuppyProvider>();
 
-            foreach(var loader in this.Provider.GetServices<IEngineLoader>())
+            foreach(var loader in this.Provider.GetServices<IGlobalLoader>())
             {
                 loader.Load(this);
             }

@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Loaders
 {
-    [Service<IEngineLoader>(ServiceLifetime.Singleton, true)]
-    public interface IEngineLoader
+    [Service<IGlobalLoader>(ServiceLifetime.Singleton, true)]
+    public interface IGlobalLoader
     {
         void Load(GuppyEngine engine);
     }

@@ -23,19 +23,13 @@ namespace Guppy.MonoGame.UI.Providers
             GameWindow window, 
             GraphicsDevice graphics, 
             IBus bus, 
-            IResourceProvider resources,
-            IEnumerable<IImGuiBatchLoader> loaders)
+            IResourceProvider resources)
         {
             _window = window;
             _graphics = graphics;
             _bus = bus;
             _resources = resources;
             _batches = new Dictionary<string, ImGuiBatch>();
-
-            foreach (IImGuiBatchLoader loader in loaders)
-            {
-                loader.Load(this);
-            }
 
             foreach(var batch in _batches.Values)
             {

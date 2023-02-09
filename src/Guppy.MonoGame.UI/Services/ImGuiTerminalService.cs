@@ -30,7 +30,7 @@ namespace Guppy.MonoGame.UI.Services
         private readonly static TextWriter _errWriter;
 
         private readonly ImGuiBatch _imGuiBatch;
-        private readonly ImFontPtr _font;
+        private ImFontPtr _font;
         private readonly GameWindow _window;
         
         private readonly Lazy<ICommandService> _commands;
@@ -45,7 +45,7 @@ namespace Guppy.MonoGame.UI.Services
         {
             _imGuiBatch = batches.Get(ImGuiBatchConstants.Debug);
             _window = window;
-            _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
+            _font = default!;
             _input = string.Empty;
             _scrollLocked = true;
             _commands = commands;
@@ -53,6 +53,13 @@ namespace Guppy.MonoGame.UI.Services
 
             this.IsEnabled = false;
             this.Visible = false;
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
         }
 
         static ImGuiTerminalService()

@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Collections;
+using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
@@ -24,6 +25,11 @@ namespace Guppy.Providers
             var scoped = _provider.GetRequiredService<IScoped<T>>();
 
             scoped.Instance.OnDispose += this.HandleGuppyDisposed;
+
+            foreach (var loader in scoped.Scope.ServiceProvider.GetServices<IGuppyLoader>())
+            {
+                loader.Load(scoped.Instance);
+            }
 
             scoped.Instance.Initialize(scoped.Scope.ServiceProvider);
 

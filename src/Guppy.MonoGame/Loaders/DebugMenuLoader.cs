@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.Attributes;
+using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
 using System;
@@ -9,12 +10,19 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Loaders
 {
-    [Sortable<IMenuLoader>(int.MinValue)]
-    internal sealed class DebugMenuLoader : IMenuLoader
+    [Sortable<IGuppyLoader>(int.MinValue)]
+    internal sealed class DebugMenuLoader : IGuppyLoader
     {
-        public void Load(IMenuProvider menus)
+        private readonly IMenuProvider _menus;
+
+        public DebugMenuLoader(IMenuProvider menus)
         {
-            menus.Add(new Menu(MenuConstants.Debug));
+            _menus = menus;
+        }
+
+        public void Load(IGuppy guppy)
+        {
+            _menus.Add(new Menu(MenuConstants.Debug));
         }
     }
 }

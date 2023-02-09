@@ -13,14 +13,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.MonoGame.UI.Providers;
+using Guppy.Attributes;
 
 namespace Guppy.MonoGame.UI.Loaders
 {
-    internal sealed class DebugImGuiBatchLoader : IImGuiBatchLoader
+    internal sealed class DebugImGuiBatchLoader : IGuppyLoader
     {
-        public void Load(IImGuiBatchProvider batches)
+        private readonly IImGuiBatchProvider _batches;
+
+        public DebugImGuiBatchLoader(IImGuiBatchProvider batchs)
         {
-            batches.Get(ImGuiBatchConstants.Debug).Fonts.Add(ResourceConstants.DiagnosticsImGuiFont, ResourceConstants.DiagnosticsImGuiFontHeader);
+            _batches = batchs;
+        }
+
+        public void Load(IGuppy guppy)
+        {
+            var batch = _batches.Get(ImGuiBatchConstants.Debug);
+
+            batch.Fonts.Add(ResourceConstants.DiagnosticsImGuiFont, ResourceConstants.DiagnosticsImGuiFontHeader);
+            batch.RebuildFontAtlas();
         }
     }
 }

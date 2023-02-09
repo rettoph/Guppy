@@ -23,6 +23,7 @@ namespace Guppy.Network.UI
         ISubscriber<Toggle<UsersDebugger>>
     {
         private readonly NetScope _netScope;
+        private ImGuiBatch _batch;
 
         private ImFontPtr _fontHeader;
 
@@ -32,7 +33,8 @@ namespace Guppy.Network.UI
             IImGuiBatchProvider batches)
         {
             _netScope = netScope;
-            _fontHeader = batches.Get(ImGuiBatchConstants.Debug).Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
+            _batch = batches.Get(ImGuiBatchConstants.Debug);
+            _fontHeader = default!;
 
             this.IsEnabled = false;
             this.Visible = false;
@@ -42,6 +44,13 @@ namespace Guppy.Network.UI
                 Label = "Users",
                 OnClick = Toggle<UsersDebugger>.Instance
             });
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            _fontHeader = _batch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
         }
 
         public override void Draw(GameTime gameTime)

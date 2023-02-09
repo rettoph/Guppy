@@ -57,7 +57,7 @@ namespace Guppy.MonoGame.UI.Loaders
             //     .AddInterfaceAliases();
 
             services.AddScoped<IImGuiBatchProvider, ImGuiBatchProvider>();
-            services.AddScoped<IImGuiBatchLoader, DebugImGuiBatchLoader>();
+            services.AddScoped<IGuppyLoader, DebugImGuiBatchLoader>();
 
             services.AddService<BeginDebugImGuiBatch>()
                 .SetLifetime(ServiceLifetime.Scoped)

@@ -39,10 +39,10 @@ namespace Guppy.MonoGame.UI.GameComponents
             _menu = menus.Get(MenuConstants.Debug);
             _imGuiBatch = batchs.Get(ImGuiBatchConstants.Debug);
             _context = ImPlot.CreateContext();
-            _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
             _window = window;
             _fps = fps;
             _bus = bus;
+            _font = default!;
 
             CleanMenuDimensions();
 
@@ -55,6 +55,8 @@ namespace Guppy.MonoGame.UI.GameComponents
         public override void Initialize()
         {
             base.Initialize();
+
+            _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
         }
 
 

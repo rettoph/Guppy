@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Loaders
 {
-    internal sealed class GuppyProviderLoader : IEngineLoader
+    internal sealed class GuppyProviderLoader : IGlobalLoader
     {
         public void Load(GuppyEngine engine)
         {
