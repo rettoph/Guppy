@@ -23,16 +23,15 @@ namespace Guppy.MonoGame.Collections
 
         public virtual void Add(T item)
         {
-            this.items.Add(item);
+            _cache.Add(item);
+
             this.dirty = true;
         }
 
         public virtual void Clear()
         {
-            while(this.Any())
-            {
-                this.Remove(this.First());
-            }
+            _cache.Clear();
+            this.dirty = true;
         }
 
         public bool Contains(T item)
@@ -51,9 +50,6 @@ namespace Guppy.MonoGame.Collections
             {
                 return;
             }
-
-            _cache.Clear();
-            _cache.AddRange(this.items);
 
             var clean = this.Clean(_cache);
 
@@ -75,7 +71,7 @@ namespace Guppy.MonoGame.Collections
 
         public virtual bool Remove(T item)
         {
-            if(this.items.Remove(item))
+            if(_cache.Remove(item))
             {
                 this.dirty = true;
                 return true;

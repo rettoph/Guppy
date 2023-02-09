@@ -21,7 +21,6 @@ namespace Guppy.Common.Implementations
 
         public T Instance => _instance ??= this.GetInstance();
 
-
         public IEnumerable<T> Instances => _instances ??= this.GetInstances();
 
         public Filtered(

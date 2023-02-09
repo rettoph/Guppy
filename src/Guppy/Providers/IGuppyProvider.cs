@@ -10,6 +10,8 @@ namespace Guppy.Providers
 {
     public interface IGuppyProvider : ICollectionManager<IGuppy>
     {
+        IGuppy Create(Type guppyType);
+
         T Create<T>()
             where T : class, IGuppy;
     }

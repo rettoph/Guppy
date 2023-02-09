@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.UI.Providers
 {
-    internal sealed class ImGuiBatchProvider : IImGuiBatchProvider
+    internal sealed class ImGuiBatchProvider : IImGuiBatchProvider, IDisposable
     {
         private readonly GameWindow _window;
         private readonly GraphicsDevice _graphics;
@@ -34,6 +34,14 @@ namespace Guppy.MonoGame.UI.Providers
             foreach(var batch in _batches.Values)
             {
                 batch.RebuildFontAtlas();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach(var batch in _batches)
+            {
+                batch.Value.Dispose();
             }
         }
 

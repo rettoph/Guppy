@@ -13,6 +13,7 @@ namespace Guppy.MonoGame
 {
     public abstract class FrameableGuppy : IGuppy, IDrawable, IUpdateable
     {
+        private IServiceScope? _scope;
         private int _drawOrder;
         private bool _visible;
         private bool _enabled;

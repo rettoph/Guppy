@@ -24,6 +24,7 @@ namespace Guppy.Network.UI
     {
         private readonly NetScope _netScope;
         private ImGuiBatch _batch;
+        private readonly Menu _menu;
 
         private ImFontPtr _fontHeader;
 
@@ -35,20 +36,21 @@ namespace Guppy.Network.UI
             _netScope = netScope;
             _batch = batches.Get(ImGuiBatchConstants.Debug);
             _fontHeader = default!;
+            _menu = menus.Get(MenuConstants.Debug);
 
             this.IsEnabled = false;
             this.Visible = false;
-
-            menus.Get(MenuConstants.Debug).Add(new MenuItem()
-            {
-                Label = "Users",
-                OnClick = Toggle<UsersDebugger>.Instance
-            });
         }
 
         public override void Initialize()
         {
             base.Initialize();
+
+            _menu.Add(new MenuItem()
+            {
+                Label = "Users",
+                OnClick = Toggle<UsersDebugger>.Instance
+            });
 
             _fontHeader = _batch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
         }
