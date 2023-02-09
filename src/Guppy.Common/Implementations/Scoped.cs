@@ -25,8 +25,6 @@ namespace Guppy.Common.Implementations
 
         public void Dispose()
         {
-            this.OnDispose?.Invoke(this);
-
             this.Scope.Dispose();
         }
     }

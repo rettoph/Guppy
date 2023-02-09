@@ -28,6 +28,8 @@ namespace Guppy.MonoGame.Loaders
             services.AddScoped<IMenuLoader, DebugMenuLoader>();
 
             services.AddSingleton<ICommandService, CommandService>();
+
+            services.AddSingleton<IEngineLoader, GuppyProviderLoader>();
         }
     }
 }

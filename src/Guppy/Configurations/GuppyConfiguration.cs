@@ -61,14 +61,14 @@ namespace Guppy.Configurations
         private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
         {
             // First initialize all auto load initializers
-            var initialize = assembly.GetTypes()
-                .AssignableFrom<IGuppyBuilder>()
+            var configurators = assembly.GetTypes()
+                .AssignableFrom<IGuppyConfigurator>()
                 .WithAttribute<AutoLoadAttribute>(true)
-                .Select(t => Activator.CreateInstance(t) as IGuppyBuilder ?? throw new Exception());
+                .Select(t => Activator.CreateInstance(t) as IGuppyConfigurator ?? throw new Exception());
 
-            foreach (IGuppyBuilder initializer in initialize)
+            foreach (IGuppyConfigurator configurator in configurators)
             {
-                initializer.Initialize(this);
+                configurator.Configure(this);
             }
 
             // Initialize all initializable attributes

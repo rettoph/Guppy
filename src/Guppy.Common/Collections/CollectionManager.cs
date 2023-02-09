@@ -7,109 +7,89 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Collections
 {
-    public abstract class CollectionManager
+    public partial class CollectionManager<T> : ICollectionManager<T>
     {
-        public abstract IEnumerable<TItem> Items<TItem>();
-    }
+        private IDictionary<Type, Manager> _managers = new Dictionary<Type, Manager>();
+        private IList<T> _items = new List<T>();
 
-    public class CollectionManager<T> : CollectionManager, IEnumerable<T>
-        where T : notnull
-    {
-        private readonly IList<T> _items;
-        private readonly IManagedCollection[] _collections;
+        public IEnumerable<IEnumerable> Collections => _managers.Values.Select(x => x.Collection);
 
-        public CollectionManager(IEnumerable<T> items, params IManagedCollection[] collections)
+        public ICollection<TItem> Collection<TItem>()
         {
-            _items = new List<T>();
-            _collections = collections;
-
-            foreach(IManagedCollection collection in _collections)
+            if(!_managers.TryGetValue(typeof(TItem), out var manager))
             {
-                collection.Initialize(this);
+                throw new NotImplementedException();
             }
 
-            this.AddRange(items);
+            if(manager is not Manager<TItem> casted)
+            {
+                throw new NotImplementedException();
+            }
+
+            return casted.Collection;
         }
 
-        public override IEnumerable<TItem> Items<TItem>()
+        public ICollectionManager<T> Attach<TItem>(ICollection<TItem> collection)
         {
-            return _items.OfType<TItem>();
+            var manager = new Manager<TItem>(collection);
+            _managers.Add(manager.Type, manager);
+
+            foreach(T item in this)
+            {
+                manager.TryAdd(item);
+            }
+            return this;
         }
 
-        public int Add(T item)
+        public ICollectionManager<T> Detach<TItem>(ICollection<TItem> collection)
+        {
+            _managers.Remove(typeof(TItem));
+            return this;
+        }
+
+        public virtual void Add(T item)
         {
             _items.Add(item);
 
-            int count = 0;
-            foreach (IManagedCollection collection in _collections)
+            foreach(var manager in _managers.Values)
             {
-                if (collection.TryAdd(item))
-                {
-                    count++;
-                }
+                manager.TryAdd(item);
             }
-
-            return count;
         }
 
-        public int Remove(T item)
+        public virtual bool Remove(T item)
         {
-            int count = 0;
-
-            if (!_items.Remove(item))
+            if(!_items.Remove(item))
             {
-                return count;
+                return false;
             }
 
-            foreach (IManagedCollection collection in _collections)
+            foreach (var manager in _managers.Values)
             {
-                if (collection.TryRemove(item))
-                {
-                    count++;
-                }
+                manager.TryRemove(item);
             }
 
-            return count;
+            return true;
         }
 
-        public void AddRange(IEnumerable<T> items)
+        public void Clear()
+        {
+            _items.Clear();
+
+            foreach (var manager in _managers.Values)
+            {
+                manager.Clear();
+            }
+        }
+
+        public ICollectionManager<T> AddRange(IEnumerable<T> items)
         {
             foreach(T item in items)
             {
                 this.Add(item);
             }
-        }
 
-        public void Clear()
-        {
-            while(_items.Any())
-            {
-                this.Remove(_items[0]);
-            }
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _items.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        public TManagedCollection GetCollection<TManagedCollection>()
-            where TManagedCollection : IManagedCollection
-        {
-            foreach(var collection in _collections)
-            {
-                if(collection is TManagedCollection casted)
-                {
-                    return casted;
-                }
-            }
-
-            throw new KeyNotFoundException();
+            return this;
         }
     }
 }

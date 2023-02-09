@@ -12,17 +12,17 @@ namespace Guppy
     {
         public static void Draw(this GuppyEngine engine, GameTime gameTime)
         {
-            foreach(var guppy in engine.Guppies.All<FrameableGuppy>())
+            foreach(var guppy in engine.Guppies.Collection<IDrawable>())
             {
-                guppy.Instance.Draw(gameTime);
+                guppy.Draw(gameTime);
             }
         }
 
         public static void Update(this GuppyEngine engine, GameTime gameTime)
         {
-            foreach (var guppy in engine.Guppies.All<FrameableGuppy>())
+            foreach (var guppy in engine.Guppies.Collection<IUpdateable>())
             {
-                guppy.Instance.Update(gameTime);
+                guppy.Update(gameTime);
             }
         }
     }

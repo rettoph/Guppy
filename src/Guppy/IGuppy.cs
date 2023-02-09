@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    public interface IGuppy
+    public interface IGuppy : IDisposable
     {
+        event OnEventDelegate<IDisposable>? OnDispose;
+
         void Initialize(IServiceProvider provider);
     }
 }

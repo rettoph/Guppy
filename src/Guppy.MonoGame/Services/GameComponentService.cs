@@ -13,19 +13,18 @@ namespace Guppy.MonoGame.Services
 {
     internal sealed class GameComponentService : IGameComponentService, IDisposable
     {
-        private DrawableCollection _drawables;
-        private UpdateableCollection _updatables;
-        private CollectionManager<IGameComponent> _components;
+        private ICollectionManager<IGameComponent> _components;
 
-        public IEnumerable<IDrawable> Drawables => _drawables;
+        public IEnumerable<IDrawable> Drawables => _components.Collection<IDrawable>();
 
-        public IEnumerable<IUpdateable> Updateables => _updatables;
+        public IEnumerable<IUpdateable> Updateables => _components.Collection<IUpdateable>();
 
         public GameComponentService(IFiltered<IGameComponent> components)
         {
-            _drawables = new DrawableCollection();
-            _updatables = new UpdateableCollection();
-            _components = new CollectionManager<IGameComponent>(components.Instances, _drawables, _updatables);
+            _components = new CollectionManager<IGameComponent>()
+                .Attach(new DrawableCollection())
+                .Attach(new UpdateableCollection())
+                .AddRange(components.Instances);
 
             foreach(IGameComponent component in _components)
             {
@@ -40,12 +39,18 @@ namespace Guppy.MonoGame.Services
 
         public void Draw(GameTime gameTime)
         {
-            _drawables.Draw(gameTime);
+            foreach(var drawable in _components.Collection<IDrawable>())
+            {
+                drawable.Draw(gameTime);
+            }
         }
 
         public void Update(GameTime gameTime)
         {
-            _updatables.Update(gameTime);
+            foreach (var updatable in _components.Collection<IUpdateable>())
+            {
+                updatable.Update(gameTime);
+            }
         }
 
         public IEnumerator<IGameComponent> GetEnumerator()

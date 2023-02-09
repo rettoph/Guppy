@@ -9,35 +9,20 @@ namespace Guppy.MonoGame.Collections
 {
     public class UpdateableCollection : DirtyableCollection<IUpdateable>
     {
-        public void Update(GameTime gameTime)
-        {
-            this.EnsureClean();
-
-            foreach (IUpdateable updatable in this.items)
-            {
-                updatable.Update(gameTime);
-            }
-        }
-
         protected override IEnumerable<IUpdateable> Clean(IEnumerable<IUpdateable> items)
         {
             return items.Where(x => x.Enabled).OrderBy(x => x.UpdateOrder);
         }
 
-        protected override bool Add(IUpdateable item)
+        public override void Add(IUpdateable item)
         {
-            if (base.Add(item))
-            {
-                item.UpdateOrderChanged += this.HandleUpdateOrderChanged;
-                item.EnabledChanged += this.HandleEnabledChanged;
+            base.Add(item);
 
-                return true;
-            }
-
-            return false;
+            item.UpdateOrderChanged += this.HandleUpdateOrderChanged;
+            item.EnabledChanged += this.HandleEnabledChanged;
         }
 
-        protected override bool Remove(IUpdateable item)
+        public override bool Remove(IUpdateable item)
         {
             if (base.Remove(item))
             {

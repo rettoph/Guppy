@@ -46,13 +46,18 @@ namespace Guppy
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
             var services = new ServiceCollection();
             var assemblies = new AssemblyProvider(this.Libraries);
-            var builder = new GuppyConfiguration(services, assemblies);
+            var configuration = new GuppyConfiguration(services, assemblies);
 
-            build?.Invoke(builder);
-            builder.Build(entry);
+            build?.Invoke(configuration);
+            configuration.Build(entry);
 
             this.Provider = services.BuildServiceProvider();
             this.Guppies = this.Provider.GetRequiredService<IGuppyProvider>();
+
+            foreach(var loader in this.Provider.GetServices<IEngineLoader>())
+            {
+                loader.Load(this);
+            }
 
             this.State = GuppyState.Ready;
 

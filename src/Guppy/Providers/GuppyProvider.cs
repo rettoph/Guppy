@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
@@ -9,60 +10,35 @@ using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    internal sealed class GuppyProvider : IGuppyProvider
+    internal sealed class GuppyProvider : CollectionManager<IGuppy>, IGuppyProvider
     {
         private IServiceProvider _provider;
-        private IList<IScoped<IGuppy>> _guppies;
-
-        public event OnEventDelegate<IGuppyProvider, IScoped<IGuppy>>? OnAdded;
-        public event OnEventDelegate<IGuppyProvider, IScoped<IGuppy>>? OnRemoved;
 
         public GuppyProvider(IServiceProvider provider)
         {
-            _guppies = new List<IScoped<IGuppy>>();
             _provider = provider;
         }
 
-        IScoped<T> IGuppyProvider.Create<T>()
+        T IGuppyProvider.Create<T>()
         {
-            var guppy = _provider.GetRequiredService<IScoped<T>>();
+            var scoped = _provider.GetRequiredService<IScoped<T>>();
 
-            guppy.OnDispose += this.HandleGuppyDisposed;
+            scoped.Instance.OnDispose += this.HandleGuppyDisposed;
 
-            _guppies.Add(guppy);
+            scoped.Instance.Initialize(scoped.Scope.ServiceProvider);
 
-            guppy.Instance.Initialize(guppy.Scope.ServiceProvider);
+            this.Add(scoped.Instance);
 
-            this.OnAdded?.Invoke(this, guppy);
-
-            return guppy;
+            return scoped.Instance;
         }
 
         private void HandleGuppyDisposed(IDisposable args)
         {
-            if(args is IScoped<IGuppy> guppy)
+            if(args is IGuppy guppy)
             {
                 guppy.OnDispose -= this.HandleGuppyDisposed;
 
-                _guppies.Remove(guppy);
-
-                this.OnRemoved?.Invoke(this, guppy);
-            }
-        }
-
-        IEnumerable<IScoped<IGuppy>> IGuppyProvider.All()
-        {
-            return _guppies;
-        }
-
-        IEnumerable<IScoped<T>> IGuppyProvider.All<T>()
-        {
-            foreach(IScoped<IGuppy> guppy in _guppies)
-            {
-                if(guppy is IScoped<T> casted)
-                {
-                    yield return casted;
-                }
+                this.Remove(guppy);
             }
         }
     }

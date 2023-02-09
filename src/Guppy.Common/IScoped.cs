@@ -10,8 +10,6 @@ namespace Guppy.Common
     public interface IScoped<out T> : IDisposable
         where T : notnull
     {
-        event OnEventDelegate<IDisposable>? OnDispose;
-
         public T Instance { get; }
         public IServiceScope Scope { get; }
     }

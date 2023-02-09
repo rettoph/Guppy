@@ -10,35 +10,20 @@ namespace Guppy.MonoGame.Collections
 {
     public class DrawableCollection : DirtyableCollection<IDrawable>
     {
-        public void Draw(GameTime gameTime)
-        {
-            this.EnsureClean();
-
-            foreach (IDrawable drawable in this.items)
-            {
-                drawable.Draw(gameTime);
-            }
-        }
-
         protected override IEnumerable<IDrawable> Clean(IEnumerable<IDrawable> items)
         {
             return items.Where(x => x.Visible).OrderBy(x => x.DrawOrder);
         }
 
-        protected override bool Add(IDrawable item)
+        public override void Add(IDrawable item)
         {
-            if(base.Add(item))
-            {
-                item.DrawOrderChanged += this.HandleDrawOrderChanged;
-                item.VisibleChanged += this.HandleVisibleChanged;
+            base.Add(item);
 
-                return true;
-            }
-
-            return false;
+            item.DrawOrderChanged += this.HandleDrawOrderChanged;
+            item.VisibleChanged += this.HandleVisibleChanged;
         }
 
-        protected override bool Remove(IDrawable item)
+        public override bool Remove(IDrawable item)
         {
             if (base.Remove(item))
             {

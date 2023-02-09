@@ -7,8 +7,8 @@ using Guppy.Configurations;
 
 namespace Guppy
 {
-    public interface IGuppyBuilder
+    public interface IGuppyConfigurator
     {
-        void Initialize(GuppyConfiguration builder);
+        void Configure(GuppyConfiguration configuration);
     }
 }
