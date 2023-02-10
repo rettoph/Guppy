@@ -59,6 +59,13 @@ namespace Guppy.MonoGame.UI.GameComponents
             _font = _imGuiBatch.Fonts[ResourceConstants.DiagnosticsImGuiFont].Ptr;
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            _window.ClientSizeChanged -= HandleClientSizeChanged;
+        }
+
 
         private void CleanMenuDimensions()
         {

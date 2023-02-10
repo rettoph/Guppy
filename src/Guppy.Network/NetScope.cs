@@ -74,6 +74,11 @@ namespace Guppy.Network
             this.Users.OnUserLeft -= this.HandleUserLeft;
 
             this.Users.Dispose();
+
+            if(this.Bound)
+            {
+                this.Peer!.Unbind(this);
+            }
         }
 
         internal void BindTo(Peer peer, byte id)

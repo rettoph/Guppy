@@ -24,38 +24,44 @@ namespace Guppy.Providers
 
         T IGuppyProvider.Create<T>()
         {
-            var scoped = _provider.GetRequiredService<IScoped<T>>();
+            var scope = _provider.CreateScope();
+            var guppy = scope.ServiceProvider.GetRequiredService<T>();
 
-            this.Configure(scoped);
+            this.Configure(guppy, scope);
 
-            return scoped.Instance;
+            return guppy;
         }
 
         IGuppy IGuppyProvider.Create(Type guppyType)
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
 
-            var scopedType = typeof(IScoped<>).MakeGenericType(guppyType);
-            var scoped = _provider.GetRequiredService(scopedType) as IScoped<IGuppy> ?? throw new NotImplementedException();
-
-            this.Configure(scoped);
-
-            return scoped.Instance;
-        }
-
-        private void Configure(IScoped<IGuppy> scoped)
-        {
-            scoped.Instance.OnDispose += this.HandleGuppyDisposed;
-
-            foreach (var loader in scoped.Scope.ServiceProvider.GetServices<IGuppyLoader>())
+            var scope = _provider.CreateScope();
+            var guppy = scope.ServiceProvider.GetRequiredService(guppyType) as IGuppy;
+            
+            if(guppy is null)
             {
-                loader.Load(scoped.Instance);
+                throw new NotImplementedException();
             }
 
-            scoped.Instance.Initialize(scoped.Scope.ServiceProvider);
+            this.Configure(guppy, scope);
 
-            this.Add(scoped.Instance);
-            _scopes.Add(scoped.Instance, scoped.Scope);
+            return guppy;
+        }
+
+        private void Configure(IGuppy guppy, IServiceScope scope)
+        {
+            guppy.OnDispose += this.HandleGuppyDisposed;
+
+            foreach (var loader in scope.ServiceProvider.GetServices<IGuppyLoader>())
+            {
+                loader.Load(guppy);
+            }
+
+            guppy.Initialize(scope.ServiceProvider);
+
+            this.Add(guppy);
+            _scopes.Add(guppy, scope);
         }
 
         private void HandleGuppyDisposed(IDisposable args)
