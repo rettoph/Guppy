@@ -28,7 +28,7 @@ namespace Guppy.MonoGame.UI.Loaders
 
         public void Load(IGuppy guppy)
         {
-            var batch = _batches.Get(ImGuiBatchConstants.Debug);
+            var batch = _batches.Get(ImGuiBatchConstants.Default);
 
             batch.Fonts.Add(ResourceConstants.DiagnosticsImGuiFont, ResourceConstants.DiagnosticsImGuiFontHeader);
             batch.RebuildFontAtlas();

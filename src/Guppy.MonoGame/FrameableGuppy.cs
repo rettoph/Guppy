@@ -3,6 +3,7 @@ using Guppy.MonoGame.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.Entities;
+using MonoGame.Extended.Timers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,16 +86,46 @@ namespace Guppy.MonoGame
             this.Bus.Initialize();
         }
 
-        public virtual void Draw(GameTime gameTime)
+        protected virtual void PreDraw(GameTime gameTime)
+        {
+        }
+
+        protected virtual void Draw(GameTime gameTime)
         {
             this.Components.Draw(gameTime);
         }
 
-        public virtual void Update(GameTime gameTime)
+        protected virtual void PostDraw(GameTime gameTime)
+        {
+        }
+
+        protected virtual void PreUpdate(GameTime gameTime)
+        {
+        }
+
+        protected virtual void Update(GameTime gameTime)
         {
             this.Components.Update(gameTime);
 
             this.Bus.Flush();
+        }
+
+        protected virtual void PostUpdate(GameTime gameTime)
+        {
+        }
+
+        void IDrawable.Draw(GameTime gameTime)
+        {
+            this.PreDraw(gameTime);
+            this.Draw(gameTime);
+            this.PostDraw(gameTime);
+        }
+
+        void IUpdateable.Update(GameTime gameTime)
+        {
+            this.PreUpdate(gameTime);
+            this.Update(gameTime);
+            this.PostUpdate(gameTime);
         }
 
         public virtual void Dispose()

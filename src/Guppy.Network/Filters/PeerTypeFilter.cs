@@ -14,17 +14,18 @@ namespace Guppy.Network.Filters
 {
     public class PeerTypeFilter : SimpleFilter
     {
-        public readonly PeerType PeerType;
+        public readonly PeerType Flags;
 
-        public PeerTypeFilter(PeerType peerType, Type type) : base(type)
+        public PeerTypeFilter(PeerType flags, Type type) : base(type)
         {
-            this.PeerType = peerType;
+            this.Flags = flags;
         }
 
         public override bool Invoke(IServiceProvider provider, object service)
         {
             var netScope = provider.GetRequiredService<NetScope>();
-            var result = netScope.Peer?.Type == this.PeerType;
+            var flag = netScope.Peer?.Type ?? PeerType.Client;
+            var result = this.Flags.HasFlag(flag);
 
             return result;
         }

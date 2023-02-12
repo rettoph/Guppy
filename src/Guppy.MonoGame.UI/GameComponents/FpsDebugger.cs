@@ -13,8 +13,9 @@ using Num = System.Numerics;
 
 namespace Guppy.MonoGame.UI.GameComponents
 {
-    internal sealed class FpsComponent : SimpleDrawableGameComponent, 
-        ISubscriber<Toggle<FpsComponent>>
+    [GuppyFilter<ImGuiGuppy>]
+    internal sealed class FpsDebugger : SimpleDrawableGameComponent, 
+        ISubscriber<Toggle<FpsDebugger>>
     {
         private static readonly TimeSpan FpsInterval = TimeSpan.FromMilliseconds(100);
         private static readonly int FpsSize = (int)(TimeSpan.FromSeconds(10) / FpsInterval);
@@ -31,7 +32,7 @@ namespace Guppy.MonoGame.UI.GameComponents
         private TimeSpan _lastAdded;
         private bool _graph;
 
-        public FpsComponent(IMenuProvider menus)
+        public FpsDebugger(IMenuProvider menus)
         {
             _frames = new Buffer<double>(256);
             _fps = new Buffer<double>(FpsSize);
@@ -43,7 +44,7 @@ namespace Guppy.MonoGame.UI.GameComponents
             menus.Get(MenuConstants.Debug).Add(new MenuItem()
             {
                 Label = "FPS",
-                OnClick = Toggle<FpsComponent>.Instance
+                OnClick = Toggle<FpsDebugger>.Instance
             });
         }
 
@@ -115,7 +116,7 @@ namespace Guppy.MonoGame.UI.GameComponents
             }
         }
 
-        public void Process(in Toggle<FpsComponent> message)
+        public void Process(in Toggle<FpsDebugger> message)
         {
             IsEnabled = !IsEnabled;
             Visible = !Visible;

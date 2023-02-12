@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network.Enums
 {
+    [Flags]
     public enum PeerType
     {
-        Client,
-        Server
+        Client = 1,
+        Server = 2
     }
 }

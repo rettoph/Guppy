@@ -21,6 +21,7 @@ using Guppy.MonoGame.Messages;
 
 namespace Guppy.MonoGame.UI.Services
 {
+    [GuppyFilter<ImGuiGuppy>]
     internal sealed partial class ImGuiTerminalService : SimpleDrawableGameComponent, 
         ITerminalService,
         ISubscriber<Toggle<ITerminalService>>
@@ -43,7 +44,7 @@ namespace Guppy.MonoGame.UI.Services
             GameWindow window, 
             Lazy<ICommandService> commands)
         {
-            _imGuiBatch = batches.Get(ImGuiBatchConstants.Debug);
+            _imGuiBatch = batches.Get(ImGuiBatchConstants.Default);
             _window = window;
             _font = default!;
             _input = string.Empty;

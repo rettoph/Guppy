@@ -57,15 +57,12 @@ namespace Guppy.MonoGame.UI.Loaders
             //     .AddInterfaceAliases();
 
             services.AddScoped<IImGuiBatchProvider, ImGuiBatchProvider>();
+            services.AddScoped<ImGuiBatch>(p =>
+            {
+                var batches = p.GetRequiredService<IImGuiBatchProvider>();
+                return batches.Get(ImGuiBatchConstants.Default);
+            });
             services.AddScoped<IGuppyLoader, DebugImGuiBatchLoader>();
-
-            services.AddService<BeginDebugImGuiBatch>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
-
-            services.AddService<EndDebugImGuiBatch>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddInterfaceAliases();
 
             services.AddService<DebugMenuComponent>()
                 .SetLifetime(ServiceLifetime.Scoped)
@@ -75,7 +72,7 @@ namespace Guppy.MonoGame.UI.Loaders
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<FpsComponent>()
+            services.AddService<FpsDebugger>()
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 

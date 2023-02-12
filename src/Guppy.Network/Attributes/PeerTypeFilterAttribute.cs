@@ -8,16 +8,16 @@ namespace Guppy.Network.Attributes
 {
     public sealed class PeerTypeFilterAttribute : GuppyConfigurationAttribute
     {
-        public readonly PeerType PeerType;
+        public readonly PeerType Flags;
 
-        public PeerTypeFilterAttribute(PeerType peerType)
+        public PeerTypeFilterAttribute(PeerType flags)
         {
-            this.PeerType = peerType;
+            this.Flags = flags;
         }
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.AddFilter(new PeerTypeFilter(this.PeerType, classType));
+            configuration.Services.AddFilter(new PeerTypeFilter(this.Flags, classType));
         }
     }
 }

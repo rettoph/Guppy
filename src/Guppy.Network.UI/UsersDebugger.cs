@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
@@ -19,6 +20,7 @@ using Num = System.Numerics;
 
 namespace Guppy.Network.UI
 {
+    [GuppyFilter<ImGuiGuppy>]
     public class UsersDebugger : SimpleDrawableGameComponent,
         ISubscriber<Toggle<UsersDebugger>>
     {
@@ -34,7 +36,7 @@ namespace Guppy.Network.UI
             IImGuiBatchProvider batches)
         {
             _netScope = netScope;
-            _batch = batches.Get(ImGuiBatchConstants.Debug);
+            _batch = batches.Get(ImGuiBatchConstants.Default);
             _fontHeader = default!;
             _menu = menus.Get(MenuConstants.Debug);
 

@@ -8,6 +8,6 @@ namespace Guppy.MonoGame.UI.Constants
 {
     public static class ImGuiBatchConstants
     {
-        public const string Debug = "debug";
+        public const string Default = "default";
     }
 }

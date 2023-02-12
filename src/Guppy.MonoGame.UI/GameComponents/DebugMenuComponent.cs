@@ -13,10 +13,10 @@ using Num = System.Numerics;
 
 namespace Guppy.MonoGame.UI.GameComponents
 {
+    [GuppyFilter<ImGuiGuppy>]
     internal sealed class DebugMenuComponent : SimpleDrawableGameComponent,
         ISubscriber<Toggle<DebugMenuComponent>>
     {
-        private FpsComponent _fps;
         private Menu _menu;
         private ImGuiBatch _imGuiBatch;
         private IntPtr _context;
@@ -30,17 +30,15 @@ namespace Guppy.MonoGame.UI.GameComponents
         private IBus _bus;
 
         public DebugMenuComponent(
-            FpsComponent fps,
             GameWindow window,
             IImGuiBatchProvider batchs,
             IMenuProvider menus,
             IBus bus)
         {
             _menu = menus.Get(MenuConstants.Debug);
-            _imGuiBatch = batchs.Get(ImGuiBatchConstants.Debug);
+            _imGuiBatch = batchs.Get(ImGuiBatchConstants.Default);
             _context = ImPlot.CreateContext();
             _window = window;
-            _fps = fps;
             _bus = bus;
             _font = default!;
 
