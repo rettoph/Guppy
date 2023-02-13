@@ -9,7 +9,8 @@ namespace Guppy.Network.Enums
     [Flags]
     public enum PeerType
     {
-        Client = 1,
-        Server = 2
+        None = 1,
+        Client = 2,
+        Server = 4,
     }
 }

@@ -24,7 +24,7 @@ namespace Guppy.Network.Filters
         public override bool Invoke(IServiceProvider provider, object service)
         {
             var netScope = provider.GetRequiredService<NetScope>();
-            var flag = netScope.Peer?.Type ?? PeerType.Client;
+            var flag = netScope.Peer?.Type ?? PeerType.None;
             var result = this.Flags.HasFlag(flag);
 
             return result;
