@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Primitives
 {
-    public abstract class PrimitiveShape<TVertexType>
+    public abstract class PrimitiveShape<TVertexType> : IPrimitiveShape<TVertexType>
         where TVertexType : struct, IVertexType
     {
-        public readonly int Length;
+        public int Length { get; }
 
         protected PrimitiveShape(int length)
         {
@@ -23,9 +23,7 @@ namespace Guppy.MonoGame.Primitives
 
     public class PrimitiveShape : PrimitiveShape<VertexPositionColor>
     {
-        private readonly Vector3[] _vertices;
-
-        public Vector3[] Vertices => _vertices;
+        protected readonly Vector3[] _vertices;
 
         public PrimitiveShape(IEnumerable<Vector2> vertices) : this(vertices.Select(x => x.ToVector3()))
         {

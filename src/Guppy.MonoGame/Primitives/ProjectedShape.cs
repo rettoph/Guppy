@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Primitives
 {
-    public class UnprojectedPrimitiveShape : PrimitiveShape
+    public class ProjectedShape : PrimitiveShape
     {
         private readonly Camera _camera;
 
-        public UnprojectedPrimitiveShape(Camera camera, IEnumerable<Vector2> vertices) : base(vertices)
+        public ProjectedShape(Camera camera, IEnumerable<Vector2> vertices) : base(vertices)
         {
             _camera = camera;
         }
