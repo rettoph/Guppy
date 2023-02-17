@@ -9,14 +9,14 @@ using Guppy.MonoGame.Utilities.Cameras;
 
 namespace Guppy.MonoGame.Primitives
 {
-    public class PrimitiveBatch<TVertexType>
-            where TVertexType : struct, IVertexType
+    public class PrimitiveBatch<TVertex>
+            where TVertex : struct, IVertexType
     {
         public static int BufferSize = 500;
 
         private readonly VertexBuffer _vertexBuffer;
         private readonly IndexBuffer _indexBuffer;
-        private readonly TVertexType[] _vertices;
+        private readonly TVertex[] _vertices;
         private readonly short[] _lineIndices;
         private readonly short[] _triangleIndices;
         private readonly short[] _buffer;
@@ -31,9 +31,9 @@ namespace Guppy.MonoGame.Primitives
 
         public PrimitiveBatch(GraphicsDevice graphicsDevice)
         {
-            _vertexBuffer = new VertexBuffer(graphicsDevice, typeof(TVertexType), BufferSize, BufferUsage.WriteOnly);
+            _vertexBuffer = new VertexBuffer(graphicsDevice, typeof(TVertex), BufferSize, BufferUsage.WriteOnly);
             _indexBuffer = new IndexBuffer(graphicsDevice, typeof(short), BufferSize * 3, BufferUsage.WriteOnly);
-            _vertices = new TVertexType[BufferSize];
+            _vertices = new TVertex[BufferSize];
             _lineIndices = new short[BufferSize * 2];
             _triangleIndices = new short[BufferSize * 3];
             _buffer = new short[3];
@@ -51,7 +51,7 @@ namespace Guppy.MonoGame.Primitives
             };
         }
 
-        public ref TVertexType NextVertex(out short index)
+        public ref TVertex NextVertex(out short index)
         {
             index = _vertexCount++;
             return ref _vertices[index];
@@ -67,7 +67,7 @@ namespace Guppy.MonoGame.Primitives
             _triangleIndices[_triangleCount++] = index;
         }
 
-        public void Fill(IPrimitiveShape<TVertexType> shape, in Color color, ref Matrix transformation)
+        public void Fill(IPrimitiveShape<TVertex> shape, in Color color, ref Matrix transformation)
         {
             this.EnsureCapacity(shape.Length);
 
@@ -85,12 +85,12 @@ namespace Guppy.MonoGame.Primitives
                 _buffer[1] = _buffer[2];
             }
         }
-        public void Fill(IPrimitiveShape<TVertexType> shape, Color color, Matrix transformation)
+        public void Fill(IPrimitiveShape<TVertex> shape, Color color, Matrix transformation)
         {
             this.Fill(shape, in color, ref transformation);
         }
 
-        public void Trace(IPrimitiveShape<TVertexType> shape, in Color color, ref Matrix transformation)
+        public void Trace(IPrimitiveShape<TVertex> shape, in Color color, ref Matrix transformation)
         {
             this.EnsureCapacity(shape.Length);
 
@@ -106,7 +106,7 @@ namespace Guppy.MonoGame.Primitives
                 _buffer[0] = _buffer[1];
             }
         }
-        public void Trace(IPrimitiveShape<TVertexType> shape, Color color, Matrix transformation)
+        public void Trace(IPrimitiveShape<TVertex> shape, Color color, Matrix transformation)
         {
             this.Trace(shape, in color, ref transformation);
         }
@@ -165,7 +165,7 @@ namespace Guppy.MonoGame.Primitives
             }
         }
 
-        private void EnsureCapacity(int vertices)
+        public void EnsureCapacity(int vertices)
         {
             if(_vertexCount + vertices < BufferSize)
             {
