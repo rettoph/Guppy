@@ -30,4 +30,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\Systems\Collections\Generic\" />
+  </ItemGroup>
+
 </Project>
