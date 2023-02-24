@@ -18,7 +18,7 @@ namespace Guppy.MonoGame.UI.Providers
 
         public Selector Selector { get; }
 
-        public StyleSheet Source => _source;
+        public IStyleSheet Source => _source;
 
         public StyleProvider(Selector selector, StyleSheet source)
         {

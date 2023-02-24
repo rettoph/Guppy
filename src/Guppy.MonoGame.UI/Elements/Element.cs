@@ -10,31 +10,44 @@ namespace Guppy.MonoGame.UI.Elements
 {
     public class Element : IElement
     {
+        private IStyleProvider _styles;
+
+        protected IContainer container { get; private set; }
+
         public Selector Selector { get; }
-        public IStyleProvider Styles { get; private set; }
+        public IStyleProvider Styles => _styles;
         public ElementState State { get; protected set; }
 
-        public Rectangle OuterBounds { get; set; }
-        public Rectangle InnerBounds { get; set; }
+        public Rectangle OuterBounds { get; protected set; }
+        public Rectangle InnerBounds { get; protected set; }
 
         public Element(params string[] names)
         {
+            _styles = null!;
+
+            this.container = null!;
+
             this.Selector = new Selector(this.GetType(), names);
-            this.Styles = null!;
         }
 
         protected virtual void Initialize(IContainer container)
         {
-            this.Selector.Parent = this.InitializeSelectorParent(container);
-            this.Styles = this.InitializeStyleProvider(container);
+            this.container = container;
+
+            this.Initialize(container, out _styles, out Selector? parent);
+            this.Selector.Parent = parent;
+
             this.State |= ElementState.Initialized;
         }
 
         protected virtual void Uninitialize()
         {
             this.State &= ~ElementState.Initialized;
-            this.Styles = null!;
+
             this.Selector.Parent = null;
+            _styles = null!;
+
+            this.container = null!;
         }
 
         protected virtual void Draw(GameTime gameTime)
@@ -52,14 +65,10 @@ namespace Guppy.MonoGame.UI.Elements
 
         }
 
-        protected virtual IStyleProvider InitializeStyleProvider(IContainer container)
+        protected virtual void Initialize(IContainer container, out IStyleProvider styles, out Selector? parent)
         {
-            return container.Styles.Source.GetProvider(this.Selector);
-        }
-
-        protected virtual Selector? InitializeSelectorParent(IContainer container)
-        {
-            return container.Selector;
+            styles = container.Styles.Source.GetProvider(this.Selector);
+            parent = container.Selector;
         }
 
         void IElement.Initialize(IContainer container)

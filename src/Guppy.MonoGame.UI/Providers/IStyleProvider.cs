@@ -12,7 +12,7 @@ namespace Guppy.MonoGame.UI.Providers
     public interface IStyleProvider
     {
         Selector Selector { get; }
-        StyleSheet Source { get; }
+        IStyleSheet Source { get; }
 
         bool TryGet<T>(Style style, ElementState state, [MaybeNullWhen(false)] out T value);
     }

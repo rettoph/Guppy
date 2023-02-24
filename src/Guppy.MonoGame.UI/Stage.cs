@@ -13,14 +13,25 @@ namespace Guppy.MonoGame.UI
 {
     public class Stage : Container<IElement>, IContainer<IElement>, IPublicContainer<IElement>
     {
-        public StyleSheet StyleSheet { get; private set; }
+        private readonly IStyleSheetProvider _styleSheets;
 
-        public Stage()
+        public IStyleSheet StyleSheet { get; private set; }
+
+        public Stage(IStyleSheetProvider styleSheets)
         {
+            _styleSheets = styleSheets;
+
             this.StyleSheet = null!;
         }
 
-        public void Initialize(StyleSheet styleSheet)
+        public void Initialize(string styleSheetName)
+        {
+            var styleSheet = _styleSheets.Get(styleSheetName);
+
+            this.Initialize(styleSheet);
+        }
+
+        public void Initialize(IStyleSheet styleSheet)
         {
             this.StyleSheet = styleSheet;
 
@@ -47,14 +58,10 @@ namespace Guppy.MonoGame.UI
             base.Update(gameTime);
         }
 
-        protected override IStyleProvider InitializeStyleProvider(IContainer container)
+        protected override void Initialize(IContainer container, out IStyleProvider styles, out Selector? parent)
         {
-            return this.StyleSheet.GetProvider(this.Selector);
-        }
-
-        protected override Selector? InitializeSelectorParent(IContainer container)
-        {
-            return null;
+            styles = this.StyleSheet.GetProvider(this.Selector);
+            parent = null;
         }
     }
 }

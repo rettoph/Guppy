@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.UI
 {
-    public sealed class StyleSheet
+    internal sealed class StyleSheet : IStyleSheet
     {
         record StyleState(Style Style, ElementState State);
         record SelectorStyling(Selector Selector, StyleValue Styling);
