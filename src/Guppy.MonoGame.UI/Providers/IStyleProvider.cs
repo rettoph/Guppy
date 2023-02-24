@@ -11,19 +11,9 @@ namespace Guppy.MonoGame.UI.Providers
 {
     public interface IStyleProvider
     {
-        IElement Element { get; }
+        Selector Selector { get; }
+        StyleSheet Source { get; }
 
         bool TryGet<T>(Style style, ElementState state, [MaybeNullWhen(false)] out T value);
-
-        void Set<T>(Style style, T? value);
-        void Set<T>(Style style, ElementState state, T? value);
-
-        void Clear<T>(Style style);
-        void Clear<T>(Style style, ElementState state);
-
-        void Inherit(IStyleProvider parent);
-        void Clean();
-
-        IEnumerable<IStyleValueProvider> All();
     }
 }

@@ -23,31 +23,25 @@ namespace Guppy.MonoGame.UI
             this.Inherit = inherit;
         }
 
-        private static readonly List<Style> _items;
-        public static readonly ReadOnlyCollection<Style> Items;
+        private static readonly List<Style> _items = new();
+        public static readonly ReadOnlyCollection<Style> Items = new(_items);
 
-        public static readonly StyleDefinition<SpriteFont> Font = Create<SpriteFont>(nameof(Font), true);
-        public static readonly StyleDefinition<Color> Color = Create<Color>(nameof(Color), true);
-        public static readonly StyleDefinition<Color> BackgroundColor = Create<Color>(nameof(BackgroundColor), false);
+        public static readonly Style<SpriteFont> Font = Create<SpriteFont>(nameof(Font), true);
+        public static readonly Style<Color> Color = Create<Color>(nameof(Color), true);
+        public static readonly Style<Color> BackgroundColor = Create<Color>(nameof(BackgroundColor), false);
 
-        static Style()
+        public static Style<T> Create<T>(string name, bool inherit)
         {
-            _items = new List<Style>();
-            Items = new ReadOnlyCollection<Style>(_items);
-        }
-
-        public static StyleDefinition<T> Create<T>(string name, bool inherit)
-        {
-            var definition = new StyleDefinition<T>(name, inherit);
+            var definition = new Style<T>(name, inherit);
             _items.Add(definition);
 
             return definition;
         }
     }
 
-    public sealed class StyleDefinition<T> : Style
+    public sealed class Style<T> : Style
     {
-        internal StyleDefinition(string name, bool inherit) : base(name, typeof(T), inherit)
+        internal Style(string name, bool inherit) : base(name, typeof(T), inherit)
         {
         }
     }

@@ -9,7 +9,8 @@ namespace Guppy.MonoGame.UI
     [Flags]
     public enum ElementState
     {
-        Defaut = 1,
+        None = 0,
+        Initialized = 1,
         Hovered = 2,
         Focused = 4,
         Active = 8

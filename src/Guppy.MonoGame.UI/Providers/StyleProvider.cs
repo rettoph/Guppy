@@ -11,98 +11,45 @@ namespace Guppy.MonoGame.UI.Providers
 {
     internal class StyleProvider : IStyleProvider
     {
-        private IStyleProvider? _parent;
-        private Dictionary<Style, IStyleValueProvider> _values = new();
-        private Dictionary<Style, IStyleValueProvider> _cache = new();
+        record StyleState(Style Style, ElementState State);
 
-        public IElement Element { get; }
+        private readonly StyleSheet _source;
+        private Dictionary<StyleState, StyleValue> _values = new();
 
-        public StyleProvider(IElement element)
+        public Selector Selector { get; }
+
+        public StyleSheet Source => _source;
+
+        public StyleProvider(Selector selector, StyleSheet source)
         {
-            this.Element = element;
+            _source = source;
+
+            this.Selector = selector;
         }
 
         public bool TryGet<T>(Style style, ElementState state, [MaybeNullWhen(false)] out T value)
         {
-            var cache = this.GetValueProvider<T>(_cache, style);
-            if (cache.TryGet(state, out value))
+            var key = new StyleState(style, state);
+
+            if(!_values.TryGetValue(key, out var styleValue))
             {
-                return value is not null;
+                styleValue = _source.Get<T?>(this.Selector, style, state);
+                _values.Add(key, styleValue);
             }
 
-            var values = this.GetValueProvider<T>(_values, style);
-            if(values.TryGet(state, out value))
+            if(!styleValue.Defined)
             {
-                cache.Set(state, value);
-                return value is not null;
+                value = default!;
+                return false;
             }
 
-            if(style.Inherit && _parent is not null && _parent.TryGet(style, state, out value))
+            if(styleValue is not StyleValue<T> casted)
             {
-                cache.Set(state, value);
-                return true;
+                throw new NotImplementedException();
             }
 
-            value = default!;
-            cache.Set(state, null);
-            return false;
-        }
-
-        public void Set<T>(Style style, T? value)
-        {
-            this.Set(style, ElementState.Defaut, value);
-        }
-
-        public void Set<T>(Style style, ElementState state, T? value)
-        {
-            this.GetValueProvider<T>(_values, style).Set(state, value);
-            this.GetValueProvider<T>(_cache, style).Set(state, value);
-        }
-
-        public void Clear<T>(Style style)
-        {
-            this.Clear<T>(style, ElementState.Defaut);
-        }
-
-        public void Clear<T>(Style style, ElementState state)
-        {
-            this.GetValueProvider<T>(_values, style).Clear(state);
-            this.GetValueProvider<T>(_cache, style).Clear(state);
-        }
-
-        public IEnumerable<IStyleValueProvider> All()
-        {
-            return _values.Values;
-        }
-
-        public void Inherit(IStyleProvider parent)
-        {
-            _parent = parent;
-
-            this.Clean();
-        }
-
-        public void Clean()
-        {
-            _cache.Clear();
-        }
-
-        private IStyleValueProvider<T> GetValueProvider<T>(IDictionary<Style, IStyleValueProvider> providers, Style style)
-        {
-            if(!providers.TryGetValue(style, out var uncasted))
-            {
-                var provider = new StyleValueProvider<T>(style, this);
-                providers.Add(style, provider);
-
-                return provider;
-            }
-
-            if(uncasted is IStyleValueProvider<T> casted)
-            {
-                return casted;
-            }
-
-            throw new InvalidCastException(nameof(uncasted));
+            value = casted.Value;
+            return true;
         }
     }
 }

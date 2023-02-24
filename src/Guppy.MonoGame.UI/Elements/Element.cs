@@ -10,51 +10,81 @@ namespace Guppy.MonoGame.UI.Elements
 {
     public class Element : IElement
     {
-        public IStyleProvider Styles { get; }
-        public ElementState State { get; }
+        public Selector Selector { get; }
+        public IStyleProvider Styles { get; private set; }
+        public ElementState State { get; protected set; }
 
-        public Element()
+        public Rectangle OuterBounds { get; set; }
+        public Rectangle InnerBounds { get; set; }
+
+        public Element(params string[] names)
         {
-            this.Styles = new StyleProvider(this);
+            this.Selector = new Selector(this.GetType(), names);
+            this.Styles = null!;
         }
 
-        protected virtual void PreDraw(GameTime gameTime)
+        protected virtual void Initialize(IContainer container)
         {
+            this.Selector.Parent = this.InitializeSelectorParent(container);
+            this.Styles = this.InitializeStyleProvider(container);
+            this.State |= ElementState.Initialized;
         }
 
-        protected void Draw(GameTime gameTime)
+        protected virtual void Uninitialize()
+        {
+            this.State &= ~ElementState.Initialized;
+            this.Styles = null!;
+            this.Selector.Parent = null;
+        }
+
+        protected virtual void Draw(GameTime gameTime)
+        {
+            var result = this.Styles.TryGet<Color>(Style.Color, ElementState.Initialized, out var color);
+        }
+
+        protected virtual void Update(GameTime gameTime)
         {
 
         }
 
-        protected virtual void PostDraw(GameTime gameTime)
+        protected virtual void Clean()
         {
+
         }
 
-        protected virtual void Clean(IStyleStack styles)
+        protected virtual IStyleProvider InitializeStyleProvider(IContainer container)
         {
-            styles.Push(this.Styles);
+            return container.Styles.Source.GetProvider(this.Selector);
+        }
 
+        protected virtual Selector? InitializeSelectorParent(IContainer container)
+        {
+            return container.Selector;
+        }
 
+        void IElement.Initialize(IContainer container)
+        {
+            this.Initialize(container);
+        }
 
-            styles.Pop();
+        void IElement.Uninitialize()
+        {
+            this.Uninitialize();
         }
 
         void IElement.Draw(GameTime gameTime)
         {
-            this.PreDraw(gameTime);
             this.Draw(gameTime);
-            this.PostDraw(gameTime);
         }
 
         void IElement.Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            this.Update(gameTime);
         }
 
-        void IElement.Clean(IStyleStack styles)
+        void IElement.Clean()
         {
-            this.Clean(styles);
+            this.Clean();
         }
     }
 }
