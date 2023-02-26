@@ -27,8 +27,12 @@ namespace Guppy.MonoGame.UI
         public static readonly ReadOnlyCollection<Style> Items = new(_items);
 
         public static readonly Style<SpriteFont> Font = Create<SpriteFont>(nameof(Font), true);
-        public static readonly Style<Color> Color = Create<Color>(nameof(Color), true);
+        public static readonly Style<Color> FontColor = Create<Color>(nameof(FontColor), true);
+
         public static readonly Style<Color> BackgroundColor = Create<Color>(nameof(BackgroundColor), false);
+
+        public static readonly Style<Display> DisplayHorizontal = Create<Display>(nameof(DisplayHorizontal), false);
+        public static readonly Style<Display> DisplayVertical = Create<Display>(nameof(DisplayVertical), false);
 
         public static Style<T> Create<T>(string name, bool inherit)
         {

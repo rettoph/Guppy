@@ -11,6 +11,8 @@ namespace Guppy.MonoGame.UI.Elements
     public class Element : IElement
     {
         private IStyleProvider _styles;
+        private Rectangle _outerBounds;
+        private Rectangle _innerBounds;
 
         protected IContainer container { get; private set; }
 
@@ -18,8 +20,11 @@ namespace Guppy.MonoGame.UI.Elements
         public IStyleProvider Styles => _styles;
         public ElementState State { get; protected set; }
 
-        public Rectangle OuterBounds { get; protected set; }
-        public Rectangle InnerBounds { get; protected set; }
+        public Rectangle OuterBounds => _outerBounds;
+        public Rectangle InnerBounds => _innerBounds;
+
+        public StyleValue<Display> DisplayHorizontal { get; private set; }
+        public StyleValue<Display> DisplayVertical { get; private set; }
 
         public Element(params string[] names)
         {
@@ -28,6 +33,9 @@ namespace Guppy.MonoGame.UI.Elements
             this.container = null!;
 
             this.Selector = new Selector(this.GetType(), names);
+
+            this.DisplayHorizontal = null!;
+            this.DisplayVertical = null!;
         }
 
         protected virtual void Initialize(IContainer container)
@@ -38,6 +46,11 @@ namespace Guppy.MonoGame.UI.Elements
             this.Selector.Parent = parent;
 
             this.State |= ElementState.Initialized;
+        }
+
+        protected virtual void InitializeStyles(IStyleProvider styles)
+        {
+            this.DisplayHorizontal = Style.FontColor
         }
 
         protected virtual void Uninitialize()
@@ -52,7 +65,7 @@ namespace Guppy.MonoGame.UI.Elements
 
         protected virtual void Draw(GameTime gameTime)
         {
-            var result = this.Styles.TryGet<Color>(Style.Color, ElementState.Initialized, out var color);
+            var result = this.Styles.TryGet<Color>(Style.FontColor, ElementState.Initialized, out var color);
         }
 
         protected virtual void Update(GameTime gameTime)
@@ -61,6 +74,11 @@ namespace Guppy.MonoGame.UI.Elements
         }
 
         protected virtual void Clean()
+        {
+            this.CleanOuterBounds(ref _outerBounds);
+        }
+
+        protected virtual void CleanOuterBounds(ref Rectangle bounds)
         {
 
         }

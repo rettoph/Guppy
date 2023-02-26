@@ -57,6 +57,7 @@ namespace Guppy.MonoGame.UI
                         type = type.BaseType ?? typeof(object);
                     }
 
+
                     _specificity += this.Names.Length;
                 }
 
