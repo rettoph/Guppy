@@ -76,13 +76,6 @@ namespace Guppy.MonoGame.UI.Loaders
                 .SetLifetime(ServiceLifetime.Scoped)
                 .AddInterfaceAliases();
 
-            services.AddService<IStyleSheetProvider>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .SetImplementationType<StyleSheetProvider>();
-
-            services.AddService<Stage>()
-                .SetLifetime(ServiceLifetime.Transient);
-
             services.AddCommand<Definitions.CommandDefinitions.UI.Key>();
 
             services.AddInput(InputConstants.ToggleDebugMenu, Keys.F1, new[]

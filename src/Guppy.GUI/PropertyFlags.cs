@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.UI
+namespace Guppy.GUI
 {
-    public enum Display
+    [Flags]
+    public enum PropertyFlags
     {
-        Block,
-        Inline
+        None = 0
     }
 }

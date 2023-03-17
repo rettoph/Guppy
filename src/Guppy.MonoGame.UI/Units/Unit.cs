@@ -8,6 +8,6 @@ namespace Guppy.MonoGame.UI.Units
 {
     public abstract class Unit
     {
-        public abstract int ToPixel(int bounds)
+        public abstract int ToPixel(int bounds);
     }
 }

@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 namespace Guppy.GUI
 {
     [Flags]
-    public enum ElementState
+    public enum ElementState : int
     {
-        None = 1,
+        None = 0,
+        Focused = 1,
         Hovered = 2,
-        Focused = 4,
-        Any = None | Hovered | Focused
     }
 }

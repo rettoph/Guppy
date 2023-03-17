@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.GUI
+namespace Guppy.GUI.Providers
 {
-    public interface IElement
+    public interface IStyleSheetProvider
     {
-        Selector Selector { get; }
-        ElementState State { get; }
+        IStyleSheet Get(string name);
     }
 }

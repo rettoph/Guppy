@@ -23,20 +23,20 @@ namespace Guppy.MonoGame.Primitives
 
     public class PrimitiveShape : PrimitiveShape<VertexPositionColor>
     {
-        protected readonly Vector3[] _vertices;
+        public readonly Vector3[] Vertices;
 
         public PrimitiveShape(IEnumerable<Vector2> vertices) : this(vertices.Select(x => x.ToVector3()))
         {
         }
         public PrimitiveShape(IEnumerable<Vector3> vertices) : base(vertices.Count())
         {
-            _vertices = vertices.ToArray();
+            Vertices = vertices.ToArray();
         }
 
         public override void Transform(int index, in Color color, ref Matrix transformation, out VertexPositionColor output)
         {
             output.Color = color;
-            Vector3.Transform(ref _vertices[index], ref transformation, out output.Position);
+            Vector3.Transform(ref Vertices[index], ref transformation, out output.Position);
         }
     }
 }

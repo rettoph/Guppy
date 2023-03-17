@@ -118,11 +118,6 @@ namespace Guppy.MonoGame.Primitives
 
         public void Begin(Matrix view, Matrix projection)
         {
-            this.GraphicsDevice.BlendState = this.BlendState;
-            this.GraphicsDevice.RasterizerState = this.RasterizerState;
-            this.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
-            this.GraphicsDevice.Indices = _indexBuffer;
-
             this.Effect.View = view;
             this.Effect.Projection = projection;
         }
@@ -138,6 +133,11 @@ namespace Guppy.MonoGame.Primitives
             {
                 return;
             }
+
+            this.GraphicsDevice.BlendState = this.BlendState;
+            this.GraphicsDevice.RasterizerState = this.RasterizerState;
+            this.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+            this.GraphicsDevice.Indices = _indexBuffer;
 
             _vertexBuffer.SetData(_vertices, 0, _vertexCount);
             _vertexCount = 0;
