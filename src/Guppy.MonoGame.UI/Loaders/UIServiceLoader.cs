@@ -17,7 +17,6 @@ using System.Runtime.InteropServices;
 using Guppy.MonoGame.UI.Messages;
 using Guppy.Common;
 using Microsoft.Xna.Framework;
-using Guppy.MonoGame.Enums;
 using Guppy.MonoGame.Constants;
 using InputConstants = Guppy.MonoGame.UI.Constants.InputConstants;
 using Guppy.Common.DependencyInjection;
@@ -33,6 +32,7 @@ using Guppy.MonoGame.Loaders;
 using Guppy.MonoGame.UI.GameComponents;
 using Guppy.MonoGame.Messages;
 using System.Diagnostics;
+using Guppy.Input.Enums;
 
 namespace Guppy.MonoGame.UI.Loaders
 {

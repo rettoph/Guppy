@@ -1,5 +1,4 @@
 ﻿using Guppy.Common;
-using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -8,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame
+namespace Guppy.Input
 {
-    public interface IInput
+    public interface IButton
     {
         string Key { get; }
-        InputSource DefaultSource { get; }
-        InputSource Source { get; set; }
+        ButtonSource DefaultSource { get; }
+        ButtonSource Source { get; set; }
 
         bool Message(bool pressed, [MaybeNullWhen(false)] out IMessage message);
     }

@@ -1,4 +1,4 @@
-﻿using Guppy.MonoGame.Enums;
+﻿using Guppy.Input.Enums;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Structs
+namespace Guppy.Input
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct InputSource
+    public struct ButtonSource
     {
         [FieldOffset(0)]
-        public readonly InputType Type;
+        public readonly ButtonType Type;
 
         [FieldOffset(1)]
         public readonly Keys KeyboardKey;
@@ -22,16 +22,16 @@ namespace Guppy.MonoGame.Structs
         public readonly MouseButtons MouseButton;
 
 
-        public InputSource(Keys keyboardKey)
+        public ButtonSource(Keys keyboardKey)
         {
-            this.Type = InputType.Keyboard;
+            this.Type = ButtonType.Keyboard;
             this.MouseButton = default(MouseButtons);
             this.KeyboardKey = keyboardKey;
         }
 
-        public InputSource(MouseButtons mouseButtons)
+        public ButtonSource(MouseButtons mouseButtons)
         {
-            this.Type = InputType.Mouse;
+            this.Type = ButtonType.Mouse;
             this.KeyboardKey = default(Keys);
             this.MouseButton = mouseButtons;
         }
@@ -40,9 +40,9 @@ namespace Guppy.MonoGame.Structs
         {
             switch (this.Type)
             {
-                case InputType.Mouse:
+                case ButtonType.Mouse:
                     return this.MouseButton.ToString();
-                case InputType.Keyboard:
+                case ButtonType.Keyboard:
                     return this.KeyboardKey.ToString();
                 default:
                     throw new NotImplementedException();
@@ -56,26 +56,26 @@ namespace Guppy.MonoGame.Structs
 
         public override bool Equals(object? obj)
         {
-            return obj is InputSource source &&
+            return obj is ButtonSource source &&
                    Type == source.Type &&
                    KeyboardKey == source.KeyboardKey;
         }
 
-        public static implicit operator InputSource(MouseButtons mouseButtons)
+        public static implicit operator ButtonSource(MouseButtons mouseButtons)
         {
-            return new InputSource(mouseButtons);
+            return new ButtonSource(mouseButtons);
         }
 
-        public static implicit operator InputSource(Keys keyboardKey)
+        public static implicit operator ButtonSource(Keys keyboardKey)
         {
-            return new InputSource(keyboardKey);
+            return new ButtonSource(keyboardKey);
         }
-        public static bool operator ==(InputSource a, InputSource b)
+        public static bool operator ==(ButtonSource a, ButtonSource b)
         {
             return a.Equals(b);
         }
 
-        public static bool operator !=(InputSource a, InputSource b)
+        public static bool operator !=(ButtonSource a, ButtonSource b)
         {
             return !(a == b);
         }

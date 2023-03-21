@@ -1,4 +1,4 @@
-﻿using Guppy.MonoGame.Enums;
+﻿using Guppy.Input.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

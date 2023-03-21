@@ -1,20 +1,19 @@
-﻿using Guppy.MonoGame.Structs;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame
+namespace Guppy.Input
 {
-    internal sealed class InputState
+    internal sealed class ButtonState
     {
-        public readonly IInput Input;
+        public readonly IButton Input;
         public bool Pressed;
-        public readonly InputSource Source;
+        public readonly ButtonSource Source;
 
-        public InputState(IInput input)
+        public ButtonState(IButton input)
         {
             this.Input = input;
             this.Pressed = false;

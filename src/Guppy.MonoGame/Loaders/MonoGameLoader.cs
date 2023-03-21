@@ -47,22 +47,6 @@ namespace Guppy.MonoGame.Loaders
                 (true, Toggle<ITerminalService>.Instance)
             });
 
-            services.ConfigureCollection(manager =>
-            {
-                manager.GetService<InputService>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IInputService>()
-                    .AddAlias<IGameComponent>();
-
-                manager.GetService<KeyboardProvider>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IInputProvider>();
-
-                manager.GetService<MouseProvider>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IInputProvider>();
-            });
-
             // Add descriptor for some primitive batch cameras
             var vertexTypes = typeof(Game).Assembly.GetTypes().Where(x => x.IsAssignableTo(typeof(IVertexType)) && x.IsValueType);
             foreach (Type vertexType in vertexTypes)

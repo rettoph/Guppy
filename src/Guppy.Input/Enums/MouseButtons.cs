@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Enums
+namespace Guppy.Input.Enums
 {
     public enum MouseButtons
     {

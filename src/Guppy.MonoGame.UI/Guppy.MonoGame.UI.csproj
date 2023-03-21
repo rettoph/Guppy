@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" />
     <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImPlot.NET\ImPlot.NET.csproj" />
+    <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\Guppy.MonoGame\Guppy.MonoGame.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>

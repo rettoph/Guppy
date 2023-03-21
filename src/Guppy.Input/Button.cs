@@ -1,7 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.MonoGame.Enums;
-using Guppy.MonoGame.Services;
-using Guppy.MonoGame.Structs;
+using Guppy.Input.Services;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -11,25 +9,25 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Guppy.MonoGame
+namespace Guppy.Input
 {
-    public sealed class Input<T> : IInput
+    internal sealed class Button<T> : IButton
         where T : IMessage
     {
-        private ButtonState _state;
+        private Microsoft.Xna.Framework.Input.ButtonState _state;
 
         public string Key { get; }
-        public InputSource DefaultSource { get; }
+        public ButtonSource DefaultSource { get; }
 
-        public InputSource Source { get; set; }
+        public ButtonSource Source { get; set; }
 
-        public ButtonState State => _state;
+        public Microsoft.Xna.Framework.Input.ButtonState State => _state;
 
         public readonly IReadOnlyDictionary<bool, T> Data;
 
-        public Input(
+        public Button(
             string key,
-            InputSource defaultSource,
+            ButtonSource defaultSource,
             (bool pressed, T data)[] data)
         {
             this.Key = key;

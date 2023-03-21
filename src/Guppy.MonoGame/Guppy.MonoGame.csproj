@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\MonoGame.Extended\src\cs\MonoGame.Extended.Entities\MonoGame.Extended.Entities.csproj" />
     <ProjectReference Include="..\Guppy.ECS\Guppy.ECS.csproj" />
+    <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>

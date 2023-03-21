@@ -42,6 +42,7 @@ namespace Guppy
             }
 
             return builder.ConfigureGame()
+                .ConfigureInput()
                 .AddServiceLoader(new MonoGameLoader(game, graphics, content, window))
                 .AddTag(nameof(ConfigureMonoGame));
         }

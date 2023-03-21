@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Input.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -7,16 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Providers
+namespace Guppy.Input.Providers
 {
-    internal sealed class KeyboardProvider : IInputProvider
+    internal sealed class KeyboardButtonProvider : IButtonProvider
     {
-        private InputState[] _keys = Array.Empty<InputState>();
+        private ButtonState[] _keys = Array.Empty<ButtonState>();
 
-        public void Clean(IEnumerable<IInput> inputs)
+        public void Clean(IEnumerable<IButton> buttons)
         {
-            _keys = inputs.Where(x => x.Source.Type == Enums.InputType.Keyboard)
-                .Select(x => new InputState(x))
+            _keys = buttons.Where(x => x.Source.Type == ButtonType.Keyboard)
+                .Select(x => new ButtonState(x))
                 .ToArray();
         }
 
