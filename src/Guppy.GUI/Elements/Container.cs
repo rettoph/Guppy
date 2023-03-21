@@ -69,7 +69,6 @@ namespace Guppy.GUI.Elements
             foreach(T child in _children)
             {
                 child.Clean(out var childSize);
-                child.Translate(translation);
 
                 translation.Y += childSize.Y;
                 size.Y += childSize.Y;

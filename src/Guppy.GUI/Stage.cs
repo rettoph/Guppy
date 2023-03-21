@@ -13,6 +13,9 @@ namespace Guppy.GUI
 {
     public class Stage : Container<Element>
     {
+        private static readonly Point PointX = new Point(1, 0);
+        private static readonly Point PointOne = new Point(1, 1);
+
         private readonly IStyleSheetProvider _styles;
         private readonly IScreen _screen;
 
@@ -58,7 +61,7 @@ namespace Guppy.GUI
         {
             this.PrimitiveBatch.Begin(_screen.Camera);
 
-            base.Draw(gameTime, new Point(1, 0));
+            base.Draw(gameTime, PointX);
 
             this.PrimitiveBatch.End();
         }
@@ -75,7 +78,7 @@ namespace Guppy.GUI
 
         protected override Point GetSizeConstraints()
         {
-            return _screen.Window.ClientBounds.Size - new Point(1, 1);
+            return _screen.Window.ClientBounds.Size - PointOne;
         }
     }
 }

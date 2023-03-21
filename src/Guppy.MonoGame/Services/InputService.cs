@@ -3,6 +3,7 @@ using Guppy.Common;
 using Guppy.Common.Implementations;
 using Guppy.MonoGame.Definitions;
 using Guppy.MonoGame.Enums;
+using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,87 +21,43 @@ namespace Guppy.MonoGame.Services
     internal sealed class InputService : SimpleGameComponent, IInputService
     {
         private readonly Dictionary<string, IInput> _inputs;
-        private readonly HashSet<IInput> _mouseInputs;
-        private readonly HashSet<IInput> _keyboardInputs;
+        private readonly IInputProvider[] _providers;
         private readonly IBus _bus;
 
-        public InputService(IBus bus, IEnumerable<IInputDefinition> definitions)
+        public InputService(
+            IBus bus,
+            IEnumerable<IInput> inputs,
+            ISorted<IInputProvider> providers)
         {
             _bus = bus;
-            _mouseInputs = new HashSet<IInput>();
-            _keyboardInputs = new HashSet<IInput>();
+            _inputs = inputs.ToDictionary(x => x.Key, x => x);
+            _providers = providers.ToArray();
 
-            _inputs = new Dictionary<string, IInput>(definitions.Count());
-
-            foreach (IInputDefinition definition in definitions)
+            foreach (var provider in _providers)
             {
-                var input = definition.BuildInput();
-                this.ConfigureInput(input);
-
-                _inputs.Add(input.Key, input);
+                provider.Clean(_inputs.Values);
             }
         }
 
-        private void ConfigureInput(IInput input)
+        public void Set(string key, InputSource source)
         {
-            input.OnSourceChanged += this.HandeInputSourceChanged;
+            _inputs[key].Source = source;
 
-            switch (input.Source.Type)
+            foreach(var provider in _providers)
             {
-                case InputType.Mouse:
-                    _mouseInputs.Add(input);
-                    break;
-                case InputType.Keyboard:
-                    _keyboardInputs.Add(input);
-                    break;
+                provider.Clean(_inputs.Values);
             }
         }
 
         public override void Update(GameTime gameTime)
         {
-            // TODO: Refactor such that input states can be passed by 
-            // some managing service
-            var kState = Keyboard.GetState();
-            var mState = Mouse.GetState();
-
-            foreach (IInput input in _inputs.Values)
+            foreach (var provider in _providers)
             {
-                if(input.Update(ref kState, ref mState, out IMessage? data))
+                foreach(IMessage data in provider.Update())
                 {
                     _bus.Enqueue(data);
                 }
             }
-        }
-
-        private void HandeInputSourceChanged(IInput input, InputSource old, InputSource value)
-        {
-            // The source type didnt change, so nothing needs to happen...
-            if (old.Type == value.Type)
-            {
-                return;
-            }
-
-            switch (value.Type)
-            {
-                case InputType.Mouse:
-                    _keyboardInputs.Remove(input);
-                    _mouseInputs.Add(input);
-                    break;
-                case InputType.Keyboard:
-                    _mouseInputs.Remove(input);
-                    _keyboardInputs.Add(input);
-                    break;
-            }
-        }
-
-        public IEnumerator<IInput> GetEnumerator()
-        {
-            return _inputs.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
     }
 }

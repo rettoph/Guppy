@@ -4,6 +4,7 @@ using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Primitives;
+using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
 using Guppy.Resources.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +44,7 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {
-                (ButtonState.Pressed, Toggle<ITerminalService>.Instance)
+                (true, Toggle<ITerminalService>.Instance)
             });
 
             services.ConfigureCollection(manager =>
@@ -52,6 +53,14 @@ namespace Guppy.MonoGame.Loaders
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<IInputService>()
                     .AddAlias<IGameComponent>();
+
+                manager.GetService<KeyboardProvider>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<IInputProvider>();
+
+                manager.GetService<MouseProvider>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<IInputProvider>();
             });
 
             // Add descriptor for some primitive batch cameras

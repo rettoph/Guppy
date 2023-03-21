@@ -22,12 +22,13 @@ namespace Guppy.GUI.Elements
         protected Stage stage;
         protected Element? parent;
         protected ElementState state;
+        protected Point position;
+        protected Rectangle bounds;
+        protected Rectangle content;
 
         public Selector Selector { get; }
         public ElementState State => this.state;
-
-        protected Rectangle bounds;
-        protected Rectangle content;
+        public Point Position => this.position;
 
         public Element(params string[] names)
         {
@@ -163,11 +164,6 @@ namespace Guppy.GUI.Elements
             }
 
             return result;
-        }
-
-        public virtual void Translate(Point position)
-        {
-            this.bounds.Location += position;
         }
     }
 }

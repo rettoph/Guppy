@@ -15,11 +15,7 @@ namespace Guppy.MonoGame
         string Key { get; }
         InputSource DefaultSource { get; }
         InputSource Source { get; set; }
-        ButtonState State { get; }
 
-        public event OnChangedEventDelegate<IInput, InputSource>? OnSourceChanged;
-        public event OnChangedEventDelegate<IInput, ButtonState>? OnStateChanged;
-
-        bool Update(ref KeyboardState kState, ref MouseState mState, [MaybeNullWhen(false)] out IMessage data);
+        bool Message(bool pressed, [MaybeNullWhen(false)] out IMessage message);
     }
 }

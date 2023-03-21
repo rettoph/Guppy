@@ -1,5 +1,4 @@
 ﻿using Guppy.Common;
-using Guppy.MonoGame.Structs;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Services
+namespace Guppy.MonoGame.Providers
 {
-    public interface IInputService : IGameComponent, IUpdateable
+    public interface IInputProvider
     {
-        void Set(string key, InputSource source);
+        IEnumerable<IMessage> Update();
+        void Clean(IEnumerable<IInput> inputs);
     }
 }

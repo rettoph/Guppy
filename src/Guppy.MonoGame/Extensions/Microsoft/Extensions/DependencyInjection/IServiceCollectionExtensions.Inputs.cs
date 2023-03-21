@@ -2,7 +2,6 @@
 using Guppy.Common;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Definitions;
-using Guppy.MonoGame.Definitions.Inputs;
 using Guppy.MonoGame.Structs;
 using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,21 +16,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static partial class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddInput<T>(this IServiceCollection services)
-            where T : class, IInputDefinition
-        {
-            return services.AddSingleton<IInputDefinition, T>();
-        }
-
-        public static IServiceCollection AddInput(this IServiceCollection services, Type definitionType)
-        {
-            return services.AddSingleton(typeof(IInputDefinition), definitionType);
-        }
-
-        public static IServiceCollection AddInput<TData>(this IServiceCollection services, string key, InputSource defaultSource, (ButtonState, TData)[] data)
+        public static IServiceCollection AddInput<TData>(this IServiceCollection services, string key, InputSource defaultSource, (bool, TData)[] data)
             where TData : IMessage
         {
-            return services.AddSingleton(typeof(IInputDefinition), new RuntimeInputDefinition<TData>(key, defaultSource, data));
+            return services.AddSingleton(typeof(IInput), new Input<TData>(key, defaultSource, data));
         }
     }
 }

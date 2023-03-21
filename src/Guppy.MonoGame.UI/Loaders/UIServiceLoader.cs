@@ -80,7 +80,7 @@ namespace Guppy.MonoGame.UI.Loaders
 
             services.AddInput(InputConstants.ToggleDebugMenu, Keys.F1, new[]
 {
-                (ButtonState.Pressed, Toggle<DebugMenuComponent>.Instance)
+                (true, Toggle<DebugMenuComponent>.Instance)
             });
 
             AddImGuiKeyEvent(services, InputConstants.UI_Tab, Keys.Tab, ImGuiKey.Tab);
@@ -124,8 +124,8 @@ namespace Guppy.MonoGame.UI.Loaders
                 defaultKey,
                 new[]
                 {
-                    (ButtonState.Pressed, new ImGuiKeyEvent(mapping, true)),
-                    (ButtonState.Released, new ImGuiKeyEvent(mapping, false))
+                    (true, new ImGuiKeyEvent(mapping, true)),
+                    (false, new ImGuiKeyEvent(mapping, false))
                 });
         }
 
@@ -136,8 +136,8 @@ namespace Guppy.MonoGame.UI.Loaders
                 defaultButton,
                 new[]
                 {
-                    (ButtonState.Pressed, new ImGuiMouseButtonEvent(mapping, true)),
-                    (ButtonState.Released, new ImGuiMouseButtonEvent(mapping, false))
+                    (true, new ImGuiMouseButtonEvent(mapping, true)),
+                    (false, new ImGuiMouseButtonEvent(mapping, false))
                 });
         }
     }
