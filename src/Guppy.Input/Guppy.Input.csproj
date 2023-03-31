@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Guppy.ECS\Guppy.ECS.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Messages\" />
+  </ItemGroup>
+
 </Project>

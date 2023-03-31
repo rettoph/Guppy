@@ -14,7 +14,8 @@ namespace Guppy.Input
         string Key { get; }
         ButtonSource DefaultSource { get; }
         ButtonSource Source { get; set; }
+        bool Pressed { get; }
 
-        bool Message(bool pressed, [MaybeNullWhen(false)] out IMessage message);
+        bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IMessage message);
     }
 }

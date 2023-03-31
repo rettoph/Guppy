@@ -12,13 +12,11 @@ namespace Guppy.Input.Providers
 {
     internal sealed class KeyboardButtonProvider : IButtonProvider
     {
-        private ButtonState[] _keys = Array.Empty<ButtonState>();
+        private IButton[] _keys = Array.Empty<IButton>();
 
         public void Clean(IEnumerable<IButton> buttons)
         {
-            _keys = buttons.Where(x => x.Source.Type == ButtonType.Keyboard)
-                .Select(x => new ButtonState(x))
-                .ToArray();
+            _keys = buttons.Where(x => x.Source.Type == ButtonType.Keyboard).ToArray();
         }
 
         public IEnumerable<IMessage> Update()
@@ -32,8 +30,7 @@ namespace Guppy.Input.Providers
                     continue;
                 }
 
-                key.Pressed = !key.Pressed;
-                if (key.Input.Message(key.Pressed, out var message))
+                if (key.SetPressed(!key.Pressed, out var message))
                 {
                     yield return message;
                 }

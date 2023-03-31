@@ -12,13 +12,11 @@ namespace Guppy.Input.Providers
 {
     internal sealed class MouseButtonProvider : IButtonProvider
     {
-        private ButtonState[] _buttons = Array.Empty<ButtonState>();
+        private IButton[] _buttons = Array.Empty<IButton>();
 
         public void Clean(IEnumerable<IButton> buttons)
         {
-            _buttons = buttons.Where(x => x.Source.Type == ButtonType.Mouse)
-                .Select(x => new ButtonState(x))
-                .ToArray();
+            _buttons = buttons.Where(x => x.Source.Type == ButtonType.Mouse).ToArray();
         }
 
         public IEnumerable<IMessage> Update()
@@ -32,8 +30,7 @@ namespace Guppy.Input.Providers
                     continue;
                 }
 
-                button.Pressed = !button.Pressed;
-                if (button.Input.Message(button.Pressed, out var message))
+                if (button.SetPressed(!button.Pressed, out var message))
                 {
                     yield return message;
                 }

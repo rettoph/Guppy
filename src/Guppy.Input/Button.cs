@@ -14,14 +14,13 @@ namespace Guppy.Input
     internal sealed class Button<T> : IButton
         where T : IMessage
     {
-        private Microsoft.Xna.Framework.Input.ButtonState _state;
-
         public string Key { get; }
+
         public ButtonSource DefaultSource { get; }
 
         public ButtonSource Source { get; set; }
 
-        public Microsoft.Xna.Framework.Input.ButtonState State => _state;
+        public bool Pressed { get; protected set; }
 
         public readonly IReadOnlyDictionary<bool, T> Data;
 
@@ -37,8 +36,10 @@ namespace Guppy.Input
             this.Source = defaultSource;
         }
 
-        public bool Message(bool pressed, [MaybeNullWhen(false)] out IMessage message)
+        public bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IMessage message)
         {
+            this.Pressed = pressed;
+
             if (this.Data.TryGetValue(pressed, out var data))
             {
                 message = data;
