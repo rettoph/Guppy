@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MonoGame.Extended.Entities.Systems;
+using Guppy.Input.Systems;
 
 namespace Guppy.Input.Loaders
 {
@@ -31,6 +32,10 @@ namespace Guppy.Input.Loaders
                 manager.GetService<MouseButtonProvider>()
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<IButtonProvider>();
+
+                manager.GetService<MouseEventPublishSystem>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<ISystem>();
             });
         }
     }
