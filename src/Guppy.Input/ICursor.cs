@@ -9,8 +9,7 @@ namespace Guppy.Input
 {
     public interface ICursor
     {
-        string Id { get; }
+        Guid Id { get; }
         Vector2 Position { get; }
-        Vector2 Delta { get; }
     }
 }

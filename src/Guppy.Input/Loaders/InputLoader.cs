@@ -36,6 +36,10 @@ namespace Guppy.Input.Loaders
                 manager.GetService<MouseEventPublishSystem>()
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<ISystem>();
+
+                manager.GetService<MouseCursor>()
+                    .SetLifetime(ServiceLifetime.Scoped)
+                    .AddAlias<ICursor>();
             });
         }
     }

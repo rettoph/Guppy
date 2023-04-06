@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,21 +15,21 @@ namespace Guppy.Input.Systems
     internal sealed class MouseEventPublishSystem : UpdateSystem
     {
         private readonly IBus _bus;
-        private MouseMove? _previous;
+        private readonly MouseCursor _cursor;
 
-        public MouseEventPublishSystem(IBus bus)
+        public MouseEventPublishSystem(MouseCursor cursor, IBus bus)
         {
             _bus = bus;
+            _cursor = cursor;
         }
 
         public override void Update(GameTime gameTime)
         {
             MouseState state = Mouse.GetState();
-            MouseMove move = new MouseMove(state.Position.ToVector2(), _previous);
-
-            if(move.Delta != Vector2.Zero)
+            
+            if(_cursor.MoveTo(state.Position.ToVector2(), out var movement))
             {
-                _bus.Enqueue(move);
+                _bus.Enqueue(movement);
             }
         }
     }
