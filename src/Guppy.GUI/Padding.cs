@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,12 @@ namespace Guppy.GUI
             this.Left = left;
         }
 
-        public void AddPadding(in Rectangle bounds, out Rectangle result)
+        public void AddPadding(in RectangleF bounds, out RectangleF result)
         {
-            int top = this.Top.Calculate(bounds.Height);
-            int right = this.Right.Calculate(bounds.Width);
-            int bottom = this.Bottom.Calculate(bounds.Height);
-            int left = this.Left.Calculate(bounds.Width);
+            float top = this.Top.Calculate(bounds.Height);
+            float right = this.Right.Calculate(bounds.Width);
+            float bottom = this.Bottom.Calculate(bounds.Height);
+            float left = this.Left.Calculate(bounds.Width);
 
             result.Y = bounds.Y + top;
             result.X = bounds.X + left;
@@ -35,17 +36,17 @@ namespace Guppy.GUI
             result.Width = bounds.Width - left - right;
         }
 
-        public void AddPadding(ref Rectangle bounds)
+        public void AddPadding(ref RectangleF bounds)
         {
             this.AddPadding(in bounds, out bounds);
         }
 
-        public void RemovePadding(in Rectangle bounds, out Rectangle result)
+        public void RemovePadding(in RectangleF bounds, out RectangleF result)
         {
-            int top = this.Top.Calculate(bounds.Height);
-            int right = this.Right.Calculate(bounds.Width);
-            int bottom = this.Bottom.Calculate(bounds.Height);
-            int left = this.Left.Calculate(bounds.Width);
+            float top = this.Top.Calculate(bounds.Height);
+            float right = this.Right.Calculate(bounds.Width);
+            float bottom = this.Bottom.Calculate(bounds.Height);
+            float left = this.Left.Calculate(bounds.Width);
 
             result.Y = bounds.Y - top;
             result.X = bounds.X - left;
@@ -53,17 +54,17 @@ namespace Guppy.GUI
             result.Width = bounds.Width + left + right;
         }
 
-        public void RemovePadding(ref Rectangle bounds)
+        public void RemovePadding(ref RectangleF bounds)
         {
             this.RemovePadding(in bounds, out bounds);
         }
 
-        public int Horizontal(int parent)
+        public float Horizontal(float parent)
         {
             return this.Left.Calculate(parent) + this.Right.Calculate(parent);
         }
 
-        public int Vertical(int parent)
+        public float Vertical(float parent)
         {
             return this.Top.Calculate(parent) + this.Bottom.Calculate(parent);
         }

@@ -2,6 +2,7 @@
 using Guppy.MonoGame.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,10 @@ namespace Guppy.GUI.Elements
     {
         private static PrimitiveShape _shape = new PrimitiveShape(new Vector3[5]);
 
-        private Rectangle _outerBounds;
-        private Rectangle _innerBounds;
-        private Rectangle _contentBounds;
-        private Point _contentAlignment;
+        private RectangleF _outerBounds;
+        private RectangleF _innerBounds;
+        private RectangleF _contentBounds;
+        private Vector2 _contentAlignment;
         private IStyle<Unit> _width = null!;
         private IStyle<Unit> _height = null!;
         private IStyle<Padding> _padding = null!;
@@ -29,9 +30,9 @@ namespace Guppy.GUI.Elements
         public Selector Selector { get; }
         public ElementState State => this.state;
 
-        public Rectangle OuterBounds => _outerBounds;
-        public Rectangle InnerBounds => _innerBounds;
-        public Rectangle ContentBounds => _contentBounds;
+        public RectangleF OuterBounds => _outerBounds;
+        public RectangleF InnerBounds => _innerBounds;
+        public RectangleF ContentBounds => _contentBounds;
 
         public Element(params string[] names)
         {
@@ -61,14 +62,14 @@ namespace Guppy.GUI.Elements
         {
         }
 
-        protected internal virtual void Draw(GameTime gameTime, Point position)
+        protected internal virtual void Draw(GameTime gameTime, Vector2 position)
         {
             this.DrawOuter(gameTime, position);
-            this.DrawInner(gameTime, position + _innerBounds.Location);
+            this.DrawInner(gameTime, position + _innerBounds.Position);
             this.DrawContent(gameTime, position + _contentAlignment);
         }
 
-        protected virtual void DrawOuter(GameTime gameTime, Point position)
+        protected virtual void DrawOuter(GameTime gameTime, Vector2 position)
         {
             _shape.Vertices[0].X = position.X;
             _shape.Vertices[0].Y = position.Y;
@@ -88,7 +89,7 @@ namespace Guppy.GUI.Elements
             this.stage.PrimitiveBatch.Trace(_shape, Color.Green, Matrix.Identity);
         }
 
-        protected virtual void DrawInner(GameTime gameTime, Point position)
+        protected virtual void DrawInner(GameTime gameTime, Vector2 position)
         {
             _shape.Vertices[0].X = position.X;
             _shape.Vertices[0].Y = position.Y;
@@ -108,7 +109,7 @@ namespace Guppy.GUI.Elements
             this.stage.PrimitiveBatch.Trace(_shape, Color.Red, Matrix.Identity);
         }
 
-        protected virtual void DrawContent(GameTime gameTime, Point position)
+        protected virtual void DrawContent(GameTime gameTime, Vector2 position)
         {
             _shape.Vertices[0].X = position.X - 1;
             _shape.Vertices[0].Y = position.Y - 1;
@@ -130,8 +131,8 @@ namespace Guppy.GUI.Elements
 
         protected internal virtual void Clean()
         {
-            Rectangle outerConstraints = this.GetConstraints();
-            Rectangle innerConstraints = outerConstraints;
+            RectangleF outerConstraints = this.GetConstraints();
+            RectangleF innerConstraints = outerConstraints;
             if (_padding.TryGetValue(out var padding))
             {
                 padding.AddPadding(in outerConstraints, out innerConstraints);
@@ -144,7 +145,7 @@ namespace Guppy.GUI.Elements
             this.CleanContentAlignment(in _innerBounds, in _contentBounds, out _contentAlignment);
         }
 
-        protected virtual Rectangle GetConstraints()
+        protected virtual RectangleF GetConstraints()
         {
             if (this.parent is null)
             {
@@ -154,12 +155,12 @@ namespace Guppy.GUI.Elements
             return this.parent.InnerBounds.Fit(_width, _height);
         }
 
-        protected virtual void CleanOuterBounds(in Rectangle constraints, out Rectangle outerBounds)
+        protected virtual void CleanOuterBounds(in RectangleF constraints, out RectangleF outerBounds)
         {
             outerBounds = constraints;
         }
 
-        protected virtual void CleanInnerBounds(in Rectangle constraints, in Rectangle contentBounds, out Rectangle innerBounds)
+        protected virtual void CleanInnerBounds(in RectangleF constraints, in RectangleF contentBounds, out RectangleF innerBounds)
         {
             innerBounds = constraints;
 
@@ -174,22 +175,22 @@ namespace Guppy.GUI.Elements
             }
         }
 
-        protected virtual void CleanContentBounds(in Rectangle constraints, out Rectangle contentBounds)
+        protected virtual void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
         {
             contentBounds = new Rectangle();
         }
 
-        protected virtual void CleanContentAlignment(in Rectangle innerBounds, in Rectangle contentBounds, out Point contentAlignment)
+        protected virtual void CleanContentAlignment(in RectangleF innerBounds, in RectangleF contentBounds, out Vector2 contentAlignment)
         {
-            int x = innerBounds.Width - contentBounds.Width;
+            float x = innerBounds.Width - contentBounds.Width;
             x /= 2;
-            x += innerBounds.Location.X;
+            x += innerBounds.Position.X;
 
-            int y = innerBounds.Height - contentBounds.Height;
+            float y = innerBounds.Height - contentBounds.Height;
             y /= 2;
-            y += innerBounds.Location.Y;
+            y += innerBounds.Position.Y;
 
-            contentAlignment = new Point(x, y);
+            contentAlignment = new Vector2(x, y);
         }
     }
 }

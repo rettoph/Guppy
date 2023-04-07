@@ -17,7 +17,7 @@ namespace Guppy.GUI.Units
             this.Addend2 = addend2;
         }
 
-        public override int Calculate(int parent)
+        public override float Calculate(float parent)
         {
             return this.Addend1.Calculate(parent) + this.Addend2.Calculate(parent);
         }

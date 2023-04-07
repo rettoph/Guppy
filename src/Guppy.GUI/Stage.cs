@@ -3,6 +3,7 @@ using Guppy.GUI.Providers;
 using Guppy.MonoGame.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,6 @@ namespace Guppy.GUI
 {
     public class Stage : Container<Element>
     {
-        private static readonly Point PointX = new Point(1, 0);
-        private static readonly Point PointOne = new Point(1, 1);
-
         private readonly IStyleSheetProvider _styles;
         private readonly IScreen _screen;
 
@@ -64,11 +62,13 @@ namespace Guppy.GUI
 
         public void Draw(GameTime gameTime)
         {
+            this.SpriteBatch.Begin();
             this.PrimitiveBatch.Begin(_screen.Camera);
 
-            base.Draw(gameTime, PointX);
+            base.Draw(gameTime, Vector2.UnitX);
 
             this.PrimitiveBatch.End();
+            this.SpriteBatch.End();
         }
 
         public new void Add(Element element)
@@ -81,9 +81,9 @@ namespace Guppy.GUI
             base.Remove(element);
         }
 
-        protected override Rectangle GetConstraints()
+        protected override RectangleF GetConstraints()
         {
-            return new Rectangle()
+            return new RectangleF()
             {
                 X = 0,
                 Y = 0,

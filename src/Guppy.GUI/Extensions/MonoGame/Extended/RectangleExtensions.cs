@@ -1,24 +1,25 @@
 ﻿using Guppy.GUI;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Xna.Framework
+namespace MonoGame.Extended
 {
-    public static class RectangleExtensions
+    public static class RectangleFExtensions
     {
-        public static Rectangle SetLocation(this Rectangle rectangle, Point location)
+        public static RectangleF SetLocation(this RectangleF rectangle, Vector2 position)
         {
-            rectangle.Location = location;
+            rectangle.Position = position;
 
             return rectangle;
         }
 
-        public static Rectangle Fit(this Rectangle rectangle, IStyle<Unit> width, IStyle<Unit> height)
+        public static RectangleF Fit(this RectangleF rectangle, IStyle<Unit> width, IStyle<Unit> height)
         {
-            if(width.TryGetValue(out var w))
+            if (width.TryGetValue(out var w))
             {
                 rectangle.Width = w.Calculate(rectangle.Width);
             }

@@ -15,9 +15,9 @@ namespace Guppy.GUI.Units
             this.Ratio = ratio;
         }
 
-        public override int Calculate(int parent)
+        public override float Calculate(float parent)
         {
-            return (int)(this.Ratio * parent);
+            return this.Ratio * parent;
         }
 
         public override Unit Inverse()

@@ -9,7 +9,7 @@ namespace Guppy.GUI
 {
     public abstract class Unit
     {
-        public abstract int Calculate(int parent);
+        public abstract float Calculate(float parent);
         public abstract Unit Inverse();
 
         public static Unit Ratio(float ratio)

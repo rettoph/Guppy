@@ -23,9 +23,15 @@ namespace Guppy.GUI.Elements
             _color = this.stage.StyleSheet.Get<Color>(Property.Color, this);
         }
 
-        protected override void DrawContent(GameTime gameTime, Point position)
+        protected override void DrawContent(GameTime gameTime, Vector2 position)
         {
             base.DrawContent(gameTime, position);
+
+            this.stage.SpriteBatch.DrawString(
+                spriteFont: _font.GetValue(this.state), 
+                text: this.Text, 
+                position: position, 
+                color: _color.GetValue(this.state));
         }
     }
 }

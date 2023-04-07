@@ -15,7 +15,7 @@ namespace Guppy.GUI.Units
             Pixels = pixels;
         }
 
-        public override int Calculate(int parent)
+        public override float Calculate(float parent)
         {
             return this.Pixels;
         }

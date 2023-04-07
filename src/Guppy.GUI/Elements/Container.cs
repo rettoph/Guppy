@@ -41,7 +41,7 @@ namespace Guppy.GUI.Elements
             this.Clean();
         }
 
-        protected override void DrawContent(GameTime gameTime, Point position)
+        protected override void DrawContent(GameTime gameTime, Vector2 position)
         {
             base.DrawContent(gameTime, position);
 
