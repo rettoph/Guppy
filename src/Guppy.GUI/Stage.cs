@@ -40,14 +40,14 @@ namespace Guppy.GUI
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
         {
-            this.Clean(out _);
+            this.Clean();
         }
 
         public void Initialize(IStyleSheet styleSheet)
         {
             this.StyleSheet = styleSheet;
             this.Initialize(this, null);
-            this.Clean(out _);
+            this.Clean();
         }
 
         public void Initialize(string styleSheetName)
@@ -55,6 +55,11 @@ namespace Guppy.GUI
             var styles = _styles.Get(styleSheetName);
 
             this.Initialize(styles);
+        }
+
+        public new void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime)
@@ -76,9 +81,15 @@ namespace Guppy.GUI
             base.Remove(element);
         }
 
-        protected override Point GetSizeConstraints()
+        protected override Rectangle GetConstraints()
         {
-            return _screen.Window.ClientBounds.Size - PointOne;
+            return new Rectangle()
+            {
+                X = 0,
+                Y = 0,
+                Width = _screen.Window.ClientBounds.Width - 1,
+                Height = _screen.Window.ClientBounds.Height - 1,
+            };
         }
     }
 }

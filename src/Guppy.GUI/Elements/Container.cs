@@ -27,7 +27,7 @@ namespace Guppy.GUI.Elements
             _children.Add(child);
 
             child.Initialize(this.stage, this);
-            this.Clean(out _);
+            this.Clean();
         }
 
         protected virtual void Remove(T child)
@@ -38,12 +38,12 @@ namespace Guppy.GUI.Elements
             }
 
             child.Uninitialize();
-            this.Clean(out _);
+            this.Clean();
         }
 
-        protected override void InnerDraw(GameTime gameTime, Point position)
+        protected override void DrawContent(GameTime gameTime, Point position)
         {
-            base.InnerDraw(gameTime, position);
+            base.DrawContent(gameTime, position);
 
             foreach (T child in _children)
             {
@@ -51,7 +51,7 @@ namespace Guppy.GUI.Elements
             }
         }
 
-        public override void Update(GameTime gameTime)
+        protected internal override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
@@ -59,23 +59,6 @@ namespace Guppy.GUI.Elements
             {
                 child.Update(gameTime);
             }
-        }
-
-        protected override Point CleanContentSize(Point constraints)
-        {
-            Point size = Point.Zero;
-            Point translation = Point.Zero;
-
-            foreach(T child in _children)
-            {
-                child.Clean(out var childSize);
-
-                translation.Y += childSize.Y;
-                size.Y += childSize.Y;
-                size.X = Math.Max(childSize.X, size.X);
-            }
-
-            return size;
         }
     }
 }

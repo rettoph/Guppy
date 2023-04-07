@@ -57,5 +57,15 @@ namespace Guppy.GUI
         {
             this.RemovePadding(in bounds, out bounds);
         }
+
+        public int Horizontal(int parent)
+        {
+            return this.Left.Calculate(parent) + this.Right.Calculate(parent);
+        }
+
+        public int Vertical(int parent)
+        {
+            return this.Top.Calculate(parent) + this.Bottom.Calculate(parent);
+        }
     }
 }

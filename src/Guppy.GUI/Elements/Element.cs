@@ -14,6 +14,10 @@ namespace Guppy.GUI.Elements
     {
         private static PrimitiveShape _shape = new PrimitiveShape(new Vector3[5]);
 
+        private Rectangle _outerBounds;
+        private Rectangle _innerBounds;
+        private Rectangle _contentBounds;
+        private Point _contentAlignment;
         private IStyle<bool> _inline;
         private IStyle<Unit> _width;
         private IStyle<Unit> _height;
@@ -22,13 +26,13 @@ namespace Guppy.GUI.Elements
         protected Stage stage;
         protected Element? parent;
         protected ElementState state;
-        protected Point position;
-        protected Rectangle bounds;
-        protected Rectangle content;
 
         public Selector Selector { get; }
         public ElementState State => this.state;
-        public Point Position => this.position;
+
+        public Rectangle OuterBounds => _outerBounds;
+        public Rectangle InnerBounds => _innerBounds;
+        public Rectangle ContentBounds => _contentBounds;
 
         public Element(params string[] names)
         {
@@ -55,115 +59,139 @@ namespace Guppy.GUI.Elements
             this.stage = null!;
         }
 
-        public virtual void Update(GameTime gameTime)
+        protected internal virtual void Update(GameTime gameTime)
         {
         }
 
-        public virtual void Draw(GameTime gameTime, Point position)
+        protected internal virtual void Draw(GameTime gameTime, Point position)
         {
-            this.OuterDraw(gameTime, position + this.bounds.Location);
+            this.DrawOuter(gameTime, position);
+            this.DrawInner(gameTime, position + _innerBounds.Location);
+            this.DrawContent(gameTime, position + _contentAlignment);
         }
 
-        protected virtual void OuterDraw(GameTime gameTime, Point position)
+        protected virtual void DrawOuter(GameTime gameTime, Point position)
         {
             _shape.Vertices[0].X = position.X;
             _shape.Vertices[0].Y = position.Y;
 
-            _shape.Vertices[1].X = position.X + this.bounds.Width;
+            _shape.Vertices[1].X = position.X + _outerBounds.Width;
             _shape.Vertices[1].Y = position.Y;
 
-            _shape.Vertices[2].X = position.X + this.bounds.Width;
-            _shape.Vertices[2].Y = position.Y + this.bounds.Height;
+            _shape.Vertices[2].X = position.X + _outerBounds.Width;
+            _shape.Vertices[2].Y = position.Y + _outerBounds.Height;
 
             _shape.Vertices[3].X = position.X;
-            _shape.Vertices[3].Y = position.Y + this.bounds.Height;
+            _shape.Vertices[3].Y = position.Y + _outerBounds.Height;
+
+            _shape.Vertices[4].X = position.X;
+            _shape.Vertices[4].Y = position.Y;
+
+            this.stage.PrimitiveBatch.Trace(_shape, Color.Green, Matrix.Identity);
+        }
+
+        protected virtual void DrawInner(GameTime gameTime, Point position)
+        {
+            _shape.Vertices[0].X = position.X;
+            _shape.Vertices[0].Y = position.Y;
+
+            _shape.Vertices[1].X = position.X + _innerBounds.Width;
+            _shape.Vertices[1].Y = position.Y;
+
+            _shape.Vertices[2].X = position.X + _innerBounds.Width;
+            _shape.Vertices[2].Y = position.Y + _innerBounds.Height;
+
+            _shape.Vertices[3].X = position.X;
+            _shape.Vertices[3].Y = position.Y + _innerBounds.Height;
 
             _shape.Vertices[4].X = position.X;
             _shape.Vertices[4].Y = position.Y;
 
             this.stage.PrimitiveBatch.Trace(_shape, Color.Red, Matrix.Identity);
-
-            this.InnerDraw(gameTime, position + this.content.Location);
         }
 
-        protected virtual void InnerDraw(GameTime gameTime, Point position)
+        protected virtual void DrawContent(GameTime gameTime, Point position)
         {
-            _shape.Vertices[0].X = position.X;
-            _shape.Vertices[0].Y = position.Y;
+            _shape.Vertices[0].X = position.X - 1;
+            _shape.Vertices[0].Y = position.Y - 1;
 
-            _shape.Vertices[1].X = position.X + this.content.Width;
-            _shape.Vertices[1].Y = position.Y;
+            _shape.Vertices[1].X = position.X + _contentBounds.Width + 1;
+            _shape.Vertices[1].Y = position.Y - 1;
 
-            _shape.Vertices[2].X = position.X + this.content.Width;
-            _shape.Vertices[2].Y = position.Y + this.content.Height;
+            _shape.Vertices[2].X = position.X + _contentBounds.Width + 1;
+            _shape.Vertices[2].Y = position.Y + _contentBounds.Height + 1;
 
-            _shape.Vertices[3].X = position.X;
-            _shape.Vertices[3].Y = position.Y + this.content.Height;
+            _shape.Vertices[3].X = position.X - 1;
+            _shape.Vertices[3].Y = position.Y + _contentBounds.Height + 1;
 
-            _shape.Vertices[4].X = position.X;
-            _shape.Vertices[4].Y = position.Y;
+            _shape.Vertices[4].X = position.X - 1;
+            _shape.Vertices[4].Y = position.Y - 1;
 
             this.stage.PrimitiveBatch.Trace(_shape, Color.Blue, Matrix.Identity);
         }
 
-        protected internal virtual void Clean(out Point size)
+        protected internal virtual void Clean()
         {
-            Point constraints = this.GetSizeConstraints();
+            Rectangle outerConstraints = this.GetConstraints();
+            Rectangle innerConstraints = outerConstraints;
+            if (_padding.TryGetValue(out var padding))
+            {
+                padding.AddPadding(in outerConstraints, out innerConstraints);
+            }
 
-            // Reset positions
-            this.bounds.Location = Point.Zero;
-            this.content.Location = Point.Zero;
 
-            // Set the content constraints
-            this.content.Width = constraints.X;
-            this.content.Height = constraints.Y;
-            _padding.Value?.AddPadding(ref this.content);
-
-            // Snap to fit to the calculated size
-            this.content.Size = this.CleanContentSize(this.content.Size);
-            this.bounds.Size = this.CleanBoundsSize(constraints, this.content.Size);
-
-            size = this.bounds.Size;
+            this.CleanContentBounds(in innerConstraints, out _contentBounds);
+            this.CleanInnerBounds(in innerConstraints, in _contentBounds, out _innerBounds);
+            this.CleanOuterBounds(in outerConstraints, out _outerBounds);
+            this.CleanContentAlignment(in _innerBounds, in _contentBounds, out _contentAlignment);
         }
 
-        protected virtual Point GetSizeConstraints()
+        protected virtual Rectangle GetConstraints()
         {
-            if(this.parent is null)
+            if (this.parent is null)
             {
                 throw new NotImplementedException();
             }
 
-            return this.parent.content.Size;
+            return this.parent.InnerBounds.Fit(_width, _height);
         }
 
-        protected virtual Point CleanContentSize(Point constraints)
+        protected virtual void CleanOuterBounds(in Rectangle constraints, out Rectangle outerBounds)
         {
-            return Point.Zero;
+            outerBounds = constraints;
         }
 
-        protected virtual Point CleanBoundsSize(Point constraints, Point content)
+        protected virtual void CleanInnerBounds(in Rectangle constraints, in Rectangle contentBounds, out Rectangle innerBounds)
         {
-            Point result;
+            innerBounds = constraints;
 
-            if(_width.TryGetValue(out var width))
+            if (_width.Value is null)
             {
-                result.X = width.Calculate(constraints.X);
-            }
-            else
-            {
-                result.X = Math.Min(constraints.X, content.X);
+                innerBounds.Width = Math.Min(constraints.Width, contentBounds.Width);
             }
 
-            if (_height.TryGetValue(out var height))
+            if (_height.Value is null)
             {
-                result.Y = height.Calculate(constraints.Y);
+                innerBounds.Height = Math.Min(constraints.Height, contentBounds.Height);
             }
-            else
-            {
-                result.Y = Math.Min(constraints.Y, content.Y);
-            }
+        }
 
-            return result;
+        protected virtual void CleanContentBounds(in Rectangle constraints, out Rectangle contentBounds)
+        {
+            contentBounds = new Rectangle();
+        }
+
+        protected virtual void CleanContentAlignment(in Rectangle innerBounds, in Rectangle contentBounds, out Point contentAlignment)
+        {
+            int x = innerBounds.Width - contentBounds.Width;
+            x /= 2;
+            x += innerBounds.Location.X;
+
+            int y = innerBounds.Height - contentBounds.Height;
+            y /= 2;
+            y += innerBounds.Location.Y;
+
+            contentAlignment = new Point(x, y);
         }
     }
 }
