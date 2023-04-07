@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
+using MonoGame.Extended.Timers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -59,6 +61,22 @@ namespace Guppy.GUI.Elements
             {
                 child.Update(gameTime);
             }
+        }
+
+        protected override void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
+        {
+            base.CleanContentBounds(constraints, out contentBounds);
+            Vector2 size = Vector2.Zero;
+
+            foreach (T child in _children)
+            {
+                child.Clean();
+                size.X += child.OuterBounds.Width;
+                size.Y += child.OuterBounds.Height;
+            }
+
+            contentBounds.Width = size.X;
+            contentBounds.Height = size.Y;
         }
     }
 }

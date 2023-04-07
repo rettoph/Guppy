@@ -66,7 +66,17 @@ namespace Guppy.GUI.Elements
         {
             this.DrawOuter(gameTime, position);
             this.DrawInner(gameTime, position + _innerBounds.Position);
+
+            this.stage.Screen.Graphics.PushScissorRectangle(new Rectangle()
+            {
+                X = (int)(position.X + _innerBounds.X),
+                Y = (int)(position.Y + _innerBounds.Y),
+                Width = (int)_innerBounds.Width,
+                Height = (int)_innerBounds.Height
+            });
+
             this.DrawContent(gameTime, position + _contentAlignment);
+            this.stage.Screen.Graphics.PopScissorRectangle();
         }
 
         protected virtual void DrawOuter(GameTime gameTime, Vector2 position)
@@ -138,6 +148,8 @@ namespace Guppy.GUI.Elements
                 padding.AddPadding(in outerConstraints, out innerConstraints);
             }
 
+            _outerBounds = outerConstraints;
+            _innerBounds = innerConstraints;
 
             this.CleanContentBounds(in innerConstraints, out _contentBounds);
             this.CleanInnerBounds(in innerConstraints, in _contentBounds, out _innerBounds);
@@ -152,7 +164,7 @@ namespace Guppy.GUI.Elements
                 throw new NotImplementedException();
             }
 
-            return this.parent.InnerBounds.Fit(_width, _height);
+            return this.parent.InnerBounds.Fit(_width, _height).SetPosition(Vector2.Zero);
         }
 
         protected virtual void CleanOuterBounds(in RectangleF constraints, out RectangleF outerBounds)
@@ -177,7 +189,7 @@ namespace Guppy.GUI.Elements
 
         protected virtual void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
         {
-            contentBounds = new Rectangle();
+            contentBounds = new RectangleF();
         }
 
         protected virtual void CleanContentAlignment(in RectangleF innerBounds, in RectangleF contentBounds, out Vector2 contentAlignment)

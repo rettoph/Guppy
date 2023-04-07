@@ -10,7 +10,7 @@ namespace MonoGame.Extended
 {
     public static class RectangleFExtensions
     {
-        public static RectangleF SetLocation(this RectangleF rectangle, Vector2 position)
+        public static RectangleF SetPosition(this RectangleF rectangle, Vector2 position)
         {
             rectangle.Position = position;
 

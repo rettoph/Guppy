@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,25 @@ namespace Guppy.GUI.Elements
                 text: this.Text, 
                 position: position, 
                 color: _color.GetValue(this.state));
+        }
+
+        protected override void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
+        {
+            base.CleanContentBounds(constraints, out contentBounds);
+
+            if(string.IsNullOrEmpty(this.Text))
+            {
+                return;
+            }
+
+            if(!_font.TryGetValue(this.state, out var font))
+            {
+                return;
+            }
+
+            Vector2 textSize = font.MeasureString(this.Text);
+            contentBounds.Width = textSize.X;
+            contentBounds.Height = textSize.Y;
         }
     }
 }

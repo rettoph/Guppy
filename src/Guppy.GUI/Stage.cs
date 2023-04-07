@@ -15,11 +15,11 @@ namespace Guppy.GUI
     public class Stage : Container<Element>
     {
         private readonly IStyleSheetProvider _styles;
-        private readonly IScreen _screen;
-
+        private readonly RasterizerState _raster;
         public IStyleSheet StyleSheet { get; private set; }
         public readonly SpriteBatch SpriteBatch;
         public readonly PrimitiveBatch<VertexPositionColor> PrimitiveBatch;
+        public readonly IScreen Screen;
 
         public Stage(
             GraphicsDevice graphics,
@@ -27,13 +27,18 @@ namespace Guppy.GUI
             IStyleSheetProvider styles)
         {
             _styles = styles;
-            _screen = screen;
+            _raster = new RasterizerState()
+            {
+                MultiSampleAntiAlias = true,
+                ScissorTestEnable = true,
+            };
 
             this.StyleSheet = null!;
             this.SpriteBatch = new SpriteBatch(graphics);
             this.PrimitiveBatch = new PrimitiveBatch<VertexPositionColor>(graphics);
+            this.Screen = screen;
 
-            _screen.Window.ClientSizeChanged += this.HandleClientSizeChanged;
+            this.Screen.Window.ClientSizeChanged += this.HandleClientSizeChanged;
         }
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
@@ -62,8 +67,13 @@ namespace Guppy.GUI
 
         public void Draw(GameTime gameTime)
         {
-            this.SpriteBatch.Begin();
-            this.PrimitiveBatch.Begin(_screen.Camera);
+            this.Screen.Graphics.ScissorRectangle = this.Screen.Graphics.Viewport.Bounds;
+
+            this.SpriteBatch.Begin(
+                sortMode: SpriteSortMode.Immediate,
+                rasterizerState: _raster);
+
+            this.PrimitiveBatch.Begin(this.Screen.Camera);
 
             base.Draw(gameTime, Vector2.UnitX);
 
@@ -87,8 +97,8 @@ namespace Guppy.GUI
             {
                 X = 0,
                 Y = 0,
-                Width = _screen.Window.ClientBounds.Width - 1,
-                Height = _screen.Window.ClientBounds.Height - 1,
+                Width = this.Screen.Window.ClientBounds.Width - 1,
+                Height = this.Screen.Window.ClientBounds.Height - 1,
             };
         }
     }
