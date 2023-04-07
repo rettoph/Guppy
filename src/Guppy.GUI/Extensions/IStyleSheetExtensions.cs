@@ -12,5 +12,10 @@ namespace Guppy.GUI
         {
             return styleSheet.Set<T>(property, selector, ElementState.None, value, priority);
         }
+
+        public static IStyleSheet Set<T>(this IStyleSheet styleSheet, Property<T> property, Selector selector, string resource, int priority = 0)
+        {
+            return styleSheet.Set<T>(property, selector, ElementState.None, resource, priority);
+        }
     }
 }

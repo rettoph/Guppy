@@ -1,8 +1,11 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Elements;
 using Guppy.GUI.Providers;
+using Guppy.Resources;
+using Guppy.Resources.Providers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,7 +15,13 @@ namespace Guppy.GUI
 {
     internal sealed partial class StyleSheet : IStyleSheet
     {
-        private Dictionary<(Property, Selector), IStyle> _cache = new();
+        private readonly IResourceProvider _resources;
+        private readonly Dictionary<(Property, Selector), IStyle> _cache = new();
+
+        public StyleSheet(IResourceProvider resources)
+        {
+            _resources = resources;
+        }
 
         public IStyle<T> Get<T>(Property<T> property, Element element)
         {
@@ -34,6 +43,12 @@ namespace Guppy.GUI
             _values.Add(priority, new StyleValue(property, selector, state, value));
 
             return this;
+        }
+
+        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, string resource, int priority = 0)
+        {
+            T value = _resources.Get<T>(resource).Value;
+            return this.Set<T>(property, selector, state, value, priority);
         }
     }
 }

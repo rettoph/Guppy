@@ -23,7 +23,12 @@ namespace Guppy.MonoGame.Resources
             var content = services.GetRequiredService<ContentManager>();
             var fullPath = Path.Combine(path, this.File);
 
+            string root = content.RootDirectory;
+            content.RootDirectory = "";
+
             this.Value = content.Load<T>(fullPath);
+
+            content.RootDirectory = root;
         }
 
         public override string GetJson()

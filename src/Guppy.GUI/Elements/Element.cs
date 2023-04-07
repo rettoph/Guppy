@@ -18,10 +18,9 @@ namespace Guppy.GUI.Elements
         private Rectangle _innerBounds;
         private Rectangle _contentBounds;
         private Point _contentAlignment;
-        private IStyle<bool> _inline;
-        private IStyle<Unit> _width;
-        private IStyle<Unit> _height;
-        private IStyle<Padding> _padding;
+        private IStyle<Unit> _width = null!;
+        private IStyle<Unit> _height = null!;
+        private IStyle<Padding> _padding = null!;
 
         protected Stage stage;
         protected Element? parent;
@@ -47,7 +46,6 @@ namespace Guppy.GUI.Elements
             this.stage = stage;
             this.parent = parent;
 
-            _inline = this.stage.StyleSheet.Get<bool>(Property.Inline, this);
             _padding = this.stage.StyleSheet.Get<Padding>(Property.Padding, this);
             _width = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
             _height = this.stage.StyleSheet.Get<Unit>(Property.Width, this);

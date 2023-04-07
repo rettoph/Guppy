@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Loaders;
+using Guppy.Resources.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Guppy.GUI.Providers
 {
     internal sealed class StyleSheetProvider : IStyleSheetProvider
     {
-        private Dictionary<string, IStyleSheet> _sheets = new();
+        private readonly IResourceProvider _resources;
+        private readonly Dictionary<string, IStyleSheet> _sheets = new();
 
-        public StyleSheetProvider(ISorted<IStyleSheetLoader> loaders)
+        public StyleSheetProvider(IResourceProvider resources, ISorted<IStyleSheetLoader> loaders)
         {
+            _resources = resources;
             foreach(var loader in loaders)
             {
                 loader.Load(this);
@@ -24,7 +27,7 @@ namespace Guppy.GUI.Providers
         {
             if(!_sheets.TryGetValue(name, out var sheet))
             {
-                sheet = new StyleSheet();
+                sheet = new StyleSheet(_resources);
                 _sheets.Add(name, sheet);
             }
 
