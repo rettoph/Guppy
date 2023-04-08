@@ -9,7 +9,8 @@ namespace Guppy.Input.Providers
 {
     public interface ICursorProvider
     {
-        void Initialize(IList<ICursor> cursors);
-        IEnumerable<IMessage> Update();
+        ICursor Get(Guid id);
+        void Add(ICursor cursor);
+        IEnumerable<ICursor> All();
     }
 }

@@ -61,17 +61,7 @@ namespace Guppy.GUI.Elements
 
             foreach (T child in _children)
             {
-                child.Draw(gameTime, position);
-            }
-        }
-
-        protected internal override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            foreach (T child in _children)
-            {
-                child.Update(gameTime);
+                child.TryDraw(gameTime, position);
             }
         }
 

@@ -66,13 +66,41 @@ namespace Guppy.GUI.Elements
             this.stage = null!;
         }
 
-        protected internal virtual void Update(GameTime gameTime)
+        protected virtual void CleanState(GameTime gameTime, Vector2 position)
         {
+            bool wasHovered = this.state.HasFlag(ElementState.Hovered);
+            bool isHovered = position.X <= this.stage.Mouse.Position.X;
+            isHovered &= this.stage.Mouse.Position.X <= position.X + this.OuterBounds.Width;
+            isHovered &= position.Y <= this.stage.Mouse.Position.Y;
+            isHovered &= this.stage.Mouse.Position.Y <= position.Y + this.OuterBounds.Height; 
+
+            if(isHovered && !wasHovered)
+            {
+                this.state |= ElementState.Hovered;
+            }
+            else if(!isHovered && wasHovered)
+            {
+                this.state &= ~ElementState.Hovered;
+            }
         }
 
-        protected internal virtual void Draw(GameTime gameTime, Vector2 position)
+        protected internal virtual bool TryDraw(GameTime gameTime, Vector2 position)
         {
-            this.DrawOuter(gameTime, position += _outerBounds.Location.AsVector2());
+            position += _outerBounds.Location.AsVector2();
+
+            if (this.stage.Screen.Camera.Frustum.Contains(new Vector3(position.Y, position.Y, 0)) == ContainmentType.Disjoint)
+            {
+                return false;
+            }
+
+            this.Draw(gameTime, position);
+            return true;
+        }
+        protected virtual void Draw(GameTime gameTime, Vector2 position)
+        {
+            this.CleanState(gameTime, position);
+            this.DrawOuter(gameTime, position);
+
             this.DrawInner(gameTime, position += _innerBounds.Location.AsVector2());
 
             this.stage.Screen.Graphics.PushScissorRectangle(new Rectangle()

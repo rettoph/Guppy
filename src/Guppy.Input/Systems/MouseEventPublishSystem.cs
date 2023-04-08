@@ -1,5 +1,7 @@
 ﻿using Guppy.Common;
+using Guppy.Input.Constants;
 using Guppy.Input.Messages;
+using Guppy.Input.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Entities.Systems;
@@ -17,10 +19,10 @@ namespace Guppy.Input.Systems
         private readonly IBus _bus;
         private readonly MouseCursor _cursor;
 
-        public MouseEventPublishSystem(MouseCursor cursor, IBus bus)
+        public MouseEventPublishSystem(ICursorProvider cursors, IBus bus)
         {
             _bus = bus;
-            _cursor = cursor;
+            _cursor = (cursors.Get(Cursors.Mouse) as MouseCursor)!;
         }
 
         public override void Update(GameTime gameTime)

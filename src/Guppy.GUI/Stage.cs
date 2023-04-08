@@ -1,5 +1,10 @@
-﻿using Guppy.GUI.Elements;
+﻿using Guppy.Common;
+using Guppy.GUI.Elements;
 using Guppy.GUI.Providers;
+using Guppy.Input;
+using Guppy.Input.Constants;
+using Guppy.Input.Messages;
+using Guppy.Input.Providers;
 using Guppy.MonoGame.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    public class Stage : Container<Element>
+    public class Stage : Container<Element>, ISubscriber<CursorMove>
     {
         private readonly IStyleSheetProvider _styles;
         private readonly RasterizerState _rasterizerState;
@@ -20,11 +25,15 @@ namespace Guppy.GUI
         public readonly SpriteBatch SpriteBatch;
         public readonly PrimitiveBatch<VertexPositionColor> PrimitiveBatch;
         public readonly IScreen Screen;
+        public readonly IBus Bus;
+        public readonly ICursor Mouse;
 
         public Stage(
             GraphicsDevice graphics,
             IScreen screen,
-            IStyleSheetProvider styles)
+            IStyleSheetProvider styles,
+            ICursorProvider cursors,
+            IBus bus)
         {
             _styles = styles;
             _rasterizerState = new RasterizerState()
@@ -37,6 +46,8 @@ namespace Guppy.GUI
             this.SpriteBatch = new SpriteBatch(graphics);
             this.PrimitiveBatch = new PrimitiveBatch<VertexPositionColor>(graphics);
             this.Screen = screen;
+            this.Bus = bus;
+            this.Mouse = cursors.Get(Cursors.Mouse);
 
             this.Screen.Window.ClientSizeChanged += this.HandleClientSizeChanged;
             this.PrimitiveBatch.OnEarlyFlush += this.HandleEarlyPrimitiveFlush;
@@ -47,6 +58,8 @@ namespace Guppy.GUI
             this.StyleSheet = styleSheet;
             this.Initialize(this, null);
             this.Clean();
+
+            this.Bus.Subscribe(this);
         }
 
         public void Initialize(string styleSheetName)
@@ -56,9 +69,11 @@ namespace Guppy.GUI
             this.Initialize(styles);
         }
 
-        public new void Update(GameTime gameTime)
+        protected internal override void Uninitialize()
         {
-            base.Update(gameTime);
+            base.Uninitialize();
+
+            this.Bus.Unsubscribe(this);
         }
 
         public void Draw(GameTime gameTime)
@@ -71,7 +86,7 @@ namespace Guppy.GUI
 
             this.PrimitiveBatch.Begin(this.Screen.Camera);
 
-            base.Draw(gameTime, Vector2.UnitX);
+            this.TryDraw(gameTime, Vector2.UnitX);
 
             this.PrimitiveBatch.End();
             this.SpriteBatch.End();
@@ -110,6 +125,11 @@ namespace Guppy.GUI
             this.SpriteBatch.Begin(
                 sortMode: SpriteSortMode.Immediate,
                 rasterizerState: _rasterizerState);
+        }
+
+        public void Process(in CursorMove message)
+        {
+
         }
     }
 }

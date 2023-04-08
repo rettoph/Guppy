@@ -1,4 +1,5 @@
-﻿using Guppy.Input.Messages;
+﻿using Guppy.Input.Constants;
+using Guppy.Input.Messages;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Guppy.Input
 {
     internal sealed class MouseCursor : ICursor
     {
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; } = Cursors.Mouse;
 
         public Vector2 Position { get; private set; }
 
