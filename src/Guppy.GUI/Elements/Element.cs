@@ -8,6 +8,7 @@ namespace Guppy.GUI.Elements
 {
     public class Element
     {
+        private static int CurrentId = 0;
         private static PrimitiveShape _shape = new PrimitiveShape(new Vector3[5]);
 
         private RectangleF _outerBounds;
@@ -24,6 +25,7 @@ namespace Guppy.GUI.Elements
         protected Element? parent;
         protected ElementState state;
 
+        public readonly int Id;
         public Selector Selector { get; }
         public ElementState State => this.state;
 
@@ -39,6 +41,7 @@ namespace Guppy.GUI.Elements
 
         public Element(params string[] names)
         {
+            this.Id = CurrentId++;
             this.parent = null!;
             this.stage = null!;
 

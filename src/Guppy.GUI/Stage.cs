@@ -15,7 +15,7 @@ namespace Guppy.GUI
     public class Stage : Container<Element>
     {
         private readonly IStyleSheetProvider _styles;
-        private readonly RasterizerState _raster;
+        private readonly RasterizerState _rasterizerState;
         public IStyleSheet StyleSheet { get; private set; }
         public readonly SpriteBatch SpriteBatch;
         public readonly PrimitiveBatch<VertexPositionColor> PrimitiveBatch;
@@ -27,7 +27,7 @@ namespace Guppy.GUI
             IStyleSheetProvider styles)
         {
             _styles = styles;
-            _raster = new RasterizerState()
+            _rasterizerState = new RasterizerState()
             {
                 MultiSampleAntiAlias = true,
                 ScissorTestEnable = true,
@@ -39,11 +39,7 @@ namespace Guppy.GUI
             this.Screen = screen;
 
             this.Screen.Window.ClientSizeChanged += this.HandleClientSizeChanged;
-        }
-
-        private void HandleClientSizeChanged(object? sender, EventArgs e)
-        {
-            this.Clean();
+            this.PrimitiveBatch.OnEarlyFlush += this.HandleEarlyPrimitiveFlush;
         }
 
         public void Initialize(IStyleSheet styleSheet)
@@ -71,7 +67,7 @@ namespace Guppy.GUI
 
             this.SpriteBatch.Begin(
                 sortMode: SpriteSortMode.Immediate,
-                rasterizerState: _raster);
+                rasterizerState: _rasterizerState);
 
             this.PrimitiveBatch.Begin(this.Screen.Camera);
 
@@ -100,6 +96,20 @@ namespace Guppy.GUI
                 Width = this.Screen.Window.ClientBounds.Width - 1,
                 Height = this.Screen.Window.ClientBounds.Height - 1,
             };
+        }
+
+        private void HandleClientSizeChanged(object? sender, EventArgs e)
+        {
+            this.Clean();
+        }
+
+        private void HandleEarlyPrimitiveFlush(PrimitiveBatch<VertexPositionColor> args)
+        {
+            this.SpriteBatch.End();
+
+            this.SpriteBatch.Begin(
+                sortMode: SpriteSortMode.Immediate,
+                rasterizerState: _rasterizerState);
         }
     }
 }

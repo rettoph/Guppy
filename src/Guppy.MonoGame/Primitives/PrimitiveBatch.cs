@@ -12,7 +12,7 @@ namespace Guppy.MonoGame.Primitives
     public class PrimitiveBatch<TVertex>
             where TVertex : struct, IVertexType
     {
-        public static int BufferSize = 500;
+        public static int BufferSize = 512;
 
         private readonly VertexBuffer _vertexBuffer;
         private readonly IndexBuffer _indexBuffer;
@@ -28,6 +28,8 @@ namespace Guppy.MonoGame.Primitives
         public RasterizerState RasterizerState;
         public BlendState BlendState;
         public readonly GraphicsDevice GraphicsDevice;
+
+        public event OnEventDelegate<PrimitiveBatch<TVertex>> OnEarlyFlush;
 
         public PrimitiveBatch(GraphicsDevice graphicsDevice)
         {
@@ -156,7 +158,7 @@ namespace Guppy.MonoGame.Primitives
             if(_lineCount != 0)
             {
                 _indexBuffer.SetData(_lineIndices, 0, _lineCount);
-                foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
+                foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
                     this.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, _lineCount / 2);
@@ -172,7 +174,17 @@ namespace Guppy.MonoGame.Primitives
                 return;
             }
 
+            SamplerState samplerState = this.GraphicsDevice.SamplerStates[0];
+            BlendState blendState = this.GraphicsDevice.BlendState;
+            RasterizerState rasterizerState = this.GraphicsDevice.RasterizerState;
+
             this.Flush();
+
+            this.GraphicsDevice.SamplerStates[0] = samplerState;
+            this.GraphicsDevice.BlendState = blendState;
+            this.GraphicsDevice.RasterizerState = rasterizerState;
+
+            this.OnEarlyFlush?.Invoke(this);
         }
     }
 }
