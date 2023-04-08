@@ -14,12 +14,14 @@ namespace Guppy.GUI.Elements
         where T : Element
     {
         private readonly IList<T> _children;
+        private readonly IList<T> _row;
 
         protected readonly ReadOnlyCollection<T> children;
 
         public Container(params string[] names) : base(names)
         {
             _children = new List<T>();
+            _row = new List<T>();
 
             this.children = new ReadOnlyCollection<T>(_children);
         }
@@ -67,16 +69,51 @@ namespace Guppy.GUI.Elements
         {
             base.CleanContentBounds(constraints, out contentBounds);
             Vector2 size = Vector2.Zero;
+            Vector2 rowSize = Vector2.Zero;
+            float rowY = 0f;
+            _row.Clear();
 
             foreach (T child in _children)
             {
                 child.Clean();
-                size.X += child.OuterBounds.Width;
-                size.Y += child.OuterBounds.Height;
+
+                if (child.Inline == false || rowSize.X + child.OuterBounds.Width >= constraints.Width)
+                {
+                    size.Y += rowSize.Y;
+                    size.X = Math.Max(size.X, rowSize.X);
+
+                    this.VerticalAlignElements(_row, rowY, rowSize.Y);
+
+                    rowY += rowSize.Y;
+                    rowSize = Vector2.Zero;
+                    _row.Clear();
+                }
+
+                child.SetPosition(rowSize.X, null);
+                _row.Add(child);
+                rowSize.X += child.OuterBounds.Width;
+                rowSize.Y = Math.Max(rowSize.Y, child.OuterBounds.Height);
+            }
+
+            if(_row.Count > 0)
+            {
+                size.Y += rowSize.Y;
+                size.X = Math.Max(size.X, rowSize.X);
+
+                this.VerticalAlignElements(_row, rowY, rowSize.Y);
+                _row.Clear();
             }
 
             contentBounds.Width = size.X;
             contentBounds.Height = size.Y;
+        }
+
+        private void VerticalAlignElements(IEnumerable<T> elements, float y, float height)
+        {
+            foreach (T element in elements)
+            {
+                element.SetPosition(null, y + (height - element.OuterBounds.Height) / 2);
+            }
         }
     }
 }

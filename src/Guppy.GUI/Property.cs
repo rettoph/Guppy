@@ -17,6 +17,8 @@ namespace Guppy.GUI
 
         public static readonly Property<Color> BackgroundColor = new();
 
+        public static readonly Property<bool> Inline = new();
+
         public static readonly Property<Padding> Padding = new();
         public static readonly Property<Unit> Width = new();
         public static readonly Property<Unit> Height = new();

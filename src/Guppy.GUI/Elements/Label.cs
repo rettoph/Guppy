@@ -16,6 +16,11 @@ namespace Guppy.GUI.Elements
 
         public string Text = string.Empty;
 
+        public Label(params string[] names) : base(names)
+        {
+
+        }
+
         protected internal override void Initialize(Stage stage, Element? parent)
         {
             base.Initialize(stage, parent);
@@ -27,6 +32,8 @@ namespace Guppy.GUI.Elements
         protected override void DrawContent(GameTime gameTime, Vector2 position)
         {
             base.DrawContent(gameTime, position);
+
+            position.Round();
 
             this.stage.SpriteBatch.DrawString(
                 spriteFont: _font.GetValue(this.state), 

@@ -19,6 +19,7 @@ namespace Guppy.GUI.Elements
         private RectangleF _innerBounds;
         private RectangleF _contentBounds;
         private Vector2 _contentAlignment;
+        private IStyle<bool> _inline = null!;
         private IStyle<Unit> _width = null!;
         private IStyle<Unit> _height = null!;
         private IStyle<Padding> _padding = null!;
@@ -34,6 +35,11 @@ namespace Guppy.GUI.Elements
         public RectangleF InnerBounds => _innerBounds;
         public RectangleF ContentBounds => _contentBounds;
 
+        public bool Inline => _inline.GetValue(this.state);
+        public Unit? Width => _width.GetValue(this.state);
+        public Unit? Height => _height.GetValue(this.state);
+        public Padding? Padding => _padding.GetValue(this.state);
+
         public Element(params string[] names)
         {
             this.parent = null!;
@@ -47,6 +53,7 @@ namespace Guppy.GUI.Elements
             this.stage = stage;
             this.parent = parent;
 
+            _inline = this.stage.StyleSheet.Get<bool>(Property.Inline, this);
             _padding = this.stage.StyleSheet.Get<Padding>(Property.Padding, this);
             _width = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
             _height = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
@@ -64,18 +71,18 @@ namespace Guppy.GUI.Elements
 
         protected internal virtual void Draw(GameTime gameTime, Vector2 position)
         {
-            this.DrawOuter(gameTime, position);
-            this.DrawInner(gameTime, position + _innerBounds.Position);
+            this.DrawOuter(gameTime, position += _outerBounds.Position);
+            this.DrawInner(gameTime, position += _innerBounds.Position);
 
             this.stage.Screen.Graphics.PushScissorRectangle(new Rectangle()
             {
-                X = (int)(position.X + _innerBounds.X),
-                Y = (int)(position.Y + _innerBounds.Y),
+                X = (int)position.X,
+                Y = (int)position.Y,
                 Width = (int)_innerBounds.Width,
                 Height = (int)_innerBounds.Height
             });
 
-            this.DrawContent(gameTime, position + _contentAlignment);
+            this.DrawContent(gameTime, position += _contentAlignment);
             this.stage.Screen.Graphics.PopScissorRectangle();
         }
 
@@ -153,7 +160,7 @@ namespace Guppy.GUI.Elements
 
             this.CleanContentBounds(in innerConstraints, out _contentBounds);
             this.CleanInnerBounds(in innerConstraints, in _contentBounds, out _innerBounds);
-            this.CleanOuterBounds(in outerConstraints, out _outerBounds);
+            this.CleanOuterBounds(in outerConstraints, in _innerBounds, out _outerBounds);
             this.CleanContentAlignment(in _innerBounds, in _contentBounds, out _contentAlignment);
         }
 
@@ -167,9 +174,19 @@ namespace Guppy.GUI.Elements
             return this.parent.InnerBounds.Fit(_width, _height).SetPosition(Vector2.Zero);
         }
 
-        protected virtual void CleanOuterBounds(in RectangleF constraints, out RectangleF outerBounds)
+        protected virtual void CleanOuterBounds(in RectangleF constraints, in RectangleF innerBounds, out RectangleF outerBounds)
         {
             outerBounds = constraints;
+
+            if(this.Width is null)
+            {
+                outerBounds.Width = innerBounds.Width + (this.Padding?.Horizontal(constraints.Width) ?? 0);
+            }
+
+            if (this.Height is null)
+            {
+                outerBounds.Height = innerBounds.Height + (this.Padding?.Vertical(constraints.Height) ?? 0);
+            }
         }
 
         protected virtual void CleanInnerBounds(in RectangleF constraints, in RectangleF contentBounds, out RectangleF innerBounds)
@@ -196,13 +213,24 @@ namespace Guppy.GUI.Elements
         {
             float x = innerBounds.Width - contentBounds.Width;
             x /= 2;
-            x += innerBounds.Position.X;
 
             float y = innerBounds.Height - contentBounds.Height;
             y /= 2;
-            y += innerBounds.Position.Y;
 
             contentAlignment = new Vector2(x, y);
+        }
+
+        public virtual void SetPosition(Vector2 position)
+        {
+            _outerBounds.Position = position;
+        }
+        public void SetPosition(float? x = null, float? y = null)
+        {
+            _outerBounds.Position = new Vector2()
+            {
+                X = x ?? _outerBounds.Position.X,
+                Y = y ?? _outerBounds.Position.Y
+            };
         }
     }
 }
