@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using MonoGame.Extended.Timers;
+using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,15 +14,24 @@ namespace Guppy.GUI.Elements
     public class Container<T> : Element
         where T : Element
     {
+        private static readonly IList<RowData> Rows = new List<RowData>();
+        private struct RowData
+        {
+            public SizeF Size;
+            public int Elements;
+
+            public float AlignX(float maxRowWidth, HorizontalAlignment alignment)
+            {
+                return Alignment.AlignHorizontal(maxRowWidth, this.Size.Width, alignment);
+            }
+        }
         private readonly IList<T> _children;
-        private readonly IList<T> _row;
 
         protected readonly ReadOnlyCollection<T> children;
 
         public Container(params string[] names) : base(names)
         {
             _children = new List<T>();
-            _row = new List<T>();
 
             this.children = new ReadOnlyCollection<T>(_children);
         }
@@ -68,44 +78,68 @@ namespace Guppy.GUI.Elements
         protected override void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
         {
             base.CleanContentBounds(constraints, out contentBounds);
-            Vector2 size = Vector2.Zero;
-            Vector2 rowSize = Vector2.Zero;
-            float rowY = 0f;
-            _row.Clear();
+            SizeF size = SizeF.Empty;
+            
+            Rows.Clear();
+            RowData row = new RowData();
+            float maxRowWidth = 0f;
+            float rowsHeight = 0f;
 
             foreach (T child in _children)
             {
                 child.Clean();
 
-                if (child.Inline == false || rowSize.X + child.OuterBounds.Width >= constraints.Width)
+                if (child.Inline == false || row.Size.Width + child.OuterBounds.Width >= constraints.Width)
                 {
-                    size.Y += rowSize.Y;
-                    size.X = Math.Max(size.X, rowSize.X);
-
-                    this.VerticalAlignElements(_row, rowY, rowSize.Y);
-
-                    rowY += rowSize.Y;
-                    rowSize = Vector2.Zero;
-                    _row.Clear();
+                    Rows.Add(row);
+                    maxRowWidth = MathF.Max(row.Size.Width, maxRowWidth);
+                    rowsHeight += row.Size.Height;
+                    row = new RowData();
                 }
 
-                child.SetPosition(rowSize.X, null);
-                _row.Add(child);
-                rowSize.X += child.OuterBounds.Width;
-                rowSize.Y = Math.Max(rowSize.Y, child.OuterBounds.Height);
+                row.Elements++;
+                row.Size.Width += child.OuterBounds.Width;
+                row.Size.Height = Math.Max(row.Size.Height, child.OuterBounds.Height);
             }
 
-            if(_row.Count > 0)
+            if(row.Elements > 0)
             {
-                size.Y += rowSize.Y;
-                size.X = Math.Max(size.X, rowSize.X);
-
-                this.VerticalAlignElements(_row, rowY, rowSize.Y);
-                _row.Clear();
+                Rows.Add(row);
+                maxRowWidth = MathF.Max(row.Size.Width, maxRowWidth);
+                rowsHeight += row.Size.Height;
             }
 
-            contentBounds.Width = size.X;
-            contentBounds.Height = size.Y;
+            if(Rows.Count == 0)
+            {
+                contentBounds.Width = 0;
+                contentBounds.Height = 0;
+
+                return;
+            }
+
+            int index = 0;
+            int element = 0;
+            row = Rows[index];
+            PointF position = new PointF(row.AlignX(maxRowWidth, this.Alignment.Horizontal), 0);
+            foreach (T child in _children)
+            {
+                if(index == row.Elements)
+                {
+                    position.Y += row.Size.Height;
+                    row = Rows[index++];
+                    position.X = row.AlignX(maxRowWidth, this.Alignment.Horizontal);
+                    element = 0;
+                }
+
+                float y = Alignment.AlignVertical(row.Size.Height, child.OuterBounds.Height, this.Alignment.Vertical); ;
+                child.SetPosition(position.X, position.Y + y);
+                position.X += child.OuterBounds.Width;
+
+                element++;
+            }
+
+            contentBounds.Width = maxRowWidth;
+            contentBounds.Height = rowsHeight;
         }
 
         private void VerticalAlignElements(IEnumerable<T> elements, float y, float height)

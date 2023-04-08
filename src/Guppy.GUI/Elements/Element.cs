@@ -209,13 +209,8 @@ namespace Guppy.GUI.Elements
 
         protected virtual void CleanContentAlignment(in RectangleF innerBounds, in RectangleF contentBounds, out Vector2 contentAlignment)
         {
-            float x = innerBounds.Width - contentBounds.Width;
-            x /= 2;
-
-            float y = innerBounds.Height - contentBounds.Height;
-            y /= 2;
-
-            contentAlignment = new Vector2(x, y);
+            PointF alignment = this.Alignment.Align(innerBounds.Size, contentBounds.Size);
+            contentAlignment = alignment.AsVector2();
         }
 
         public virtual void SetPosition(Vector2 position)
