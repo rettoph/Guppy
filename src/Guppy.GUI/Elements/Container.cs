@@ -123,10 +123,10 @@ namespace Guppy.GUI.Elements
             PointF position = new PointF(row.AlignX(maxRowWidth, this.Alignment.Horizontal), 0);
             foreach (T child in _children)
             {
-                if(index == row.Elements)
+                if(element == row.Elements)
                 {
                     position.Y += row.Size.Height;
-                    row = Rows[index++];
+                    row = Rows[++index];
                     position.X = row.AlignX(maxRowWidth, this.Alignment.Horizontal);
                     element = 0;
                 }
