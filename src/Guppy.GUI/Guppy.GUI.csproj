@@ -12,7 +12,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\Microsoft\Xna\Framework\" />
+    <Folder Include="Extensions\MonoGame\Extended\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Drawing.PointF">
+      <Alias>PointF</Alias>
+    </Using>
+    <Using Include="System.Drawing.RectangleF">
+      <Alias>RectangleF</Alias>
+    </Using>
+    <Using Include="System.Drawing.SizeF">
+      <Alias>SizeF</Alias>
+    </Using>
   </ItemGroup>
 
 </Project>

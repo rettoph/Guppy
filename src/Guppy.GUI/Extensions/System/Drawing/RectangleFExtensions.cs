@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonoGame.Extended
+namespace Guppy.GUI.Extensions.System.Drawing
 {
     public static class RectangleFExtensions
     {
-        public static RectangleF SetPosition(this RectangleF rectangle, Vector2 position)
+        public static RectangleF SetLocation(this RectangleF rectangle, PointF position)
         {
-            rectangle.Position = position;
+            rectangle.Location = position;
 
             return rectangle;
         }

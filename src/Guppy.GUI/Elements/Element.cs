@@ -1,13 +1,8 @@
-﻿using Guppy.MonoGame.Extensions.Primitives;
+﻿using Guppy.GUI.Extensions.Microsoft.Xna.Framework;
+using Guppy.GUI.Extensions.System.Drawing;
 using Guppy.MonoGame.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.GUI.Elements
 {
@@ -23,6 +18,7 @@ namespace Guppy.GUI.Elements
         private IStyle<Unit> _width = null!;
         private IStyle<Unit> _height = null!;
         private IStyle<Padding> _padding = null!;
+        private IStyle<Alignment> _alignment = null!;
 
         protected Stage stage;
         protected Element? parent;
@@ -39,6 +35,7 @@ namespace Guppy.GUI.Elements
         public Unit? Width => _width.GetValue(this.state);
         public Unit? Height => _height.GetValue(this.state);
         public Padding? Padding => _padding.GetValue(this.state);
+        public Alignment Alignment => _alignment.GetValue(this.state);
 
         public Element(params string[] names)
         {
@@ -57,6 +54,7 @@ namespace Guppy.GUI.Elements
             _padding = this.stage.StyleSheet.Get<Padding>(Property.Padding, this);
             _width = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
             _height = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
+            _alignment = this.stage.StyleSheet.Get<Alignment>(Property.Alignment, this);
         }
 
         protected internal virtual void Uninitialize()
@@ -71,8 +69,8 @@ namespace Guppy.GUI.Elements
 
         protected internal virtual void Draw(GameTime gameTime, Vector2 position)
         {
-            this.DrawOuter(gameTime, position += _outerBounds.Position);
-            this.DrawInner(gameTime, position += _innerBounds.Position);
+            this.DrawOuter(gameTime, position += _outerBounds.Location.AsVector2());
+            this.DrawInner(gameTime, position += _innerBounds.Location.AsVector2());
 
             this.stage.Screen.Graphics.PushScissorRectangle(new Rectangle()
             {
@@ -171,7 +169,7 @@ namespace Guppy.GUI.Elements
                 throw new NotImplementedException();
             }
 
-            return this.parent.InnerBounds.Fit(_width, _height).SetPosition(Vector2.Zero);
+            return this.parent.InnerBounds.Fit(_width, _height).SetLocation(PointF.Empty);
         }
 
         protected virtual void CleanOuterBounds(in RectangleF constraints, in RectangleF innerBounds, out RectangleF outerBounds)
@@ -222,14 +220,14 @@ namespace Guppy.GUI.Elements
 
         public virtual void SetPosition(Vector2 position)
         {
-            _outerBounds.Position = position;
+            _outerBounds.Location = position.AsPointFRef();
         }
         public void SetPosition(float? x = null, float? y = null)
         {
-            _outerBounds.Position = new Vector2()
+            _outerBounds.Location = new PointF()
             {
-                X = x ?? _outerBounds.Position.X,
-                Y = y ?? _outerBounds.Position.Y
+                X = x ?? _outerBounds.Location.X,
+                Y = y ?? _outerBounds.Location.Y
             };
         }
     }

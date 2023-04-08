@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.GUI
+﻿namespace Guppy.GUI
 {
     public struct Alignment
     {
@@ -29,7 +21,7 @@ namespace Guppy.GUI
             VerticalAlignment vertical = VerticalAlignment.Center,
             HorizontalAlignment horizontal = HorizontalAlignment.Center)
         {
-            PointF offset = Alignment.Align(container.Size, element.Size);
+            PointF offset = Alignment.Align(container.Size, element.Size, vertical, horizontal);
 
             element.Location = new PointF()
             {

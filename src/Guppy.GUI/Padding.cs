@@ -30,10 +30,13 @@ namespace Guppy.GUI
             float bottom = this.Bottom.Calculate(bounds.Height);
             float left = this.Left.Calculate(bounds.Width);
 
-            result.Y = bounds.Y + top;
-            result.X = bounds.X + left;
-            result.Height = bounds.Height - top - bottom;
-            result.Width = bounds.Width - left - right;
+            result = new RectangleF()
+            {
+                X = bounds.X + left,
+                Y = bounds.Y + top,
+                Width = bounds.Width - left - right,
+                Height = bounds.Height - top - bottom
+            };
         }
 
         public void AddPadding(ref RectangleF bounds)
@@ -48,10 +51,13 @@ namespace Guppy.GUI
             float bottom = this.Bottom.Calculate(bounds.Height);
             float left = this.Left.Calculate(bounds.Width);
 
-            result.Y = bounds.Y - top;
-            result.X = bounds.X - left;
-            result.Height = bounds.Height + top + bottom;
-            result.Width = bounds.Width + left + right;
+            result = new RectangleF()
+            {
+                X = bounds.X - left,
+                Y = bounds.Y - top,
+                Width = bounds.Width + left + right,
+                Height = bounds.Height + top + bottom
+            };
         }
 
         public void RemovePadding(ref RectangleF bounds)

@@ -23,6 +23,8 @@ namespace Guppy.GUI
         public static readonly Property<Unit> Width = new();
         public static readonly Property<Unit> Height = new();
 
+        public static readonly Property<Alignment> Alignment = new();
+
         public readonly Type Type;
         public readonly PropertyFlags Flags;
 

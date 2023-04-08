@@ -11,9 +11,14 @@ namespace Guppy.GUI.Extensions.System.Drawing
 {
     public static class PointFExtensions
     {
-        public static Vector2 AsVector2(ref this PointF point)
+        public static Vector2 AsVector2(this PointF point)
         {
             return Unsafe.As<PointF, Vector2>(ref point);
+        }
+
+        public static ref Vector2 AsVector2Ref(ref this PointF point)
+        {
+            return ref Unsafe.As<PointF, Vector2>(ref point);
         }
     }
 }
