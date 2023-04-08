@@ -17,5 +17,13 @@ namespace Guppy.GUI
         {
             return styleSheet.Set<T>(property, selector, ElementState.None, resource, priority);
         }
+
+        public static IStyleSheet Configure(this IStyleSheet styleSheet, Selector selector, Action<SelectorManager> configuration)
+        {
+            SelectorManager manager = new SelectorManager(styleSheet, selector);
+            configuration(manager);
+
+            return styleSheet;
+        }
     }
 }
