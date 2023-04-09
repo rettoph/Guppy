@@ -11,5 +11,6 @@ namespace Guppy.Input
     {
         Guid Id { get; }
         Vector2 Position { get; }
+        int Scroll { get; }
     }
 }

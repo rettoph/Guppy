@@ -16,13 +16,36 @@ namespace Guppy.Input
 
         public Vector2 Position { get; private set; }
 
+        public int Scroll { get; private set; }
+
         public bool MoveTo(Vector2 position, [MaybeNullWhen(false)] out CursorMove movement)
         {
             Vector2 delta = position - this.Position;
+            if(delta == Vector2.Zero)
+            {
+                movement = null;
+                return false;
+            }
+
             this.Position = position;
             movement = new CursorMove(this, delta);
 
-            return delta != Vector2.Zero;
+            return true;
+        }
+
+        public bool ScrollTo(int scroll, [MaybeNullWhen(false)] out CursorScroll scrolling)
+        {
+            int delta = scroll - this.Scroll;
+            if(delta == 0 )
+            {
+                scrolling = null;
+                return false;
+            }
+
+            this.Scroll = scroll;
+            scrolling = new CursorScroll(this, delta);
+
+            return true;
         }
     }
 }

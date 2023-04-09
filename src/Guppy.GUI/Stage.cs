@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    public class Stage : Container<Element>, ISubscriber<CursorMove>
+    public class Stage : ScrollContainer<Element>
     {
         private readonly IStyleSheetProvider _styles;
         private readonly RasterizerState _rasterizerState;
@@ -27,6 +27,7 @@ namespace Guppy.GUI
         public readonly IScreen Screen;
         public readonly IBus Bus;
         public readonly ICursor Mouse;
+        public readonly Texture2D Pixel;
 
         public Stage(
             GraphicsDevice graphics,
@@ -48,6 +49,7 @@ namespace Guppy.GUI
             this.Screen = screen;
             this.Bus = bus;
             this.Mouse = cursors.Get(Cursors.Mouse);
+            this.Pixel = this.Screen.Graphics.BuildPixel();
 
             this.Screen.Window.ClientSizeChanged += this.HandleClientSizeChanged;
             this.PrimitiveBatch.OnEarlyFlush += this.HandleEarlyPrimitiveFlush;
@@ -58,8 +60,6 @@ namespace Guppy.GUI
             this.StyleSheet = styleSheet;
             this.Initialize(this, null);
             this.Clean();
-
-            this.Bus.Subscribe(this);
         }
 
         public void Initialize(string styleSheetName)
@@ -72,8 +72,6 @@ namespace Guppy.GUI
         protected internal override void Uninitialize()
         {
             base.Uninitialize();
-
-            this.Bus.Unsubscribe(this);
         }
 
         public void Draw(GameTime gameTime)

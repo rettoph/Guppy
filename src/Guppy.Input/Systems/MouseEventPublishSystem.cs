@@ -33,6 +33,11 @@ namespace Guppy.Input.Systems
             {
                 _bus.Enqueue(movement);
             }
+
+            if(_cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
+            {
+                _bus.Enqueue(scrolling);
+            }
         }
     }
 }

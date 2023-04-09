@@ -14,16 +14,17 @@ namespace Guppy.GUI.Elements
         private RectangleF _outerBounds;
         private RectangleF _innerBounds;
         private RectangleF _contentBounds;
-        private Vector2 _contentAlignment;
         private IStyle<bool> _inline = null!;
         private IStyle<Unit> _width = null!;
         private IStyle<Unit> _height = null!;
         private IStyle<Padding> _padding = null!;
         private IStyle<Alignment> _alignment = null!;
+        private IStyle<Color> _backgroundColor = null!;
 
         protected Stage stage;
         protected Element? parent;
         protected ElementState state;
+        protected Vector2 contentOffset;
 
         public readonly int Id;
         public Selector Selector { get; }
@@ -38,6 +39,7 @@ namespace Guppy.GUI.Elements
         public Unit? Height => _height.GetValue(this.state);
         public Padding? Padding => _padding.GetValue(this.state);
         public Alignment Alignment => _alignment.GetValue(this.state);
+        public Color BackgroundColor => _backgroundColor.GetValue(this.state);
 
         public Element(params string[] names)
         {
@@ -58,6 +60,7 @@ namespace Guppy.GUI.Elements
             _width = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
             _height = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
             _alignment = this.stage.StyleSheet.Get<Alignment>(Property.Alignment, this);
+            _backgroundColor = this.stage.StyleSheet.Get<Color>(Property.BackgroundColor, this);
         }
 
         protected internal virtual void Uninitialize()
@@ -111,68 +114,29 @@ namespace Guppy.GUI.Elements
                 Height = (int)_innerBounds.Height
             });
 
-            this.DrawContent(gameTime, position += _contentAlignment);
+            this.DrawContent(gameTime, position += this.contentOffset);
             this.stage.Screen.Graphics.PopScissorRectangle();
         }
 
         protected virtual void DrawOuter(GameTime gameTime, Vector2 position)
         {
-            _shape.Vertices[0].X = position.X;
-            _shape.Vertices[0].Y = position.Y;
+            if(_backgroundColor.TryGetValue(this.state, out var color))
+            {
+                this.stage.SpriteBatch.Draw(
+                    texture: this.stage.Pixel,
+                    destinationRectangle: new Rectangle((int)position.X, (int)position.Y, (int)this.OuterBounds.Width, (int)this.OuterBounds.Height),
+                    color: color);
 
-            _shape.Vertices[1].X = position.X + _outerBounds.Width;
-            _shape.Vertices[1].Y = position.Y;
-
-            _shape.Vertices[2].X = position.X + _outerBounds.Width;
-            _shape.Vertices[2].Y = position.Y + _outerBounds.Height;
-
-            _shape.Vertices[3].X = position.X;
-            _shape.Vertices[3].Y = position.Y + _outerBounds.Height;
-
-            _shape.Vertices[4].X = position.X;
-            _shape.Vertices[4].Y = position.Y;
-
-            this.stage.PrimitiveBatch.Trace(_shape, Color.Green, Matrix.Identity);
+                this.stage.PrimitiveBatch.Fill(_shape, color, Matrix.Identity);
+            }
         }
 
         protected virtual void DrawInner(GameTime gameTime, Vector2 position)
         {
-            _shape.Vertices[0].X = position.X;
-            _shape.Vertices[0].Y = position.Y;
-
-            _shape.Vertices[1].X = position.X + _innerBounds.Width;
-            _shape.Vertices[1].Y = position.Y;
-
-            _shape.Vertices[2].X = position.X + _innerBounds.Width;
-            _shape.Vertices[2].Y = position.Y + _innerBounds.Height;
-
-            _shape.Vertices[3].X = position.X;
-            _shape.Vertices[3].Y = position.Y + _innerBounds.Height;
-
-            _shape.Vertices[4].X = position.X;
-            _shape.Vertices[4].Y = position.Y;
-
-            this.stage.PrimitiveBatch.Trace(_shape, Color.Red, Matrix.Identity);
         }
 
         protected virtual void DrawContent(GameTime gameTime, Vector2 position)
         {
-            _shape.Vertices[0].X = position.X - 1;
-            _shape.Vertices[0].Y = position.Y - 1;
-
-            _shape.Vertices[1].X = position.X + _contentBounds.Width + 1;
-            _shape.Vertices[1].Y = position.Y - 1;
-
-            _shape.Vertices[2].X = position.X + _contentBounds.Width + 1;
-            _shape.Vertices[2].Y = position.Y + _contentBounds.Height + 1;
-
-            _shape.Vertices[3].X = position.X - 1;
-            _shape.Vertices[3].Y = position.Y + _contentBounds.Height + 1;
-
-            _shape.Vertices[4].X = position.X - 1;
-            _shape.Vertices[4].Y = position.Y - 1;
-
-            this.stage.PrimitiveBatch.Trace(_shape, Color.Blue, Matrix.Identity);
         }
 
         protected internal virtual void Clean()
@@ -190,7 +154,7 @@ namespace Guppy.GUI.Elements
             this.CleanContentBounds(in innerConstraints, out _contentBounds);
             this.CleanInnerBounds(in innerConstraints, in _contentBounds, out _innerBounds);
             this.CleanOuterBounds(in outerConstraints, in _innerBounds, out _outerBounds);
-            this.CleanContentAlignment(in _innerBounds, in _contentBounds, out _contentAlignment);
+            this.CleanContentOffset(in _innerBounds, in _contentBounds, out this.contentOffset);
         }
 
         protected virtual RectangleF GetConstraints()
@@ -238,10 +202,10 @@ namespace Guppy.GUI.Elements
             contentBounds = new RectangleF();
         }
 
-        protected virtual void CleanContentAlignment(in RectangleF innerBounds, in RectangleF contentBounds, out Vector2 contentAlignment)
+        protected virtual void CleanContentOffset(in RectangleF innerBounds, in RectangleF contentBounds, out Vector2 contentOffset)
         {
             PointF alignment = this.Alignment.Align(innerBounds.Size, contentBounds.Size);
-            contentAlignment = alignment.AsVector2();
+            contentOffset = alignment.AsVector2();
         }
 
         public virtual void SetPosition(Vector2 position)
