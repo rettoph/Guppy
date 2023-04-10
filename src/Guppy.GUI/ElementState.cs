@@ -11,7 +11,8 @@ namespace Guppy.GUI
     public enum ElementState : int
     {
         None = 0,
-        Focused = 1,
-        Hovered = 2,
+        Hovered = 1,
+        Focused = 4,
+        Active = 2,
     }
 }

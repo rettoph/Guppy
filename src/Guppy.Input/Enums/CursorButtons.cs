@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Input.Services
+namespace Guppy.Input.Enums
 {
-    internal sealed class CursorService
+    public enum CursorButtons
     {
+        Left,
+        Middle,
+        Right
     }
 }

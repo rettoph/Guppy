@@ -9,27 +9,27 @@ namespace Microsoft.Xna.Framework.Input
 {
     public static class MouseStateExtensions
     {
-        public static bool IsState(this MouseState mouse, MouseButtons button, ButtonState state)
+        public static bool IsState(this MouseState mouse, CursorButtons button, ButtonState state)
         {
             switch (button)
             {
-                case MouseButtons.Left:
+                case CursorButtons.Left:
                     return mouse.LeftButton == state;
-                case MouseButtons.Middle:
+                case CursorButtons.Middle:
                     return mouse.MiddleButton == state;
-                case MouseButtons.Right:
+                case CursorButtons.Right:
                     return mouse.RightButton == state;
                 default:
                     throw new NotImplementedException();
             }
         }
 
-        public static bool IsButtonUp(this MouseState mouse, MouseButtons button)
+        public static bool IsButtonUp(this MouseState mouse, CursorButtons button)
         {
             return mouse.IsState(button, ButtonState.Released);
         }
 
-        public static bool IsButtonDown(this MouseState mouse, MouseButtons button)
+        public static bool IsButtonDown(this MouseState mouse, CursorButtons button)
         {
             return mouse.IsState(button, ButtonState.Pressed);
         }

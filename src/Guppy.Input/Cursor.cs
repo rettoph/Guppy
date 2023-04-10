@@ -1,22 +1,34 @@
-﻿using Guppy.Input.Constants;
+﻿using Guppy.Common.Helpers;
+using Guppy.Input.Constants;
+using Guppy.Input.Enums;
 using Guppy.Input.Messages;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.Input
 {
-    internal sealed class MouseCursor : ICursor
+    internal sealed class Cursor : ICursor
     {
+        private Dictionary<CursorButtons, bool> _buttons;
+
         public Guid Id { get; } = Cursors.Mouse;
 
         public Vector2 Position { get; private set; }
 
         public int Scroll { get; private set; }
+
+        public bool this[CursorButtons button] => _buttons[button];
+
+        public Cursor()
+        {
+            _buttons = EnumHelper.ToDictionary<CursorButtons, bool>(b => false);
+        }
 
         public bool MoveTo(Vector2 position, [MaybeNullWhen(false)] out CursorMove movement)
         {
@@ -44,6 +56,22 @@ namespace Guppy.Input
 
             this.Scroll = scroll;
             scrolling = new CursorScroll(this, delta);
+
+            return true;
+        }
+
+        public bool SetPress(CursorButtons button, bool value, [MaybeNullWhen(false)] out CursorPress press)
+        {
+            ref bool valueRef = ref CollectionsMarshal.GetValueRefOrNullRef(_buttons, button);
+
+            if(value == valueRef)
+            {
+                press = null;
+                return false;
+            }
+
+            valueRef = value;
+            press = new CursorPress(this, button, value);
 
             return true;
         }

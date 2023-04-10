@@ -18,9 +18,13 @@ namespace Guppy.GUI
         private readonly IResourceProvider _resources;
         private readonly Dictionary<(Property, Selector), IStyle> _cache = new();
 
-        public StyleSheet(IResourceProvider resources)
+        public string Name { get; }
+
+        public StyleSheet(string name, IResourceProvider resources)
         {
             _resources = resources;
+
+            this.Name = name;
         }
 
         public IStyle<T> Get<T>(Property<T> property, Element element)

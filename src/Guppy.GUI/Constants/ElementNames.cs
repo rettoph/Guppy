@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Input.Enums
+namespace Guppy.GUI.Constants
 {
-    public enum MouseButtons
+    internal sealed class ElementNames
     {
-        Left,
-        Middle,
-        Right
+        public const string TextInputLabel = "#textinput_label";
     }
 }

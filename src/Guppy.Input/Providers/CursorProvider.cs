@@ -14,7 +14,7 @@ namespace Guppy.Input.Providers
         {
             _cursors = new List<ICursor>();
 
-            this.Add(new MouseCursor());
+            this.Add(new Cursor());
         }
 
         public void Add(ICursor cursor)

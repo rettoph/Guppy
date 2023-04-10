@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Input.Constants;
+using Guppy.Input.Enums;
 using Guppy.Input.Messages;
 using Guppy.Input.Providers;
 using Microsoft.Xna.Framework;
@@ -17,12 +18,12 @@ namespace Guppy.Input.Systems
     internal sealed class MouseEventPublishSystem : UpdateSystem
     {
         private readonly IBus _bus;
-        private readonly MouseCursor _cursor;
+        private readonly Cursor _cursor;
 
         public MouseEventPublishSystem(ICursorProvider cursors, IBus bus)
         {
             _bus = bus;
-            _cursor = (cursors.Get(Cursors.Mouse) as MouseCursor)!;
+            _cursor = (cursors.Get(Cursors.Mouse) as Cursor)!;
         }
 
         public override void Update(GameTime gameTime)
@@ -37,6 +38,21 @@ namespace Guppy.Input.Systems
             if(_cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
             {
                 _bus.Enqueue(scrolling);
+            }
+
+            if (_cursor.SetPress(CursorButtons.Left, state.LeftButton == ButtonState.Pressed, out var press))
+            {
+                _bus.Enqueue(press);
+            }
+
+            if (_cursor.SetPress(CursorButtons.Middle, state.LeftButton == ButtonState.Pressed, out press))
+            {
+                _bus.Enqueue(press);
+            }
+
+            if (_cursor.SetPress(CursorButtons.Right, state.LeftButton == ButtonState.Pressed, out press))
+            {
+                _bus.Enqueue(press);
             }
         }
     }

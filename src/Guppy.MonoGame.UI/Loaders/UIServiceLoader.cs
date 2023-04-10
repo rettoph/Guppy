@@ -112,9 +112,9 @@ namespace Guppy.MonoGame.UI.Loaders
             AddImGuiKeyEvent(services, InputConstants.UI_LeftSuper, Keys.LeftWindows, ImGuiKey.LeftSuper);
             AddImGuiKeyEvent(services, InputConstants.UI_RightSuper, Keys.RightWindows, ImGuiKey.RightSuper);
 
-            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton01, MouseButtons.Left, 0);
-            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton02, MouseButtons.Middle, 1);
-            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton03, MouseButtons.Right, 2);
+            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton01, CursorButtons.Left, 0);
+            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton02, CursorButtons.Middle, 1);
+            AddImGuiMouseButtonEvent(services, InputConstants.UI_MouseButton03, CursorButtons.Right, 2);
         }
 
         private static void AddImGuiKeyEvent(IServiceCollection services, string key, Keys defaultKey, ImGuiKey mapping)
@@ -129,7 +129,7 @@ namespace Guppy.MonoGame.UI.Loaders
                 });
         }
 
-        private static void AddImGuiMouseButtonEvent(IServiceCollection services, string key, MouseButtons defaultButton, int mapping)
+        private static void AddImGuiMouseButtonEvent(IServiceCollection services, string key, CursorButtons defaultButton, int mapping)
         {
             services.AddInput(
                 key,

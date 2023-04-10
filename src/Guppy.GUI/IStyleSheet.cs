@@ -9,6 +9,8 @@ namespace Guppy.GUI
 {
     public interface IStyleSheet
     {
+        string Name { get; }
+
         IStyle<T> Get<T>(Property<T> property, Element element);
         IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, T value, int priority = 0);
         IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, string resource, int priority = 0);

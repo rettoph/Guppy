@@ -11,6 +11,7 @@ namespace Guppy.GUI.Elements
         private static int CurrentId = 0;
         private static PrimitiveShape _shape = new PrimitiveShape(new Vector3[5]);
 
+        private ElementState _state;
         private RectangleF _outerBounds;
         private RectangleF _innerBounds;
         private RectangleF _contentBounds;
@@ -23,23 +24,29 @@ namespace Guppy.GUI.Elements
 
         protected Stage stage;
         protected Element? parent;
-        protected ElementState state;
         protected Vector2 contentOffset;
 
         public readonly int Id;
         public Selector Selector { get; }
-        public ElementState State => this.state;
+        public bool Initialized { get; protected set; }
+        public ElementState State
+        {
+            get => _state;
+            protected set => this.OnStateChanged.InvokeIf(_state != value, this, ref _state, value);
+        }
 
         public RectangleF OuterBounds => _outerBounds;
         public RectangleF InnerBounds => _innerBounds;
         public RectangleF ContentBounds => _contentBounds;
 
-        public bool Inline => _inline.GetValue(this.state);
-        public Unit? Width => _width.GetValue(this.state);
-        public Unit? Height => _height.GetValue(this.state);
-        public Padding? Padding => _padding.GetValue(this.state);
-        public Alignment Alignment => _alignment.GetValue(this.state);
-        public Color BackgroundColor => _backgroundColor.GetValue(this.state);
+        public bool Inline => _inline.GetValue(this.State);
+        public Unit? Width => _width.GetValue(this.State);
+        public Unit? Height => _height.GetValue(this.State);
+        public Padding? Padding => _padding.GetValue(this.State);
+        public Alignment Alignment => _alignment.GetValue(this.State);
+        public Color BackgroundColor => _backgroundColor.GetValue(this.State);
+
+        public event OnChangedEventDelegate<Element, ElementState> OnStateChanged;
 
         public Element(params string[] names)
         {
@@ -61,17 +68,21 @@ namespace Guppy.GUI.Elements
             _height = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
             _alignment = this.stage.StyleSheet.Get<Alignment>(Property.Alignment, this);
             _backgroundColor = this.stage.StyleSheet.Get<Color>(Property.BackgroundColor, this);
+
+            this.Initialized = true;
         }
 
         protected internal virtual void Uninitialize()
         {
             this.parent = null;
             this.stage = null!;
+
+            this.Initialized = false;
         }
 
         protected virtual void CleanState(GameTime gameTime, Vector2 position)
         {
-            bool wasHovered = this.state.HasFlag(ElementState.Hovered);
+            bool wasHovered = this.State.HasFlag(ElementState.Hovered);
             bool isHovered = position.X <= this.stage.Mouse.Position.X;
             isHovered &= this.stage.Mouse.Position.X <= position.X + this.OuterBounds.Width;
             isHovered &= position.Y <= this.stage.Mouse.Position.Y;
@@ -79,11 +90,11 @@ namespace Guppy.GUI.Elements
 
             if(isHovered && !wasHovered)
             {
-                this.state |= ElementState.Hovered;
+                this.State |= ElementState.Hovered;
             }
             else if(!isHovered && wasHovered)
             {
-                this.state &= ~ElementState.Hovered;
+                this.State &= ~ElementState.Hovered;
             }
         }
 
@@ -91,7 +102,12 @@ namespace Guppy.GUI.Elements
         {
             position += _outerBounds.Location.AsVector2();
 
-            if (this.stage.Screen.Camera.Frustum.Contains(new Vector3(position.Y, position.Y, 0)) == ContainmentType.Disjoint)
+            BoundingBox boundingBox = new BoundingBox(
+                min: new Vector3(position.X, position.Y, 0),
+                max: new Vector3(position.X + this.OuterBounds.Width, position.Y + this.OuterBounds.Height, 0));
+
+            ContainmentType containmentType = this.stage.Screen.Camera.Frustum.Contains(boundingBox);
+            if (containmentType == ContainmentType.Disjoint)
             {
                 return false;
             }
@@ -120,14 +136,12 @@ namespace Guppy.GUI.Elements
 
         protected virtual void DrawOuter(GameTime gameTime, Vector2 position)
         {
-            if(_backgroundColor.TryGetValue(this.state, out var color))
+            if(_backgroundColor.TryGetValue(this.State, out var color))
             {
                 this.stage.SpriteBatch.Draw(
                     texture: this.stage.Pixel,
                     destinationRectangle: new Rectangle((int)position.X, (int)position.Y, (int)this.OuterBounds.Width, (int)this.OuterBounds.Height),
                     color: color);
-
-                this.stage.PrimitiveBatch.Fill(_shape, color, Matrix.Identity);
             }
         }
 
@@ -184,6 +198,10 @@ namespace Guppy.GUI.Elements
 
         protected virtual void CleanInnerBounds(in RectangleF constraints, in RectangleF contentBounds, out RectangleF innerBounds)
         {
+            if(this is Stage)
+            {
+
+            }
             innerBounds = constraints;
 
             if (_width.Value is null)

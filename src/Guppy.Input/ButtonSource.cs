@@ -19,17 +19,17 @@ namespace Guppy.Input
         public readonly Keys KeyboardKey;
 
         [FieldOffset(1)]
-        public readonly MouseButtons MouseButton;
+        public readonly CursorButtons MouseButton;
 
 
         public ButtonSource(Keys keyboardKey)
         {
             this.Type = ButtonType.Keyboard;
-            this.MouseButton = default(MouseButtons);
+            this.MouseButton = default(CursorButtons);
             this.KeyboardKey = keyboardKey;
         }
 
-        public ButtonSource(MouseButtons mouseButtons)
+        public ButtonSource(CursorButtons mouseButtons)
         {
             this.Type = ButtonType.Mouse;
             this.KeyboardKey = default(Keys);
@@ -61,7 +61,7 @@ namespace Guppy.Input
                    KeyboardKey == source.KeyboardKey;
         }
 
-        public static implicit operator ButtonSource(MouseButtons mouseButtons)
+        public static implicit operator ButtonSource(CursorButtons mouseButtons)
         {
             return new ButtonSource(mouseButtons);
         }

@@ -10,6 +10,7 @@ namespace Guppy.GUI
     {
         Left,
         Center,
-        Right
+        Right,
+        LeftFit,
     }
 }

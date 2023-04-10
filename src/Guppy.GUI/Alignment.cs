@@ -94,6 +94,9 @@ namespace Guppy.GUI
                 case HorizontalAlignment.Right:
                     return container - element;
 
+                case HorizontalAlignment.LeftFit:
+                    return container < element ? container - element : 0;
+
                 default:
                     throw new UnreachableException();
             }

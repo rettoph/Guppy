@@ -36,9 +36,34 @@ namespace Guppy.GUI.Elements
             this.children = new ReadOnlyCollection<T>(_children);
         }
 
+        protected internal override void Initialize(Stage stage, Element? parent)
+        {
+            foreach (T child in _children)
+            {
+                child.Initialize(stage, this);
+            }
+
+            base.Initialize(stage, parent);
+        }
+
+        protected internal override void Uninitialize()
+        {
+            base.Uninitialize();
+
+            foreach (T child in _children)
+            {
+                child.Uninitialize();
+            }
+        }
+
         protected virtual void Add(T child)
         {
             _children.Add(child);
+
+            if(!this.Initialized)
+            {
+                return;
+            }
 
             child.Initialize(this.stage, this);
             this.Clean();
@@ -47,6 +72,11 @@ namespace Guppy.GUI.Elements
         protected virtual void Remove(T child)
         {
             if(!_children.Remove(child))
+            {
+                return;
+            }
+
+            if (!this.Initialized)
             {
                 return;
             }
@@ -79,7 +109,7 @@ namespace Guppy.GUI.Elements
             {
                 child.Clean();
 
-                if (child.Inline == false || row.Size.Width + child.OuterBounds.Width >= constraints.Width)
+                if (row.Elements > 0 && (child.Inline == false || row.Size.Width + child.OuterBounds.Width >= constraints.Width))
                 {
                     Rows.Add(row);
                     maxRowWidth = MathF.Max(row.Size.Width, maxRowWidth);
@@ -113,7 +143,7 @@ namespace Guppy.GUI.Elements
             PointF position = new PointF(row.AlignX(maxRowWidth, this.Alignment.Horizontal), 0);
             foreach (T child in _children)
             {
-                if(element == row.Elements)
+                if (element == row.Elements)
                 {
                     position.Y += row.Size.Height;
                     row = Rows[++index];
@@ -130,14 +160,6 @@ namespace Guppy.GUI.Elements
 
             contentBounds.Width = maxRowWidth;
             contentBounds.Height = rowsHeight;
-        }
-
-        private void VerticalAlignElements(IEnumerable<T> elements, float y, float height)
-        {
-            foreach (T element in elements)
-            {
-                element.SetPosition(null, y + (height - element.OuterBounds.Height) / 2);
-            }
         }
     }
 }

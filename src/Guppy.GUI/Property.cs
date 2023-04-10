@@ -25,6 +25,10 @@ namespace Guppy.GUI
 
         public static readonly Property<Alignment> Alignment = new();
 
+        public static readonly Property<int> ScrollTrackWidth = new();
+        public static readonly Property<Color> ScrollTrackColor = new();
+        public static readonly Property<Color> ScrollThumbColor = new();
+
         public readonly Type Type;
         public readonly PropertyFlags Flags;
 

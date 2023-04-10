@@ -13,6 +13,7 @@ namespace Guppy.GUI.Loaders
     [Service<IStyleSheetLoader>(ServiceLifetime.Scoped, true)]
     public interface IStyleSheetLoader
     {
+        void Configure(IStyleSheet styleSheet);
         void Load(IStyleSheetProvider styles);
     }
 }
