@@ -17,12 +17,12 @@ namespace Guppy.GUI.Loaders
         {
             styleSheet.Configure(Selector.Create<Label>(ElementNames.TextInputLabel), manager =>
             {
-                manager.Set(Property.Alignment, new Alignment(VerticalAlignment.Center, HorizontalAlignment.LeftFit), 100)
-                    .Set(Property.Padding, new Padding(0, 0, 0, 0), 100);
+                manager.Set(Property.Alignment, new Alignment(VerticalAlignment.Center, HorizontalAlignment.LeftFit))
+                    .Set(Property.Padding, new Padding(0, 0, 0, 0));
             })
             .Configure(Selector.Create<TextInput>(), manager =>
             {
-                manager.Set(Property.Alignment, Alignment.CenterLeft, 100);
+                manager.Set(Property.Alignment, Alignment.CenterLeft);
             });
         }
 

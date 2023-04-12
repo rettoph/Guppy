@@ -58,12 +58,12 @@ namespace Guppy.GUI.Elements
         {
             base.CleanContentBounds(constraints, out contentBounds);
 
-            if(string.IsNullOrEmpty(this.Text))
+            if (string.IsNullOrEmpty(this.Text))
             {
                 return;
             }
 
-            if(!_font.TryGetValue(this.State, out var font))
+            if (!_font.TryGetValue(this.State, out var font))
             {
                 return;
             }

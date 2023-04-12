@@ -21,22 +21,24 @@ namespace Guppy.GUI
             this.Names = names;
         }
 
-        public bool Match(Selector selector)
+        public int Match(Selector selector)
         {
             if (!this.Type.IsAssignableFrom(selector.Type))
             {
-                return false;
+                return 0;
             }
 
-            foreach (string name in this.Names)
+            int match = 1;
+
+            foreach (string name in selector.Names)
             {
-                if (!selector.Names.Contains(name))
+                if (!this.Names.Contains(name))
                 {
-                    return false;
+                    match++;
                 }
             }
 
-            return true;
+            return match;
         }
 
         public static Selector Create(params string[] names)

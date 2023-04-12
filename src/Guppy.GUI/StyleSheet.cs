@@ -42,17 +42,17 @@ namespace Guppy.GUI
             return style;
         }
 
-        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, T value, int priority = 0)
+        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, T value)
         {
-            _values.Add(priority, new StyleValue(property, selector, state, value));
+            _values.Add(new StyleValue(property, selector, state, value));
 
             return this;
         }
 
-        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, string resource, int priority = 0)
+        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, string resource)
         {
             T value = _resources.Get<T>(resource).Value;
-            return this.Set<T>(property, selector, state, value, priority);
+            return this.Set<T>(property, selector, state, value);
         }
     }
 }

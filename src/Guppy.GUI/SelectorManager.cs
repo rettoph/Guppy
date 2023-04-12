@@ -18,27 +18,27 @@ namespace Guppy.GUI
             _selector = selector;
         }
 
-        public SelectorManager Set<T>(Property<T> property, T value, int priority = 0)
+        public SelectorManager Set<T>(Property<T> property, T value)
         {
-            _styleSheet.Set<T>(property, _selector, value, priority);
+            _styleSheet.Set<T>(property, _selector, value);
             return this;
         }
 
-        public SelectorManager Set<T>(Property<T> property, ElementState state, T value, int priority = 0)
+        public SelectorManager Set<T>(Property<T> property, ElementState state, T value)
         {
-            _styleSheet.Set<T>(property, _selector, state, value, priority);
+            _styleSheet.Set<T>(property, _selector, state, value);
             return this;
         }
 
-        public SelectorManager Set<T>(Property<T> property, string resource, int priority = 0)
+        public SelectorManager Set<T>(Property<T> property, string resource)
         {
-            _styleSheet.Set<T>(property, _selector, resource, priority);
+            _styleSheet.Set<T>(property, _selector, resource);
             return this;
         }
 
-        public SelectorManager Set<T>(Property<T> property, ElementState state, string resource, int priority = 0)
+        public SelectorManager Set<T>(Property<T> property, ElementState state, string resource)
         {
-            _styleSheet.Set<T>(property, _selector, state, resource, priority);
+            _styleSheet.Set<T>(property, _selector, state, resource);
             return this;
         }
     }

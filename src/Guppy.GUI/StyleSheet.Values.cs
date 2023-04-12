@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Guppy.GUI
@@ -28,36 +29,13 @@ namespace Guppy.GUI
             }
         }
 
-        private SortedList<int, StyleValue> _values = new(new DuplicateKeyComparer<int>());
+        private List<StyleValue> _values = new();
 
         public bool Get<T>(Property<T> property, Selector selector, ElementState state, [MaybeNullWhen(false)] out T value)
         {
-            StyleValue result = default!;
-
-            foreach (KeyValuePair<int, StyleValue> styleValue in _values)
-            {
-                if (styleValue.Value.Property != property)
-                {
-                    continue;
-                }
-
-                if (!styleValue.Value.Selector.Match(selector))
-                {
-                    continue;
-                }
-
-                if ((styleValue.Value.State | state) != state)
-                {
-                    continue;
-                }
-
-                if (result is not null && styleValue.Value.State < result.State)
-                {
-                    continue;
-                }
-
-                result = styleValue.Value;
-            }
+            StyleValue result = this.GetMatches<T>(property, selector, state)
+                .OrderByDescending(x => x.Selector.Match(selector))
+                .FirstOrDefault();
 
             if (result?.Value is null)
             {
@@ -68,6 +46,29 @@ namespace Guppy.GUI
             value = (T)result.Value;
 
             return true;
+        }
+
+        private IEnumerable<StyleValue> GetMatches<T>(Property<T> property, Selector selector, ElementState state)
+        {
+            foreach (StyleValue styleValue in _values)
+            {
+                if (styleValue.Property != property)
+                {
+                    continue;
+                }
+
+                if ((styleValue.State | state) != state)
+                {
+                    continue;
+                }
+
+                if (styleValue.Selector.Match(selector) == 0)
+                {
+                    continue;
+                }
+
+                yield return styleValue;
+            }
         }
     }
 }
