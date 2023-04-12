@@ -21,7 +21,11 @@ namespace Guppy.GUI.Elements
             set
             {
                 _text = value;
-                this.Clean();
+
+                if(this.Initialized)
+                {
+                    this.Clean();
+                }
             }
         }
 

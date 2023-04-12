@@ -2,6 +2,7 @@
 using Guppy.GUI.Constants;
 using Guppy.GUI.Elements;
 using Guppy.GUI.Providers;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +16,16 @@ namespace Guppy.GUI.Loaders
     {
         public void Configure(IStyleSheet styleSheet)
         {
-            styleSheet.Configure(Selector.Create<Label>(ElementNames.TextInputLabel), manager =>
+            styleSheet.Configure(Selector.Create<TextInput>(), textInput =>
             {
-                manager.Set(Property.Alignment, new Alignment(VerticalAlignment.Center, HorizontalAlignment.LeftFit))
-                    .Set(Property.Padding, new Padding(0, 0, 0, 0));
-            })
-            .Configure(Selector.Create<TextInput>(), manager =>
-            {
-                manager.Set(Property.Alignment, Alignment.CenterLeft);
+                textInput.Configure(Selector.Create<Label>(), label =>
+                {
+                    label.Set(Property.Alignment, new Alignment(VerticalAlignment.Center, HorizontalAlignment.LeftFit))
+                        .Set(Property.Padding, new Padding(0, 0, 0, 0))
+                        .Set(Property.BackgroundColor, ElementState.Hovered, Color.Green);
+                });
+
+                textInput.Set(Property.Alignment, Alignment.CenterLeft);
             });
         }
 

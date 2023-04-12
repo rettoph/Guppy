@@ -41,5 +41,14 @@ namespace Guppy.GUI
             _styleSheet.Set<T>(property, _selector, state, resource);
             return this;
         }
+
+        public SelectorManager Configure(Selector child, Action<SelectorManager> configuration)
+        {
+            child.Parent = _selector;
+            SelectorManager manager = new SelectorManager(_styleSheet, child);
+            configuration(manager);
+
+            return this;
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace Guppy.GUI
 
         public bool Get<T>(Property<T> property, Selector selector, ElementState state, [MaybeNullWhen(false)] out T value)
         {
-            StyleValue result = this.GetMatches<T>(property, selector, state)
+            StyleValue? result = this.GetMatches<T>(property, selector, state)
                 .OrderByDescending(x => x.Selector.Match(selector))
                 .FirstOrDefault();
 

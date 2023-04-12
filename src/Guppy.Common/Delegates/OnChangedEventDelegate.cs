@@ -20,7 +20,7 @@ namespace System
         /// <param name="old"></param>
         /// <param name="value"></param>
         public static bool InvokeIf<TSender, TValue>(
-            this OnChangedEventDelegate<TSender, TValue> deltaDelegate, 
+            this OnChangedEventDelegate<TSender, TValue>? deltaDelegate, 
             bool changed, 
             TSender sender, 
             ref TValue old, 

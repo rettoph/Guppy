@@ -27,7 +27,7 @@ namespace Guppy.GUI.Elements
         protected Vector2 contentOffset;
 
         public readonly int Id;
-        public Selector Selector { get; }
+        public Selector Selector { get; private set; }
         public bool Initialized { get; protected set; }
         public ElementState State
         {
@@ -46,7 +46,7 @@ namespace Guppy.GUI.Elements
         public Alignment Alignment => _alignment.GetValue(this.State);
         public Color BackgroundColor => _backgroundColor.GetValue(this.State);
 
-        public event OnChangedEventDelegate<Element, ElementState> OnStateChanged;
+        public event OnChangedEventDelegate<Element, ElementState>? OnStateChanged;
 
         public Element(params string[] names)
         {
@@ -69,6 +69,7 @@ namespace Guppy.GUI.Elements
             _alignment = this.stage.StyleSheet.Get<Alignment>(Property.Alignment, this);
             _backgroundColor = this.stage.StyleSheet.Get<Color>(Property.BackgroundColor, this);
 
+            this.Selector.Parent = parent?.Selector;
             this.Initialized = true;
         }
 
