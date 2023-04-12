@@ -32,8 +32,8 @@ namespace Guppy.GUI
 
             result = new RectangleF()
             {
-                X = bounds.X + left,
-                Y = bounds.Y + top,
+                X = left,
+                Y = top,
                 Width = bounds.Width - left - right,
                 Height = bounds.Height - top - bottom
             };

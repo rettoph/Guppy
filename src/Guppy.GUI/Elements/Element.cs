@@ -179,7 +179,7 @@ namespace Guppy.GUI.Elements
                 throw new NotImplementedException();
             }
 
-            return this.parent.InnerBounds.Fit(_width, _height).SetLocation(PointF.Empty);
+            return this.parent.InnerBounds.Fit(_width, _height).SetLocation(this.OuterBounds.Location);
         }
 
         protected virtual void CleanOuterBounds(in RectangleF constraints, in RectangleF innerBounds, out RectangleF outerBounds)
@@ -199,10 +199,6 @@ namespace Guppy.GUI.Elements
 
         protected virtual void CleanInnerBounds(in RectangleF constraints, in RectangleF contentBounds, out RectangleF innerBounds)
         {
-            if(this is Stage)
-            {
-
-            }
             innerBounds = constraints;
 
             if (_width.Value is null)
