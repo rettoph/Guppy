@@ -51,7 +51,7 @@ namespace Guppy.GUI.Elements
                 }
                 else if(focused)
                 {
-                    this.State |= ElementState.Active;
+                    this.State |= ElementState.Focus;
                     this.State &= ~ElementState.Focused;
                 }
             }
@@ -61,7 +61,7 @@ namespace Guppy.GUI.Elements
 
                 if (pressed)
                 {
-                    this.State &= ~ElementState.Active;
+                    this.State &= ~ElementState.Focus;
                 }
             }
         }

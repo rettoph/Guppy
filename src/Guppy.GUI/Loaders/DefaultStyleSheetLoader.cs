@@ -24,7 +24,11 @@ namespace Guppy.GUI.Loaders
             {
                 textInput.Set(Property.Alignment, Alignment.CenterLeft)
                     .Set(Property.BackgroundColor, Color.White)
-                    .Set(Property.Width, 1f);
+                    .Set(Property.Width, 1f)
+                    .Set(Property.BorderColor, ElementState.Focus, new Color(134, 183, 254))
+                    .Set(Property.BorderThickness, ElementState.Focus, 2)
+                    .Set(Property.BorderColor, Color.Gray)
+                    .Set(Property.BorderThickness, 1);
 
                 textInput.Configure(Selector.Create<Label>(ElementNames.TextInputLabel), label =>
                 {

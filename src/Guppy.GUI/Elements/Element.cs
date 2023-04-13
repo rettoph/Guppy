@@ -3,6 +3,7 @@ using Guppy.GUI.Extensions.System.Drawing;
 using Guppy.MonoGame.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace Guppy.GUI.Elements
 {
@@ -20,6 +21,8 @@ namespace Guppy.GUI.Elements
         private IStyle<Padding> _padding = null!;
         private IStyle<Alignment> _alignment = null!;
         private IStyle<Color> _backgroundColor = null!;
+        private IStyle<Color> _borderColor = null!;
+        private IStyle<Unit> _borderThickness = null!;
 
         protected Stage stage;
         protected Element? parent;
@@ -45,6 +48,8 @@ namespace Guppy.GUI.Elements
         public Padding? Padding => _padding.GetValue(this.State);
         public Alignment Alignment => _alignment.GetValue(this.State);
         public Color BackgroundColor => _backgroundColor.GetValue(this.State);
+        public Color BorderColor => _borderColor.GetValue(this.State);
+        public Unit? BorderThickness => _borderThickness.GetValue(this.State);
 
         public event OnChangedEventDelegate<Element, ElementState>? OnStateChanged;
 
@@ -68,6 +73,8 @@ namespace Guppy.GUI.Elements
             _height = this.stage.StyleSheet.Get<Unit>(Property.Height, this);
             _alignment = this.stage.StyleSheet.Get<Alignment>(Property.Alignment, this);
             _backgroundColor = this.stage.StyleSheet.Get<Color>(Property.BackgroundColor, this);
+            _borderColor = this.stage.StyleSheet.Get<Color>(Property.BorderColor, this);
+            _borderThickness = this.stage.StyleSheet.Get<Unit>(Property.BorderThickness, this);
 
             this.Selector.Parent = parent?.Selector;
             this.Initialized = true;
@@ -143,6 +150,23 @@ namespace Guppy.GUI.Elements
                     texture: this.stage.Pixel,
                     destinationRectangle: new Rectangle((int)position.X, (int)position.Y, (int)this.OuterBounds.Width, (int)this.OuterBounds.Height),
                     color: color);
+            }
+
+            if(_borderColor.TryGetValue(this.State, out var borderColor) &&
+                _borderThickness.TryGetValue(this.State, out var borderThickness))
+            {
+                float thicknessX = borderThickness.Calculate(this.OuterBounds.Width);
+                float thicknessY = borderThickness.Calculate(this.OuterBounds.Height);
+
+                var topLeft = new Vector2(0, 0);
+                var bottomLeft = new Vector2(0, this.OuterBounds.Height);
+                var topRight = new Vector2(this.OuterBounds.Width, 0);
+                var bottomRight = new Vector2(this.OuterBounds.Width, this.OuterBounds.Height);
+                
+                this.stage.SpriteBatch.DrawLine(position, position + topRight, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position + topRight, position + bottomRight, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position + bottomLeft, position + bottomRight, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position + bottomLeft, position + topLeft, borderColor, thicknessX);
             }
         }
 

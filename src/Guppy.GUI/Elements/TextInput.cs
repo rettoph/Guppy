@@ -54,7 +54,7 @@ namespace Guppy.GUI.Elements
         {
             base.DrawContent(gameTime, position);
 
-            if(this.State.HasFlag(ElementState.Active))
+            if(this.State.HasFlag(ElementState.Focus))
             {
                 _timer.Update(gameTime);
                 while(_timer.Step(out _))
@@ -86,8 +86,8 @@ namespace Guppy.GUI.Elements
 
         private void HandleStateChanged(Element sender, ElementState old, ElementState value)
         {
-            bool wasActive = old.HasFlag(ElementState.Active);
-            bool isActive = value.HasFlag(ElementState.Active);
+            bool wasActive = old.HasFlag(ElementState.Focus);
+            bool isActive = value.HasFlag(ElementState.Focus);
 
             if (wasActive && !isActive)
             {

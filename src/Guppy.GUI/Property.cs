@@ -29,6 +29,9 @@ namespace Guppy.GUI
         public static readonly Property<Color> ScrollTrackColor = new();
         public static readonly Property<Color> ScrollThumbColor = new();
 
+        public static readonly Property<Unit> BorderThickness = new();
+        public static readonly Property<Color> BorderColor = new();
+
         public readonly Type Type;
         public readonly PropertyFlags Flags;
 
