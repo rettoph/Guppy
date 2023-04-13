@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    public class Stage : ScrollContainer<Element>
+    public class Stage : ScrollBox<Element>
     {
         private readonly IStyleSheetProvider _styles;
         private readonly RasterizerState _rasterizerState;
@@ -100,7 +100,7 @@ namespace Guppy.GUI
             base.Remove(element);
         }
 
-        protected override RectangleF GetConstraints()
+        protected override RectangleF GetOuterConstraints()
         {
             return new RectangleF()
             {

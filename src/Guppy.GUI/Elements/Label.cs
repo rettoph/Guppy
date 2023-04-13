@@ -62,11 +62,6 @@ namespace Guppy.GUI.Elements
         {
             base.CleanContentBounds(constraints, out contentBounds);
 
-            if (string.IsNullOrEmpty(this.Text))
-            {
-                return;
-            }
-
             if (!_font.TryGetValue(this.State, out var font))
             {
                 return;
@@ -74,7 +69,7 @@ namespace Guppy.GUI.Elements
 
             Vector2 textSize = font.MeasureString(this.Text);
             contentBounds.Width = textSize.X;
-            contentBounds.Height = textSize.Y;
+            contentBounds.Height = MathF.Max(font.LineSpacing, textSize.Y);
         }
     }
 }

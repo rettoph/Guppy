@@ -9,5 +9,6 @@ namespace Guppy.GUI.Constants
     internal sealed class ElementNames
     {
         public const string TextInputLabel = "#textinput_label";
+        public const string ScrollBox = "#scrollbox";
     }
 }

@@ -18,14 +18,21 @@ namespace Guppy.GUI.Loaders
         {
             styleSheet.Configure(Selector.Create<TextInput>(), textInput =>
             {
-                textInput.Configure(Selector.Create<Label>(), label =>
+                textInput.Set(Property.Alignment, Alignment.CenterLeft)
+                    .Set(Property.BackgroundColor, Color.LightGray)
+                    .Set(Property.Width, 1f);
+
+                textInput.Configure(Selector.Create<Label>(ElementNames.TextInputLabel), label =>
                 {
                     label.Set(Property.Alignment, new Alignment(VerticalAlignment.Center, HorizontalAlignment.LeftFit))
-                        .Set(Property.Padding, new Padding(0, 0, 0, 0))
-                        .Set(Property.BackgroundColor, ElementState.Hovered, Color.Green);
+                        .Set(Property.Padding, new Padding(0, 0, 0, 0));
                 });
-
-                textInput.Set(Property.Alignment, Alignment.CenterLeft);
+            })
+            .Configure(Selector.Create<Element>(ElementNames.ScrollBox), manager =>
+            {
+                manager.Set(Property.ScrollThumbColor, Color.DarkGray)
+                    .Set(Property.ScrollTrackColor, Color.LightGray)
+                    .Set(Property.ScrollTrackWidth, 10);
             });
         }
 

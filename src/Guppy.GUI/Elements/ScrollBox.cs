@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.GUI.Constants;
 using Guppy.Input.Messages;
 using Microsoft.Xna.Framework;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Elements
 {
-    public class ScrollContainer<T> : Container<T>, ISubscriber<CursorScroll>
+    public class ScrollBox<T> : Container<T>, ISubscriber<CursorScroll>
         where T : Element
     {
         private IStyle<int> _trackWidth = null!;
@@ -26,7 +27,7 @@ namespace Guppy.GUI.Elements
         public RectangleF TrackBounds => _trackBounds;
         public RectangleF ThumbBounds => _thumbBounds;
 
-        public ScrollContainer(params string[] names) : base(names)
+        public ScrollBox(params string[] names) : base(names.Concat(new[] { ElementNames.ScrollBox  }).ToArray())
         {
         }
 
@@ -77,6 +78,18 @@ namespace Guppy.GUI.Elements
             }
         }
 
+        protected override RectangleF GetInnerConstraints(in RectangleF outerConstraints)
+        {
+            RectangleF innerConstraints = base.GetInnerConstraints(outerConstraints);
+
+            if (_trackWidth.TryGetValue(out var width))
+            {
+                innerConstraints.Width -= width;
+            }
+
+            return innerConstraints;
+        }
+
         protected override void CleanOuterBounds(in RectangleF constraints, in RectangleF innerBounds, out RectangleF outerBounds)
         {
             base.CleanOuterBounds(constraints, innerBounds, out outerBounds);
@@ -103,11 +116,6 @@ namespace Guppy.GUI.Elements
         protected override void CleanInnerBounds(in RectangleF constraints, in RectangleF contentBounds, out RectangleF innerBounds)
         {
             base.CleanInnerBounds(constraints, contentBounds, out innerBounds);
-
-            if(_trackWidth.TryGetValue(out var width))
-            {
-                innerBounds.Width -= width;
-            }
         }
 
         protected override void CleanContentOffset(in RectangleF innerBounds, in RectangleF contentBounds, out Vector2 contentOffset)

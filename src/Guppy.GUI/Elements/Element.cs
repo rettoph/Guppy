@@ -65,7 +65,7 @@ namespace Guppy.GUI.Elements
             _inline = this.stage.StyleSheet.Get<bool>(Property.Inline, this);
             _padding = this.stage.StyleSheet.Get<Padding>(Property.Padding, this);
             _width = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
-            _height = this.stage.StyleSheet.Get<Unit>(Property.Width, this);
+            _height = this.stage.StyleSheet.Get<Unit>(Property.Height, this);
             _alignment = this.stage.StyleSheet.Get<Alignment>(Property.Alignment, this);
             _backgroundColor = this.stage.StyleSheet.Get<Color>(Property.BackgroundColor, this);
 
@@ -156,12 +156,9 @@ namespace Guppy.GUI.Elements
 
         protected internal virtual void Clean()
         {
-            RectangleF outerConstraints = this.GetConstraints();
-            RectangleF innerConstraints = outerConstraints;
-            if (_padding.TryGetValue(out var padding))
-            {
-                padding.AddPadding(in outerConstraints, out innerConstraints);
-            }
+            RectangleF outerConstraints = this.GetOuterConstraints();
+            RectangleF innerConstraints = this.GetInnerConstraints(in outerConstraints);
+            
 
             _outerBounds = outerConstraints;
             _innerBounds = innerConstraints;
@@ -172,7 +169,7 @@ namespace Guppy.GUI.Elements
             this.CleanContentOffset(in _innerBounds, in _contentBounds, out this.contentOffset);
         }
 
-        protected virtual RectangleF GetConstraints()
+        protected virtual RectangleF GetOuterConstraints()
         {
             if (this.parent is null)
             {
@@ -180,6 +177,18 @@ namespace Guppy.GUI.Elements
             }
 
             return this.parent.InnerBounds.Fit(_width, _height).SetLocation(this.OuterBounds.Location);
+        }
+
+        protected virtual RectangleF GetInnerConstraints(in RectangleF outerConstraints)
+        {
+            RectangleF innerConstraints = outerConstraints;
+
+            if (_padding.TryGetValue(out var padding))
+            {
+                padding.AddPadding(in outerConstraints, out innerConstraints);
+            }
+
+            return innerConstraints;
         }
 
         protected virtual void CleanOuterBounds(in RectangleF constraints, in RectangleF innerBounds, out RectangleF outerBounds)

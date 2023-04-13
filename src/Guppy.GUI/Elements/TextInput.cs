@@ -1,6 +1,7 @@
 ﻿using Guppy.GUI.Constants;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,23 @@ namespace Guppy.GUI.Elements
 
         private void HandleTextInput(object? sender, TextInputEventArgs e)
         {
-            this.Value += e.Character;
+            switch(e.Key)
+            {
+                case Keys.Back:
+                    if(this.Value.Length > 0)
+                    {
+                        this.Value = this.Value.Remove(this.Value.Length - 1, 1);
+                    }
+                    break;
+                default:
+                    if(this.Font?.Characters.Contains(e.Character) ?? false)
+                    {
+                        this.Value += e.Character;
+                    }
+                    break;
+            }
+
+            
             this.Clean();
         }
     }
