@@ -48,14 +48,9 @@ namespace Guppy.MonoGame.Utilities
             _gameTime.ElapsedGameTime += gameTime.ElapsedGameTime;
         }
 
-        public void Step(Func<GameTime, bool> step)
+        public void Reset()
         {
-            while (_gameTime.ElapsedGameTime >= _interval && step(_gameTime))
-            {
-                _gameTime.ElapsedGameTime -= _interval;
-
-                step(_gameTime);
-            }
+            _gameTime.ElapsedGameTime = TimeSpan.Zero;
         }
 
         public bool Step([MaybeNullWhen(false)] out GameTime gameTime)

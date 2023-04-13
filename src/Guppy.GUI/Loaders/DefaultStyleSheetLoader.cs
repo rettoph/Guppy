@@ -16,16 +16,21 @@ namespace Guppy.GUI.Loaders
     {
         public void Configure(IStyleSheet styleSheet)
         {
-            styleSheet.Configure(Selector.Create<TextInput>(), textInput =>
+            styleSheet.Configure(Selector.Create<Label>(), label =>
+            {
+                label.Set(Property.Font, Fonts.Default);
+            })
+            .Configure(Selector.Create<TextInput>(), textInput =>
             {
                 textInput.Set(Property.Alignment, Alignment.CenterLeft)
-                    .Set(Property.BackgroundColor, Color.LightGray)
+                    .Set(Property.BackgroundColor, Color.White)
                     .Set(Property.Width, 1f);
 
                 textInput.Configure(Selector.Create<Label>(ElementNames.TextInputLabel), label =>
                 {
                     label.Set(Property.Alignment, new Alignment(VerticalAlignment.Center, HorizontalAlignment.LeftFit))
-                        .Set(Property.Padding, new Padding(0, 0, 0, 0));
+                        .Set(Property.Padding, new Padding(0, 0, 0, 0))
+                        .Set(Property.Color, Color.Black);
                 });
             })
             .Configure(Selector.Create<Element>(ElementNames.ScrollBox), manager =>

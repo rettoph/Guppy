@@ -9,7 +9,6 @@ namespace Guppy.GUI.Elements
     public class Element
     {
         private static int CurrentId = 0;
-        private static PrimitiveShape _shape = new PrimitiveShape(new Vector3[5]);
 
         private ElementState _state;
         private RectangleF _outerBounds;
@@ -32,12 +31,13 @@ namespace Guppy.GUI.Elements
         public ElementState State
         {
             get => _state;
-            protected set => this.OnStateChanged.InvokeIf(_state != value, this, ref _state, value);
+            set => this.OnStateChanged.InvokeIf(_state != value, this, ref _state, value);
         }
 
         public RectangleF OuterBounds => _outerBounds;
         public RectangleF InnerBounds => _innerBounds;
         public RectangleF ContentBounds => _contentBounds;
+        public Vector2 ContentOffset => this.contentOffset;
 
         public bool Inline => _inline.GetValue(this.State);
         public Unit? Width => _width.GetValue(this.State);
@@ -123,16 +123,16 @@ namespace Guppy.GUI.Elements
 
             this.DrawInner(gameTime, position += _innerBounds.Location.AsVector2());
 
-            this.stage.Screen.Graphics.PushScissorRectangle(new Rectangle()
-            {
-                X = (int)position.X,
-                Y = (int)position.Y,
-                Width = (int)_innerBounds.Width,
-                Height = (int)_innerBounds.Height
-            });
+            // this.stage.Screen.Graphics.PushScissorRectangle(new Rectangle()
+            // {
+            //     X = (int)position.X,
+            //     Y = (int)position.Y,
+            //     Width = (int)_innerBounds.Width,
+            //     Height = (int)_innerBounds.Height
+            // });
 
             this.DrawContent(gameTime, position += this.contentOffset);
-            this.stage.Screen.Graphics.PopScissorRectangle();
+            // this.stage.Screen.Graphics.PopScissorRectangle();
         }
 
         protected virtual void DrawOuter(GameTime gameTime, Vector2 position)
