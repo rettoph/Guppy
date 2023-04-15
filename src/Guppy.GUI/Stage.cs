@@ -33,7 +33,7 @@ namespace Guppy.GUI
             IScreen screen,
             IStyleSheetProvider styles,
             ICursorProvider cursors,
-            IBus bus)
+            IBus bus) : base(Enumerable.Empty<string>())
         {
             _styles = styles;
             _rasterizerState = new RasterizerState()

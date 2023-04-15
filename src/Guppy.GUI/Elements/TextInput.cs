@@ -31,7 +31,10 @@ namespace Guppy.GUI.Elements
 
         public event OnEventDelegate<TextInput, string>? OnEntered;
 
-        public TextInput(params string[] names) : base(names)
+        public TextInput(params string[] names) : this((IEnumerable<string>)names)
+        {
+        }
+        public TextInput(IEnumerable<string> names) : base(names)
         {
             _timer = new GuppyTimer(TimeSpan.FromSeconds(0.75f));
             _label = new Label(ElementNames.TextInputLabel);
@@ -89,16 +92,16 @@ namespace Guppy.GUI.Elements
 
         private void HandleStateChanged(Element sender, ElementState old, ElementState value)
         {
-            bool wasActive = old.HasFlag(ElementState.Focused);
-            bool isActive = value.HasFlag(ElementState.Focused);
+            bool wasFocused = old.HasFlag(ElementState.Focused);
+            bool isFocused = value.HasFlag(ElementState.Focused);
 
-            if (wasActive && !isActive)
+            if (wasFocused && !isFocused)
             {
                 this.stage.Screen.Window.TextInput -= this.HandleTextInput;
                 return;
             }
 
-            if (!wasActive && isActive)
+            if (!wasFocused && isFocused)
             {
                 this.stage.Screen.Window.TextInput += this.HandleTextInput;
                 return;

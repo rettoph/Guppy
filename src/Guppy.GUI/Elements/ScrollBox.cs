@@ -27,7 +27,7 @@ namespace Guppy.GUI.Elements
         public RectangleF TrackBounds => _trackBounds;
         public RectangleF ThumbBounds => _thumbBounds;
 
-        public ScrollBox(params string[] names) : base(names.Concat(new[] { ElementNames.ScrollBox  }).ToArray())
+        public ScrollBox(IEnumerable<string> names) : base(names.Concat(ElementNames.ScrollBox.Yield()))
         {
         }
 

@@ -63,7 +63,7 @@ namespace Guppy.GUI.Services
 
             private Label _label;
 
-            public Output(Stage stage) : base(ElementNames.TerminalOutputContainer)
+            public Output(Stage stage) : base(ElementNames.TerminalOutputContainer.Yield())
             {
                 _label = this.CreateLabel(default);
 

@@ -29,7 +29,7 @@ namespace Guppy.GUI.Elements
 
         protected readonly ReadOnlyCollection<T> children;
 
-        public Container(params string[] names) : base(names)
+        public Container(IEnumerable<string> names) : base(names)
         {
             _children = new List<T>();
 

@@ -37,7 +37,10 @@ namespace Guppy.GUI.Elements
             set => _colorValue = value;
         }
 
-        public Label(params string[] names) : base(names)
+        public Label(params string[] names) : this((IEnumerable<string>)names)
+        {
+        }
+        public Label(IEnumerable<string> names) : base(names)
         {
             _textValue = string.Empty;
         }

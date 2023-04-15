@@ -53,7 +53,7 @@ namespace Guppy.GUI.Elements
 
         public event OnChangedEventDelegate<Element, ElementState>? OnStateChanged;
 
-        public Element(params string[] names)
+        public Element(IEnumerable<string> names)
         {
             this.Id = CurrentId++;
             this.parent = null!;

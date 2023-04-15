@@ -13,7 +13,7 @@ namespace Guppy.GUI.Elements
     public abstract class Input<T> : Container<T>, ISubscriber<CursorPress>
         where T : Element
     {
-        public Input(params string[] names) : base(names)
+        public Input(IEnumerable<string> names) : base(names)
         {
 
         }

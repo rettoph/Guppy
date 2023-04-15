@@ -16,7 +16,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Services
 {
-    internal sealed partial class TerminalService : SimpleDrawableGameComponent, ISubscriber<ToggleTerminal>
+    internal sealed partial class TerminalService : SimpleDrawableGameComponent, 
+        ISubscriber<ToggleTerminal>
     {
         private readonly Stage _stage;
         private readonly Output _output;
@@ -41,6 +42,7 @@ namespace Guppy.GUI.Services
 
             _stage.Add(_output);
             _stage.Add(_input);
+
             _stage.Initialize(StyleSheets.Guppy, ElementNames.Terminal);
 
             _input.OnEntered += this.HandleInputEntered;
