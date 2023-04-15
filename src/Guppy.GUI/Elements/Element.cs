@@ -182,7 +182,6 @@ namespace Guppy.GUI.Elements
         {
             RectangleF outerConstraints = this.GetOuterConstraints();
             RectangleF innerConstraints = this.GetInnerConstraints(in outerConstraints);
-            
 
             _outerBounds = outerConstraints;
             _innerBounds = innerConstraints;

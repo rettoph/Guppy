@@ -13,7 +13,7 @@ namespace Guppy.GUI
         private Selector? _parent;
 
         public readonly Type Type;
-        public readonly string[] Names;
+        public readonly List<string> Names;
         public Selector? Parent
         {
             get => _parent;
@@ -28,66 +28,60 @@ namespace Guppy.GUI
             }
         }
 
-        internal Selector(Type type, string[] names)
+        internal Selector(Type type, IEnumerable<string> names)
         {
             ThrowIf.Type.IsNotAssignableFrom<Element>(type);
             
             this.Type = type;
-            this.Names = names;
+            this.Names = new List<string>(names);
         }
 
-        private bool Check(Selector? selector, out int strength)
+        private bool Check(Selector? selector)
         {
             if (selector is null)
             {
-                strength = 0;
                 return false;
             }
 
             if (!this.Type.IsAssignableFrom(selector.Type))
             {
-                strength = 0;
                 return false;
             }
 
-            strength = 1;
-
             foreach (string name in this.Names)
             {
-                if (selector.Names.Contains(name))
+                if (!selector.Names.Contains(name))
                 {
-                    strength++;
+                    return false;
                 }
             }
 
             return true;
         }
 
-        public int Match(Selector? selector)
+        public bool Match(Selector? selector)
         {
-            int result;
             Selector? query = this;
 
-            if(!query.Check(selector, out result))
+            if(!query.Check(selector))
             {
-                return 0;
+                return false;
             }
 
             while(true)
             {
                 if(query is null)
                 {
-                    return result;
+                    return true;
                 }
 
                 if (selector is null)
                 {
-                    return 0;
+                    return false;
                 }
 
-                if (query.Check(selector, out int strength))
+                if (query.Check(selector))
                 {
-                    result += strength;
                     query = query.Parent;
                 }
 

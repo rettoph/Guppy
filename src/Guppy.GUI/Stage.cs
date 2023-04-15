@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    public class Stage : ScrollBox<Element>
+    public class Stage : Container<Element>
     {
         private readonly IStyleSheetProvider _styles;
         private readonly RasterizerState _rasterizerState;
@@ -30,7 +30,6 @@ namespace Guppy.GUI
         public readonly Texture2D Pixel;
 
         public Stage(
-            GraphicsDevice graphics,
             IScreen screen,
             IStyleSheetProvider styles,
             ICursorProvider cursors,
@@ -43,10 +42,10 @@ namespace Guppy.GUI
                 ScissorTestEnable = true,
             };
 
-            this.StyleSheet = null!;
-            this.SpriteBatch = new SpriteBatch(graphics);
-            this.PrimitiveBatch = new PrimitiveBatch<VertexPositionColor>(graphics);
             this.Screen = screen;
+            this.StyleSheet = null!;
+            this.SpriteBatch = new SpriteBatch(this.Screen.Graphics);
+            this.PrimitiveBatch = new PrimitiveBatch<VertexPositionColor>(this.Screen.Graphics);
             this.Bus = bus;
             this.Mouse = cursors.Get(Cursors.Mouse);
             this.Pixel = this.Screen.Graphics.BuildPixel();
@@ -55,18 +54,23 @@ namespace Guppy.GUI
             this.PrimitiveBatch.OnEarlyFlush += this.HandleEarlyPrimitiveFlush;
         }
 
-        public void Initialize(IStyleSheet styleSheet)
+        public void Initialize(IStyleSheet styleSheet, params string[] names)
         {
-            this.StyleSheet = styleSheet;
-            this.Initialize(this, null);
+            if (names.Length > 0)
+            {
+                this.Selector.Names.AddRange(names);
+            }
+
+            this.StyleSheet = styleSheet;            
+            base.Initialize(this, null);
             this.Clean();
         }
 
-        public void Initialize(string styleSheetName)
+        public void Initialize(string styleSheetName, params string[] names)
         {
             var styles = _styles.Get(styleSheetName);
 
-            this.Initialize(styles);
+            this.Initialize(styles, names);
         }
 
         protected internal override void Uninitialize()

@@ -1,7 +1,11 @@
 ﻿using Guppy.Common.DependencyInjection;
+using Guppy.GUI.Constants;
+using Guppy.GUI.Messages;
 using Guppy.GUI.Providers;
+using Guppy.GUI.Services;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,8 +28,14 @@ namespace Guppy.GUI.Loaders
             services.ConfigureCollection(manager =>
             {
                 manager.AddScoped<IScreen>().SetImplementationType<Screen>();
+
+                manager.AddScoped<TerminalService>().AddInterfaceAliases();
             });
-            
+
+            services.AddInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
+            {
+                (false, new ToggleTerminal())
+            });
         }
     }
 }

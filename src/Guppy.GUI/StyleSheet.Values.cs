@@ -34,8 +34,7 @@ namespace Guppy.GUI
         public bool Get<T>(Property<T> property, Selector selector, ElementState state, [MaybeNullWhen(false)] out T value)
         {
             StyleValue? result = this.GetMatches<T>(property, selector, state)
-                .OrderByDescending(x => x.Selector.Match(selector))
-                .FirstOrDefault();
+                .LastOrDefault();
 
             if (result?.Value is null)
             {
@@ -62,7 +61,7 @@ namespace Guppy.GUI
                     continue;
                 }
 
-                if (styleValue.Selector.Match(selector) == 0)
+                if (!styleValue.Selector.Match(selector))
                 {
                     continue;
                 }

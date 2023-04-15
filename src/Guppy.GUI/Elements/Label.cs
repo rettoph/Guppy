@@ -11,16 +11,17 @@ namespace Guppy.GUI.Elements
 {
     public class Label : Element
     {
-        private string _text;
+        private string _textValue;
+        private Color? _colorValue;
         private IStyle<SpriteFont> _font = null!;
         private IStyle<Color> _color = null!;
 
         public string Text
         {
-            get => _text;
+            get => _textValue;
             set
             {
-                _text = value;
+                _textValue = value;
 
                 if(this.Initialized)
                 {
@@ -30,11 +31,15 @@ namespace Guppy.GUI.Elements
         }
 
         public SpriteFont? Font => _font.GetValue(this.State);
-        public Color? Color => _color.GetValue(this.State);
+        public Color Color
+        {
+            get => _colorValue ?? _color.GetValue(this.State);
+            set => _colorValue = value;
+        }
 
         public Label(params string[] names) : base(names)
         {
-            _text = string.Empty;
+            _textValue = string.Empty;
         }
 
         protected internal override void Initialize(Stage stage, Element? parent)
@@ -55,7 +60,7 @@ namespace Guppy.GUI.Elements
                 spriteFont: _font.GetValue(this.State), 
                 text: this.Text, 
                 position: position, 
-                color: _color.GetValue(this.State));
+                color: this.Color);
         }
 
         protected override void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
