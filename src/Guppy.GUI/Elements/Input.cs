@@ -41,27 +41,27 @@ namespace Guppy.GUI.Elements
 
             bool hovered = this.State.HasFlag(ElementState.Hovered);
             bool pressed = message.Value;
-            bool focused = this.State.HasFlag(ElementState.Focused);
+            bool focused = this.State.HasFlag(ElementState.Active);
 
             if (hovered)
             {
                 if (pressed)
                 {
-                    this.State |= ElementState.Focused;
+                    this.State |= ElementState.Active;
                 }
                 else if(focused)
                 {
-                    this.State |= ElementState.Focus;
-                    this.State &= ~ElementState.Focused;
+                    this.State |= ElementState.Focused;
+                    this.State &= ~ElementState.Active;
                 }
             }
             else
             {
-                this.State &= ~ElementState.Focused;
+                this.State &= ~ElementState.Active;
 
                 if (pressed)
                 {
-                    this.State &= ~ElementState.Focus;
+                    this.State &= ~ElementState.Focused;
                 }
             }
         }

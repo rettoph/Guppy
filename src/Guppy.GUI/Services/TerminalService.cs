@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Constants;
 using Guppy.GUI.Elements;
+using Guppy.GUI.Messages;
 using Guppy.GUI.Providers;
 using Guppy.Input.Providers;
 using Guppy.MonoGame.Services;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Services
 {
-    internal sealed partial class TerminalService : SimpleDrawableGameComponent
+    internal sealed partial class TerminalService : SimpleDrawableGameComponent, ISubscriber<ToggleTerminal>
     {
         private readonly Stage _stage;
         private readonly Output _output;
@@ -29,7 +30,14 @@ namespace Guppy.GUI.Services
             _stage = stage;
             _commands = commands;
             _output = new Output(_stage);
-            _input = new TextInput(ElementNames.TerminalInput);
+            _input = new TextInput(ElementNames.TerminalInput)
+            {
+                Blacklist =
+                {
+                    '`',
+                    '~'
+                }
+            };
 
             _stage.Add(_output);
             _stage.Add(_input);
@@ -46,11 +54,17 @@ namespace Guppy.GUI.Services
 
         public override void Draw(GameTime gameTime)
         {
+            _input.State |= ElementState.Focused;
             _stage.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)
         {
+        }
+
+        public void Process(in ToggleTerminal message)
+        {
+            this.Visible = !this.Visible;
         }
     }
 }

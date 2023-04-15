@@ -12,7 +12,7 @@ namespace Guppy.GUI
     {
         None = 0,
         Hovered = 1,
-        Focused = 4,
-        Focus = 2,
+        Focused = 2,
+        Active = 4,
     }
 }

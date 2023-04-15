@@ -27,6 +27,8 @@ namespace Guppy.GUI.Elements
         public SpriteFont? Font => _label.Font;
         public Color? Color => _label.Color;
 
+        public readonly List<char> Blacklist;
+
         public event OnEventDelegate<TextInput, string>? OnEntered;
 
         public TextInput(params string[] names) : base(names)
@@ -34,6 +36,7 @@ namespace Guppy.GUI.Elements
             _timer = new GuppyTimer(TimeSpan.FromSeconds(0.75f));
             _label = new Label(ElementNames.TextInputLabel);
             this.Add(_label);
+            this.Blacklist = new List<char>();
         }
 
         protected internal override void Initialize(Stage stage, Element? parent)
@@ -54,7 +57,7 @@ namespace Guppy.GUI.Elements
         {
             base.DrawContent(gameTime, position);
 
-            if(this.State.HasFlag(ElementState.Focus))
+            if(this.State.HasFlag(ElementState.Focused))
             {
                 _timer.Update(gameTime);
                 while(_timer.Step(out _))
@@ -86,8 +89,8 @@ namespace Guppy.GUI.Elements
 
         private void HandleStateChanged(Element sender, ElementState old, ElementState value)
         {
-            bool wasActive = old.HasFlag(ElementState.Focus);
-            bool isActive = value.HasFlag(ElementState.Focus);
+            bool wasActive = old.HasFlag(ElementState.Focused);
+            bool isActive = value.HasFlag(ElementState.Focused);
 
             if (wasActive && !isActive)
             {
@@ -116,10 +119,17 @@ namespace Guppy.GUI.Elements
                     this.OnEntered?.Invoke(this, this.Value);
                     break;
                 default:
-                    if(this.Font?.Characters.Contains(e.Character) ?? false)
+                    if((this.Font?.Characters.Contains(e.Character) ?? false) == false)
                     {
-                        this.Value += e.Character;
+                        break;
                     }
+
+                    if(this.Blacklist.Contains(e.Character))
+                    {
+                        break;
+                    }
+
+                    this.Value += e.Character;
                     break;
             }
 

@@ -57,6 +57,7 @@ namespace Guppy.GUI.Services
                 }
             }
 
+            private const int MaxLines = 512;
             private const char NewLineChar = '\n';
             private const char CarriageReturnChar = '\r';
 
@@ -111,6 +112,11 @@ namespace Guppy.GUI.Services
             {
                 _label = new Label(ElementNames.TerminalOutput);
                 _label.Color = color;
+
+                while(this.children.Count >= MaxLines)
+                {
+                    this.Remove(this.children.First());
+                }
 
                 return _label;
             }

@@ -24,8 +24,8 @@ namespace Guppy.GUI.Loaders
                 textInput.Set(Property.Alignment, Alignment.CenterLeft)
                     .Set(Property.BackgroundColor, Color.White)
                     .Set(Property.Width, 1f)
-                    .Set(Property.BorderColor, ElementState.Focus, new Color(134, 183, 254))
-                    .Set(Property.BorderThickness, ElementState.Focus, 2)
+                    .Set(Property.BorderColor, ElementState.Focused, new Color(134, 183, 254))
+                    .Set(Property.BorderThickness, ElementState.Focused, 2)
                     .Set(Property.BorderColor, Color.Gray)
                     .Set(Property.BorderThickness, 1)
                     .Set(Property.Padding, new Padding(5, 7, 5, 7));
