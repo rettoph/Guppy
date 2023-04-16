@@ -46,6 +46,9 @@ namespace Guppy.GUI.Services
             _stage.Initialize(StyleSheets.Guppy, ElementNames.Terminal);
 
             _input.OnEntered += this.HandleInputEntered;
+
+            this.Visible = false;
+            this.IsEnabled = false;
         }
 
         private void HandleInputEntered(TextInput sender, string args)
