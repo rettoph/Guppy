@@ -15,6 +15,7 @@ namespace Guppy.GUI.Elements
         private RectangleF _outerBounds;
         private RectangleF _innerBounds;
         private RectangleF _contentBounds;
+        private bool _visible;
         private IStyle<bool> _inline = null!;
         private IStyle<Unit> _width = null!;
         private IStyle<Unit> _height = null!;
@@ -36,6 +37,11 @@ namespace Guppy.GUI.Elements
             get => _state;
             set => this.OnStateChanged.InvokeIf(_state != value, this, ref _state, value);
         }
+        public bool Visible
+        {
+            get => _visible;
+            set => this.OnVisibleChanged.InvokeIf(_visible != value, this, ref _visible, value);
+        }
 
         public RectangleF OuterBounds => _outerBounds;
         public RectangleF InnerBounds => _innerBounds;
@@ -52,6 +58,7 @@ namespace Guppy.GUI.Elements
         public Unit? BorderThickness => _borderThickness.GetValue(this.State);
 
         public event OnChangedEventDelegate<Element, ElementState>? OnStateChanged;
+        public event OnChangedEventDelegate<Element, bool>? OnVisibleChanged;
 
         public Element(IEnumerable<string> names)
         {
@@ -60,6 +67,7 @@ namespace Guppy.GUI.Elements
             this.stage = null!;
 
             this.Selector = new Selector(this.GetType(), names);
+            this.Visible = true;
         }
 
         protected internal virtual void Initialize(Stage stage, Element? parent)

@@ -36,13 +36,6 @@ namespace Guppy.GUI.Elements
         {
             _label = new Label(ElementNames.TextInputLabel);
             this.Add(_label);
-
-            this.OnStateChanged += this.HandleStateChanged;
-        }
-
-        private void HandleStateChanged(Element sender, ElementState old, ElementState value)
-        {
-            this.Text = value.ToString();
         }
     }
 }

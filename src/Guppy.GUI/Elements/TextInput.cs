@@ -72,8 +72,8 @@ namespace Guppy.GUI.Elements
                 {
                     Vector2 offset = new Vector2()
                     {
-                        X = this.Font!.MeasureString(this.Value).X + _label.ContentOffset.X,
-                        Y = 0
+                        X = (_label.OuterBounds.Width + this.Font!.MeasureString(this.Value).X) / 2,
+                        Y = _label.OuterBounds.Y + _label.InnerBounds.Y
                     };
 
                     this.stage.SpriteBatch.Draw(
@@ -83,7 +83,7 @@ namespace Guppy.GUI.Elements
                         color: this.Color!.Value,
                         rotation: 0,
                         origin: Vector2.Zero,
-                        scale: new Vector2(this.Font!.Spacing, this.Font!.LineSpacing),
+                        scale: new Vector2(1, this.Font!.LineSpacing),
                         effects: SpriteEffects.None,
                         layerDepth: 0);
                 }

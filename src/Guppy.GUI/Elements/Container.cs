@@ -26,14 +26,18 @@ namespace Guppy.GUI.Elements
             }
         }
         private readonly IList<T> _children;
+        private readonly IList<T> _visible;
 
         protected readonly ReadOnlyCollection<T> children;
+        protected readonly ReadOnlyCollection<T> visible;
 
         public Container(IEnumerable<string> names) : base(names)
         {
             _children = new List<T>();
+            _visible = new List<T>();
 
             this.children = new ReadOnlyCollection<T>(_children);
+            this.visible = new ReadOnlyCollection<T>(_visible);
         }
 
         protected internal override void Initialize(Stage stage, Element? parent)
@@ -59,6 +63,7 @@ namespace Guppy.GUI.Elements
         protected virtual void Add(T child)
         {
             _children.Add(child);
+            child.OnVisibleChanged += this.HandleVisibleChanged;
 
             if(!this.Initialized)
             {
@@ -76,6 +81,8 @@ namespace Guppy.GUI.Elements
                 return;
             }
 
+            child.OnVisibleChanged -= this.HandleVisibleChanged;
+
             if (!this.Initialized)
             {
                 return;
@@ -89,10 +96,24 @@ namespace Guppy.GUI.Elements
         {
             base.DrawContent(gameTime, position);
 
-            foreach (T child in _children)
+            foreach (T child in _visible)
             {
                 child.TryDraw(gameTime, position);
             }
+        }
+
+        protected internal override void Clean()
+        {
+            _visible.Clear();
+            foreach (T child in _children)
+            {
+                if (child.Visible)
+                {
+                    _visible.Add(child);
+                }
+            }
+
+            base.Clean();
         }
 
         protected override void CleanContentBounds(in RectangleF constraints, out RectangleF contentBounds)
@@ -105,7 +126,7 @@ namespace Guppy.GUI.Elements
             float maxRowWidth = 0f;
             float rowsHeight = 0f;
 
-            foreach (T child in _children)
+            foreach (T child in _visible)
             {
                 child.Clean();
 
@@ -141,7 +162,7 @@ namespace Guppy.GUI.Elements
             int element = 0;
             row = Rows[index];
             PointF position = new PointF(row.AlignX(maxRowWidth, this.Alignment.Horizontal), 0);
-            foreach (T child in _children)
+            foreach (T child in _visible)
             {
                 if (element == row.Elements)
                 {
@@ -160,6 +181,11 @@ namespace Guppy.GUI.Elements
 
             contentBounds.Width = maxRowWidth;
             contentBounds.Height = rowsHeight;
+        }
+
+        private void HandleVisibleChanged(Element sender, bool old, bool value)
+        {
+            this.Clean();
         }
     }
 }
