@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Providers
 {
-    public interface IStyleSheetProvider
+    public interface IStageProvider
     {
-        IStyleSheet Get(string name);
+        Stage Create(params string[] names);
     }
 }

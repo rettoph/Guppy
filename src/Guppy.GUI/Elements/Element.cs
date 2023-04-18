@@ -9,7 +9,7 @@ namespace Guppy.GUI.Elements
 {
     public class Element
     {
-        private static int CurrentId = 0;
+        private static int CurrentIndex = 0;
 
         private ElementState _state;
         private RectangleF _outerBounds;
@@ -29,7 +29,7 @@ namespace Guppy.GUI.Elements
         protected Element? parent;
         protected Vector2 contentOffset;
 
-        public readonly int Id;
+        public readonly int Index;
         public Selector Selector { get; private set; }
         public bool Initialized { get; protected set; }
         public ElementState State
@@ -62,7 +62,7 @@ namespace Guppy.GUI.Elements
 
         public Element(IEnumerable<string> names)
         {
-            this.Id = CurrentId++;
+            this.Index = CurrentIndex++;
             this.parent = null!;
             this.stage = null!;
 

@@ -18,12 +18,9 @@ namespace Guppy.GUI.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddService<IStyleSheetProvider>()
+            services.AddService<IStageProvider>()
                 .SetLifetime(ServiceLifetime.Scoped)
-                .SetImplementationType<StyleSheetProvider>();
-
-            services.AddService<Stage>()
-                .SetLifetime(ServiceLifetime.Transient);
+                .SetImplementationType<StageProvider>();
 
             services.ConfigureCollection(manager =>
             {

@@ -25,10 +25,10 @@ namespace Guppy.GUI.Services
         private readonly ICommandService _commands;
 
         public TerminalService(
-            Stage stage,
+            IStageProvider stages,
             ICommandService commands)
         {
-            _stage = stage;
+            _stage = stages.Create(ElementNames.Terminal);
             _commands = commands;
             _output = new Output(_stage);
             _input = new TextInput(ElementNames.TerminalInput)
@@ -42,8 +42,6 @@ namespace Guppy.GUI.Services
 
             _stage.Add(_output);
             _stage.Add(_input);
-
-            _stage.Initialize(StyleSheets.Guppy, ElementNames.Terminal);
 
             _input.OnEntered += this.HandleInputEntered;
 

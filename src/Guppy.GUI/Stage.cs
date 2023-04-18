@@ -19,23 +19,23 @@ namespace Guppy.GUI
 {
     public class Stage : Container<Element>
     {
-        private readonly IStyleSheetProvider _styles;
         private readonly RasterizerState _rasterizerState;
-        public IStyleSheet StyleSheet { get; private set; }
+
         public readonly SpriteBatch SpriteBatch;
         public readonly PrimitiveBatch<VertexPositionColor> PrimitiveBatch;
         public readonly IScreen Screen;
         public readonly IBus Bus;
         public readonly ICursor Mouse;
         public readonly Texture2D Pixel;
+        public readonly IStyleSheet StyleSheet;
 
         public Stage(
+            string[] names,
+            IStyleSheet styleSheet,
             IScreen screen,
-            IStyleSheetProvider styles,
             ICursorProvider cursors,
-            IBus bus) : base(Enumerable.Empty<string>())
+            IBus bus) : base(names)
         {
-            _styles = styles;
             _rasterizerState = new RasterizerState()
             {
                 MultiSampleAntiAlias = true,
@@ -43,7 +43,7 @@ namespace Guppy.GUI
             };
 
             this.Screen = screen;
-            this.StyleSheet = null!;
+            this.StyleSheet = styleSheet;
             this.SpriteBatch = new SpriteBatch(this.Screen.Graphics);
             this.PrimitiveBatch = new PrimitiveBatch<VertexPositionColor>(this.Screen.Graphics);
             this.Bus = bus;
@@ -52,30 +52,9 @@ namespace Guppy.GUI
 
             this.Screen.Window.ClientSizeChanged += this.HandleClientSizeChanged;
             this.PrimitiveBatch.OnEarlyFlush += this.HandleEarlyPrimitiveFlush;
-        }
 
-        public void Initialize(IStyleSheet styleSheet, params string[] names)
-        {
-            if (names.Length > 0)
-            {
-                this.Selector.Names.AddRange(names);
-            }
-
-            this.StyleSheet = styleSheet;            
             base.Initialize(this, null);
             this.Clean();
-        }
-
-        public void Initialize(string styleSheetName, params string[] names)
-        {
-            var styles = _styles.Get(styleSheetName);
-
-            this.Initialize(styles, names);
-        }
-
-        protected internal override void Uninitialize()
-        {
-            base.Uninitialize();
         }
 
         public void Draw(GameTime gameTime)

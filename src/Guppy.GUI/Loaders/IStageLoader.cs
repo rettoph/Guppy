@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Utilities;
 using Guppy.GUI.Providers;
-using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Loaders
 {
-    [Service<IStyleSheetLoader>(ServiceLifetime.Scoped, true)]
-    public interface IStyleSheetLoader
+    [Service<IStageLoader>(ServiceLifetime.Scoped, true)]
+    public interface IStageLoader
     {
-        void Configure(IStyleSheet styleSheet);
-        void Load(IStyleSheetProvider styles);
+        BlockList StageBlockList { get; }
+
+        void Load(Stage stage);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.Common.Attributes;
+using Guppy.Common.Utilities;
 using Guppy.GUI.Constants;
 using Guppy.GUI.Elements;
-using Guppy.GUI.Providers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,11 +14,19 @@ using System.Threading.Tasks;
 namespace Guppy.GUI.Loaders
 {
     [AutoLoad]
-    internal sealed class DefaultStyleSheetLoader : IStyleSheetLoader
+    internal sealed class StageLoader_Default : IStageLoader, ISortable
     {
-        public void Configure(IStyleSheet styleSheet)
+        public BlockList StageBlockList => BlockList.AllowAll;
+
+        public bool GetOrder(Type type, out int order)
         {
-            styleSheet.Configure(Selector.Create<Label>(), label =>
+            order = -1;
+            return true;
+        }
+
+        public void Load(Stage stage)
+        {
+            stage.StyleSheet.Configure(Selector.Create<Label>(), label =>
             {
                 label.Set(Property.Font, Fonts.Default);
             }).Configure(Selector.Create<TextInput>(), textInput =>
@@ -41,36 +51,6 @@ namespace Guppy.GUI.Loaders
                 manager.Set(Property.ScrollThumbColor, Color.DarkGray)
                     .Set(Property.ScrollTrackColor, Color.LightGray)
                     .Set(Property.ScrollTrackWidth, 10);
-            });
-        }
-
-        public void Load(IStyleSheetProvider styles)
-        {
-            Unit TerminalInputHeight = 35;
-
-            styles.Get(StyleSheets.Guppy).Configure(Selector.Create<Stage>(ElementNames.Terminal), terminal =>
-            {
-                terminal.Configure(Selector.Create<Element>(ElementNames.TerminalOutputContainer), output =>
-                {
-                    output.Set(Property.Height, 1f - TerminalInputHeight)
-                        .Set(Property.Width, 1f)
-                        .Set(Property.Padding, new Padding(7, 7, 7, 7))
-                        .Set(Property.Alignment, Alignment.BottomLeft);
-
-                    output.Configure(Selector.Create<Label>(ElementNames.TerminalOutput), label =>
-                    {
-                        label.Set(Property.Padding, new Padding(0, 0, 0, 0));
-                    });
-                }).Configure(Selector.Create<TextInput>(ElementNames.TerminalInput), input =>
-                {
-                    input.Set(Property.BackgroundColor, Color.Black)
-                        .Set(Property.Height, TerminalInputHeight);
-
-                    input.Configure(Selector.Create<Label>(ElementNames.TextInputLabel), label =>
-                    {
-                        label.Set(Property.Color, Color.White);
-                    });
-                });
             });
         }
     }
