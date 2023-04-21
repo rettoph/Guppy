@@ -31,6 +31,9 @@ namespace Guppy.GUI.Elements
         protected readonly ReadOnlyCollection<T> children;
         protected readonly ReadOnlyCollection<T> visible;
 
+        public Container(params string[] names) : this((IEnumerable<string>)names)
+        {
+        }
         public Container(IEnumerable<string> names) : base(names)
         {
             _children = new List<T>();
@@ -60,7 +63,7 @@ namespace Guppy.GUI.Elements
             }
         }
 
-        protected virtual void Add(T child)
+        public virtual void Add(T child)
         {
             _children.Add(child);
             child.OnVisibleChanged += this.HandleVisibleChanged;
@@ -71,10 +74,10 @@ namespace Guppy.GUI.Elements
             }
 
             child.Initialize(this.stage, this);
-            this.Clean();
+            (this.parent ?? this)?.Clean();
         }
 
-        protected virtual void Remove(T child)
+        public virtual void Remove(T child)
         {
             if(!_children.Remove(child))
             {

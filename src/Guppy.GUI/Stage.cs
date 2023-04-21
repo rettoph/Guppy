@@ -21,6 +21,8 @@ namespace Guppy.GUI
     {
         private readonly RasterizerState _rasterizerState;
 
+        internal readonly IList<Element> elements;
+
         public readonly SpriteBatch SpriteBatch;
         public readonly PrimitiveBatch<VertexPositionColor> PrimitiveBatch;
         public readonly IScreen Screen;
@@ -41,6 +43,8 @@ namespace Guppy.GUI
                 MultiSampleAntiAlias = true,
                 ScissorTestEnable = true,
             };
+
+            this.elements = new List<Element>();
 
             this.Screen = screen;
             this.StyleSheet = styleSheet;
@@ -108,9 +112,15 @@ namespace Guppy.GUI
                 rasterizerState: _rasterizerState);
         }
 
-        public void Process(in CursorMove message)
+        public IEnumerable<Element> Query(Selector query)
         {
+            return this.elements.Where(e => query.Match(e.Selector));
+        }
 
+        public IEnumerable<T> Query<T>(Selector query)
+            where T : Element
+        {
+            return this.Query(query).OfType<T>();
         }
     }
 }

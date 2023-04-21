@@ -15,6 +15,8 @@ namespace Guppy.MonoGame
 
         public ReadOnlyCollection<MenuItem> Items;
 
+        public event OnEventDelegate<Menu, MenuItem>? OnItemAdded;
+
         public Menu(string name)
         {
             _items = new List<MenuItem>();
@@ -27,6 +29,7 @@ namespace Guppy.MonoGame
         public void Add(MenuItem item)
         {
             _items.Add(item);
+            this.OnItemAdded?.Invoke(this, item);
         }
 
         public Menu Add(params MenuItem[] items)

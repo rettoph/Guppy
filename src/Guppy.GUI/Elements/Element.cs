@@ -85,11 +85,15 @@ namespace Guppy.GUI.Elements
             _borderThickness = this.stage.StyleSheet.Get<Unit>(Property.BorderThickness, this);
 
             this.Selector.Parent = parent?.Selector;
+            this.stage.elements.Add(this);
+
             this.Initialized = true;
         }
 
         protected internal virtual void Uninitialize()
         {
+            this.stage.elements.Remove(this);
+
             this.parent = null;
             this.stage = null!;
 

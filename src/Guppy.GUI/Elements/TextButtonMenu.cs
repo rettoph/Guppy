@@ -13,12 +13,13 @@ namespace Guppy.GUI.Elements
 
         public TextButtonMenu(Menu menu, params string[] names) : this(menu, (IEnumerable<string>)names)
         {
-            _menu = menu;
         }
 
         public TextButtonMenu(Menu menu, IEnumerable<string> names) : base(names)
         {
             _menu = menu;
+
+            _menu.OnItemAdded += this.HandleMenuItemAdded;
         }
 
         protected internal override void Initialize(Stage stage, Element? parent)
@@ -30,9 +31,18 @@ namespace Guppy.GUI.Elements
                 this.Add(new TextButton()
                 {
                     Text = item.Label,
-                    OnReleased = item.OnClick
+                    ReleasedMessage = item.OnClick
                 });
             }
+        }
+
+        private void HandleMenuItemAdded(Menu sender, MenuItem item)
+        {
+            this.Add(new TextButton()
+            {
+                Text = item.Label,
+                ReleasedMessage = item.OnClick
+            });
         }
     }
 }

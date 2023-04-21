@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInput<TData>(this IServiceCollection services, string key, ButtonSource defaultSource, (bool, TData)[] data)
             where TData : IMessage
         {
-            return services.AddSingleton(typeof(IButton), new Button<TData>(key, defaultSource, data));
+            return services.AddScoped(typeof(IButton), p => new Button<TData>(key, defaultSource, data));
         }
     }
 }

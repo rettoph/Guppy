@@ -14,8 +14,11 @@ namespace Guppy.GUI.Elements
     public class Button<T> : Input<T>
         where T : Element
     {
-        public IMessage? OnPressed { get; set; }
-        public IMessage? OnReleased { get; set; }
+        public IMessage? PressedMessage { get; set; }
+        public IMessage? ReleasedMessage { get; set; }
+
+        public event OnEventDelegate<Button<T>, IMessage?>? OnPressed;
+        public event OnEventDelegate<Button<T>, IMessage?>? OnReleased;
 
         public Button(params string[] names) : this((IEnumerable<string>)names)
         {
@@ -31,15 +34,27 @@ namespace Guppy.GUI.Elements
             bool isActive = value.HasFlag(ElementState.Active);
             bool isHovered = value.HasFlag(ElementState.Hovered);
 
-            if(!wasActive && wasActive && this.OnPressed is not null)
+            if(!wasActive && wasActive)
             {
-                this.stage.Bus.Enqueue(this.OnPressed);
+                if (this.PressedMessage is not null)
+                {
+                    this.stage.Bus.Enqueue(this.PressedMessage);
+                }
+
+                this.OnPressed?.Invoke(this, this.PressedMessage);
+                
                 return;
             }
 
-            if(wasActive && !isActive && isHovered && this.OnReleased is not null)
+            if(wasActive && !isActive && isHovered)
             {
-                this.stage.Bus.Enqueue(this.OnReleased);
+                if (this.ReleasedMessage is not null)
+                {
+                    this.stage.Bus.Enqueue(this.ReleasedMessage);
+                }
+
+                this.OnReleased?.Invoke(this, this.ReleasedMessage);
+
                 return;
             }
         }
