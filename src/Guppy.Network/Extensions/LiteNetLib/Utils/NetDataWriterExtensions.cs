@@ -20,5 +20,10 @@ namespace LiteNetLib.Utils
         {
             writer.Put(Convert.ToByte(value));
         }
+
+        public static void Put(this NetDataWriter writer, Guid value)
+        {
+            writer.Put(value.ToByteArray());
+        }
     }
 }

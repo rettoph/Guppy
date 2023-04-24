@@ -21,5 +21,13 @@ namespace LiteNetLib.Utils
             var byteVal = reader.GetByte();
             return Unsafe.As<byte, TEnum>(ref byteVal);
         }
+
+        public static Guid GetGuid(this NetDataReader reader)
+        {
+            byte[] buffer = new byte[16];
+            reader.GetBytes(buffer, 16);
+
+            return new Guid(buffer);
+        }
     }
 }
