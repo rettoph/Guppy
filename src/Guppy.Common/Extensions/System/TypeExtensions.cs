@@ -93,5 +93,18 @@ namespace System
                   interfaceType.GetCustomAttributes(attributeType, true)))
               .Cast<T>();
         }
+
+        public static IEnumerable<Type> GetConstructedGenericTypes(this Type type, Type genericTypeDefinition)
+        {
+            var interfaceTypes = type.GetInterfaces();
+
+            foreach (var interfaceType in interfaceTypes)
+            {
+                if (interfaceType.IsConstructedGenericType && interfaceType.GetGenericTypeDefinition() == genericTypeDefinition)
+                {
+                    yield return interfaceType;
+                }
+            }
+        }
     }
 }

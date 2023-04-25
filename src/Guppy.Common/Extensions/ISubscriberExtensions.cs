@@ -15,21 +15,16 @@ namespace Guppy.Common.Extensions
 
         public static IEnumerable<Subscription> GetSubscriptions(this ISubscriber subscriber)
         {
-            var interfaceTypes = subscriber.GetType().GetInterfaces();
-
-            foreach (var interfaceType in interfaceTypes)
+            foreach (var interfaceType in subscriber.GetType().GetConstructedGenericTypes(typeof(ISubscriber<>)))
             {
-                if (interfaceType.IsConstructedGenericType && interfaceType.GetGenericTypeDefinition() == typeof(ISubscriber<>))
-                {
-                    var messageType = interfaceType.GetGenericArguments()[0];
+                var messageType = interfaceType.GetGenericArguments()[0];
 
-                    yield return new Subscription(
-                        Subscriber: subscriber,
-                        Type: interfaceType,
-                        Subscribe: BrokerMethod(subscriber, messageType, SubscribeMethodInfo),
-                        Unsubscribe: BrokerMethod(subscriber, messageType, UnsubscribeMethodInfo)
-                    );
-                }
+                yield return new Subscription(
+                    Subscriber: subscriber,
+                    Type: interfaceType,
+                    Subscribe: BrokerMethod(subscriber, messageType, SubscribeMethodInfo),
+                    Unsubscribe: BrokerMethod(subscriber, messageType, UnsubscribeMethodInfo)
+                );
             }
         }
 
