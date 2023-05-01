@@ -42,31 +42,52 @@ namespace Guppy.Common.Collections
                 elementSelector: v => v.Item1);
         }
 
-        public void Add(T1 t1, T2 t2)
+        public bool TryAdd(T1 t1, T2 t2)
         {
-            if(_forward.TryAdd(t1, t2))
+            if(!_forward.TryAdd(t1, t2))
             {
-                if(!_reverse.TryAdd(t2, t1))
-                {
-                    _forward.Remove(t1);
-                }
+                return false;
             }
-        }
 
-        public void Remove(T1 t1)
-        {
-            if(_forward.Remove(t1, out var t2))
-            {
-                _reverse.Remove(t2);
-            }
-        }
-
-        public void Remove(T2 t2)
-        {
-            if (_reverse.Remove(t2, out var t1))
+            if (!_reverse.TryAdd(t2, t1))
             {
                 _forward.Remove(t1);
+                return false;
             }
+
+            return true;
+        }
+
+        public bool TryRemove(T1 t1)
+        {
+            if (!_forward.Remove(t1, out var t2))
+            {
+                return false;
+            }
+
+            if (!_reverse.Remove(t2))
+            {
+                _forward.Add(t1, t2);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool TryRemove(T2 t2)
+        {
+            if (!_reverse.Remove(t2, out var t1))
+            {
+                return false;
+            }
+
+            if(!_forward.Remove(t1))
+            {
+                _reverse.Add(t2, t1);
+                return false;
+            }
+
+            return true;
         }
 
         public bool TryGet(T1 key1, [MaybeNullWhen(false)] out T2 value2)
