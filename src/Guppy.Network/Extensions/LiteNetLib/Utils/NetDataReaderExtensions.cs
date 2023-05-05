@@ -29,5 +29,16 @@ namespace LiteNetLib.Utils
 
             return new Guid(buffer);
         }
+
+        public static unsafe UInt128 GetUInt128(this NetDataReader reader)
+        {
+            UInt128 value = new UInt128();
+            ulong* values = (ulong*)&value;
+
+            values[0] = reader.GetULong();
+            values[1] = reader.GetULong();
+
+            return value;
+        }
     }
 }

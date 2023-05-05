@@ -25,5 +25,13 @@ namespace LiteNetLib.Utils
         {
             writer.Put(value.ToByteArray());
         }
+
+        public static unsafe void Put(this NetDataWriter writer, UInt128 value)
+        {
+            ulong* values = (ulong*)&value;
+
+            writer.Put(values[0]);
+            writer.Put(values[1]);
+        }
     }
 }
