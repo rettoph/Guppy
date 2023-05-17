@@ -76,6 +76,7 @@ namespace Guppy.GUI.Services
                 switch(c)
                 {
                     case NewLineChar:
+                        this.Break();
                         this.CreateLabel(color);
                         break;
                     case CarriageReturnChar:
@@ -119,6 +120,11 @@ namespace Guppy.GUI.Services
                 }
 
                 return _label;
+            }
+
+            private void Break()
+            {
+                this.Add(new Label(ElementNames.TerminalBreak));
             }
         }
     }

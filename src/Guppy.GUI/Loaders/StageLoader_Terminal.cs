@@ -32,6 +32,12 @@ namespace Guppy.GUI.Loaders
 
                     output.Configure(Selector.Create<Label>(ElementNames.TerminalOutput), label =>
                     {
+                        label.Set(Property.Padding, new Padding(0, 0, 0, 0))
+                            .Set(Property.Inline, true);
+                    });
+
+                    output.Configure(Selector.Create<Label>(ElementNames.TerminalBreak), label =>
+                    {
                         label.Set(Property.Padding, new Padding(0, 0, 0, 0));
                     });
                 }).Configure(Selector.Create<TextInput>(ElementNames.TerminalInput), input =>

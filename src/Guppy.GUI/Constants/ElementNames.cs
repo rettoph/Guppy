@@ -13,6 +13,7 @@ namespace Guppy.GUI.Constants
         public const string Terminal = "#terminal";
         public const string TerminalOutputContainer = $"{Terminal}#output_container";
         public const string TerminalOutput = $"{Terminal}#output";
+        public const string TerminalBreak = $"{Terminal}#break";
         public const string TerminalInput = $"{Terminal}#input";
     }
 }

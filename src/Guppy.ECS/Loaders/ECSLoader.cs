@@ -1,4 +1,5 @@
 ﻿using Guppy.ECS.Providers;
+using Guppy.ECS.Services;
 using Guppy.Loaders;
 using Microsoft.Extensions.DependencyInjection;
 using MonoGame.Extended.Entities;
@@ -14,6 +15,7 @@ namespace Guppy.ECS.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IEntityService, EntityService>();
             services.AddScoped<IWorldProvider, WorldProvider>();
             services.AddScoped<World>(p => p.GetRequiredService<IWorldProvider>().Get(null));
         }
