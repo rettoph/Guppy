@@ -28,8 +28,6 @@ namespace Guppy.MonoGame.Loaders
             services.AddScoped<IMenuProvider, MenuProvider>();
             services.AddScoped<IGuppyLoader, DebugMenuLoader>();
 
-            services.AddSingleton<ICommandService, CommandService>();
-
             services.AddSingleton<IGlobalLoader, GuppyProviderLoader>();
 
             services.AddFilter(new GuppyFilter<IGameComponent, FrameableGuppy>());
