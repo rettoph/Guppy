@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace Guppy.Commands
 {
-    public sealed class Option
+    public sealed class Argument
     {
         public readonly PropertyInfo PropertyInfo;
-        public readonly string[] Names;
+        public readonly string Name;
         public readonly string? Description;
-        public readonly bool Required;
 
-        public Option(PropertyInfo propertyInfo, string[] names, string? description, bool required)
+        public Argument(PropertyInfo propertyInfo, string name, string? description)
         {
             this.PropertyInfo = propertyInfo;
-            this.Names = names;
+            this.Name = name;
             this.Description = description;
-            this.Required = required;
         }
     }
 }

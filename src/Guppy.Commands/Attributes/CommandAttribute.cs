@@ -27,7 +27,8 @@ namespace Guppy.Commands.Attributes
                 parent: this.Parent,
                 name: this.Name ?? classType.Name.LowerCaseFirstLetter(),
                 description: this.Description,
-                options: FactoryAttribute<Option>.GetAll(classType));
+                options: FactoryAttribute<Option>.GetAll(classType),
+                arguments: FactoryAttribute<Argument>.GetAll(classType));
 
             configuration.Services.AddSingleton<Command>(command);
         }

@@ -14,13 +14,13 @@ namespace Guppy.Commands.Arguments
     [AttributeUsage(AttributeTargets.Property)]
     public class OptionAttribute : FactoryAttribute<Option>
     {
-        public readonly string? Name;
+        public readonly string[]? Names;
         public readonly string? Description;
         public readonly bool Required;
 
-        public OptionAttribute(string? name = null, string? description = null, bool required = false)
+        public OptionAttribute(string[]? names = null, string? description = null, bool required = false)
         {
-            this.Name = name;
+            this.Names = names;
             this.Description = description;
             this.Required = required;
         }
@@ -29,7 +29,7 @@ namespace Guppy.Commands.Arguments
         {
             Option option = new Option(
                 propertyInfo: (PropertyInfo)member!, 
-                name: this.Name ?? member.Name.LowerCaseFirstLetter(), 
+                names: this.Names ?? new[] { "-" + member.Name.LowerCaseFirstLetter() }, 
                 description: this.Description,
                 required: this.Required);
 

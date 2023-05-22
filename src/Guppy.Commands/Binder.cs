@@ -27,19 +27,48 @@ namespace Guppy.Commands
 
             foreach(Option option in _command.Options)
             {
-                object? value = bindingContext.ParseResult.GetValueForOption(option.GetSystemOption());
+                SCL.Option sclOption = option.GetSystemOption();
+                object? value = bindingContext.ParseResult.GetValueForOption(sclOption);
 
                 if(value is null)
                 {
                     continue;
                 }
 
-                if(value is not Token token)
+                if(value is Token token)
+                {
+                    option.PropertyInfo.SetValue(instance, token.Value);
+                    continue;
+                }
+
+                if(value.GetType().IsAssignableTo(option.PropertyInfo.PropertyType))
+                {
+                    option.PropertyInfo.SetValue(instance, value);
+                    continue;
+                }
+            }
+
+            foreach (Argument argument in _command.Arguments)
+            {
+                SCL.Argument sclArgument = argument.GetSystemArgument();
+                object? value = bindingContext.ParseResult.GetValueForArgument(sclArgument);
+
+                if (value is null)
                 {
                     continue;
                 }
 
-                option.PropertyInfo.SetValue(instance, token.Value);
+                if (value is Token token)
+                {
+                    argument.PropertyInfo.SetValue(instance, token.Value);
+                    continue;
+                }
+
+                if (value.GetType().IsAssignableTo(argument.PropertyInfo.PropertyType))
+                {
+                    argument.PropertyInfo.SetValue(instance, value);
+                    continue;
+                }
             }
 
             return instance;

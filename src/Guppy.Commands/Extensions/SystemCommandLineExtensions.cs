@@ -20,7 +20,12 @@ namespace Guppy.Commands.Extensions
                 scl.AddOption(option);
             }
 
-            if(command.Type.IsAssignableTo(typeof(IMessage)))
+            foreach (SCL.Argument argument in command.Arguments.Select(o => o.GetSystemArgument()))
+            {
+                scl.AddArgument(argument);
+            }
+
+            if (command.Type.IsAssignableTo(typeof(IMessage)))
             {
                 GenericInvoker(SetHandler, command.Type, command, bus, scl);
             }
@@ -28,13 +33,33 @@ namespace Guppy.Commands.Extensions
             return scl;
         }
 
+        #region Arguments
+        private static Dictionary<Argument, SCL.Argument> _arguments = new Dictionary<Argument, SCL.Argument>();
+        internal static SCL.Argument GetSystemArgument(this Argument argument)
+        {
+            if (!_arguments.TryGetValue(argument, out SCL.Argument? scl))
+            {
+                scl = (SCL.Argument)GenericInvoker(ArgumentFactory, argument.PropertyInfo.PropertyType, argument)!;
+                _arguments.Add(argument, scl);
+            }
+
+            return scl;
+        }
+
+        private static readonly MethodInfo ArgumentFactory = GetMethodInfo(nameof(ArgumentFactoryMethod));
+        private static Argument<T> ArgumentFactoryMethod<T>(Argument argument)
+        {
+            return new Argument<T>(argument.Name, argument.Description);
+        }
+        #endregion
+
         #region Options
         private static Dictionary<Option, SCL.Option> _options = new Dictionary<Option, SCL.Option>();
         internal static SCL.Option GetSystemOption(this Option option)
         {
             if(!_options.TryGetValue(option, out SCL.Option? scl))
             {
-                scl = (SCL.Option)GenericInvoker(OptionFactory, option.PropertyInfo.DeclaringType, option)!;
+                scl = (SCL.Option)GenericInvoker(OptionFactory, option.PropertyInfo.PropertyType, option)!;
                 _options.Add(option, scl);
             }
 
@@ -44,7 +69,7 @@ namespace Guppy.Commands.Extensions
         private static readonly MethodInfo OptionFactory = GetMethodInfo(nameof(OptionFactoryMethod));
         private static Option<T> OptionFactoryMethod<T>(Option option)
         {
-            return new Option<T>(option.Name, option.Description)
+            return new Option<T>(option.Names, option.Description)
             {
                 IsRequired = option.Required
             };
