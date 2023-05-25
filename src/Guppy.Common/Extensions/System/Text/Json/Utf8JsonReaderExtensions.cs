@@ -107,6 +107,15 @@ namespace System.Text.Json
             return value;
         }
 
+        public static long ReadInt64(ref this Utf8JsonReader reader)
+        {
+            reader.CheckToken(JsonTokenType.Number, true);
+            long value = reader.GetInt64();
+            reader.Read();
+
+            return value;
+        }
+
         public static byte ReadByte(ref this Utf8JsonReader reader)
         {
             reader.CheckToken(JsonTokenType.Number, true);
