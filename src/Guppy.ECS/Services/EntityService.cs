@@ -41,6 +41,19 @@ namespace Guppy.ECS.Services
             return entity;
         }
 
+        public Entity Create(EntityType type, params Action<Entity>[] factories)
+        {
+            Entity entity = _world.CreateEntity();
+            foreach(Action<Entity> factory in factories)
+            {
+                factory(entity);
+            }
+
+            this.Make(type, entity);
+
+            return entity;
+        }
+
         public void Destroy(int entityId)
         {
             _world.DestroyEntity(entityId);

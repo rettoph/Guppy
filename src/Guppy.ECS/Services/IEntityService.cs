@@ -8,6 +8,7 @@ namespace Guppy.ECS.Services
 
         Entity Create(EntityType type);
         Entity Create(EntityType type, Action<Entity> factory);
+        Entity Create(EntityType type, params Action<Entity>[] factories);
 
         void Destroy(int entityId);
         void Destroy(int entityId, out EntityBackup backup);
