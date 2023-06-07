@@ -12,7 +12,7 @@ namespace Guppy.Common
 
         bool Matches(Type type, object? value);
 
-        object? Get(Type type);
+        object? GetValue(Type type);
     }
     public interface IState<T> : IState
     {

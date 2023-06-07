@@ -30,7 +30,7 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddSingleton<IGlobalLoader, GuppyProviderLoader>();
 
-            services.AddFilter(new StateFilter<IGameComponent, Type>(typeof(FrameableGuppy)));
+            services.AddFilter(new ServiceFilter<IGameComponent, Type>(typeof(FrameableGuppy)));
         }
     }
 }

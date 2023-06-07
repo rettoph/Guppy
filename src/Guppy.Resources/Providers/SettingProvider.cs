@@ -1,4 +1,5 @@
-﻿using Guppy.Resources.Definitions;
+﻿using Guppy.Common.Providers;
+using Guppy.Resources.Definitions;
 using Guppy.Resources.Serialization.Json;
 using System;
 using System.Collections.Generic;

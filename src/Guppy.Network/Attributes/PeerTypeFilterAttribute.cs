@@ -18,7 +18,7 @@ namespace Guppy.Network.Attributes
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.AddFilter(new StateFilter<PeerType>(classType, this.Flags));
+            configuration.Services.AddFilter(new ServiceFilter<PeerType>(classType, this.Flags));
         }
     }
 }

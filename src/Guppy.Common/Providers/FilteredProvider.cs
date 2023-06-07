@@ -11,11 +11,13 @@ namespace Guppy.Common.Providers
 {
     internal sealed class FilteredProvider : IFilteredProvider
     {
+        private readonly IStateProvider _state;
         private readonly IServiceProvider _provider;
-        private readonly IFilterProvider _filters;
+        private readonly IServiceFilterProvider _filters;
 
-        public FilteredProvider(IServiceProvider provider, IFilterProvider filters)
+        public FilteredProvider(IServiceProvider provider, IServiceFilterProvider filters, IStateProvider state)
         {
+            _state = state;
             _provider = provider;
             _filters = filters;
         }
@@ -24,6 +26,7 @@ namespace Guppy.Common.Providers
             where T : class
         {
             return new Filtered<T>(
+                _state,
                 _filters, 
                 _provider.GetRequiredService<Lazy<IEnumerable<T>>>());
         }
@@ -38,6 +41,24 @@ namespace Guppy.Common.Providers
             where T : class
         {
             return this.Get<T>().Instances;
+        }
+
+        public IFiltered<T> Get<T>(params IState[] states) where T : class
+        {
+            return new Filtered<T>(
+                _state.Custom(states),
+                _filters,
+                _provider.GetRequiredService<Lazy<IEnumerable<T>>>());
+        }
+
+        public T? Instance<T>(params IState[] states) where T : class
+        {
+            return this.Get<T>(states).Instance;
+        }
+
+        public IEnumerable<T> Instances<T>(params IState[] states) where T : class
+        {
+            return this.Get<T>(states).Instances;
         }
     }
 }

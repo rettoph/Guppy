@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Providers
 {
-    public interface IFilterProvider
+    public interface IServiceFilterProvider
     {
-        bool Filter(object service);
+        bool Filter(IStateProvider state, object service);
     }
 }

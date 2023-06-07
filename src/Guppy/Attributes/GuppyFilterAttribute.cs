@@ -25,7 +25,7 @@ namespace Guppy.Attributes
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.AddFilter(new StateFilter<Type>(classType, this.GuppyType));
+            configuration.Services.AddFilter(new ServiceFilter<Type>(classType, this.GuppyType));
         }
     }
 

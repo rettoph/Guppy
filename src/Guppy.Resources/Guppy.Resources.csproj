@@ -8,15 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Initializers\**" />
+    <EmbeddedResource Remove="Initializers\**" />
+    <None Remove="Initializers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Initializers\" />
   </ItemGroup>
 
 </Project>

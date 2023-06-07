@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Providers
 {
-    internal sealed class FilterProvider : IFilterProvider
+    internal sealed class ServiceFilterProvider : IServiceFilterProvider
     {
-        private IStateProvider _state;
         private IServiceFilter[] _filters;
         private IDictionary<Type, IServiceFilter[]> _typeFilters;
 
-        public FilterProvider(
+        public ServiceFilterProvider(
             IStateProvider state,
             IEnumerable<IServiceFilter> filters)
         {
-            _state = state;
             _filters = filters.ToArray();
             _typeFilters = new Dictionary<Type, IServiceFilter[]>();
         }
 
-        public bool Filter(object service)
+        public bool Filter(IStateProvider state, object service)
         {
             var type = service.GetType();
             if (!_typeFilters.TryGetValue(type, out var filters))
@@ -33,7 +31,7 @@ namespace Guppy.Common.Providers
 
             foreach(var filter in filters)
             {
-                if(!filter.Invoke(_state, service))
+                if(!filter.Invoke(state, service))
                 {
                     return false;
                 }

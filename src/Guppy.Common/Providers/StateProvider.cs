@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -8,17 +9,13 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Providers
 {
-    internal sealed class StateProvider : IStateProvider
-    {
+    internal class StateProvider : IStateProvider
+    {    
         private Dictionary<Type, IState> _genericStates;
         private Dictionary<Type, IState> _states;
 
-        public IServiceProvider Scope { get; }
-
-        public StateProvider(IServiceProvider scope, IEnumerable<IState> states)
+        public StateProvider(IEnumerable<IState> states)
         {
-            this.Scope = scope;
-
             _genericStates = new Dictionary<Type, IState>();
             foreach (IState state in states)
             {
@@ -39,7 +36,7 @@ namespace Guppy.Common.Providers
             }
         }
 
-        public bool TryGet<T>([MaybeNullWhen(false)] out T value)
+        public virtual bool TryGet<T>([MaybeNullWhen(false)] out T value)
         {
             if(_genericStates.TryGetValue(typeof(T), out IState? state))
             {
@@ -49,7 +46,7 @@ namespace Guppy.Common.Providers
 
             if(_states.TryGetValue(typeof(T), out state))
             {
-                value = (T)state.Get(typeof(T))!;
+                value = (T)state.GetValue(typeof(T))!;
                 return true;
             }
 
@@ -57,7 +54,7 @@ namespace Guppy.Common.Providers
             return false;
         }
 
-        public bool Matches<T>(T value)
+        public virtual bool Matches<T>(T value)
         {
             if (_genericStates.TryGetValue(typeof(T), out IState? state))
             {
@@ -74,7 +71,7 @@ namespace Guppy.Common.Providers
 
         public IStateProvider Custom(IState[] states)
         {
-            throw new NotImplementedException();
+            return new CustomStateProvider(this, states);
         }
     }
 }

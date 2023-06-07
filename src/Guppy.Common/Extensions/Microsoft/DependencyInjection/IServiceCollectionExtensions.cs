@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddScoped<IBus, Bus>()
                     .AddScoped<BusConfiguration>()
                     .AddScoped<BrokerConfiguration>()
-                    .AddScoped<IFilterProvider, FilterProvider>()
+                    .AddScoped<IServiceFilterProvider, ServiceFilterProvider>()
                     .AddScoped<IFilteredProvider, FilteredProvider>()
                     .AddScoped<IStateProvider, StateProvider>()
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>))

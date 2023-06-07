@@ -16,5 +16,14 @@ namespace Guppy.Common.Providers
 
         IEnumerable<T> Instances<T>()
             where T : class;
+
+        IFiltered<T> Get<T>(params IState[] states)
+            where T : class;
+
+        T? Instance<T>(params IState[] states)
+            where T : class;
+
+        IEnumerable<T> Instances<T>(params IState[] states)
+            where T : class;
     }
 }

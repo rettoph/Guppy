@@ -15,7 +15,7 @@ namespace Guppy
         private static readonly Type[] _types = new[] { typeof(T) };
         public Type[] Types => _types;
 
-        object? IState.Get(Type type)
+        object? IState.GetValue(Type type)
         {
             throw new NotImplementedException();
         }
