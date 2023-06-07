@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\MonoGame.Extended\src\cs\MonoGame.Extended\MonoGame.Extended.csproj" />
     <ProjectReference Include="..\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\Guppy.MonoGame\Guppy.MonoGame.csproj" />
   </ItemGroup>

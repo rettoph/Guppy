@@ -11,6 +11,6 @@ namespace Guppy.Common.DependencyInjection.Interfaces
     {
         bool AppliesTo(Type type);
 
-        bool Invoke(IStateProvider state, object service);
+        bool Invoke(IStateProvider state);
     }
 }

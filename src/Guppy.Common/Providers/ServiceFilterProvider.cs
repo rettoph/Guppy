@@ -31,7 +31,7 @@ namespace Guppy.Common.Providers
 
             foreach(var filter in filters)
             {
-                if(!filter.Invoke(state, service))
+                if(!filter.Invoke(state))
                 {
                     return false;
                 }

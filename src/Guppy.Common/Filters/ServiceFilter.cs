@@ -27,7 +27,7 @@ namespace Guppy.Common.Filters
             return result;
         }
 
-        public virtual bool Invoke(IStateProvider state, object service)
+        public virtual bool Invoke(IStateProvider state)
         {
             bool result = state.Matches(this.Value);
             return result;

@@ -3,6 +3,7 @@ using Guppy.GUI.Extensions.System.Drawing;
 using Guppy.MonoGame.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 
 namespace Guppy.GUI.Elements
 {
@@ -174,10 +175,10 @@ namespace Guppy.GUI.Elements
                 var topRight = new Vector2(this.OuterBounds.Width, 0);
                 var bottomRight = new Vector2(this.OuterBounds.Width, this.OuterBounds.Height);
                 
-                // this.stage.SpriteBatch.DrawLine(position, position + topRight, borderColor, thicknessX);
-                // this.stage.SpriteBatch.DrawLine(position + topRight, position + bottomRight, borderColor, thicknessX);
-                // this.stage.SpriteBatch.DrawLine(position + bottomLeft, position + bottomRight, borderColor, thicknessX);
-                // this.stage.SpriteBatch.DrawLine(position + bottomLeft, position + topLeft, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position, position + topRight, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position + topRight, position + bottomRight, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position + bottomLeft, position + bottomRight, borderColor, thicknessX);
+                this.stage.SpriteBatch.DrawLine(position + bottomLeft, position + topLeft, borderColor, thicknessX);
             }
         }
 
