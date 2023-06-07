@@ -5,7 +5,6 @@ using Guppy.Input.Messages;
 using Guppy.Input.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.Entities.Systems;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -13,14 +12,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Input.Systems
+namespace Guppy.Input.Services
 {
-    internal sealed class MouseEventPublishSystem : UpdateSystem
+    internal sealed class MouseEventPublishService : BaseGameComponent
     {
         private readonly IBus _bus;
         private readonly Cursor _cursor;
 
-        public MouseEventPublishSystem(ICursorProvider cursors, IBus bus)
+        public MouseEventPublishService(ICursorProvider cursors, IBus bus)
         {
             _bus = bus;
             _cursor = (cursors.Get(Cursors.Mouse) as Cursor)!;
@@ -29,13 +28,13 @@ namespace Guppy.Input.Systems
         public override void Update(GameTime gameTime)
         {
             MouseState state = Mouse.GetState();
-            
-            if(_cursor.MoveTo(state.Position.ToVector2(), out var movement))
+
+            if (_cursor.MoveTo(state.Position.ToVector2(), out var movement))
             {
                 _bus.Enqueue(movement);
             }
 
-            if(_cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
+            if (_cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
             {
                 _bus.Enqueue(scrolling);
             }

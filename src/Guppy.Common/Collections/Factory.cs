@@ -34,7 +34,7 @@ namespace Guppy.Common.Collections
 
         public virtual bool TryReturnToPool(T instance)
         {
-            return _pool.TryReturn(instance);
+            return _pool.TryReturn(ref instance);
         }
     }
 

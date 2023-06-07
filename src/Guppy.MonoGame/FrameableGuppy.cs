@@ -2,13 +2,6 @@
 using Guppy.MonoGame.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.Entities;
-using MonoGame.Extended.Timers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.MonoGame
 {
@@ -82,8 +75,6 @@ namespace Guppy.MonoGame
         {
             this.Components = provider.GetRequiredService<IGameComponentService>();
             this.Bus = provider.GetRequiredService<IBus>();
-
-            this.Bus.Initialize();
         }
 
         protected virtual void PreDraw(GameTime gameTime)

@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.GUI
+﻿namespace Guppy.GUI
 {
     public class Padding
     {

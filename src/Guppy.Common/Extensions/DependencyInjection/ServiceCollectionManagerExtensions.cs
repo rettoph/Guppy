@@ -26,7 +26,7 @@ namespace Guppy.Common.DependencyInjection
         public static ServiceConfiguration<T> AddTransient<T>(this IServiceCollectionManager manager)
             where T : class
         {
-            return manager.AddService<T>().SetLifetime(ServiceLifetime.Singleton);
+            return manager.AddService<T>().SetLifetime(ServiceLifetime.Transient);
         }
 
         public static ServiceConfiguration<T> GetService<T>(this IServiceCollectionManager manager)

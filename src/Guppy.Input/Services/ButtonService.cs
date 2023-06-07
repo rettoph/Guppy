@@ -2,12 +2,10 @@
 using Guppy.Input;
 using Guppy.Input.Providers;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using MonoGame.Extended.Entities.Systems;
 
 namespace Guppy.Input.Services
 {
-    internal sealed class ButtonService : UpdateSystem, IButtonService
+    internal sealed class ButtonService : BaseGameComponent, IButtonService
     {
         private readonly Dictionary<string, IButton> _buttons;
         private readonly IButtonProvider[] _providers;

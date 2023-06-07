@@ -1,13 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using MonoGame.Extended.Timers;
-using Serilog.Parsing;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.GUI.Elements
 {

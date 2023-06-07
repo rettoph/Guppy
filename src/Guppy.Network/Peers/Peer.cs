@@ -56,7 +56,6 @@ namespace Guppy.Network.Peers
         protected virtual void Start()
         {
             this.Bind(this.Scope, NetScopeConstants.PeerScopeId);
-            this.Scope.Bus.Initialize();
         }
 
         public void Bind(NetScope scope, byte id)

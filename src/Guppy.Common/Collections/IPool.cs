@@ -6,7 +6,6 @@ using System.Text;
 namespace Guppy.Common.Collections
 {
     public interface IPool<T>
-        where T : class
     {
         /// <summary>
         /// Determin whether or not the current pool contains any items
@@ -27,7 +26,7 @@ namespace Guppy.Common.Collections
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
-        bool TryReturn(T instance);
+        bool TryReturn(ref T instance);
 
         /// <summary>
         /// A counf of how many items are within the pool.

@@ -21,7 +21,7 @@ namespace Guppy
                 return builder;
             }
 
-            return builder.ConfigureECS()
+            return builder
                 .ConfigureResources()
                 .ConfigureCommands()
                 .AddServiceLoader(new GameLoader())

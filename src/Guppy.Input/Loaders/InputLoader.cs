@@ -9,8 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MonoGame.Extended.Entities.Systems;
-using Guppy.Input.Systems;
 
 namespace Guppy.Input.Loaders
 {
@@ -23,7 +21,7 @@ namespace Guppy.Input.Loaders
                 manager.GetService<ButtonService>()
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<IButtonService>()
-                    .AddAlias<ISystem>();
+                    .AddAlias<IGameComponent>();
 
                 manager.GetService<KeyboardButtonProvider>()
                     .SetLifetime(ServiceLifetime.Scoped)
@@ -33,9 +31,9 @@ namespace Guppy.Input.Loaders
                     .SetLifetime(ServiceLifetime.Scoped)
                     .AddAlias<IButtonProvider>();
 
-                manager.GetService<MouseEventPublishSystem>()
+                manager.GetService<MouseEventPublishService>()
                     .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<ISystem>();
+                    .AddAlias<IGameComponent>();
 
                 manager.GetService<ICursorProvider>()
                     .SetLifetime(ServiceLifetime.Scoped)

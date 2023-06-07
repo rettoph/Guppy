@@ -4,16 +4,8 @@ using Guppy.GUI.Constants;
 using Guppy.GUI.Elements;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Providers;
-using Guppy.Input.Providers;
-using Guppy.MonoGame.Services;
+using Guppy.MonoGame;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.GUI.Services
 {

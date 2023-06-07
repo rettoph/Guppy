@@ -7,7 +7,6 @@ using System.Text;
 namespace Guppy.Common.Collections
 {
     public class Pool<T> : IPool<T>
-        where T : class
     {
         private Stack<T> _pool;
         private ushort _poolSize;
@@ -44,7 +43,7 @@ namespace Guppy.Common.Collections
         }
 
         /// <inheritdoc />
-        public virtual bool TryReturn(T instance)
+        public virtual bool TryReturn(ref T instance)
         {
             if (_poolSize < _maxPoolSize)
             {

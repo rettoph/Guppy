@@ -12,7 +12,7 @@ namespace Guppy
                 return builder;
             }
 
-            return builder.ConfigureECS()
+            return builder
                 .AddServiceLoader(new InputLoader())
                 .AddTag(nameof(ConfigureInput));
         }

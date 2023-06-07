@@ -21,8 +21,7 @@ namespace Guppy.Common.Implementations
         private readonly IBusQueue[] _queues;
         private readonly Dictionary<Type, IBusQueue> _typeMap;
         private readonly IBusQueue _default;
-        private readonly IFiltered<ISubscriber> _subscribers;
-        private List<Subscription> _subscriptions;
+        private readonly Dictionary<ISubscriber, Subscription[]> _subscriptions;
 
         public IPublisher this[Type type] => _broker[type];
 
@@ -30,12 +29,10 @@ namespace Guppy.Common.Implementations
 
         public Bus(
             IBroker broker,
-            IFiltered<ISubscriber> subscribers,
             IOptions<BusConfiguration> configuration)
         {
-            _subscribers = subscribers;
             _broker = broker;
-            _subscriptions = default!;
+            _subscriptions = new Dictionary<ISubscriber, Subscription[]>();
 
             _queues = configuration.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
@@ -50,27 +47,8 @@ namespace Guppy.Common.Implementations
                 elementSelector: x => this.GetQueue(x.Queue));
         }
 
-        public void Initialize()
-        {
-            _subscriptions = _subscribers.Instances
-                .Select(x => x.GetSubscriptions())
-                .SelectMany(x => x)
-                .OrderBy(x => x.Order)
-                .ToList();
-
-            foreach (Subscription subscription in _subscriptions)
-            {
-                subscription.Subscribe(this);
-            }
-        }
-
         public void Dispose()
         {
-            foreach (Subscription subscription in _subscriptions)
-            {
-                subscription.Unsubscribe(this);
-            }
-
             _broker.Dispose();
         }
 
@@ -118,6 +96,35 @@ namespace Guppy.Common.Implementations
         private IBusQueue GetQueue(int id)
         {
             return _queues.FirstOrDefault(x => x.Id == id) ?? _default;
+        }
+
+        public void Subscribe(ISubscriber subscriber)
+        {
+            if(_subscriptions.ContainsKey(subscriber))
+            {
+                return;
+            }
+
+            Subscription[] subscriptions = subscriber.GetSubscriptions().ToArray();
+            _subscriptions.Add(subscriber, subscriptions);
+
+            foreach(Subscription subscription in subscriptions)
+            {
+                subscription.Subscribe(this);
+            }
+        }
+
+        public void Unsubscribe(ISubscriber subscriber)
+        {
+            if (!_subscriptions.Remove(subscriber, out Subscription[]? subscriptions))
+            {
+                return;
+            }
+
+            foreach (Subscription subscription in subscriptions)
+            {
+                subscription.Unsubscribe(this);
+            }
         }
     }
 }
