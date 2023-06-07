@@ -9,13 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
-    <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
-    <ProjectReference Include="..\Guppy\Guppy.csproj" />
+    <Compile Remove="Configurations\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <None Remove="Configurations\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Configurations\" />
+    <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
+    <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
 </Project>

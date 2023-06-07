@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.DependencyInjection;
-using Guppy.Filters;
 using Guppy.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

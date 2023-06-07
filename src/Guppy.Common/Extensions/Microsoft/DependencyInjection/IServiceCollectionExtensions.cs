@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     .AddScoped<BrokerConfiguration>()
                     .AddScoped<IFilterProvider, FilterProvider>()
                     .AddScoped<IFilteredProvider, FilteredProvider>()
+                    .AddScoped<IStateProvider, StateProvider>()
                     .AddTransient(typeof(IFiltered<>), typeof(Filtered<>))
                     .AddTransient(typeof(ISorted<>), typeof(Guppy.Common.Implementations.Sorted<>));
         }

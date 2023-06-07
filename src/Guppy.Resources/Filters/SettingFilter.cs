@@ -1,5 +1,6 @@
 ﻿using Guppy.Common.DependencyInjection.Interfaces;
 using Guppy.Common.Filters;
+using Guppy.Common.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,9 @@ namespace Guppy.Resources.Filters
             this.RequiredValue = requiredValue;
         }
 
-        public override bool Invoke(IServiceProvider provider, object service)
+        public override bool Invoke(IStateProvider state, object service)
         {
-            var setting = provider.GetSetting<TSetting>(this.Key);
+            var setting = state.Scope.GetSetting<TSetting>(this.Key);
             var result = setting.Value.Equals(this.RequiredValue);
 
             return result;

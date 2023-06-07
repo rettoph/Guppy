@@ -15,11 +15,11 @@ namespace Guppy
         public IServiceProvider Provider { get; private set; }
         public IGuppyProvider Guppies { get; private set; }
 
-        public GuppyState State { get; private set; }
+        public GuppyStatus Status { get; private set; }
 
         public GuppyEngine(IEnumerable<Assembly>? libraries = default)
         {
-            this.State = GuppyState.NotReady;
+            this.Status = GuppyStatus.NotReady;
 
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
@@ -36,12 +36,12 @@ namespace Guppy
             Action<GuppyConfiguration>? build = null,
             Assembly? entry = null)
         {
-            if(this.State != GuppyState.NotReady)
+            if(this.Status != GuppyStatus.NotReady)
             {
                 throw new InvalidOperationException();
             }
 
-            this.State = GuppyState.Starting;
+            this.Status = GuppyStatus.Starting;
 
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
             var services = new ServiceCollection();
@@ -59,7 +59,7 @@ namespace Guppy
                 loader.Load(this);
             }
 
-            this.State = GuppyState.Ready;
+            this.Status = GuppyStatus.Ready;
 
             return this;
         }

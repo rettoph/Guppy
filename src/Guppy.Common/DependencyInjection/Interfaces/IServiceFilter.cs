@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,8 @@ namespace Guppy.Common.DependencyInjection.Interfaces
 {
     public interface IServiceFilter
     {
-        void Initialize(IServiceProvider provier);
-
         bool AppliesTo(Type type);
 
-        bool Invoke(IServiceProvider provider, object service);
+        bool Invoke(IStateProvider state, object service);
     }
 }

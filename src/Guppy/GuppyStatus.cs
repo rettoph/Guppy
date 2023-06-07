@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy
 {
-    public enum GuppyState
+    public enum GuppyStatus
     {
         NotReady,
         Starting,

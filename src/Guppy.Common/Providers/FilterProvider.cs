@@ -9,23 +9,17 @@ namespace Guppy.Common.Providers
 {
     internal sealed class FilterProvider : IFilterProvider
     {
-        private IServiceProvider _provider;
+        private IStateProvider _state;
         private IServiceFilter[] _filters;
         private IDictionary<Type, IServiceFilter[]> _typeFilters;
 
         public FilterProvider(
-            IServiceProvider provider,
+            IStateProvider state,
             IEnumerable<IServiceFilter> filters)
         {
-            _provider = provider;
+            _state = state;
             _filters = filters.ToArray();
             _typeFilters = new Dictionary<Type, IServiceFilter[]>();
-
-            // Initialize all filters
-            foreach (IServiceFilter filter in _filters)
-            {
-                filter.Initialize(provider);
-            }
         }
 
         public bool Filter(object service)
@@ -39,7 +33,7 @@ namespace Guppy.Common.Providers
 
             foreach(var filter in filters)
             {
-                if(!filter.Invoke(_provider, service))
+                if(!filter.Invoke(_state, service))
                 {
                     return false;
                 }

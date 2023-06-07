@@ -1,6 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.DependencyInjection;
-using Guppy.Filters;
+using Guppy.Common.Filters;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
@@ -30,7 +30,7 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddSingleton<IGlobalLoader, GuppyProviderLoader>();
 
-            services.AddFilter(new GuppyFilter<IGameComponent, FrameableGuppy>());
+            services.AddFilter(new StateFilter<IGameComponent, Type>(typeof(FrameableGuppy)));
         }
     }
 }

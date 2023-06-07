@@ -30,6 +30,7 @@ namespace Guppy.Common.Implementations
             _filters = filters;
             _unfiltered = unfiltered;
         }
+
         private T GetInstance()
         {
             return _unfiltered.Value.First(_filters.Filter);

@@ -18,6 +18,7 @@ namespace Guppy.GUI.Services
         private readonly ICommandService _commands;
 
         public TerminalService(
+            IBus bus,
             IStageProvider stages,
             ICommandService commands)
         {
@@ -40,6 +41,8 @@ namespace Guppy.GUI.Services
 
             this.Visible = false;
             this.IsEnabled = false;
+
+            bus.Subscribe(this);
         }
 
         private void HandleInputEntered(TextInput sender, string args)

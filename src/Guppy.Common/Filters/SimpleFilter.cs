@@ -1,4 +1,5 @@
 ﻿using Guppy.Common.DependencyInjection.Interfaces;
+using Guppy.Common.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,6 @@ namespace Guppy.Common.Filters
             this.Type = type;
         }
 
-        public virtual void Initialize(IServiceProvider provier)
-        {
-            //
-        }
-
         public virtual bool AppliesTo(Type type)
         {
             var result = this.Type.IsAssignableFrom(type);
@@ -28,6 +24,6 @@ namespace Guppy.Common.Filters
             return result;
         }
 
-        public abstract bool Invoke(IServiceProvider provider, object service);
+        public abstract bool Invoke(IStateProvider state, object service);
     }
 }
