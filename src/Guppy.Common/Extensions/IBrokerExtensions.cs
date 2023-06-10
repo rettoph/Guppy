@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Extensions
 {
-    public static class IBusExtensions
+    public static class IBrokerExtensions
     {
-        public static void SubscribeMany(this IBus bus, IEnumerable<ISubscriber> subscribers)
+        public static void SubscribeMany(this IBroker bus, IEnumerable<ISubscriber> subscribers)
         {
             foreach(ISubscriber subscriber in subscribers)
             {
@@ -16,7 +16,7 @@ namespace Guppy.Common.Extensions
             }
         }
 
-        public static void UnsubscribeMany(this IBus bus, IEnumerable<ISubscriber> subscribers)
+        public static void UnsubscribeMany(this IBroker bus, IEnumerable<ISubscriber> subscribers)
         {
             foreach (ISubscriber subscriber in subscribers)
             {

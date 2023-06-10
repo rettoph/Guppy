@@ -21,7 +21,6 @@ namespace Guppy.Common.Implementations
         private readonly IBusQueue[] _queues;
         private readonly Dictionary<Type, IBusQueue> _typeMap;
         private readonly IBusQueue _default;
-        private readonly Dictionary<ISubscriber, Subscription[]> _subscriptions;
 
         public IPublisher this[Type type] => _broker[type];
 
@@ -32,7 +31,6 @@ namespace Guppy.Common.Implementations
             IOptions<BusConfiguration> configuration)
         {
             _broker = broker;
-            _subscriptions = new Dictionary<ISubscriber, Subscription[]>();
 
             _queues = configuration.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
@@ -76,11 +74,21 @@ namespace Guppy.Common.Implementations
             _broker.Subscribe(subscriber);
         }
 
-        public void Unsubscribe<T>(ISubscriber<T> processor)
+        public void Unsubscribe<T>(ISubscriber<T> subscriber)
 
             where T : notnull, IMessage
         {
-            _broker.Unsubscribe(processor);
+            _broker.Unsubscribe(subscriber);
+        }
+
+        public void Subscribe(ISubscriber subscriber)
+        {
+            _broker.Subscribe(subscriber);
+        }
+
+        public void Unsubscribe(ISubscriber subscriber)
+        {
+            _broker.Unsubscribe(subscriber);
         }
 
         private IBusQueue GetQueue(Type type)
@@ -96,35 +104,6 @@ namespace Guppy.Common.Implementations
         private IBusQueue GetQueue(int id)
         {
             return _queues.FirstOrDefault(x => x.Id == id) ?? _default;
-        }
-
-        public void Subscribe(ISubscriber subscriber)
-        {
-            if(_subscriptions.ContainsKey(subscriber))
-            {
-                return;
-            }
-
-            Subscription[] subscriptions = subscriber.GetSubscriptions().ToArray();
-            _subscriptions.Add(subscriber, subscriptions);
-
-            foreach(Subscription subscription in subscriptions)
-            {
-                subscription.Subscribe(this);
-            }
-        }
-
-        public void Unsubscribe(ISubscriber subscriber)
-        {
-            if (!_subscriptions.Remove(subscriber, out Subscription[]? subscriptions))
-            {
-                return;
-            }
-
-            foreach (Subscription subscription in subscriptions)
-            {
-                subscription.Unsubscribe(this);
-            }
         }
     }
 }

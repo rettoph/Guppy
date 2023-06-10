@@ -10,8 +10,8 @@ namespace Guppy.Common.Extensions
 {
     public static class ISubscriberExtensions
     {
-        private static readonly MethodInfo SubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Subscribe)) ?? throw new NotImplementedException();
-        private static readonly MethodInfo UnsubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Unsubscribe)) ?? throw new NotImplementedException();
+        private static readonly MethodInfo SubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Subscribe), 1, new[] { typeof(ISubscriber<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) }) ?? throw new NotImplementedException();
+        private static readonly MethodInfo UnsubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Unsubscribe), 1, new[] { typeof(ISubscriber<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) }) ?? throw new NotImplementedException();
 
         public static IEnumerable<Subscription> GetSubscriptions(this ISubscriber subscriber)
         {

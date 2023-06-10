@@ -28,5 +28,9 @@ namespace Guppy.Common
         /// </summary>
         /// <param name="message"></param>
         public void Publish(in IMessage message);
+
+        void Subscribe(ISubscriber subscriber);
+
+        void Unsubscribe(ISubscriber subscriber);
     }
 }

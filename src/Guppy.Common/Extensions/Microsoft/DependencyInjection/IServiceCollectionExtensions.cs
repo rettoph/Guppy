@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services
                     .AddTransient(typeof(Lazy<>), typeof(Lazier<>))
                     .AddTransient(typeof(IScoped<>), typeof(Scoped<>))
-                    .AddScoped<IBroker, Broker>()
+                    .AddTransient<IBroker, Broker>()
                     .AddScoped<IBus, Bus>()
                     .AddScoped<BusConfiguration>()
                     .AddScoped<BrokerConfiguration>()

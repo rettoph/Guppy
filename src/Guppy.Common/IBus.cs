@@ -13,9 +13,5 @@ namespace Guppy.Common
         void Enqueue(in IMessage message);
 
         void Flush();
-
-        void Subscribe(ISubscriber subscriber);
-
-        void Unsubscribe(ISubscriber subscriber);
     }
 }
