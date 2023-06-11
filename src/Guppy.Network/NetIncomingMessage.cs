@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
-    public class NetIncomingMessage<T> : INetIncomingMessage<T>
+    internal sealed class NetIncomingMessage<T> : INetIncomingMessage<T>
         where T : notnull
     {
         private readonly NetScope _scope;
