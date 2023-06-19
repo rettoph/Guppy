@@ -106,12 +106,12 @@ namespace Guppy.Network
             this.Bound = false;
         }
 
-        void ISubscriber<INetOutgoingMessage>.Process(in INetOutgoingMessage message)
+        void ISubscriber<INetOutgoingMessage>.Process(in Guid messageId, in INetOutgoingMessage message)
         {
             message.Send();
         }
 
-        void ISubscriber<INetIncomingMessage<UserAction>>.Process(in INetIncomingMessage<UserAction> message)
+        void ISubscriber<INetIncomingMessage<UserAction>>.Process(in Guid messsageId, in INetIncomingMessage<UserAction> message)
         {
             if (this.Peer!.Type != PeerType.Client)
             {

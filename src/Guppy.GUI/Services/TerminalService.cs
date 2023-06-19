@@ -61,7 +61,7 @@ namespace Guppy.GUI.Services
         {
         }
 
-        public void Process(in ToggleTerminal message)
+        public void Process(in Guid messageId, in ToggleTerminal message)
         {
             this.Visible = !this.Visible;
         }

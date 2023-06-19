@@ -19,6 +19,6 @@ namespace Guppy.Common
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        void Process(in T message);
+        void Process(in Guid messageId, in T message);
     }
 }

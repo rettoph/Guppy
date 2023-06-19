@@ -32,7 +32,7 @@ namespace Guppy.GUI.Elements
             this.stage.Bus.Unsubscribe(this);
         }
 
-        public virtual void Process(in CursorPress message)
+        public virtual void Process(in Guid messageId, in CursorPress message)
         {
             if(message.Button != CursorButtons.Left)
             {

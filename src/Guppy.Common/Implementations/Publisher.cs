@@ -22,7 +22,7 @@ namespace Guppy.Common.Implementations
     internal class Publisher<T> : Publisher, IPublisher<T>
         where T : notnull, IMessage
     {
-        private delegate void ProcessDelegate(in T message);
+        private delegate void ProcessDelegate(in Guid messageId, in T message);
 
         private ProcessDelegate? _subscribers;
 
@@ -44,7 +44,8 @@ namespace Guppy.Common.Implementations
 
         public void Publish(in T message)
         {
-            _subscribers?.Invoke(in message);
+            Guid messageId = Guid.NewGuid();
+            _subscribers?.Invoke(in messageId, in message);
         }
 
         public void Subscribe(ISubscriber<T> subscriber)

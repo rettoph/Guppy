@@ -142,7 +142,7 @@ namespace Guppy.GUI.Elements
             _thumbBounds.Y = thumbScroll;
         }
 
-        public void Process(in CursorScroll message)
+        public void Process(in Guid messageId, in CursorScroll message)
         {
             if(!this.State.HasFlag(ElementState.Hovered))
             {

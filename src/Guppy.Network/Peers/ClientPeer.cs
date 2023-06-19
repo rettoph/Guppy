@@ -48,7 +48,7 @@ namespace Guppy.Network.Peers
             }
         }
 
-        public void Process(in INetIncomingMessage<UserAction> message)
+        public void Process(in Guid messsageId, in INetIncomingMessage<UserAction> message)
         {
             switch (message.Body.Action)
             {
