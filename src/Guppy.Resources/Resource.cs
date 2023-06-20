@@ -1,52 +1,42 @@
-﻿using System;
+﻿using Guppy.Common.Collections;
+using Standart.Hash.xxHash;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Guppy.Resources
 {
-    public abstract class Resource<TValue, TJson> : IResource<TValue, TJson>
+    public unsafe abstract class Resource
     {
-        public string Name { get; }
-        public virtual TValue Value { get; set; }
+        private static DoubleDictionary<Guid, string, Resource> _resources = new DoubleDictionary<Guid, string, Resource>();
 
-        public Resource(string name)
+        public readonly Guid Id;
+        public readonly string Name;
+
+        internal Resource(string name)
         {
+            uint128 nameHash = xxHash128.ComputeHash(name);
+            Guid* pNameHash = (Guid*)&nameHash;
+            this.Id = pNameHash[0];
             this.Name = name;
-            this.Value = default!;
+
+            _resources.TryAdd(this.Id, this.Name, this);
         }
 
-        public abstract void Initialize(string path, IServiceProvider services);
-        public abstract void Export(string path, IServiceProvider services);
-
-        public abstract TJson GetJson();
+        public static Resource Get(Guid id)
+        {
+            return _resources[id];
+        }
     }
 
-    public abstract class Resource<T> : IResource<T, T>
+    public sealed class Resource<T> : Resource
+        where T : notnull
     {
-        public string Name { get; }
-        public T Value { get; set; }
-
-        public Resource(string name, T value)
+        public Resource(string name) : base(name)
         {
-            this.Name = name;
-            this.Value = value;
-        }
-
-        public virtual void Initialize(string path, IServiceProvider services)
-        {
-            //
-        }
-
-        public virtual void Export(string path, IServiceProvider services)
-        {
-            //
-        }
-
-        public T GetJson()
-        {
-            return this.Value;
         }
     }
 }

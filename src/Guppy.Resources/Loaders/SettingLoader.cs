@@ -23,7 +23,7 @@ namespace Guppy.Resources.Loaders
                     .AddSingleton<IJsonSerializer, JsonSerializer>()
                     .AddSingleton<JsonConverter>(new JsonStringEnumConverter(STJ.JsonNamingPolicy.CamelCase));
 
-            services.AddSetting(SettingConstants.CurrentLanguage, LanguageConstants.Default, true, nameof(Guppy));
+            services.AddSetting(SettingConstants.Localization, Localization.Default, true, nameof(Guppy));
         }
     }
 }

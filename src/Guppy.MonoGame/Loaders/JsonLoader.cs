@@ -17,7 +17,6 @@ namespace Guppy.MonoGame.Loaders
         {
             services.AddSingleton<JsonConverter, ColorConverter>();
             services.AddSingleton<JsonConverter, Vector2Converter>();
-            services.AddSingleton<JsonConverter, ColorResourceConverter>();
 
             services.AddTransient<JsonSerializerOptions>(p =>
             {

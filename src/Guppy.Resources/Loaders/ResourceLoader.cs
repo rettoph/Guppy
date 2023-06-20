@@ -15,15 +15,8 @@ namespace Guppy.Resources.Loaders
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IPackProvider, PackProvider>();
+            services.AddSingleton<IResourcePackProvider, ResourcePackProvider>();
             services.AddSingleton<IResourceProvider, ResourceProvider>();
-            services.AddSingleton<JsonConverter, PackConverter>();
-            services.AddSingleton<JsonConverter, ResourceCollectionConverterConverter>();
-            services.AddSingleton<JsonConverter, PolymorphicEnumerableConverter<IResource>>();
-            services.AddSingleton<Pack>(new Pack(GuppyPack.Id, GuppyPack.Name)
-            {
-                Directory = GuppyPack.Path
-            });
         }
     }
 }

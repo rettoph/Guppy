@@ -7,6 +7,6 @@ namespace Guppy.Resources.Loaders
     [Service<IPackLoader>(ServiceLifetime.Singleton, true)]
     public interface IPackLoader
     {
-        void Load(IPackProvider packs);
+        void Load(IResourcePackProvider packs);
     }
 }

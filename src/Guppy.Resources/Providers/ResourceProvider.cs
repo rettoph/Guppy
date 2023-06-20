@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Guppy.Resources.Constants;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,67 +11,72 @@ namespace Guppy.Resources.Providers
 {
     internal class ResourceProvider : IResourceProvider
     {
-        private IPackProvider _packs;
-        private IDictionary<string, IResource> _cache;
+        private ISettingProvider _settings;
+        private IResourcePackProvider _packs;
+        private Dictionary<Resource, object> _cache;
+        private ISetting<string> _localization;
 
-        public ResourceProvider(IPackProvider packs)
+        public ResourceProvider(ISettingProvider settings, IResourcePackProvider packs)
         {
+            _settings = settings;
             _packs = packs;
-            _cache = new Dictionary<string, IResource>();
+            _cache = new Dictionary<Resource, object>();
+            _localization = _settings.Get<string>(SettingConstants.Localization);
         }
 
-        public IResource<T> Get<T>(string name)
+        public T? Get<T>(Resource<T> resource) where T : notnull
         {
-            if(_cache.TryGetValue(name, out var uncasted) && uncasted is IResource<T> casted)
-            {
-                return casted;
-            }
-
-            foreach(Pack pack in _packs.GetAll())
-            {
-                if(pack.TryGet<T>(name, out var resource))
-                {
-                    _cache.Add(name, resource);
-                    return resource;
-                }
-            }
-
-            return default(IResource<T>) ?? throw new ArgumentException();
+            this.TryGet(resource, out T? value);
+            return value;
         }
 
-        public bool TryGet<T>(string name, [MaybeNullWhen(false)] IResource<T> resource)
+        public bool TryGet<T>(Resource<T> resource, [MaybeNullWhen(false)] out T value) 
+            where T : notnull
         {
-            if (_cache.TryGetValue(name, out var uncasted) && uncasted is IResource<T> casted)
+            if(_cache.TryGetValue(resource, out object? cached))
             {
-                resource = casted;
+                value = (T)cached;
                 return true;
             }
 
-            foreach (Pack pack in _packs.GetAll())
+            foreach (ResourcePack pack in _packs.GetAll())
             {
-                if (pack.TryGet<T>(name, out var r))
+                if(pack.TryGet(resource, _localization.Value, out value))
                 {
-                    _cache.Add(name, r);
-                    resource = r;
+                    _cache.Add(resource, value);
+                    return true;
+                }
+
+                if (_localization.Value != Localization.Default && pack.TryGet(resource, Localization.Default, out value))
+                {
+                    _cache.Add(resource, value);
                     return true;
                 }
             }
 
-            resource = default;
+            value = default!;
             return false;
         }
 
-        public IEnumerable<T> GetAll<T>()
-            where T : IResource
+        public IEnumerable<(Resource, T)> GetAll<T>() where T : notnull
         {
-            var output = new List<T>();
-
-            foreach(Pack pack in _packs.GetAll())
+            List<(Resource, T)> resources = new List<(Resource, T)>();
+            foreach((Resource resource, object cached)  in _cache)
             {
-                output.AddRange(pack.Resources.OfType<T>());
+                if(cached is T casted)
+                {
+                    resources.Add((resource, casted));
+                }
             }
 
-            return output;
+            return resources;
+        }
+
+        public IResourceProvider Set<T>(Resource<T> resource, T value) where T : notnull
+        {
+            _cache[resource] = value;
+
+            return this;
         }
     }
 }

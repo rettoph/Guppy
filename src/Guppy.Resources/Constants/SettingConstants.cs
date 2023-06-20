@@ -8,6 +8,6 @@ namespace Guppy.Resources.Constants
 {
     public static class SettingConstants
     {
-        public const string CurrentLanguage = "current_language";
+        public const string Localization = "localization";
     }
 }

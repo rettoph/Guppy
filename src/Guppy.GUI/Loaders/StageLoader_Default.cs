@@ -28,7 +28,7 @@ namespace Guppy.GUI.Loaders
         {
             stage.StyleSheet.Configure(Selector.Create<Label>(), label =>
             {
-                label.Set(Property.Font, Fonts.Default);
+                label.Set(Property.Font, Resources.Fonts.Default);
             }).Configure(Selector.Create<TextInput>(), textInput =>
             {
                 textInput.Set(Property.Alignment, Alignment.CenterLeft)

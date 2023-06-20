@@ -45,10 +45,11 @@ namespace Guppy.GUI
             return this;
         }
 
-        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, string resource)
+        public IStyleSheet Set<T>(Property<T> property, Selector selector, ElementState state, Resource<T> resource)
+            where T : notnull
         {
-            T value = _resources.Get<T>(resource).Value;
-            return this.Set<T>(property, selector, state, value);
+            T? value = _resources.Get<T>(resource);
+            return this.Set<T>(property, selector, state, value ?? default!);
         }
     }
 }

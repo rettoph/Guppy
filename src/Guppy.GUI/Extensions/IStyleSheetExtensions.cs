@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Resources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace Guppy.GUI
             return styleSheet.Set<T>(property, selector, ElementState.None, value);
         }
 
-        public static IStyleSheet Set<T>(this IStyleSheet styleSheet, Property<T> property, Selector selector, string resource)
+        public static IStyleSheet Set<T>(this IStyleSheet styleSheet, Property<T> property, Selector selector, Resource<T> resource)
+            where T : notnull
         {
             return styleSheet.Set<T>(property, selector, ElementState.None, resource);
         }

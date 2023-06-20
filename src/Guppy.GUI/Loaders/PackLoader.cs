@@ -1,25 +1,29 @@
 ﻿using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
 using Guppy.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.MonoGame.Resources;
-using Guppy.GUI.Constants;
 using Guppy.Attributes;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.GUI.Loaders
 {
     [AutoLoad]
     internal sealed class PackLoader : IPackLoader
     {
-        public void Load(IPackProvider packs)
+        private readonly ContentManager _content;
+
+        public PackLoader(ContentManager content)
         {
-            packs.GetById(GuppyPack.Id).Add(new IResource[]
+            _content = content;
+        }
+
+        public void Load(IResourcePackProvider packs)
+        {
+            _content.RootDirectory = GuppyPack.Path;
+
+            packs.Configure(GuppyPack.Id, pack =>
             {
-                new SpriteFontResource(Fonts.Default, "Fonts/Default")
+                pack.Add(Resources.Fonts.Default, _content.Load<SpriteFont>("Fonts/Default"));
             });
         }
     }

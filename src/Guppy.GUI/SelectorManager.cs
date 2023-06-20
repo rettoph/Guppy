@@ -1,4 +1,6 @@
-﻿namespace Guppy.GUI
+﻿using Guppy.Resources;
+
+namespace Guppy.GUI
 {
     public sealed class SelectorManager
     {
@@ -23,13 +25,15 @@
             return this;
         }
 
-        public SelectorManager Set<T>(Property<T> property, string resource)
+        public SelectorManager Set<T>(Property<T> property, Resource<T> resource)
+            where T : notnull
         {
             _styleSheet.Set<T>(property, _selector, resource);
             return this;
         }
 
-        public SelectorManager Set<T>(Property<T> property, ElementState state, string resource)
+        public SelectorManager Set<T>(Property<T> property, ElementState state, Resource<T> resource)
+            where T : notnull
         {
             _styleSheet.Set<T>(property, _selector, state, resource);
             return this;

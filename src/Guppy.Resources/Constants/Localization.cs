@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Resources.Constants
 {
-    public static class LanguageConstants
+    public static class Localization
     {
         public const string Default = en_US;
 
