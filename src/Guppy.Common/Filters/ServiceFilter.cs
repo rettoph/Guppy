@@ -1,5 +1,4 @@
-﻿using Guppy.Common.DependencyInjection.Interfaces;
-using Guppy.Common.Providers;
+﻿using Guppy.Common.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,14 +1,9 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Configurations;
 using Guppy.Resources.Serialization.Json;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Resources.Attributes
 {
@@ -24,7 +19,7 @@ namespace Guppy.Resources.Attributes
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.AddSingleton<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType));
+            configuration.Builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, classType)).SingleInstance();
         }
     }
 }

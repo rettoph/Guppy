@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Autofac;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace Guppy.Common.Implementations
     internal sealed class Lazier<T> : Lazy<T>
         where T : class
     {
-        public Lazier(IServiceProvider p) : base(() => p.GetRequiredService<T>())
+        public Lazier(IComponentContext p) : base(() => p.Resolve<T>())
         {
 
         }

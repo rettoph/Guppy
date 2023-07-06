@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
 using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
@@ -7,15 +8,7 @@ using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Providers;
 using Guppy.Network.Messages;
-using Guppy.Network.Providers;
-using Guppy.Resources.Providers;
 using LiteNetLib;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Peers
 {
@@ -27,7 +20,7 @@ namespace Guppy.Network.Peers
 
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
-        public ServerPeer(IScoped<NetScope> scope) : base(scope)
+        public ServerPeer(ILifetimeScope scope) : base(scope)
         {
             this.Listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
             this.Listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
@@ -46,7 +39,7 @@ namespace Guppy.Network.Peers
 
         private void HandleUserConnected(IUserProvider sender, User newUser)
         {
-            this.Scope.Users.Add(newUser);
+            this.NetScope.Users.Add(newUser);
         }
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
@@ -59,7 +52,7 @@ namespace Guppy.Network.Peers
                 throw new NotImplementedException();
             }
 
-            using (var data = this.Scope.Messages.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
+            using (var data = this.NetScope.Messages.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
             {
                 if (data is INetIncomingMessage<UserAction> casted)
                 {
@@ -79,7 +72,7 @@ namespace Guppy.Network.Peers
 
                         var user = this.Users.UpdateOrCreate(peer.Id, peer, casted.Body.Claims);
 
-                        this.Scope.Messages.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
+                        this.NetScope.Messages.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
                             .AddRecipient(peer)
                             .Send()
                             .Recycle();

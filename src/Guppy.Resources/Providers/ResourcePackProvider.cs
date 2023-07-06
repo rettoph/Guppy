@@ -1,13 +1,5 @@
-﻿using Guppy.Resources.Definitions;
-using Guppy.Resources.Loaders;
+﻿using Guppy.Resources.Loaders;
 using Guppy.Resources.Serialization.Json;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Guppy.Resources.Providers
 {
@@ -16,8 +8,6 @@ namespace Guppy.Resources.Providers
         private IDictionary<Guid, ResourcePack> _packs;
 
         public ResourcePackProvider(
-            IServiceProvider provider,
-            IJsonSerializer json,
             IEnumerable<ResourcePack> packs,
             IEnumerable<IPackLoader> loaders)
         {

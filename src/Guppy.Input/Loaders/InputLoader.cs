@@ -1,44 +1,19 @@
-﻿using Guppy.Common.DependencyInjection;
-using Guppy.Input.Providers;
+﻿using Guppy.Input.Providers;
 using Guppy.Loaders;
 using Guppy.Input.Services;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Autofac;
 
 namespace Guppy.Input.Loaders
 {
     internal sealed class InputLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.ConfigureCollection(manager =>
-            {
-                manager.GetService<ButtonService>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IButtonService>()
-                    .AddAlias<IGameComponent>();
-
-                manager.GetService<KeyboardButtonProvider>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IButtonProvider>();
-
-                manager.GetService<MouseButtonProvider>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IButtonProvider>();
-
-                manager.GetService<MouseEventPublishService>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .AddAlias<IGameComponent>();
-
-                manager.GetService<ICursorProvider>()
-                    .SetLifetime(ServiceLifetime.Scoped)
-                    .SetImplementationType<CursorProvider>();
-            });
+            services.RegisterType<ButtonService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<KeyboardButtonProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<MouseButtonProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<MouseEventPublishService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<CursorProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

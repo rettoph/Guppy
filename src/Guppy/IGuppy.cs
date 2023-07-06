@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,6 @@ namespace Guppy
     {
         event OnEventDelegate<IDisposable>? OnDispose;
 
-        void Initialize(IServiceProvider provider);
+        void Initialize(ILifetimeScope scope);
     }
 }

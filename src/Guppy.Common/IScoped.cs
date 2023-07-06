@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Autofac;
 
 namespace Guppy.Common
 {
@@ -11,6 +6,6 @@ namespace Guppy.Common
         where T : notnull
     {
         public T Instance { get; }
-        public IServiceScope Scope { get; }
+        public ILifetimeScope Scope { get; }
     }
 }

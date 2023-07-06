@@ -1,19 +1,14 @@
-﻿using Guppy.Commands.Services;
+﻿using Autofac;
+using Guppy.Commands.Services;
 using Guppy.Loaders;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Commands.Loaders
 {
     internal sealed class CommandLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddScoped<ICommandService, CommandService>();
+            services.RegisterType<CommandService>().As<ICommandService>().InstancePerLifetimeScope();
         }
     }
 }

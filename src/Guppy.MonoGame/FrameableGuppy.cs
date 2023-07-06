@@ -1,13 +1,12 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
 using Guppy.MonoGame.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.MonoGame
 {
     public abstract class FrameableGuppy : IGuppy, IDrawable, IUpdateable
     {
-        private IServiceScope? _scope;
         private int _drawOrder;
         private bool _visible;
         private bool _enabled;
@@ -71,10 +70,10 @@ namespace Guppy.MonoGame
         public event EventHandler<EventArgs> UpdateOrderChanged;
         public event OnEventDelegate<IDisposable>? OnDispose;
 
-        public virtual void Initialize(IServiceProvider provider)
+        public virtual void Initialize(ILifetimeScope scope)
         {
-            this.Components = provider.GetRequiredService<IGameComponentService>();
-            this.Bus = provider.GetRequiredService<IBus>();
+            this.Components = scope.Resolve<IGameComponentService>();
+            this.Bus = scope.Resolve<IBus>();
         }
 
         protected virtual void PreDraw(GameTime gameTime)

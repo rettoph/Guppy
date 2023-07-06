@@ -1,32 +1,13 @@
 ﻿using Guppy.Common;
-using Guppy.Common.Collections;
-using Guppy.Common.Implementations;
-using Guppy.Network.Constants;
-using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Enums;
-using Guppy.Network.Identity.Providers;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
 using Guppy.Network.Peers;
-using Guppy.Network.Providers;
 using Guppy.Network.Services;
-using Guppy.Resources;
-using Guppy.Resources.Providers;
-using LiteNetLib;
-using LiteNetLib.Utils;
-using Microsoft.Extensions.Options;
-using Serilog;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network
 {

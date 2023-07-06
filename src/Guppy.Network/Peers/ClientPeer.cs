@@ -1,20 +1,12 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
-using Guppy.Network.Identity.Providers;
 using Guppy.Network.Messages;
-using Guppy.Network.Providers;
-using Guppy.Resources.Providers;
 using LiteNetLib;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Peers
 {
@@ -24,7 +16,7 @@ namespace Guppy.Network.Peers
 
         public override PeerType Type => PeerType.Client;
 
-        public ClientPeer(IScoped<NetScope> scope) : base(scope)
+        public ClientPeer(ILifetimeScope scope) : base(scope)
         {
         }
 
@@ -34,7 +26,7 @@ namespace Guppy.Network.Peers
 
             this.Manager.Start();
 
-            this.Scope.Bus.Subscribe(this);
+            this.NetScope.Bus.Subscribe(this);
         }
 
         public void Connect(string address, int port, params Claim[] claims)
@@ -42,7 +34,7 @@ namespace Guppy.Network.Peers
             var user = new User(-1, claims);
             var action = user.CreateAction(UserAction.Actions.ConnectionRequest, ClaimAccessibility.Protected);
 
-            using(var request = this.Scope.Messages.Create(in action))
+            using(var request = this.NetScope.Messages.Create(in action))
             {
                 _peer = this.Manager.Connect(address, port, request.Writer);
             }

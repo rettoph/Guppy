@@ -1,7 +1,4 @@
 ﻿using Guppy.Common.Extensions;
-using Microsoft.Extensions.Options;
-using Serilog;
-using System.Collections;
 
 namespace Guppy.Common.Implementations
 {

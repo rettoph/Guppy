@@ -1,10 +1,10 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
 using Guppy.Configurations;
 using Guppy.Loaders;
 using Guppy.Providers;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace Guppy
@@ -12,7 +12,7 @@ namespace Guppy
     public sealed class GuppyEngine
     {
         public IEnumerable<Assembly> Libraries { get; private set; }
-        public IServiceProvider Provider { get; private set; }
+        public IContainer Container { get; private set; }
         public IGuppyProvider Guppies { get; private set; }
 
         public GuppyStatus Status { get; private set; }
@@ -28,7 +28,7 @@ namespace Guppy
             });
 
             this.Libraries = libraries;
-            this.Provider = default!;
+            this.Container = default!;
             this.Guppies = default!;
         }
 
@@ -44,17 +44,17 @@ namespace Guppy
             this.Status = GuppyStatus.Starting;
 
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
-            var services = new ServiceCollection();
+            var builder = new ContainerBuilder();
             var assemblies = new AssemblyProvider(this.Libraries);
-            var configuration = new GuppyConfiguration(services, assemblies);
+            var configuration = new GuppyConfiguration(builder, assemblies);
 
             build?.Invoke(configuration);
             configuration.Build(entry);
 
-            this.Provider = services.BuildServiceProvider();
-            this.Guppies = this.Provider.GetRequiredService<IGuppyProvider>();
+            this.Container = builder.Build();
+            this.Guppies = this.Container.Resolve<IGuppyProvider>();
 
-            foreach(var loader in this.Provider.GetServices<IGlobalLoader>())
+            foreach(var loader in this.Container.Resolve<IEnumerable<IGlobalLoader>>())
             {
                 loader.Load(this);
             }

@@ -1,24 +1,18 @@
-﻿using Guppy.Common.Implementations;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Autofac;
+using Guppy.Common.Implementations;
 
 namespace Guppy.Common.Providers
 {
     internal sealed class FilteredProvider : IFilteredProvider
     {
         private readonly IStateProvider _state;
-        private readonly IServiceProvider _provider;
+        private readonly IComponentContext _context;
         private readonly IServiceFilterProvider _filters;
 
-        public FilteredProvider(IServiceProvider provider, IServiceFilterProvider filters, IStateProvider state)
+        public FilteredProvider(IComponentContext context, IServiceFilterProvider filters, IStateProvider state)
         {
             _state = state;
-            _provider = provider;
+            _context = context;
             _filters = filters;
         }
 
@@ -28,7 +22,7 @@ namespace Guppy.Common.Providers
             return new Filtered<T>(
                 _state,
                 _filters, 
-                _provider.GetRequiredService<Lazy<IEnumerable<T>>>());
+                _context.Resolve<Lazy<IEnumerable<T>>>());
         }
 
         public T? Instance<T>()
@@ -48,7 +42,7 @@ namespace Guppy.Common.Providers
             return new Filtered<T>(
                 _state.Custom(states),
                 _filters,
-                _provider.GetRequiredService<Lazy<IEnumerable<T>>>());
+                _context.Resolve<Lazy<IEnumerable<T>>>());
         }
 
         public T? Instance<T>(params IState[] states) where T : class

@@ -1,11 +1,11 @@
-﻿using Guppy.Common;
-using Guppy.Common.DependencyInjection;
+﻿using Autofac;
+using Guppy.Common;
+using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,18 +17,14 @@ namespace Guppy.MonoGame.Loaders
 {
     internal sealed class GameLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddService<ConsoleTerminalService>()
-                .SetLifetime(ServiceLifetime.Scoped)
-                .AddAlias<ITerminalService>();
+            services.RegisterType<ConsoleTerminalService>().As<ITerminalService>().InstancePerLifetimeScope();
+            services.RegisterType<GameComponentService>().As<IGameComponentService>().InstancePerLifetimeScope();
+            services.RegisterType<MenuProvider>().As<IMenuProvider>().InstancePerLifetimeScope();
+            services.RegisterType<DebugMenuLoader>().As<IGuppyLoader>().InstancePerLifetimeScope();
 
-            services.AddScoped<IGameComponentService, GameComponentService>();
-
-            services.AddScoped<IMenuProvider, MenuProvider>();
-            services.AddScoped<IGuppyLoader, DebugMenuLoader>();
-
-            services.AddSingleton<IGlobalLoader, GuppyProviderLoader>();
+            services.RegisterType<GuppyProviderLoader>().As<IGlobalLoader>().SingleInstance();
 
             services.AddFilter(new ServiceFilter<IGameComponent, Type>(typeof(FrameableGuppy)));
         }

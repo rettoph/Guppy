@@ -1,15 +1,4 @@
-﻿using Guppy.Common;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.CommandLine;
-using System.CommandLine.Binding;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Commands
+﻿namespace Guppy.Commands
 {
     public sealed class Command
     {

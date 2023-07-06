@@ -57,7 +57,7 @@ namespace Guppy.GUI.Services
                 }
             }
 
-            private const int MaxLines = 512;
+            private const int MaxLines = 2048;
             private const char NewLineChar = '\n';
             private const char CarriageReturnChar = '\r';
 

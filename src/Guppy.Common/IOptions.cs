@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common
 {
-    public interface ITypeProvider<T> : IEnumerable<Type>
+    public interface IOptions<T>
+        where T : new()
     {
-        IEnumerable<T> CreateInstances();
+        public T Value { get; }
     }
 }

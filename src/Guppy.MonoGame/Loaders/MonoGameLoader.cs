@@ -1,18 +1,13 @@
-﻿using Guppy.Common.DependencyInjection;
-using Guppy.Common.Providers;
+﻿using Autofac;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Primitives;
-using Guppy.MonoGame.Providers;
 using Guppy.MonoGame.Services;
-using Guppy.Resources.Providers;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 
 namespace Guppy.MonoGame.Loaders
 {
@@ -31,13 +26,13 @@ namespace Guppy.MonoGame.Loaders
             _window = window;
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddSingleton<Game>(_game);
-            services.AddSingleton<GraphicsDeviceManager>(_graphics);
-            services.AddSingleton<GraphicsDevice>(_graphics.GraphicsDevice);
-            services.AddSingleton<ContentManager>(_content);
-            services.AddSingleton<GameWindow>(_window);
+            services.RegisterInstance<Game>(_game).SingleInstance();
+            services.RegisterInstance<GraphicsDeviceManager>(_graphics).SingleInstance();
+            services.RegisterInstance<GraphicsDevice>(_graphics.GraphicsDevice).SingleInstance();
+            services.RegisterInstance<ContentManager>(_content).SingleInstance();
+            services.RegisterInstance<GameWindow>(_window).SingleInstance();
 
             // services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
             // services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
@@ -52,7 +47,7 @@ namespace Guppy.MonoGame.Loaders
             foreach (Type vertexType in vertexTypes)
             {
                 var primitiveBatchType = typeof(PrimitiveBatch<>).MakeGenericType(vertexType);
-                services.AddSingleton(primitiveBatchType);
+                services.RegisterType(primitiveBatchType);
             }
         }
     }

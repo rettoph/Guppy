@@ -1,9 +1,7 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Commands.Extensions;
-using Guppy.Common;
 using Guppy.Configurations;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace Guppy.Commands.Attributes
 {
@@ -30,7 +28,7 @@ namespace Guppy.Commands.Attributes
                 options: FactoryAttribute<Option>.GetAll(classType),
                 arguments: FactoryAttribute<Argument>.GetAll(classType));
 
-            configuration.Services.AddSingleton<Command>(command);
+            configuration.Builder.RegisterInstance<Command>(command).SingleInstance();
         }
     }
 

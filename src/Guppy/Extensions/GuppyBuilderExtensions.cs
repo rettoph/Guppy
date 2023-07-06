@@ -41,7 +41,7 @@ namespace Guppy
 
         public static GuppyConfiguration AddServiceLoader(this GuppyConfiguration engine, IServiceLoader loader, int? order = null)
         {
-            return engine.AddLoader(x => loader.ConfigureServices(x.Services));
+            return engine.AddLoader(x => loader.ConfigureServices(x.Builder));
         }
     }
 }

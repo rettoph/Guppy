@@ -1,10 +1,4 @@
-﻿using Guppy.Common;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Autofac;
 
 namespace Guppy.Common.Implementations
 {
@@ -15,12 +9,12 @@ namespace Guppy.Common.Implementations
 
         public T Instance { get; private set; }
 
-        public IServiceScope Scope { get; private set; }
+        public ILifetimeScope Scope { get; private set; }
 
-        public Scoped(IServiceProvider provider)
+        public Scoped(ILifetimeScope scope)
         {
-            this.Scope = provider.CreateScope();
-            this.Instance = this.Scope.ServiceProvider.GetRequiredService<T>();
+            this.Scope = scope.BeginLifetimeScope();
+            this.Instance = this.Scope.Resolve<T>();
         }
 
         public void Dispose()

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,36 +23,6 @@ namespace Guppy.Common.Providers
                 object? instance = Activator.CreateInstance(type);
 
                 if (instance is not null && instance is T casted)
-                {
-                    yield return casted;
-                }
-
-                throw new InvalidOperationException();
-            }
-        }
-
-        public IEnumerable<T> CreateInstances(IServiceProvider provider)
-        {
-            foreach (Type type in _types)
-            {
-                object instance = provider.GetService(type) ?? ActivatorUtilities.CreateInstance(provider, type);
-
-                if (instance is T casted)
-                {
-                    yield return casted;
-                }
-
-                throw new InvalidOperationException();
-            }
-        }
-
-        public IEnumerable<T> CreateInstances(IServiceProvider provider, params object[] args)
-        {
-            foreach (Type type in _types)
-            {
-                object instance = provider.GetService(type) ?? ActivatorUtilities.CreateInstance(provider, type, args);
-
-                if (instance is T casted)
                 {
                     yield return casted;
                 }

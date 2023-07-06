@@ -1,9 +1,9 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
 using Guppy.Configurations;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Guppy.Attributes
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.AddFilter(new ServiceFilter<Type>(classType, this.GuppyType));
+            configuration.Builder.AddFilter(new ServiceFilter<Type>(classType, this.GuppyType));
         }
     }
 

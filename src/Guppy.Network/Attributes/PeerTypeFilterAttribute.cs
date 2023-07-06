@@ -1,9 +1,8 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
 using Guppy.Configurations;
 using Guppy.Network.Enums;
-using LiteNetLib;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network.Attributes
 {
@@ -18,7 +17,7 @@ namespace Guppy.Network.Attributes
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.AddFilter(new ServiceFilter<PeerType>(classType, this.Flags));
+            configuration.Builder.AddFilter(new ServiceFilter<PeerType>(classType, this.Flags));
         }
     }
 }

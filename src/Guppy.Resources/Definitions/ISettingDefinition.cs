@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
+using Guppy.Enums;
 using Guppy.Resources.Serialization.Json;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Resources.Definitions
 {

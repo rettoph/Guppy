@@ -1,12 +1,11 @@
-﻿using Guppy.Loaders;
-using Guppy.Resources.Providers;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Autofac;
+using Guppy.Loaders;
 
 namespace Guppy.MonoGame.Loaders
 {
     internal sealed class ResourceLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
             // services.AddTransient<IResourcePackTypeProvider, ResourcePackColorProvider>();
         }

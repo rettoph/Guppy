@@ -1,7 +1,7 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +15,16 @@ namespace Guppy.Configurations
     {
         private SortedList<int, Action<GuppyConfiguration>> _loaders;
 
-        public readonly IServiceCollection Services;
+        public readonly ContainerBuilder Builder;
         public readonly IAssemblyProvider Assemblies;
 
         public IEnumerable<Action<GuppyConfiguration>> Loaders => _loaders.Values;
 
-        internal GuppyConfiguration(IServiceCollection services, IAssemblyProvider assemblies)
+        internal GuppyConfiguration(ContainerBuilder builder, IAssemblyProvider assemblies)
         {
             _loaders = new SortedList<int, Action<GuppyConfiguration>>(new DuplicateKeyComparer<int>());
 
-            Services = services;
+            Builder = builder;
             Assemblies = assemblies;
 
             Assemblies.OnAssemblyLoaded += HandleAssemblyLoaded;
@@ -52,8 +52,7 @@ namespace Guppy.Configurations
                 loader.Value.Invoke(this);
             }
 
-            Services.AddSingleton(Assemblies);
-            Services.RefreshManagers();
+            this.Builder.RegisterInstance(Assemblies);
 
             return this;
         }

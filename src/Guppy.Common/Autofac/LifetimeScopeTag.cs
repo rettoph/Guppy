@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common.Autofac
 {
-    public interface ITypeProvider<T> : IEnumerable<Type>
+    public static class LifetimeScopeTag
     {
-        IEnumerable<T> CreateInstances();
+        public static readonly object Guppy = new object();
     }
 }

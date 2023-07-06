@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
+using Guppy.Enums;
 using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Network
 {

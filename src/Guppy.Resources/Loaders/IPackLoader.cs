@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
+using Guppy.Enums;
 using Guppy.Resources.Providers;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Guppy.Resources.Loaders
 {

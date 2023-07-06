@@ -1,10 +1,6 @@
-﻿using Guppy.Loaders;
+﻿using Autofac;
+using Guppy.Loaders;
 using Guppy.MonoGame.Serialization.Json.Converters;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -13,22 +9,23 @@ namespace Guppy.MonoGame.Loaders
 {
     internal sealed class JsonLoader : IServiceLoader
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(ContainerBuilder services)
         {
-            services.AddSingleton<JsonConverter, ColorConverter>();
-            services.AddSingleton<JsonConverter, Vector2Converter>();
+            services.RegisterType<ColorConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<Vector2Converter>().As<JsonConverter>().SingleInstance();
 
-            services.AddTransient<JsonSerializerOptions>(p =>
+
+            services.Register<JsonSerializerOptions>(p =>
             {
                 var options = new JsonSerializerOptions();
 
-                foreach(JsonConverter converter in p.GetServices<JsonConverter>())
+                foreach(JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
                 {
                     options.Converters.Add(converter);
                 }
 
                 return options;
-            });
+            }).InstancePerDependency();
         }
     }
 }

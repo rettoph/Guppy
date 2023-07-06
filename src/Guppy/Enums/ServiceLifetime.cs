@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Enums
 {
-    public interface ITypeProvider<T> : IEnumerable<Type>
+    public enum ServiceLifetime
     {
-        IEnumerable<T> CreateInstances();
+        Transient,
+        Scoped,
+        Singleton
     }
 }

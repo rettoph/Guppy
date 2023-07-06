@@ -1,12 +1,7 @@
-﻿using Guppy.Common.DependencyInjection;
+﻿using Autofac;
 using Guppy.Configurations;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Guppy.Enums;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Attributes
 {
@@ -37,12 +32,20 @@ namespace Guppy.Attributes
 
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            configuration.Services.ConfigureCollection(sm =>
+            var service = configuration.Builder.RegisterType(classType).As(this.ServiceType ?? classType);
+
+            switch (this.Lifetime)
             {
-                sm.AddService(this.ServiceType ?? classType)
-                    .SetImplementationType(classType)
-                    .SetLifetime(this.Lifetime);
-            });
+                case ServiceLifetime.Transient:
+                    service.InstancePerDependency();
+                    break;
+                case ServiceLifetime.Scoped:
+                    service.InstancePerLifetimeScope();
+                    break;
+                case ServiceLifetime.Singleton:
+                    service.SingleInstance();
+                    break;
+            }
         }
     }
 

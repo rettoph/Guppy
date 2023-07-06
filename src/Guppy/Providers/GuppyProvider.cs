@@ -1,31 +1,29 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
+using Guppy.Common.Autofac;
 using Guppy.Common.Collections;
 using Guppy.Loaders;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
     internal sealed class GuppyProvider : CollectionManager<IGuppy>, IGuppyProvider
     {
-        private IServiceProvider _provider;
-        private Dictionary<IGuppy, IServiceScope> _scopes;
+        private ILifetimeScope _scope;
+        private Dictionary<IGuppy, ILifetimeScope> _scopes;
 
-        public GuppyProvider(IServiceProvider provider)
+        public GuppyProvider(ILifetimeScope scope)
         {
-            _provider = provider;
-            _scopes = new Dictionary<IGuppy, IServiceScope>();
+            _scope = scope;
+            _scopes = new Dictionary<IGuppy, ILifetimeScope>();
         }
 
         T IGuppyProvider.Create<T>()
         {
-            var scope = _provider.CreateScope();
-            var guppy = scope.ServiceProvider.GetRequiredService<T>();
+            var scope = _scope.BeginLifetimeScope(LifetimeScopeTag.Guppy, builder =>
+            {
+                builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
+            });
+            var guppy = scope.Resolve<T>();
 
             this.Configure(guppy, scope);
 
@@ -36,8 +34,11 @@ namespace Guppy.Providers
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
 
-            var scope = _provider.CreateScope();
-            var guppy = scope.ServiceProvider.GetRequiredService(guppyType) as IGuppy;
+            var scope = _scope.BeginLifetimeScope(LifetimeScopeTag.Guppy, builder =>
+            {
+                builder.RegisterType(guppyType).AsSelf().AsImplementedInterfaces().SingleInstance();
+            });
+            var guppy = scope.Resolve(guppyType) as IGuppy;
             
             if(guppy is null)
             {
@@ -49,16 +50,16 @@ namespace Guppy.Providers
             return guppy;
         }
 
-        private void Configure(IGuppy guppy, IServiceScope scope)
+        private void Configure(IGuppy guppy, ILifetimeScope scope)
         {
             guppy.OnDispose += this.HandleGuppyDisposed;
 
-            foreach (var loader in scope.ServiceProvider.GetServices<IGuppyLoader>())
+            foreach (var loader in scope.Resolve<IEnumerable<IGuppyLoader>>())
             {
                 loader.Load(guppy);
             }
 
-            guppy.Initialize(scope.ServiceProvider);
+            guppy.Initialize(scope);
 
             this.Add(guppy);
             _scopes.Add(guppy, scope);
