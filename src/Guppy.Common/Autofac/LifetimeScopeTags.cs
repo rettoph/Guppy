@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Autofac
 {
-    public static class LifetimeScopeTag
+    public static class LifetimeScopeTags
     {
         public static readonly object Guppy = new object();
     }

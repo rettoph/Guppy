@@ -21,9 +21,7 @@ namespace Guppy.Common.Extensions.Autofac
             services.RegisterGeneric(typeof(Options<>)).As(typeof(IOptions<>)).InstancePerDependency();
 
             services.RegisterType<Broker>().As<IBroker>().InstancePerDependency();
-            services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTag.Guppy).SingleInstance();
-            services.RegisterType<BusConfiguration>();
-            services.RegisterType<BrokerConfiguration>();
+            services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
             services.RegisterType<ServiceFilterProvider>().As<IServiceFilterProvider>().InstancePerLifetimeScope();
             services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
             services.RegisterType<StateProvider>().As<IStateProvider>().InstancePerLifetimeScope();

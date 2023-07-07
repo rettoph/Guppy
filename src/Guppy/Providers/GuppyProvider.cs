@@ -19,7 +19,7 @@ namespace Guppy.Providers
 
         T IGuppyProvider.Create<T>()
         {
-            var scope = _scope.BeginLifetimeScope(LifetimeScopeTag.Guppy, builder =>
+            var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.Guppy, builder =>
             {
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
             });
@@ -34,7 +34,7 @@ namespace Guppy.Providers
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
 
-            var scope = _scope.BeginLifetimeScope(LifetimeScopeTag.Guppy, builder =>
+            var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.Guppy, builder =>
             {
                 builder.RegisterType(guppyType).AsSelf().AsImplementedInterfaces().SingleInstance();
             });
