@@ -53,5 +53,11 @@ namespace Guppy.Common.Collections
             value = default!;
             return false;
         }
+
+        public void Clear()
+        {
+            _queue.Clear();
+            _dict.Clear();
+        }
     }
 }
