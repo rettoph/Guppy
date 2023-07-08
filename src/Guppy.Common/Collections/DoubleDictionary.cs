@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,6 +66,20 @@ namespace Guppy.Common.Collections
         public bool TryGet(TKey2 key2, [MaybeNullWhen(false)] out TValue value)
         {
             return _dic2.TryGetValue(key2, out value);
+        }
+
+        public ref TValue TryGetRef(TKey1 key, out bool isNullRef)
+        {
+            ref TValue value = ref CollectionsMarshal.GetValueRefOrNullRef(_dic1, key);
+            isNullRef = Unsafe.IsNullRef(ref value);
+            return ref value;
+        }
+
+        public ref TValue TryGetRef(TKey2 key, out bool isNullRef)
+        {
+            ref TValue value = ref CollectionsMarshal.GetValueRefOrNullRef(_dic2, key);
+            isNullRef = Unsafe.IsNullRef(ref value);
+            return ref value;
         }
 
         public void Remove(TKey1 key1, TKey2 key2)
