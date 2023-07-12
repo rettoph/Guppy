@@ -1,5 +1,4 @@
 ﻿using Guppy.Common;
-using Guppy.Common.Attributes;
 using Guppy.Common.Collections;
 using System.Reflection;
 
@@ -30,11 +29,6 @@ namespace System.Collections.Generic
             var kkvps = input.Select(x => (keySelector1(x), keySelector2(x), valueSelector(x)));
 
             return new DoubleDictionary<TKey1, TKey2, TValue>(kkvps);
-        }
-
-        public static IOrderedEnumerable<T> Sort<T>(this IEnumerable<T> items)
-        {
-            return items.OrderBy(x => x.GetOrder());
         }
     }
 }

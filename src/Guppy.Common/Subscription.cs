@@ -8,6 +8,5 @@ namespace Guppy.Common
 {
     public record Subscription(ISubscriber Subscriber, Type Type, Action<IBroker> Subscribe, Action<IBroker> Unsubscribe)
     {
-        public int Order => this.Subscriber.GetOrderAs(this.Type);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Common.Attributes;
 using Guppy.Common.Utilities;
 using Guppy.GUI.Constants;
 using Guppy.GUI.Elements;
@@ -14,15 +13,9 @@ using System.Threading.Tasks;
 namespace Guppy.GUI.Loaders
 {
     [AutoLoad]
-    internal sealed class StageLoader_Default : IStageLoader, ISortable
+    internal sealed class StageLoader_Default : IStageLoader
     {
         public BlockList StageBlockList => BlockList.AllowAll;
-
-        public bool GetOrder(Type type, out int order)
-        {
-            order = -1;
-            return true;
-        }
 
         public void Load(Stage stage)
         {

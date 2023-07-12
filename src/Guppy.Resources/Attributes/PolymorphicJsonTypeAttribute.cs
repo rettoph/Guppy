@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Common.Attributes;
 using Guppy.Configurations;
 using Guppy.Resources.Serialization.Json;
 

@@ -14,11 +14,11 @@ namespace Guppy.Input.Services
         public ButtonService(
             IBus bus,
             IEnumerable<IButton> inputs,
-            ISorted<IButtonProvider> providers)
+            IFiltered<IButtonProvider> providers)
         {
             _bus = bus;
             _buttons = inputs.ToDictionary(x => x.Key, x => x);
-            _providers = providers.ToArray();
+            _providers = providers.Instances.ToArray();
 
             foreach (var provider in _providers)
             {

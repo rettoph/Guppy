@@ -37,7 +37,7 @@ namespace Guppy.Configurations
 
         public GuppyConfiguration AddLoader(Action<GuppyConfiguration> loader, int? order = null)
         {
-            _loaders.Add(order ?? loader.GetOrder(), loader);
+            _loaders.Add(order ?? 0, loader);
 
             return this;
         }

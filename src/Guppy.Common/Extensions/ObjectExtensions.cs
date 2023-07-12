@@ -1,10 +1,4 @@
-﻿using Guppy.Common.Attributes;
-using Guppy.Common;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Reflection;
 
 namespace System
 {
@@ -68,25 +62,6 @@ namespace System
         public static IEnumerable<T> Yield<T>(this T instance)
         {
             yield return instance;
-        }
-
-        public static int GetOrderAs<T>(this T item, Type type)
-        {
-            if (item is ISortable sortable && sortable.GetOrder(type, out int order))
-            {
-                return order;
-            }
-
-            return item!.GetType().GetCustomAttributes()
-                .OfType<SortableAttribute>()
-                .Where(attr => attr.Sorts(type))
-                .DefaultIfEmpty()
-                .Min(attr => attr?.Order ?? 0);
-        }
-
-        public static int GetOrder<T>(this T item)
-        {
-            return item.GetOrderAs(typeof(T));
         }
     }
 }

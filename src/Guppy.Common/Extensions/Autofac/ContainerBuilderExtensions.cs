@@ -17,7 +17,6 @@ namespace Guppy.Common.Extensions.Autofac
             services.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Sorted<>)).As(typeof(ISorted<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Options<>)).As(typeof(IOptions<>)).InstancePerDependency();
 
             services.RegisterType<Broker>().As<IBroker>().InstancePerDependency();
