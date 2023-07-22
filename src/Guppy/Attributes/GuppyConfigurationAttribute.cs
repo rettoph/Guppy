@@ -2,7 +2,7 @@
 
 namespace Guppy.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = true, Inherited = true)]
     public abstract class GuppyConfigurationAttribute : Attribute
     {
         public GuppyConfigurationAttribute()

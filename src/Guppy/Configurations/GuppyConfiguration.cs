@@ -14,6 +14,7 @@ namespace Guppy.Configurations
     public sealed class GuppyConfiguration : IDisposable
     {
         private SortedList<int, Action<GuppyConfiguration>> _loaders;
+        private readonly List<IGuppyConfigurator> _configurators;
 
         public readonly ContainerBuilder Builder;
         public readonly IAssemblyProvider Assemblies;
@@ -23,6 +24,7 @@ namespace Guppy.Configurations
         internal GuppyConfiguration(ContainerBuilder builder, IAssemblyProvider assemblies)
         {
             _loaders = new SortedList<int, Action<GuppyConfiguration>>(new DuplicateKeyComparer<int>());
+            _configurators = new List<IGuppyConfigurator>();
 
             Builder = builder;
             Assemblies = assemblies;
@@ -52,6 +54,11 @@ namespace Guppy.Configurations
                 loader.Value.Invoke(this);
             }
 
+            foreach (IGuppyConfigurator configurator in _configurators)
+            {
+                configurator.Configure(this);
+            }
+
             this.Builder.RegisterInstance(Assemblies);
 
             return this;
@@ -67,7 +74,7 @@ namespace Guppy.Configurations
 
             foreach (IGuppyConfigurator configurator in configurators)
             {
-                configurator.Configure(this);
+                _configurators.Add(configurator);
             }
 
             // Initialize all initializable attributes
