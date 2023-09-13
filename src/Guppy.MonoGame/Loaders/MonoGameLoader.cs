@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.MonoGame;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
@@ -28,6 +29,7 @@ namespace Guppy.MonoGame.Loaders
 
         public void ConfigureServices(ContainerBuilder services)
         {
+            services.RegisterType<Screen>().As<IScreen>().InstancePerLifetimeScope();
             services.RegisterInstance<Game>(_game).SingleInstance();
             services.RegisterInstance<GraphicsDeviceManager>(_graphics).SingleInstance();
             services.RegisterInstance<GraphicsDevice>(_graphics.GraphicsDevice).SingleInstance();
