@@ -15,7 +15,11 @@ namespace Guppy.Resources.Providers
         bool TryGet<T>(Resource<T> resource, [MaybeNullWhen(false)] out T value) 
             where T : notnull;
 
-        IEnumerable<(Resource, T)> GetAll<T>() where T : notnull;
+        IEnumerable<(Resource, T)> GetAll<T>() 
+            where T : notnull;
+
+        IEnumerable<T> GetAll<T>(Resource<T> resource)
+            where T : notnull;
 
         IResourceProvider Set<T>(Resource<T> resource, T value)
             where T : notnull;

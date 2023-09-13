@@ -13,19 +13,6 @@ namespace Guppy.MonoGame.Loaders
         {
             services.RegisterType<ColorConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<Vector2Converter>().As<JsonConverter>().SingleInstance();
-
-
-            services.Register<JsonSerializerOptions>(p =>
-            {
-                var options = new JsonSerializerOptions();
-
-                foreach(JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
-                {
-                    options.Converters.Add(converter);
-                }
-
-                return options;
-            }).InstancePerDependency();
         }
     }
 }

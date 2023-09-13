@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,14 +14,14 @@ namespace Guppy.Resources.Providers
     {
         private ISettingProvider _settings;
         private IResourcePackProvider _packs;
-        private Dictionary<Resource, object> _cache;
+        private Dictionary<Resource, Array> _cache;
         private ISetting<string> _localization;
 
         public ResourceProvider(ISettingProvider settings, IResourcePackProvider packs)
         {
             _settings = settings;
             _packs = packs;
-            _cache = new Dictionary<Resource, object>();
+            _cache = new Dictionary<Resource, Array>();
             _localization = _settings.Get<string>(SettingConstants.Localization);
         }
 
@@ -33,29 +34,16 @@ namespace Guppy.Resources.Providers
         public bool TryGet<T>(Resource<T> resource, [MaybeNullWhen(false)] out T value) 
             where T : notnull
         {
-            if(_cache.TryGetValue(resource, out object? cached))
+            ref T[] cache = ref this.GetCache(resource);
+
+            if(cache.Length == 0)
             {
-                value = (T)cached;
-                return true;
+                value = default!;
+                return false;
             }
 
-            foreach (ResourcePack pack in _packs.GetAll())
-            {
-                if(pack.TryGet(resource, _localization.Value, out value))
-                {
-                    _cache.Add(resource, value);
-                    return true;
-                }
-
-                if (_localization.Value != Localization.Default && pack.TryGet(resource, Localization.Default, out value))
-                {
-                    _cache.Add(resource, value);
-                    return true;
-                }
-            }
-
-            value = default!;
-            return false;
+            value = cache[0];
+            return true;
         }
 
         public IEnumerable<(Resource, T)> GetAll<T>() where T : notnull
@@ -72,11 +60,58 @@ namespace Guppy.Resources.Providers
             return resources;
         }
 
+        public IEnumerable<T> GetAll<T>(Resource<T> resource) 
+            where T : notnull
+        {
+            ref T[] cache = ref this.GetCache(resource);
+
+            return cache;
+        }
+
         public IResourceProvider Set<T>(Resource<T> resource, T value) where T : notnull
         {
-            _cache[resource] = value;
+            throw new NotImplementedException();
 
-            return this;
+            // ref T[] cache = ref this.GetCache(resource);
+            // Array.Resize(ref cache, cache.Length + 1);
+            // _cache[resource] = value;
+            // 
+            // return this;
+        }
+
+        private ref T[] GetCache<T>(Resource<T> resource)
+            where T : notnull
+        {
+            ref Array? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
+            if (exists)
+            {
+                return ref Unsafe.As<Array?, T[]>(ref cache);
+            }
+
+            List<T> valuesToCache = new List<T>();
+            foreach (ResourcePack pack in _packs.GetAll())
+            {
+                if (pack.TryGet(resource, Localization.Default, out IEnumerable<T> values))
+                {
+                    valuesToCache.AddRange(values);
+                }
+            }
+
+            if(_localization.Value != Localization.Default)
+            {
+                foreach (ResourcePack pack in _packs.GetAll())
+                {
+                    if (pack.TryGet(resource, _localization.Value, out IEnumerable<T> values))
+                    {
+                        valuesToCache.AddRange(values);
+                    }
+                }
+            }
+
+            valuesToCache.Reverse();
+            cache = valuesToCache.ToArray();
+
+            return ref Unsafe.As<Array?, T[]>(ref cache);
         }
     }
 }

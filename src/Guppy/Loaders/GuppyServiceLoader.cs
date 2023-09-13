@@ -4,6 +4,9 @@ using Guppy.Providers;
 using Serilog;
 using Guppy.Common.Extensions.Autofac;
 using Guppy.Common;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using Guppy.Serialization;
 
 namespace Guppy.Loaders
 {
@@ -23,6 +26,20 @@ namespace Guppy.Loaders
 
                 return logger;
             }).InstancePerLifetimeScope();
+
+            services.Register<JsonSerializerOptions>(p =>
+            {
+                var options = new JsonSerializerOptions();
+
+                foreach (JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
+                {
+                    options.Converters.Add(converter);
+                }
+
+                return options;
+            }).InstancePerDependency();
+
+            services.RegisterType<Serialization.JsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
         }
     }
 }
