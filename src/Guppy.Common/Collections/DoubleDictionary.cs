@@ -82,10 +82,14 @@ namespace Guppy.Common.Collections
             return ref value;
         }
 
-        public void Remove(TKey1 key1, TKey2 key2)
+        public bool Remove(TKey1 key1, TKey2 key2)
         {
-            _dic1.Remove(key1);
-            _dic2.Remove(key2);
+            return _dic1.Remove(key1) && _dic2.Remove(key2);
+        }
+
+        public bool Remove(TKey1 key1, TKey2 key2, [MaybeNullWhen(false)] out TValue removed)
+        {
+            return _dic1.Remove(key1, out removed) && _dic2.Remove(key2);
         }
     }
 }

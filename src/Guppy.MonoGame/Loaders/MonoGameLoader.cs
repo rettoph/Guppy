@@ -33,9 +33,7 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterInstance<GraphicsDevice>(_graphics.GraphicsDevice).SingleInstance();
             services.RegisterInstance<ContentManager>(_content).SingleInstance();
             services.RegisterInstance<GameWindow>(_window).SingleInstance();
-
-            // services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<Texture2D>>();
-            // services.AddTransient<IResourcePackTypeProvider, ResourcePackContentProvider<SpriteFont>>();
+            services.RegisterType<SpriteBatch>().SingleInstance();
 
             services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
             {

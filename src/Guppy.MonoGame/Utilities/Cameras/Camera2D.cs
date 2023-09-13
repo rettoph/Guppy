@@ -89,7 +89,7 @@ namespace Guppy.MonoGame.Utilities.Cameras
             get => _targetZoom;
             set
             {
-                _targetZoom = value;
+                _targetZoom = Math.Clamp(value, this.MinZoom, this.MaxZoom);
             }
         }
 
@@ -206,6 +206,22 @@ namespace Guppy.MonoGame.Utilities.Cameras
             view = Matrix.Identity;
         }
 
+        public override Vector3 Project(Vector3 source)
+        {
+            Matrix matrix = this.Frustum.Matrix;
+            Vector3 vector = Vector3.Transform(source, matrix);
+            float a = (((source.X * matrix.M14) + (source.Y * matrix.M24)) + (source.Z * matrix.M34)) + matrix.M44;
+            if (!WithinEpsilon(a, 1f))
+            {
+                vector.X = vector.X / a;
+                vector.Y = vector.Y / a;
+            }
+            vector.X = (((vector.X + 1f) * 0.5f) * this.ViewportBounds.Width) + this.Position.X;
+            vector.Y = (((-vector.Y + 1f) * 0.5f) * this.ViewportBounds.Height) + this.Position.Y;
+            vector.Z = 0;
+            return vector;
+        }
+
         protected virtual RectangleF BuildViewportBounds()
         {
             return new RectangleF(
@@ -218,6 +234,12 @@ namespace Guppy.MonoGame.Utilities.Cameras
         private void HandleClientBoundsChanged(object? sender, EventArgs e)
         {
             _dirtyViewportBounds = true;
+        }
+
+        private static bool WithinEpsilon(float a, float b)
+        {
+            float num = a - b;
+            return ((-1.401298E-45f <= num) && (num <= float.Epsilon));
         }
     }
 }

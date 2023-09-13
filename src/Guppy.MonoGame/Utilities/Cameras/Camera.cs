@@ -44,6 +44,11 @@ namespace Guppy.MonoGame.Utilities.Cameras
             this.Frustum.Matrix = this.View * this.Projection;
         }
 
+        public virtual bool Contains(in Matrix transformation)
+        {
+            return this.Frustum.Contains(transformation.GetBoudingSphere(5f)) != ContainmentType.Disjoint;
+        }
+
         #region Matrix Methods
         protected abstract void SetWorld(ref Matrix world);
         protected abstract void SetView(ref Matrix view);
@@ -51,13 +56,13 @@ namespace Guppy.MonoGame.Utilities.Cameras
         #endregion
 
         #region Utility Methods
-        public Vector2 Project(Vector2 source)
+        public virtual Vector2 Project(Vector2 source)
             => this.graphics.Viewport.Project(source.ToVector3(), this.Projection, this.View, this.World).ToVector2();
-        public Vector2 Unproject(Vector2 source)
+        public virtual Vector2 Unproject(Vector2 source)
             => this.graphics.Viewport.Unproject(source.ToVector3(), this.Projection, this.View, this.World).ToVector2();
-        public Vector3 Project(Vector3 source)
+        public virtual Vector3 Project(Vector3 source)
             => this.graphics.Viewport.Project(source, this.Projection, this.View, this.World);
-        public Vector3 Unproject(Vector3 source)
+        public virtual Vector3 Unproject(Vector3 source)
             => this.graphics.Viewport.Unproject(source, this.Projection, this.View, this.World);
         #endregion
     }
