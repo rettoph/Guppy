@@ -105,6 +105,7 @@ namespace Guppy.Resources.Providers
                         if(!resolver.TryResolve(pack, resource, localization, value))
                         {
                             _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
+                            continue;
                         }
 
                         _logger.Verbose("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} within pack {PackName}, {Localization}", nameof(ResourcePackProvider), nameof(Load), name, pack.Name, localization);
