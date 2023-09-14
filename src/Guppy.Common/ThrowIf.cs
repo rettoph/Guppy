@@ -41,6 +41,22 @@ namespace Guppy.Common
                 throw new ArgumentException($"{nameof(implementation)} value of {implementation.Name} does not implement generic type definition {genericTypeDefinition.Name}.");
             }
 
+            public static void IsNotGenericTypeDefinitionn(System.Type genericTypeDefinition)
+            {
+                if (!genericTypeDefinition.IsGenericTypeDefinition)
+                {
+                    throw new ArgumentException($"{nameof(genericTypeDefinition)} value of {genericTypeDefinition.Name} is not a valid Generic Type Definition.");
+                }
+            }
+
+            public static void IsNotGenericType(System.Type genericType)
+            {
+                if (!genericType.IsGenericType)
+                {
+                    throw new ArgumentException($"{nameof(genericType)} value of {genericType.Name} is not a valid Generic Type.");
+                }
+            }
+
             public static void IsNotClass(System.Type type)
             {
                 if (!type.IsClass)
