@@ -26,7 +26,7 @@ namespace Guppy.Common.Extensions.Autofac
             services.RegisterType<StateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
         }
 
-        public static void Configure<T>(this ContainerBuilder services, Action<T> builder)
+        public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)
             where T : new()
         {
             services.RegisterInstance(new ConfigurationBuilder<T>(builder));

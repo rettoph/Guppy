@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
 using System;
@@ -18,16 +19,22 @@ namespace Guppy.Configurations
 
         public readonly ContainerBuilder Builder;
         public readonly IAssemblyProvider Assemblies;
+        public readonly IGuppyEnvironment Environment;
 
         public IEnumerable<Action<GuppyConfiguration>> Loaders => _loaders.Values;
 
-        internal GuppyConfiguration(ContainerBuilder builder, IAssemblyProvider assemblies)
+        internal GuppyConfiguration(string company, string name, ContainerBuilder builder, IAssemblyProvider assemblies)
         {
             _loaders = new SortedList<int, Action<GuppyConfiguration>>(new DuplicateKeyComparer<int>());
             _configurators = new List<IGuppyConfigurator>();
 
             Builder = builder;
             Assemblies = assemblies;
+            Environment = new GuppyEnvironment()
+            {
+                Company = company,
+                Name = name
+            };
 
             Assemblies.OnAssemblyLoaded += HandleAssemblyLoaded;
         }
@@ -60,6 +67,7 @@ namespace Guppy.Configurations
             }
 
             this.Builder.RegisterInstance(Assemblies);
+            this.Builder.RegisterInstance(Environment);
 
             return this;
         }

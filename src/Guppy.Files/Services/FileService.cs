@@ -1,4 +1,5 @@
 ﻿using Guppy.Files.Enums;
+using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Serialization;
 using System;
@@ -32,7 +33,7 @@ namespace Guppy.Files.Services
 
             if(!exists || forceLoadFromDisk)
             {
-                this.EnsureDirectoryExists(fullPath);
+                DirectoryHelper.EnsureDirectoryExists(fullPath);
 
                 using (FileStream stream = File.Open(fullPath, FileMode.OpenOrCreate))
                 {
@@ -59,21 +60,11 @@ namespace Guppy.Files.Services
             where T : new()
 
         {
-            this.EnsureDirectoryExists(file.FullPath);
+            DirectoryHelper.EnsureDirectoryExists(file.FullPath);
 
             string json = _json.Serialize(file.Value);
 
             File.WriteAllText(file.FullPath, json);
-        }
-
-        private void EnsureDirectoryExists(string fullPath)
-        {
-            string directory = Path.GetDirectoryName(fullPath) ?? throw new NotImplementedException();
-
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
         }
     }
 }

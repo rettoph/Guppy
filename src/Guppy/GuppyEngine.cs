@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
 using Guppy.Configurations;
@@ -17,9 +18,14 @@ namespace Guppy
 
         public GuppyStatus Status { get; private set; }
 
-        public GuppyEngine(IEnumerable<Assembly>? libraries = default)
+        public string Name { get; private set; }
+        public string Company { get; private set; }
+
+        public GuppyEngine(string company, string name, IEnumerable<Assembly>? libraries = default)
         {
             this.Status = GuppyStatus.NotReady;
+            this.Name = name;
+            this.Company = company;
 
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
@@ -46,7 +52,7 @@ namespace Guppy
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
             var builder = new ContainerBuilder();
             var assemblies = new AssemblyProvider(this.Libraries);
-            var configuration = new GuppyConfiguration(builder, assemblies);
+            var configuration = new GuppyConfiguration(this.Company, this.Name, builder, assemblies);
 
             build?.Invoke(configuration);
             configuration.Build(entry);

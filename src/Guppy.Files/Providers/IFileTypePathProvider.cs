@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Files.Providers
 {
-    internal interface IFileTypePathProvider
+    public interface IFileTypePathProvider
     {
         string GetFullPath(FileType type, string path);
     }

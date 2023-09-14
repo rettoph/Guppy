@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Core.Lifetime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,13 +13,13 @@ namespace Guppy.Common.Implementations
     {
         public T Value { get; }
 
-        public Configuration(IEnumerable<ConfigurationBuilder<T>> builders)
+        public Configuration(ILifetimeScope scope, IEnumerable<ConfigurationBuilder<T>> builders)
         {
             this.Value = new();
 
             foreach(var builder in builders)
             {
-                builder.Build(this.Value);
+                builder.Build(scope, this.Value);
             }
         }
     }
@@ -25,16 +27,16 @@ namespace Guppy.Common.Implementations
     internal class ConfigurationBuilder<T>
         where T : new()
     {
-        private Action<T> _builder;
+        private Action<ILifetimeScope, T> _builder;
 
-        public ConfigurationBuilder(Action<T> builder)
+        public ConfigurationBuilder(Action<ILifetimeScope, T> builder)
         {
             _builder = builder;
         }
 
-        public void Build(T instance)
+        public void Build(ILifetimeScope scope, T instance)
         {
-            _builder(instance);
+            _builder(scope, instance);
         }
     }
 }
