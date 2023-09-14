@@ -17,7 +17,7 @@ namespace Guppy.Common.Extensions.Autofac
             services.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Options<>)).As(typeof(IOptions<>)).InstancePerDependency();
+            services.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
 
             services.RegisterType<Broker>().As<IBroker>().InstancePerDependency();
             services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
@@ -29,7 +29,7 @@ namespace Guppy.Common.Extensions.Autofac
         public static void Configure<T>(this ContainerBuilder services, Action<T> builder)
             where T : new()
         {
-            services.RegisterInstance(new OptionBuilder<T>(builder));
+            services.RegisterInstance(new ConfigurationBuilder<T>(builder));
         }
 
         public static void AddFilter(this ContainerBuilder builder, IServiceFilter filter)

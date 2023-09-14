@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common.Collections;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -23,5 +24,9 @@ namespace Guppy.Resources.Providers
 
         IResourceProvider Set<T>(Resource<T> resource, T value)
             where T : notnull;
+
+        void Register(params Resource[] resources);
+
+        bool TryGetResourceByName(string name, [MaybeNullWhen(false)] out Resource resource);
     }
 }

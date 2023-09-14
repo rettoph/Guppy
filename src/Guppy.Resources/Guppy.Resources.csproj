@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Guppy.Files\Guppy.Files.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,9 @@
-﻿using Guppy.Resources.Constants;
+﻿using Guppy.Common.Collections;
+using Guppy.Resources.Constants;
+using Guppy.Resources.Loaders;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,16 +16,36 @@ namespace Guppy.Resources.Providers
     internal class ResourceProvider : IResourceProvider
     {
         private ISettingProvider _settings;
-        private IResourcePackProvider _packs;
+        private Lazy<IResourcePackProvider> _packs;
         private Dictionary<Resource, Array> _cache;
         private ISetting<string> _localization;
+        private Dictionary<string, Resource> _registered;
 
-        public ResourceProvider(ISettingProvider settings, IResourcePackProvider packs)
+        public ResourceProvider(ISettingProvider settings, Lazy<IResourcePackProvider> packs, IEnumerable<IResourceLoader> loaders)
         {
             _settings = settings;
             _packs = packs;
             _cache = new Dictionary<Resource, Array>();
             _localization = _settings.Get<string>(SettingConstants.Localization);
+            _registered = new Dictionary<string, Resource>();
+
+            foreach (IResourceLoader loader in loaders)
+            {
+                loader.Load(this);
+            }
+        }
+
+        public void Register(params Resource[] resources)
+        {
+            foreach(Resource resource in resources)
+            {
+                _registered.Add(resource.Name, resource);
+            }
+        }
+
+        public bool TryGetResourceByName(string name, [MaybeNullWhen(false)] out Resource resource)
+        {
+            return _registered.TryGetValue(name, out resource);
         }
 
         public T? Get<T>(Resource<T> resource) where T : notnull
@@ -89,7 +112,7 @@ namespace Guppy.Resources.Providers
             }
 
             List<T> valuesToCache = new List<T>();
-            foreach (ResourcePack pack in _packs.GetAll())
+            foreach (ResourcePack pack in _packs.Value.GetAll())
             {
                 if (pack.TryGet(resource, Localization.Default, out IEnumerable<T> values))
                 {
@@ -99,7 +122,7 @@ namespace Guppy.Resources.Providers
 
             if(_localization.Value != Localization.Default)
             {
-                foreach (ResourcePack pack in _packs.GetAll())
+                foreach (ResourcePack pack in _packs.Value.GetAll())
                 {
                     if (pack.TryGet(resource, _localization.Value, out IEnumerable<T> values))
                     {

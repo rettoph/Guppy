@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Guppy.Files;
+using Guppy.Files.Enums;
+using Guppy.Resources.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +11,8 @@ namespace Guppy.Resources.Providers
 {
     public interface IResourcePackProvider
     {
-        void Configure(Guid id, Action<ResourcePack> configurator);
+        void Register(IFile<ResourcePackConfiguration> options);
+        void Register(FileType type, string path);
         IEnumerable<ResourcePack> GetAll();
         ResourcePack GetById(Guid id);
     }

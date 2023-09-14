@@ -15,8 +15,9 @@ namespace Guppy.Resources
 
         public readonly Guid Id;
         public readonly string Name;
+        public readonly Type Type;
 
-        internal Resource(string name)
+        internal Resource(string name, Type type)
         {
             uint128 nameHash = xxHash128.ComputeHash(name);
             Guid* pNameHash = (Guid*)&nameHash;
@@ -24,6 +25,7 @@ namespace Guppy.Resources
             this.Name = name;
 
             _resources.TryAdd(this.Id, this.Name, this);
+            Type = type;
         }
 
         public static Resource Get(Guid id)
@@ -35,7 +37,7 @@ namespace Guppy.Resources
     public sealed class Resource<T> : Resource
         where T : notnull
     {
-        public Resource(string name) : base(name)
+        public Resource(string name) : base(name, typeof(T))
         {
         }
     }

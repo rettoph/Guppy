@@ -15,7 +15,7 @@
 
         public Bus(
             IBroker broker,
-            IOptions<BusConfiguration> configuration)
+            IConfiguration<BusConfiguration> configuration)
         {
             _broker = broker;
 

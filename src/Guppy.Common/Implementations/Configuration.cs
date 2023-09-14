@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Implementations
 {
-    internal class Options<T> : IOptions<T>
+    internal class Configuration<T> : IConfiguration<T>
         where T : new()
     {
         public T Value { get; }
 
-        public Options(IEnumerable<OptionBuilder<T>> builders)
+        public Configuration(IEnumerable<ConfigurationBuilder<T>> builders)
         {
             this.Value = new();
 
@@ -22,12 +22,12 @@ namespace Guppy.Common.Implementations
         }
     }
 
-    internal class OptionBuilder<T>
+    internal class ConfigurationBuilder<T>
         where T : new()
     {
         private Action<T> _builder;
 
-        public OptionBuilder(Action<T> builder)
+        public ConfigurationBuilder(Action<T> builder)
         {
             _builder = builder;
         }

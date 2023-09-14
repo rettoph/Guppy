@@ -1,4 +1,6 @@
-﻿using Guppy.Resources.Constants;
+﻿using Guppy.Files;
+using Guppy.Resources.Configuration;
+using Guppy.Resources.Constants;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -7,13 +9,16 @@ namespace Guppy.Resources
     public sealed class ResourcePack
     {
         public readonly Guid Id;
-        public string? Name { get; set; }
+        public readonly string Name;
+        public readonly string RootDirectory;
 
         private Dictionary<Resource, Dictionary<string, List<object>>> _resources;
 
-        public ResourcePack(Guid id)
+        public ResourcePack(IFile<ResourcePackConfiguration> configuration)
         {
-            this.Id = id;
+            this.Id = configuration.Value.Id;
+            this.Name = configuration.Value.Name;
+            this.RootDirectory = Path.GetDirectoryName(configuration.FullPath)!;
 
             _resources = new Dictionary<Resource, Dictionary<string, List<object>>>();
         }

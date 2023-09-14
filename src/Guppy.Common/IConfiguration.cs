@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IOptions<T>
+    public interface IConfiguration<T>
         where T : new()
     {
         public T Value { get; }

@@ -21,7 +21,7 @@ namespace Guppy.Loaders
 
             services.Register<ILogger>(p =>
             {
-                var configuration = p.Resolve<IOptions<LoggerConfiguration>>().Value;
+                var configuration = p.Resolve<IConfiguration<LoggerConfiguration>>().Value;
                 var logger = configuration.CreateLogger();
 
                 return logger;
@@ -39,7 +39,7 @@ namespace Guppy.Loaders
                 return options;
             }).InstancePerDependency();
 
-            services.RegisterType<Serialization.JsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
+            services.RegisterType<Serialization.DefaultJsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
         }
     }
 }

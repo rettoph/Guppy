@@ -11,7 +11,7 @@ namespace Guppy.Common.Implementations
 
         public IPublisher this[Type type] => _publishers[type];
 
-        public Broker(IOptions<BrokerConfiguration> configuration) : this(configuration.Value)
+        public Broker(IConfiguration<BrokerConfiguration> configuration) : this(configuration.Value)
         {
 
         }
