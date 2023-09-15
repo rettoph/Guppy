@@ -19,19 +19,22 @@ namespace Guppy.Serialization
             _logger = logger;
         }
 
-        public T? Deserialize<T>(string json)
+        public T? Deserialize<T>(string json, out bool success)
         {
             if(json == string.Empty)
             {
+                success = false;
                 return default!;
             }
 
             try
             {
+                success = true;
                 return JsonSerializer.Deserialize<T>(json, _options);
             }
             catch(Exception e)
             {
+                success = false;
                 _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}> => '{JSON}'", nameof(DefaultJsonSerializer), nameof(Deserialize), typeof(T).Name, json);
                 return default!;
             }
