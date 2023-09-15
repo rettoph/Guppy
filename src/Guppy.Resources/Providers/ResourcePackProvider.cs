@@ -7,6 +7,7 @@ using Guppy.Files.Services;
 using Guppy.Files.Enums;
 using Guppy.Resources.Serialization.Resources;
 using Serilog;
+using System.Xml.Linq;
 
 namespace Guppy.Resources.Providers
 {
@@ -78,20 +79,23 @@ namespace Guppy.Resources.Providers
         private void Load(string directory, IFile<ResourcePackConfiguration> configuration)
         {
             ResourcePack pack = this.GetOrCreatePack(configuration);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
 
             foreach ((string localization, string[] resourceFiles) in configuration.Value.Import)
             {
                 foreach(string resourceFile in resourceFiles)
                 {
-                    Dictionary<string, string> rawResourceValues = _files.Get<Dictionary<string, string>>(
+                    Dictionary<string, RawResourceValues> rawResourceValues = _files.Get<Dictionary<string, RawResourceValues>>(
                         FileType.Source,
                         Path.Combine(directory, resourceFile)).Value;
 
-                    foreach ((string name, string value) in rawResourceValues)
+                    _logger.Verbose("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFile, localization);
+
+                    foreach ((string name, RawResourceValues values) in rawResourceValues)
                     {
                         if (!_resources.Value.TryGetResourceByName(name, out Resource? resource))
                         {
-                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource defined by '{PackName}', {ResourceName}, unkown.", nameof(ResourcePackProvider), nameof(Load), pack.Name, name);
+                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(Load), name);
                             continue;
                         }
 
@@ -101,14 +105,16 @@ namespace Guppy.Resources.Providers
                             continue;
                         }
 
-
-                        if(!resolver.TryResolve(pack, resource, localization, value))
+                        foreach(string value in values)
                         {
-                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
-                            continue;
-                        }
+                            if (!resolver.TryResolve(pack, resource, localization, value))
+                            {
+                                _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
+                                continue;
+                            }
 
-                        _logger.Verbose("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} within pack {PackName}, {Localization}", nameof(ResourcePackProvider), nameof(Load), name, pack.Name, localization);
+                            _logger.Verbose("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
+                        }
                     }
                 }
 
