@@ -16,7 +16,6 @@ namespace Guppy.Resources.Loaders
             services.RegisterType<ResourceProvider>().As<IResourceProvider>().SingleInstance();
             services.RegisterType<ResourceTypeProvider>().As<IResourceTypeProvider>().SingleInstance();
 
-            services.RegisterType<RawResourceValuesConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<IOptionsJsonConverter<ResourcePackConfiguration>>().As<JsonConverter>().SingleInstance();
         }
     }
