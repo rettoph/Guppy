@@ -1,11 +1,10 @@
 ﻿using Guppy.Attributes;
 using Guppy.Resources;
-using Guppy.Resources.Serialization.Resources;
 
-namespace Guppy.MonoGame.Serialization.ResourceTypes
+namespace Guppy.Resources.ResourceTypes
 {
     [AutoLoad]
-    internal class StringResourceTypeResolver : ResourceTypeResolver<string>
+    internal class StringResourceType : ResourceType<string>
     {
         protected override bool TryResolve(Resource<string> resource, string input, out string value)
         {

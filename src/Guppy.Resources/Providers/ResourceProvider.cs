@@ -17,78 +17,41 @@ namespace Guppy.Resources.Providers
     {
         private ISettingProvider _settings;
         private Lazy<IResourcePackProvider> _packs;
-        private Dictionary<Resource, Array> _cache;
+        private Dictionary<Resource, object> _cache;
         private ISetting<string> _localization;
-        private Dictionary<string, Resource> _registered;
 
-        public ResourceProvider(ISettingProvider settings, Lazy<IResourcePackProvider> packs, IEnumerable<IResourceLoader> loaders)
+        public ResourceProvider(ISettingProvider settings, Lazy<IResourcePackProvider> packs)
         {
             _settings = settings;
             _packs = packs;
-            _cache = new Dictionary<Resource, Array>();
+            _cache = new Dictionary<Resource, object>();
             _localization = _settings.Get<string>(SettingConstants.Localization);
-            _registered = new Dictionary<string, Resource>();
-
-            foreach (IResourceLoader loader in loaders)
-            {
-                loader.Load(this);
-            }
         }
 
-        public void Register(params Resource[] resources)
+        public T Get<T>(Resource<T> resource) where T : notnull
         {
-            foreach(Resource resource in resources)
-            {
-                _registered.Add(resource.Name, resource);
-            }
-        }
-
-        public bool TryGetResourceByName(string name, [MaybeNullWhen(false)] out Resource resource)
-        {
-            return _registered.TryGetValue(name, out resource);
-        }
-
-        public T? Get<T>(Resource<T> resource) where T : notnull
-        {
-            this.TryGet(resource, out T? value);
-            return value;
+            ref T cache = ref this.GetCache(resource);
+            return cache;
         }
 
         public bool TryGet<T>(Resource<T> resource, [MaybeNullWhen(false)] out T value) 
             where T : notnull
         {
-            ref T[] cache = ref this.GetCache(resource);
+            ref T cache = ref this.GetCache(resource);
 
-            if(cache.Length == 0)
-            {
-                value = default!;
-                return false;
-            }
-
-            value = cache[0];
-            return true;
+            value = (T)cache;
+            return cache is not null;
         }
 
         public IEnumerable<(Resource, T)> GetAll<T>() where T : notnull
         {
-            List<(Resource, T)> resources = new List<(Resource, T)>();
-            foreach((Resource resource, object cached)  in _cache)
+            IEnumerable<Resource<T>> resources = _packs.Value.GetAll().Select(x => x.GetAll<T>()).SelectMany(x => x).Distinct();
+
+
+            foreach(Resource<T> resource in resources)
             {
-                if(cached is T casted)
-                {
-                    resources.Add((resource, casted));
-                }
+                yield return (resource, this.Get(resource));
             }
-
-            return resources;
-        }
-
-        public IEnumerable<T> GetAll<T>(Resource<T> resource) 
-            where T : notnull
-        {
-            ref T[] cache = ref this.GetCache(resource);
-
-            return cache;
         }
 
         public IResourceProvider Set<T>(Resource<T> resource, T value) where T : notnull
@@ -102,21 +65,21 @@ namespace Guppy.Resources.Providers
             // return this;
         }
 
-        private ref T[] GetCache<T>(Resource<T> resource)
+        private ref T GetCache<T>(Resource<T> resource)
             where T : notnull
         {
-            ref Array? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
+            ref object? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
             if (exists)
             {
-                return ref Unsafe.As<Array?, T[]>(ref cache);
+                return ref Unsafe.As<object?, T>(ref cache);
             }
 
             List<T> valuesToCache = new List<T>();
             foreach (ResourcePack pack in _packs.Value.GetAll())
             {
-                if (pack.TryGet(resource, Localization.Default, out IEnumerable<T> values))
+                if (pack.TryGet(resource, Localization.Default, out T? value))
                 {
-                    valuesToCache.AddRange(values);
+                    valuesToCache.Add(value);
                 }
             }
 
@@ -124,17 +87,21 @@ namespace Guppy.Resources.Providers
             {
                 foreach (ResourcePack pack in _packs.Value.GetAll())
                 {
-                    if (pack.TryGet(resource, _localization.Value, out IEnumerable<T> values))
+                    if (pack.TryGet(resource, _localization.Value, out T? value))
                     {
-                        valuesToCache.AddRange(values);
+                        valuesToCache.Add(value);
                     }
                 }
             }
 
-            valuesToCache.Reverse();
-            cache = valuesToCache.ToArray();
+            cache = valuesToCache.LastOrDefault();
 
-            return ref Unsafe.As<Array?, T[]>(ref cache);
+            if(cache == null)
+            {
+                // TODO: Load default somehow
+            }
+
+            return ref Unsafe.As<object?, T>(ref cache);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Guppy.Resources
         public readonly string Name;
         public readonly string RootDirectory;
 
-        private Dictionary<Resource, Dictionary<string, List<object>>> _resources;
+        private Dictionary<Resource, Dictionary<string, object>> _resources;
 
         public ResourcePack(IFile<ResourcePackConfiguration> configuration)
         {
@@ -20,7 +20,7 @@ namespace Guppy.Resources
             this.Name = configuration.Value.Name;
             this.RootDirectory = Path.GetDirectoryName(configuration.FullPath)!;
 
-            _resources = new Dictionary<Resource, Dictionary<string, List<object>>>();
+            _resources = new Dictionary<Resource, Dictionary<string, object>>();
         }
 
         public void Add<T>(Resource<T> resource, string localization, T value)
@@ -31,10 +31,8 @@ namespace Guppy.Resources
                 _resources[resource] = values = new();
             }
 
-            ref List<object>? localized = ref CollectionsMarshal.GetValueRefOrAddDefault(values, localization, out bool exists);
-            localized ??= new List<object>();
-
-            localized.Add(value);
+            ref object? localized = ref CollectionsMarshal.GetValueRefOrAddDefault(values, localization, out bool exists);
+            localized ??= value;
         }
 
         public void Add<T>(Resource<T> resource, T value)
@@ -43,23 +41,29 @@ namespace Guppy.Resources
             this.Add(resource, Localization.Default, value);
         }
 
-        public bool TryGet<T>(Resource<T> resource, string localization, out IEnumerable<T> value)
+        public bool TryGet<T>(Resource<T> resource, string localization, [MaybeNullWhen(false)] out T value)
             where T : notnull
         {
             if (!_resources.TryGetValue(resource, out var values))
             {
-                value = Enumerable.Empty<T>();
+                value = default;
                 return false;
             }
 
-            if(values.TryGetValue(localization, out List<object>? cached))
+            if(values.TryGetValue(localization, out object? cached))
             {
-                value = cached.OfType<T>();
+                value = (T)cached;
                 return true;
             }
 
-            value = Enumerable.Empty<T>();
+            value = default;
             return false;
+        }
+
+        public IEnumerable<Resource<T>> GetAll<T>()
+            where T : notnull
+        {
+            return _resources.Keys.OfType<Resource<T>>();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Resources;
-using Guppy.Resources.Serialization.Resources;
+using Guppy.Resources.ResourceTypes;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -9,17 +9,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Serialization.ResourceTypes
+namespace Guppy.MonoGame.ResourceTypes
 {
     [AutoLoad]
-    internal class ColorResourceTypeResolver : ResourceTypeResolver<Color>
+    internal class ColorResourceType : ResourceType<Color>
     {
         private readonly Regex rgbaArrayRegex = new Regex("^(\\d{1,3}),(\\d{1,3}),(\\d{1,3}),(\\d{1,3})$");
 
         protected override bool TryResolve(Resource<Color> resource, string input, out Color value)
         {
             Match rgbaArray = rgbaArrayRegex.Match(input);
-            if(rgbaArray.Success)
+            if (rgbaArray.Success)
             {
                 value = new Color(
                     r: byte.Parse(rgbaArray.Groups[1].Value),

@@ -5,8 +5,9 @@ using Guppy.Resources.Serialization.Json;
 using Guppy.Files;
 using Guppy.Files.Services;
 using Guppy.Files.Enums;
-using Guppy.Resources.Serialization.Resources;
 using Serilog;
+using Guppy.Resources.ResourceTypes;
+using System.Security.AccessControl;
 
 namespace Guppy.Resources.Providers
 {
@@ -15,22 +16,20 @@ namespace Guppy.Resources.Providers
         private readonly IFileService _files;
         private IDictionary<Guid, ResourcePack> _packs;
         private IFile<List<IFile<ResourcePackConfiguration>>> _registered;
-        private readonly Lazy<IResourceProvider> _resources;
-        private readonly Dictionary<Type, IResourceTypeResolver> _resolvers;
+        private readonly IResourceTypeProvider _resourceTypes;
         private readonly ILogger _logger;
 
         public ResourcePackProvider(
             IFileService options,
+
             IEnumerable<ResourcePack> packs,
             IEnumerable<IPackLoader> loaders,
-            Lazy<IResourceProvider> resources,
-            IEnumerable<IResourceTypeResolver> resolvers,
+            IResourceTypeProvider resourceTypes,
             ILogger logger)
         {
             _files = options;
             _registered = options.Get<List<IFile<ResourcePackConfiguration>>>(FileType.AppData, FilePaths.Packs);
-            _resources = resources;
-            _resolvers = resolvers.ToDictionary(x => x.Type, x => x);
+            _resourceTypes = resourceTypes;
             _logger = logger;
 
             _packs = packs.ToDictionary(x => x.Id, x => x);
@@ -89,20 +88,13 @@ namespace Guppy.Resources.Providers
 
                     foreach ((string name, string value) in rawResourceValues)
                     {
-                        if (!_resources.Value.TryGetResourceByName(name, out Resource? resource))
+                        if(!_resourceTypes.TryGet(name, out IResourceType? resourceType))
                         {
-                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource defined by '{PackName}', {ResourceName}, unkown.", nameof(ResourcePackProvider), nameof(Load), pack.Name, name);
+                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unkown.", nameof(ResourcePackProvider), nameof(Load), name);
                             continue;
                         }
 
-                        if(!_resolvers.TryGetValue(resource.Type, out IResourceTypeResolver? resolver))
-                        {
-                            _logger.Warning("{ClassName}::{MethodName} - Unknown resource type {Type} when attempting to load {Resource}", nameof(ResourcePackProvider), nameof(Load), resource.Type, name);
-                            continue;
-                        }
-
-
-                        if(!resolver.TryResolve(pack, resource, localization, value))
+                        if(!resourceType.TryResolve(pack, name, localization, value))
                         {
                             _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
                             continue;

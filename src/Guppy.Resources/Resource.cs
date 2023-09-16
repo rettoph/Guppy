@@ -32,12 +32,23 @@ namespace Guppy.Resources
         {
             return _resources[id];
         }
+        
+        public static Resource<T> Get<T>(string name)
+            where T : notnull
+        {
+            if(_resources.TryGet(name, out Resource? resource))
+            {
+                return (Resource<T>)resource;
+            }
+
+            return new Resource<T>(name);
+        }
     }
 
     public sealed class Resource<T> : Resource
         where T : notnull
     {
-        public Resource(string name) : base(name, typeof(T))
+        internal Resource(string name) : base(name, typeof(T))
         {
         }
     }

@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
-namespace Guppy.Resources.Serialization.Resources
+namespace Guppy.Resources.ResourceTypes
 {
-    public abstract class ResourceTypeResolver<T> : IResourceTypeResolver
+    public abstract class ResourceType<T> : IResourceType
         where T : notnull
     {
         public Type Type => typeof(T);
 
-        public bool TryResolve(ResourcePack pack, Resource resource, string localization, string input)
+        public bool TryResolve(ResourcePack pack, string resourceName, string localization, string input)
         {
-            this.Configure(pack);
+            Resource<T> resource = Resource.Get<T>(resourceName);
+            Configure(pack);
 
-            if(resource is Resource<T> casted && this.TryResolve(casted, input, out T value))
+            if (this.TryResolve(resource, input, out T value))
             {
-                pack.Add(casted, localization, value);
+                pack.Add(resource, localization, value);
                 return true;
             }
 

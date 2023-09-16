@@ -19,14 +19,7 @@ namespace Guppy.Resources.Providers
         IEnumerable<(Resource, T)> GetAll<T>() 
             where T : notnull;
 
-        IEnumerable<T> GetAll<T>(Resource<T> resource)
-            where T : notnull;
-
         IResourceProvider Set<T>(Resource<T> resource, T value)
             where T : notnull;
-
-        void Register(params Resource[] resources);
-
-        bool TryGetResourceByName(string name, [MaybeNullWhen(false)] out Resource resource);
     }
 }
