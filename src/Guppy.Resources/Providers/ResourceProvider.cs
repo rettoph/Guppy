@@ -30,23 +30,42 @@ namespace Guppy.Resources.Providers
 
         public T Get<T>(Resource<T> resource) where T : notnull
         {
-            ref T cache = ref this.GetCache(resource);
-            return cache;
-        }
+            ref object? cachedValue = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
+            if (exists)
+            {
+                return (T)cachedValue!;
+            }
 
-        public bool TryGet<T>(Resource<T> resource, [MaybeNullWhen(false)] out T value) 
-            where T : notnull
-        {
-            ref T cache = ref this.GetCache(resource);
+            List<T> valuesToCache = new List<T>();
+            foreach (ResourcePack pack in _packs.Value.GetAll())
+            {
+                if (pack.TryGet(resource, Localization.Default, out T? packValue))
+                {
+                    valuesToCache.Add(packValue);
+                }
+            }
 
-            value = (T)cache;
-            return cache is not null;
+            if (_localization.Value != Localization.Default)
+            {
+                foreach (ResourcePack pack in _packs.Value.GetAll())
+                {
+                    if (pack.TryGet(resource, _localization.Value, out T? packValue))
+                    {
+                        valuesToCache.Add(packValue);
+                    }
+                }
+            }
+
+            // TODO: Load default somehow
+            T value = valuesToCache.LastOrDefault() ?? throw new NotImplementedException();
+            cachedValue = value;
+
+            return value;
         }
 
         public IEnumerable<(Resource, T)> GetAll<T>() where T : notnull
         {
             IEnumerable<Resource<T>> resources = _packs.Value.GetAll().Select(x => x.GetAll<T>()).SelectMany(x => x).Distinct();
-
 
             foreach(Resource<T> resource in resources)
             {
@@ -63,45 +82,6 @@ namespace Guppy.Resources.Providers
             // _cache[resource] = value;
             // 
             // return this;
-        }
-
-        private ref T GetCache<T>(Resource<T> resource)
-            where T : notnull
-        {
-            ref object? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
-            if (exists)
-            {
-                return ref Unsafe.As<object?, T>(ref cache);
-            }
-
-            List<T> valuesToCache = new List<T>();
-            foreach (ResourcePack pack in _packs.Value.GetAll())
-            {
-                if (pack.TryGet(resource, Localization.Default, out T? value))
-                {
-                    valuesToCache.Add(value);
-                }
-            }
-
-            if(_localization.Value != Localization.Default)
-            {
-                foreach (ResourcePack pack in _packs.Value.GetAll())
-                {
-                    if (pack.TryGet(resource, _localization.Value, out T? value))
-                    {
-                        valuesToCache.Add(value);
-                    }
-                }
-            }
-
-            cache = valuesToCache.LastOrDefault();
-
-            if(cache == null)
-            {
-                // TODO: Load default somehow
-            }
-
-            return ref Unsafe.As<object?, T>(ref cache);
         }
     }
 }
