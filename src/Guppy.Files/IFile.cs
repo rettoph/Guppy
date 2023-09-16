@@ -13,6 +13,7 @@ namespace Guppy.Files
         FileType Type { get; }
         string Path { get; }
         string FullPath { get; }
+        bool Success { get; }
         T Value { get; set; }
     }
 }

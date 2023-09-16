@@ -8,7 +8,7 @@ namespace Guppy.Serialization
 {
     public interface IJsonSerializer
     {
-        T? Deserialize<T>(string json);
+        T? Deserialize<T>(string json, out bool success);
         string Serialize<T>(T value);
     }
 }

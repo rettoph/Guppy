@@ -77,6 +77,7 @@ namespace Guppy.Resources.Providers
         private void Load(string directory, IFile<ResourcePackConfiguration> configuration)
         {
             ResourcePack pack = this.GetOrCreatePack(configuration);
+            _logger.Verbose("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
 
             foreach ((string localization, string[] resourceFiles) in configuration.Value.Import)
             {
@@ -84,7 +85,10 @@ namespace Guppy.Resources.Providers
                 {
                     Dictionary<string, string> rawResourceValues = _files.Get<Dictionary<string, string>>(
                         FileType.Source,
-                        Path.Combine(directory, resourceFile)).Value;
+                        Path.Combine(directory, resourceFile)
+                    ).Value;
+
+                    _logger.Verbose("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFile, localization);
 
                     foreach ((string name, string value) in rawResourceValues)
                     {
@@ -100,7 +104,7 @@ namespace Guppy.Resources.Providers
                             continue;
                         }
 
-                        _logger.Verbose("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} within pack {PackName}, {Localization}", nameof(ResourcePackProvider), nameof(Load), name, pack.Name, localization);
+                        _logger.Verbose("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
                     }
                 }
 

@@ -40,14 +40,15 @@ namespace Guppy.Files.Services
                     using (StreamReader reader = new StreamReader(stream))
                     {
                         string content = reader.ReadToEnd();
-                        T value = _json.Deserialize<T>(content) ?? new T();
+                        T value = _json.Deserialize<T>(content, out bool success) ?? new();
 
                         file = new GuppyFile<T>()
                         {
                             Type = type,
                             Path = path,
                             FullPath = fullPath,
-                            Value = value
+                            Value = value,
+                            Success = success
                         };
                     }
                 }
