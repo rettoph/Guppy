@@ -15,9 +15,8 @@ namespace Guppy.Resources.ResourceTypes
         public bool TryResolve(ResourcePack pack, string resourceName, string localization, string input)
         {
             Resource<T> resource = Resource.Get<T>(resourceName);
-            Configure(pack);
 
-            if (this.TryResolve(resource, input, out T value))
+            if (this.TryResolve(resource, input, pack.RootDirectory, out T value))
             {
                 pack.Add(resource, localization, value);
                 return true;
@@ -26,11 +25,6 @@ namespace Guppy.Resources.ResourceTypes
             return false;
         }
 
-        protected virtual void Configure(ResourcePack pack)
-        {
-
-        }
-
-        protected abstract bool TryResolve(Resource<T> resource, string input, out T value);
+        protected abstract bool TryResolve(Resource<T> resource, string input, string root, out T value);
     }
 }

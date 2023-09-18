@@ -24,25 +24,12 @@ namespace Guppy.MonoGame.ResourceTypes
             _content = content;
         }
 
-        protected override void Configure(ResourcePack pack)
+        protected override bool TryResolve(Resource<SpriteFont> resource, string input, string root, out SpriteFont value)
         {
-            base.Configure(pack);
+            _content.RootDirectory = root;
 
-            _content.RootDirectory = pack.RootDirectory;
-        }
-        protected override bool TryResolve(Resource<SpriteFont> resource, string input, out SpriteFont value)
-        {
-            try
-            {
-                value = _content.Load<SpriteFont>(input);
-                return true;
-            }
-            catch
-            {
-                value = default!;
-                return false;
-            }
-
+            value = _content.Load<SpriteFont>(input);
+            return true;
         }
     }
 }

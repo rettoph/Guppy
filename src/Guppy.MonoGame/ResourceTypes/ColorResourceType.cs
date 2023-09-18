@@ -16,7 +16,7 @@ namespace Guppy.MonoGame.ResourceTypes
     {
         private readonly Regex rgbaArrayRegex = new Regex("^(\\d{1,3}),(\\d{1,3}),(\\d{1,3}),(\\d{1,3})$");
 
-        protected override bool TryResolve(Resource<Color> resource, string input, out Color value)
+        protected override bool TryResolve(Resource<Color> resource, string input, string root, out Color value)
         {
             Match rgbaArray = rgbaArrayRegex.Match(input);
             if (rgbaArray.Success)
