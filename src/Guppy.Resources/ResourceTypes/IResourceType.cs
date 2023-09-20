@@ -12,6 +12,7 @@ namespace Guppy.Resources.ResourceTypes
     public interface IResourceType
     {
         Type Type { get; }
+        string Name { get; }
 
         bool TryResolve(ResourcePack pack, string resource, string localization, string value);
     }

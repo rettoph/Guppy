@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,11 +15,11 @@ namespace Guppy.Resources.Providers
     {
         private readonly Regex resourceNameRegex = new Regex("^(.+?)s{0,1}\\..+$");
 
-        private readonly Dictionary<Type, IResourceType> _types;
+        private readonly Dictionary<string, IResourceType> _types;
 
         public ResourceTypeProvider(IEnumerable<IResourceType> types)
         {
-            _types = types.ToDictionary(x => x.Type, x => x);
+            _types = types.ToDictionary(x => x.Name, x => x);
         }
 
         public bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType)
@@ -31,7 +32,7 @@ namespace Guppy.Resources.Providers
             }
 
             string resourceTypeName = resourceNameMatch.Groups[1].Value;
-            KeyValuePair<Type, IResourceType> kvp = _types.FirstOrDefault(x => x.Key.Name == resourceTypeName);
+            KeyValuePair<string, IResourceType> kvp = _types.FirstOrDefault(x => x.Key == resourceTypeName);
 
             if(kvp.Value is null)
             {
