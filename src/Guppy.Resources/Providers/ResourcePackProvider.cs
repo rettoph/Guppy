@@ -77,7 +77,7 @@ namespace Guppy.Resources.Providers
         private void Load(string directory, IFile<ResourcePackConfiguration> configuration)
         {
             ResourcePack pack = this.GetOrCreatePack(configuration);
-            _logger.Verbose("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
+            _logger.Information("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
 
             foreach ((string localization, string[] resourceFiles) in configuration.Value.Import)
             {
@@ -88,23 +88,23 @@ namespace Guppy.Resources.Providers
                         Path.Combine(directory, resourceFile)
                     ).Value;
 
-                    _logger.Verbose("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFile, localization);
+                    _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFile, localization);
 
                     foreach ((string name, string value) in rawResourceValues)
                     {
                         if(!_resourceTypes.TryGet(name, out IResourceType? resourceType))
                         {
-                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unkown.", nameof(ResourcePackProvider), nameof(Load), name);
+                            _logger.Information("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unkown.", nameof(ResourcePackProvider), nameof(Load), name);
                             continue;
                         }
 
                         if(!resourceType.TryResolve(pack, name, localization, value))
                         {
-                            _logger.Warning("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
+                            _logger.Information("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
                             continue;
                         }
 
-                        _logger.Verbose("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
+                        _logger.Information("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
                     }
                 }
 

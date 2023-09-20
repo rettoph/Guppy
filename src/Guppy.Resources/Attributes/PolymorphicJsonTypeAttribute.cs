@@ -6,7 +6,7 @@ using Guppy.Resources.Serialization.Json;
 
 namespace Guppy.Resources.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple =true)]
     public class PolymorphicJsonTypeAttribute : GuppyConfigurationAttribute
     {
         public readonly string Key;
