@@ -13,7 +13,7 @@ namespace Guppy.MonoGame.Extensions.Primitives
         private static readonly short[] _buffer = new short[3];
 
         public static void DrawLine<TVertex>(this PrimitiveBatch<TVertex> batch, TVertex v1, TVertex v2)
-            where TVertex : struct, IVertexType
+            where TVertex : unmanaged, IVertexType
         {
             batch.EnsureCapacity(2);
 
@@ -25,7 +25,7 @@ namespace Guppy.MonoGame.Extensions.Primitives
         }
 
         public static void DrawTriangle<TVertex>(this PrimitiveBatch<TVertex> batch, TVertex v1, TVertex v2, TVertex v3)
-            where TVertex : struct, IVertexType
+            where TVertex : unmanaged, IVertexType
         {
             batch.EnsureCapacity(3);
 

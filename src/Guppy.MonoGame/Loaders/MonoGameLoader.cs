@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Guppy.Attributes;
 
 namespace Guppy.MonoGame.Loaders
 {
@@ -42,13 +43,8 @@ namespace Guppy.MonoGame.Loaders
                 (true, Toggle<ITerminalService>.Instance)
             });
 
-            // Add descriptor for some primitive batch cameras
-            var vertexTypes = typeof(Game).Assembly.GetTypes().Where(x => x.IsAssignableTo(typeof(IVertexType)) && x.IsValueType);
-            foreach (Type vertexType in vertexTypes)
-            {
-                var primitiveBatchType = typeof(PrimitiveBatch<>).MakeGenericType(vertexType);
-                services.RegisterType(primitiveBatchType);
-            }
+            services.RegisterGeneric(typeof(PrimitiveBatch<,>));
+            services.RegisterGeneric(typeof(PrimitiveBatch<>));
         }
     }
 }

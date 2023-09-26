@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Common;
+using Guppy.Common.Extensions;
 using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 
@@ -74,6 +75,8 @@ namespace Guppy.MonoGame
         {
             this.Components = scope.Resolve<IGameComponentService>();
             this.Bus = scope.Resolve<IBus>();
+
+            this.Bus.SubscribeMany(this.Components.OfType<ISubscriber>());
         }
 
         protected virtual void PreDraw(GameTime gameTime)

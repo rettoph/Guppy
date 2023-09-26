@@ -1,9 +1,11 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.Configurations;
 using Guppy.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +43,8 @@ namespace Guppy
 
         public static GuppyConfiguration AddServiceLoader(this GuppyConfiguration engine, IServiceLoader loader, int? order = null)
         {
-            return engine.AddLoader(x => loader.ConfigureServices(x.Builder));
+            order ??= loader.GetType().GetCustomAttribute<OrderAttribute>()?.Order;
+            return engine.AddLoader(x => loader.ConfigureServices(x.Builder), order);
         }
     }
 }

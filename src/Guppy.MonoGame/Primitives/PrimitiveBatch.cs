@@ -9,8 +9,9 @@ using Guppy.MonoGame.Utilities.Cameras;
 
 namespace Guppy.MonoGame.Primitives
 {
-    public class PrimitiveBatch<TVertex>
-            where TVertex : struct, IVertexType
+    public class PrimitiveBatch<TVertex, TEffect>
+        where TVertex : unmanaged, IVertexType
+        where TEffect : Effect, IEffectMatrices
     {
         public static int BufferSize = 512;
 
@@ -24,14 +25,12 @@ namespace Guppy.MonoGame.Primitives
         private int _lineCount;
         private int _triangleCount;
 
-        public BasicEffect Effect;
+        public TEffect Effect;
         public RasterizerState RasterizerState;
         public BlendState BlendState;
         public readonly GraphicsDevice GraphicsDevice;
 
-        public event OnEventDelegate<PrimitiveBatch<TVertex>> OnEarlyFlush;
-
-        public PrimitiveBatch(GraphicsDevice graphicsDevice)
+        public PrimitiveBatch(GraphicsDevice graphicsDevice, TEffect effect)
         {
             _vertexBuffer = new VertexBuffer(graphicsDevice, typeof(TVertex), BufferSize, BufferUsage.WriteOnly);
             _indexBuffer = new IndexBuffer(graphicsDevice, typeof(short), BufferSize * 3, BufferUsage.WriteOnly);
@@ -41,10 +40,7 @@ namespace Guppy.MonoGame.Primitives
             _buffer = new short[3];
 
             this.GraphicsDevice = graphicsDevice;
-            this.Effect = new BasicEffect(this.GraphicsDevice)
-            {
-                VertexColorEnabled = true
-            };
+            this.Effect = effect;
             this.BlendState = BlendState.AlphaBlend;
             this.RasterizerState = new RasterizerState()
             {
@@ -183,8 +179,19 @@ namespace Guppy.MonoGame.Primitives
             this.GraphicsDevice.SamplerStates[0] = samplerState;
             this.GraphicsDevice.BlendState = blendState;
             this.GraphicsDevice.RasterizerState = rasterizerState;
+        }
+    }
 
-            this.OnEarlyFlush?.Invoke(this);
+    public class PrimitiveBatch<TVertex> : PrimitiveBatch<TVertex, BasicEffect>
+        where TVertex : unmanaged, IVertexType
+    {
+        public PrimitiveBatch(GraphicsDevice graphicsDevice) : base(
+            graphicsDevice, 
+            new BasicEffect(graphicsDevice)
+            {
+                VertexColorEnabled = true
+            })
+        {
         }
     }
 }
