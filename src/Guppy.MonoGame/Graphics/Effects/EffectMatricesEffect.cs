@@ -60,6 +60,7 @@ namespace Guppy.MonoGame.Graphics.Effects
         #region Constructor
         public EffectMatricesEffect(GraphicsDevice graphicsDevice, byte[] effectCode) : base(graphicsDevice, effectCode)
         {
+            this.World = Matrix.Identity;
             _worldViewProjectionParam = this.Parameters["WorldViewProjection"];
         }
         #endregion
