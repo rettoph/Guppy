@@ -1,9 +1,0 @@
-﻿{
-  "LanguageIdentifier": "en-US",
-  "Values": {
-    "pong": "Pong",
-    "player_one": "Player One",
-    "player_two": "Player Two",
-    "score": "Score"
-  }
-}
