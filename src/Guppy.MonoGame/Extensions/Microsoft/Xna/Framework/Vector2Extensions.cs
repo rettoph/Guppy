@@ -7,8 +7,8 @@ namespace Microsoft.Xna.Framework
 {
     public static class Vector2Extensions
     {
-        public static float Angle(this Vector2 p2, Vector2 p1)
-            => MathHelper.WrapAngle(MathF.Atan2(p2.Y - p1.Y, p2.X - p1.X));
+        public static float Angle(this Vector2 vertex, Vector2 p1)
+            => MathHelper.WrapAngle(MathF.Atan2(p1.Y - vertex.Y, p1.X - vertex.X));
 
         public static float Angle(this Vector2 vertex, Vector2 p1, Vector2 p2)
             => MathHelper.WrapAngle(MathF.Atan2(p2.Y - vertex.Y, p2.X - vertex.X) - MathF.Atan2(p1.Y - vertex.Y, p1.X - vertex.X));
