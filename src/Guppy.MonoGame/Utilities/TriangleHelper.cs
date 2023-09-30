@@ -111,7 +111,7 @@ namespace Guppy.MonoGame.Helpers
             a3 = MathHelper.Pi - a1 - a2;
 
             s2 = ((s1 / MathF.Sin(a3)) * MathF.Sin(a1));
-            s3 = ((s1 * MathF.Sin(a3)) * MathF.Sin(a3));
+            s3 = ((s1 / MathF.Sin(a3)) * MathF.Sin(a2));
         }
     }
 }
