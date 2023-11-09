@@ -218,8 +218,8 @@ namespace Guppy.MonoGame.Utilities.Cameras
                 vector.X = vector.X / a;
                 vector.Y = vector.Y / a;
             }
-            vector.X = (((vector.X + 1f) * 0.5f) * this.ViewportBounds.Width) + this.Position.X;
-            vector.Y = (((-vector.Y + 1f) * 0.5f) * this.ViewportBounds.Height) + this.Position.Y;
+            vector.X = (((vector.X + 1f) * 0.5f) * this.ViewportBounds.Width) + this.ViewportBounds.X;
+            vector.Y = (((-vector.Y + 1f) * 0.5f) * this.ViewportBounds.Height) + this.ViewportBounds.Y;
             vector.Z = 0;
             return vector;
         }
@@ -227,8 +227,8 @@ namespace Guppy.MonoGame.Utilities.Cameras
         protected virtual RectangleF BuildViewportBounds()
         {
             return new RectangleF(
-                x: 0,
-                y: 0,
+                x: this.graphics.Viewport.Bounds.X,
+                y: this.graphics.Viewport.Bounds.Y,
                 width: this.graphics.Viewport.Bounds.Width,
                 height: this.graphics.Viewport.Bounds.Height);
         }
