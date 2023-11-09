@@ -185,8 +185,9 @@ namespace Guppy.MonoGame.Utilities.Cameras
                         this.Position.Y + this.ViewportBounds.Height / 2,
                         this.Position.Y - this.ViewportBounds.Height / 2,
                         0f,
-                        1f)
-                    * Matrix.CreateScale(this.Zoom);
+                        1f);
+
+                projection *= Matrix.CreateScale(this.Zoom);
             }
             else
             {
@@ -196,8 +197,9 @@ namespace Guppy.MonoGame.Utilities.Cameras
                     this.Position.Y + this.ViewportBounds.Height,
                     this.Position.Y,
                     0f,
-                    1f)
-                * Matrix.CreateScale(this.Zoom);
+                    1f);
+
+                projection *= Matrix.CreateScale(this.Zoom);
             }
         }
 
