@@ -1,5 +1,6 @@
 ﻿using Guppy.Loaders;
 using Guppy.MonoGame.Collections;
+using Guppy.MonoGame.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ namespace Guppy.MonoGame.Loaders
     {
         public void Load(GuppyEngine engine)
         {
-            engine.Guppies.Attach(new DrawableCollection());
-            engine.Guppies.Attach(new UpdateableCollection());
+            engine.Guppies.Attach(new List<IGuppyDrawable>());
+            engine.Guppies.Attach(new List<IGuppyUpdateable>());
         }
     }
 }

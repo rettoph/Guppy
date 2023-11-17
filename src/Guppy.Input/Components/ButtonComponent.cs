@@ -1,17 +1,23 @@
-﻿using Guppy.Common;
-using Guppy.Input;
+﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.Common.Attributes;
 using Guppy.Input.Providers;
+using Guppy.MonoGame;
+using Guppy.MonoGame.Common;
+using Guppy.MonoGame.Common.Enums;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Input.Services
+namespace Guppy.Input.Components
 {
-    internal sealed class ButtonService : BaseGameComponent, IButtonService
+    [AutoLoad]
+    [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
+    internal sealed class ButtonComponent : IGuppyComponent, IGuppyUpdateable
     {
         private readonly Dictionary<string, IButton> _buttons;
         private readonly IButtonProvider[] _providers;
         private readonly IBus _bus;
 
-        public ButtonService(
+        public ButtonComponent(
             IBus bus,
             IEnumerable<IButton> inputs,
             IFiltered<IButtonProvider> providers)
@@ -26,6 +32,11 @@ namespace Guppy.Input.Services
             }
         }
 
+        public void Initialize(IGuppy guppy)
+        {
+            //
+        }
+
         public bool Get(string key)
         {
             throw new NotImplementedException();
@@ -35,17 +46,17 @@ namespace Guppy.Input.Services
         {
             _buttons[key].Source = source;
 
-            foreach(var provider in _providers)
+            foreach (var provider in _providers)
             {
                 provider.Clean(_buttons.Values);
             }
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             foreach (var provider in _providers)
             {
-                foreach(IMessage data in provider.Update())
+                foreach (IMessage data in provider.Update())
                 {
                     _bus.Enqueue(data);
                 }

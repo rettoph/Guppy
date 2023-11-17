@@ -1,124 +1,69 @@
 ﻿using Autofac;
 using Guppy.Common;
 using Guppy.Common.Extensions;
-using Guppy.MonoGame.Services;
+using Guppy.Enums;
+using Guppy.MonoGame.Common;
+using Guppy.MonoGame.Common.Enums;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Guppy.MonoGame
 {
-    public abstract class FrameableGuppy : IGuppy, IDrawable, IUpdateable
+    public abstract class FrameableGuppy : IGuppy, IGuppyDrawable, IGuppyUpdateable
     {
-        private int _drawOrder;
-        private bool _visible;
-        private bool _enabled;
-        private int _updateOrder;
+        private IGuppyDrawable[] _drawComponents;
+        private IGuppyUpdateable[] _updateComponents;
 
-        public int DrawOrder
-        {
-            get => _drawOrder;
-            set
-            {
-                _drawOrder = value;
-                this.DrawOrderChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public bool Visible
-        {
-            get => _visible;
-            set
-            {
-                _visible = value;
-                this.VisibleChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public bool Enabled
-        {
-            get => _enabled;
-            set
-            {
-                _enabled = value;
-                this.EnabledChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public int UpdateOrder
-        {
-            get => _updateOrder;
-            set
-            {
-                _updateOrder = value;
-                this.UpdateOrderChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public IBus Bus { get; private set; }
-        public IGameComponentService Components { get; private set; }
+        public IGuppyComponent[] Components { get; private set; }
 
 
         public FrameableGuppy()
         {
-            this.Bus = default!;
-            this.Components = default!;
-            this.Visible = true;
-            this.Enabled = true;
+            _drawComponents = Array.Empty<IGuppyDrawable>();
+            _updateComponents = Array.Empty<IGuppyUpdateable>();
+
+            this.Components = Array.Empty<IGuppyComponent>();
         }
 
-        public event EventHandler<EventArgs> DrawOrderChanged;
-        public event EventHandler<EventArgs> VisibleChanged;
-        public event EventHandler<EventArgs> EnabledChanged;
-        public event EventHandler<EventArgs> UpdateOrderChanged;
         public event OnEventDelegate<IDisposable>? OnDispose;
 
         public virtual void Initialize(ILifetimeScope scope)
         {
-            this.Components = scope.Resolve<IGameComponentService>();
-            this.Bus = scope.Resolve<IBus>();
+            this.Components = scope.Resolve<IFiltered<IGuppyComponent>>().Instances.Sequence(InitializeSequence.Initialize).ToArray();
 
-            this.Bus.SubscribeMany(this.Components.OfType<ISubscriber>());
-        }
+            _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
+            _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
 
-        protected virtual void PreDraw(GameTime gameTime)
-        {
+            foreach (IGuppyComponent component in this.Components)
+            {
+                component.Initialize(this);
+            }
         }
 
         protected virtual void Draw(GameTime gameTime)
         {
-            this.Components.Draw(gameTime);
-        }
-
-        protected virtual void PostDraw(GameTime gameTime)
-        {
-        }
-
-        protected virtual void PreUpdate(GameTime gameTime)
-        {
+            foreach(IGuppyDrawable drawable in _drawComponents)
+            {
+                drawable.Draw(gameTime);
+            }
         }
 
         protected virtual void Update(GameTime gameTime)
         {
-            this.Components.Update(gameTime);
-
-            this.Bus.Flush();
+            foreach (IGuppyUpdateable updateable in _updateComponents)
+            {
+                updateable.Update(gameTime);
+            }
         }
 
-        protected virtual void PostUpdate(GameTime gameTime)
+        void IGuppyDrawable.Draw(GameTime gameTime)
         {
-        }
-
-        void IDrawable.Draw(GameTime gameTime)
-        {
-            this.PreDraw(gameTime);
             this.Draw(gameTime);
-            this.PostDraw(gameTime);
         }
 
-        void IUpdateable.Update(GameTime gameTime)
+        void IGuppyUpdateable.Update(GameTime gameTime)
         {
-            this.PreUpdate(gameTime);
             this.Update(gameTime);
-            this.PostUpdate(gameTime);
         }
 
         public virtual void Dispose()

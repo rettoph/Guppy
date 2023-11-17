@@ -13,7 +13,7 @@ namespace Guppy.MonoGame.Primitives
         where TVertex : unmanaged, IVertexType
         where TEffect : Effect, IEffectMatrices
     {
-        public static int BufferSize = 512;
+        public static int BufferSize = 8192;
 
         private readonly VertexBuffer _vertexBuffer;
         private readonly IndexBuffer _indexBuffer;

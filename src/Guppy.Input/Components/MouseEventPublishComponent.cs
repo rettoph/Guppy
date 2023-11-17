@@ -1,8 +1,13 @@
-﻿using Guppy.Common;
+﻿using Guppy.Attributes;
+using Guppy.Common;
+using Guppy.Common.Attributes;
 using Guppy.Input.Constants;
 using Guppy.Input.Enums;
 using Guppy.Input.Messages;
 using Guppy.Input.Providers;
+using Guppy.MonoGame;
+using Guppy.MonoGame.Common;
+using Guppy.MonoGame.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -12,20 +17,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Input.Services
+namespace Guppy.Input.Components
 {
-    internal sealed class MouseEventPublishService : BaseGameComponent
+    [AutoLoad]
+    [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
+    internal sealed class MouseEventPublishComponent : IGuppyComponent, IGuppyUpdateable
     {
         private readonly IBus _bus;
         private readonly Cursor _cursor;
 
-        public MouseEventPublishService(ICursorProvider cursors, IBus bus)
+        public MouseEventPublishComponent(ICursorProvider cursors, IBus bus)
         {
             _bus = bus;
             _cursor = (cursors.Get(Cursors.Mouse) as Cursor)!;
         }
 
-        public override void Update(GameTime gameTime)
+        public void Initialize(IGuppy guppy)
+        {
+            //
+        }
+
+        public void Update(GameTime gameTime)
         {
             MouseState state = Mouse.GetState();
 

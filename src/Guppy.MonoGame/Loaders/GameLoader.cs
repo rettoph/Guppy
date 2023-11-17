@@ -5,7 +5,6 @@ using Guppy.Common.Filters;
 using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
-using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -19,8 +18,6 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<ConsoleTerminalService>().As<ITerminalService>().InstancePerLifetimeScope();
-            services.RegisterType<GameComponentService>().As<IGameComponentService>().InstancePerLifetimeScope();
             services.RegisterType<MenuProvider>().As<IMenuProvider>().InstancePerLifetimeScope();
             services.RegisterType<DebugMenuLoader>().As<IGuppyLoader>().InstancePerLifetimeScope();
 

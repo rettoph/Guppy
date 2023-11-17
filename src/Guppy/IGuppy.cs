@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.MonoGame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace Guppy
 {
     public interface IGuppy : IDisposable
     {
+        IGuppyComponent[] Components { get; }
+
         event OnEventDelegate<IDisposable>? OnDispose;
 
         void Initialize(ILifetimeScope scope);

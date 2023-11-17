@@ -4,7 +4,6 @@ using Guppy.Loaders;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
 using Guppy.MonoGame.Primitives;
-using Guppy.MonoGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,11 +36,6 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterInstance<ContentManager>(_content).SingleInstance();
             services.RegisterInstance<GameWindow>(_window).SingleInstance();
             services.RegisterType<SpriteBatch>().SingleInstance();
-
-            services.AddInput(InputConstants.ToggleTerminal, Keys.OemTilde, new[]
-            {
-                (true, Toggle<ITerminalService>.Instance)
-            });
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));
