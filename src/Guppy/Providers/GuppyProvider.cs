@@ -3,16 +3,22 @@ using Guppy.Common;
 using Guppy.Common.Autofac;
 using Guppy.Common.Collections;
 using Guppy.Loaders;
+using System.Collections;
 
 namespace Guppy.Providers
 {
-    internal sealed class GuppyProvider : CollectionManager<IGuppy>, IGuppyProvider
+    internal sealed class GuppyProvider : IGuppyProvider
     {
         private ILifetimeScope _scope;
+        private List<IGuppy> _guppies;
         private Dictionary<IGuppy, ILifetimeScope> _scopes;
+
+        public event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyCreated;
+        public event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyDestroyed;
 
         public GuppyProvider(ILifetimeScope scope)
         {
+            _guppies = new List<IGuppy>();
             _scope = scope;
             _scopes = new Dictionary<IGuppy, ILifetimeScope>();
         }
@@ -54,15 +60,11 @@ namespace Guppy.Providers
         {
             guppy.OnDispose += this.HandleGuppyDisposed;
 
-            foreach (var loader in scope.Resolve<IEnumerable<IGuppyLoader>>())
-            {
-                loader.Load(guppy);
-            }
-
             guppy.Initialize(scope);
-
-            this.Add(guppy);
             _scopes.Add(guppy, scope);
+            _guppies.Add(guppy);
+
+            this.OnGuppyCreated?.Invoke(this, guppy);
         }
 
         private void HandleGuppyDisposed(IDisposable args)
@@ -71,13 +73,24 @@ namespace Guppy.Providers
             {
                 guppy.OnDispose -= this.HandleGuppyDisposed;
 
-                this.Remove(guppy);
-
                 if(_scopes.Remove(guppy, out var scope))
                 {
                     scope.Dispose();
                 }
+
+                _guppies.Remove(guppy);
+                this.OnGuppyDestroyed?.Invoke(this, guppy);
             }
+        }
+
+        public IEnumerator<IGuppy> GetEnumerator()
+        {
+            return _guppies.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

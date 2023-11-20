@@ -1,4 +1,5 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;

@@ -87,15 +87,15 @@ namespace Guppy.Common.Providers
         public IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
             where TAttribute : Attribute
         {
-            var types = this.GetTypes<TType>(x => x.HasCustomAttribute<TAttribute>(inherit));
-            return new AttributeProvider<TType, TAttribute>(types);
+            var types = this.GetTypes<TType>(x => x.HasCustomAttributesIncludingInterfaces<TAttribute>(inherit));
+            return new AttributeProvider<TType, TAttribute>(types, inherit);
         }
 
         public IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute
         {
-            var types = this.GetTypes<TType>(x => x.HasCustomAttribute<TAttribute>(inherit) && predicate(x));
-            return new AttributeProvider<TType, TAttribute>(types);
+            var types = this.GetTypes<TType>(x => x.HasCustomAttributesIncludingInterfaces<TAttribute>(inherit) && predicate(x));
+            return new AttributeProvider<TType, TAttribute>(types, inherit);
         }
 
         public IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(bool inherit)

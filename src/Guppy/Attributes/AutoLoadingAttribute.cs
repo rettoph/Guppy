@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Autofac;
 using Guppy.Configurations;
 
 namespace Guppy.Attributes
@@ -7,7 +8,9 @@ namespace Guppy.Attributes
     {
         protected override bool ShouldConfigure(GuppyConfiguration configuration, Type classType)
         {
-            return classType.HasCustomAttribute<AutoLoadAttribute>() && base.ShouldConfigure(configuration, classType);
+            bool result = classType.HasCustomAttribute<AutoLoadAttribute>();
+            result &= base.ShouldConfigure(configuration, classType);
+            return result;
         }
     }
 }

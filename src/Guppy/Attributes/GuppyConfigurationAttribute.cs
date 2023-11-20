@@ -1,4 +1,5 @@
-﻿using Guppy.Configurations;
+﻿using Autofac;
+using Guppy.Configurations;
 
 namespace Guppy.Attributes
 {

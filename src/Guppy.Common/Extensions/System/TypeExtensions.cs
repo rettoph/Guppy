@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,7 +66,6 @@ namespace System
         {
             ThrowIf.Type.IsNotAssignableFrom<Attribute>(attribute);
 
-
             return types.Where(t =>
             {
                 var info = t.GetCustomAttributes(attribute, inherit);
@@ -85,13 +85,50 @@ namespace System
         /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static IEnumerable<T> GetCustomAttributesIncludingInterfaces<T>(this Type type)
+        public static IEnumerable<T> GetCustomAttributesIncludingInterfaces<T>(this Type type, bool inherit)
+            where T : Attribute
         {
+            if (inherit == false)
+            {
+                return type.GetCustomAttributes<T>();
+            }
+
             var attributeType = typeof(T);
             return type.GetCustomAttributes(attributeType, true)
               .Union(type.GetInterfaces().SelectMany(interfaceType =>
                   interfaceType.GetCustomAttributes(attributeType, true)))
               .Cast<T>();
+        }
+
+        /// <summary>
+        /// https://stackoverflow.com/questions/540749/can-a-c-sharp-class-inherit-attributes-from-its-interface
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool HasCustomAttributesIncludingInterfaces<T>(this Type type, bool inherit)
+            where T : Attribute
+        {
+            if(inherit == false)
+            {
+                return type.HasCustomAttribute<T>();
+            }
+
+            if(type.HasCustomAttribute<T>())
+            {
+                return true;
+
+            }
+
+            foreach(Type interfaceType in type.GetInterfaces())
+            {
+                if(interfaceType.HasCustomAttribute<T>())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static IEnumerable<Type> GetConstructedGenericTypes(this Type type, Type genericTypeDefinition)

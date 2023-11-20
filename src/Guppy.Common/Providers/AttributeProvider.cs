@@ -17,7 +17,7 @@ namespace Guppy.Common.Providers
 
         public TAttribute[] this[Type type] => _attributes[type];
 
-        public AttributeProvider(ITypeProvider<TType> types) 
+        public AttributeProvider(ITypeProvider<TType> types, bool inherit) 
         {
             this.Types = types;
 
@@ -25,7 +25,7 @@ namespace Guppy.Common.Providers
 
             foreach(Type type in this.Types)
             {
-                _attributes.Add(type, type.GetCustomAttributes<TAttribute>().ToArray());
+                _attributes.Add(type, type.GetCustomAttributesIncludingInterfaces<TAttribute>(inherit).ToArray());
             }
         }
 

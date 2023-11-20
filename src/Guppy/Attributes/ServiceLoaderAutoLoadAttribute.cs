@@ -1,4 +1,5 @@
-﻿using Guppy.Configurations;
+﻿using Autofac;
+using Guppy.Configurations;
 using Guppy.Loaders;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,7 @@ namespace Guppy.Attributes
     {
         protected override void Configure(GuppyConfiguration configuration, Type classType)
         {
-            var loader = Activator.CreateInstance(classType) as IServiceLoader;
-
-            configuration.AddServiceLoader(loader ?? throw new NotImplementedException());
+            configuration.AddServiceLoader(classType);
         }
     }
 }

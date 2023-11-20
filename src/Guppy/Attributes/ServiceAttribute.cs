@@ -18,9 +18,9 @@ namespace Guppy.Attributes
             this.RequireAutoLoadAttribute = requireAutoLoadAttribute;
         }
 
-        protected override bool ShouldConfigure(GuppyConfiguration builder, Type classType)
+        protected override bool ShouldConfigure(GuppyConfiguration configuration, Type classType)
         {
-            var result =  base.ShouldConfigure(builder, classType);
+            var result =  base.ShouldConfigure(configuration, classType);
 
             if(this.RequireAutoLoadAttribute)
             {

@@ -40,7 +40,7 @@ namespace Guppy.MonoGame
             }
         }
 
-        protected virtual void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             foreach(IGuppyDrawable drawable in _drawComponents)
             {
@@ -48,22 +48,12 @@ namespace Guppy.MonoGame
             }
         }
 
-        protected virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             foreach (IGuppyUpdateable updateable in _updateComponents)
             {
                 updateable.Update(gameTime);
             }
-        }
-
-        void IGuppyDrawable.Draw(GameTime gameTime)
-        {
-            this.Draw(gameTime);
-        }
-
-        void IGuppyUpdateable.Update(GameTime gameTime)
-        {
-            this.Update(gameTime);
         }
 
         public virtual void Dispose()

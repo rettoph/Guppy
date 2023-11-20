@@ -40,11 +40,5 @@ namespace Guppy
         {
             return GetTags(engine).Contains(tag);
         }
-
-        public static GuppyConfiguration AddServiceLoader(this GuppyConfiguration engine, IServiceLoader loader, int? order = null)
-        {
-            order ??= loader.GetType().GetCustomAttribute<OrderAttribute>()?.Order;
-            return engine.AddLoader(x => loader.ConfigureServices(x.Builder), order);
-        }
     }
 }

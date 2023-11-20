@@ -12,20 +12,23 @@ namespace Guppy
 {
     public sealed class GuppyEngine
     {
+        private IContainer _container;
+
         public IEnumerable<Assembly> Libraries { get; private set; }
-        public IContainer Container { get; private set; }
         public IGuppyProvider Guppies { get; private set; }
 
         public GuppyStatus Status { get; private set; }
 
-        public string Name { get; private set; }
-        public string Company { get; private set; }
+        public IGuppyEnvironment Environment { get; private set; }
 
         public GuppyEngine(string company, string name, IEnumerable<Assembly>? libraries = default)
         {
             this.Status = GuppyStatus.NotReady;
-            this.Name = name;
-            this.Company = company;
+            this.Environment = new GuppyEnvironment()
+            {
+                Company = company,
+                Name = name
+            };
 
             libraries ??= Enumerable.Empty<Assembly>();
             libraries = libraries.Concat(new[]
@@ -33,8 +36,8 @@ namespace Guppy
                 typeof(GuppyEngine).Assembly,
             });
 
+            _container = default!;
             this.Libraries = libraries;
-            this.Container = default!;
             this.Guppies = default!;
         }
 
@@ -50,20 +53,9 @@ namespace Guppy
             this.Status = GuppyStatus.Starting;
 
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
-            var builder = new ContainerBuilder();
-            var assemblies = new AssemblyProvider(this.Libraries);
-            var configuration = new GuppyConfiguration(this.Company, this.Name, builder, assemblies);
+            _container = GuppyConfiguration.Build(this.Environment, entry, this.Libraries, build);
 
-            build?.Invoke(configuration);
-            configuration.Build(entry);
-
-            this.Container = builder.Build();
-            this.Guppies = this.Container.Resolve<IGuppyProvider>();
-
-            foreach(var loader in this.Container.Resolve<IEnumerable<IGlobalLoader>>())
-            {
-                loader.Load(this);
-            }
+            this.Guppies = _container.Resolve<IGuppyProvider>();
 
             this.Status = GuppyStatus.Ready;
 

@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    public interface IGuppyProvider : ICollectionManager<IGuppy>
+    public interface IGuppyProvider : IEnumerable<IGuppy>
     {
+        event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyCreated;
+        event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyDestroyed;
+
         IGuppy Create(Type guppyType);
 
         T Create<T>()

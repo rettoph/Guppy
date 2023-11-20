@@ -12,7 +12,7 @@ namespace System.Reflection
         public static bool HasCustomAttribute<T>(this MemberInfo member)
             where T : Attribute
         {
-            return member.GetCustomAttribute<T>() is not null;
+            return member.GetCustomAttributes<T>().Any();
         }
 
         public static bool HasCustomAttribute<T>(this MemberInfo member, bool inherit)
