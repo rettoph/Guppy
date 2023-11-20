@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Attributes
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
     public class SequenceAttribute<TSequence> : Attribute
         where TSequence : Enum
     {
@@ -13,7 +14,7 @@ namespace Guppy.Common.Attributes
 
         public SequenceAttribute(TSequence value)
         {
-            Value = value;
+            this.Value = value;
         }
     }
 }

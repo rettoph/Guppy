@@ -20,7 +20,7 @@ namespace Guppy.MonoGame.Loaders
         {
             services.RegisterType<MenuProvider>().As<IMenuProvider>().InstancePerLifetimeScope();
 
-            services.AddFilter(new ServiceFilter<IGameComponent, Type>(typeof(FrameableGuppy)));
+            services.AddFilter(new ServiceFilter<IGameComponent, Type>(typeof(MonoGameGuppy)));
         }
     }
 }

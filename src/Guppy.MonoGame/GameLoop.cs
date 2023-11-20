@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame
 {
-    public sealed class GameLoop : FrameableGuppy
+    public sealed class GameLoop : MonoGameGuppy
     {
         private IGuppyProvider _guppies;
-        private List<FrameableGuppy> _frameables;
+        private List<MonoGameGuppy> _frameables;
 
         public GameLoop(IGuppyProvider guppies)
         {
             _guppies = guppies;
-            _frameables = _guppies.OfType<FrameableGuppy>().Where(x => x is not GameLoop).ToList();
+            _frameables = _guppies.OfType<MonoGameGuppy>().Where(x => x is not GameLoop).ToList();
 
             _guppies.OnGuppyCreated += HandleGuppyCreated;
             _guppies.OnGuppyDestroyed += HandleGuppyDestroyed;
@@ -24,7 +24,7 @@ namespace Guppy.MonoGame
 
         public void Draw(GameTime gameTime)
         {
-            foreach (FrameableGuppy frameable in _frameables)
+            foreach (MonoGameGuppy frameable in _frameables)
             {
                 frameable.Draw(gameTime);
             }
@@ -32,7 +32,7 @@ namespace Guppy.MonoGame
 
         public void Update(GameTime gameTime)
         {
-            foreach (FrameableGuppy frameable in _frameables)
+            foreach (MonoGameGuppy frameable in _frameables)
             {
                 frameable.Update(gameTime);
             }
@@ -40,7 +40,7 @@ namespace Guppy.MonoGame
 
         private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
         {
-            if (args is FrameableGuppy frameable && args is not GameLoop)
+            if (args is MonoGameGuppy frameable && args is not GameLoop)
             {
                 _frameables.Add(frameable);
             }
@@ -48,7 +48,7 @@ namespace Guppy.MonoGame
 
         private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)
         {
-            if (args is FrameableGuppy frameable && args is not GameLoop)
+            if (args is MonoGameGuppy frameable && args is not GameLoop)
             {
                 _frameables.Remove(frameable);
             }

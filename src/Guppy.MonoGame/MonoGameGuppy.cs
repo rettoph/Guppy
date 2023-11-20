@@ -9,7 +9,7 @@ using System;
 
 namespace Guppy.MonoGame
 {
-    public abstract class FrameableGuppy : IGuppy, IGuppyDrawable, IGuppyUpdateable
+    public abstract class MonoGameGuppy : IGuppy, IGuppyDrawable, IGuppyUpdateable
     {
         private IGuppyDrawable[] _drawComponents;
         private IGuppyUpdateable[] _updateComponents;
@@ -17,7 +17,7 @@ namespace Guppy.MonoGame
         public IGuppyComponent[] Components { get; private set; }
 
 
-        public FrameableGuppy()
+        public MonoGameGuppy()
         {
             _drawComponents = Array.Empty<IGuppyDrawable>();
             _updateComponents = Array.Empty<IGuppyUpdateable>();
