@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" />
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj">
+      <PrivateAssets>All</PrivateAssets>
+    </ProjectReference>
     <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImPlot.NET\ImPlot.NET.csproj" />
     <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\Guppy.MonoGame.Common\Guppy.MonoGame.Common.csproj" />
@@ -16,6 +18,12 @@
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Guppy.GUI.Generators\Guppy.GUI.Generators.csproj" 
+                      OutputItemType="Analyzer" 
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Content Include="natives\**\*.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -26,11 +34,6 @@
     <Content Include="Content\Guppy\GUI\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="content\guppy\gui\colors.json" />
-    <None Remove="content\guppy\gui\styles.json" />
   </ItemGroup>
 
 </Project>

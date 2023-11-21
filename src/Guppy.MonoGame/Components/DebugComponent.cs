@@ -3,7 +3,6 @@ using Guppy.GUI;
 using Guppy.GUI.Providers;
 using Guppy.GUI.Styling;
 using Guppy.Resources.Providers;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -29,17 +28,17 @@ namespace Guppy.MonoGame.Components
 
         public void DrawGui()
         {
-            using (_styler.Apply())
-            {
-                ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
-
-                if (ImGui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
-                {
-                    ImGui.Text("test");
-                }
-
-                ImGui.End();
-            }
+            //using (_styler.Apply())
+            //{
+            //    ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
+            //
+            //    if (ImGui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
+            //    {
+            //        ImGui.Text("test");
+            //    }
+            //
+            //    ImGui.End();
+            //}
         }
     }
 }
