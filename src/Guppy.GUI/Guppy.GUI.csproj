@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" />
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImPlot.NET\ImPlot.NET.csproj" />
+    <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
+    <ProjectReference Include="..\Guppy.MonoGame.Common\Guppy.MonoGame.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="natives\**\*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Guppy\GUI\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

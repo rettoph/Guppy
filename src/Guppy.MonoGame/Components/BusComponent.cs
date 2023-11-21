@@ -15,7 +15,7 @@ namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PostUpdate)]
-    internal sealed class BusComponent : IGuppyComponent, IGuppyUpdateable, ISequenceable<UpdateSequence>
+    internal sealed class BusComponent : IGuppyComponent, IUpdateableComponent, ISequenceable<UpdateSequence>
     {
         private readonly IBus _bus;
 

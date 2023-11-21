@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
     <ProjectReference Include="..\Guppy.Common\Guppy.Common.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
 
 </Project>

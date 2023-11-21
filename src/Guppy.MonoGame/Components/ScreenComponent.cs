@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Components
 {
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal sealed class ScreenComponent : IGuppyComponent, IGuppyDrawable
+    internal sealed class ScreenComponent : IGuppyComponent, IDrawableComponent
     {
         private readonly IScreen _screen;
 

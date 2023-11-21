@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame
+namespace Guppy
 {
     [Service<IGuppyComponent>(ServiceLifetime.Scoped, true)]
     public interface IGuppyComponent : ISequenceable<InitializeSequence>

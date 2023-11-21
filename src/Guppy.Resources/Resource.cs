@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Guppy.Resources
 {
-    public unsafe abstract class Resource
+    public unsafe abstract class Resource : IEquatable<Resource?>
     {
         private static DoubleDictionary<Guid, string, Resource> _resources = new DoubleDictionary<Guid, string, Resource>();
 
@@ -42,6 +42,32 @@ namespace Guppy.Resources
             }
 
             return new Resource<T>(name);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Resource);
+        }
+
+        public bool Equals(Resource? other)
+        {
+            return other is not null &&
+                   Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public static bool operator ==(Resource? left, Resource? right)
+        {
+            return EqualityComparer<Resource>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Resource? left, Resource? right)
+        {
+            return !(left == right);
         }
     }
 

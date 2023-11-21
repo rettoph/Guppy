@@ -94,7 +94,7 @@ namespace Guppy.Resources.Providers
                     {
                         if(!_resourceTypes.TryGet(name, out IResourceType? resourceType))
                         {
-                            _logger.Information("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unkown.", nameof(ResourcePackProvider), nameof(Load), name);
+                            _logger.Information("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(Load), name);
                             continue;
                         }
 

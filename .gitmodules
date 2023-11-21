@@ -3,7 +3,7 @@
 	url = https://github.com/RevenantX/LiteNetLib
 [submodule "libraries/ImGui.NET"]
 	path = libraries/ImGui.NET
-	url = https://github.com/mellinoe/imgui.net
+	url = https://github.com/rettoph/ImGui.NET
 [submodule "libraries/MonoGame.Extended"]
 	path = libraries/MonoGame.Extended
 	url = https://github.com/rettoph/MonoGame.Extended

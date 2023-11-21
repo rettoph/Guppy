@@ -21,7 +21,7 @@ namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class MouseEventPublishComponent : IGuppyComponent, IGuppyUpdateable
+    internal sealed class MouseEventPublishComponent : IGuppyComponent, IUpdateableComponent
     {
         private readonly IBus _bus;
         private readonly Cursor _cursor;

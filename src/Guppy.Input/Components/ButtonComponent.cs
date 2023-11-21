@@ -11,7 +11,7 @@ namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class ButtonComponent : IGuppyComponent, IGuppyUpdateable
+    internal sealed class ButtonComponent : IGuppyComponent, IUpdateableComponent
     {
         private readonly Dictionary<string, IButton> _buttons;
         private readonly IButtonProvider[] _providers;

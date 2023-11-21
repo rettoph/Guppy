@@ -9,18 +9,18 @@ using System;
 
 namespace Guppy.MonoGame
 {
-    public abstract class MonoGameGuppy : IGuppy, IGuppyDrawable, IGuppyUpdateable
+    public abstract class MonoGameGuppy : IGuppy
     {
-        private IGuppyDrawable[] _drawComponents;
-        private IGuppyUpdateable[] _updateComponents;
+        private IDrawableComponent[] _drawComponents;
+        private IUpdateableComponent[] _updateComponents;
 
         public IGuppyComponent[] Components { get; private set; }
 
 
         public MonoGameGuppy()
         {
-            _drawComponents = Array.Empty<IGuppyDrawable>();
-            _updateComponents = Array.Empty<IGuppyUpdateable>();
+            _drawComponents = Array.Empty<IDrawableComponent>();
+            _updateComponents = Array.Empty<IUpdateableComponent>();
 
             this.Components = Array.Empty<IGuppyComponent>();
         }
@@ -31,8 +31,8 @@ namespace Guppy.MonoGame
         {
             this.Components = scope.Resolve<IFiltered<IGuppyComponent>>().Instances.Sequence(InitializeSequence.Initialize).ToArray();
 
-            _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
-            _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
+            _drawComponents = this.Components.OfType<IDrawableComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _updateComponents = this.Components.OfType<IUpdateableComponent>().Sequence(UpdateSequence.Update).ToArray();
 
             foreach (IGuppyComponent component in this.Components)
             {
@@ -42,7 +42,7 @@ namespace Guppy.MonoGame
 
         public virtual void Draw(GameTime gameTime)
         {
-            foreach(IGuppyDrawable drawable in _drawComponents)
+            foreach(IDrawableComponent drawable in _drawComponents)
             {
                 drawable.Draw(gameTime);
             }
@@ -50,7 +50,7 @@ namespace Guppy.MonoGame
 
         public virtual void Update(GameTime gameTime)
         {
-            foreach (IGuppyUpdateable updateable in _updateComponents)
+            foreach (IUpdateableComponent updateable in _updateComponents)
             {
                 updateable.Update(gameTime);
             }
