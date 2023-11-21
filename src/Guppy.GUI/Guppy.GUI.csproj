@@ -5,23 +5,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj">
-      <PrivateAssets>All</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImPlot.NET\ImPlot.NET.csproj" />
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" />
+    <ProjectReference Include="..\Guppy.GUI.Generators\Guppy.GUI.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
     <ProjectReference Include="..\Guppy.MonoGame.Common\Guppy.MonoGame.Common.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Guppy.GUI.Generators\Guppy.GUI.Generators.csproj" 
-                      OutputItemType="Analyzer" 
-                      ReferenceOutputAssembly="false" />
   </ItemGroup>
   
   <ItemGroup>
@@ -34,6 +30,12 @@
     <Content Include="Content\Guppy\GUI\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Numerics">
+      <Alias>Num</Alias>
+    </Using>
   </ItemGroup>
 
 </Project>

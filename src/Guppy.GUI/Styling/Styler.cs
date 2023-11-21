@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.GUI.Helpers;
 
 namespace Guppy.GUI.Styling
 {
@@ -31,7 +32,7 @@ namespace Guppy.GUI.Styling
 
         public void Set(ImGuiCol var, Color color)
         {
-            _values.Add(new StylerColorValue(var, color.ToVector4()));
+            _values.Add(new StylerColorValue(var, NumericsHelper.Convert(color)));
         }
 
         public Styler Apply()

@@ -270,10 +270,10 @@ namespace Guppy.GUI
 
             var mouse = Mouse.GetState();
 
-            this.IO.DisplaySize = new Vector2(_graphics.PresentationParameters.BackBufferWidth, _graphics.PresentationParameters.BackBufferHeight);
-            this.IO.DisplayFramebufferScale = new Vector2(1f, 1f);
+            this.IO.DisplaySize = new Num.Vector2(_graphics.PresentationParameters.BackBufferWidth, _graphics.PresentationParameters.BackBufferHeight);
+            this.IO.DisplayFramebufferScale = new Num.Vector2(1f, 1f);
 
-            this.IO.MousePos = new Vector2(mouse.X, mouse.Y);
+            this.IO.MousePos = new Num.Vector2(mouse.X, mouse.Y);
 
             var scrollDelta = mouse.ScrollWheelValue - _scrollWheelValue;
             this.IO.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;

@@ -1,4 +1,5 @@
-﻿using Guppy.GUI.Styling.StylerValues;
+﻿using Guppy.GUI.Helpers;
+using Guppy.GUI.Styling.StylerValues;
 using Guppy.Resources;
 using Guppy.Resources.Attributes;
 using Guppy.Resources.Providers;
@@ -21,7 +22,7 @@ namespace Guppy.GUI.Styling.StyleValueResources
 
         internal override IStylerValue GetStylerValue(ImGuiBatch batcher, IResourceProvider resources)
         {
-            return new StylerColorValue(Property, resources.Get(Resource).ToVector4());
+            return new StylerColorValue(Property, NumericsHelper.Convert(resources.Get(Resource)));
         }
     }
 }
