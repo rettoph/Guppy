@@ -6,12 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Guppy.GUI.ResourceTypes
 {
     [AutoLoad]
-    internal class TrueTypeFontResourceType : ResourceType<TrueTypeFont>
+    internal class TrueTypeFontResourceType : SimpleResourceType<TrueTypeFont>
     {
         private readonly ILogger _logger;
 
@@ -20,7 +21,7 @@ namespace Guppy.GUI.ResourceTypes
             _logger = logger;
         }
 
-        protected override bool TryResolve(Resource<TrueTypeFont> resource, string input, string root, out TrueTypeFont value)
+        protected override bool TryResolve(Resource<TrueTypeFont> resource, string root, string input, out TrueTypeFont value)
         {
             string path = Path.Combine(root, input);
 

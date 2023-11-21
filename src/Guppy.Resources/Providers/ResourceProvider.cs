@@ -60,6 +60,11 @@ namespace Guppy.Resources.Providers
             T value = valuesToCache.LastOrDefault() ?? throw new NotImplementedException();
             cachedValue = value;
 
+            if(value is IInitializableResource initializable)
+            {
+                initializable.Initialize(this);
+            }
+
             return value;
         }
 

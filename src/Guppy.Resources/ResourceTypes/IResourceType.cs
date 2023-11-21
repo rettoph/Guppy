@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Guppy.Resources.ResourceTypes
@@ -14,6 +15,6 @@ namespace Guppy.Resources.ResourceTypes
         Type Type { get; }
         string Name { get; }
 
-        bool TryResolve(ResourcePack pack, string resource, string localization, string value);
+        bool TryResolve(ResourcePack pack, string resource, string localization, ref Utf8JsonReader reader);
     }
 }

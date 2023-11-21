@@ -8,12 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.ResourceTypes
 {
     [AutoLoad]
-    internal class SpriteFontResourceType : ResourceType<SpriteFont>
+    internal class SpriteFontResourceType : SimpleResourceType<SpriteFont>
     {
         public Type Type => typeof(SpriteFont);
 
@@ -24,7 +25,7 @@ namespace Guppy.MonoGame.ResourceTypes
             _content = content;
         }
 
-        protected override bool TryResolve(Resource<SpriteFont> resource, string input, string root, out SpriteFont value)
+        protected override bool TryResolve(Resource<SpriteFont> resource, string root, string input, out SpriteFont value)
         {
             _content.RootDirectory = root;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Guppy.Resources.Serialization.Json;
+using Guppy.Serialization;
 
 namespace Guppy.Resources
 {

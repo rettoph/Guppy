@@ -1,11 +1,13 @@
 ﻿using Guppy.Attributes;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
+using Guppy.Serialization;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -14,25 +16,16 @@ namespace Guppy.MonoGame.ResourceTypes
     [AutoLoad]
     internal class ColorResourceType : ResourceType<Color>
     {
-        private readonly Regex rgbaArrayRegex = new Regex("^(\\d{1,3}),(\\d{1,3}),(\\d{1,3}),(\\d{1,3})$");
+        private readonly IJsonSerializer _json;
 
-        protected override bool TryResolve(Resource<Color> resource, string input, string root, out Color value)
+        public ColorResourceType(IJsonSerializer json)
         {
-            Match rgbaArray = rgbaArrayRegex.Match(input);
-            if (rgbaArray.Success)
-            {
-                value = new Color(
-                    r: byte.Parse(rgbaArray.Groups[1].Value),
-                    g: byte.Parse(rgbaArray.Groups[2].Value),
-                    b: byte.Parse(rgbaArray.Groups[3].Value),
-                    alpha: byte.Parse(rgbaArray.Groups[4].Value)
-                );
+            _json = json;
+        }
 
-                return true;
-            }
-
-            value = default!;
-            return false;
+        protected override bool TryResolve(Resource<Color> resource, string root, ref Utf8JsonReader reader, out Color value)
+        {
+            return _json.TryDeserialize<Color>(ref reader, out value);
         }
     }
 }

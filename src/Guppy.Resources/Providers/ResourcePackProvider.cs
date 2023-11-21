@@ -1,13 +1,16 @@
 ﻿using Guppy.Resources.Configuration;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Loaders;
-using Guppy.Resources.Serialization.Json;
+using Guppy.Serialization;
 using Guppy.Files;
 using Guppy.Files.Services;
 using Guppy.Files.Enums;
 using Serilog;
 using Guppy.Resources.ResourceTypes;
 using System.Security.AccessControl;
+using System.Text.Json;
+using System.Text;
+using System.Reflection.PortableExecutable;
 
 namespace Guppy.Resources.Providers
 {
@@ -79,35 +82,37 @@ namespace Guppy.Resources.Providers
             ResourcePack pack = this.GetOrCreatePack(configuration);
             _logger.Information("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
 
-            foreach ((string localization, string[] resourceFiles) in configuration.Value.Import)
+            foreach ((string localization, string[] resourceFileNames) in configuration.Value.Import)
             {
-                foreach(string resourceFile in resourceFiles)
+                foreach(string resourceFileName in resourceFileNames)
                 {
-                    Dictionary<string, string> rawResourceValues = _files.Get<Dictionary<string, string>>(
-                        FileType.Source,
-                        Path.Combine(directory, resourceFile)
-                    ).Value;
+                    _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFileName, localization);
 
-                    _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFile, localization);
+                    IFile resourceFile = _files.Get(FileType.Source, Path.Combine(directory, resourceFileName));
+                    Utf8JsonReader reader = new Utf8JsonReader(Encoding.ASCII.GetBytes(resourceFile.Content));
+                    reader.Read();
 
-                    foreach ((string name, string value) in rawResourceValues)
+                    reader.CheckToken(JsonTokenType.StartObject, true);
+                    reader.Read();
+
+                    while(reader.ReadPropertyName(out string? name))
                     {
                         if(!_resourceTypes.TryGet(name, out IResourceType? resourceType))
                         {
-                            _logger.Information("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(Load), name);
-                            continue;
+                            _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(Load), name);
+                            break;
                         }
 
-                        if(!resourceType.TryResolve(pack, name, localization, value))
+                        if(!resourceType.TryResolve(pack, name, localization, ref reader))
                         {
-                            _logger.Information("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}, with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
-                            continue;
+                            _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}", nameof(ResourcePackProvider), nameof(Load), name);
+                            break;
                         }
 
-                        _logger.Information("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName} with value {Value}", nameof(ResourcePackProvider), nameof(Load), name, value);
+                        _logger.Information("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName}", nameof(ResourcePackProvider), nameof(Load), name);
+                        reader.Read();
                     }
                 }
-
             }
         }
 

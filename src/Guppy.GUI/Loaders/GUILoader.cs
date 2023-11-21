@@ -4,14 +4,18 @@ using Guppy.Common.Helpers;
 using Guppy.GUI.Constants;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Providers;
+using Guppy.GUI.Serialization.Json.Converters;
+using Guppy.GUI.Styling.StyleValueResources;
 using Guppy.Input.Enums;
 using Guppy.Loaders;
+using Guppy.Resources.Serialization.Json.Converters;
 using ImGuiNET;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Guppy.GUI.Loaders
@@ -23,7 +27,14 @@ namespace Guppy.GUI.Loaders
             string nativesDirectory = Path.Combine(Directory.GetCurrentDirectory(), NativeConstants.Directory);
             NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
-            services.RegisterType<ImGuiBatch>().As<ImGuiBatch>().As<IImFontProvider>().InstancePerLifetimeScope();
+            services.RegisterType<ImGuiBatch>().As<ImGuiBatch>().As<IImFontProvider>().As<IStylerProvider>().InstancePerLifetimeScope();
+
+            services.RegisterType<StyleConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<PolymorphicConverter<StyleValue>>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<StyleVarFloatValueConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<StyleVarVector2ValueConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<StyleColorValueConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<StyleFontValueConverter>().As<JsonConverter>().SingleInstance();
 
             AddImGuiKeyEvent(services, InputConstants.UI_Tab, Keys.Tab, ImGuiKey.Tab);
             AddImGuiKeyEvent(services, InputConstants.UI_LeftArrow, Keys.Left, ImGuiKey.LeftArrow);

@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Resources;
+using Guppy.Resources.Providers;
+using Guppy.Resources.ResourceTypes;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,8 +69,9 @@ namespace Guppy.MonoGame.Serialization.Json.Converters
         {
             reader.CheckToken(JsonTokenType.String, true);
 
-            var htmlValue = reader.GetString() ?? throw new Exception();
-            var drawingColor = System.Drawing.ColorTranslator.FromHtml(htmlValue);
+            string value = reader.GetString() ?? throw new Exception();
+
+            DrawingColor drawingColor = System.Drawing.ColorTranslator.FromHtml(value);
             return System.Drawing.ColorExtensions.ToXnaColor(drawingColor);
         }
 

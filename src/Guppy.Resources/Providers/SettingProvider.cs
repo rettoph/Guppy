@@ -1,6 +1,6 @@
 ﻿using Guppy.Common.Providers;
 using Guppy.Resources.Definitions;
-using Guppy.Resources.Serialization.Json;
+using Guppy.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,6 +2,7 @@
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Serialization;
+using Guppy.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,41 @@ namespace Guppy.Files.Services
     {
         private readonly IJsonSerializer _json;
         private readonly IFileTypePathProvider _paths;
-        private Dictionary<string, GuppyFile> _cache;
+        private Dictionary<string, IFile> _cache;
 
         public FileService(IJsonSerializer json, IFileTypePathProvider paths)
         {
             _json = json;
             _paths = paths;
-            _cache = new Dictionary<string, GuppyFile>();
+            _cache = new Dictionary<string, IFile>();
+        }
+
+        public IFile Get(FileType type, string path, bool forceLoadFromDisk = false)
+        {
+            string fullPath = _paths.GetFullPath(type, path);
+
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
+
+            if (!exists || forceLoadFromDisk)
+            {
+                DirectoryHelper.EnsureDirectoryExists(fullPath);
+
+                using (FileStream stream = File.Open(fullPath, FileMode.OpenOrCreate))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string content = reader.ReadToEnd();
+
+                        file = new StringFile(
+                            type: type,
+                            path: path,
+                            fullPath: fullPath,
+                            content: content);
+                    }
+                }
+            }
+
+            return file ?? throw new Exception();
         }
 
         public IFile<T> Get<T>(FileType type, string path, bool forceLoadFromDisk = false)
@@ -29,7 +58,7 @@ namespace Guppy.Files.Services
         {
             string fullPath = _paths.GetFullPath(type, path);
 
-            ref GuppyFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
 
             if(!exists || forceLoadFromDisk)
             {
@@ -40,18 +69,19 @@ namespace Guppy.Files.Services
                     using (StreamReader reader = new StreamReader(stream))
                     {
                         string content = reader.ReadToEnd();
-                        T value = _json.Deserialize<T>(content, out bool success) ?? new();
 
-                        file = new GuppyFile<T>()
-                        {
-                            Type = type,
-                            Path = path,
-                            FullPath = fullPath,
-                            Value = value,
-                            Success = success
-                        };
+                        file = new JsonFile<T>(
+                            type: type,
+                            path: path,
+                            fullPath: fullPath,
+                            content: content,
+                            json: _json);
                     }
                 }
+            }
+            else if(file is StringFile stringFile)
+            {
+                file = new JsonFile<T>(stringFile, _json);
             }
 
             return file as IFile<T> ?? throw new Exception();

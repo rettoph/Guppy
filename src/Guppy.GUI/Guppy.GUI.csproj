@@ -28,4 +28,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="content\guppy\gui\colors.json" />
+    <None Remove="content\guppy\gui\styles.json" />
+  </ItemGroup>
+
 </Project>

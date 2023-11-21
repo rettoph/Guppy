@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Providers;
+using Guppy.GUI.Styling;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
 using ImGuiNET;
@@ -14,15 +15,17 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using static Guppy.GUI.Resources;
 
 namespace Guppy.GUI
 {
-    internal class ImGuiBatch : ISubscriber<ImGuiKeyEvent>, ISubscriber<ImGuiMouseButtonEvent>, IImFontProvider
+    internal class ImGuiBatch : ISubscriber<ImGuiKeyEvent>, ISubscriber<ImGuiMouseButtonEvent>, IImFontProvider, IStylerProvider
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
         private bool _dirtyFonts;
         private readonly Dictionary<(Resource<TrueTypeFont>, int), ImFontPtr> _fonts;
+        private readonly Dictionary<Resource<Style>, IStyler> _stylers;
 
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
@@ -85,6 +88,7 @@ namespace Guppy.GUI
             this.IO = ImGui.GetIO();
 
             _fonts = new Dictionary<(Resource<TrueTypeFont>, int), ImFontPtr>();
+            _stylers = new Dictionary<Resource<Style>, IStyler>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
             _inputs = new Queue<char>();
@@ -453,7 +457,7 @@ namespace Guppy.GUI
             _inputs.Enqueue(e.Character);
         }
 
-        ImFontPtr IImFontProvider.GetFontPtr(Resource<TrueTypeFont> font, int size)
+        public ImFontPtr GetFontPtr(Resource<TrueTypeFont> font, int size)
         {
             ref ImFontPtr fontPtr = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (font, size), out bool exists);
 
@@ -468,6 +472,20 @@ namespace Guppy.GUI
             _dirtyFonts = true;
 
             return fontPtr;
+        }
+
+        IStyler IStylerProvider.Get(Resource<Style> style)
+        {
+            ref IStyler? styler = ref CollectionsMarshal.GetValueRefOrAddDefault(_stylers, style, out bool exists);
+
+            if(exists)
+            {
+                return styler!;
+            }
+
+            styler = _resources.Get(style).BuildStyler(this, _resources);
+
+            return styler;
         }
     }
 }

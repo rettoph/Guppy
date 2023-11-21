@@ -3,6 +3,7 @@ using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Configurations;
 using Guppy.Resources.Serialization.Json;
+using Guppy.Serialization;
 
 namespace Guppy.Resources.Attributes
 {

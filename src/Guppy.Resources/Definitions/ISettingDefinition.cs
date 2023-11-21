@@ -1,6 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
-using Guppy.Resources.Serialization.Json;
+using Guppy.Serialization;
+using Guppy.Serialization;
 
 namespace Guppy.Resources.Definitions
 {

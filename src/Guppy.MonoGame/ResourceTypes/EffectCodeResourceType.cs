@@ -4,11 +4,12 @@ using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
 using Microsoft.Xna.Framework.Graphics;
 using Serilog;
+using System.Text.Json;
 
 namespace Guppy.MonoGame.ResourceTypes
 {
     [AutoLoad]
-    internal class EffectCodeResourceType : ResourceType<EffectCode>
+    internal class EffectCodeResourceType : SimpleResourceType<EffectCode>
     {
         private readonly ILogger _logger;
 
@@ -17,7 +18,7 @@ namespace Guppy.MonoGame.ResourceTypes
             _logger = logger;
         }
 
-        protected override bool TryResolve(Resource<EffectCode> resource, string input, string root, out EffectCode value)
+        protected override bool TryResolve(Resource<EffectCode> resource, string root, string input, out EffectCode value)
         {
             string path = Path.Combine(root, input);
 

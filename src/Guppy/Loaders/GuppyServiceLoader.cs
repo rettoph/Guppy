@@ -39,7 +39,7 @@ namespace Guppy.Loaders
                 return options;
             }).InstancePerDependency();
 
-            services.RegisterType<Serialization.DefaultJsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
+            services.RegisterType<Serialization.JsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
         }
     }
 }

@@ -8,7 +8,7 @@ using Guppy.Resources.ResourceTypes;
 
 namespace Guppy.Resources.Providers
 {
-    internal interface IResourceTypeProvider
+    public interface IResourceTypeProvider
     {
         bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType);
     }

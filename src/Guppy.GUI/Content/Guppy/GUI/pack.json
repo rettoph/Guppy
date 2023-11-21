@@ -3,7 +3,9 @@
   "Name": "Guppy - GUI",
   "Import": {
     "en-US": [
-      "true-type-fonts.json"
+      "colors.json",
+      "true-type-fonts.json",
+      "styles.json"
     ]
   }
 }

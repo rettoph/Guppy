@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.GUI;
 using Guppy.GUI.Providers;
+using Guppy.GUI.Styling;
+using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System;
@@ -14,11 +16,11 @@ namespace Guppy.MonoGame.Components
     [AutoLoad]
     internal sealed class DebugComponent : IGuppyComponent, IGuiComponent
     {
-        private readonly ImFontPtr _font;
+        private readonly IStyler _styler;
 
-        public DebugComponent(IImFontProvider fonts)
+        public DebugComponent(IStylerProvider stylers, IImFontProvider fonts, IResourceProvider resources)
         {
-            _font = fonts.GetFontPtr(GUI.Resources.TrueTypeFonts.DiagnosticsFont, 25);
+            _styler = stylers.Get(GUI.Resources.Styles.FullScreen);
         }
 
         public void Initialize(IGuppy guppy)
@@ -27,22 +29,17 @@ namespace Guppy.MonoGame.Components
 
         public void DrawGui()
         {
-            //ImGui.ShowStyleEditor();
-
-            ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
-            ImGui.PushFont(_font);
-            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
-            ImGui.PushStyleColor(ImGuiCol.WindowBg, Color.Red);
-
-            if (ImGui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
+            using (_styler.Apply())
             {
+                ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
 
+                if (ImGui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
+                {
+                    ImGui.Text("test");
+                }
+
+                ImGui.End();
             }
-
-            ImGui.PopStyleColor();
-            ImGui.PopStyleVar();
-            ImGui.PopFont();
-            ImGui.End();
         }
     }
 }
