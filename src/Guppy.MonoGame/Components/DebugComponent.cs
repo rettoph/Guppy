@@ -32,12 +32,14 @@ namespace Guppy.MonoGame.Components
             ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
             ImGui.PushFont(_font);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, Color.Red);
 
             if (ImGui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
             {
 
             }
 
+            ImGui.PopStyleColor();
             ImGui.PopStyleVar();
             ImGui.PopFont();
             ImGui.End();
