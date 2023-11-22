@@ -15,7 +15,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
     {
         public override StyleVarFloatValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ImGuiStyleVar var = default;
+            GuiStyleVar var = default;
             float value = default;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -26,7 +26,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
                 switch (property)
                 {
                     case nameof(StyleVarFloatValue.Property):
-                        var = Enum.Parse<ImGuiStyleVar>(reader.ReadString());
+                        var = Enum.Parse<GuiStyleVar>(reader.ReadString());
                         break;
                     case nameof(StyleVarFloatValue.Value):
                         value = reader.ReadSingle();

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.GUI.Services
+namespace Guppy.GUI
 {
-    public partial interface IImGuiService
+    public partial interface IGui
     {
         ImGuiFont GetFont(Resource<TrueTypeFont> ttf, int size);
 

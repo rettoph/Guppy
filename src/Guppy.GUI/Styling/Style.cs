@@ -1,5 +1,4 @@
-﻿using Guppy.GUI.Services;
-using Guppy.GUI.Styling.StylerValues;
+﻿using Guppy.GUI.Styling.StylerValues;
 using Guppy.GUI.Styling.StyleValueResources;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
@@ -12,7 +11,7 @@ namespace Guppy.GUI.Styling
     {
         internal StyleValue[] _values = Array.Empty<StyleValue>();
 
-        internal IStyler BuildStyler(IImGuiService imgui, IResourceProvider resources)
+        internal IStyler BuildStyler(IGui imgui, IResourceProvider resources)
         {
             return new Styler(_values.Select(x => x.GetStylerValue(imgui, resources)).ToList());
         }

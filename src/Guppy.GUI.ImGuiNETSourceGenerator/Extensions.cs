@@ -41,6 +41,22 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
             }
 
 
+            return value.Replace("System.Void", "void");
+        }
+
+        public static string ToGuppyName(this string value)
+        {
+            if(value.Contains("ImGui"))
+            {
+                value = value.Replace("ImGui", "Gui");
+            }
+
+            if(value.StartsWith("Im"))
+            {
+                value = "Gui" + value.Substring(2);
+            }
+
+
             return value;
         }
     }

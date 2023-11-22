@@ -6,15 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Guppy.GUI.Services
+namespace Guppy.GUI
 {
-    internal partial class ImGuiService : IImGuiService
+    internal partial class Gui : IGui
     {
         private readonly Dictionary<Resource<Style>, IStyler> _stylers;
         private readonly IResourceProvider _resources;
         private readonly ImGuiBatch _batch;
 
-        public ImGuiService(IResourceProvider resources, ImGuiBatch batch)
+        public Gui(IResourceProvider resources, ImGuiBatch batch)
         {
             _stylers = new Dictionary<Resource<Style>, IStyler>();
             _resources = resources;

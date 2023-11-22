@@ -16,7 +16,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
     {
         public override StyleColorValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ImGuiCol col = default;
+            GuiCol col = default;
             Resource<Color> resource = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -27,7 +27,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
                 switch (property)
                 {
                     case nameof(StyleColorValue.Property):
-                        col = Enum.Parse<ImGuiCol>(reader.ReadString());
+                        col = Enum.Parse<GuiCol>(reader.ReadString());
                         break;
 
                     case nameof(StyleColorValue.Resource):

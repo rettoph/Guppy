@@ -5,9 +5,9 @@
         public readonly ImGuiNET.ImGuiCol Property;
         public readonly Num.Vector4 Value;
 
-        public StylerColorValue(ImGuiCol property, Num.Vector4 value)
+        public StylerColorValue(GuiCol property, Num.Vector4 value)
         {
-            Property = ImGuiColConverter.ConvertToImGui(property);
+            Property = GuiColConverter.ConvertToImGui(property);
             Value = value;
         }
 

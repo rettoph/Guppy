@@ -11,7 +11,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
         {
         }
 
-        public override void GenerateSourceFiles(ref GeneratorExecutionContext context)
+        public override void GenerateSourceFiles(CodeBuilder source)
         {
             //throw new NotImplementedException();
         }

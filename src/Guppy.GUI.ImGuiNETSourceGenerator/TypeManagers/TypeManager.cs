@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
@@ -19,24 +20,35 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
             {
                 manager = new EnumTypeManager(type);
             }
+            else if (type.Assembly == typeof(ImGui).Assembly && type.IsEnum == false && type.IsGenericType == false && typeof(Delegate).IsAssignableFrom(type) == false)
+            {
+                manager = new DecoratingTypeManager(type);
+            }
             else
             {
                 manager = new DefaultTypeManager(type);
             }
 
             _instances.Add(type, manager);
+            _sourceGenerators.Enqueue(manager);
 
             return manager;
         }
 
-        public static void GenerateAllSourceFiles(ref GeneratorExecutionContext context)
+        public static void GenerateAllSourceFiles(CodeBuilder source)
         {
+            while(_sourceGenerators.Any())
+            {
+                _sourceGenerators.Dequeue().GenerateSourceFiles(source);
+            }
+
             foreach(TypeManager manager in _instances.Values)
             {
-                manager.GenerateSourceFiles(ref context);
+                _sourceGenerators.Enqueue(manager);
             }
         }
 
+        private static Queue<TypeManager> _sourceGenerators = new Queue<TypeManager>();
         private static Dictionary<Type, TypeManager> _instances = new Dictionary<Type, TypeManager>()
         {
             { typeof(System.Numerics.Vector2), new UnsafeAsTypeManager(typeof(System.Numerics.Vector2), "Microsoft.Xna.Framework.Vector2") },
@@ -54,12 +66,12 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
         protected TypeManager(Type imGuiType, string guppyType)
         {
             ImGuiType = imGuiType;
-            GuppyType = guppyType;
+            GuppyType = guppyType.Replace("System.Void*", "void*");
         }
 
         public abstract string GetGuppyToImGuiConverter(string parameter);
         public abstract string GetImGuiToGuppyConverter(string parameter);
 
-        public abstract void GenerateSourceFiles(ref GeneratorExecutionContext context);
+        public abstract void GenerateSourceFiles(CodeBuilder source);
     }
 }

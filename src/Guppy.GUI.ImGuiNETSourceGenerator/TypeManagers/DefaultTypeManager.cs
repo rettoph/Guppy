@@ -9,13 +9,13 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
     {
         public override string ReturnTypeName => this.ImGuiType.IsVoid() ? "void" : base.ReturnTypeName;
 
-        public override string GuppyParameterType => this.ImGuiType.FullName == "System.Void*&" ? "void*" : base.GuppyParameterType;
+        public override string GuppyParameterType => base.GuppyParameterType;
 
         public DefaultTypeManager(Type imGuiType) : base(imGuiType, imGuiType.FullName)
         {
         }
 
-        public override void GenerateSourceFiles(ref GeneratorExecutionContext context)
+        public override void GenerateSourceFiles(CodeBuilder source)
         {
             //throw new NotImplementedException();
         }

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All"/>
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
     <ProjectReference Include="..\Guppy.GUI.ImGuiNETSourceGenerator\Guppy.GUI.ImGuiNETSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
   
@@ -36,6 +36,10 @@
     <Using Include="System.Numerics">
       <Alias>Num</Alias>
     </Using>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

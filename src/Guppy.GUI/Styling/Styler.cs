@@ -20,17 +20,17 @@ namespace Guppy.GUI.Styling
             _values = values;
         }
 
-        public void Set(ImGuiStyleVar var, float value)
+        public void Set(GuiStyleVar var, float value)
         {
             _values.Add(new StyleVarFloatValue(var, value));
         }
 
-        public void Set(ImGuiStyleVar var, Vector2 value)
+        public void Set(GuiStyleVar var, Vector2 value)
         {
             _values.Add(new StyleVarVector2Value(var, value));
         }
 
-        public void Set(ImGuiCol var, Color color)
+        public void Set(GuiCol var, Color color)
         {
             _values.Add(new StylerColorValue(var, NumericsHelper.Convert(color)));
         }

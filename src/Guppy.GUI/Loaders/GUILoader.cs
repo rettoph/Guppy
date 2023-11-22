@@ -4,7 +4,6 @@ using Guppy.Common.Helpers;
 using Guppy.GUI.Constants;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Serialization.Json.Converters;
-using Guppy.GUI.Services;
 using Guppy.GUI.Styling.StyleValueResources;
 using Guppy.Input.Enums;
 using Guppy.Loaders;
@@ -28,7 +27,7 @@ namespace Guppy.GUI.Loaders
             NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
             services.RegisterType<ImGuiBatch>().As<ImGuiBatch>().InstancePerLifetimeScope();
-            services.RegisterType<ImGuiService>().As<IImGuiService>().InstancePerLifetimeScope();
+            services.RegisterType<Gui>().As<IGui>().InstancePerLifetimeScope();
 
             services.RegisterType<StyleConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<PolymorphicConverter<StyleValue>>().As<JsonConverter>().SingleInstance();
@@ -78,8 +77,8 @@ namespace Guppy.GUI.Loaders
                 defaultKey,
                 new[]
                 {
-                    (ButtonState.Pressed, new ImGuiKeyEvent(ImGuiKeyConverter.ConvertToImGui(mapping), true)),
-                    (ButtonState.Released, new ImGuiKeyEvent(ImGuiKeyConverter.ConvertToImGui(mapping), false))
+                    (ButtonState.Pressed, new ImGuiKeyEvent(mapping, true)),
+                    (ButtonState.Released, new ImGuiKeyEvent(mapping, false))
                 });
         }
 

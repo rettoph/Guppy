@@ -1,5 +1,4 @@
 ﻿using Guppy.GUI.Helpers;
-using Guppy.GUI.Services;
 using Guppy.GUI.Styling.StylerValues;
 using Guppy.Resources;
 using Guppy.Resources.Attributes;
@@ -12,16 +11,16 @@ namespace Guppy.GUI.Styling.StyleValueResources
     [PolymorphicJsonType(nameof(Color))]
     internal sealed class StyleColorValue : StyleValue
     {
-        public readonly ImGuiCol Property;
+        public readonly GuiCol Property;
         public readonly Resource<Color> Resource;
 
-        public StyleColorValue(ImGuiCol col, Resource<Color> resource)
+        public StyleColorValue(GuiCol col, Resource<Color> resource)
         {
             this.Property = col;
             this.Resource = resource;
         }
 
-        internal override IStylerValue GetStylerValue(IImGuiService imgui, IResourceProvider resources)
+        internal override IStylerValue GetStylerValue(IGui imgui, IResourceProvider resources)
         {
             return new StylerColorValue(Property, NumericsHelper.Convert(resources.Get(Resource)));
         }
