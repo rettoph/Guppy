@@ -1,4 +1,5 @@
-﻿using Guppy.GUI.Styling;
+﻿using Guppy.GUI;
+using Guppy.GUI.Styling;
 using Guppy.Resources;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.GUI
+namespace Guppy.MonoGame
 {
     public static class Resources
     {
@@ -17,7 +18,7 @@ namespace Guppy.GUI
 
         public static class Styles
         {
-            public static readonly Resource<Style> FullScreen = Resource.Get<Style>($"{nameof(Style)}.{nameof(FullScreen)}");
+            public static readonly Resource<Style> DebugWindow = Resource.Get<Style>($"{nameof(Style)}.{nameof(DebugWindow)}");
         }
     }
 }

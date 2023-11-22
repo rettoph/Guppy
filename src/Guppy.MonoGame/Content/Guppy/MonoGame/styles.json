@@ -1,5 +1,5 @@
 {
-  "Style.FullScreen": [
+  "Style.DebugWindow": [
     {
       "Type": "Color",
       "Value": {
@@ -21,7 +21,7 @@
       "Type": "TrueTypeFont",
       "Value": {
         "Resource": "TrueTypeFont.DiagnosticsFont",
-        "Size": 50
+        "Size": 20
       }
     }
   ]

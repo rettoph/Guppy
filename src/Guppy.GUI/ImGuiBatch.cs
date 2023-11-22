@@ -14,7 +14,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static Guppy.GUI.Resources;
 
 namespace Guppy.GUI
 {

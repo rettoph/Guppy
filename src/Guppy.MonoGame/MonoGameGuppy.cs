@@ -16,6 +16,9 @@ namespace Guppy.MonoGame
 
         public IGuppyComponent[] Components { get; private set; }
 
+        public virtual string Name => this.GetType().Name;
+
+        public Guid Id { get; set; }
 
         public MonoGameGuppy()
         {
@@ -23,6 +26,7 @@ namespace Guppy.MonoGame
             _updateComponents = Array.Empty<IUpdateableComponent>();
 
             this.Components = Array.Empty<IGuppyComponent>();
+            this.Id = Guid.NewGuid();
         }
 
         public event OnEventDelegate<IDisposable>? OnDispose;

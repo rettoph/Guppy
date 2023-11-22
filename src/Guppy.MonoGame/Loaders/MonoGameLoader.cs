@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Guppy.Attributes;
+using Guppy.MonoGame.Components;
 
 namespace Guppy.MonoGame.Loaders
 {

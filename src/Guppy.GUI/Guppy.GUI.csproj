@@ -27,19 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Content\Guppy\GUI\**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="System.Numerics">
       <Alias>Num</Alias>
     </Using>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

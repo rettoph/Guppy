@@ -38,7 +38,7 @@ namespace Guppy.GUI.Components
 
             foreach(IGuiComponent component in _components)
             {
-                component.DrawGui();
+                component.DrawGui(gameTime);
             }
 
             _batch.End();

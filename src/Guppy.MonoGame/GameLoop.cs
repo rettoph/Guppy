@@ -22,20 +22,24 @@ namespace Guppy.MonoGame
             _guppies.OnGuppyDestroyed += HandleGuppyDestroyed;
         }
 
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             foreach (MonoGameGuppy frameable in _frameables)
             {
                 frameable.Draw(gameTime);
             }
+
+            base.Draw(gameTime);
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             foreach (MonoGameGuppy frameable in _frameables)
             {
                 frameable.Update(gameTime);
             }
+
+            base.Update(gameTime);
         }
 
         private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
