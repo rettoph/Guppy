@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" GeneratePathProperty="true" PrivateAssets="all"/>
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" GeneratePathProperty="true" PrivateAssets="all" />
   </ItemGroup>
   
   <PropertyGroup>

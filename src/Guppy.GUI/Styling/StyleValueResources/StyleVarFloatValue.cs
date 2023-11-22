@@ -1,4 +1,5 @@
-﻿using Guppy.GUI.Styling.StylerValues;
+﻿using Guppy.GUI.Services;
+using Guppy.GUI.Styling.StylerValues;
 using Guppy.Resources.Attributes;
 using Guppy.Resources.Providers;
 
@@ -12,7 +13,7 @@ namespace Guppy.GUI.Styling.StyleValueResources
 
         public StyleVarFloatValue(ImGuiStyleVar property, float value)
         {
-            Property = ImGuiStyleVarConverter.Convert(property);
+            Property = ImGuiStyleVarConverter.ConvertToImGui(property);
             Value = value;
         }
 
@@ -26,7 +27,7 @@ namespace Guppy.GUI.Styling.StyleValueResources
             ImGuiNET.ImGui.PushStyleVar(Property, Value);
         }
 
-        internal override IStylerValue GetStylerValue(ImGuiBatch batcher, IResourceProvider resources)
+        internal override IStylerValue GetStylerValue(IImGuiService imgui, IResourceProvider resources)
         {
             return this;
         }

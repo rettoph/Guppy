@@ -7,7 +7,7 @@
 
         public StylerColorValue(ImGuiCol property, Num.Vector4 value)
         {
-            Property = ImGuiColConverter.Convert(property);
+            Property = ImGuiColConverter.ConvertToImGui(property);
             Value = value;
         }
 

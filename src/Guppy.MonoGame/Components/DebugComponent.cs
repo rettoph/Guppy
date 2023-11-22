@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.GUI;
-using Guppy.GUI.Providers;
+using Guppy.GUI.Services;
 using Guppy.GUI.Styling;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -16,10 +16,12 @@ namespace Guppy.MonoGame.Components
     internal sealed class DebugComponent : IGuppyComponent, IGuiComponent
     {
         private readonly IStyler _styler;
+        private readonly IImGuiService _imgui;
 
-        public DebugComponent(IStylerProvider stylers, IImFontProvider fonts, IResourceProvider resources)
+        public DebugComponent(IImGuiService imgui, IResourceProvider resources)
         {
-            _styler = stylers.Get(GUI.Resources.Styles.FullScreen);
+            _imgui = imgui;
+            _styler = imgui.GetStyler(GUI.Resources.Styles.FullScreen);
         }
 
         public void Initialize(IGuppy guppy)
@@ -28,17 +30,17 @@ namespace Guppy.MonoGame.Components
 
         public void DrawGui()
         {
-            //using (_styler.Apply())
-            //{
-            //    ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
-            //
-            //    if (ImGui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
-            //    {
-            //        ImGui.Text("test");
-            //    }
-            //
-            //    ImGui.End();
-            //}
+            using (_styler.Apply())
+            {
+                //_imgui.SetNextWindowSize(_imgui.GetMainViewport().Size);
+                
+                if (_imgui.Begin(nameof(DebugComponent), ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoTitleBar))
+                {
+                    _imgui.Text("test");
+                }
+
+                _imgui.End();
+            }
         }
     }
 }

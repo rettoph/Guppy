@@ -1,6 +1,5 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Messages;
-using Guppy.GUI.Providers;
 using Guppy.GUI.Styling;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
@@ -19,13 +18,12 @@ using static Guppy.GUI.Resources;
 
 namespace Guppy.GUI
 {
-    internal class ImGuiBatch : ISubscriber<ImGuiKeyEvent>, ISubscriber<ImGuiMouseButtonEvent>, IImFontProvider, IStylerProvider
+    internal class ImGuiBatch : ISubscriber<ImGuiKeyEvent>, ISubscriber<ImGuiMouseButtonEvent>
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
         private bool _dirtyFonts;
-        private readonly Dictionary<(Resource<TrueTypeFont>, int), ImFontPtr> _fonts;
-        private readonly Dictionary<Resource<Style>, IStyler> _stylers;
+        private readonly Dictionary<(Resource<TrueTypeFont>, int), ImGuiFont> _fonts;
 
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
@@ -61,6 +59,8 @@ namespace Guppy.GUI
         public readonly IntPtr Context;
         public readonly ImGuiIOPtr IO;
 
+        public bool Running { get; private set; }
+
         public bool Stale
         {
             get => DateTime.Now - _begin > StaleTime;
@@ -87,8 +87,7 @@ namespace Guppy.GUI
             ImGui.SetCurrentContext(this.Context);
             this.IO = ImGui.GetIO();
 
-            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), ImFontPtr>();
-            _stylers = new Dictionary<Resource<Style>, IStyler>();
+            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), ImGuiFont>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
             _inputs = new Queue<char>();
@@ -182,6 +181,13 @@ namespace Guppy.GUI
         /// </summary>
         public void Begin(GameTime gameTime)
         {
+            if(this.Running)
+            {
+                throw new Exception();
+            }
+
+            this.Running = true;
+
             if (this.Stale)
             {
                 _inputs.Clear();
@@ -214,6 +220,8 @@ namespace Guppy.GUI
             ImGui.Render();
 
             unsafe { RenderDrawData(ImGui.GetDrawData()); }
+
+            this.Running = false;
         }
 
         #endregion ImGuiRenderer
@@ -457,35 +465,24 @@ namespace Guppy.GUI
             _inputs.Enqueue(e.Character);
         }
 
-        public ImFontPtr GetFontPtr(Resource<TrueTypeFont> font, int size)
+        public ImGuiFont GetFont(Resource<TrueTypeFont> ttf, int size)
         {
-            ref ImFontPtr fontPtr = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (font, size), out bool exists);
+            ref ImGuiFont font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
 
             if(exists)
             {
-                return fontPtr;
+                return font;
             }
 
-            TrueTypeFont ttf = _resources.Get(font);
-            IntPtr ptr = ttf.GetDataPtr();
-            fontPtr = this.IO.Fonts.AddFontFromMemoryTTF(ptr, ttf.GetDataSize(), size);
+            TrueTypeFont ttfInstance = _resources.Get(ttf);
+            IntPtr ptr = ttfInstance.GetDataPtr();
+            ImFontPtr fontPtr = this.IO.Fonts.AddFontFromMemoryTTF(ptr, ttfInstance.GetDataSize(), size);
+
+            font = new ImGuiFont(ttf, size, fontPtr);
+
             _dirtyFonts = true;
 
-            return fontPtr;
-        }
-
-        IStyler IStylerProvider.Get(Resource<Style> style)
-        {
-            ref IStyler? styler = ref CollectionsMarshal.GetValueRefOrAddDefault(_stylers, style, out bool exists);
-
-            if(exists)
-            {
-                return styler!;
-            }
-
-            styler = _resources.Get(style).BuildStyler(this, _resources);
-
-            return styler;
+            return font;
         }
     }
 }

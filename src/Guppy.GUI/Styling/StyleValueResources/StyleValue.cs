@@ -1,4 +1,5 @@
-﻿using Guppy.GUI.Styling.StylerValues;
+﻿using Guppy.GUI.Services;
+using Guppy.GUI.Styling.StylerValues;
 using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,6 @@ namespace Guppy.GUI.Styling.StyleValueResources
 {
     internal abstract class StyleValue
     {
-        internal abstract IStylerValue GetStylerValue(ImGuiBatch batcher, IResourceProvider resources);
+        internal abstract IStylerValue GetStylerValue(IImGuiService imgui, IResourceProvider resources);
     }
 }
