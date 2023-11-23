@@ -37,14 +37,17 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 
         public static void GenerateAllSourceFiles(CodeBuilder source)
         {
-            while(_sourceGenerators.Any())
+            if(_sourceGenerators.Any() == false)
             {
-                _sourceGenerators.Dequeue().GenerateSourceFiles(source);
+                foreach (TypeManager manager in _instances.Values)
+                {
+                    _sourceGenerators.Enqueue(manager);
+                }
             }
 
-            foreach(TypeManager manager in _instances.Values)
+            while (_sourceGenerators.Any())
             {
-                _sourceGenerators.Enqueue(manager);
+                _sourceGenerators.Dequeue().GenerateSourceFiles(source);
             }
         }
 

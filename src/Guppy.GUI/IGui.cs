@@ -14,5 +14,14 @@ namespace Guppy.GUI
         ImGuiFont GetFont(Resource<TrueTypeFont> ttf, int size);
 
         IStyler GetStyler(Resource<Style> style);
+
+        void TextCentered(string text)
+        {
+            float windowWidth = this.GetWindowWidth();
+            float textWidth = this.CalcTextSize(text).X;
+
+            this.SetCursorPosX((windowWidth - textWidth) / 2);
+            this.Text(text);
+        }
     }
 }

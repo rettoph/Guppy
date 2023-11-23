@@ -45,6 +45,8 @@ namespace Guppy.MonoGame.Components
             _gui.SetNextWindowPos(Vector2.Zero);
             _gui.SetNextWindowSize(_gui.GetMainViewport().Size);
 
+            _gui.PushStyleVar(GuiStyleVar.WindowBorderSize, 0);
+
             using (_debugWindowStyler.Apply())
             {                
                 if (_gui.Begin($"#{nameof(DrawDebugComponent)}", GuiWindowFlags.NoResize | GuiWindowFlags.NoMove | GuiWindowFlags.NoTitleBar))
@@ -57,12 +59,18 @@ namespace Guppy.MonoGame.Components
                             {
                                 _gui.Dummy(Vector2.UnitY);
 
-                                _gui.PushID($"#{guppy.Id}");
-                                foreach (IDebugComponent component in components)
+                                _gui.PushStyleVar(GuiStyleVar.WindowPadding, new Vector2(1, 1));
+
+                                if (_gui.BeginChild($"#{guppy.Id}_Container", Vector2.Zero, GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AutoResizeY | GuiChildFlags.AutoResizeX | GuiChildFlags.AlwaysUseWindowPadding))
                                 {
-                                    component.RenderDebugInfo(_gui, gameTime);
+                                    foreach (IDebugComponent component in components)
+                                    {
+                                        component.RenderDebugInfo(_gui, gameTime);
+                                    }
                                 }
-                                _gui.PopID();
+                                _gui.EndChild();
+
+                                _gui.PopStyleVar();
                             }
 
                             _gui.Dummy(Vector2.UnitY);
@@ -72,11 +80,19 @@ namespace Guppy.MonoGame.Components
 
                 _gui.End();
             }
+
+            _gui.PopStyleVar();
         }
 
         private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
         {
-            _components.Add(args, args.Components.OfType<IDebugComponent>().ToArray());
+            IDebugComponent[] components = args.Components.OfType<IDebugComponent>().ToArray();
+            _components.Add(args, components);
+
+            foreach(IDebugComponent component in components)
+            {
+                component.Initialize(_gui);
+            }
         }
 
         private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)

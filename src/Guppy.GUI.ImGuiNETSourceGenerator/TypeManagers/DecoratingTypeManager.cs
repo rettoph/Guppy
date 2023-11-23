@@ -19,21 +19,24 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
                 return;
             }
 
-            using (source.Section($"public unsafe partial {(this.ImGuiType.IsValueType ? "struct" : "class")} {this.GuppyType}"))
+            using(source.File($"{this.GuppyType}.g.cs"))
             {
-                source.AppendLine($"internal {this.ImGuiType.FullName} Value;");
-                source.AppendLine();
-
-                using (source.Section($"internal {this.GuppyType}({this.ImGuiType.FullName} value)"))
+                using (source.Section($"public unsafe partial {(this.ImGuiType.IsValueType ? "struct" : "class")} {this.GuppyType}"))
                 {
-                    source.AppendLine("this.Value = value;");
+                    source.AppendLine($"internal {this.ImGuiType.FullName} Value;");
+                    source.AppendLine();
+
+                    using (source.Section($"internal {this.GuppyType}({this.ImGuiType.FullName} value)"))
+                    {
+                        source.AppendLine("this.Value = value;");
+                    }
+
+                    //TypeDecoratorHelper.AddFieldDecorations(this.ImGuiType, "this.Value", source);
+                    //
+                    //TypeDecoratorHelper.AddPropertyDecorations(this.ImGuiType, "this.Value", source);
+
+                    TypeDecoratorHelper.AddPublicMethodDecorations(this.ImGuiType, "this.Value", source);
                 }
-
-                //TypeDecoratorHelper.AddFieldDecorations(this.ImGuiType, "this.Value", source);
-                //
-                //TypeDecoratorHelper.AddPropertyDecorations(this.ImGuiType, "this.Value", source);
-
-                TypeDecoratorHelper.AddPublicMethodDecorations(this.ImGuiType, "this.Value", source);
             }
         }
 

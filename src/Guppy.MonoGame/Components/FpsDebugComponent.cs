@@ -20,6 +20,11 @@ namespace Guppy.MonoGame.Components
         private Buffer<double> _sampleBuffer = new Buffer<double>(20);
         private double _sampleSum = 0;
 
+        public void Initialize(IGui gui)
+        {
+            //throw new NotImplementedException();
+        }
+
         public void RenderDebugInfo(IGui gui, GameTime gameTime)
         {
             _sampleSum += gameTime.ElapsedGameTime.TotalSeconds;

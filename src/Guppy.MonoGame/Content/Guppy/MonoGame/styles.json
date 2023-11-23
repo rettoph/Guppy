@@ -8,9 +8,26 @@
       }
     },
     {
+      "Type": "Single",
+      "Value": {
+        "Property": "WindowBorderSize",
+        "Value": 0
+      }
+    },
+    {
       "Type": "Vector2",
       "Value": {
         "Property": "WindowPadding",
+        "Value": {
+          "X": 10,
+          "Y": 10
+        }
+      }
+    },
+    {
+      "Type": "Vector2",
+      "Value": {
+        "Property": "CellPadding",
         "Value": {
           "X": 10,
           "Y": 10
