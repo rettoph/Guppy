@@ -6,30 +6,38 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Guppy.Serialization;
 using Guppy.Resources;
+using Guppy.Common;
 
 namespace Guppy.Resources
 {
-    internal abstract class SettingValue
-    {
-        public readonly Setting Setting;
-
-        protected SettingValue(Setting setting)
-        {
-            this.Setting = setting;
-        }
-    }
-    internal sealed class SettingValue<T> : SettingValue
+    public sealed class SettingValue<T> : Ref<T>, ISettingValue
         where T : notnull
     {
-        public new readonly Setting<T> Setting;
+        public readonly Setting<T> Setting;
+        public readonly T DefaultValue;
 
-        public Ref<T> Value;
+        Setting ISettingValue.Setting => this.Setting;
 
-
-        public SettingValue(Setting<T> setting) : base(setting)
+        public SettingValue(Setting<T> setting, T defaultValue) : base(defaultValue)
         {
             this.Setting = setting;
-            this.Value = new Ref<T>(setting.DefaultValue);
+            this.DefaultValue = defaultValue;
+        }
+
+        public static implicit operator T(SettingValue<T> settingValue)
+        {
+            return settingValue.Value;
+        }
+
+        void ISettingValue.SetValue(ISettingValue value)
+        {
+            if(value is SettingValue<T> casted)
+            {
+                this.Value = casted.Value;
+                return;
+            }
+
+            throw new NotImplementedException();
         }
     }
 }

@@ -12,13 +12,10 @@ namespace Guppy.Resources.Providers
         void Register<T>(Setting<T> setting, T defaultValue)
             where T : notnull;
 
-        Ref<T> Get<T>(Setting<T> setting)
+        SettingValue<T> Get<T>(Setting<T> setting)
             where T : notnull;
 
         void Set<T>(Setting<T> setting, T value)
-            where T : notnull;
-
-        T GetDefault<T>(Setting<T> setting)
             where T : notnull;
     }
 }

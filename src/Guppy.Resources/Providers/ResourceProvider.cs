@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Collections;
+﻿using Guppy.Common;
+using Guppy.Common.Collections;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Loaders;
 using System;
@@ -18,7 +19,7 @@ namespace Guppy.Resources.Providers
         private ISettingProvider _settings;
         private Lazy<IResourcePackProvider> _packs;
         private Dictionary<Resource, object> _cache;
-        private Ref<string> _localization;
+        private SettingValue<string> _localization;
 
         public ResourceProvider(ISettingProvider settings, Lazy<IResourcePackProvider> packs)
         {
@@ -39,13 +40,13 @@ namespace Guppy.Resources.Providers
             List<T> valuesToCache = new List<T>();
             foreach (ResourcePack pack in _packs.Value.GetAll())
             {
-                if (pack.TryGet(resource, _settings.GetDefault(Settings.Localization), out T? packValue))
+                if (pack.TryGet(resource, _localization.DefaultValue, out T? packValue))
                 {
                     valuesToCache.Add(packValue);
                 }
             }
 
-            if (_localization != _settings.GetDefault(Settings.Localization))
+            if (_localization != _localization.DefaultValue)
             {
                 foreach (ResourcePack pack in _packs.Value.GetAll())
                 {

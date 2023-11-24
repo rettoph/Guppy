@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Resources
+namespace Guppy.Common
 {
     public class Ref<T>
     {

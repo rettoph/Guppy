@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Resources.Serialization.Json.Converters
 {
-    internal class SettingValueDictionaryConverter : JsonConverter<Dictionary<Setting, SettingValue>>
+    internal class SettingValueDictionaryConverter : JsonConverter<Dictionary<Setting, ISettingValue>>
     {
-        public override Dictionary<Setting, SettingValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Dictionary<Setting, ISettingValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Dictionary<Setting, SettingValue> _dict = new Dictionary<Setting, SettingValue>();
+            Dictionary<Setting, ISettingValue> _dict = new Dictionary<Setting, ISettingValue>();
 
             if(reader.CheckToken(JsonTokenType.StartObject, false))
             {
@@ -38,7 +38,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
             return _dict;
         }
 
-        public override void Write(Utf8JsonWriter writer, Dictionary<Setting, SettingValue> dict, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Dictionary<Setting, ISettingValue> dict, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 

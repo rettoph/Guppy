@@ -20,48 +20,40 @@ namespace Guppy.Resources.Providers
     internal sealed class SettingProvider : ISettingProvider, IDisposable
     {
         private readonly IFileService _files;
-        private readonly Dictionary<Setting, SettingValue> _defaultValues;
-        private readonly IFile<Dictionary<Setting, SettingValue>> _settings;
+        private readonly Dictionary<Setting, ISettingValue> _values;
+        private readonly IFile<Dictionary<Setting, ISettingValue>> _file;
 
         public SettingProvider(IFileService files, IEnumerable<ISettingLoader> loaders)
         {
-            _defaultValues = new Dictionary<Setting, SettingValue>();
+            _values = new Dictionary<Setting, ISettingValue>();
             foreach (ISettingLoader loader in loaders)
             {
                 loader.Load(this);
             }
 
             _files = files;
-            _settings = _files.Get<Dictionary<Setting, SettingValue>>(FileType.AppData, FilePaths.Settings, true);
+            _file = _files.Get<Dictionary<Setting, ISettingValue>>(FileType.AppData, FilePaths.Settings, true);
+
+            this.UpdateDefaultValues(_file.Value);
         }
 
         public void Register<T>(Setting<T> setting, T defaultValue) where T : notnull
         {
-            SettingValue<T> defaultSettingValue = new SettingValue<T>(setting);
-            defaultSettingValue.Value.Value = defaultValue;
+            SettingValue<T> defaultSettingValue = new SettingValue<T>(setting, defaultValue);
 
-            _defaultValues.Add(setting, defaultSettingValue);
+            _values.Add(setting, defaultSettingValue);
         }
 
-        public Ref<T> Get<T>(Setting<T> setting) where T : notnull
+        public SettingValue<T> Get<T>(Setting<T> setting) where T : notnull
         {
-            ref SettingValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(_settings.Value, setting, out bool exists);
+            ref ISettingValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, setting, out bool exists);
 
             if(exists && value is SettingValue<T> casted)
             {
-                return casted.Value;
+                return casted;
             }
 
-            if(_defaultValues.TryGetValue(setting, out value) && value is SettingValue<T> defaultCasted)
-            {
-                value = defaultCasted;
-
-                return defaultCasted.Value;
-            }
-
-            value = casted = new SettingValue<T>(setting);
-
-            return casted.Value;
+            throw new KeyNotFoundException(setting.Name);
         }
 
         public void Set<T>(Setting<T> setting, T value) where T : notnull
@@ -71,17 +63,16 @@ namespace Guppy.Resources.Providers
 
         public void Dispose()
         {
-            _files.Save(_settings);
+            _file.Value = _values;
+            _files.Save(_file);
         }
 
-        public T GetDefault<T>(Setting<T> setting) where T : notnull
+        private void UpdateDefaultValues(Dictionary<Setting, ISettingValue> values)
         {
-            if (_defaultValues.TryGetValue(setting, out SettingValue? value) && value is SettingValue<T> casted)
+            foreach(var (setting, value) in values)
             {
-                return casted.Value;
+                _values[setting].SetValue(value);
             }
-
-            throw new NotImplementedException();
         }
     }
 }
