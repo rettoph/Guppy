@@ -30,7 +30,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
                         break;
 
                     case nameof(StyleFontValue.Resource):
-                        resource = Resource.Get<TrueTypeFont>(reader.ReadString());
+                        resource = Resources.Resource.Get<TrueTypeFont>(reader.ReadString());
                         break;
                 }
             }

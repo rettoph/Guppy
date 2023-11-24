@@ -13,12 +13,12 @@ namespace Guppy.MonoGame
     {
         public static class TrueTypeFonts
         {
-            public static readonly Resource<TrueTypeFont> DiagnosticsFont = Resource.Get<TrueTypeFont>($"{nameof(TrueTypeFont)}.{nameof(DiagnosticsFont)}");
+            public static readonly Resource<TrueTypeFont> DiagnosticsFont = Guppy.Resources.Resource.Get<TrueTypeFont>($"{nameof(GUI.TrueTypeFont)}.{nameof(DiagnosticsFont)}");
         }
 
         public static class Styles
         {
-            public static readonly Resource<Style> DebugWindow = Resource.Get<Style>($"{nameof(Style)}.{nameof(DebugWindow)}");
+            public static readonly Resource<Style> DebugWindow = Guppy.Resources.Resource.Get<Style>($"{nameof(GUI.Styling.Style)}.{nameof(DebugWindow)}");
         }
     }
 }

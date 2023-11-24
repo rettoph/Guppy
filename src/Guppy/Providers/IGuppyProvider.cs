@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
-    public interface IGuppyProvider : IEnumerable<IGuppy>
+    public interface IGuppyProvider : IEnumerable<IGuppy>, IDisposable
     {
         event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyCreated;
         event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyDestroyed;

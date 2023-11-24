@@ -31,7 +31,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
                         break;
 
                     case nameof(StyleColorValue.Resource):
-                        resource = Resource.Get<Color>(reader.ReadString());
+                        resource = Resources.Resource.Get<Color>(reader.ReadString());
                         break;
                 }
             }

@@ -9,8 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\Microsoft\**" />
     <Compile Remove="Initializers\**" />
+    <EmbeddedResource Remove="Extensions\Microsoft\**" />
     <EmbeddedResource Remove="Initializers\**" />
+    <None Remove="Extensions\Microsoft\**" />
     <None Remove="Initializers\**" />
   </ItemGroup>
 
@@ -25,10 +28,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Files\Guppy.Files.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\Microsoft\Extensions\DependencyInjection\" />
   </ItemGroup>
 
 </Project>

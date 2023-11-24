@@ -23,15 +23,14 @@ namespace Guppy.Resources.Providers
         private readonly ILogger _logger;
 
         public ResourcePackProvider(
-            IFileService options,
-
+            IFileService files,
             IEnumerable<ResourcePack> packs,
             IEnumerable<IPackLoader> loaders,
             IResourceTypeProvider resourceTypes,
             ILogger logger)
         {
-            _files = options;
-            _registered = options.Get<List<IFile<ResourcePackConfiguration>>>(FileType.AppData, FilePaths.Packs);
+            _files = files;
+            _registered = _files.Get<List<IFile<ResourcePackConfiguration>>>(FileType.AppData, FilePaths.ResourcePacks);
             _resourceTypes = resourceTypes;
             _logger = logger;
 

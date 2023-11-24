@@ -92,5 +92,10 @@ namespace Guppy.Providers
         {
             return this.GetEnumerator();
         }
+
+        public void Dispose()
+        {
+            _scope.Dispose();
+        }
     }
 }

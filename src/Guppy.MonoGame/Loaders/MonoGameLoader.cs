@@ -40,6 +40,11 @@ namespace Guppy.MonoGame.Loaders
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));
+
+            services.AddInput(Inputs.ToggleDebugger, Keys.F1, new[]
+            {
+                (ButtonState.Pressed, Toggle<DebugWindowComponent>.Instance)
+            });
         }
     }
 }

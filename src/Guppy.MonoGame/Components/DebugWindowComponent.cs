@@ -1,6 +1,8 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common;
 using Guppy.GUI;
 using Guppy.GUI.Styling;
+using Guppy.MonoGame.Messages;
 using Guppy.Providers;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -9,24 +11,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.MonoGame.Constants;
+using Guppy.Resources;
 
 namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
     [GuppyFilter<GameLoop>]
-    internal sealed class DrawDebugComponent : IGuppyComponent, IGuiComponent, IDisposable
+    internal sealed class DebugWindowComponent : IGuppyComponent, IGuiComponent, IDisposable, ISubscriber<Toggle<DebugWindowComponent>>
     {
         private readonly IStyler _debugWindowStyler;
         private readonly IGui _gui;
         private readonly IGuppyProvider _guppies;
         private Dictionary<IGuppy, IDebugComponent[]> _components;
+        private Ref<bool> _enabled;
 
-        public DrawDebugComponent(IGui gui, IGuppyProvider guppies)
+        public DebugWindowComponent(IGui gui, IGuppyProvider guppies, ISettingProvider settings)
         {
             _components = new Dictionary<IGuppy, IDebugComponent[]>();
             _guppies = guppies;
             _gui = gui;
             _debugWindowStyler = gui.GetStyler(Resources.Styles.DebugWindow);
+
+
+            _enabled = settings.Get(Constants.Settings.IsDebugWindowEnabled);
         }
 
         public void Initialize(IGuppy guppy)
@@ -42,6 +50,11 @@ namespace Guppy.MonoGame.Components
 
         public void DrawGui(GameTime gameTime)
         {
+            if(_enabled == false)
+            {
+                return;
+            }
+
             _gui.SetNextWindowPos(Vector2.Zero);
             _gui.SetNextWindowSize(_gui.GetMainViewport().Size);
 
@@ -49,7 +62,7 @@ namespace Guppy.MonoGame.Components
 
             using (_debugWindowStyler.Apply())
             {                
-                if (_gui.Begin($"#{nameof(DrawDebugComponent)}", GuiWindowFlags.NoResize | GuiWindowFlags.NoMove | GuiWindowFlags.NoTitleBar))
+                if (_gui.Begin($"#{nameof(DebugWindowComponent)}", GuiWindowFlags.NoResize | GuiWindowFlags.NoMove | GuiWindowFlags.NoTitleBar))
                 {
                     foreach((IGuppy guppy, IDebugComponent[] components) in _components)
                     {
@@ -98,6 +111,11 @@ namespace Guppy.MonoGame.Components
         private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)
         {
             _components.Remove(args);
+        }
+
+        public void Process(in Guid messageId, in Toggle<DebugWindowComponent> message)
+        {
+            _enabled.Value = !_enabled.Value;
         }
     }
 }

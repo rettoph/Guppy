@@ -18,14 +18,14 @@ namespace Guppy.Resources.Providers
         private ISettingProvider _settings;
         private Lazy<IResourcePackProvider> _packs;
         private Dictionary<Resource, object> _cache;
-        private ISetting<string> _localization;
+        private Ref<string> _localization;
 
         public ResourceProvider(ISettingProvider settings, Lazy<IResourcePackProvider> packs)
         {
             _settings = settings;
             _packs = packs;
             _cache = new Dictionary<Resource, object>();
-            _localization = _settings.Get<string>(SettingConstants.Localization);
+            _localization = _settings.Get(Constants.Settings.Localization);
         }
 
         public T Get<T>(Resource<T> resource) where T : notnull
@@ -45,11 +45,11 @@ namespace Guppy.Resources.Providers
                 }
             }
 
-            if (_localization.Value != Localization.Default)
+            if (_localization != Localization.Default)
             {
                 foreach (ResourcePack pack in _packs.Value.GetAll())
                 {
-                    if (pack.TryGet(resource, _localization.Value, out T? packValue))
+                    if (pack.TryGet(resource, _localization, out T? packValue))
                     {
                         valuesToCache.Add(packValue);
                     }

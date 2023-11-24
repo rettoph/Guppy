@@ -1,47 +1,91 @@
-﻿using System;
+﻿using Guppy.Common.Collections;
+using Standart.Hash.xxHash;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Guppy.Serialization;
 
 namespace Guppy.Resources
 {
-    internal sealed class Setting<T> : ISetting<T>
+    public unsafe abstract class Setting : IEquatable<Setting?>
     {
-        private IJsonSerializer _json;
-        public T Value { get; set; }
+        private static DoubleDictionary<Guid, string, Setting> _settings = new DoubleDictionary<Guid, string, Setting>();
 
-        public T DefaultValue { get; }
+        public readonly Guid Id;
+        public readonly string Name;
+        public readonly Type Type;
 
-        public string Key { get; }
-
-        public bool Exportable { get; }
-
-        public string[] Tags { get; }
-
-        public Type Type => typeof(T);
-
-        public Setting(string key, T defaultValue, bool exportable, string[] tags, IJsonSerializer json)
+        internal Setting(string name, Type type)
         {
-            _json = json;
+            uint128 nameHash = xxHash128.ComputeHash($"{type.AssemblyQualifiedName}##{name}");
+            Guid* pNameHash = (Guid*)&nameHash;
+            this.Id = pNameHash[0];
+            this.Name = name;
 
-            this.Key = key;
-            this.Value = defaultValue;
-            this.DefaultValue = defaultValue;
-            this.Exportable = exportable;
-            this.Tags = tags;
+            _settings.TryAdd(this.Id, this.Name, this);
+            Type = type;
         }
 
-        void ISetting.Import(string value)
+        public static Setting Get(Guid id)
         {
-            this.Value = _json.Deserialize<T>(value) ?? throw new Exception();
+            return _settings[id];
         }
 
-        string ISetting.Export()
+        public static Setting<T> Define<T>(string name, T defaultValue)
+            where T : notnull
         {
-            return _json.Serialize<T>(this.Value);
+            Setting<T> settingT = default!;
+
+            if (_settings.TryGet(name, out Setting? Setting))
+            {
+                settingT = (Setting<T>)Setting;
+            }
+            else
+            {
+                settingT = new Setting<T>(name);
+            }
+
+            settingT.DefaultValue = defaultValue;
+
+            return settingT;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Setting);
+        }
+
+        public bool Equals(Setting? other)
+        {
+            return other is not null &&
+                   Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public static bool operator ==(Setting? left, Setting? right)
+        {
+            return EqualityComparer<Setting>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Setting? left, Setting? right)
+        {
+            return !(left == right);
+        }
+    }
+
+    public sealed class Setting<T> : Setting
+        where T : notnull
+    {
+        public T DefaultValue;
+
+        internal Setting(string name) : base(name, typeof(T))
+        {
+            this.DefaultValue = default!;
         }
     }
 }

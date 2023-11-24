@@ -1,31 +1,55 @@
 ﻿using Guppy.Common.Providers;
-using Guppy.Resources.Definitions;
 using Guppy.Serialization;
+using Guppy.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Resources.Serialization.Settings;
+using Guppy.Common.Collections;
+using System.Text.Json;
+using Guppy.Files.Services;
+using Guppy.Files.Enums;
+using Guppy.Files;
+using Guppy.Resources.Constants;
 
 namespace Guppy.Resources.Providers
 {
-    internal sealed class SettingProvider : ISettingProvider
+    internal sealed class SettingProvider : ISettingProvider, IDisposable
     {
-        private readonly Dictionary<string, ISetting> _settings;
+        private readonly IFileService _files;
+        private readonly IFile<Dictionary<Setting, SettingValue>> _settings;
 
-        public SettingProvider(IEnumerable<ISettingDefinition> settings, IJsonSerializer json)
+        public SettingProvider(IFileService files, IJsonSerializer json)
         {
-            _settings = settings.GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.First().Build(json));
+            _files = files;
+            _settings = _files.Get<Dictionary<Setting, SettingValue>>(FileType.AppData, FilePaths.Settings, true);
         }
 
-        public ISetting<T> Get<T>()
+        public Ref<T> Get<T>(Setting<T> setting) where T : notnull
         {
-            return this.Get<T>(typeof(T).FullName!);
+            ref SettingValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(_settings.Value, setting, out bool exists);
+
+            if(exists && value is SettingValue<T> casted)
+            {
+                return casted.Value;
+            }
+
+            value = casted = new SettingValue<T>(setting);
+
+            return casted.Value;
         }
 
-        public ISetting<T> Get<T>(string key)
+        public void Set<T>(Setting<T> setting, T value) where T : notnull
         {
-            return (ISetting<T>)_settings[key];
+            this.Get(setting).Value = value;
+        }
+
+        public void Dispose()
+        {
+            _files.Save(_settings);
         }
     }
 }

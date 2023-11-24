@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.Files.Serialization.Json
 {
-    public class IOptionsJsonConverter<T> : JsonConverter<IFile<T>>
+    public class IFileJsonConverter<T> : JsonConverter<IFile<T>>
         where T : new()
     {
         private Lazy<IFileService> _files;
 
-        public IOptionsJsonConverter(Lazy<IFileService> files)
+        public IFileJsonConverter(Lazy<IFileService> files)
         {
             _files = files;
         }
@@ -39,7 +39,7 @@ namespace Guppy.Files.Serialization.Json
         {
             writer.WriteStartArray();
 
-            JsonSerializer.Serialize(writer, value.Type);
+            JsonSerializer.Serialize(writer, value.Type, options);
 
             writer.WriteStringValue(value.Path);
 

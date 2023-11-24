@@ -3,6 +3,8 @@ using Guppy.Common;
 using Guppy.Loaders;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Providers;
+using Guppy.Resources.Serialization.Json.Converters;
+using Guppy.Resources.Serialization.Settings;
 using Guppy.Serialization;
 using System.Text.Json.Serialization;
 using STJ = System.Text.Json;
@@ -14,9 +16,13 @@ namespace Guppy.Resources.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<SettingProvider>().As<ISettingProvider>().SingleInstance();
-            services.RegisterInstance(new JsonStringEnumConverter(STJ.JsonNamingPolicy.CamelCase)).As<JsonConverter>().SingleInstance();
+            services.RegisterInstance(new JsonStringEnumConverter()).As<JsonConverter>().SingleInstance();
 
-            services.AddSetting(SettingConstants.Localization, Localization.Default, true, nameof(Guppy));
+            services.RegisterType<SettingValueDictionaryConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<DefaultSettingSerializer<bool>>().As<SettingSerializer>().SingleInstance();
+            services.RegisterType<DefaultSettingSerializer<string>>().As<SettingSerializer>().SingleInstance();
+            services.RegisterType<DefaultSettingSerializer<int>>().As<SettingSerializer>().SingleInstance();
+            services.RegisterType<DefaultSettingSerializer<float>>().As<SettingSerializer>().SingleInstance();
         }
     }
 }

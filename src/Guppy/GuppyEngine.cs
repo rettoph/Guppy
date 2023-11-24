@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Guppy
 {
-    public sealed class GuppyEngine
+    public sealed class GuppyEngine : IDisposable
     {
         private IContainer _container;
 
@@ -60,6 +60,11 @@ namespace Guppy
             this.Status = GuppyStatus.Ready;
 
             return this;
+        }
+
+        public void Dispose()
+        {
+            this.Guppies.Dispose();
         }
     }
 }

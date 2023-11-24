@@ -86,5 +86,9 @@ namespace Guppy.Serialization
         {
             STJ.JsonSerializer.Serialize(utf8Json, obj, _options);
         }
+        public void Serialize<T>(Utf8JsonWriter writer, T obj)
+        {
+            STJ.JsonSerializer.Serialize(writer, obj, _options);
+        }
     }
 }
