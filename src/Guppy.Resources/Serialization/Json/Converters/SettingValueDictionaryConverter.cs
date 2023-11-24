@@ -1,6 +1,5 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Resources;
-using Guppy.Resources.Serialization.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +13,6 @@ namespace Guppy.Resources.Serialization.Json.Converters
 {
     internal class SettingValueDictionaryConverter : JsonConverter<Dictionary<Setting, SettingValue>>
     {
-        private static readonly Regex PropertyPattern = new Regex(@"^(.+?)\.(.+)$");
-        private DoubleDictionary<string, Type, SettingSerializer> _serializers;
-
-        public SettingValueDictionaryConverter(IEnumerable<SettingSerializer> serializers)
-        {
-            _serializers = serializers.ToDoubleDictionary(x => x.Key, x => x.Type);
-        }
-
         public override Dictionary<Setting, SettingValue>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Dictionary<Setting, SettingValue> _dict = new Dictionary<Setting, SettingValue>();
@@ -30,19 +21,12 @@ namespace Guppy.Resources.Serialization.Json.Converters
             {
                 while (reader.ReadPropertyName(out string? propertyName))
                 {
-                    var match = PropertyPattern.Match(propertyName);
-
-                    if(match.Success == false)
+                    if(Setting.TryGet(propertyName, out Setting? setting) == false)
                     {
                         throw new NotImplementedException();
                     }
 
-                    if (_serializers.TryGet(match.Groups[1].Value, out var serializer) == false)
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                    var settingValue = serializer.Deserialize(match.Groups[2].Value, ref reader, options);
+                    var settingValue = setting.Deserialize(propertyName, ref reader, options);
                     reader.Read();
 
                     _dict[settingValue.Setting] = settingValue;
@@ -60,10 +44,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
 
             foreach(var (setting, value) in dict.OrderBy(x => x.Key.Name))
             {
-                if(_serializers.TryGet(setting.Type, out var serializer))
-                {
-                    serializer.Serialize(writer, value, options);
-                }
+                setting.Serialize(writer, value, options);
             }
 
             writer.WriteEndObject();

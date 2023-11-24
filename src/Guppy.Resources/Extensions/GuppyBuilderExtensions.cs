@@ -15,8 +15,7 @@ namespace Guppy
             }
 
             return builder
-                .AddServiceLoader(new SettingLoader())
-                .AddServiceLoader(new ResourceLoader())
+                .AddServiceLoader<ServiceLoader>()
                 .ConfigureFiles()
                 .AddTag(nameof(ConfigureResources));
         }

@@ -1,28 +1,29 @@
 ﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json.Converters;
-using Guppy.Resources.Serialization.Settings;
 using Guppy.Serialization;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using STJ = System.Text.Json;
 
 namespace Guppy.Resources.Loaders
 {
-    internal sealed class SettingLoader : IServiceLoader
+    [AutoLoad]
+    internal sealed class SettingLoader : ISettingLoader
     {
-        public void ConfigureServices(ContainerBuilder services)
+        public IEnumerable<Setting> GetSettings(ISettingProvider settings)
         {
-            services.RegisterType<SettingProvider>().As<ISettingProvider>().SingleInstance();
-            services.RegisterInstance(new JsonStringEnumConverter()).As<JsonConverter>().SingleInstance();
+            yield return Settings.Localization;
+        }
 
-            services.RegisterType<SettingValueDictionaryConverter>().As<JsonConverter>().SingleInstance();
-            services.RegisterType<DefaultSettingSerializer<bool>>().As<SettingSerializer>().SingleInstance();
-            services.RegisterType<DefaultSettingSerializer<string>>().As<SettingSerializer>().SingleInstance();
-            services.RegisterType<DefaultSettingSerializer<int>>().As<SettingSerializer>().SingleInstance();
-            services.RegisterType<DefaultSettingSerializer<float>>().As<SettingSerializer>().SingleInstance();
+        public void Load(ISettingProvider settings)
+        {
+            settings.Register(Settings.Localization, Localization.en_US);
         }
     }
 }

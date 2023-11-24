@@ -38,7 +38,7 @@ namespace Guppy.Resources
         public void Add<T>(Resource<T> resource, T value)
             where T : notnull
         {
-            this.Add(resource, Localization.Default, value);
+            this.Add(resource, Localization.es_US, value);
         }
 
         public bool TryGet<T>(Resource<T> resource, string localization, [MaybeNullWhen(false)] out T value)

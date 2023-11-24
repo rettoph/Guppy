@@ -39,6 +39,7 @@ namespace Guppy.Loaders
                 return options;
             }).InstancePerDependency();
 
+            services.RegisterInstance(new JsonStringEnumConverter()).As<JsonConverter>().SingleInstance();
             services.RegisterType<Serialization.JsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
         }
     }

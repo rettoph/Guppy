@@ -8,15 +8,17 @@ using Guppy.Resources.Serialization.Json.Converters;
 
 namespace Guppy.Resources.Loaders
 {
-    internal sealed class ResourceLoader : IServiceLoader
+    internal sealed class ServiceLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)
         {
+            services.RegisterType<SettingProvider>().As<ISettingProvider>().SingleInstance();
             services.RegisterType<ResourcePackProvider>().As<IResourcePackProvider>().SingleInstance();
             services.RegisterType<ResourceProvider>().As<IResourceProvider>().SingleInstance();
             services.RegisterType<ResourceTypeProvider>().As<IResourceTypeProvider>().SingleInstance();
 
             services.RegisterType<IFileJsonConverter<ResourcePackConfiguration>>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<SettingValueDictionaryConverter>().As<JsonConverter>().SingleInstance();
         }
     }
 }

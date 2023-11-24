@@ -2,8 +2,10 @@
 using Standart.Hash.xxHash;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Guppy.Resources
@@ -18,21 +20,28 @@ namespace Guppy.Resources
 
         internal Setting(string name, Type type)
         {
-            uint128 nameHash = xxHash128.ComputeHash($"{type.AssemblyQualifiedName}##{name}");
+            uint128 nameHash = xxHash128.ComputeHash(name);
             Guid* pNameHash = (Guid*)&nameHash;
             this.Id = pNameHash[0];
             this.Name = name;
+            this.Type = type;
 
-            _settings.TryAdd(this.Id, this.Name, this);
-            Type = type;
+            if (_settings.TryAdd(this.Id, this.Name, this) == false)
+            {
+                throw new NotImplementedException();
+            }
         }
 
-        public static Setting Get(Guid id)
+        internal abstract SettingValue Deserialize(string name, ref Utf8JsonReader reader, JsonSerializerOptions options);
+
+        internal abstract void Serialize(Utf8JsonWriter writer, SettingValue settingValue, JsonSerializerOptions options);
+
+        internal static bool TryGet(string name, [MaybeNullWhen(false)] out Setting value)
         {
-            return _settings[id];
+            return _settings.TryGet(name, out value);
         }
 
-        public static Setting<T> Define<T>(string name, T defaultValue)
+        public static Setting<T> Get<T>(string name)
             where T : notnull
         {
             Setting<T> settingT = default!;
@@ -45,8 +54,6 @@ namespace Guppy.Resources
             {
                 settingT = new Setting<T>(name);
             }
-
-            settingT.DefaultValue = defaultValue;
 
             return settingT;
         }
@@ -86,6 +93,24 @@ namespace Guppy.Resources
         internal Setting(string name) : base(name, typeof(T))
         {
             this.DefaultValue = default!;
+        }
+
+        internal override SettingValue Deserialize(string name, ref Utf8JsonReader reader, JsonSerializerOptions options)
+        {
+            Setting<T> setting = Setting.Get<T>(name);
+            SettingValue<T> settingValue = new SettingValue<T>(setting);
+            settingValue.Value.Value = JsonSerializer.Deserialize<T>(ref reader, options) ?? throw new NotImplementedException();
+
+            return settingValue;
+        }
+
+        internal override void Serialize(Utf8JsonWriter writer, SettingValue settingValue, JsonSerializerOptions options)
+        {
+            if (settingValue is SettingValue<T> casted)
+            {
+                writer.WritePropertyName(casted.Setting.Name);
+                JsonSerializer.Serialize(writer, casted.Value.Value, options);
+            }
         }
     }
 }

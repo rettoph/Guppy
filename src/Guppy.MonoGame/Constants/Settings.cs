@@ -9,6 +9,6 @@ namespace Guppy.MonoGame.Constants
 {
     public static class Settings
     {
-        public static Setting<bool> IsDebugWindowEnabled = Setting.Define<bool>(nameof(IsDebugWindowEnabled), true);
+        public static Setting<bool> IsDebugWindowEnabled = Setting.Get<bool>(nameof(IsDebugWindowEnabled));
     }
 }
