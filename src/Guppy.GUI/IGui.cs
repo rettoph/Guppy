@@ -18,7 +18,7 @@ namespace Guppy.GUI
     {
         Ref<GuiFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
 
-        Style GetStyle(Resource<Style> style);
+        ResourceValue<Style> GetStyle(Resource<Style> style);
 
         Style Apply(Style style)
         {

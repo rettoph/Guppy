@@ -1,6 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common.Attributes;
-using Guppy.GUI;
 using Guppy.MonoGame.Common;
 using Guppy.MonoGame.Common.Enums;
 using Guppy.Providers;
@@ -11,19 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Components
+namespace Guppy.MonoGame.Components.Game
 {
     [AutoLoad]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DrawGuiComponent : GlobalComponent, IDrawableComponent
+    internal class StepGuppiesComponent : GlobalComponent, IDrawableComponent, IUpdateableComponent
     {
-        private readonly ImGuiBatch _batch;
         private readonly IGuppyProvider _guppies;
         private readonly List<MonoGameGuppy> _frameables;
 
-        public DrawGuiComponent(IGuppyProvider guppies, ImGuiBatch batch)
+        public StepGuppiesComponent(IGuppyProvider guppies)
         {
-            _batch = batch;
             _guppies = guppies;
             _frameables = _guppies.OfType<MonoGameGuppy>().ToList();
 
@@ -37,12 +32,18 @@ namespace Guppy.MonoGame.Components
 
         public void Draw(GameTime gameTime)
         {
-            _batch.Begin(gameTime);
             foreach (MonoGameGuppy frameable in _frameables)
             {
-                frameable.DrawGui(gameTime);
+                frameable.Draw(gameTime);
             }
-            _batch.End();
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (MonoGameGuppy frameable in _frameables)
+            {
+                frameable.Update(gameTime);
+            }
         }
 
         private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)

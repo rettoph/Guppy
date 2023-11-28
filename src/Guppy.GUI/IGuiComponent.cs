@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    public interface IGuiComponent : IGuppyComponent, ISequenceable<GuiSequence>
+    public interface IGuiComponent : ISequenceable<GuiSequence>
     {
         void DrawGui(GameTime gameTime);
     }

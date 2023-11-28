@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Components
 {
-    public interface IDebugComponent : IGuppyComponent
+    public interface IDebugComponent
     {
-        void Initialize(IGui gui);
-
-        void RenderDebugInfo(IGui gui, GameTime gameTime);
+        void RenderDebugInfo(GameTime gameTime);
     }
 }

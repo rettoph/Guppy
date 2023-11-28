@@ -2,6 +2,7 @@
 using Guppy.Common.Autofac;
 using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
+using Guppy.Common.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace Guppy.Common.Extensions.Autofac
             services.RegisterType<ServiceFilterProvider>().As<IServiceFilterProvider>().InstancePerLifetimeScope();
             services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
             services.RegisterType<StateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+            services.RegisterType<BulkSubscriptionService>().As<IBulkSubscriptionService>().InstancePerLifetimeScope();
         }
 
         public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)

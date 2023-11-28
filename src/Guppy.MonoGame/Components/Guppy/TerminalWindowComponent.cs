@@ -6,6 +6,7 @@ using Guppy.GUI;
 using Guppy.GUI.Styling;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
+using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
@@ -15,13 +16,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Components
+namespace Guppy.MonoGame.Components.Guppy
 {
-    internal class TerminalWindowComponent : GuppyComponent, IGuiComponent, ISubscriber<Toggle<TerminalWindowComponent>>
+    [AutoLoad]
+    internal class TerminalWindowComponent : GuppyComponent, IGuiComponent
     {
         private readonly ICommandService _commands;
         private readonly IGui _gui;
-        private readonly Style _debugWindowStyle;
+        private readonly ResourceValue<Style> _debugWindowStyle;
         private readonly Terminal _terminal;
 
         private string _input;
@@ -67,11 +69,18 @@ namespace Guppy.MonoGame.Components
                 _gui.PushStyleVar(GuiStyleVar.WindowPadding, Vector2.Zero);
                 _gui.PushStyleVar(GuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                if (_gui.Begin(_guppy.Name))
+                GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
+                windowClass.ClassId = _gui.GetID(nameof(TerminalWindowComponent));
+                windowClass.DockNodeFlagsOverrideSet = GuiDockNodeFlags.NoDockingSplit;
+                windowClass.DockingAllowUnclassed = false;
+
+                _gui.SetNextWindowClass(windowClass);
+                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
+                if (_gui.Begin(_guppy.Name, GuiWindowFlags.NoScrollbar))
                 {
                     _gui.PushStyleVar(GuiStyleVar.WindowPadding, new Vector2(5, 5));
 
-                    if (_gui.BeginChild("##output-container", new Vector2(-1, _gui.GetWindowContentRegionMax().Y - _inputContainerHeight), GuiChildFlags.AlwaysUseWindowPadding, GuiWindowFlags.HorizontalScrollbar))
+                    if (_gui.BeginChild("##output-container", new Vector2(-1, _gui.GetContentRegionAvail().Y - _inputContainerHeight), GuiChildFlags.AlwaysUseWindowPadding, GuiWindowFlags.HorizontalScrollbar))
                     {
                         _scrolledToBottom = _gui.GetScrollMaxY() == 0 || _gui.GetScrollY() / _gui.GetScrollMaxY() == 1;
 
@@ -98,7 +107,7 @@ namespace Guppy.MonoGame.Components
                     if (_gui.BeginChild("#input-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
                     {
                         _gui.PushItemWidth(-1);
-                        if(_gui.InputText("#input", ref _input, 1 << 11, GuiInputTextFlags.EnterReturnsTrue))
+                        if (_gui.InputText("#input", ref _input, 1 << 11, GuiInputTextFlags.EnterReturnsTrue))
                         {
                             _commands.Invoke(_input);
                             _input = string.Empty;
@@ -116,11 +125,6 @@ namespace Guppy.MonoGame.Components
                 _gui.PopStyleVar();
                 _gui.PopStyleVar();
             }
-        }
-
-        public void Process(in Guid messageId, in Toggle<TerminalWindowComponent> message)
-        {
-            _enabled.Value = !_enabled.Value;
         }
     }
 }

@@ -19,18 +19,19 @@ using Guppy.Commands.Messages;
 using System.ComponentModel;
 using Guppy.Input;
 
-namespace Guppy.MonoGame.Components
+namespace Guppy.MonoGame.Components.Guppy
 {
     [AutoLoad]
-    internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent
+    internal sealed class GuppyDebugWindowComponent : GuppyComponent, IGuiComponent
     {
-        private readonly Style _debugWindowStyle;
+        private readonly ResourceValue<Style> _debugWindowStyle;
         private readonly IGui _gui;
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;
         private IGuppy _guppy;
+        private GuiWindowClassPtr _class;
 
-        public DebugWindowComponent(IGui gui, ISettingProvider settings)
+        public GuppyDebugWindowComponent(IGui gui, ISettingProvider settings)
         {
             _guppy = null!;
             _components = Array.Empty<IDebugComponent>();
@@ -50,18 +51,25 @@ namespace Guppy.MonoGame.Components
 
         public void DrawGui(GameTime gameTime)
         {
-            if(_enabled == false)
+            if (_enabled == false)
             {
                 return;
             }
 
             using (_gui.Apply(_debugWindowStyle))
-            {                
+            {
+                GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
+                windowClass.ClassId = _gui.GetID(nameof(IDebugComponent));
+                windowClass.DockNodeFlagsOverrideSet = GuiDockNodeFlags.NoDockingSplit;
+                windowClass.DockingAllowUnclassed = false;
+
+                _gui.SetNextWindowClass(windowClass);
+                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
                 if (_gui.Begin($"{_guppy.Name} - {_guppy.Id}"))
                 {
-                    foreach(IDebugComponent component in _components)
+                    foreach (IDebugComponent component in _components)
                     {
-                        component.RenderDebugInfo(_gui, gameTime);
+                        component.RenderDebugInfo(gameTime);
                     }
                 }
 

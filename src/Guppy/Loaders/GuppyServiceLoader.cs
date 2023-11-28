@@ -19,6 +19,8 @@ namespace Guppy.Loaders
 
             services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
 
+            services.RegisterType<BulkBusSubscriptionProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
             services.Register<ILogger>(p =>
             {
                 var configuration = p.Resolve<IConfiguration<LoggerConfiguration>>().Value;

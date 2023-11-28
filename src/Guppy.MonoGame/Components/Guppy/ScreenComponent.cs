@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Components
+namespace Guppy.MonoGame.Components.Guppy
 {
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class ScreenComponent : IGuppyComponent, IDrawableComponent

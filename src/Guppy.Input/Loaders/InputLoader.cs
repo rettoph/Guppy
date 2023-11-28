@@ -14,7 +14,7 @@ namespace Guppy.Input.Loaders
             services.RegisterType<MouseButtonProvider>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<CursorProvider>().AsImplementedInterfaces().SingleInstance();
 
-            services.RegisterType<InputService>().As<IInputService>().SingleInstance();
+            services.RegisterType<InputService>().AsImplementedInterfaces().SingleInstance();
         }
     }
 }

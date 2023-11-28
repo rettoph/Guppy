@@ -22,7 +22,7 @@ namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class MousePublishComponent : GlobalComponent
+    internal sealed class MousePublishComponent : GlobalComponent, IUpdateableComponent
     {
         private readonly IInputService _inputs;
         private readonly Cursor _cursor;

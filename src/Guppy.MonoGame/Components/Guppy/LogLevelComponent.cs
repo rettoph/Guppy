@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.MonoGame.Components
+namespace Guppy.MonoGame.Components.Guppy
 {
     internal class LogLevelComponent : GuppyComponent, ISubscriber<LogLevelCommand>
     {

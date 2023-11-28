@@ -16,8 +16,6 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
     {
         public void Execute(GeneratorExecutionContext context)
         {
-            
-
             CodeBuilder source = new CodeBuilder(ref context, context.Compilation.AssemblyName);
 
             using(source.File("IGui.g.cs"))
@@ -28,6 +26,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
                 }
             }
 
+            //TypeManager.GetTypeManager(typeof(ImGuiWindowClass));
             TypeManager.GenerateAllSourceFiles(source);
         }
 

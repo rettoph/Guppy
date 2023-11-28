@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Guppy.Attributes;
-using Guppy.MonoGame.Components;
+using Guppy.MonoGame.Components.Guppy;
 
 namespace Guppy.MonoGame.Loaders
 {
@@ -45,7 +45,7 @@ namespace Guppy.MonoGame.Loaders
 
             services.AddInput(Inputs.ToggleDebugger, Keys.F1, new[]
             {
-                (ButtonState.Pressed, Toggle<DebugWindowComponent>.Instance)
+                (ButtonState.Pressed, Toggle<GuppyDebugWindowComponent>.Instance)
             });
 
             services.AddInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]

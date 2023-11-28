@@ -89,6 +89,8 @@ namespace Guppy.GUI
             ImGui.SetCurrentContext(this.Context);
             this.IO = ImGui.GetIO();
 
+            this.IO.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+
             _fonts = new Dictionary<(Resource<TrueTypeFont>, int), Ref<GuiFontPtr>>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();

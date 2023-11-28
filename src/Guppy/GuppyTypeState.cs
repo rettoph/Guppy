@@ -1,4 +1,6 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
+using Guppy.Common.Autofac;
 using Guppy.Common.Implementations;
 using System;
 using System.Collections.Generic;
@@ -11,21 +13,28 @@ namespace Guppy
     [AutoLoad]
     internal sealed class GuppyTypeState : State<Type?>
     {
-        private readonly IGuppy _guppy;
+        private readonly IGuppy? _guppy;
 
-        public GuppyTypeState(IGuppy guppy)
+        public GuppyTypeState(ILifetimeScope scope)
         {
-            _guppy = guppy;
+            try
+            {
+                scope.TryResolve(out _guppy);
+            }
+            catch
+            {
+
+            }
         }
 
         public override Type? GetValue()
         {
-            return _guppy.GetType();
+            return _guppy?.GetType();
         }
 
         public override bool Matches(Type? value)
         {
-            if(_guppy.GetType() is null)
+            if(_guppy?.GetType() is null)
             {
                 return false;
             }
