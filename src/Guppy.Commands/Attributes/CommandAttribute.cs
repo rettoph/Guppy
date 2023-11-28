@@ -23,7 +23,7 @@ namespace Guppy.Commands.Attributes
             Command command = new Command(
                 type: classType,
                 parent: this.Parent,
-                name: this.Name ?? classType.Name.LowerCaseFirstLetter(),
+                name: this.Name ?? classType.Name.LowerCaseFirstLetter().TrimEnd(nameof(Command)),
                 description: this.Description,
                 options: FactoryAttribute<Option>.GetAll(classType),
                 arguments: FactoryAttribute<Argument>.GetAll(classType));

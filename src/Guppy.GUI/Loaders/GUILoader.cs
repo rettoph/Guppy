@@ -26,8 +26,8 @@ namespace Guppy.GUI.Loaders
             string nativesDirectory = Path.Combine(Directory.GetCurrentDirectory(), NativeConstants.Directory);
             NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
-            services.RegisterType<ImGuiBatch>().As<ImGuiBatch>().InstancePerLifetimeScope();
-            services.RegisterType<Gui>().As<IGui>().InstancePerLifetimeScope();
+            services.RegisterType<ImGuiBatch>().As<ImGuiBatch>().SingleInstance();
+            services.RegisterType<Gui>().As<IGui>().SingleInstance();
 
             services.RegisterType<StyleConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<PolymorphicConverter<StyleValue>>().As<JsonConverter>().SingleInstance();

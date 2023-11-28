@@ -13,39 +13,35 @@ using System.Text;
 using System.Threading.Tasks;
 using Guppy.MonoGame.Constants;
 using Guppy.Resources;
+using Guppy.MonoGame.Common.Enums;
+using Guppy.Common.Extensions;
+using Guppy.Commands.Messages;
+using System.ComponentModel;
 
 namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
-    [GuppyFilter<GameLoop>]
-    internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent, IDisposable, ISubscriber<Toggle<DebugWindowComponent>>
+    internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent, ISubscriber<Toggle<DebugWindowComponent>>
     {
         private readonly IGuiStyle _debugWindowStyle;
         private readonly IGui _gui;
-        private readonly IGuppyProvider _guppies;
-        private Dictionary<IGuppy, IDebugComponent[]> _components;
+        private IDebugComponent[] _components;
         private Ref<bool> _enabled;
 
-        public DebugWindowComponent(IGui gui, IGuppyProvider guppies, ISettingProvider settings)
+        public DebugWindowComponent(IGui gui, ISettingProvider settings)
         {
-            _components = new Dictionary<IGuppy, IDebugComponent[]>();
-            _guppies = guppies;
+            _components = Array.Empty<IDebugComponent>();
             _gui = gui;
             _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
-
 
             _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }
 
         public override void Initialize(IGuppy guppy)
         {
-            _guppies.OnGuppyCreated += this.HandleGuppyCreated;
-            _guppies.OnGuppyDestroyed += this.HandleGuppyDestroyed;
-        }
+            base.Initialize(guppy);
 
-        public void Dispose()
-        {
-            _guppies.OnGuppyCreated -= this.HandleGuppyCreated;
+            _components = guppy.Components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
         public void DrawGui(GameTime gameTime)
@@ -55,58 +51,18 @@ namespace Guppy.MonoGame.Components
                 return;
             }
 
-            _gui.SetNextWindowPos(Vector2.Zero);
-            _gui.SetNextWindowSize(_gui.GetMainViewport().Size);
-
             using (_gui.Apply(_debugWindowStyle))
             {                
-                if (_gui.Begin($"#{nameof(DebugWindowComponent)}", GuiWindowFlags.NoResize | GuiWindowFlags.NoMove | GuiWindowFlags.NoTitleBar))
+                if (_gui.Begin($"#{nameof(DebugWindowComponent)}"))
                 {
-                    foreach((IGuppy guppy, IDebugComponent[] components) in _components)
+                    foreach(IDebugComponent component in _components)
                     {
-                        if(components.Length > 0)
-                        {
-                            if(_gui.CollapsingHeader($"{guppy.GetType().Name} - {guppy.Id}", GuiTreeNodeFlags.DefaultOpen))
-                            {
-                                _gui.Dummy(Vector2.UnitY);
-
-                                _gui.PushStyleVar(GuiStyleVar.WindowPadding, new Vector2(1, 1));
-
-                                if (_gui.BeginChild($"#{guppy.Id}_Container", Vector2.Zero, GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AutoResizeY | GuiChildFlags.AutoResizeX | GuiChildFlags.AlwaysUseWindowPadding))
-                                {
-                                    foreach (IDebugComponent component in components)
-                                    {
-                                        component.RenderDebugInfo(_gui, gameTime);
-                                    }
-                                }
-                                _gui.EndChild();
-
-                                _gui.PopStyleVar();
-                            }
-
-                            _gui.Dummy(Vector2.UnitY);
-                        }
+                        component.RenderDebugInfo(_gui, gameTime);
                     }
                 }
 
                 _gui.End();
             }
-        }
-
-        private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
-        {
-            IDebugComponent[] components = args.Components.OfType<IDebugComponent>().ToArray();
-            _components.Add(args, components);
-
-            foreach(IDebugComponent component in components)
-            {
-                component.Initialize(_gui);
-            }
-        }
-
-        private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)
-        {
-            _components.Remove(args);
         }
 
         public void Process(in Guid messageId, in Toggle<DebugWindowComponent> message)

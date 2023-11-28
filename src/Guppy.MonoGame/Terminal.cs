@@ -44,7 +44,12 @@ namespace Guppy.MonoGame
         {
             if(_currentLine.TryAppend(value, foregroundColor, backgroundColor, out TerminalLine? line) == false)
             {
-                this.Lines.Add(line);
+                this.Lines.Add(line, out TerminalLine oldLine);
+
+                if(oldLine is not null)
+                {
+                    TerminalLine.Factory.TryReturnToPool(oldLine);
+                }
             }
         }
     }

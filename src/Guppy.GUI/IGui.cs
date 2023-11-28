@@ -1,4 +1,5 @@
-﻿using Guppy.GUI.Styling;
+﻿using System.Runtime.CompilerServices;
+using Guppy.GUI.Styling;
 using Guppy.Resources;
 using ImGuiNET;
 using System;
@@ -7,8 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("Guppy.MonoGame")]
+
 namespace Guppy.GUI
 {
+
     public partial interface IGui
     {
         GuiFontPtr GetFont(Resource<TrueTypeFont> ttf, int size);

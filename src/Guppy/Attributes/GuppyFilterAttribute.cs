@@ -30,6 +30,7 @@ namespace Guppy.Attributes
     }
 
     public class GuppyFilterAttribute<TGuppy> : GuppyFilterAttribute
+        where TGuppy : IGuppy
     {
         public GuppyFilterAttribute() : base(typeof(TGuppy)) { }
     }

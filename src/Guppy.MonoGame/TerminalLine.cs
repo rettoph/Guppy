@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,10 @@ namespace Guppy.MonoGame
 {
     internal class TerminalLine
     {
-        public TerminalSegment[] Segments = Array.Empty<TerminalSegment>();
+        private const int PoolSize = 100;
+
+        public static Factory<TerminalLine> Factory = new Factory<TerminalLine>(() => new TerminalLine(), PoolSize);
+
+        public List<TerminalSegment> Segments = new List<TerminalSegment>();
     }
 }

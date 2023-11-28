@@ -12,7 +12,7 @@ namespace Guppy.MonoGame
     {
         private static readonly Color DarkYellow = new Color(139, 128, 0);
 
-        public List<TerminalSegment> Segments;
+        private TerminalLine _line;
 
         public ConsoleColor ConsoleForegroundColor;
         public Color XnaForegroundColor;
@@ -24,7 +24,7 @@ namespace Guppy.MonoGame
 
         public TerminalLineBuilder()
         {
-            this.Segments = new List<TerminalSegment>();
+            _line = TerminalLine.Factory.GetInstance();
             this.Text = new StringBuilder();
         }
 
@@ -32,14 +32,12 @@ namespace Guppy.MonoGame
         {
             if(value == '\n')
             {
-                this.BuildSegment();
+                this.AddSegment();
 
-                previousLine = new TerminalLine()
-                {
-                    Segments = this.Segments.ToArray()
-                };
+                previousLine = _line;
 
-                this.Segments.Clear();
+                _line = TerminalLine.Factory.GetInstance();
+                _line.Segments.Clear();
 
                 return false;
             }
@@ -53,7 +51,7 @@ namespace Guppy.MonoGame
                 return true;
             }
 
-            this.BuildSegment();
+            this.AddSegment();
 
             this.ConsoleForegroundColor = consoleForegroundColor;
             this.XnaForegroundColor = ToXnaColor(this.ConsoleForegroundColor);
@@ -66,10 +64,10 @@ namespace Guppy.MonoGame
             return true;
         }
 
-        private void BuildSegment()
+        private void AddSegment()
         {
             TerminalSegment segment = new TerminalSegment(this.XnaForegroundColor, this.XnaBackgroundColor, this.Text.ToString());
-            this.Segments.Add(segment);
+            _line.Segments.Add(segment);
 
             this.Text.Clear();
         }

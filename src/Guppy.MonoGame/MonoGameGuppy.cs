@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.Enums;
+using Guppy.GUI;
 using Guppy.MonoGame.Common;
 using Guppy.MonoGame.Common.Enums;
 using Microsoft.Xna.Framework;
@@ -13,6 +14,7 @@ namespace Guppy.MonoGame
     {
         private IDrawableComponent[] _drawComponents;
         private IUpdateableComponent[] _updateComponents;
+        private IGuiComponent[] _guiComponents;
 
         public IGuppyComponent[] Components { get; private set; }
 
@@ -24,6 +26,7 @@ namespace Guppy.MonoGame
         {
             _drawComponents = Array.Empty<IDrawableComponent>();
             _updateComponents = Array.Empty<IUpdateableComponent>();
+            _guiComponents = Array.Empty<IGuiComponent>();
 
             this.Components = Array.Empty<IGuppyComponent>();
             this.Id = Guid.NewGuid();
@@ -37,6 +40,7 @@ namespace Guppy.MonoGame
 
             _drawComponents = this.Components.OfType<IDrawableComponent>().Sequence(DrawSequence.Draw).ToArray();
             _updateComponents = this.Components.OfType<IUpdateableComponent>().Sequence(UpdateSequence.Update).ToArray();
+            _guiComponents = this.Components.OfType<IGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
 
             foreach (IGuppyComponent component in this.Components)
             {
@@ -57,6 +61,14 @@ namespace Guppy.MonoGame
             foreach (IUpdateableComponent updateable in _updateComponents)
             {
                 updateable.Update(gameTime);
+            }
+        }
+
+        public virtual void DrawGui(GameTime gameTime)
+        {
+            foreach(IGuiComponent component in _guiComponents)
+            {
+                component.DrawGui(gameTime);
             }
         }
 

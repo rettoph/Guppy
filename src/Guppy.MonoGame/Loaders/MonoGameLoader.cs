@@ -38,7 +38,7 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterInstance<GameWindow>(_window).SingleInstance();
             services.RegisterType<SpriteBatch>().SingleInstance();
 
-            services.RegisterType<Terminal>().As<ITerminal>().AsSelf().SingleInstance();
+            services.RegisterType<Terminal>().As<ITerminal>().AsSelf().InstancePerLifetimeScope();
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));
@@ -46,6 +46,11 @@ namespace Guppy.MonoGame.Loaders
             services.AddInput(Inputs.ToggleDebugger, Keys.F1, new[]
             {
                 (ButtonState.Pressed, Toggle<DebugWindowComponent>.Instance)
+            });
+
+            services.AddInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
+{
+                (ButtonState.Pressed, Toggle<TerminalWindowComponent>.Instance)
             });
         }
     }

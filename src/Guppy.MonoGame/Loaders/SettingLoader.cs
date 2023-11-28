@@ -12,6 +12,7 @@ namespace MonoGame.Loaders
         public void Load(ISettingProvider settings)
         {
             settings.Register(Settings.IsDebugWindowEnabled, false);
+            settings.Register(Settings.IsTerminalWindowEnabled, false);
         }
     }
 }

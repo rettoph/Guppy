@@ -41,7 +41,7 @@ namespace Guppy
             this.Guppies = default!;
         }
 
-        public GuppyEngine Start(
+        public IContainer Start(
             Action<GuppyConfiguration>? build = null,
             Assembly? entry = null)
         {
@@ -59,7 +59,7 @@ namespace Guppy
 
             this.Status = GuppyStatus.Ready;
 
-            return this;
+            return _container;
         }
 
         public void Dispose()
