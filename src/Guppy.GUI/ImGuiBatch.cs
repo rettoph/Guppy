@@ -22,7 +22,7 @@ namespace Guppy.GUI
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
         private bool _dirtyFonts;
-        private readonly Dictionary<(Resource<TrueTypeFont>, int), ImGuiFont> _fonts;
+        private readonly Dictionary<(Resource<TrueTypeFont>, int), GuiFontPtr> _fonts;
 
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
@@ -86,7 +86,7 @@ namespace Guppy.GUI
             ImGui.SetCurrentContext(this.Context);
             this.IO = ImGui.GetIO();
 
-            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), ImGuiFont>();
+            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), GuiFontPtr>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
             _inputs = new Queue<char>();
@@ -464,9 +464,9 @@ namespace Guppy.GUI
             _inputs.Enqueue(e.Character);
         }
 
-        public ImGuiFont GetFont(Resource<TrueTypeFont> ttf, int size)
+        public GuiFontPtr GetFont(Resource<TrueTypeFont> ttf, int size)
         {
-            ref ImGuiFont font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
+            ref GuiFontPtr font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
 
             if(exists)
             {
@@ -477,7 +477,7 @@ namespace Guppy.GUI
             IntPtr ptr = ttfInstance.GetDataPtr();
             ImFontPtr fontPtr = this.IO.Fonts.AddFontFromMemoryTTF(ptr, ttfInstance.GetDataSize(), size);
 
-            font = new ImGuiFont(ttf, size, fontPtr);
+            font = new GuiFontPtr(ttf, size, fontPtr);
 
             _dirtyFonts = true;
 

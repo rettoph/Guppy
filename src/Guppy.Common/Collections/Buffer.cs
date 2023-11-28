@@ -19,6 +19,8 @@ namespace Guppy.Common.Collections
             set => _position = value;
         }
 
+        public int Count => Math.Min(this.Position, this.Length);
+
         public T this[int index] => _buffer[index];
 
         public T[] Items => _buffer;

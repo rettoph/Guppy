@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.GUI.Styling.StylerValues
+namespace Guppy.MonoGame
 {
-    internal interface IStylerValue
+    internal class TerminalLine
     {
-        void Push();
-        void Pop();
+        public TerminalSegment[] Segments = Array.Empty<TerminalSegment>();
     }
 }

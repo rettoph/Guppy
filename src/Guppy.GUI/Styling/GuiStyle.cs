@@ -11,11 +11,11 @@ using Guppy.GUI.Helpers;
 
 namespace Guppy.GUI.Styling
 {
-    public class Styler : IStyler
+    internal class GuiStyle : IGuiStyle
     {
-        private List<IStylerValue> _values;
+        private List<IGuiStyleValue> _values;
 
-        internal Styler(List<IStylerValue> values)
+        internal GuiStyle(List<IGuiStyleValue> values)
         {
             _values = values;
         }
@@ -32,10 +32,10 @@ namespace Guppy.GUI.Styling
 
         public void Set(GuiCol var, Color color)
         {
-            _values.Add(new StylerColorValue(var, NumericsHelper.Convert(color)));
+            _values.Add(new GuiStyleColorValue(var, NumericsHelper.Convert(color)));
         }
 
-        public Styler Apply()
+        public GuiStyle Apply()
         {
             this.Push();
 
@@ -44,7 +44,7 @@ namespace Guppy.GUI.Styling
 
         public void Push()
         {
-            foreach (IStylerValue value in _values)
+            foreach (IGuiStyleValue value in _values)
             {
                 value.Push();
             }
@@ -52,7 +52,7 @@ namespace Guppy.GUI.Styling
 
         public void Pop()
         {
-            foreach (IStylerValue value in _values)
+            foreach (IGuiStyleValue value in _values)
             {
                 value.Pop();
             }

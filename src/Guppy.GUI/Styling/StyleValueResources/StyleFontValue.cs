@@ -23,9 +23,9 @@ namespace Guppy.GUI.Styling.StyleValueResources
             Size = size;
         }
 
-        internal override IStylerValue GetStylerValue(IGui imgui, IResourceProvider resources)
+        internal override IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources)
         {
-            return new StylerFontValue(imgui.GetFont(this.Resource, this.Size).ImFontPtr);
+            return new GuiStyleFontValue(imgui.GetFont(this.Resource, this.Size).Value);
         }
     }
 }

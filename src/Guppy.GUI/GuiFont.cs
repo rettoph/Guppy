@@ -3,22 +3,22 @@ using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    public struct ImGuiFont
+    [StructLayout(LayoutKind.Auto)]
+    public partial struct GuiFontPtr
     {
         public readonly Resource<TrueTypeFont> TTF;
         public readonly int Size;
-        internal readonly ImFontPtr ImFontPtr;
 
-        internal ImGuiFont(Resource<TrueTypeFont> ttf, int size, ImFontPtr imFontPtr)
+        internal GuiFontPtr(Resource<TrueTypeFont> ttf, int size, ImFontPtr value) : this(value)
         {
             TTF = ttf;
             Size = size;
-            ImFontPtr = imFontPtr;
         }
     }
 }

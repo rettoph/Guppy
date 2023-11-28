@@ -20,9 +20,9 @@ namespace Guppy.GUI.Styling.StyleValueResources
             this.Resource = resource;
         }
 
-        internal override IStylerValue GetStylerValue(IGui imgui, IResourceProvider resources)
+        internal override IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources)
         {
-            return new StylerColorValue(Property, NumericsHelper.Convert(resources.Get(Resource)));
+            return new GuiStyleColorValue(Property, NumericsHelper.Convert(resources.Get(Resource)));
         }
     }
 }

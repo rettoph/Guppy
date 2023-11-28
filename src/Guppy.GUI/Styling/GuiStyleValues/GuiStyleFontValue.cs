@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Styling.StylerValues
 {
-    internal class StylerFontValue : IStylerValue
+    internal class GuiStyleFontValue : IGuiStyleValue
     {
         public readonly ImFontPtr Font;
 
-        public StylerFontValue(ImFontPtr font)
+        public GuiStyleFontValue(ImFontPtr font)
         {
             Font = font;
         }

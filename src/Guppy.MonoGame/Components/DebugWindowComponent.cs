@@ -18,9 +18,9 @@ namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
     [GuppyFilter<GameLoop>]
-    internal sealed class DebugWindowComponent : IGuppyComponent, IGuiComponent, IDisposable, ISubscriber<Toggle<DebugWindowComponent>>
+    internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent, IDisposable, ISubscriber<Toggle<DebugWindowComponent>>
     {
-        private readonly IStyler _debugWindowStyler;
+        private readonly IGuiStyle _debugWindowStyle;
         private readonly IGui _gui;
         private readonly IGuppyProvider _guppies;
         private Dictionary<IGuppy, IDebugComponent[]> _components;
@@ -31,13 +31,13 @@ namespace Guppy.MonoGame.Components
             _components = new Dictionary<IGuppy, IDebugComponent[]>();
             _guppies = guppies;
             _gui = gui;
-            _debugWindowStyler = gui.GetStyler(Resources.Styles.DebugWindow);
+            _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
 
 
-            _enabled = settings.Get(Constants.Settings.IsDebugWindowEnabled);
+            _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }
 
-        public void Initialize(IGuppy guppy)
+        public override void Initialize(IGuppy guppy)
         {
             _guppies.OnGuppyCreated += this.HandleGuppyCreated;
             _guppies.OnGuppyDestroyed += this.HandleGuppyDestroyed;
@@ -58,9 +58,7 @@ namespace Guppy.MonoGame.Components
             _gui.SetNextWindowPos(Vector2.Zero);
             _gui.SetNextWindowSize(_gui.GetMainViewport().Size);
 
-            _gui.PushStyleVar(GuiStyleVar.WindowBorderSize, 0);
-
-            using (_debugWindowStyler.Apply())
+            using (_gui.Apply(_debugWindowStyle))
             {                
                 if (_gui.Begin($"#{nameof(DebugWindowComponent)}", GuiWindowFlags.NoResize | GuiWindowFlags.NoMove | GuiWindowFlags.NoTitleBar))
                 {
@@ -93,8 +91,6 @@ namespace Guppy.MonoGame.Components
 
                 _gui.End();
             }
-
-            _gui.PopStyleVar();
         }
 
         private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)

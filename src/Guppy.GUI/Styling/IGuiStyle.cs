@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Styling
 {
-    public interface IStyler : IDisposable
+    public interface IGuiStyle : IDisposable
     {
-        Styler Apply();
-
         void Push();
 
         void Pop();

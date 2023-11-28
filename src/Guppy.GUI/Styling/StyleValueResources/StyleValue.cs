@@ -13,6 +13,6 @@ namespace Guppy.GUI.Styling.StyleValueResources
 {
     internal abstract class StyleValue
     {
-        internal abstract IStylerValue GetStylerValue(IGui imgui, IResourceProvider resources);
+        internal abstract IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources);
     }
 }

@@ -5,7 +5,7 @@ using Guppy.Resources.Providers;
 namespace Guppy.GUI.Styling.StyleValueResources
 {
     [PolymorphicJsonType(nameof(Single))]
-    internal sealed class StyleVarFloatValue : StyleValue, IStylerValue
+    internal sealed class StyleVarFloatValue : StyleValue, IGuiStyleValue
     {
         public readonly ImGuiNET.ImGuiStyleVar Property;
         public readonly float Value;
@@ -26,7 +26,7 @@ namespace Guppy.GUI.Styling.StyleValueResources
             ImGuiNET.ImGui.PushStyleVar(Property, Value);
         }
 
-        internal override IStylerValue GetStylerValue(IGui imgui, IResourceProvider resources)
+        internal override IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources)
         {
             return this;
         }

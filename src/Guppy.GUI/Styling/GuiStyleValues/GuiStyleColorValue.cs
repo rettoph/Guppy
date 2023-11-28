@@ -1,11 +1,11 @@
 ﻿namespace Guppy.GUI.Styling.StylerValues
 {
-    internal class StylerColorValue : IStylerValue
+    internal class GuiStyleColorValue : IGuiStyleValue
     {
         public readonly ImGuiNET.ImGuiCol Property;
         public readonly Num.Vector4 Value;
 
-        public StylerColorValue(GuiCol property, Num.Vector4 value)
+        public GuiStyleColorValue(GuiCol property, Num.Vector4 value)
         {
             Property = GuiColConverter.ConvertToImGui(property);
             Value = value;

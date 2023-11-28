@@ -10,18 +10,18 @@ namespace Guppy.GUI
 {
     internal partial class Gui : IGui
     {
-        private readonly Dictionary<Resource<Style>, IStyler> _stylers;
+        private readonly Dictionary<Resource<Style>, IGuiStyle> _stylers;
         private readonly IResourceProvider _resources;
         private readonly ImGuiBatch _batch;
 
         public Gui(IResourceProvider resources, ImGuiBatch batch)
         {
-            _stylers = new Dictionary<Resource<Style>, IStyler>();
+            _stylers = new Dictionary<Resource<Style>, IGuiStyle>();
             _resources = resources;
             _batch = batch;
         }
 
-        public ImGuiFont GetFont(Resource<TrueTypeFont> ttf, int size)
+        public GuiFontPtr GetFont(Resource<TrueTypeFont> ttf, int size)
         {
             if (_batch.Running)
             {
@@ -31,20 +31,20 @@ namespace Guppy.GUI
             return _batch.GetFont(ttf, size);
         }
 
-        public IStyler GetStyler(Resource<Style> style)
+        public IGuiStyle GetStyle(Resource<Style> style)
         {
             if (_batch.Running)
             {
                 throw new InvalidOperationException();
             }
 
-            ref IStyler? styler = ref CollectionsMarshal.GetValueRefOrAddDefault(_stylers, style, out bool exists);
+            ref IGuiStyle? styler = ref CollectionsMarshal.GetValueRefOrAddDefault(_stylers, style, out bool exists);
             if (exists)
             {
                 return styler!;
             }
 
-            styler = _resources.Get(style).BuildStyler(this, _resources);
+            styler = _resources.Get(style).BuildGuiStyle(this, _resources);
 
             return styler;
         }

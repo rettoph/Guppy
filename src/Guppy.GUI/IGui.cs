@@ -11,9 +11,16 @@ namespace Guppy.GUI
 {
     public partial interface IGui
     {
-        ImGuiFont GetFont(Resource<TrueTypeFont> ttf, int size);
+        GuiFontPtr GetFont(Resource<TrueTypeFont> ttf, int size);
 
-        IStyler GetStyler(Resource<Style> style);
+        IGuiStyle GetStyle(Resource<Style> style);
+
+        IGuiStyle Apply(IGuiStyle style)
+        {
+            style.Push();
+
+            return style;
+        }
 
         void TextCentered(string text)
         {

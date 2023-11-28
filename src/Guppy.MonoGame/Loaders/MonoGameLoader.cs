@@ -38,6 +38,8 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterInstance<GameWindow>(_window).SingleInstance();
             services.RegisterType<SpriteBatch>().SingleInstance();
 
+            services.RegisterType<Terminal>().As<ITerminal>().AsSelf().SingleInstance();
+
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));
 

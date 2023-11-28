@@ -11,9 +11,9 @@ namespace Guppy.GUI.Styling
     {
         internal StyleValue[] _values = Array.Empty<StyleValue>();
 
-        internal IStyler BuildStyler(IGui imgui, IResourceProvider resources)
+        internal IGuiStyle BuildGuiStyle(IGui imgui, IResourceProvider resources)
         {
-            return new Styler(_values.Select(x => x.GetStylerValue(imgui, resources)).ToList());
+            return new GuiStyle(_values.Select(x => x.GetGuiStyleValue(imgui, resources)).ToList());
         }
     }
 }

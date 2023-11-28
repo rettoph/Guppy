@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Guppy.GUI.Styling.StyleValueResources
 {
     [PolymorphicJsonType(nameof(Vector2))]
-    internal sealed class StyleVarVector2Value : StyleValue, IStylerValue
+    internal sealed class StyleVarVector2Value : StyleValue, IGuiStyleValue
     {
         public readonly ImGuiNET.ImGuiStyleVar Property;
         public readonly Num.Vector2 Value;
@@ -34,7 +34,7 @@ namespace Guppy.GUI.Styling.StyleValueResources
             ImGuiNET.ImGui.PushStyleVar(Property, Value);
         }
 
-        internal override IStylerValue GetStylerValue(IGui imgui, IResourceProvider resources)
+        internal override IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources)
         {
             return this;
         }
