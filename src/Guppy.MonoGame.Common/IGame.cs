@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Providers;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,12 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Common
 {
-    public interface IGameLoop
+    public interface IGame
     {
+        IGuppyProvider Guppies { get; }
+
+        void Initialize();
+
         void Update(GameTime gameTime);
 
         void Draw(GameTime gameTime);

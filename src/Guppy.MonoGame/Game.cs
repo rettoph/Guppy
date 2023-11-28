@@ -15,15 +15,24 @@ using Guppy.Enums;
 
 namespace Guppy.MonoGame
 {
-    internal sealed class GameLoop : IGameLoop
+    internal sealed class Game : IGame
     {
         private IDrawableComponent[] _drawableComponents;
         private IUpdateableComponent[] _updateableComonents;
 
-        public GameLoop(IEnumerable<IGlobalComponent> components)
+        public IGuppyProvider Guppies { get; private set; }
+
+        public Game(IGuppyProvider guppies, IEnumerable<IGlobalComponent> components)
         {
+            this.Guppies = guppies;
+
             _drawableComponents = components.OfType<IDrawableComponent>().Sequence(DrawSequence.Draw).ToArray();
             _updateableComonents = components.OfType<IUpdateableComponent>().Sequence(UpdateSequence.Update).ToArray();
+        }
+
+        public void Initialize()
+        {
+            this.Guppies.Initialize();
         }
 
         public void Draw(GameTime gameTime)

@@ -2,6 +2,8 @@
 using Guppy.Common;
 using Guppy.Common.Autofac;
 using Guppy.Common.Collections;
+using Guppy.Common.Extensions;
+using Guppy.Enums;
 using Guppy.Loaders;
 using System.Collections;
 
@@ -12,6 +14,9 @@ namespace Guppy.Providers
         private ILifetimeScope _scope;
         private List<IGuppy> _guppies;
         private Dictionary<IGuppy, ILifetimeScope> _scopes;
+        private bool _initialized;
+
+        public ILifetimeScope Scope => _scope;
 
         public event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyCreated;
         public event OnEventDelegate<IGuppyProvider, IGuppy>? OnGuppyDestroyed;
@@ -23,8 +28,26 @@ namespace Guppy.Providers
             _scopes = new Dictionary<IGuppy, ILifetimeScope>();
         }
 
+        public void Initialize()
+        {
+            if(_initialized == true)
+            {
+                return;
+            }
+
+            var components = this.Scope.Resolve<IEnumerable<IGlobalComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
+            foreach (IGlobalComponent component in components)
+            {
+                component.Initialize(components);
+            }
+
+            _initialized = true;
+        }
+
         T IGuppyProvider.Create<T>()
         {
+            this.Initialize();
+
             var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.Guppy, builder =>
             {
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
@@ -39,6 +62,8 @@ namespace Guppy.Providers
         IGuppy IGuppyProvider.Create(Type guppyType)
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
+
+            this.Initialize();
 
             var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.Guppy, builder =>
             {

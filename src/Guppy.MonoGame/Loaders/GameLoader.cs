@@ -26,7 +26,7 @@ namespace Guppy.MonoGame.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<GameLoop>().As<IGameLoop>().SingleInstance();
+            services.RegisterType<Game>().As<IGame>().SingleInstance();
             services.RegisterType<MenuProvider>().As<IMenuProvider>().InstancePerLifetimeScope();
 
             services.AddFilter(new ServiceFilter<IGameComponent, Type>(typeof(MonoGameGuppy)));

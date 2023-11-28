@@ -15,12 +15,12 @@ namespace Guppy.MonoGame.Loaders
 {
     internal sealed class MonoGameLoader : IServiceLoader
     {
-        private Game _game;
+        private Microsoft.Xna.Framework.Game _game;
         private GraphicsDeviceManager _graphics;
         private ContentManager _content;
         private GameWindow _window;
 
-        public MonoGameLoader(Game game, GraphicsDeviceManager graphics, ContentManager content, GameWindow window)
+        public MonoGameLoader(Microsoft.Xna.Framework.Game game, GraphicsDeviceManager graphics, ContentManager content, GameWindow window)
         {
             _game = game;
             _graphics = graphics;
@@ -31,7 +31,7 @@ namespace Guppy.MonoGame.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<Screen>().As<IScreen>().InstancePerLifetimeScope();
-            services.RegisterInstance<Game>(_game).SingleInstance();
+            services.RegisterInstance(_game).SingleInstance();
             services.RegisterInstance<GraphicsDeviceManager>(_graphics).SingleInstance();
             services.RegisterInstance<GraphicsDevice>(_graphics.GraphicsDevice).SingleInstance();
             services.RegisterInstance<ContentManager>(_content).SingleInstance();
