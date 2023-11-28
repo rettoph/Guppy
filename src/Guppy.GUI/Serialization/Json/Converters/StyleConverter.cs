@@ -15,7 +15,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
         public override Style? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             Style style = new Style();
-            style._values = JsonSerializer.Deserialize<StyleValue[]>(ref reader, options) ?? style._values;
+            style._values = JsonSerializer.Deserialize<List<StyleValue>>(ref reader, options) ?? style._values;
 
             return style;
         }

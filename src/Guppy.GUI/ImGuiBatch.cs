@@ -1,4 +1,6 @@
 ﻿using Guppy.Common;
+using Guppy.Common.Attributes;
+using Guppy.Enums;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Styling;
 using Guppy.Input;
@@ -19,17 +21,17 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    internal class ImGuiBatch : IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>
+    [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
+    internal class ImGuiBatch : GlobalComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
         private bool _dirtyFonts;
-        private readonly Dictionary<(Resource<TrueTypeFont>, int), GuiFontPtr> _fonts;
+        private readonly Dictionary<(Resource<TrueTypeFont>, int), Ref<GuiFontPtr>> _fonts;
 
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
         private readonly IResourceProvider _resources;
-        private readonly IInputService _inputService;
         private DateTime _begin;
 
         // Graphics
@@ -81,14 +83,13 @@ namespace Guppy.GUI
         public ImGuiBatch(
             GameWindow window,
             GraphicsDevice graphics,
-            IInputService inputs,
             IResourceProvider resources)
         {
             this.Context = ImGui.CreateContext();
             ImGui.SetCurrentContext(this.Context);
             this.IO = ImGui.GetIO();
 
-            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), GuiFontPtr>();
+            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), Ref<GuiFontPtr>>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
             _inputs = new Queue<char>();
@@ -96,7 +97,6 @@ namespace Guppy.GUI
             _window = window;
             _graphics = graphics;
             _resources = resources;
-            _inputService = inputs;
 
             _loadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -121,11 +121,26 @@ namespace Guppy.GUI
             this.RebuildFontAtlas();
         }
 
+        protected override void Initialize(IGlobalComponent[] components)
+        {
+            base.Initialize(components);
+
+            _resources.Initialize(components);
+
+            if(_fonts.Count > 0)
+            {
+                foreach(Ref<GuiFontPtr> font in _fonts.Values)
+                {
+                    font.Value.SetImFontPtr(this.IO.Fonts);
+                }
+
+                _dirtyFonts = true;
+            }
+        }
+
         public void Dispose()
         {
             _window.TextInput -= this.HandleTextInput;
-            _inputService.Unsubscribe<ImGuiKeyEvent>(this);
-            _inputService.Unsubscribe<ImGuiMouseButtonEvent>(this);
         }
 
         #region ImGuiRenderer
@@ -234,9 +249,6 @@ namespace Guppy.GUI
         /// </summary>
         private void SetupInput()
         {
-            _inputService.Subscribe<ImGuiKeyEvent>(this);
-            _inputService.Subscribe<ImGuiMouseButtonEvent>(this);
-
             _window.TextInput += this.HandleTextInput;
 
             //_io.Fonts.AddFontDefault();
@@ -466,20 +478,24 @@ namespace Guppy.GUI
             _inputs.Enqueue(e.Character);
         }
 
-        public GuiFontPtr GetFont(Resource<TrueTypeFont> ttf, int size)
+        public Ref<GuiFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size)
         {
-            ref GuiFontPtr font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
+            ref Ref<GuiFontPtr>? font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
 
             if(exists)
             {
-                return font;
+                return font!;
             }
 
-            TrueTypeFont ttfInstance = _resources.Get(ttf);
-            IntPtr ptr = ttfInstance.GetDataPtr();
-            ImFontPtr fontPtr = this.IO.Fonts.AddFontFromMemoryTTF(ptr, ttfInstance.GetDataSize(), size);
+            font = new Ref<GuiFontPtr>(default!);
 
-            font = new GuiFontPtr(ttf, size, fontPtr);
+            ResourceValue<TrueTypeFont> ttfInstance = _resources.Get(ttf);
+            font.Value = new GuiFontPtr(ttfInstance, size);
+
+            if (this.Ready)
+            {
+                font.Value.SetImFontPtr(this.IO.Fonts);
+            }
 
             _dirtyFonts = true;
 

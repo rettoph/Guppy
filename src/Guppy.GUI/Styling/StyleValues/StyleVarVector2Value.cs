@@ -1,6 +1,5 @@
 ﻿using Guppy.GUI;
 using Guppy.GUI.Helpers;
-using Guppy.GUI.Styling.StylerValues;
 using Guppy.Resources.Attributes;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 namespace Guppy.GUI.Styling.StyleValueResources
 {
     [PolymorphicJsonType(nameof(Vector2))]
-    internal sealed class StyleVarVector2Value : StyleValue, IGuiStyleValue
+    internal sealed class StyleVarVector2Value : StyleValue
     {
         public readonly ImGuiNET.ImGuiStyleVar Property;
         public readonly Num.Vector2 Value;
@@ -24,19 +23,14 @@ namespace Guppy.GUI.Styling.StyleValueResources
             Value = NumericsHelper.Convert(value);
         }
 
-        public void Pop()
+        public override void Pop()
         {
             ImGuiNET.ImGui.PopStyleVar();
         }
 
-        public void Push()
+        public override void Push()
         {
             ImGuiNET.ImGui.PushStyleVar(Property, Value);
-        }
-
-        internal override IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources)
-        {
-            return this;
         }
     }
 }

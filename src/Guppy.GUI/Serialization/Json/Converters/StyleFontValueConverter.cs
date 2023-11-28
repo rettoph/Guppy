@@ -13,10 +13,17 @@ namespace Guppy.GUI.Serialization.Json.Converters
 {
     internal class StyleFontValueConverter : JsonConverter<StyleFontValue>
     {
+        private readonly Lazy<IGui> _gui;
+
+        public StyleFontValueConverter(Lazy<IGui> gui)
+        {
+            _gui = gui;
+        }
+
         public override StyleFontValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             int size = default;
-            Resource<TrueTypeFont> resource = default!;
+            Resource<TrueTypeFont> ttf = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -25,19 +32,19 @@ namespace Guppy.GUI.Serialization.Json.Converters
             {
                 switch (property)
                 {
-                    case nameof(StyleFontValue.Size):
+                    case nameof(GuiFontPtr.Size):
                         size = reader.ReadInt32();
                         break;
 
-                    case nameof(StyleFontValue.Resource):
-                        resource = Resources.Resource.Get<TrueTypeFont>(reader.ReadString());
+                    case nameof(GuiFontPtr.TTF):
+                        ttf = Resources.Resource.Get<TrueTypeFont>(reader.ReadString());
                         break;
                 }
             }
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new StyleFontValue(resource, size);
+            return new StyleFontValue(_gui.Value.GetFont(ttf, size));
         }
 
         public override void Write(Utf8JsonWriter writer, StyleFontValue value, JsonSerializerOptions options)

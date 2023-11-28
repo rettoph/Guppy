@@ -4,7 +4,7 @@
       "Type": "Color",
       "Value": {
         "Property": "WindowBg",
-        "Resource": "Color.FullScreenBackground"
+        "Color": "Color.FullScreenBackground"
       }
     },
     {
@@ -37,7 +37,7 @@
     {
       "Type": "TrueTypeFont",
       "Value": {
-        "Resource": "TrueTypeFont.DiagnosticsFont",
+        "TTF": "TrueTypeFont.DiagnosticsFont",
         "Size": 20
       }
     }

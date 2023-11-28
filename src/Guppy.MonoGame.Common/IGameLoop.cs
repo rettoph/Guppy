@@ -9,8 +9,6 @@ namespace Guppy.MonoGame.Common
 {
     public interface IGameLoop
     {
-        IGameLoopComponent[] Components { get; }
-
         void Update(GameTime gameTime);
 
         void Draw(GameTime gameTime);

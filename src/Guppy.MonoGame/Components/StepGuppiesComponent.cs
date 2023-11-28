@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
-    internal class StepGuppiesComponent : GameLoopComponent, IDrawableComponent, IUpdateableComponent
+    internal class StepGuppiesComponent : GlobalComponent, IDrawableComponent, IUpdateableComponent
     {
         private readonly IGuppyProvider _guppies;
         private readonly List<MonoGameGuppy> _frameables;

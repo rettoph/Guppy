@@ -16,7 +16,7 @@ using Guppy.MonoGame.Constants;
 namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
-    internal class ToggleDebugWindowComponent : GameLoopComponent, IInputSubscriber<Toggle<DebugWindowComponent>>
+    internal class ToggleDebugWindowComponent : GlobalComponent, IInputSubscriber<Toggle<DebugWindowComponent>>
     {
         private Ref<bool> _enabled;
 

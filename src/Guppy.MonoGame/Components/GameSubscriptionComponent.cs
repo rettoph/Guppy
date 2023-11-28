@@ -14,30 +14,27 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
-    internal class GameSubscriptionComponent : GameLoopComponent, IDisposable
+    internal class GameSubscriptionComponent : GlobalComponent, IDisposable
     {
         private readonly IInputService _inputs;
-
-        private IGameLoop _gameLoop;
+        private IGlobalComponent[] _components;
 
         public GameSubscriptionComponent(IInputService inputs)
         {
-            _gameLoop = null!;
             _inputs = inputs;
+            _components = Array.Empty<IGlobalComponent>();
         }
 
-        public override void Initialize(IGameLoop gameLoop)
+        protected override void Initialize(IGlobalComponent[] components)
         {
-            base.Initialize(gameLoop);
+            _components = components;
 
-            _gameLoop = gameLoop;
-
-            _inputs.SubscribeMany(_gameLoop.Components.OfType<IBaseSubscriber<IInput>>());
+            _inputs.SubscribeMany(_components.OfType<IBaseSubscriber<IInput>>());
         }
 
         public void Dispose()
         {
-            _inputs.UnsubscribeMany(_gameLoop.Components.OfType<IBaseSubscriber<IInput>>());
+            _inputs.UnsubscribeMany(_components.OfType<IBaseSubscriber<IInput>>());
         }
     }
 }

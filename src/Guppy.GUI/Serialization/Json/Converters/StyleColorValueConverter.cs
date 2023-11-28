@@ -1,5 +1,6 @@
 ﻿using Guppy.GUI.Styling.StyleValueResources;
 using Guppy.Resources;
+using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System;
@@ -14,6 +15,13 @@ namespace Guppy.GUI.Serialization.Json.Converters
 {
     internal class StyleColorValueConverter : JsonConverter<StyleColorValue>
     {
+        private readonly Lazy<IResourceProvider> _resources;
+
+        public StyleColorValueConverter(Lazy<IResourceProvider> resources)
+        {
+            _resources = resources;
+        }
+
         public override StyleColorValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             GuiCol col = default;
@@ -30,7 +38,7 @@ namespace Guppy.GUI.Serialization.Json.Converters
                         col = Enum.Parse<GuiCol>(reader.ReadString());
                         break;
 
-                    case nameof(StyleColorValue.Resource):
+                    case nameof(StyleColorValue.Color):
                         resource = Resources.Resource.Get<Color>(reader.ReadString());
                         break;
                 }
@@ -38,7 +46,8 @@ namespace Guppy.GUI.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new StyleColorValue(col, resource);
+            IResourceProvider resources = _resources.Value;
+            return new StyleColorValue(col, resources.Get(resource));
         }
 
         public override void Write(Utf8JsonWriter writer, StyleColorValue value, JsonSerializerOptions options)

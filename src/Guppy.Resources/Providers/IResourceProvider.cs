@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Resources.Providers
 {
-    public interface IResourceProvider
+    public interface IResourceProvider : IGlobalComponent
     {
-        T Get<T>(Resource<T> resource)
+        bool Ready { get; }
+
+        ResourceValue<T> Get<T>(Resource<T> resource)
             where T : notnull;
 
         IEnumerable<(Resource, T)> GetAll<T>() 

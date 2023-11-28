@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Common;
 
 [assembly: InternalsVisibleTo("Guppy.MonoGame")]
 
@@ -15,11 +16,11 @@ namespace Guppy.GUI
 
     public partial interface IGui
     {
-        GuiFontPtr GetFont(Resource<TrueTypeFont> ttf, int size);
+        Ref<GuiFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
 
-        IGuiStyle GetStyle(Resource<Style> style);
+        Style GetStyle(Resource<Style> style);
 
-        IGuiStyle Apply(IGuiStyle style)
+        Style Apply(Style style)
         {
             style.Push();
 

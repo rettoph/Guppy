@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.GUI.Styling.StylerValues
+namespace Guppy
 {
-    internal interface IGuiStyleValue
+    public interface IGlobalComponent
     {
-        void Push();
-        void Pop();
+        void Initialize(IGlobalComponent[] components);
     }
 }

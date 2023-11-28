@@ -11,16 +11,22 @@ using System.Security.AccessControl;
 using System.Text.Json;
 using System.Text;
 using System.Reflection.PortableExecutable;
+using Guppy.Common.Attributes;
+using Guppy.Enums;
 
 namespace Guppy.Resources.Providers
 {
-    internal sealed class ResourcePackProvider : IResourcePackProvider
+    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
+    internal sealed class ResourcePackProvider : IResourcePackProvider, IGlobalComponent
     {
         private readonly IFileService _files;
         private IDictionary<Guid, ResourcePack> _packs;
         private IFile<List<IFile<ResourcePackConfiguration>>> _registered;
         private readonly IResourceTypeProvider _resourceTypes;
         private readonly ILogger _logger;
+        private readonly IPackLoader[] _loaders;
+
+        public bool Ready { get; private set; }
 
         public ResourcePackProvider(
             IFileService files,
@@ -33,18 +39,26 @@ namespace Guppy.Resources.Providers
             _registered = _files.Get<List<IFile<ResourcePackConfiguration>>>(FileType.AppData, FilePaths.ResourcePacks);
             _resourceTypes = resourceTypes;
             _logger = logger;
+            _loaders = loaders.ToArray();
 
             _packs = packs.ToDictionary(x => x.Id, x => x);
 
-            foreach(var loader in loaders)
+            this.Ready = false;
+        }
+
+        public void Initialize(IGlobalComponent[] components)
+        {
+            foreach (var loader in _loaders)
             {
                 loader.Load(this);
             }
 
-            foreach(IFile<ResourcePackConfiguration> configuration in _registered.Value)
+            foreach (IFile<ResourcePackConfiguration> configuration in _registered.Value)
             {
                 this.Load(Path.GetDirectoryName(configuration.FullPath)!, configuration);
             }
+
+            this.Ready = true;
         }
 
         public void Register(IFile<ResourcePackConfiguration> configuration)

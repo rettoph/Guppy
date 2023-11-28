@@ -1,9 +1,11 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Common.Extensions;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
 using Guppy.Configurations;
+using Guppy.Enums;
 using Guppy.Loaders;
 using Guppy.Providers;
 using System.Reflection;
@@ -16,6 +18,7 @@ namespace Guppy
 
         public IEnumerable<Assembly> Libraries { get; private set; }
         public IGuppyProvider Guppies { get; private set; }
+        public IGlobalComponent[] Components { get; private set; }
 
         public GuppyStatus Status { get; private set; }
 
@@ -39,6 +42,7 @@ namespace Guppy
             _container = default!;
             this.Libraries = libraries;
             this.Guppies = default!;
+            this.Components = Array.Empty<IGlobalComponent>();
         }
 
         public IContainer Start(
@@ -56,6 +60,12 @@ namespace Guppy
             _container = GuppyConfiguration.Build(this.Environment, entry, this.Libraries, build);
 
             this.Guppies = _container.Resolve<IGuppyProvider>();
+            this.Components = _container.Resolve<IEnumerable<IGlobalComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
+
+            foreach (IGlobalComponent component in this.Components)
+            {
+                component.Initialize(this.Components);
+            }
 
             this.Status = GuppyStatus.Ready;
 

@@ -12,7 +12,7 @@ namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class ButtonPublishComponent : GameLoopComponent, IUpdateableComponent
+    internal sealed class ButtonPublishComponent : GlobalComponent, IUpdateableComponent
     {
         private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;

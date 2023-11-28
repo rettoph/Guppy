@@ -21,7 +21,7 @@ namespace Guppy.MonoGame.Components
     {
         private readonly ICommandService _commands;
         private readonly IGui _gui;
-        private readonly IGuiStyle _debugWindowStyle;
+        private readonly Style _debugWindowStyle;
         private readonly Terminal _terminal;
 
         private string _input;

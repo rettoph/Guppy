@@ -1,11 +1,10 @@
-﻿using Guppy.GUI.Styling.StylerValues;
-using Guppy.Resources.Attributes;
+﻿using Guppy.Resources.Attributes;
 using Guppy.Resources.Providers;
 
 namespace Guppy.GUI.Styling.StyleValueResources
 {
     [PolymorphicJsonType(nameof(Single))]
-    internal sealed class StyleVarFloatValue : StyleValue, IGuiStyleValue
+    internal sealed class StyleVarFloatValue : StyleValue
     {
         public readonly ImGuiNET.ImGuiStyleVar Property;
         public readonly float Value;
@@ -16,19 +15,14 @@ namespace Guppy.GUI.Styling.StyleValueResources
             Value = value;
         }
 
-        public void Pop()
+        public override void Pop()
         {
             ImGuiNET.ImGui.PopStyleVar();
         }
 
-        public void Push()
+        public override void Push()
         {
             ImGuiNET.ImGui.PushStyleVar(Property, Value);
-        }
-
-        internal override IGuiStyleValue GetGuiStyleValue(IGui imgui, IResourceProvider resources)
-        {
-            return this;
         }
     }
 }

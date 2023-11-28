@@ -20,19 +20,10 @@ namespace Guppy.MonoGame
         private IDrawableComponent[] _drawableComponents;
         private IUpdateableComponent[] _updateableComonents;
 
-        public IGameLoopComponent[] Components { get; private set; }
-
-        public GameLoop(IEnumerable<IGameLoopComponent> components)
+        public GameLoop(IEnumerable<IGlobalComponent> components)
         {
-            this.Components = components.ToArray();
-
-            _drawableComponents = this.Components.OfType<IDrawableComponent>().Sequence(DrawSequence.Draw).ToArray();
-            _updateableComonents = this.Components.OfType<IUpdateableComponent>().Sequence(UpdateSequence.Update).ToArray();
-
-            foreach (IGameLoopComponent component in this.Components.Sequence(InitializeSequence.Initialize))
-            {
-                component.Initialize(this);
-            }
+            _drawableComponents = components.OfType<IDrawableComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _updateableComonents = components.OfType<IUpdateableComponent>().Sequence(UpdateSequence.Update).ToArray();
         }
 
         public void Draw(GameTime gameTime)

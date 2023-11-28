@@ -15,7 +15,7 @@ namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DrawGuiComponent : GameLoopComponent, IDrawableComponent
+    internal class DrawGuiComponent : GlobalComponent, IDrawableComponent
     {
         private readonly ImGuiBatch _batch;
         private readonly IGuppyProvider _guppies;

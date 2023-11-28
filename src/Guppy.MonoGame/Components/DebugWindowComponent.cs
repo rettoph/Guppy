@@ -24,7 +24,7 @@ namespace Guppy.MonoGame.Components
     [AutoLoad]
     internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent
     {
-        private readonly IGuiStyle _debugWindowStyle;
+        private readonly Style _debugWindowStyle;
         private readonly IGui _gui;
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;

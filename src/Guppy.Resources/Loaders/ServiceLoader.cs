@@ -13,8 +13,8 @@ namespace Guppy.Resources.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<SettingProvider>().As<ISettingProvider>().SingleInstance();
-            services.RegisterType<ResourcePackProvider>().As<IResourcePackProvider>().SingleInstance();
-            services.RegisterType<ResourceProvider>().As<IResourceProvider>().SingleInstance();
+            services.RegisterType<ResourcePackProvider>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<ResourceProvider>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourceTypeProvider>().As<IResourceTypeProvider>().SingleInstance();
 
             services.RegisterType<IFileJsonConverter<ResourcePackConfiguration>>().As<JsonConverter>().SingleInstance();

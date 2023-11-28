@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public class Ref<T>
+    public class Ref
+    {
+        internal Ref()
+        {
+
+        }
+    }
+    public class Ref<T> : Ref
     {
         public T Value;
 
