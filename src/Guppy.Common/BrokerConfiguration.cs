@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public class BrokerConfiguration
+    public class BrokerConfiguration<TBase>
+        where TBase : IMessage
     {
         internal sealed class MessageAliasConfiguration
         {
@@ -22,7 +23,7 @@ namespace Guppy.Common
             _messageAliases = new List<MessageAliasConfiguration>();
         }
 
-        public BrokerConfiguration AddMessageAlias(Type message, Type alias, bool inheritable)
+        public BrokerConfiguration<TBase> AddMessageAlias(Type message, Type alias, bool inheritable)
         {
             ThrowIf.Type.IsNotAssignableFrom<IMessage>(message);
             ThrowIf.Type.IsNotAssignableFrom<IMessage>(alias);
@@ -37,7 +38,7 @@ namespace Guppy.Common
             return this;
         }
 
-        public BrokerConfiguration AddMessageAlias<TMessage, TAlias>(bool inheritable)
+        public BrokerConfiguration<TBase> AddMessageAlias<TMessage, TAlias>(bool inheritable)
             where TMessage : IMessage
             where TAlias : IMessage
         {

@@ -5,6 +5,7 @@ using Guppy.Input.Constants;
 using Guppy.Input.Enums;
 using Guppy.Input.Messages;
 using Guppy.Input.Providers;
+using Guppy.Input.Services;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Common;
 using Guppy.MonoGame.Common.Enums;
@@ -21,20 +22,19 @@ namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class MouseEventPublishComponent : IGuppyComponent, IUpdateableComponent
+    internal sealed class MousePublishComponent : GameLoopComponent
     {
-        private readonly IBus _bus;
+        private readonly IInputService _inputs;
         private readonly Cursor _cursor;
 
-        public MouseEventPublishComponent(ICursorProvider cursors, IBus bus)
+        public MousePublishComponent(ICursorProvider cursors, IInputService inputs)
         {
-            _bus = bus;
+            _inputs = inputs;
             _cursor = (cursors.Get(Cursors.Mouse) as Cursor)!;
         }
 
-        public void Initialize(IGuppy guppy)
+        public void Initialize()
         {
-            //
         }
 
         public void Update(GameTime gameTime)
@@ -43,27 +43,27 @@ namespace Guppy.Input.Components
 
             if (_cursor.MoveTo(state.Position.ToVector2(), out var movement))
             {
-                _bus.Enqueue(movement);
+                _inputs.Publish(movement);
             }
 
             if (_cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
             {
-                _bus.Enqueue(scrolling);
+                _inputs.Publish(scrolling);
             }
 
             if (_cursor.SetPress(CursorButtons.Left, state.LeftButton == ButtonState.Pressed, out var press))
             {
-                _bus.Enqueue(press);
+                _inputs.Publish(press);
             }
 
             if (_cursor.SetPress(CursorButtons.Middle, state.LeftButton == ButtonState.Pressed, out press))
             {
-                _bus.Enqueue(press);
+                _inputs.Publish(press);
             }
 
             if (_cursor.SetPress(CursorButtons.Right, state.LeftButton == ButtonState.Pressed, out press))
             {
-                _bus.Enqueue(press);
+                _inputs.Publish(press);
             }
         }
     }

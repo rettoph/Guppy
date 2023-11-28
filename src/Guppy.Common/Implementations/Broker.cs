@@ -2,78 +2,79 @@
 
 namespace Guppy.Common.Implementations
 {
-    public class Broker : IBroker
+    public class Broker<TBase> : IBroker<TBase>
+        where TBase : IMessage
     {
-        private readonly BrokerConfiguration _configuration;
-        private readonly IDictionary<Type, IPublisher> _publishers;
+        private readonly BrokerConfiguration<TBase> _configuration;
+        private readonly IDictionary<Type, IPublisher<TBase>> _publishers;
         private readonly IDictionary<Type, Type[]> _aliases;
-        private readonly Dictionary<ISubscriber, Subscription[]> _subscriptions;
+        private readonly Dictionary<IBaseSubscriber<TBase>, Subscription<TBase>[]> _subscriptions;
 
-        public IPublisher this[Type type] => _publishers[type];
+        public IPublisher<TBase> this[Type type] => _publishers[type];
 
-        public Broker(IConfiguration<BrokerConfiguration> configuration) : this(configuration.Value)
+        public Broker(IConfiguration<BrokerConfiguration<TBase>> configuration) : this(configuration.Value)
         {
 
         }
-        protected Broker(BrokerConfiguration configuration)
+        protected Broker(BrokerConfiguration<TBase> configuration)
         {
             _configuration = configuration;
-            _publishers = new Dictionary<Type, IPublisher>();
+            _publishers = new Dictionary<Type, IPublisher<TBase>>();
             _aliases = new Dictionary<Type, Type[]>();
-            _subscriptions = new Dictionary<ISubscriber, Subscription[]>();
+            _subscriptions = new Dictionary<IBaseSubscriber<TBase>, Subscription<TBase>[]>();
         }
 
-        public void Subscribe<T>(ISubscriber<T> subscriber)
-            where T : notnull, IMessage
+        public void Subscribe<T>(IBaseSubscriber<TBase, T> subscriber)
+            where T : TBase
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher? publisher) && publisher is IPublisher<T> casted)
+            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<TBase, T> casted)
             {
                 casted.Subscribe(subscriber);
                 return;
             }
 
-            _publishers.Add(typeof(T), new Publisher<T>(subscriber));
+            _publishers.Add(typeof(T), new Publisher<TBase, T>(subscriber));
         }
 
-        public void Unsubscribe<T>(ISubscriber<T> processor)
-            where T : notnull, IMessage
+        public void Unsubscribe<T>(IBaseSubscriber<TBase, T> processor)
+            where T : TBase
         {
-            if (_publishers.TryGetValue(typeof(T), out IPublisher? publisher) && publisher is IPublisher<T> casted)
+            if (_publishers.TryGetValue(typeof(T), out IPublisher<TBase>? publisher) && publisher is IPublisher<TBase, T> casted)
             {
                 casted.Unsubscribe(processor);
             }
         }
 
-        public void Subscribe(ISubscriber subscriber)
+        public void Subscribe(IBaseSubscriber<TBase> subscriber)
         {
             if (_subscriptions.ContainsKey(subscriber))
             {
                 return;
             }
 
-            Subscription[] subscriptions = subscriber.GetSubscriptions().ToArray();
+            Subscription<TBase>[] subscriptions = subscriber.GetSubscriptions().ToArray();
             _subscriptions.Add(subscriber, subscriptions);
 
-            foreach (Subscription subscription in subscriptions)
+            foreach (Subscription<TBase> subscription in subscriptions)
             {
                 subscription.Subscribe(this);
             }
         }
 
-        public void Unsubscribe(ISubscriber subscriber)
+        public void Unsubscribe(IBaseSubscriber<TBase> subscriber)
         {
-            if (!_subscriptions.Remove(subscriber, out Subscription[]? subscriptions))
+            if (!_subscriptions.Remove(subscriber, out Subscription<TBase>[]? subscriptions))
             {
                 return;
             }
 
-            foreach (Subscription subscription in subscriptions)
+            foreach (Subscription<TBase> subscription in subscriptions)
             {
                 subscription.Unsubscribe(this);
             }
         }
 
-        public void Publish(in IMessage message)
+        public void Publish(in TBase message)
         {
             if(!_aliases.TryGetValue(message.Type, out Type[]? aliases))
             {
@@ -83,7 +84,7 @@ namespace Guppy.Common.Implementations
 
             foreach(Type alias in aliases)
             {
-                if (_publishers.TryGetValue(alias, out IPublisher? publisher))
+                if (_publishers.TryGetValue(alias, out IPublisher<TBase>? publisher))
                 {
                     if(message is IDisposable disposable)
                     {
@@ -103,7 +104,7 @@ namespace Guppy.Common.Implementations
         {
             GC.SuppressFinalize(this);
 
-            foreach (IPublisher publisher in _publishers.Values)
+            foreach (IPublisher<TBase> publisher in _publishers.Values)
             {
                 publisher.Dispose();
             }

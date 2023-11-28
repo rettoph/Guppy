@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Components
 {
-    [AutoLoad]
+    //[AutoLoad]
     internal class FpsDebugComponent : GuppyComponent, IDebugComponent
     {
         private Buffer<double> _sampleBuffer = new Buffer<double>(20);

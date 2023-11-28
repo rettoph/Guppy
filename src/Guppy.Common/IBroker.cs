@@ -6,31 +6,32 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IBroker : IDisposable
+    public interface IBroker<TBase> : IDisposable
+        where TBase : notnull, IMessage
     {
-        IPublisher this[Type type] { get; }
+        IPublisher<TBase> this[Type type] { get; }
 
         /// <summary>
         /// Subscribe a subscriber with the broker
         /// </summary>
         /// <param name="key"></param>
         /// <param name="subscriber"></param>
-        public void Subscribe<T>(ISubscriber<T> subscriber) where T : IMessage;
+        public void Subscribe<T>(IBaseSubscriber<TBase, T> subscriber) where T : TBase;
 
         /// <summary>
         /// Unsubscribe a subscriber from the queue.
         /// </summary>
         /// <param name="subscriber"></param>
-        public void Unsubscribe<T>(ISubscriber<T> subscriber) where T : IMessage;
+        public void Unsubscribe<T>(IBaseSubscriber<TBase, T> subscriber) where T : TBase;
 
         /// <summary>
         /// Publish an incoming message.
         /// </summary>
         /// <param name="message"></param>
-        public void Publish(in IMessage message);
+        public void Publish(in TBase message);
 
-        void Subscribe(ISubscriber subscriber);
+        void Subscribe(IBaseSubscriber<TBase> subscriber);
 
-        void Unsubscribe(ISubscriber subscriber);
+        void Unsubscribe(IBaseSubscriber<TBase> subscriber);
     }
 }

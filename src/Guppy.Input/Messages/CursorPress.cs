@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Input.Messages
 {
-    public class CursorPress : Message<CursorPress>
+    public class CursorPress : Message<CursorPress>, IInput
     {
         public readonly ICursor Cursor;
         public readonly CursorButtons Button;

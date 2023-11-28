@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Common
 {
-    public interface IUpdateableComponent : IGuppyComponent, ISequenceable<UpdateSequence>
+    public interface IUpdateableComponent : ISequenceable<UpdateSequence>
     {
         void Update(GameTime gameTime);
     }

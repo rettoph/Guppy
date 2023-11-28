@@ -18,22 +18,23 @@ namespace Guppy.Common.Implementations
     /// thats even beneficial. More testing needed.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal sealed class BusQueue : IBusQueue
+    internal sealed class BusQueue<TBase> : IBusQueue<TBase>
+        where TBase : IMessage
     {
-        private readonly IBroker _broker;
-        private ConcurrentQueue<IMessage> _queue;
+        private readonly IBroker<TBase> _broker;
+        private ConcurrentQueue<TBase> _queue;
 
         public int Id { get; }
 
-        public BusQueue(int id, IBroker broker)
+        public BusQueue(int id, IBroker<TBase> broker)
         {
             this.Id = id;
 
-            _queue = new ConcurrentQueue<IMessage>();
+            _queue = new ConcurrentQueue<TBase>();
             _broker = broker;
         }
 
-        public void Enqueue(in IMessage message)
+        public void Enqueue(in TBase message)
         {
             _queue.Enqueue(message);
         }

@@ -8,6 +8,7 @@ using Guppy.Files.Providers;
 using Guppy.Loaders;
 using Guppy.MonoGame.Commands;
 using Guppy.MonoGame.Common;
+using Guppy.MonoGame.Components;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Providers;
 using Microsoft.Xna.Framework;

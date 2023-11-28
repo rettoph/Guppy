@@ -30,7 +30,7 @@ namespace Guppy.Network.Loaders
             services.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            services.Configure<BrokerConfiguration>((scope, configuration) =>
+            services.Configure<BrokerConfiguration<IMessage>>((scope, configuration) =>
             {
                 configuration.AddMessageAlias<INetOutgoingMessage, INetOutgoingMessage>(true);
             });

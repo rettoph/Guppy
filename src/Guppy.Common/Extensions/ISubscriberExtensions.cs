@@ -10,29 +10,36 @@ namespace Guppy.Common.Extensions
 {
     public static class ISubscriberExtensions
     {
-        private static readonly MethodInfo SubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Subscribe), 1, new[] { typeof(ISubscriber<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) }) ?? throw new NotImplementedException();
-        private static readonly MethodInfo UnsubscribeMethodInfo = typeof(IBroker).GetMethod(nameof(IBroker.Unsubscribe), 1, new[] { typeof(ISubscriber<>).MakeGenericType(Type.MakeGenericMethodParameter(0)) }) ?? throw new NotImplementedException();
-
-        public static IEnumerable<Subscription> GetSubscriptions(this ISubscriber subscriber)
+        private static class MethodInfo<TBase>
+            where TBase : IMessage
         {
-            foreach (var interfaceType in subscriber.GetType().GetConstructedGenericTypes(typeof(ISubscriber<>)))
-            {
-                var messageType = interfaceType.GetGenericArguments()[0];
+            public static readonly MethodInfo Subscribe = typeof(IBroker<TBase>).GetMethod(nameof(IBroker<TBase>.Subscribe), 1, new[] { typeof(IBaseSubscriber<,>).MakeGenericType(typeof(TBase), Type.MakeGenericMethodParameter(0)) }) ?? throw new NotImplementedException();
+            public static readonly MethodInfo Unsubscribe = typeof(IBroker<TBase>).GetMethod(nameof(IBroker<TBase>.Unsubscribe), 1, new[] { typeof(IBaseSubscriber<,>).MakeGenericType(typeof(TBase), Type.MakeGenericMethodParameter(0)) }) ?? throw new NotImplementedException();
+        }
 
-                yield return new Subscription(
+
+        public static IEnumerable<Subscription<TBase>> GetSubscriptions<TBase>(this IBaseSubscriber<TBase> subscriber)
+            where TBase : IMessage
+        {
+            foreach (var interfaceType in subscriber.GetType().GetConstructedGenericTypes(typeof(IBaseSubscriber<,>)))
+            {
+                var messageType = interfaceType.GetGenericArguments()[1];
+
+                yield return new Subscription<TBase>(
                     Subscriber: subscriber,
                     Type: interfaceType,
-                    Subscribe: BrokerMethod(subscriber, messageType, SubscribeMethodInfo),
-                    Unsubscribe: BrokerMethod(subscriber, messageType, UnsubscribeMethodInfo)
+                    Subscribe: BrokerMethod<TBase>(subscriber, messageType, MethodInfo<TBase>.Subscribe),
+                    Unsubscribe: BrokerMethod<TBase>(subscriber, messageType, MethodInfo<TBase>.Unsubscribe)
                 );
             }
         }
 
-        private static Action<IBroker> BrokerMethod(ISubscriber subscriber, Type messageType, MethodInfo methodInfo)
+        private static Action<IBroker<TBase>> BrokerMethod<TBase>(IBaseSubscriber<TBase> subscriber, Type messageType, MethodInfo methodInfo)
+            where TBase : IMessage
         {
             var method = methodInfo.MakeGenericMethod(messageType);
 
-            void Method(IBroker broker)
+            void Method(IBroker<TBase> broker)
             {
                 method.Invoke(broker, new[] { subscriber });
             }

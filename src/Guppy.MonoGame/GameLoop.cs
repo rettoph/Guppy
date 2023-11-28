@@ -9,66 +9,45 @@ using Guppy.MonoGame.Common;
 using Guppy.Common;
 using Guppy.GUI;
 using Autofac;
+using Guppy.Common.Extensions;
+using Guppy.MonoGame.Common.Enums;
+using Guppy.Enums;
 
 namespace Guppy.MonoGame
 {
     internal sealed class GameLoop : IGameLoop
     {
-        private readonly ImGuiBatch _batch;
-        private readonly IGuppyProvider _guppies;
-        private readonly List<MonoGameGuppy> _frameables;
+        private IDrawableComponent[] _drawableComponents;
+        private IUpdateableComponent[] _updateableComonents;
 
-        public IGameComponent[] Components { get; private set; }
+        public IGameLoopComponent[] Components { get; private set; }
 
-        public GameLoop(IGuppyProvider guppies, ILifetimeScope lifeTimeScope, IEnumerable<IGameComponent> components)
+        public GameLoop(IEnumerable<IGameLoopComponent> components)
         {
-            _batch = lifeTimeScope.Resolve<ImGuiBatch>();
-            _guppies = guppies;
-            _frameables = _guppies.OfType<MonoGameGuppy>().ToList();
-
-            _guppies.OnGuppyCreated += HandleGuppyCreated;
-            _guppies.OnGuppyDestroyed += HandleGuppyDestroyed;
-
             this.Components = components.ToArray();
+
+            _drawableComponents = this.Components.OfType<IDrawableComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _updateableComonents = this.Components.OfType<IUpdateableComponent>().Sequence(UpdateSequence.Update).ToArray();
+
+            foreach (IGameLoopComponent component in this.Components.Sequence(InitializeSequence.Initialize))
+            {
+                component.Initialize(this);
+            }
         }
 
         public void Draw(GameTime gameTime)
         {
-            foreach (MonoGameGuppy frameable in _frameables)
+            foreach(IDrawableComponent component in _drawableComponents)
             {
-                frameable.Draw(gameTime);
+                component.Draw(gameTime);
             }
-
-
-            _batch.Begin(gameTime);
-            foreach (MonoGameGuppy frameable in _frameables)
-            {
-                frameable.DrawGui(gameTime);
-            }
-            _batch.End();
         }
 
         public void Update(GameTime gameTime)
         {
-            foreach (MonoGameGuppy frameable in _frameables)
+            foreach (IUpdateableComponent component in _updateableComonents)
             {
-                frameable.Update(gameTime);
-            }
-        }
-
-        private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
-        {
-            if (args is MonoGameGuppy frameable)
-            {
-                _frameables.Add(frameable);
-            }
-        }
-
-        private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)
-        {
-            if (args is MonoGameGuppy frameable)
-            {
-                _frameables.Remove(frameable);
+                component.Update(gameTime);
             }
         }
     }

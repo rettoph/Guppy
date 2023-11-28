@@ -8,19 +8,21 @@ namespace Guppy.Common.Extensions
 {
     public static class IBrokerExtensions
     {
-        public static void SubscribeMany(this IBroker bus, IEnumerable<ISubscriber> subscribers)
+        public static void SubscribeMany<TBase>(this IBroker<TBase> broker, IEnumerable<IBaseSubscriber<TBase>> subscribers)
+            where TBase : IMessage
         {
-            foreach(ISubscriber subscriber in subscribers)
+            foreach(IBaseSubscriber<TBase> subscriber in subscribers)
             {
-                bus.Subscribe(subscriber);
+                broker.Subscribe(subscriber);
             }
         }
 
-        public static void UnsubscribeMany(this IBroker bus, IEnumerable<ISubscriber> subscribers)
+        public static void UnsubscribeMany<TBase>(this IBroker<TBase> broker, IEnumerable<IBaseSubscriber<TBase>> subscribers)
+            where TBase : IMessage
         {
-            foreach (ISubscriber subscriber in subscribers)
+            foreach (IBaseSubscriber<TBase> subscriber in subscribers)
             {
-                bus.Unsubscribe(subscriber);
+                broker.Unsubscribe(subscriber);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Guppy.Input.Providers
             _keys = buttons.Where(x => x.Source.Type == ButtonType.Keyboard).ToArray();
         }
 
-        public IEnumerable<IMessage> Update()
+        public IEnumerable<IInput> Update()
         {
             var state = Keyboard.GetState();
 

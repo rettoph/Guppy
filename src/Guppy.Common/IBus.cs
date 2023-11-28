@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IBus : IBroker
+    public interface IBus : IBroker<IMessage>
     {
         Guid Id { get; }
 

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public interface IBusQueue
+    public interface IBusQueue<TBase>
+        where TBase : IMessage
     {
         int Id { get; }
-        void Enqueue(in IMessage message);
+        void Enqueue(in TBase message);
         void Flush();
     }
 }

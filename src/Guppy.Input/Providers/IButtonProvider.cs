@@ -10,7 +10,7 @@ namespace Guppy.Input.Providers
 {
     public interface IButtonProvider
     {
-        IEnumerable<IMessage> Update();
+        IEnumerable<IInput> Update();
         void Clean(IEnumerable<IButton> buttons);
     }
 }

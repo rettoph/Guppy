@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Input.Providers;
+using Guppy.Input.Services;
 using Guppy.MonoGame;
 using Guppy.MonoGame.Common;
 using Guppy.MonoGame.Common.Enums;
@@ -11,20 +12,20 @@ namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class ButtonComponent : IGuppyComponent, IUpdateableComponent
+    internal sealed class ButtonPublishComponent : GameLoopComponent, IUpdateableComponent
     {
+        private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;
         private readonly IButtonProvider[] _providers;
-        private readonly IBus _bus;
 
-        public ButtonComponent(
-            IBus bus,
-            IEnumerable<IButton> inputs,
-            IFiltered<IButtonProvider> providers)
+        public ButtonPublishComponent(
+            IInputService inputs,
+            IEnumerable<IButton> buttons,
+            IEnumerable<IButtonProvider> providers)
         {
-            _bus = bus;
-            _buttons = inputs.ToDictionary(x => x.Key, x => x);
-            _providers = providers.Instances.ToArray();
+            _inputs = inputs;
+            _buttons = buttons.ToDictionary(x => x.Key, x => x);
+            _providers = providers.ToArray();
 
             foreach (var provider in _providers)
             {
@@ -56,11 +57,16 @@ namespace Guppy.Input.Components
         {
             foreach (var provider in _providers)
             {
-                foreach (IMessage data in provider.Update())
+                foreach (IInput data in provider.Update())
                 {
-                    _bus.Enqueue(data);
+                    _inputs.Publish(data);
                 }
             }
+        }
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
         }
     }
 }

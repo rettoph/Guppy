@@ -17,19 +17,22 @@ using Guppy.MonoGame.Common.Enums;
 using Guppy.Common.Extensions;
 using Guppy.Commands.Messages;
 using System.ComponentModel;
+using Guppy.Input;
 
 namespace Guppy.MonoGame.Components
 {
     [AutoLoad]
-    internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent, ISubscriber<Toggle<DebugWindowComponent>>
+    internal sealed class DebugWindowComponent : GuppyComponent, IGuiComponent
     {
         private readonly IGuiStyle _debugWindowStyle;
         private readonly IGui _gui;
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;
+        private IGuppy _guppy;
 
         public DebugWindowComponent(IGui gui, ISettingProvider settings)
         {
+            _guppy = null!;
             _components = Array.Empty<IDebugComponent>();
             _gui = gui;
             _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
@@ -41,6 +44,7 @@ namespace Guppy.MonoGame.Components
         {
             base.Initialize(guppy);
 
+            _guppy = guppy;
             _components = guppy.Components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
@@ -53,7 +57,7 @@ namespace Guppy.MonoGame.Components
 
             using (_gui.Apply(_debugWindowStyle))
             {                
-                if (_gui.Begin($"#{nameof(DebugWindowComponent)}"))
+                if (_gui.Begin($"{_guppy.Name} - {_guppy.Id}"))
                 {
                     foreach(IDebugComponent component in _components)
                     {
@@ -63,11 +67,6 @@ namespace Guppy.MonoGame.Components
 
                 _gui.End();
             }
-        }
-
-        public void Process(in Guid messageId, in Toggle<DebugWindowComponent> message)
-        {
-            _enabled.Value = !_enabled.Value;
         }
     }
 }

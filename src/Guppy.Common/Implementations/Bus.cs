@@ -1,20 +1,20 @@
 ﻿namespace Guppy.Common.Implementations
 {
-    internal class Bus : IBus, IBroker, IDisposable
+    internal class Bus : IBus, IBroker<IMessage>, IDisposable
     {
         private const int DefaultQueue = 0;
 
-        private readonly IBroker _broker;
-        private readonly IBusQueue[] _queues;
-        private readonly Dictionary<Type, IBusQueue> _typeMap;
-        private readonly IBusQueue _default;
+        private readonly IBroker<IMessage> _broker;
+        private readonly IBusQueue<IMessage>[] _queues;
+        private readonly Dictionary<Type, IBusQueue<IMessage>> _typeMap;
+        private readonly IBusQueue<IMessage> _default;
 
-        public IPublisher this[Type type] => _broker[type];
+        public IPublisher<IMessage> this[Type type] => _broker[type];
 
         public Guid Id { get; } = Guid.NewGuid();
 
         public Bus(
-            IBroker broker,
+            IBroker<IMessage> broker,
             IConfiguration<BusConfiguration> configuration)
         {
             _broker = broker;
@@ -22,7 +22,7 @@
             _queues = configuration.Value.TypeQueues.Select(x => x.Queue).Concat(DefaultQueue.Yield())
                 .Distinct()
                 .OrderBy(x => x)
-                .Select(x => new BusQueue(x, _broker))
+                .Select(x => new BusQueue<IMessage>(x, _broker))
                 .ToArray();
 
             _default = this.GetQueue(DefaultQueue);
@@ -55,30 +55,29 @@
             _broker.Publish(message);
         }
 
-        public void Subscribe<T>(ISubscriber<T> subscriber)
-            where T : notnull, IMessage
+        public void Subscribe<T>(IBaseSubscriber<IMessage, T> subscriber)
+            where T : IMessage
         {
             _broker.Subscribe(subscriber);
         }
 
-        public void Unsubscribe<T>(ISubscriber<T> subscriber)
-
-            where T : notnull, IMessage
+        public void Unsubscribe<T>(IBaseSubscriber<IMessage, T> subscriber)
+            where T : IMessage
         {
             _broker.Unsubscribe(subscriber);
         }
 
-        public void Subscribe(ISubscriber subscriber)
+        public void Subscribe(IBaseSubscriber<IMessage> subscriber)
         {
             _broker.Subscribe(subscriber);
         }
 
-        public void Unsubscribe(ISubscriber subscriber)
+        public void Unsubscribe(IBaseSubscriber<IMessage> subscriber)
         {
             _broker.Unsubscribe(subscriber);
         }
 
-        private IBusQueue GetQueue(Type type)
+        private IBusQueue<IMessage> GetQueue(Type type)
         {
             if(_typeMap.TryGetValue(type, out var queue))
             {
@@ -88,7 +87,7 @@
             return _default;
         }
 
-        private IBusQueue GetQueue(int id)
+        private IBusQueue<IMessage> GetQueue(int id)
         {
             return _queues.FirstOrDefault(x => x.Id == id) ?? _default;
         }

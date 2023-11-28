@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Messages
 {
-    public class Toggle<T> : Message<Toggle<T>>
+    public class Toggle<T> : Message<Toggle<T>>, IInput
     {
         public static readonly Toggle<T> Instance = new Toggle<T>(default);
 

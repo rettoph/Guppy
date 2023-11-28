@@ -19,7 +19,7 @@ namespace Guppy.Input.Providers
             _buttons = buttons.Where(x => x.Source.Type == ButtonType.Mouse).ToArray();
         }
 
-        public IEnumerable<IMessage> Update()
+        public IEnumerable<IInput> Update()
         {
             var state = Mouse.GetState();
 

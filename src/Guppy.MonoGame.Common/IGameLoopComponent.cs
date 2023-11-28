@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Common
 {
-    public interface IGameLoop
+    public interface IGameLoopComponent
     {
-        IGameLoopComponent[] Components { get; }
-
-        void Update(GameTime gameTime);
-
-        void Draw(GameTime gameTime);
+        void Initialize(IGameLoop gameLoop);
     }
 }

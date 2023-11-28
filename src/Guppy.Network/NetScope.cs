@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope : 
+    public sealed class NetScope :
         ISubscriber<INetOutgoingMessage>,
         ISubscriber<INetIncomingMessage<UserAction>>, 
         IDisposable
@@ -87,12 +87,12 @@ namespace Guppy.Network
             this.Bound = false;
         }
 
-        void ISubscriber<INetOutgoingMessage>.Process(in Guid messageId, in INetOutgoingMessage message)
+        public void Process(in Guid messageId, in INetOutgoingMessage message)
         {
             message.Send();
         }
 
-        void ISubscriber<INetIncomingMessage<UserAction>>.Process(in Guid messsageId, in INetIncomingMessage<UserAction> message)
+        public void Process(in Guid messsageId, in INetIncomingMessage<UserAction> message)
         {
             if (this.Peer!.Type != PeerType.Client)
             {

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Implementations
 {
-    internal abstract class Publisher : IPublisher
+    internal abstract class Publisher<TBase> : IPublisher<TBase>
+        where TBase : IMessage
     {
         public Type Type { get; }
 
@@ -15,23 +16,24 @@ namespace Guppy.Common.Implementations
             Type = type;
         }
 
-        public abstract void Publish(in IMessage message);
+        public abstract void Publish(in TBase message);
         public abstract void Dispose();
     }
 
-    internal class Publisher<T> : Publisher, IPublisher<T>
-        where T : notnull, IMessage
+    internal class Publisher<TBase, T> : Publisher<TBase>, IPublisher<TBase, T>
+        where TBase : notnull, IMessage
+        where T : TBase
     {
         private delegate void ProcessDelegate(in Guid messageId, in T message);
 
         private ProcessDelegate? _subscribers;
 
-        public Publisher(ISubscriber<T> subscriber) : base(typeof(T))
+        public Publisher(IBaseSubscriber<TBase, T> subscriber) : base(typeof(T))
         {
             _subscribers = subscriber.Process;
         }
 
-        public override void Publish(in IMessage message)
+        public override void Publish(in TBase message)
         {
             if (message is T casted)
             {
@@ -39,7 +41,7 @@ namespace Guppy.Common.Implementations
                 return;
             }
 
-            throw new ArgumentException($"{nameof(Publisher)}::{nameof(Publish)} - Unable to assign {typeof(T).Name} from {message.GetType().Name}", nameof(message));
+            throw new ArgumentException($"{nameof(Publisher<TBase, T>)}::{nameof(Publish)} - Unable to assign {typeof(T).Name} from {message.GetType().Name}", nameof(message));
         }
 
         public void Publish(in T message)
@@ -48,12 +50,12 @@ namespace Guppy.Common.Implementations
             _subscribers?.Invoke(in messageId, in message);
         }
 
-        public void Subscribe(ISubscriber<T> subscriber)
+        public void Subscribe(IBaseSubscriber<TBase, T> subscriber)
         {
             _subscribers += subscriber.Process;
         }
 
-        public void Unsubscribe(ISubscriber<T> subscriber)
+        public void Unsubscribe(IBaseSubscriber<TBase, T> subscriber)
         {
             _subscribers -= subscriber.Process;
         }

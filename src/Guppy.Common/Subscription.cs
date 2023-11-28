@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common
 {
-    public record Subscription(ISubscriber Subscriber, Type Type, Action<IBroker> Subscribe, Action<IBroker> Unsubscribe)
+    public record Subscription<TBase>(IBaseSubscriber<TBase> Subscriber, Type Type, Action<IBroker<TBase>> Subscribe, Action<IBroker<TBase>> Unsubscribe)
+        where TBase : IMessage
     {
     }
 }

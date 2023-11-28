@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Guppy.Input
 {
     internal sealed class Button<T> : IButton
-        where T : IMessage
+        where T : IInput
     {
         public string Key { get; }
 
@@ -28,7 +28,7 @@ namespace Guppy.Input
             this.Source = defaultSource;
         }
 
-        public bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IMessage message)
+        public bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IInput message)
         {
             this.Pressed = pressed;
 

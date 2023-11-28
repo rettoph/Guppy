@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Common
 {
-    public interface IDrawableComponent : IGuppyComponent, ISequenceable<DrawSequence>
+    public interface IDrawableComponent : ISequenceable<DrawSequence>
     {
         void Draw(GameTime gameTime);
     }

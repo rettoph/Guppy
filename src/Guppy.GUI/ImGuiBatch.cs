@@ -1,6 +1,8 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Styling;
+using Guppy.Input;
+using Guppy.Input.Services;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
 using ImGuiNET;
@@ -17,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI
 {
-    internal class ImGuiBatch : ISubscriber<ImGuiKeyEvent>, ISubscriber<ImGuiMouseButtonEvent>
+    internal class ImGuiBatch : IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
@@ -27,7 +29,7 @@ namespace Guppy.GUI
         private readonly GraphicsDevice _graphics;
         private readonly GameWindow _window;
         private readonly IResourceProvider _resources;
-        private readonly IBus _bus;
+        private readonly IInputService _inputService;
         private DateTime _begin;
 
         // Graphics
@@ -79,7 +81,7 @@ namespace Guppy.GUI
         public ImGuiBatch(
             GameWindow window,
             GraphicsDevice graphics,
-            IBus bus,
+            IInputService inputs,
             IResourceProvider resources)
         {
             this.Context = ImGui.CreateContext();
@@ -94,7 +96,7 @@ namespace Guppy.GUI
             _window = window;
             _graphics = graphics;
             _resources = resources;
-            _bus = bus;
+            _inputService = inputs;
 
             _loadedTextures = new Dictionary<IntPtr, Texture2D>();
 
@@ -122,8 +124,8 @@ namespace Guppy.GUI
         public void Dispose()
         {
             _window.TextInput -= this.HandleTextInput;
-            _bus.Unsubscribe<ImGuiKeyEvent>(this);
-            _bus.Unsubscribe<ImGuiMouseButtonEvent>(this);
+            _inputService.Unsubscribe<ImGuiKeyEvent>(this);
+            _inputService.Unsubscribe<ImGuiMouseButtonEvent>(this);
         }
 
         #region ImGuiRenderer
@@ -232,8 +234,8 @@ namespace Guppy.GUI
         /// </summary>
         private void SetupInput()
         {
-            _bus.Subscribe<ImGuiKeyEvent>(this);
-            _bus.Subscribe<ImGuiMouseButtonEvent>(this);
+            _inputService.Subscribe<ImGuiKeyEvent>(this);
+            _inputService.Subscribe<ImGuiMouseButtonEvent>(this);
 
             _window.TextInput += this.HandleTextInput;
 
@@ -429,7 +431,7 @@ namespace Guppy.GUI
 
         #endregion Internals
 
-        void ISubscriber<ImGuiKeyEvent>.Process(in Guid messageId, in ImGuiKeyEvent message)
+        public void Process(in Guid messageId, in ImGuiKeyEvent message)
         {
             if (this.Stale)
             {
@@ -439,7 +441,7 @@ namespace Guppy.GUI
             _keyEvents.Enqueue(message);
         }
 
-        void ISubscriber<ImGuiMouseButtonEvent>.Process(in Guid messageId, in ImGuiMouseButtonEvent message)
+        public void Process(in Guid messageId, in ImGuiMouseButtonEvent message)
         {
             if (this.Stale)
             {
