@@ -10,15 +10,11 @@ namespace Guppy.MonoGame
 {
     internal class TerminalLineBuilder
     {
-        private static readonly Color DarkYellow = new Color(139, 128, 0);
+        private int _lineNumber = 1;
 
         private TerminalLine _line;
 
-        public ConsoleColor ConsoleForegroundColor;
-        public Color XnaForegroundColor;
-
-        public ConsoleColor ConsoleBackgroundColor;
-        public Color XnaBackgroundColor;
+        public Color Color;
 
         public StringBuilder Text;
 
@@ -26,89 +22,62 @@ namespace Guppy.MonoGame
         {
             _line = TerminalLine.Factory.GetInstance();
             this.Text = new StringBuilder();
+
+            this.AppendLineNumber();
         }
 
-        public bool TryAppend(char value, ConsoleColor consoleForegroundColor, ConsoleColor consoleBackgroundColor, [MaybeNullWhen(true)] out TerminalLine previousLine)
+        public bool TryAppend(char value, [MaybeNullWhen(true)] out TerminalLine previousLine)
         {
             if(value == '\n')
             {
-                this.AddSegment();
-
-                previousLine = _line;
-
-                _line = TerminalLine.Factory.GetInstance();
-                _line.Segments.Clear();
-
+                previousLine = this.NewLine();
                 return false;
             }
 
             previousLine = null;
-
-            if (this.ConsoleForegroundColor == consoleForegroundColor && this.ConsoleBackgroundColor == consoleBackgroundColor)
-            {
-                this.Text.Append(value);
-
-                return true;
-            }
-
-            this.AddSegment();
-
-            this.ConsoleForegroundColor = consoleForegroundColor;
-            this.XnaForegroundColor = ToXnaColor(this.ConsoleForegroundColor);
-
-            this.ConsoleBackgroundColor = consoleBackgroundColor;
-            this.XnaBackgroundColor = ToXnaColor(this.ConsoleBackgroundColor);
-
             this.Text.Append(value);
 
             return true;
         }
 
+        public void SetColor(Color color)
+        {
+            this.AddSegment();
+            this.Color = color;
+        }
+
         private void AddSegment()
         {
-            TerminalSegment segment = new TerminalSegment(this.XnaForegroundColor, this.XnaBackgroundColor, this.Text.ToString());
+            if(this.Text.Length == 0)
+            {
+                return;
+            }
+
+            TerminalSegment segment = new TerminalSegment(this.Color, this.Text.ToString());
             _line.Segments.Add(segment);
 
             this.Text.Clear();
         }
-        private Color ToXnaColor(ConsoleColor consoleColor)
+
+        public TerminalLine NewLine()
         {
-            switch (consoleColor)
-            {
-                case ConsoleColor.Black:
-                    return Color.Black;
-                case ConsoleColor.DarkBlue:
-                    return Color.DarkBlue;
-                case ConsoleColor.DarkGreen:
-                    return Color.DarkGreen;
-                case ConsoleColor.DarkCyan:
-                    return Color.DarkCyan;
-                case ConsoleColor.DarkRed:
-                    return Color.DarkRed;
-                case ConsoleColor.DarkMagenta:
-                    return Color.DarkMagenta;
-                case ConsoleColor.DarkYellow:
-                    return TerminalLineBuilder.DarkYellow;
-                case ConsoleColor.Gray:
-                    return Color.Gray;
-                case ConsoleColor.DarkGray:
-                    return Color.DarkGray;
-                case ConsoleColor.Blue:
-                    return Color.Blue;
-                case ConsoleColor.Green:
-                    return Color.Green;
-                case ConsoleColor.Cyan:
-                    return Color.Cyan;
-                case ConsoleColor.Red:
-                    return Color.Red;
-                case ConsoleColor.Magenta:
-                    return Color.Magenta;
-                case ConsoleColor.Yellow:
-                    return Color.Yellow;
-                case ConsoleColor.White:
-                default:
-                    return Color.White;
-            }
+            this.AddSegment();
+
+            var result = _line;
+            _line.CleanText();
+
+            _line = TerminalLine.Factory.GetInstance();
+            _line.Segments.Clear();
+
+            this.AppendLineNumber();
+
+            return result;
+        }
+
+        private void AppendLineNumber()
+        {
+            TerminalSegment segment = new TerminalSegment(Color.White, $"{_lineNumber++}: ");
+            _line.Segments.Add(segment);
         }
     }
 }

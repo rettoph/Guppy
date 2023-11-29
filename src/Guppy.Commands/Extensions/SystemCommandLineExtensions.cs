@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Guppy.Commands.TokenPropertySetters;
+using Guppy.Common;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -11,7 +12,7 @@ namespace Guppy.Commands.Extensions
 {
     internal static class SystemCommandLineExtensions
     {
-        internal static SCL.Command GetSystemCommand(this Command command, IBus bus)
+        internal static SCL.Command GetSystemCommand(this Command command, IBroker<ICommand> broker, ITokenPropertySetter[] tokenSetters)
         {
             SCL.Command scl = new SCL.Command(command.Name, command.Description);
 
@@ -25,9 +26,9 @@ namespace Guppy.Commands.Extensions
                 scl.AddArgument(argument);
             }
 
-            if (command.Type.IsAssignableTo(typeof(IMessage)))
+            if (command.Type.IsAssignableTo(typeof(ICommand)))
             {
-                GenericInvoker(SetHandler, command.Type, command, bus, scl);
+                GenericInvoker(SetHandler, command.Type, command, broker, scl, tokenSetters);
             }
 
             return scl;
@@ -49,7 +50,7 @@ namespace Guppy.Commands.Extensions
         private static readonly MethodInfo ArgumentFactory = GetMethodInfo(nameof(ArgumentFactoryMethod));
         private static Argument<T> ArgumentFactoryMethod<T>(Argument argument)
         {
-            return new Argument<T>(argument.Name, argument.Description);
+            return new Argument<T>(argument.Name, () => default!, argument.Description);
         }
         #endregion
 
@@ -59,7 +60,13 @@ namespace Guppy.Commands.Extensions
         {
             if(!_options.TryGetValue(option, out SCL.Option? scl))
             {
-                scl = (SCL.Option)GenericInvoker(OptionFactory, option.PropertyInfo.PropertyType, option)!;
+                Type type = option.PropertyInfo.PropertyType;
+                if (type.ImplementsGenericTypeDefinition(typeof(Nullable<>)))
+                {
+                    type = Nullable.GetUnderlyingType(type) ?? type;
+                }
+
+                scl = (SCL.Option)GenericInvoker(OptionFactory, type, option)!;
                 _options.Add(option, scl);
             }
 
@@ -78,13 +85,17 @@ namespace Guppy.Commands.Extensions
 
         #region Handler
         private static readonly MethodInfo SetHandler = GetMethodInfo(nameof(SetHandlerMethod));
-        private static void SetHandlerMethod<T>(Command command, IBus bus, SCL.Command scl)
-            where T : IMessage
+        private static void SetHandlerMethod<T>(Command command, IBroker<ICommand> bus, SCL.Command scl, ITokenPropertySetter[] tokenSetters)
+            where T : ICommand
         {
             scl.SetHandler(value =>
-            {
-                bus.Enqueue(value);
-            }, new Binder<T>(command));
+                {
+                    bus.Publish(value);
+                }, 
+                new Binder<T>(
+                    command, 
+                    tokenSetters)
+            );
         }
         #endregion
 

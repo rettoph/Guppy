@@ -50,5 +50,10 @@ namespace Guppy.MonoGame
                 component.Update(gameTime);
             }
         }
+
+        public void Dispose()
+        {
+            this.Guppies.Dispose();
+        }
     }
 }

@@ -9,47 +9,101 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Configuration;
+using System.CommandLine.IO;
+using Guppy.Resources.Providers;
 
 namespace Guppy.MonoGame
 {
     internal class Terminal : ITerminal
     {
-        public const int BufferSize = 1 << 10;
+        private readonly TerminalTextWriter _out;
 
-        private readonly TerminalTextWriter _writer;
+        public const int BufferSize = 1 << 11;
 
         public readonly Buffer<TerminalLine> Lines = new Buffer<TerminalLine>(BufferSize);
         public TerminalLineBuilder _currentLine = new TerminalLineBuilder();
+        public int FirstLineNumber { get; private set; } = 1;
 
+        public IStandardStreamWriter Out => _out;
+        public IStandardStreamWriter Error { get; }
+        public bool IsOutputRedirected { get; }
+        public bool IsErrorRedirected { get; }
+        public bool IsInputRedirected { get; }
 
-        public Terminal()
+        TextWriter ITerminal.Out => _out;
+
+        public Color Color
         {
-            _writer = new TerminalTextWriter(this);
+            get => _currentLine.Color;
+            set => _currentLine.SetColor(value);
+        }
 
-            Console.SetOut(_writer);
-            Console.SetError(_writer);
+        public TerminalTheme Theme { get; private set; }
+
+        public Terminal(TerminalTheme theme)
+        {
+            _out = new TerminalTextWriter(this);
+            this.Error = new TerminalErrorTextWriter(this, theme.Error);
+            this.Theme = theme;
+
+            this.IsOutputRedirected = true;
+            this.IsErrorRedirected = true;
+            this.IsInputRedirected = true;
+
+            this.Color = theme.Default;
+
         }
 
         public void WriteLine(string value)
         {
-            //this.WriteLine(value, _lastColor);
+            this.Write(value);
+            this.AddLine(_currentLine.NewLine());
         }
 
         public void WriteLine(string value, Color color)
         {
-            //this.Segments.Add((color, value));
+            var oldColor = this.Color;
+            _currentLine.SetColor(color);
+            this.WriteLine(value);
+
+            this.Color = oldColor;
         }
 
-        public void Write(char value, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+        public void Write(string value)
         {
-            if(_currentLine.TryAppend(value, foregroundColor, backgroundColor, out TerminalLine? line) == false)
-            {
-                this.Lines.Add(line, out TerminalLine oldLine);
+            _currentLine.Text.Append(value);
+        }
 
-                if(oldLine is not null)
-                {
-                    TerminalLine.Factory.TryReturnToPool(oldLine);
-                }
+        public void Write(string value, Color color)
+        {
+            var oldColor = this.Color;
+            _currentLine.SetColor(color);
+            this.Write(value);
+
+            this.Color = oldColor;
+        }
+
+        public void NewLine()
+        {
+            this.AddLine(_currentLine.NewLine());
+        }
+
+        public void Write(char value)
+        {
+            if(_currentLine.TryAppend(value, out TerminalLine? line) == false)
+            {
+                this.AddLine(line);
+            }
+        }
+
+        private void AddLine(TerminalLine line)
+        {
+            this.Lines.Add(line, out TerminalLine oldLine);
+
+            if (oldLine is not null)
+            {
+                TerminalLine.Factory.TryReturnToPool(oldLine);
+                this.FirstLineNumber++;
             }
         }
     }

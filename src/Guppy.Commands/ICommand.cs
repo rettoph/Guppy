@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Commands.Services
+namespace Guppy.Commands
 {
-    public interface ICommandService : IBroker<ICommand>
+    public interface ICommand : IMessage
     {
-        void Invoke(string input);
     }
 }

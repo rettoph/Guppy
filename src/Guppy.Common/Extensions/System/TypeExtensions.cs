@@ -143,5 +143,43 @@ namespace System
                 }
             }
         }
+
+        public static bool ImplementsGenericTypeDefinition(this Type type, Type genericTypeDefinition)
+        {
+            if (!genericTypeDefinition.IsGenericTypeDefinition)
+            {
+                throw new ArgumentException($"{nameof(genericTypeDefinition)} value of {genericTypeDefinition.Name} is not a valid Generic Type Definition.");
+            }
+
+            if(genericTypeDefinition.IsInterface)
+            {
+                foreach (var interfaceType in type.GetInterfaces())
+                {
+                    if (interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericTypeDefinition)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            Type? currentType = type;
+
+            while(currentType is not null)
+            {
+                if(currentType.IsGenericType)
+                {
+                    if(currentType.GetGenericTypeDefinition() == genericTypeDefinition)
+                    {
+                        return true;
+                    }
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            return false;
+        }
     }
 }

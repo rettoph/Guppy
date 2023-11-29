@@ -1,8 +1,10 @@
 ﻿using Guppy.Commands.Arguments;
 using Guppy.Commands.Extensions;
+using Guppy.Commands.TokenPropertySetters;
 using Guppy.Common;
 using System;
 using System.Collections.Generic;
+using System.CommandLine;
 using System.CommandLine.Binding;
 using System.CommandLine.Parsing;
 using System.Linq;
@@ -14,11 +16,21 @@ namespace Guppy.Commands
     internal class Binder<T> : BinderBase<T>
         where T : IMessage
     {
-        private Command _command;
+        private readonly Command _command;
+        private readonly Dictionary<Type, ITokenPropertySetter> _tokenSetters;
 
-        public Binder(Command command)
+        public Binder(Command command, ITokenPropertySetter[] tokenSetters)
         {
             _command = command;
+            _tokenSetters = new Dictionary<Type, ITokenPropertySetter>();
+
+            _tokenSetters = command.Arguments
+                .Select(x => x.PropertyInfo.PropertyType)
+                .Concat(command.Options.Select(x => x.PropertyInfo.PropertyType))
+                .Distinct()
+                .Select(p => (p, tokenSetters.FirstOrDefault(s => s.AppliesTo(p))))
+                .Where(x => x.Item2 is not null)
+                .ToDictionary(x => x.Item1, x => x.Item2!);
         }
 
         protected override T GetBoundValue(BindingContext bindingContext)
@@ -35,9 +47,9 @@ namespace Guppy.Commands
                     continue;
                 }
 
-                if(value is Token token)
+                if(value is Token token && _tokenSetters.TryGetValue(option.PropertyInfo.PropertyType, out var setter))
                 {
-                    option.PropertyInfo.SetValue(instance, token.Value);
+                    setter.SetValue(option.PropertyInfo, instance, token);
                     continue;
                 }
 
@@ -58,9 +70,9 @@ namespace Guppy.Commands
                     continue;
                 }
 
-                if (value is Token token)
+                if (value is Token token && _tokenSetters.TryGetValue(argument.PropertyInfo.PropertyType, out var setter))
                 {
-                    argument.PropertyInfo.SetValue(instance, token.Value);
+                    setter.SetValue(argument.PropertyInfo, instance, token);
                     continue;
                 }
 

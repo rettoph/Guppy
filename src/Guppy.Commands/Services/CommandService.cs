@@ -1,5 +1,10 @@
-﻿using Guppy.Commands.Extensions;
+﻿using Guppy.Attributes;
+using Guppy.Commands.Extensions;
+using Guppy.Commands.TokenPropertySetters;
 using Guppy.Common;
+using Guppy.Common.Extensions;
+using Guppy.Common.Implementations;
+using Guppy.Common.Providers;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -10,22 +15,30 @@ using System.Windows.Input;
 
 namespace Guppy.Commands.Services
 {
-    internal sealed class CommandService : ICommandService
+    [GuppyFilter<IGuppy>]
+    internal sealed class CommandService : Broker<ICommand>, ICommandService
     {
         private readonly RootCommand _root;
         private Dictionary<Command, SCL.Command> _commands;
+        private IConsole _console;
 
-        public CommandService(IBus bus, IEnumerable<Command> commands)
+        public CommandService(
+            IEnumerable<Command> commands, 
+            IEnumerable<ITokenPropertySetter> tokenSetters,
+            IConsole console, 
+            IConfiguration<BrokerConfiguration<ICommand>> configuration) : base(configuration)
         {
+            _console = console;
             _commands = new Dictionary<Command, SCL.Command>();
             _root = new RootCommand()
             {
-                Name = ">"
+                Name = ">",
             };
 
+            var tokenSettersArray = tokenSetters.ToArray();
             foreach (Command command in commands)
             {
-                _commands.Add(command, command.GetSystemCommand(bus));
+                _commands.Add(command, command.GetSystemCommand(this, tokenSettersArray));
             }
 
             // Nest all commands as needed
@@ -38,7 +51,7 @@ namespace Guppy.Commands.Services
 
         public void Invoke(string input)
         {
-            _root.Invoke(input);
+            _root.Invoke(input, _console);
         }
     }
 }

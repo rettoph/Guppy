@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Commands.Extensions;
+using Guppy.Common;
 using Guppy.Configurations;
 
 namespace Guppy.Commands.Attributes

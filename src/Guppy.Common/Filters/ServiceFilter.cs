@@ -21,6 +21,11 @@ namespace Guppy.Common.Filters
 
         public virtual bool AppliesTo(Type type)
         {
+            if(this.Type.IsGenericTypeDefinition && type.ImplementsGenericTypeDefinition(this.Type))
+            {
+                return true;
+            }
+
             var result = this.Type.IsAssignableFrom(type);
 
             return result;

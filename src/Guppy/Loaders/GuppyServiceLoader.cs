@@ -19,7 +19,7 @@ namespace Guppy.Loaders
 
             services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
 
-            services.RegisterType<BulkBusSubscriptionProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<BulkGuppyBrokerSubscriptionProvider<IBus, IMessage>>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.Register<ILogger>(p =>
             {

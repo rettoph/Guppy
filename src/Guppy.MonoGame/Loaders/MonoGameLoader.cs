@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Guppy.Attributes;
 using Guppy.MonoGame.Components.Guppy;
+using Guppy.Common.Autofac;
 
 namespace Guppy.MonoGame.Loaders
 {
@@ -38,7 +39,8 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterInstance<GameWindow>(_window).SingleInstance();
             services.RegisterType<SpriteBatch>().SingleInstance();
 
-            services.RegisterType<Terminal>().As<ITerminal>().AsSelf().InstancePerLifetimeScope();
+            services.RegisterType<Terminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
+            services.RegisterType<TerminalTheme>().AsSelf().SingleInstance();
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));

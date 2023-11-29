@@ -14,5 +14,12 @@ namespace Guppy.MonoGame
         public static Factory<TerminalLine> Factory = new Factory<TerminalLine>(() => new TerminalLine(), PoolSize);
 
         public List<TerminalSegment> Segments = new List<TerminalSegment>();
+
+        public string Text = string.Empty;
+
+        public void CleanText()
+        {
+            this.Text = string.Join("", this.Segments.Select(x => x.Text));
+        }
     }
 }

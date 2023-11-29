@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Common
 {
-    public interface IGame
+    public interface IGame : IDisposable
     {
         IGuppyProvider Guppies { get; }
 

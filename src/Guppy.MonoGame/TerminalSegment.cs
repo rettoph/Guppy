@@ -9,15 +9,12 @@ namespace Guppy.MonoGame
 {
     internal class TerminalSegment
     {
-        public readonly Vector4 ForegroundColor;
-        public readonly Vector4 BackgroundColor;
+        public readonly Vector4 Color;
         public readonly string Text;
 
-        public TerminalSegment(Color foregroundColor, Color backgroundColor, string text)
+        public TerminalSegment(Color color, string text)
         {
-            this.ForegroundColor = foregroundColor.ToVector4();
-            this.BackgroundColor = backgroundColor.ToVector4();
-
+            this.Color = color.ToVector4();
             this.Text = text;
         }
     }

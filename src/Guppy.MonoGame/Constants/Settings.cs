@@ -1,4 +1,5 @@
 ﻿using Guppy.Resources;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Guppy.MonoGame.Constants
     {
         public static Setting<bool> IsDebugWindowEnabled = Setting.Get<bool>(nameof(IsDebugWindowEnabled));
         public static Setting<bool> IsTerminalWindowEnabled = Setting.Get<bool>(nameof(IsTerminalWindowEnabled));
+        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel));
     }
 }

@@ -26,6 +26,7 @@ namespace Guppy.MonoGame.Components.Guppy
         private readonly ResourceValue<Style> _debugWindowStyle;
         private readonly Terminal _terminal;
 
+        private string _filter;
         private string _input;
         private float _inputContainerHeight;
 
@@ -42,6 +43,7 @@ namespace Guppy.MonoGame.Components.Guppy
             _gui = gui;
             _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
             _terminal = terminal;
+            _filter = string.Empty;
             _input = string.Empty;
             _inputContainerHeight = 0;
             _scrolledToBottom = true;
@@ -71,13 +73,25 @@ namespace Guppy.MonoGame.Components.Guppy
 
                 GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
                 windowClass.ClassId = _gui.GetID(nameof(TerminalWindowComponent));
-                windowClass.DockNodeFlagsOverrideSet = GuiDockNodeFlags.NoDockingSplit;
                 windowClass.DockingAllowUnclassed = false;
 
                 _gui.SetNextWindowClass(windowClass);
                 _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
-                if (_gui.Begin(_guppy.Name, GuiWindowFlags.NoScrollbar))
+                if (_gui.Begin($"{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoScrollbar))
                 {
+                    if (_gui.BeginChild("#filter-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
+                    {
+                        _gui.PushItemWidth(-1);
+                        if (_gui.InputText("#filter", ref _filter, 1 << 11, GuiInputTextFlags.EnterReturnsTrue))
+                        {
+                            _commands.Invoke(_filter);
+                            _input = string.Empty;
+                        }
+                        _gui.PopItemWidth();
+                    }
+
+                    _gui.EndChild();
+
                     _gui.PushStyleVar(GuiStyleVar.WindowPadding, new Vector2(5, 5));
 
                     if (_gui.BeginChild("##output-container", new Vector2(-1, _gui.GetContentRegionAvail().Y - _inputContainerHeight), GuiChildFlags.AlwaysUseWindowPadding, GuiWindowFlags.HorizontalScrollbar))
@@ -86,11 +100,15 @@ namespace Guppy.MonoGame.Components.Guppy
 
                         foreach (TerminalLine line in _terminal.Lines)
                         {
-                            _gui.NewLine();
-                            foreach (TerminalSegment segment in line.Segments)
+                            if (_filter == string.Empty || line.Text.Contains(_filter, StringComparison.InvariantCultureIgnoreCase))
                             {
-                                _gui.SameLine();
-                                _gui.TextColored(segment.ForegroundColor, segment.Text);
+                                _gui.NewLine();
+
+                                foreach (TerminalSegment segment in line.Segments)
+                                {
+                                    _gui.SameLine();
+                                    _gui.TextColored(segment.Color, segment.Text);
+                                }
                             }
                         }
                     }
@@ -107,8 +125,9 @@ namespace Guppy.MonoGame.Components.Guppy
                     if (_gui.BeginChild("#input-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
                     {
                         _gui.PushItemWidth(-1);
-                        if (_gui.InputText("#input", ref _input, 1 << 11, GuiInputTextFlags.EnterReturnsTrue))
+                        if (_gui.InputText("#input", ref _input, 1 << 11, GuiInputTextFlags.EnterReturnsTrue) && _input != string.Empty)
                         {
+                            _gui.SetKeyboardFocusHere(-1);
                             _commands.Invoke(_input);
                             _input = string.Empty;
                         }

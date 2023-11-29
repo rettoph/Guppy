@@ -3,6 +3,7 @@ using Guppy.MonoGame.Constants;
 using Guppy.Resources;
 using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
+using Serilog.Events;
 
 namespace MonoGame.Loaders
 {
@@ -13,6 +14,12 @@ namespace MonoGame.Loaders
         {
             settings.Register(Settings.IsDebugWindowEnabled, false);
             settings.Register(Settings.IsTerminalWindowEnabled, false);
+
+#if DEBUG
+            settings.Register(Settings.LogLevel, LogEventLevel.Debug);
+#else
+            settings.Register(Settings.LogLevel, LogEventLevel.Information);
+#endif
         }
     }
 }
