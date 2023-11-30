@@ -3,6 +3,8 @@ using Guppy.Common;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Binding;
+using System.CommandLine.Invocation;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -16,12 +18,12 @@ namespace Guppy.Commands.Extensions
         {
             SCL.Command scl = new SCL.Command(command.Name, command.Description);
 
-            foreach(SCL.Option option in command.Options.Select(o => o.GetSystemOption()))
+            foreach(SCL.Option option in command.Options.Select(o => o.SCL))
             {
                 scl.AddOption(option);
             }
 
-            foreach (SCL.Argument argument in command.Arguments.Select(o => o.GetSystemArgument()))
+            foreach (SCL.Argument argument in command.Arguments.Select(o => o.SCL))
             {
                 scl.AddArgument(argument);
             }
@@ -35,66 +37,64 @@ namespace Guppy.Commands.Extensions
         }
 
         #region Arguments
-        private static Dictionary<Argument, SCL.Argument> _arguments = new Dictionary<Argument, SCL.Argument>();
-        internal static SCL.Argument GetSystemArgument(this Argument argument)
+        internal record ArgumentBinder(SCL.Argument Argument, Func<InvocationContext, object?> Binder);
+        internal static ArgumentBinder GetSystemArgumentBinder(this Argument argument)
         {
-            if (!_arguments.TryGetValue(argument, out SCL.Argument? scl))
-            {
-                scl = (SCL.Argument)GenericInvoker(ArgumentFactory, argument.PropertyInfo.PropertyType, argument)!;
-                _arguments.Add(argument, scl);
-            }
+            return (ArgumentBinder)GenericInvoker(ArgumentFactory, argument.PropertyInfo.PropertyType, argument)!;
+        }
 
-            return scl;
+        internal static object? GetValue(this Argument argument, InvocationContext context)
+        {
+            return argument.GetSystemArgumentBinder().Binder(context);
         }
 
         private static readonly MethodInfo ArgumentFactory = GetMethodInfo(nameof(ArgumentFactoryMethod));
-        private static Argument<T> ArgumentFactoryMethod<T>(Argument argument)
+        private static ArgumentBinder ArgumentFactoryMethod<T>(Argument argument)
         {
-            return new Argument<T>(argument.Name, () => default!, argument.Description);
+            SCL.Argument<T> arg = new Argument<T>(argument.Name, () => default!, argument.Description);
+            return new ArgumentBinder(
+                arg,
+                bc => bc.ParseResult.GetValueForArgument(arg));
         }
         #endregion
 
         #region Options
-        private static Dictionary<Option, SCL.Option> _options = new Dictionary<Option, SCL.Option>();
-        internal static SCL.Option GetSystemOption(this Option option)
+        internal record OptionBinder(SCL.Option Option, Func<InvocationContext, object?> Binder);
+        internal static OptionBinder GetSystemOptionBinder(this Option option)
         {
-            if(!_options.TryGetValue(option, out SCL.Option? scl))
-            {
-                Type type = option.PropertyInfo.PropertyType;
-                if (type.ImplementsGenericTypeDefinition(typeof(Nullable<>)))
-                {
-                    type = Nullable.GetUnderlyingType(type) ?? type;
-                }
-
-                scl = (SCL.Option)GenericInvoker(OptionFactory, type, option)!;
-                _options.Add(option, scl);
-            }
-
-            return scl;
+            return(OptionBinder)GenericInvoker(OptionFactory, option.PropertyInfo.PropertyType, option)!;
         }
 
         private static readonly MethodInfo OptionFactory = GetMethodInfo(nameof(OptionFactoryMethod));
-        private static Option<T> OptionFactoryMethod<T>(Option option)
+        private static OptionBinder OptionFactoryMethod<T>(Option option)
         {
-            return new Option<T>(option.Names, option.Description)
+            Option<T> sclOption = new Option<T>(option.Names, option.Description)
             {
                 IsRequired = option.Required
             };
+
+            return new OptionBinder(
+                sclOption,
+                bc => bc.ParseResult.GetValueForOption(sclOption));
         }
         #endregion
 
         #region Handler
         private static readonly MethodInfo SetHandler = GetMethodInfo(nameof(SetHandlerMethod));
-        private static void SetHandlerMethod<T>(Command command, IBroker<ICommand> bus, SCL.Command scl, ITokenPropertySetter[] tokenSetters)
-            where T : ICommand
+        private static void SetHandlerMethod<T>(Command command, IBroker<ICommand> broker, SCL.Command scl, ITokenPropertySetter[] tokenSetters)
+            where T : ICommand, new()
         {
-            scl.SetHandler(value =>
+            var binder = new Binder<T>(
+                command,
+                tokenSetters);
+
+            scl.SetHandler(context =>
                 {
-                    bus.Publish(value);
-                }, 
-                new Binder<T>(
-                    command, 
-                    tokenSetters)
+                    if(binder.TryGetBoundValue(context, out T instance))
+                    {
+                        broker.Publish(instance);
+                    }
+                }
             );
         }
         #endregion
