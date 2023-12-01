@@ -1,6 +1,7 @@
 ﻿using Autofac;
+using Guppy.Common;
 
-namespace Guppy.Common.Implementations
+namespace Guppy
 {
     internal sealed class Scoped<T> : IScoped<T>, IDisposable
         where T : notnull

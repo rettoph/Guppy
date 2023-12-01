@@ -102,7 +102,7 @@ namespace Guppy.MonoGame
 
             if (oldLine is not null)
             {
-                TerminalLine.Factory.TryReturnToPool(oldLine);
+                TerminalLine.Factory.TryReturn(ref oldLine);
                 this.FirstLineNumber++;
             }
         }

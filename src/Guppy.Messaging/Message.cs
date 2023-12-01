@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.Messaging
 {
-    public interface IMessage
+    public class Message<T> : IMessage
     {
-        Type Type { get; }
+        public Type Type => typeof(T);
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Guppy.Common.Collections
 {
-    public class Pool<T> : IPool<T>
+    public class Pool<T>
     {
         private Stack<T> _pool;
         private ushort _poolSize;

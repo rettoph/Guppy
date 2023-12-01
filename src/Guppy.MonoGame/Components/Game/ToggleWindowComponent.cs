@@ -28,12 +28,12 @@ namespace Guppy.MonoGame.Components.Game
             _terminal = settings.Get(Settings.IsTerminalWindowEnabled);
         }
 
-        public void Process(in Guid messageId, in Toggle<GuppyDebugWindowComponent> message)
+        public void Process(in Guid messageId, Toggle<GuppyDebugWindowComponent> message)
         {
             _debug.Value = !_debug.Value;
         }
 
-        public void Process(in Guid messageId, in Toggle<TerminalWindowComponent> message)
+        public void Process(in Guid messageId, Toggle<TerminalWindowComponent> message)
         {
             _terminal.Value = !_terminal.Value;
         }

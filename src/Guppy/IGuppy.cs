@@ -12,5 +12,10 @@ namespace Guppy
         event OnEventDelegate<IDisposable>? OnDispose;
 
         void Initialize(ILifetimeScope scope);
+
+        public string ToString()
+        {
+            return $"{this.Name} - {this.Id}";
+        }
     }
 }

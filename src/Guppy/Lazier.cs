@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Implementations
+namespace Guppy
 {
     internal sealed class Lazier<T> : Lazy<T>
         where T : class

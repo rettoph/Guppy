@@ -15,24 +15,10 @@ namespace Guppy.Common.Extensions.Autofac
     {
         public static void RegisteGuppyCommon(this ContainerBuilder services)
         {
-            services.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
-
-            services.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();
-            services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
             services.RegisterType<ServiceFilterProvider>().As<IServiceFilterProvider>().InstancePerLifetimeScope();
             services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
             services.RegisterType<StateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
             services.RegisterType<BulkSubscriptionService>().As<IBulkSubscriptionService>().InstancePerLifetimeScope();
-        }
-
-        public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)
-            where T : new()
-        {
-            services.RegisterInstance(new ConfigurationBuilder<T>(builder));
         }
 
         public static void AddFilter(this ContainerBuilder builder, IServiceFilter filter)

@@ -4,6 +4,7 @@ using LiteNetLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,22 +62,22 @@ namespace Guppy.Network
 
         public override INetIncomingMessage<T> CreateIncoming()
         {
-            return _incomingFactory.GetInstance();
+            return _incomingFactory.BuildInstance();
         }
 
         public INetOutgoingMessage<T> CreateOutgoing()
         {
-            return _outgoingFactory.GetInstance();
+            return _outgoingFactory.BuildInstance();
         }
 
         internal void Recycle(NetIncomingMessage<T> message)
         {
-            _incomingFactory.TryReturnToPool(message);
+            _incomingFactory.TryReturn(ref Unsafe.AsRef<INetIncomingMessage<T>>(message));
         }
 
         internal void Recycle(NetOutgoingMessage<T> message)
         {
-            _outgoingFactory.TryReturnToPool(message);
+            _outgoingFactory.TryReturn(ref Unsafe.AsRef<INetOutgoingMessage<T>>(message));
         }
     }
 }

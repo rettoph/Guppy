@@ -2,6 +2,7 @@
 using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.Common.Providers;
+using Guppy.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Guppy.Providers
 {
     [GuppyFilter<IGuppy>]
     public class BulkGuppyBrokerSubscriptionProvider<TBroker, TMessage> : IBulkSubscriptionProvider
-        where TMessage : IMessage
+        where TMessage : class, IMessage
         where TBroker : IBroker<TMessage>
     {
         private readonly Lazy<TBroker> _service;
@@ -24,12 +25,18 @@ namespace Guppy.Providers
 
         public void Subscribe(IEnumerable<object> instances)
         {
-            _service.Value.SubscribeMany(instances.OfType<IBaseSubscriber<TMessage>>());
+            foreach(IBaseSubscriber<TMessage> subscriber in instances.OfType<IBaseSubscriber<TMessage>>())
+            {
+                _service.Value.Subscribe(subscriber);
+            }
         }
 
         public void Unsubscribe(IEnumerable<object> instances)
         {
-            _service.Value.UnsubscribeMany(instances.OfType<IBaseSubscriber<TMessage>>());
+            foreach (IBaseSubscriber<TMessage> subscriber in instances.OfType<IBaseSubscriber<TMessage>>())
+            {
+                _service.Value.Unsubscribe(subscriber);
+            }
         }
     }
 }

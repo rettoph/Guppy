@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common.Implementations
+namespace Guppy
 {
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class

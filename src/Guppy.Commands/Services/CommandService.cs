@@ -5,6 +5,7 @@ using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
+using Guppy.Messaging;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
@@ -25,8 +26,7 @@ namespace Guppy.Commands.Services
         public CommandService(
             IEnumerable<Command> commands, 
             IEnumerable<ITokenPropertySetter> tokenSetters,
-            IConsole console, 
-            IConfiguration<BrokerConfiguration<ICommand>> configuration) : base(configuration)
+            IConsole console)
         {
             _console = console;
             _commands = new Dictionary<Command, SCL.Command>();

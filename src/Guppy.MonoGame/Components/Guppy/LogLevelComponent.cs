@@ -27,7 +27,7 @@ namespace Guppy.MonoGame.Components.Guppy
             LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value;
         }
 
-        public void Process(in Guid messageId, in LogLevelCommand message)
+        public void Process(in Guid messageId, LogLevelCommand message)
         {
             if(message.Value is null)
             {

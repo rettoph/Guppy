@@ -445,7 +445,7 @@ namespace Guppy.GUI
 
         #endregion Internals
 
-        public void Process(in Guid messageId, in ImGuiKeyEvent message)
+        public void Process(in Guid messageId, ImGuiKeyEvent message)
         {
             if (this.Stale)
             {
@@ -455,7 +455,7 @@ namespace Guppy.GUI
             _keyEvents.Enqueue(message);
         }
 
-        public void Process(in Guid messageId, in ImGuiMouseButtonEvent message)
+        public void Process(in Guid messageId, ImGuiMouseButtonEvent message)
         {
             if (this.Stale)
             {

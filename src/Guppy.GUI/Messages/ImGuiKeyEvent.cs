@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Input;
+using Guppy.Messaging;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,10 @@ namespace Guppy.GUI.Messages
 {
     internal sealed class ImGuiKeyEvent : Message<ImGuiKeyEvent>, IInput
     {
-        public readonly ImGuiNET.ImGuiKey Key;
+        public readonly ImGuiKey Key;
         public readonly bool Down;
 
-        public ImGuiKeyEvent(ImGuiNET.ImGuiKey key, bool down)
+        public ImGuiKeyEvent(ImGuiKey key, bool down)
         {
             Key = key;
             Down = down;

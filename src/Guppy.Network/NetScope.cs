@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Messaging;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
@@ -39,8 +40,7 @@ namespace Guppy.Network
             this.Bus = bus;
             this.Messages = messages;
 
-            this.Bus.Subscribe<INetOutgoingMessage>(this);
-            this.Bus.Subscribe<INetIncomingMessage<UserAction>>(this);
+            this.Bus.Subscribe(this);
 
             this.Users.OnUserJoined += this.HandleUserJoined;
             this.Users.OnUserLeft += this.HandleUserLeft;
@@ -48,8 +48,7 @@ namespace Guppy.Network
 
         public void Dispose()
         {
-            this.Bus.Unsubscribe<INetOutgoingMessage>(this);
-            this.Bus.Unsubscribe<INetIncomingMessage<UserAction>>(this);
+            this.Bus.Unsubscribe(this);
 
             this.Users.OnUserJoined -= this.HandleUserJoined;
             this.Users.OnUserLeft -= this.HandleUserLeft;
@@ -87,12 +86,12 @@ namespace Guppy.Network
             this.Bound = false;
         }
 
-        public void Process(in Guid messageId, in INetOutgoingMessage message)
+        public void Process(in Guid messageId, INetOutgoingMessage message)
         {
             message.Send();
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<UserAction> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
         {
             if (this.Peer!.Type != PeerType.Client)
             {

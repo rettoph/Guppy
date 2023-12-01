@@ -29,11 +29,6 @@ namespace Guppy.Network.Loaders
             services.RegisterType<UShortNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
-
-            services.Configure<BrokerConfiguration<IMessage>>((scope, configuration) =>
-            {
-                configuration.AddMessageAlias<INetOutgoingMessage, INetOutgoingMessage>(true);
-            });
         }
     }
 }

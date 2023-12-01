@@ -20,7 +20,7 @@ namespace Guppy.MonoGame
 
         public TerminalLineBuilder()
         {
-            _line = TerminalLine.Factory.GetInstance();
+            _line = TerminalLine.Factory.BuildInstance();
             this.Text = new StringBuilder();
 
             this.AppendLineNumber();
@@ -66,7 +66,7 @@ namespace Guppy.MonoGame
             var result = _line;
             _line.CleanText();
 
-            _line = TerminalLine.Factory.GetInstance();
+            _line = TerminalLine.Factory.BuildInstance();
             _line.Segments.Clear();
 
             this.AppendLineNumber();

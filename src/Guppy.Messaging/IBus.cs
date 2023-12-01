@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.Messaging
 {
-    public interface IBusQueue<TBase>
-        where TBase : IMessage
+    public interface IBus : IBroker<IMessage>
     {
-        int Id { get; }
-        void Enqueue(in TBase message);
+        void Enqueue(in IMessage message);
+
         void Flush();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Common;
+using Guppy.Messaging;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
@@ -40,7 +41,7 @@ namespace Guppy.Network.Peers
             }
         }
 
-        public void Process(in Guid messsageId, in INetIncomingMessage<UserAction> message)
+        public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
         {
             switch (message.Body.Action)
             {

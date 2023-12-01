@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy.Common
+namespace Guppy.Messaging
 {
-    public interface IPack
+    public interface IMessage
     {
-        string Name { get; }
-        string Path { get; }
+        public Type Type { get; }
     }
 }
