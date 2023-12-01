@@ -16,11 +16,6 @@ namespace Guppy.Resources.Loaders
     [AutoLoad]
     internal sealed class SettingLoader : ISettingLoader
     {
-        public IEnumerable<Setting> GetSettings(ISettingProvider settings)
-        {
-            yield return Settings.Localization;
-        }
-
         public void Load(ISettingProvider settings)
         {
             settings.Register(Settings.Localization, Localization.en_US);

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Loaders;
 using Guppy.MonoGame.Serialization.Json.Converters;
 using System.Text.Json;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.MonoGame.Loaders
 {
+    [AutoLoad]
     internal sealed class JsonLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)

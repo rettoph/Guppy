@@ -1,7 +1,7 @@
-﻿using Guppy.Attributes;
+﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
-using Guppy.Configurations;
 using Guppy.Network.Enums;
 
 namespace Guppy.Network.Attributes
@@ -15,9 +15,9 @@ namespace Guppy.Network.Attributes
             this.Flags = flags;
         }
 
-        protected override void Configure(GuppyConfiguration configuration, Type classType)
+        protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            configuration.Builder.AddFilter(new ServiceFilter<PeerType>(classType, this.Flags));
+            builder.RegisterFilter(new ServiceFilter<PeerType>(classType, this.Flags));
         }
     }
 }

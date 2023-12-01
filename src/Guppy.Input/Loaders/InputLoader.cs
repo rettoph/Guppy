@@ -3,9 +3,11 @@ using Guppy.Loaders;
 using Autofac;
 using Guppy.Input.Services;
 using Guppy.Input.Components;
+using Guppy.Attributes;
 
 namespace Guppy.Input.Loaders
 {
+    [AutoLoad]
     internal sealed class InputLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)

@@ -10,8 +10,11 @@
 
   <ItemGroup>
     <Compile Remove="Configurations\**" />
+    <Compile Remove="Extensions\Microsoft\**" />
     <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="Extensions\Microsoft\**" />
     <None Remove="Configurations\**" />
+    <None Remove="Extensions\Microsoft\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +25,6 @@
     <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\Microsoft\DependencyInjection\" />
   </ItemGroup>
 
 </Project>

@@ -29,7 +29,7 @@ namespace Guppy.Network.Peers
 
             this.Listener = new EventBasedNetListener();
             this.Manager = new NetManager(this.Listener);
-            this.NetScope = scope.BeginLifetimeScope(LifetimeScopeTags.Guppy).Resolve<NetScope>();
+            this.NetScope = scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope).Resolve<NetScope>();
             this.Users = new UserProvider();
             this.Scopes = new ReadOnlyDictionary<byte, NetScope>(_scopes);
 

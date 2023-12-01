@@ -16,12 +16,11 @@ namespace Guppy.Common.Extensions.Autofac
         public static void RegisteGuppyCommon(this ContainerBuilder services)
         {
             services.RegisterType<ServiceFilterProvider>().As<IServiceFilterProvider>().InstancePerLifetimeScope();
-            services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
             services.RegisterType<StateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
             services.RegisterType<BulkSubscriptionService>().As<IBulkSubscriptionService>().InstancePerLifetimeScope();
         }
 
-        public static void AddFilter(this ContainerBuilder builder, IServiceFilter filter)
+        public static void RegisterFilter(this ContainerBuilder builder, IServiceFilter filter)
         {
             builder.RegisterInstance(filter).As<IServiceFilter>().SingleInstance();
         }

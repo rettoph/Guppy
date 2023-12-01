@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Configurations;
+using Guppy.Common.Autofac;
 using Guppy.Enums;
 using System.Reflection;
 
@@ -10,17 +10,19 @@ namespace Guppy.Attributes
         public readonly Type? ServiceType;
         public readonly ServiceLifetime Lifetime;
         public readonly bool RequireAutoLoadAttribute;
+        public readonly object? Tag;
 
-        public ServiceAttribute(ServiceLifetime lifetime, Type? serviceType, bool requireAutoLoadAttribute)
+        public ServiceAttribute(ServiceLifetime lifetime, Type? serviceType, bool requireAutoLoadAttribute, object? tag = null)
         {
             this.Lifetime = lifetime;
             this.ServiceType = serviceType;
             this.RequireAutoLoadAttribute = requireAutoLoadAttribute;
+            this.Tag = tag;
         }
 
-        protected override bool ShouldConfigure(GuppyConfiguration configuration, Type classType)
+        protected override bool ShouldConfigure(ContainerBuilder builder, Type classType)
         {
-            var result =  base.ShouldConfigure(configuration, classType);
+            var result =  base.ShouldConfigure(builder, classType);
 
             if(this.RequireAutoLoadAttribute)
             {
@@ -30,9 +32,9 @@ namespace Guppy.Attributes
             return result;
         }
 
-        protected override void Configure(GuppyConfiguration configuration, Type classType)
+        protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            var service = configuration.Builder.RegisterType(classType).As(this.ServiceType ?? classType);
+            var service = builder.RegisterType(classType).As(this.ServiceType ?? classType);
 
             switch (this.Lifetime)
             {
@@ -40,10 +42,18 @@ namespace Guppy.Attributes
                     service.InstancePerDependency();
                     break;
                 case ServiceLifetime.Scoped:
-                    service.InstancePerLifetimeScope();
+                    if(this.Tag is null)
+                    {
+                        service.InstancePerLifetimeScope();
+                    }
+                    else
+                    {
+                        service.InstancePerMatchingLifetimeScope(this.Tag);
+                    }
+                    
                     break;
                 case ServiceLifetime.Singleton:
-                    service.SingleInstance();
+                    service.InstancePerMatchingLifetimeScope(LifetimeScopeTags.MainScope);
                     break;
             }
         }
@@ -51,7 +61,7 @@ namespace Guppy.Attributes
 
     public class ServiceAttribute<TService> : ServiceAttribute
     {
-        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute) : base(lifetime, typeof(TService), requireAutoLoadAttribute)
+        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute, object? tag = null) : base(lifetime, typeof(TService), requireAutoLoadAttribute, tag)
         {
         }
     }

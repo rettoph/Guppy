@@ -1,7 +1,9 @@
 ﻿using Autofac;
+using Guppy.Common;
 using Guppy.Common.Implementations;
+using Guppy.Common.Providers;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Providers
 {
     internal sealed class FilteredProvider : IFilteredProvider
     {

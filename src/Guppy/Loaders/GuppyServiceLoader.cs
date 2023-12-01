@@ -9,6 +9,7 @@ using System.Text.Json;
 using Guppy.Serialization;
 using Guppy.Common.Autofac;
 using Guppy.Messaging;
+using Guppy.Common.Providers;
 
 namespace Guppy.Loaders
 {
@@ -21,8 +22,10 @@ namespace Guppy.Loaders
 
             services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
 
+            services.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+
             services.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();
-            services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
+            services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             services.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
@@ -30,6 +33,7 @@ namespace Guppy.Loaders
             services.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
 
+            services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
             services.RegisterType<BulkGuppyBrokerSubscriptionProvider<IBus, IMessage>>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.Register<ILogger>(p =>

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
@@ -23,6 +24,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Guppy.MonoGame.Loaders
 {
+    [AutoLoad]
     internal sealed class GameLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)
@@ -30,7 +32,7 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterType<Game>().As<IGame>().SingleInstance();
             services.RegisterType<MenuProvider>().As<IMenuProvider>().InstancePerLifetimeScope();
 
-            services.AddFilter(new ServiceFilter<IGameComponent, Type>(typeof(MonoGameGuppy)));
+            services.RegisterFilter(new ServiceFilter<IGameComponent, Type>(typeof(MonoGameGuppy)));
 
             services.Configure<LoggerConfiguration>((scope, config) =>
             {

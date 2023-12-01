@@ -8,6 +8,7 @@ namespace Guppy.Common.Autofac
 {
     public static class LifetimeScopeTags
     {
-        public static readonly object Guppy = new object();
+        public static readonly object MainScope = nameof(MainScope);
+        public static readonly object GuppyScope = nameof(GuppyScope);
     }
 }

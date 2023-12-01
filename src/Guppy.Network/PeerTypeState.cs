@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common.Autofac;
+using Guppy.Extensions.Autofac;
 using Guppy.Network.Enums;
 
 namespace Guppy.Network
@@ -12,13 +13,9 @@ namespace Guppy.Network
 
         public PeerTypeState(ILifetimeScope scope)
         {
-            try
+            if(scope.HasTag(LifetimeScopeTags.GuppyScope))
             {
                 scope.TryResolve(out _scope);
-            }
-            catch
-            {
-
             }
         }
 

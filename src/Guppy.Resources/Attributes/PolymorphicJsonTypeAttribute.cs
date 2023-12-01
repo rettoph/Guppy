@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Configurations;
 using Guppy.Resources.Serialization.Json;
 using Guppy.Serialization;
 
@@ -26,14 +25,14 @@ namespace Guppy.Resources.Attributes
             ThrowIf.Type.IsNotGenericType(this.Type);
         }
 
-        protected override void Configure(GuppyConfiguration configuration, Type classType)
+        protected override void Configure(ContainerBuilder builder, Type classType)
         {
             if(classType.IsGenericTypeDefinition && this.Type?.GetGenericTypeDefinition() != classType)
             {
                 return;
             }
 
-            configuration.Builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, this.Type ?? classType)).SingleInstance();
+            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, this.Type ?? classType)).SingleInstance();
         }
     }
 

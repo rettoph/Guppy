@@ -2,7 +2,6 @@
 using Guppy.Attributes;
 using Guppy.Commands.Extensions;
 using Guppy.Common;
-using Guppy.Configurations;
 
 namespace Guppy.Commands.Attributes
 {
@@ -19,7 +18,7 @@ namespace Guppy.Commands.Attributes
             this.Description = description;
         }
 
-        protected override void Configure(GuppyConfiguration configuration, Type classType)
+        protected override void Configure(ContainerBuilder builder, Type classType)
         {
             Command command = new Command(
                 type: classType,
@@ -29,7 +28,7 @@ namespace Guppy.Commands.Attributes
                 options: FactoryAttribute<Option>.GetAll(classType),
                 arguments: FactoryAttribute<Argument>.GetAll(classType));
 
-            configuration.Builder.RegisterInstance<Command>(command).SingleInstance();
+            builder.RegisterInstance<Command>(command).SingleInstance();
         }
     }
 

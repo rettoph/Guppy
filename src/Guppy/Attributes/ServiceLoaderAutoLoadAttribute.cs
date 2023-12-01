@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Configurations;
+using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ namespace Guppy.Attributes
 {
     internal sealed class ServiceLoaderAutoLoadAttribute : AutoLoadingAttribute
     {
-        protected override void Configure(GuppyConfiguration configuration, Type classType)
+        protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            configuration.AddServiceLoader(classType);
+            builder.RegisterServiceLoader(classType);
         }
     }
 }

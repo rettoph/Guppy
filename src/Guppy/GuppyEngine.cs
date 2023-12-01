@@ -4,7 +4,6 @@ using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.Common.Providers;
 using Guppy.Common.Utilities;
-using Guppy.Configurations;
 using Guppy.Enums;
 using Guppy.Loaders;
 using Guppy.Providers;
@@ -36,11 +35,12 @@ namespace Guppy
         }
 
         public IGuppyProvider Start(
-            Action<GuppyConfiguration>? build = null,
+            Action<ContainerBuilder>? build = null,
             Assembly? entry = null)
         {
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
-            var container = GuppyConfiguration.Build(this.Environment, entry, this.Libraries, build);
+
+            var container = GuppyBuilder.Build(this.Environment, entry, this.Libraries, build);
 
             return container.Resolve<IGuppyProvider>();
         }

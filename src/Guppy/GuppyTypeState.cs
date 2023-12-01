@@ -2,6 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Common.Autofac;
 using Guppy.Common.Implementations;
+using Guppy.Extensions.Autofac;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,9 @@ namespace Guppy
 
         public GuppyTypeState(ILifetimeScope scope)
         {
-            try
+            if(scope.HasTag(LifetimeScopeTags.GuppyScope))
             {
                 scope.TryResolve(out _guppy);
-            }
-            catch
-            {
-
             }
         }
 

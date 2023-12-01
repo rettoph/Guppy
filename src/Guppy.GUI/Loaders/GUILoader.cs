@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.GUI.Loaders
 {
+    [AutoLoad]
     internal sealed class GUILoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)

@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Configurations;
 using Guppy.MonoGame.Common;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace Guppy.MonoGame.Extensions
     {
         public static IGame StartGame(
             this GuppyEngine engine, 
-            Action<GuppyConfiguration>? build = null,
+            Action<ContainerBuilder>? build = null,
             Assembly? entry = null)
         {
             return engine.Start(build, entry).Scope.Resolve<IGame>();

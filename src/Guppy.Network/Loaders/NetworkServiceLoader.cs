@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Configuration;
+using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Autofac;
 using Guppy.Common.Extensions.Autofac;
@@ -14,12 +15,13 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Network.Loaders
 {
+    [AutoLoad]
     internal sealed class NetworkServiceLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<NetSerializerProvider>().As<INetSerializerProvider>().InstancePerLifetimeScope();
-            services.RegisterType<NetScope>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.Guppy);
+            services.RegisterType<NetScope>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
             services.RegisterType<ClientPeer>().SingleInstance();
             services.RegisterType<ServerPeer>().SingleInstance();
             services.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();

@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Configurations;
 
 namespace Guppy.Attributes
 {
@@ -10,22 +9,22 @@ namespace Guppy.Attributes
         {
         }
 
-        public virtual bool TryConfigure(GuppyConfiguration configuration, Type classType)
+        public virtual bool TryConfigure(ContainerBuilder builder, Type classType)
         {
-            if(this.ShouldConfigure(configuration, classType))
+            if(this.ShouldConfigure(builder, classType))
             {
-                this.Configure(configuration, classType);
+                this.Configure(builder, classType);
                 return true;
             }
 
             return false;
         }
 
-        protected virtual bool ShouldConfigure(GuppyConfiguration configuration, Type classType)
+        protected virtual bool ShouldConfigure(ContainerBuilder builder, Type classType)
         {
             return true;
         }
 
-        protected abstract void Configure(GuppyConfiguration configuration, Type classType);
+        protected abstract void Configure(ContainerBuilder builder, Type classType);
     }
 }

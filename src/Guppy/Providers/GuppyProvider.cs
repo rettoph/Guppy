@@ -48,7 +48,7 @@ namespace Guppy.Providers
         {
             this.Initialize();
 
-            var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.Guppy, builder =>
+            var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope, builder =>
             {
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
             });
@@ -65,7 +65,7 @@ namespace Guppy.Providers
 
             this.Initialize();
 
-            var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.Guppy, builder =>
+            var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope, builder =>
             {
                 builder.RegisterType(guppyType).AsSelf().AsImplementedInterfaces().SingleInstance();
             });

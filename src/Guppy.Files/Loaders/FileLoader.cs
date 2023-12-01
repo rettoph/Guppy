@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Attributes;
 using Guppy.Files.Providers;
 using Guppy.Files.Services;
 using Guppy.Loaders;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Files.Loaders
 {
+    [AutoLoad]
     internal class FileLoader : IServiceLoader
     {
         public void ConfigureServices(ContainerBuilder services)
