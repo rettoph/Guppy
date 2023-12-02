@@ -6,9 +6,8 @@ using Guppy.Input.Enums;
 using Guppy.Input.Messages;
 using Guppy.Input.Providers;
 using Guppy.Input.Services;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Common;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -17,12 +16,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Game.Common;
 
 namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class MousePublishComponent : GlobalComponent, IUpdateableComponent
+    internal sealed class MousePublishComponent : GlobalComponent, IGuppyUpdateable
     {
         private readonly IInputService _inputs;
         private readonly Cursor _cursor;

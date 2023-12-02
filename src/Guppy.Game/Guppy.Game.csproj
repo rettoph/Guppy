@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="..\Guppy.Commands\Guppy.Commands.csproj" />
+    <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
+    <ProjectReference Include="..\Guppy.GUI\Guppy.GUI.csproj" />
+    <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\Guppy\Guppy.csproj" />
+  </ItemGroup>
+
+</Project>

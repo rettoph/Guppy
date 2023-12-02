@@ -13,11 +13,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Guppy.MonoGame.Constants;
 using Guppy.Resources;
-using Guppy.MonoGame.Common.Enums;
 using Guppy.Common.Extensions;
 using Guppy.Commands.Messages;
 using System.ComponentModel;
 using Guppy.Input;
+using Guppy.Game.Components;
+using Guppy.Game.Common.Enums;
 
 namespace Guppy.MonoGame.Components.Guppy
 {

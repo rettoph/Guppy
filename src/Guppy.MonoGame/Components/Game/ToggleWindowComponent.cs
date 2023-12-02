@@ -3,7 +3,7 @@ using Guppy.Common;
 using Guppy.GUI.Styling;
 using Guppy.GUI;
 using Guppy.Input;
-using Guppy.MonoGame.Common;
+using Guppy.Game;
 using Guppy.MonoGame.Messages;
 using Guppy.Resources.Providers;
 using System;

@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.Attributes;
-using Guppy.MonoGame.Common;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Components.Guppy
 {
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal sealed class ScreenComponent : IGuppyComponent, IDrawableComponent
+    internal sealed class ScreenComponent : IGuppyComponent, IGuppyDrawable
     {
         private readonly IScreen _screen;
 

@@ -3,16 +3,16 @@ using Guppy.Common;
 using Guppy.Common.Attributes;
 using Guppy.Input.Providers;
 using Guppy.Input.Services;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Common;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
+using Guppy.Game.Common;
 
 namespace Guppy.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class ButtonPublishComponent : GlobalComponent, IUpdateableComponent
+    internal sealed class ButtonPublishComponent : GlobalComponent, IGuppyUpdateable
     {
         private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;
@@ -38,21 +38,6 @@ namespace Guppy.Input.Components
             //
         }
 
-        public bool Get(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Set(string key, ButtonSource source)
-        {
-            _buttons[key].Source = source;
-
-            foreach (var provider in _providers)
-            {
-                provider.Clean(_buttons.Values);
-            }
-        }
-
         public void Update(GameTime gameTime)
         {
             foreach (var provider in _providers)
@@ -62,11 +47,6 @@ namespace Guppy.Input.Components
                     _inputs.Publish(data);
                 }
             }
-        }
-
-        public void Initialize()
-        {
-            throw new NotImplementedException();
         }
     }
 }

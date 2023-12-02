@@ -1,7 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.GUI.Enums;
-using Guppy.MonoGame;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;

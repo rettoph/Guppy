@@ -27,7 +27,7 @@ namespace Guppy.GUI.Loaders
             string nativesDirectory = Path.Combine(Directory.GetCurrentDirectory(), NativeConstants.Directory);
             NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
-            services.RegisterType<ImGuiBatch>().As<ImGuiBatch>().As<IGlobalComponent>().SingleInstance();
+            services.RegisterType<EmptyImGuiBatch>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<Gui>().As<IGui>().SingleInstance();
 
             services.RegisterType<StyleConverter>().As<JsonConverter>().SingleInstance();
@@ -73,7 +73,7 @@ namespace Guppy.GUI.Loaders
 
         private static void AddImGuiKeyEvent(ContainerBuilder services, string key, Keys defaultKey, ImGuiKey mapping)
         {
-            services.AddInput(
+            services.RegisterInput(
                 key,
                 defaultKey,
                 new[]
@@ -85,7 +85,7 @@ namespace Guppy.GUI.Loaders
 
         private static void AddImGuiMouseButtonEvent(ContainerBuilder services, string key, CursorButtons defaultButton, int mapping)
         {
-            services.AddInput(
+            services.RegisterInput(
                 key,
                 defaultButton,
                 new[]

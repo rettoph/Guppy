@@ -13,9 +13,9 @@ namespace Guppy.GUI
     {
         private readonly Dictionary<Resource<Style>, ResourceValue<Style>> _styles;
         private readonly IResourceProvider _resources;
-        private readonly ImGuiBatch _batch;
+        private readonly IImguiBatch _batch;
 
-        public Gui(IResourceProvider resources, ImGuiBatch batch)
+        public Gui(IResourceProvider resources, IImguiBatch batch)
         {
             _styles = new Dictionary<Resource<Style>, ResourceValue<Style>>();
             _resources = resources;

@@ -24,7 +24,7 @@ namespace Guppy.MonoGame.Components.Guppy
         private readonly ICommandService _commands;
         private readonly IGui _gui;
         private readonly ResourceValue<Style> _debugWindowStyle;
-        private readonly Terminal _terminal;
+        private readonly MonoGameTerminal _terminal;
 
         private string _filter;
         private string _input;
@@ -37,7 +37,7 @@ namespace Guppy.MonoGame.Components.Guppy
 
         private IGuppy _guppy;
 
-        public TerminalWindowComponent(IGui gui, Terminal terminal, ISettingProvider settings, ICommandService commands)
+        public TerminalWindowComponent(IGui gui, MonoGameTerminal terminal, ISettingProvider settings, ICommandService commands)
         {
             _commands = commands;
             _gui = gui;
@@ -77,7 +77,7 @@ namespace Guppy.MonoGame.Components.Guppy
 
                 _gui.SetNextWindowClass(windowClass);
                 _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
-                if (_gui.Begin($"{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoScrollbar))
+                if (_gui.Begin($"Terminal:{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoScrollbar))
                 {
                     if (_gui.BeginChild("#filter-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
                     {
@@ -98,13 +98,13 @@ namespace Guppy.MonoGame.Components.Guppy
                     {
                         _scrolledToBottom = _gui.GetScrollMaxY() == 0 || _gui.GetScrollY() / _gui.GetScrollMaxY() == 1;
 
-                        foreach (TerminalLine line in _terminal.Lines)
+                        foreach (MonoGameTerminalLine line in _terminal.Lines)
                         {
                             if (_filter == string.Empty || line.Text.Contains(_filter, StringComparison.InvariantCultureIgnoreCase))
                             {
                                 _gui.NewLine();
 
-                                foreach (TerminalSegment segment in line.Segments)
+                                foreach (MonoGameTerminalSegment segment in line.Segments)
                                 {
                                     _gui.SameLine();
                                     _gui.TextColored(segment.Color, segment.Text);

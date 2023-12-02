@@ -2,8 +2,7 @@
 using Guppy.Common.Attributes;
 using Guppy.Common.Extensions;
 using Guppy.GUI;
-using Guppy.MonoGame.Common;
-using Guppy.MonoGame.Common.Enums;
+using Guppy.Game;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
 using System;
@@ -11,23 +10,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Common;
 
 namespace Guppy.MonoGame.Components.Game
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DrawGuiComponent : GlobalComponent, IDrawableComponent
+    internal class DrawGuiComponent : GlobalComponent, IGuppyDrawable
     {
-        private readonly ImGuiBatch _batch;
+        private readonly IImguiBatch _batch;
         private readonly IGuppyProvider _guppies;
-        private readonly List<MonoGameGuppy> _frameables;
+        private readonly List<GameGuppy> _frameables;
         private IGuiComponent[] _components;
 
-        public DrawGuiComponent(IGuppyProvider guppies, ImGuiBatch batch)
+        public DrawGuiComponent(IGuppyProvider guppies, IImguiBatch batch)
         {
             _batch = batch;
             _guppies = guppies;
-            _frameables = _guppies.OfType<MonoGameGuppy>().ToList();
+            _frameables = _guppies.OfType<GameGuppy>().ToList();
             _components = Array.Empty<IGuiComponent>();
 
             _guppies.OnGuppyCreated += HandleGuppyCreated;
@@ -49,7 +50,7 @@ namespace Guppy.MonoGame.Components.Game
                 component.DrawGui(gameTime);
             }
 
-            foreach (MonoGameGuppy frameable in _frameables)
+            foreach (GameGuppy frameable in _frameables)
             {
                 frameable.DrawGui(gameTime);
             }
@@ -58,7 +59,7 @@ namespace Guppy.MonoGame.Components.Game
 
         private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
         {
-            if (args is MonoGameGuppy frameable)
+            if (args is GameGuppy frameable)
             {
                 _frameables.Add(frameable);
             }
@@ -66,7 +67,7 @@ namespace Guppy.MonoGame.Components.Game
 
         private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)
         {
-            if (args is MonoGameGuppy frameable)
+            if (args is GameGuppy frameable)
             {
                 _frameables.Remove(frameable);
             }

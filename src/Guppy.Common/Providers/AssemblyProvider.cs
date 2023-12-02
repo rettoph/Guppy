@@ -36,12 +36,16 @@ namespace Guppy.Common.Providers
                 return;
             }
 
-            Debug.WriteLine($"{new string('\t', depth)}Loading: {assembly.FullName}...");
+            if(assembly.FullName.Contains("Guppy.MonoGame"))
+            {
+
+            }
+            Console.WriteLine($"{new string('\t', depth)}Loading: {assembly.FullName}...");
 
             // Recersively attempt to load all references assemblies as well...
             foreach (AssemblyName referenceName in assembly.GetReferencedAssemblies())
             {
-                Debug.WriteLine($"{new string('\t', depth + 1)}Checking: {referenceName.FullName}");
+                //Debug.WriteLine($"{new string('\t', depth + 1)}Checking: {referenceName.FullName}");
                 Assembly reference = Assembly.Load(referenceName);
                 this.Load(reference, false, depth + 1);
             }

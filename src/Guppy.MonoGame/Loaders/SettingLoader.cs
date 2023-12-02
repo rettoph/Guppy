@@ -5,7 +5,7 @@ using Guppy.Resources.Loaders;
 using Guppy.Resources.Providers;
 using Serilog.Events;
 
-namespace MonoGame.Loaders
+namespace Guppy.MonoGame.Loaders
 {
     [AutoLoad]
     internal sealed class SettingLoader : ISettingLoader
@@ -14,12 +14,6 @@ namespace MonoGame.Loaders
         {
             settings.Register(Settings.IsDebugWindowEnabled, false);
             settings.Register(Settings.IsTerminalWindowEnabled, false);
-
-#if DEBUG
-            settings.Register(Settings.LogLevel, LogEventLevel.Debug);
-#else
-            settings.Register(Settings.LogLevel, LogEventLevel.Information);
-#endif
         }
     }
 }

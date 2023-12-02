@@ -2,7 +2,6 @@
 using Guppy.Common;
 using Guppy.GUI.Styling;
 using Guppy.GUI;
-using Guppy.MonoGame.Common.Enums;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
@@ -14,6 +13,8 @@ using Guppy.Attributes;
 using Guppy.MonoGame.Constants;
 using Guppy.Commands.Messages;
 using Guppy.Resources;
+using Guppy.Game.Components;
+using Guppy.Game.Common.Enums;
 
 namespace Guppy.MonoGame.Components.Game
 {

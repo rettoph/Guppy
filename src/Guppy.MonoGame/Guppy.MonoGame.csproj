@@ -20,11 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
     <ProjectReference Include="..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
     <ProjectReference Include="..\Guppy.Commands\Guppy.Commands.csproj" />
     <ProjectReference Include="..\Guppy.GUI\Guppy.GUI.csproj" />
     <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
-    <ProjectReference Include="..\Guppy.MonoGame.Common\Guppy.MonoGame.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>

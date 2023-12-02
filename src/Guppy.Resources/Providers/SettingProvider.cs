@@ -34,7 +34,8 @@ namespace Guppy.Resources.Providers
             _files = files;
             _file = _files.Get<Dictionary<Setting, ISettingValue>>(FileType.AppData, FilePaths.Settings, true);
 
-            this.UpdateDefaultValues(_file.Value);
+            this.UpdateValues(_file.Value);
+            this.Save();
         }
 
         public void Register<T>(Setting<T> setting, T defaultValue) where T : notnull
@@ -61,13 +62,18 @@ namespace Guppy.Resources.Providers
             this.Get(setting).Value = value;
         }
 
-        public void Dispose()
+        public void Save()
         {
             _file.Value = _values;
             _files.Save(_file);
         }
 
-        private void UpdateDefaultValues(Dictionary<Setting, ISettingValue> values)
+        public void Dispose()
+        {
+            this.Save();
+        }
+
+        private void UpdateValues(Dictionary<Setting, ISettingValue> values)
         {
             foreach(var (setting, value) in values)
             {

@@ -17,5 +17,7 @@ namespace Guppy.Resources.Providers
 
         void Set<T>(Setting<T> setting, T value)
             where T : notnull;
+
+        void Save();
     }
 }

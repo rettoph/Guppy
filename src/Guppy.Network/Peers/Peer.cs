@@ -57,7 +57,7 @@ namespace Guppy.Network.Peers
 
             if(!_scopes.TryAdd(id, scope))
             {
-                throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Bind)} - Antoher {nameof(Network.NetScope)} has already been bound to id '{id}'.");
+                throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Bind)} - Another {nameof(Network.NetScope)} has already been bound to id '{id}'.");
             }
 
             scope.BindTo(this, id);

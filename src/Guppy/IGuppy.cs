@@ -13,7 +13,7 @@ namespace Guppy
 
         void Initialize(ILifetimeScope scope);
 
-        public string ToString()
+        public string? ToString()
         {
             return $"{this.Name} - {this.Id}";
         }

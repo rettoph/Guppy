@@ -12,13 +12,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guppy
+namespace Guppy.MonoGame
 {
     public static class ContainerBuilderExtensions
     {
         public static ContainerBuilder RegisterMonoGame(
             this ContainerBuilder builder, 
-            Game game,
+            Microsoft.Xna.Framework.Game game,
             GraphicsDeviceManager graphics, 
             ContentManager content, 
             GameWindow window)

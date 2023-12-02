@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Guppy.Attributes;
 using Guppy.MonoGame.Components.Guppy;
 using Guppy.Common.Autofac;
+using Guppy.GUI;
 
 namespace Guppy.MonoGame.Loaders
 {
@@ -21,18 +22,19 @@ namespace Guppy.MonoGame.Loaders
             services.RegisterType<Screen>().As<IScreen>().InstancePerLifetimeScope();
             services.RegisterType<SpriteBatch>().SingleInstance();
 
-            services.RegisterType<Terminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
-            services.RegisterType<TerminalTheme>().AsSelf().SingleInstance();
+            services.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+
+            services.RegisterType<MonoGameImGuiBatch>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));
 
-            services.AddInput(Inputs.ToggleDebugger, Keys.F1, new[]
+            services.RegisterInput(Inputs.ToggleDebugger, Keys.F1, new[]
             {
                 (ButtonState.Pressed, Toggle<GuppyDebugWindowComponent>.Instance)
             });
 
-            services.AddInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
+            services.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
 {
                 (ButtonState.Pressed, Toggle<TerminalWindowComponent>.Instance)
             });
