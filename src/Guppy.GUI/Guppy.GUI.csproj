@@ -20,7 +20,13 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Content Include="natives\**\*.dll">
+    <Content Include="natives\**\*.dll" Condition=" '$(OS)' == 'Windows_NT' " >
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="natives\**\*.so" Condition=" '$(OS)' == 'UNIX' " >
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

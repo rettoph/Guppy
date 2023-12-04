@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Common.Helpers;
+using Guppy.Files.Helpers;
 using Guppy.GUI.Constants;
 using Guppy.GUI.Messages;
 using Guppy.GUI.Serialization.Json.Converters;
@@ -24,7 +25,7 @@ namespace Guppy.GUI.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            string nativesDirectory = Path.Combine(Directory.GetCurrentDirectory(), NativeConstants.Directory);
+            string nativesDirectory = DirectoryHelper.Combine(DirectoryHelper.GetEntryDirectory(), NativeConstants.Directory);
             NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
             services.RegisterType<EmptyImGuiBatch>().AsImplementedInterfaces().SingleInstance();

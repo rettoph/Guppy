@@ -1,5 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
+using Guppy.Files.Helpers;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
 using Microsoft.Xna.Framework.Content;
@@ -29,7 +30,7 @@ namespace Guppy.MonoGame.ResourceTypes
         {
             _content.RootDirectory = root;
 
-            value = _content.Load<SpriteFont>(input);
+            value = _content.Load<SpriteFont>(DirectoryHelper.Normalize(input));
             return true;
         }
     }

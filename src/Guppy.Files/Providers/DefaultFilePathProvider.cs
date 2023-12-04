@@ -1,5 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Files.Enums;
+using Guppy.Files.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Guppy.Files.Providers
             return type switch
             {
                 FileType.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _environment.Company, _environment.Name, path),
-                FileType.CurrentDirectory => Path.Combine(Directory.GetCurrentDirectory(), path),
+                FileType.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), path),
                 _ => path
             };
         }

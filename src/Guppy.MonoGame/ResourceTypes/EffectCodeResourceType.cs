@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Files.Helpers;
 using Guppy.MonoGame.Graphics.Effects;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
@@ -20,7 +21,7 @@ namespace Guppy.MonoGame.ResourceTypes
 
         protected override bool TryResolve(Resource<EffectCode> resource, string root, string input, out EffectCode value)
         {
-            string path = Path.Combine(root, input);
+            string path = DirectoryHelper.Combine(root, input);
 
             try
             {
