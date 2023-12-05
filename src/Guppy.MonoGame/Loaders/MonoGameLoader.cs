@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Guppy.Attributes;
 using Guppy.MonoGame.Components.Guppy;
 using Guppy.Common.Autofac;
-using Guppy.GUI;
+using Guppy.Game.ImGui;
 
 namespace Guppy.MonoGame.Loaders
 {

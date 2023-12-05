@@ -1,0 +1,45 @@
+{
+  "ImStyle.DebugWindow": [
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "WindowBg",
+        "Color": "Color.FullScreenBackground"
+      }
+    },
+    {
+      "Type": "Single",
+      "Value": {
+        "Property": "WindowBorderSize",
+        "Value": 0
+      }
+    },
+    {
+      "Type": "Vector2",
+      "Value": {
+        "Property": "WindowPadding",
+        "Value": {
+          "X": 10,
+          "Y": 10
+        }
+      }
+    },
+    {
+      "Type": "Vector2",
+      "Value": {
+        "Property": "CellPadding",
+        "Value": {
+          "X": 10,
+          "Y": 10
+        }
+      }
+    },
+    {
+      "Type": "TrueTypeFont",
+      "Value": {
+        "TTF": "TrueTypeFont.DiagnosticsFont",
+        "Size": 20
+      }
+    }
+  ]
+}

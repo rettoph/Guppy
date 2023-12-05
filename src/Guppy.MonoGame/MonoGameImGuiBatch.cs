@@ -1,5 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.GUI.Messages;
+using Guppy.Game.ImGui.Messages;
 using Guppy.Input;
 using Guppy.Resources.Providers;
 using Guppy.Resources;
@@ -7,7 +7,7 @@ using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.GUI
+namespace Guppy.Game.ImGui
 {
     internal class MonoGameImGuiBatch : BaseImGuiBatch, IDisposable
     {
@@ -79,7 +79,7 @@ namespace Guppy.GUI
             _loadedTextures.Remove(textureId);
         }
 
-        protected override void RenderDrawData(ImDrawDataPtr drawData)
+        protected override void RenderDrawData(ImGuiNET.ImDrawDataPtr drawData)
         {
             // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers
             var lastViewport = _graphics.Viewport;
@@ -110,7 +110,7 @@ namespace Guppy.GUI
             _graphics.ScissorRectangle = lastScissorBox;
         }
 
-        private unsafe void UpdateBuffers(ImDrawDataPtr drawData)
+        private unsafe void UpdateBuffers(ImGuiNET.ImDrawDataPtr drawData)
         {
             // Expand buffers if we need more room
             if (drawData.TotalVtxCount > _vertexBufferSize)
@@ -137,7 +137,7 @@ namespace Guppy.GUI
 
             for (int n = 0; n < drawData.CmdListsCount; n++)
             {
-                ImDrawListPtr cmdList = drawData.CmdLists[n];
+                ImGuiNET.ImDrawListPtr cmdList = drawData.CmdLists[n];
 
                 fixed (void* vtxDstPtr = &_vertexData[vtxOffset * DrawVertDeclaration.Size])
                 fixed (void* idxDstPtr = &_indexData[idxOffset * sizeof(ushort)])
@@ -155,7 +155,7 @@ namespace Guppy.GUI
             _indexBuffer.SetData(_indexData, 0, drawData.TotalIdxCount * sizeof(ushort));
         }
 
-        private unsafe void RenderCommandLists(ImDrawDataPtr drawData)
+        private unsafe void RenderCommandLists(ImGuiNET.ImDrawDataPtr drawData)
         {
             _graphics.SetVertexBuffer(_vertexBuffer);
             _graphics.Indices = _indexBuffer;
@@ -165,11 +165,11 @@ namespace Guppy.GUI
 
             for (int n = 0; n < drawData.CmdListsCount; n++)
             {
-                ImDrawListPtr cmdList = drawData.CmdLists[n];
+                ImGuiNET.ImDrawListPtr cmdList = drawData.CmdLists[n];
 
                 for (int cmdi = 0; cmdi < cmdList.CmdBuffer.Size; cmdi++)
                 {
-                    ImDrawCmdPtr drawCmd = cmdList.CmdBuffer[cmdi];
+                    ImGuiNET.ImDrawCmdPtr drawCmd = cmdList.CmdBuffer[cmdi];
 
                     if (drawCmd.ElemCount == 0)
                     {

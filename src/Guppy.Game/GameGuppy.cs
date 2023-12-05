@@ -5,7 +5,7 @@ using Guppy.Enums;
 using Guppy.Game;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
-using Guppy.GUI;
+using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
 using System;
 
@@ -15,7 +15,7 @@ namespace Guppy.Game
     {
         private IGuppyDrawable[] _drawComponents;
         private IGuppyUpdateable[] _updateComponents;
-        private IGuiComponent[] _guiComponents;
+        private IImGuiComponent[] _imguiComponents;
 
         public IGuppyComponent[] Components { get; private set; }
 
@@ -27,7 +27,7 @@ namespace Guppy.Game
         {
             _drawComponents = Array.Empty<IGuppyDrawable>();
             _updateComponents = Array.Empty<IGuppyUpdateable>();
-            _guiComponents = Array.Empty<IGuiComponent>();
+            _imguiComponents = Array.Empty<IImGuiComponent>();
 
             this.Components = Array.Empty<IGuppyComponent>();
             this.Id = Guid.NewGuid();
@@ -41,7 +41,7 @@ namespace Guppy.Game
 
             _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
             _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
-            _guiComponents = this.Components.OfType<IGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _imguiComponents = this.Components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
 
             foreach (IGuppyComponent component in this.Components)
             {
@@ -67,9 +67,9 @@ namespace Guppy.Game
 
         public virtual void DrawGui(GameTime gameTime)
         {
-            foreach(IGuiComponent component in _guiComponents)
+            foreach(IImGuiComponent component in _imguiComponents)
             {
-                component.DrawGui(gameTime);
+                component.DrawImGui(gameTime);
             }
         }
 

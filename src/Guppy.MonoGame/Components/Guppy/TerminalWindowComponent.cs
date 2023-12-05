@@ -3,8 +3,8 @@ using Guppy.Commands.Messages;
 using Guppy.Commands.Services;
 using Guppy.Common;
 using Guppy.Game.Common;
-using Guppy.GUI;
-using Guppy.GUI.Styling;
+using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Styling;
 using Guppy.MonoGame.Constants;
 using Guppy.MonoGame.Messages;
 using Guppy.Resources;
@@ -20,11 +20,11 @@ using System.Threading.Tasks;
 namespace Guppy.MonoGame.Components.Guppy
 {
     [AutoLoad]
-    internal class TerminalWindowComponent : GuppyComponent, IGuiComponent
+    internal class TerminalWindowComponent : GuppyComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
-        private readonly IGui _gui;
-        private readonly ResourceValue<Style> _debugWindowStyle;
+        private readonly IImGui _imgui;
+        private readonly ResourceValue<ImStyle> _debugWindowStyle;
         private readonly MonoGameTerminal _terminal;
 
         private string _filter;
@@ -38,11 +38,11 @@ namespace Guppy.MonoGame.Components.Guppy
 
         private IGuppy _guppy;
 
-        public TerminalWindowComponent(IGui gui, MonoGameTerminal terminal, ISettingProvider settings, ICommandService commands)
+        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ISettingProvider settings, ICommandService commands)
         {
             _commands = commands;
-            _gui = gui;
-            _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
+            _imgui = imgui;
+            _debugWindowStyle = imgui.GetStyle(Resources.Styles.DebugWindow);
             _terminal = terminal;
             _filter = string.Empty;
             _input = string.Empty;
@@ -60,56 +60,56 @@ namespace Guppy.MonoGame.Components.Guppy
             _guppy = guppy;
         }
 
-        public void DrawGui(GameTime gameTime)
+        public void DrawImGui(GameTime gameTime)
         {
             if (_enabled == false)
             {
                 return;
             }
 
-            using (_gui.Apply(_debugWindowStyle))
+            using (_imgui.Apply(_debugWindowStyle))
             {
-                _gui.PushStyleVar(GuiStyleVar.WindowPadding, Vector2.Zero);
-                _gui.PushStyleVar(GuiStyleVar.ItemSpacing, Vector2.Zero);
+                _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
-                windowClass.ClassId = _gui.GetID(nameof(ITerminal));
+                ImGuiWindowClassPtr windowClass = new ImGuiWindowClassPtr();
+                windowClass.ClassId = _imgui.GetID(nameof(ITerminal));
                 windowClass.DockingAllowUnclassed = false;
 
-                _gui.SetNextWindowClass(windowClass);
-                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
-                _gui.SetNextWindowSize(new Vector2(800, 600), GuiCond.FirstUseEver);
-                if (_gui.Begin($"Terminal:{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoScrollbar | GuiWindowFlags.NoSavedSettings))
+                _imgui.SetNextWindowClass(windowClass);
+                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
+                _imgui.SetNextWindowSize(new Vector2(800, 600), ImGuiCond.FirstUseEver);
+                if (_imgui.Begin($"Terminal:{_guppy.Name} - {_guppy.Id}", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
                 {
-                    if (_gui.BeginChild("#filter-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
+                    if (_imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
                     {
-                        _gui.PushItemWidth(-1);
-                        if (_gui.InputText("#filter", ref _filter, 1 << 11, GuiInputTextFlags.EnterReturnsTrue))
+                        _imgui.PushItemWidth(-1);
+                        if (_imgui.InputText("#filter", ref _filter, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue))
                         {
                             _commands.Invoke(_filter);
                             _input = string.Empty;
                         }
-                        _gui.PopItemWidth();
+                        _imgui.PopItemWidth();
                     }
 
-                    _gui.EndChild();
+                    _imgui.EndChild();
 
-                    _gui.PushStyleVar(GuiStyleVar.WindowPadding, new Vector2(5, 5));
+                    _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
 
-                    if (_gui.BeginChild("##output-container", new Vector2(-1, _gui.GetContentRegionAvail().Y - _inputContainerHeight), GuiChildFlags.AlwaysUseWindowPadding, GuiWindowFlags.HorizontalScrollbar))
+                    if (_imgui.BeginChild("##output-container", new Vector2(-1, _imgui.GetContentRegionAvail().Y - _inputContainerHeight), ImGuiChildFlags.AlwaysUseWindowPadding, ImGuiWindowFlags.HorizontalScrollbar))
                     {
-                        _scrolledToBottom = _gui.GetScrollMaxY() == 0 || _gui.GetScrollY() / _gui.GetScrollMaxY() == 1;
+                        _scrolledToBottom = _imgui.GetScrollMaxY() == 0 || _imgui.GetScrollY() / _imgui.GetScrollMaxY() == 1;
 
                         foreach (MonoGameTerminalLine line in _terminal.Lines)
                         {
                             if (_filter == string.Empty || line.Text.Contains(_filter, StringComparison.InvariantCultureIgnoreCase))
                             {
-                                _gui.NewLine();
+                                _imgui.NewLine();
 
                                 foreach (MonoGameTerminalSegment segment in line.Segments)
                                 {
-                                    _gui.SameLine();
-                                    _gui.TextColored(segment.Color, segment.Text);
+                                    _imgui.SameLine();
+                                    _imgui.TextColored(segment.Color, segment.Text);
                                 }
                             }
                         }
@@ -117,34 +117,34 @@ namespace Guppy.MonoGame.Components.Guppy
 
                     if (_scrolledToBottom && _lines != (_lines = _terminal.Lines.Count))
                     {
-                        _gui.SetScrollHereY(1.0f);
+                        _imgui.SetScrollHereY(1.0f);
                     }
 
-                    _gui.EndChild();
+                    _imgui.EndChild();
 
-                    _gui.PopStyleVar();
+                    _imgui.PopStyleVar();
 
-                    if (_gui.BeginChild("#input-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
+                    if (_imgui.BeginChild("#input-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
                     {
-                        _gui.PushItemWidth(-1);
-                        if (_gui.InputText("#input", ref _input, 1 << 11, GuiInputTextFlags.EnterReturnsTrue) && _input != string.Empty)
+                        _imgui.PushItemWidth(-1);
+                        if (_imgui.InputText("#input", ref _input, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue) && _input != string.Empty)
                         {
-                            _gui.SetKeyboardFocusHere(-1);
+                            _imgui.SetKeyboardFocusHere(-1);
                             _commands.Invoke(_input);
                             _input = string.Empty;
                         }
-                        _gui.PopItemWidth();
+                        _imgui.PopItemWidth();
 
-                        _inputContainerHeight = _gui.GetWindowSize().Y;
+                        _inputContainerHeight = _imgui.GetWindowSize().Y;
                     }
 
-                    _gui.EndChild();
+                    _imgui.EndChild();
                 }
 
-                _gui.End();
+                _imgui.End();
 
-                _gui.PopStyleVar();
-                _gui.PopStyleVar();
+                _imgui.PopStyleVar();
+                _imgui.PopStyleVar();
             }
         }
     }

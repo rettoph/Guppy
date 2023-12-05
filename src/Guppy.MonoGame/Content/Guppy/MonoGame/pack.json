@@ -5,7 +5,7 @@
     "en-US": [
       "colors.json",
       "true-type-fonts.json",
-      "styles.json"
+      "imstyles.json"
     ]
   }
 }

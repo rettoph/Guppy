@@ -1,7 +1,7 @@
 ﻿using Guppy.Common.Extensions;
 using Guppy.Common;
-using Guppy.GUI.Styling;
-using Guppy.GUI;
+using Guppy.Game.ImGui.Styling;
+using Guppy.Game.ImGui;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using System;
@@ -19,18 +19,18 @@ using Guppy.Game.Common.Enums;
 namespace Guppy.MonoGame.Components.Game
 {
     [AutoLoad]
-    internal class GlobalDebugWindowComponent : GlobalComponent, IGuiComponent
+    internal class GlobalDebugWindowComponent : GlobalComponent, IImGuiComponent
     {
-        private readonly ResourceValue<Style> _debugWindowStyle;
-        private readonly IGui _gui;
+        private readonly ResourceValue<ImStyle> _debugWindowStyle;
+        private readonly IImGui _imgui;
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;
 
-        public GlobalDebugWindowComponent(IGui gui, ISettingProvider settings)
+        public GlobalDebugWindowComponent(IImGui imgui, ISettingProvider settings)
         {
             _components = Array.Empty<IDebugComponent>();
-            _gui = gui;
-            _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
+            _imgui = imgui;
+            _debugWindowStyle = imgui.GetStyle(Resources.Styles.DebugWindow);
 
             _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }
@@ -42,22 +42,22 @@ namespace Guppy.MonoGame.Components.Game
             _components = components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
-        public void DrawGui(GameTime gameTime)
+        public void DrawImGui(GameTime gameTime)
         {
             if (_enabled == false)
             {
                 return;
             }
 
-            using (_gui.Apply(_debugWindowStyle))
+            using (_imgui.Apply(_debugWindowStyle))
             {
-                GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
-                windowClass.ClassId = _gui.GetID(nameof(IDebugComponent));
+                ImGuiWindowClassPtr windowClass = new ImGuiWindowClassPtr();
+                windowClass.ClassId = _imgui.GetID(nameof(IDebugComponent));
                 windowClass.DockingAllowUnclassed = false;
 
-                _gui.SetNextWindowClass(windowClass);
-                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.Once);
-                if (_gui.Begin($"Game Debug Window"))
+                _imgui.SetNextWindowClass(windowClass);
+                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.Once);
+                if (_imgui.Begin($"Game Debug Window"))
                 {
                     foreach (IDebugComponent component in _components)
                     {
@@ -65,7 +65,7 @@ namespace Guppy.MonoGame.Components.Game
                     }
                 }
 
-                _gui.End();
+                _imgui.End();
             }
         }
     }

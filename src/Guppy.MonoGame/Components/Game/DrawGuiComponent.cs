@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Common.Extensions;
-using Guppy.GUI;
+using Guppy.Game.ImGui;
 using Guppy.Game;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
@@ -22,14 +22,14 @@ namespace Guppy.MonoGame.Components.Game
         private readonly IImguiBatch _batch;
         private readonly IGuppyProvider _guppies;
         private readonly List<GameGuppy> _frameables;
-        private IGuiComponent[] _components;
+        private IImGuiComponent[] _components;
 
         public DrawGuiComponent(IGuppyProvider guppies, IImguiBatch batch)
         {
             _batch = batch;
             _guppies = guppies;
             _frameables = _guppies.OfType<GameGuppy>().ToList();
-            _components = Array.Empty<IGuiComponent>();
+            _components = Array.Empty<IImGuiComponent>();
 
             _guppies.OnGuppyCreated += HandleGuppyCreated;
             _guppies.OnGuppyDestroyed += HandleGuppyDestroyed;
@@ -39,15 +39,15 @@ namespace Guppy.MonoGame.Components.Game
         {
             base.Initialize(components);
 
-            _components = components.OfType<IGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _components = components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
         public void Draw(GameTime gameTime)
         {
             _batch.Begin(gameTime);
-            foreach(IGuiComponent component in _components)
+            foreach(IImGuiComponent component in _components)
             {
-                component.DrawGui(gameTime);
+                component.DrawImGui(gameTime);
             }
 
             foreach (GameGuppy frameable in _frameables)

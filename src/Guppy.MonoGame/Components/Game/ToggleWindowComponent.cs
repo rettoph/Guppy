@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.GUI.Styling;
-using Guppy.GUI;
+using Guppy.Game.ImGui.Styling;
+using Guppy.Game.ImGui;
 using Guppy.Input;
 using Guppy.Game;
 using Guppy.MonoGame.Messages;

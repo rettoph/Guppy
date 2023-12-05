@@ -1,7 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.GUI;
-using Guppy.GUI.Styling;
+using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Styling;
 using Guppy.MonoGame.Messages;
 using Guppy.Providers;
 using Guppy.Resources.Providers;
@@ -23,21 +23,21 @@ using Guppy.Game.Common.Enums;
 namespace Guppy.MonoGame.Components.Guppy
 {
     [AutoLoad]
-    internal sealed class GuppyDebugWindowComponent : GuppyComponent, IGuiComponent
+    internal sealed class GuppyDebugWindowComponent : GuppyComponent, IImGuiComponent
     {
-        private readonly ResourceValue<Style> _debugWindowStyle;
-        private readonly IGui _gui;
+        private readonly ResourceValue<ImStyle> _debugWindowStyle;
+        private readonly IImGui _imgui;
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;
         private IGuppy _guppy;
-        private GuiWindowClassPtr _class;
+        private ImGuiWindowClassPtr _class;
 
-        public GuppyDebugWindowComponent(IGui gui, ISettingProvider settings)
+        public GuppyDebugWindowComponent(IImGui imgui, ISettingProvider settings)
         {
             _guppy = null!;
             _components = Array.Empty<IDebugComponent>();
-            _gui = gui;
-            _debugWindowStyle = gui.GetStyle(Resources.Styles.DebugWindow);
+            _imgui = imgui;
+            _debugWindowStyle = imgui.GetStyle(Resources.Styles.DebugWindow);
 
             _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }
@@ -50,22 +50,22 @@ namespace Guppy.MonoGame.Components.Guppy
             _components = guppy.Components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
-        public void DrawGui(GameTime gameTime)
+        public void DrawImGui(GameTime gameTime)
         {
             if (_enabled == false)
             {
                 return;
             }
 
-            using (_gui.Apply(_debugWindowStyle))
+            using (_imgui.Apply(_debugWindowStyle))
             {
-                GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
-                windowClass.ClassId = _gui.GetID(nameof(IDebugComponent));
+                ImGuiWindowClassPtr windowClass = new ImGuiWindowClassPtr();
+                windowClass.ClassId = _imgui.GetID(nameof(IDebugComponent));
                 windowClass.DockingAllowUnclassed = false;
 
-                _gui.SetNextWindowClass(windowClass);
-                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
-                if (_gui.Begin($"{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoSavedSettings))
+                _imgui.SetNextWindowClass(windowClass);
+                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
+                if (_imgui.Begin($"{_guppy.Name} - {_guppy.Id}", ImGuiWindowFlags.NoSavedSettings))
                 {
                     foreach (IDebugComponent component in _components)
                     {
@@ -73,7 +73,7 @@ namespace Guppy.MonoGame.Components.Guppy
                     }
                 }
 
-                _gui.End();
+                _imgui.End();
             }
         }
     }

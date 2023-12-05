@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Collections;
-using Guppy.GUI;
+using Guppy.Game.ImGui;
 using Guppy.Game;
 using Microsoft.Xna.Framework;
 using System;
@@ -19,10 +19,10 @@ namespace Guppy.MonoGame.Components.Game
         private Buffer<double> _sampleBuffer = new Buffer<double>(20);
         private double _sampleSum = 0;
 
-        private readonly IGui _gui;
-        public FpsDebugComponent(IGui gui)
+        private readonly IImGui _imgui;
+        public FpsDebugComponent(IImGui imgui)
         {
-            _gui = gui;
+            _imgui = imgui;
         }
 
         public void RenderDebugInfo(GameTime gameTime)
@@ -33,7 +33,7 @@ namespace Guppy.MonoGame.Components.Game
 
             var fps = 20.0 / _sampleSum;
 
-            _gui.Text($"FPS: {fps.ToString("#,##0")}");
+            _imgui.Text($"FPS: {fps.ToString("#,##0")}");
         }
     }
 }
