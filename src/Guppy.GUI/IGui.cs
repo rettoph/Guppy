@@ -35,5 +35,14 @@ namespace Guppy.GUI
             this.SetCursorPosX((windowWidth - textWidth) / 2);
             this.Text(text);
         }
+
+        bool Button(string id, string label)
+        {
+            this.PushID(id);
+            bool result = this.Button(label);
+            this.PopID();
+
+            return result;
+        }
     }
 }
