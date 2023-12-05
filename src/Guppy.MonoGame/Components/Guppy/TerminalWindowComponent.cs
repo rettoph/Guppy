@@ -2,6 +2,7 @@
 using Guppy.Commands.Messages;
 using Guppy.Commands.Services;
 using Guppy.Common;
+using Guppy.Game.Common;
 using Guppy.GUI;
 using Guppy.GUI.Styling;
 using Guppy.MonoGame.Constants;
@@ -72,12 +73,13 @@ namespace Guppy.MonoGame.Components.Guppy
                 _gui.PushStyleVar(GuiStyleVar.ItemSpacing, Vector2.Zero);
 
                 GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
-                windowClass.ClassId = _gui.GetID(nameof(TerminalWindowComponent));
+                windowClass.ClassId = _gui.GetID(nameof(ITerminal));
                 windowClass.DockingAllowUnclassed = false;
 
                 _gui.SetNextWindowClass(windowClass);
                 _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
-                if (_gui.Begin($"Terminal:{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoScrollbar))
+                _gui.SetNextWindowSize(new Vector2(800, 600), GuiCond.FirstUseEver);
+                if (_gui.Begin($"Terminal:{_guppy.Name} - {_guppy.Id}", GuiWindowFlags.NoScrollbar | GuiWindowFlags.NoSavedSettings))
                 {
                     if (_gui.BeginChild("#filter-container", Vector2.Zero, GuiChildFlags.AutoResizeY | GuiChildFlags.AlwaysAutoResize | GuiChildFlags.AlwaysUseWindowPadding | GuiChildFlags.Border))
                     {

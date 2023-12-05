@@ -53,11 +53,10 @@ namespace Guppy.MonoGame.Components.Game
             {
                 GuiWindowClassPtr windowClass = new GuiWindowClassPtr();
                 windowClass.ClassId = _gui.GetID(nameof(IDebugComponent));
-                windowClass.DockNodeFlagsOverrideSet = GuiDockNodeFlags.NoDockingSplit;
                 windowClass.DockingAllowUnclassed = false;
 
                 _gui.SetNextWindowClass(windowClass);
-                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.FirstUseEver);
+                _gui.SetNextWindowDockID(windowClass.ClassId, GuiCond.Once);
                 if (_gui.Begin($"Game Debug Window"))
                 {
                     foreach (IDebugComponent component in _components)
