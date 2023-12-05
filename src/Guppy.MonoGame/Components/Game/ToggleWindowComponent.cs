@@ -2,7 +2,7 @@
 using Guppy.Common;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Game.ImGui;
-using Guppy.Input;
+using Guppy.Game.Input;
 using Guppy.Game;
 using Guppy.MonoGame.Messages;
 using Guppy.Resources.Providers;

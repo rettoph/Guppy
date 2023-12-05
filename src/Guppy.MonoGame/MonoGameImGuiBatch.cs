@@ -1,6 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Game.ImGui.Messages;
-using Guppy.Input;
+using Guppy.Game.Input;
 using Guppy.Resources.Providers;
 using Guppy.Resources;
 using ImGuiNET;

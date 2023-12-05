@@ -16,7 +16,7 @@ using Guppy.Resources;
 using Guppy.Common.Extensions;
 using Guppy.Commands.Messages;
 using System.ComponentModel;
-using Guppy.Input;
+using Guppy.Game.Input;
 using Guppy.Game.Components;
 using Guppy.Game.Common.Enums;
 

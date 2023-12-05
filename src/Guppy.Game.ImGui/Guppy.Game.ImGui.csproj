@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guppy.Input\Guppy.Input.csproj" />
+    <ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
