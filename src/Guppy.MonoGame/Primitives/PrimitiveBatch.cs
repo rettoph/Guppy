@@ -15,8 +15,8 @@ namespace Guppy.MonoGame.Primitives
     {
         public static int BufferSize = 8192;
 
-        private readonly VertexBuffer _vertexBuffer;
-        private readonly IndexBuffer _indexBuffer;
+        private readonly DynamicVertexBuffer _vertexBuffer;
+        private readonly DynamicIndexBuffer _indexBuffer;
         private readonly TVertex[] _vertices;
         private readonly short[] _lineIndices;
         private readonly short[] _triangleIndices;
@@ -32,8 +32,8 @@ namespace Guppy.MonoGame.Primitives
 
         public PrimitiveBatch(GraphicsDevice graphicsDevice, TEffect effect)
         {
-            _vertexBuffer = new VertexBuffer(graphicsDevice, typeof(TVertex), BufferSize, BufferUsage.WriteOnly);
-            _indexBuffer = new IndexBuffer(graphicsDevice, typeof(short), BufferSize * 3, BufferUsage.WriteOnly);
+            _vertexBuffer = new DynamicVertexBuffer(graphicsDevice, typeof(TVertex), BufferSize, BufferUsage.WriteOnly);
+            _indexBuffer = new DynamicIndexBuffer(graphicsDevice, typeof(short), BufferSize * 3, BufferUsage.WriteOnly);
             _vertices = new TVertex[BufferSize];
             _lineIndices = new short[BufferSize * 2];
             _triangleIndices = new short[BufferSize * 3];

@@ -18,11 +18,11 @@ namespace Guppy.GUI
         private readonly RasterizerState _rasterizerState;
 
         private byte[] _vertexData;
-        private VertexBuffer _vertexBuffer;
+        private DynamicVertexBuffer _vertexBuffer;
         private int _vertexBufferSize;
 
         private byte[] _indexData;
-        private IndexBuffer _indexBuffer;
+        private DynamicIndexBuffer _indexBuffer;
         private int _indexBufferSize;
 
         private readonly Dictionary<IntPtr, Texture2D> _loadedTextures;
@@ -49,9 +49,9 @@ namespace Guppy.GUI
 
             _effect = new BasicEffect(_graphics);
             _vertexData = Array.Empty<byte>();
-            _vertexBuffer = new VertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
+            _vertexBuffer = new DynamicVertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
             _indexData = Array.Empty<byte>();
-            _indexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
+            _indexBuffer = new DynamicIndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
 
             _window.TextInput += this.HandleTextInput;
         }
@@ -118,7 +118,7 @@ namespace Guppy.GUI
                 _vertexBuffer?.Dispose();
 
                 _vertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
-                _vertexBuffer = new VertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
+                _vertexBuffer = new DynamicVertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.WriteOnly);
                 _vertexData = new byte[_vertexBufferSize * DrawVertDeclaration.Size];
             }
 
@@ -127,7 +127,7 @@ namespace Guppy.GUI
                 _indexBuffer?.Dispose();
 
                 _indexBufferSize = (int)(drawData.TotalIdxCount * 1.5f);
-                _indexBuffer = new IndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
+                _indexBuffer = new DynamicIndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.WriteOnly);
                 _indexData = new byte[_indexBufferSize * sizeof(ushort)];
             }
 
