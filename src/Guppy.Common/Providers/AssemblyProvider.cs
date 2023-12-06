@@ -36,7 +36,7 @@ namespace Guppy.Common.Providers
                 return;
             }
 
-            if(assembly.FullName.Contains("Guppy.MonoGame"))
+            if(assembly.FullName.Contains("Guppy.Game.MonoGame"))
             {
 
             }

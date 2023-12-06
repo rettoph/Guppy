@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Guppy.Common;
 
-[assembly: InternalsVisibleTo("Guppy.MonoGame")]
+[assembly: InternalsVisibleTo("Guppy.Game.MonoGame")]
 
 namespace Guppy.Game.ImGui
 {
