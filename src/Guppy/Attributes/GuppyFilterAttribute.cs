@@ -24,7 +24,7 @@ namespace Guppy.Attributes
 
         protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new ServiceFilter<Type>(classType, this.GuppyType));
+            builder.RegisterFilter(new ServiceFilter(classType, this.GuppyType));
         }
     }
 

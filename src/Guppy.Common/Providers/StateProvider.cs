@@ -10,67 +10,24 @@ namespace Guppy.Common.Providers
 {
     internal class StateProvider : IStateProvider
     {    
-        private Dictionary<Type, IState> _genericStates;
-        private Dictionary<Type, IState> _states;
+        private IState[] _states;
 
         public StateProvider(IEnumerable<IState> states)
         {
-            _genericStates = new Dictionary<Type, IState>();
-            foreach (IState state in states)
+            _states = states.ToArray();
+        }
+
+        public virtual bool Matches(object? value)
+        {
+            foreach(IState state in _states)
             {
-                IEnumerable<Type> genericTypes = state.GetType().GetConstructedGenericTypes(typeof(IState<>));
-                foreach(Type genericType in genericTypes)
+                if(state.Matches(value))
                 {
-                    _genericStates.Add(genericType.GenericTypeArguments[0], state);
+                    return true;
                 }
             }
 
-            _states = new Dictionary<Type, IState>();
-            foreach (IState state in states.Except(_genericStates.Values))
-            {
-                foreach (Type type in state.Types)
-                {
-                    _states.Add(type, state);
-                }
-            }
-        }
-
-        public virtual bool TryGet<T>([MaybeNullWhen(false)] out T value)
-        {
-            if(_genericStates.TryGetValue(typeof(T), out IState? state))
-            {
-                value = Unsafe.As<IState<T>>(state).GetValue();
-                return true;
-            }
-
-            if(_states.TryGetValue(typeof(T), out state))
-            {
-                value = (T)state.GetValue(typeof(T))!;
-                return true;
-            }
-
-            value = default!;
             return false;
-        }
-
-        public virtual bool Matches<T>(T value)
-        {
-            if (_genericStates.TryGetValue(typeof(T), out IState? state))
-            {
-                return Unsafe.As<IState<T>>(state).Matches(value);
-            }
-
-            if (_states.TryGetValue(typeof(T), out state))
-            {
-                return state.Matches(typeof(T), value);
-            }
-
-            return false;
-        }
-
-        public IStateProvider Custom(IState[] states)
-        {
-            return new CustomStateProvider(this, states);
         }
     }
 }

@@ -8,16 +8,6 @@ namespace Guppy.Common
 {
     public interface IState
     {
-        Type[] Types { get; }
-
-        bool Matches(Type type, object? value);
-
-        object? GetValue(Type type);
-    }
-    public interface IState<T> : IState
-    {
-        T GetValue();
-
-        bool Matches(T value);
+        bool Matches(object? value);
     }
 }

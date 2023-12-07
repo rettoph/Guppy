@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Guppy.Common.Filters
 {
-    public class ServiceFilter<T> : IServiceFilter
+    public class ServiceFilter : IServiceFilter
     {
         public readonly Type Type;
 
-        public readonly T Value;
+        public readonly object State;
 
-        public ServiceFilter(Type type, T value)
+        public ServiceFilter(Type type, object state)
         {
-            this.Value = value;
+            this.State = state;
             this.Type = type;
         }
 
@@ -33,14 +33,14 @@ namespace Guppy.Common.Filters
 
         public virtual bool Invoke(IStateProvider state)
         {
-            bool result = state.Matches(this.Value);
+            bool result = state.Matches(this.State);
             return result;
         }
     }
 
-    public class ServiceFilter<TService, TValue> : ServiceFilter<TValue>
+    public class ServiceFilter<TService> : ServiceFilter
     {
-        public ServiceFilter(TValue value) : base(typeof(TService), value)
+        public ServiceFilter(object value) : base(typeof(TService), value)
         {
         }
     }

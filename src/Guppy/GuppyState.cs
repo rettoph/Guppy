@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 namespace Guppy
 {
     [AutoLoad]
-    internal sealed class GuppyTypeState : State<Type?>
+    internal sealed class GuppyState : State
     {
         private readonly IGuppy? _guppy;
 
-        public GuppyTypeState(ILifetimeScope scope)
+        public GuppyState(ILifetimeScope scope)
         {
             if(scope.HasTag(LifetimeScopeTags.GuppyScope))
             {
@@ -24,19 +24,19 @@ namespace Guppy
             }
         }
 
-        public override Type? GetValue()
+        public override bool Matches(object? value)
         {
-            return _guppy?.GetType();
-        }
-
-        public override bool Matches(Type? value)
-        {
-            if(_guppy?.GetType() is null)
+            if (_guppy?.GetType() is null)
             {
                 return false;
             }
 
-            return value?.IsAssignableFrom(_guppy.GetType()) ?? false;
+            if(value is Type guppyType)
+            {
+                return _guppy.GetType().IsAssignableTo(guppyType);
+            }
+
+            return false;
         }
     }
 }

@@ -9,10 +9,6 @@ namespace Guppy.Common.Providers
 {
     public interface IStateProvider
     {
-        bool TryGet<T>([MaybeNullWhen(false)] out T state);
-
-        bool Matches<T>(T state);
-
-        IStateProvider Custom(IState[] states);
+        bool Matches(object? state);
     }
 }

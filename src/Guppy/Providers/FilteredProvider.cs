@@ -38,23 +38,5 @@ namespace Guppy.Providers
         {
             return this.Get<T>().Instances;
         }
-
-        public IFiltered<T> Get<T>(params IState[] states) where T : class
-        {
-            return new Filtered<T>(
-                _state.Custom(states),
-                _filters,
-                _context.Resolve<Lazy<IEnumerable<T>>>());
-        }
-
-        public T? Instance<T>(params IState[] states) where T : class
-        {
-            return this.Get<T>(states).Instance;
-        }
-
-        public IEnumerable<T> Instances<T>(params IState[] states) where T : class
-        {
-            return this.Get<T>(states).Instances;
-        }
     }
 }
