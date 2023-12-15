@@ -30,7 +30,7 @@ namespace Guppy.Game.MonoGame.Components.Game
         {
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
-            _debugWindowStyle = imgui.GetStyle(Resources.Styles.DebugWindow);
+            _debugWindowStyle = imgui.GetStyle(Resources.ImGuiStyles.DebugWindow);
 
             _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }
@@ -56,7 +56,7 @@ namespace Guppy.Game.MonoGame.Components.Game
                 windowClass.DockingAllowUnclassed = false;
 
                 _imgui.SetNextWindowClass(windowClass);
-                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.Once);
+                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
                 if (_imgui.Begin($"Game Debug Window"))
                 {
                     foreach (IDebugComponent component in _components)

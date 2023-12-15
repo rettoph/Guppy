@@ -22,6 +22,7 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
 
         public override ImStyleFontValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            string? key = null;
             int size = default;
             Resource<TrueTypeFont> ttf = default!;
 
@@ -32,6 +33,10 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
             {
                 switch (property)
                 {
+                    case nameof(ImStyleValue.Key):
+                        key = reader.ReadString();
+                        break;
+
                     case nameof(ImFontPtr.Size):
                         size = reader.ReadInt32();
                         break;
@@ -44,7 +49,7 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ImStyleFontValue(_imgui.Value.GetFont(ttf, size));
+            return new ImStyleFontValue(key, _imgui.Value.GetFont(ttf, size));
         }
 
         public override void Write(Utf8JsonWriter writer, ImStyleFontValue value, JsonSerializerOptions options)

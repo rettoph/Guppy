@@ -16,7 +16,7 @@ namespace Guppy.Game.ImGui.Styling.StyleValueResources
     {
         public readonly Ref<ImFontPtr> Font;
 
-        public ImStyleFontValue(Ref<ImFontPtr> font)
+        public ImStyleFontValue(string? key, Ref<ImFontPtr> font) : base(key)
         {
             this.Font = font;
         }

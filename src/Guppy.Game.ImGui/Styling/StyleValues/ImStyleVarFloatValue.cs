@@ -9,7 +9,7 @@ namespace Guppy.Game.ImGui.Styling.StyleValueResources
         public readonly ImGuiNET.ImGuiStyleVar Property;
         public readonly float Value;
 
-        public ImStyleVarFloatValue(ImGuiStyleVar property, float value)
+        public ImStyleVarFloatValue(string? key, ImGuiStyleVar property, float value) : base(key)
         {
             Property = ImGuiStyleVarConverter.ConvertToImGui(property);
             Value = value;

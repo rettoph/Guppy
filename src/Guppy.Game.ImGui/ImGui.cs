@@ -9,17 +9,54 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Game.ImGui
 {
-    internal partial class ImGui : IImGui
+    internal partial class ImGui : IImGui, IDisposable
     {
         private readonly Dictionary<Resource<ImStyle>, ResourceValue<ImStyle>> _styles;
         private readonly IResourceProvider _resources;
         private readonly IImguiBatch _batch;
+        private readonly Stack<ImStyle> _styleStack;
 
         public ImGui(IResourceProvider resources, IImguiBatch batch)
         {
             _styles = new Dictionary<Resource<ImStyle>, ResourceValue<ImStyle>>();
             _resources = resources;
             _batch = batch;
+            _styleStack = new Stack<ImStyle>();
+        }
+
+        public IDisposable Apply(Resource<ImStyle> style)
+        {
+            return this.Apply(this.GetStyle(style));
+        }
+
+        public IDisposable Apply(ImStyle style)
+        {
+            style.Push();
+            _styleStack.Push(style);
+
+            return this;
+        }
+
+        public IDisposable Apply(string key)
+        {
+            foreach(ImStyle style in _styleStack)
+            {
+                if(style.TryGetValue(key, out var value))
+                {
+                    value.Push();
+                    return value;
+                }
+            }
+
+            throw new KeyNotFoundException();
+        }
+
+        public void Dispose()
+        {
+            if(_styleStack.TryPop(out ImStyle? style))
+            {
+                style.Pop();
+            }
         }
 
         public Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size)
@@ -34,11 +71,6 @@ namespace Guppy.Game.ImGui
 
         public ResourceValue<ImStyle> GetStyle(Resource<ImStyle> style)
         {
-            if (_batch.Running)
-            {
-                throw new InvalidOperationException();
-            }
-
             ref ResourceValue<ImStyle>? styleValue = ref CollectionsMarshal.GetValueRefOrAddDefault(_styles, style, out bool exists);
             if (exists)
             {

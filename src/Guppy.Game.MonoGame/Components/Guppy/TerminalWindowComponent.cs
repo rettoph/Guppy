@@ -42,7 +42,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
         {
             _commands = commands;
             _imgui = imgui;
-            _debugWindowStyle = imgui.GetStyle(Resources.Styles.DebugWindow);
+            _debugWindowStyle = imgui.GetStyle(Resources.ImGuiStyles.DebugWindow);
             _terminal = terminal;
             _filter = string.Empty;
             _input = string.Empty;

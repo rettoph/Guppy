@@ -20,12 +20,9 @@ namespace Guppy.Game.ImGui
 
         ResourceValue<ImStyle> GetStyle(Resource<ImStyle> style);
 
-        ImStyle Apply(ImStyle style)
-        {
-            style.Push();
-
-            return style;
-        }
+        IDisposable Apply(Resource<ImStyle> style);
+        IDisposable Apply(ImStyle style);
+        IDisposable Apply(string key);
 
         void TextCentered(string text)
         {

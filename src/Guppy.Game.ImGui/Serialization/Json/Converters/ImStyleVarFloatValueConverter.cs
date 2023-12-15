@@ -15,6 +15,7 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
     {
         public override ImStyleVarFloatValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            string? key = null;
             ImGuiStyleVar var = default;
             float value = default;
 
@@ -25,9 +26,14 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
             {
                 switch (property)
                 {
+                    case nameof(ImStyleValue.Key):
+                        key = reader.ReadString();
+                        break;
+
                     case nameof(ImStyleVarFloatValue.Property):
                         var = Enum.Parse<ImGuiStyleVar>(reader.ReadString());
                         break;
+
                     case nameof(ImStyleVarFloatValue.Value):
                         value = reader.ReadSingle();
                         break;
@@ -36,7 +42,7 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ImStyleVarFloatValue(var, value);
+            return new ImStyleVarFloatValue(key, var, value);
         }
 
         public override void Write(Utf8JsonWriter writer, ImStyleVarFloatValue value, JsonSerializerOptions options)

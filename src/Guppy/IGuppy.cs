@@ -4,7 +4,7 @@ namespace Guppy
 {
     public interface IGuppy : IDisposable
     {
-        Guid Id { get; }
+        long Id { get; }
         string Name { get; }
 
         IGuppyComponent[] Components { get; }

@@ -4,7 +4,7 @@
       "Type": "Color",
       "Value": {
         "Property": "WindowBg",
-        "Color": "Color.FullScreenBackground"
+        "Color": "Color.ImGuiFullScreenBackground"
       }
     },
     {
@@ -39,6 +39,66 @@
       "Value": {
         "TTF": "TrueTypeFont.DiagnosticsFont",
         "Size": 20
+      }
+    }
+  ],
+  "ImStyle.ButtonGreen": [
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "Button",
+        "Color": "Color.ImGuiButtonGreen.Background"
+      }
+    },
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "ButtonHovered",
+        "Color": "Color.ImGuiButtonGreen.Background.Hovered"
+      }
+    },
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "ButtonActive",
+        "Color": "Color.ImGuiButtonGreen.Background.Active"
+      }
+    },
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "Text",
+        "Color": "Color.ImGuiButtonGreen.Foreground"
+      }
+    }
+  ],
+  "ImStyle.ButtonRed": [
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "Button",
+        "Color": "Color.ImGuiButtonRed.Background"
+      }
+    },
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "ButtonHovered",
+        "Color": "Color.ImGuiButtonRed.Background.Hovered"
+      }
+    },
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "ButtonActive",
+        "Color": "Color.ImGuiButtonRed.Background.Active"
+      }
+    },
+    {
+      "Type": "Color",
+      "Value": {
+        "Property": "Text",
+        "Color": "Color.ImGuiButtonRed.Foreground"
       }
     }
   ]

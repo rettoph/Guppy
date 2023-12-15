@@ -18,7 +18,7 @@ namespace Guppy.Game.ImGui.Styling.StyleValueResources
         public readonly ImGuiNET.ImGuiCol Property;
         public readonly Ref<Color> Color;
 
-        public ImStyleColorValue(ImGuiCol col, Ref<Color> color)
+        public ImStyleColorValue(string? key, ImGuiCol col, Ref<Color> color) : base(key)
         {
             this.Property = ImGuiColConverter.ConvertToImGui(col);
             this.Color = color;

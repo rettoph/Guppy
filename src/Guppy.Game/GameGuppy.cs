@@ -8,11 +8,21 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Guppy.Game
 {
     public abstract class GameGuppy : IGuppy, IGameGuppy
     {
+        private static Dictionary<Type, short> _count = new Dictionary<Type, short>();
+        private static long CalculateId(GameGuppy instance)
+        {
+            ref short count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
+            int hash = instance.GetType().GetHashCode();
+
+            return (long)hash << 32 | (long)count++;
+        }
+
         private IGuppyDrawable[] _drawComponents;
         private IGuppyUpdateable[] _updateComponents;
         private IImGuiComponent[] _imguiComponents;
@@ -21,7 +31,7 @@ namespace Guppy.Game
 
         public virtual string Name => this.GetType().Name;
 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         public GameGuppy()
         {
@@ -30,7 +40,9 @@ namespace Guppy.Game
             _imguiComponents = Array.Empty<IImGuiComponent>();
 
             this.Components = Array.Empty<IGuppyComponent>();
-            this.Id = Guid.NewGuid();
+
+
+            this.Id = CalculateId(this);
         }
 
         public event OnEventDelegate<IDisposable>? OnDispose;

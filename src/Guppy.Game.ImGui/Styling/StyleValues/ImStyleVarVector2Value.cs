@@ -17,7 +17,7 @@ namespace Guppy.Game.ImGui.Styling.StyleValueResources
         public readonly ImGuiNET.ImGuiStyleVar Property;
         public readonly Num.Vector2 Value;
 
-        public ImStyleVarVector2Value(ImGuiStyleVar var, Vector2 value)
+        public ImStyleVarVector2Value(string? key, ImGuiStyleVar var, Vector2 value) : base(key)
         {
             Property = ImGuiStyleVarConverter.ConvertToImGui(var);
             Value = NumericsHelper.Convert(value);
