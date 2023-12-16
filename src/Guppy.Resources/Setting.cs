@@ -19,6 +19,8 @@ namespace Guppy.Resources
         public readonly string Name;
         public readonly Type Type;
 
+        public string? Description { get; internal set; }
+
         internal Setting(string name, Type type)
         {
             uint128 nameHash = xxHash128.ComputeHash(name);
@@ -56,7 +58,7 @@ namespace Guppy.Resources
             return setting;
         }
 
-        public static Setting<T> Get<T>(string name, T defaultValue)
+        public static Setting<T> Get<T>(string name, T defaultValue, string? description = null)
             where T : notnull
         {
             Setting<T> settingT = default!;
@@ -71,6 +73,7 @@ namespace Guppy.Resources
             }
 
             settingT.DefaultValue = defaultValue;
+            settingT.Description = description;
 
             return settingT;
         }

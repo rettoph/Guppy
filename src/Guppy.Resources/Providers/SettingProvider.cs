@@ -30,7 +30,6 @@ namespace Guppy.Resources.Providers
             _file = _files.Get<Dictionary<Setting, ISettingValue>>(FileType.AppData, FilePaths.Settings, true);
 
             this.UpdateValues(_file.Value);
-            this.Save();
         }
 
         public SettingValue<T> Get<T>(Setting<T> setting) where T : notnull

@@ -36,6 +36,10 @@ namespace Guppy.Resources.Serialization.Json.Converters
                         name = reader.ReadString();
                         break;
 
+                    case nameof(Setting.Description):
+                        reader.ReadString();
+                        break;
+
                     case nameof(Setting.Type):
                         type = reader.ReadString();
                         break;
@@ -65,6 +69,12 @@ namespace Guppy.Resources.Serialization.Json.Converters
             writer.WriteStartObject();
 
             writer.WriteString(nameof(Setting.Name), value.Setting.Name);
+
+            if (value.Setting.Description is not null)
+            {
+                writer.WriteString(nameof(Setting.Description), value.Setting.Description);
+            }
+
             writer.WriteString(nameof(Setting.Type), value.Setting.Type.Name);
 
             writer.WritePropertyName(nameof(ISettingValue.Value));

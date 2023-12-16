@@ -11,9 +11,9 @@ namespace Guppy.Game
     public static class Settings
     {
 #if DEBUG
-        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Debug);
+        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Debug, "Acceptable Values: Verbose, Debug, Information, Warning, Fatal");
 #else
-        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Information);
+        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Information, "Acceptable Values: Verbose, Debug, Information, Warning, Fatal");
 #endif
     }
 }
