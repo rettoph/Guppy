@@ -17,7 +17,7 @@ using Guppy.Enums;
 namespace Guppy.Resources.Providers
 {
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal sealed class ResourcePackProvider : IResourcePackProvider, IGlobalComponent
+    internal sealed class ResourcePackProvider : GlobalComponent, IResourcePackProvider, IGlobalComponent
     {
         private readonly IFileService _files;
         private IDictionary<Guid, ResourcePack> _packs;
@@ -25,8 +25,6 @@ namespace Guppy.Resources.Providers
         private readonly IResourceTypeProvider _resourceTypes;
         private readonly ILogger _logger;
         private readonly IPackLoader[] _loaders;
-
-        public bool Ready { get; private set; }
 
         public ResourcePackProvider(
             IFileService files,
@@ -42,11 +40,9 @@ namespace Guppy.Resources.Providers
             _loaders = loaders.ToArray();
 
             _packs = packs.ToDictionary(x => x.Id, x => x);
-
-            this.Ready = false;
         }
 
-        public void Initialize(IGlobalComponent[] components)
+        protected override void Initialize(IGlobalComponent[] components)
         {
             foreach (var loader in _loaders)
             {
@@ -57,8 +53,6 @@ namespace Guppy.Resources.Providers
             {
                 this.Load(Path.GetDirectoryName(configuration.FullPath)!, configuration);
             }
-
-            this.Ready = true;
         }
 
         public void Register(IFile<ResourcePackConfiguration> configuration)

@@ -11,9 +11,11 @@ namespace Guppy.Game
     public static class Settings
     {
 #if DEBUG
-        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Debug, "Acceptable Values: Verbose, Debug, Information, Warning, Fatal");
+        private const LogEventLevel DefaultLogLevel = LogEventLevel.Debug;
 #else
-        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Information, "Acceptable Values: Verbose, Debug, Information, Warning, Fatal");
+        private const LogEventLevel DefaultLogLevel = LogEventLevel.Information;
 #endif
+
+        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), DefaultLogLevel, "Serilog LogEventLevel. Valid Values: Verbose, Debug, Information, Warning, Fatal.");
     }
 }
