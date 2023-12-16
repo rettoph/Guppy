@@ -7,6 +7,7 @@ using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
+using Standart.Hash.xxHash;
 using System;
 using System.Runtime.InteropServices;
 
@@ -15,12 +16,12 @@ namespace Guppy.Game
     public abstract class GameGuppy : IGuppy, IGameGuppy
     {
         private static Dictionary<Type, short> _count = new Dictionary<Type, short>();
-        private static long CalculateId(GameGuppy instance)
+        private static ulong CalculateId(GameGuppy instance)
         {
             ref short count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
-            int hash = instance.GetType().GetHashCode();
+            uint hash = xxHash32.ComputeHash(instance.GetType().AssemblyQualifiedName);
 
-            return (long)hash << 32 | (long)count++;
+            return (ulong)hash << 32 | (ulong)count++;
         }
 
         private IGuppyDrawable[] _drawComponents;
@@ -31,7 +32,7 @@ namespace Guppy.Game
 
         public virtual string Name => this.GetType().Name;
 
-        public long Id { get; set; }
+        public ulong Id { get; set; }
 
         public GameGuppy()
         {
