@@ -14,7 +14,6 @@ namespace Guppy.Resources
         where T : notnull
     {
         public readonly Setting<T> Setting;
-        public readonly T DefaultValue;
 
         Setting ISettingValue.Setting => this.Setting;
 
@@ -32,14 +31,9 @@ namespace Guppy.Resources
             }
         }
 
-        public SettingValue(Setting<T> setting, T defaultValue) : base(defaultValue)
+        public SettingValue(Setting<T> setting) : base(setting.DefaultValue)
         {
             this.Setting = setting;
-            this.DefaultValue = defaultValue;
-        }
-        public SettingValue(Setting<T> setting) : this(setting, default!)
-        {
-
         }
 
         public static implicit operator T(SettingValue<T> settingValue)

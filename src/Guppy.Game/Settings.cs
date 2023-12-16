@@ -10,6 +10,10 @@ namespace Guppy.Game
 {
     public static class Settings
     {
-        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel));
+#if DEBUG
+        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Debug);
+#else
+        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), LogEventLevel.Information);
+#endif
     }
 }

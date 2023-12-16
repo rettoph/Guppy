@@ -33,10 +33,6 @@ namespace Guppy.Resources
             }
         }
 
-        internal abstract ISettingValue Deserialize(string name, ref Utf8JsonReader reader, JsonSerializerOptions options);
-
-        internal abstract void Serialize(Utf8JsonWriter writer, ISettingValue settingValue, JsonSerializerOptions options);
-
         internal static bool TryGet(string name, [MaybeNullWhen(false)] out Setting value)
         {
             return _settings.TryGet(name, out value);
@@ -60,7 +56,7 @@ namespace Guppy.Resources
             return setting;
         }
 
-        public static Setting<T> Get<T>(string name)
+        public static Setting<T> Get<T>(string name, T defaultValue)
             where T : notnull
         {
             Setting<T> settingT = default!;
@@ -73,6 +69,8 @@ namespace Guppy.Resources
             {
                 settingT = new Setting<T>(name);
             }
+
+            settingT.DefaultValue = defaultValue;
 
             return settingT;
         }
@@ -107,34 +105,11 @@ namespace Guppy.Resources
     public sealed class Setting<T> : Setting
         where T : notnull
     {
+        public T DefaultValue { get; internal set; }
+
         internal Setting(string name) : base(name, typeof(T))
         {
-        }
-
-        internal override ISettingValue Deserialize(string name, ref Utf8JsonReader reader, JsonSerializerOptions options)
-        {
-            Setting<T> setting = Setting.Get<T>(name);
-            T value = JsonSerializer.Deserialize<T>(ref reader, options) ?? throw new NotImplementedException();
-
-            SettingValue<T> settingValue = new SettingValue<T>(setting, value);
-
-            return settingValue;
-        }
-
-        internal override void Serialize(Utf8JsonWriter writer, ISettingValue settingValue, JsonSerializerOptions options)
-        {
-            if (settingValue is SettingValue<T> casted)
-            {
-                writer.WriteStartObject();
-
-                writer.WriteString(nameof(Setting.Name), casted.Setting.Name);
-                writer.WriteString(nameof(Setting.Type), casted.Setting.Type.Name);
-
-                writer.WritePropertyName(nameof(SettingValue<T>.Value));
-                JsonSerializer.Serialize(writer, casted.Value, options);
-
-                writer.WriteEndObject();
-            }
+            this.DefaultValue = default!;
         }
     }
 }

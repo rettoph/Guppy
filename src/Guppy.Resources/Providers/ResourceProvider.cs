@@ -77,13 +77,13 @@ namespace Guppy.Resources.Providers
             List<T> valuesToCache = new List<T>();
             foreach (ResourcePack pack in _packs.GetAll())
             {
-                if (pack.TryGet(resource, _localization.DefaultValue, out T? packValue))
+                if (pack.TryGet(resource, _localization.Setting.DefaultValue, out T? packValue))
                 {
                     valuesToCache.Add(packValue);
                 }
             }
 
-            if (_localization != _localization.DefaultValue)
+            if (_localization != _localization.Setting.DefaultValue)
             {
                 foreach (ResourcePack pack in _packs.GetAll())
                 {

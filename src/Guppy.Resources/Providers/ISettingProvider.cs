@@ -9,9 +9,6 @@ namespace Guppy.Resources.Providers
 {
     public interface ISettingProvider
     {
-        void Register<T>(Setting<T> setting, T defaultValue)
-            where T : notnull;
-
         SettingValue<T> Get<T>(Setting<T> setting)
             where T : notnull;
 
