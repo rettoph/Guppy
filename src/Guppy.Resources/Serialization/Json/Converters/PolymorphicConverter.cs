@@ -1,5 +1,6 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Common.Providers;
+using Guppy.Resources.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,32 +18,39 @@ namespace Guppy.Resources.Serialization.Json.Converters
         public const string TypePropertyKey = "Type";
         public const string ValuePropertyKey = "Value";
 
-        private Map<string, Type> _types;
+        private IPolymorphicJsonSerializer<T> _serializer;
 
-        public PolymorphicConverter(IAssemblyProvider assembly, IEnumerable<PolymorphicJsonType> types)
+        public PolymorphicConverter(IPolymorphicJsonSerializer<T> serializer)
         {
-            var typeTuples = types.Where(x => x.Type.IsAssignableTo(typeof(T))).Select(x => (x.Key, x.Type));
-            _types = new Map<string, Type>(typeTuples);
+            _serializer = serializer;
         }
 
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            string type = string.Empty;
+            JsonElement value = default!;
+
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
 
-            reader.CheckPropertyName(TypePropertyKey, true);
-            reader.Read();
+            while(reader.ReadPropertyName(out string? propertyName))
+            {
+                switch(propertyName)
+                {
+                    case TypePropertyKey:
+                        type = reader.ReadString();
+                        break;
 
-            string typeKey = reader.ReadString();
+                    case ValuePropertyKey:
+                        value = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+                        reader.Read();
+                        break;
+                }
+            }
 
-            reader.CheckPropertyName(ValuePropertyKey, true);
-            reader.Read();
+            reader.CheckToken(JsonTokenType.EndObject, true);
 
-            Type type = _types[typeKey];
-            T? instance = (T?)JsonSerializer.Deserialize(ref reader, type, options);
-            reader.Read();
-
-            return instance;
+            return _serializer.Deserialize(type, ref value, options);
         }
 
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
@@ -56,7 +64,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
 
             writer.WriteStartObject();
 
-            writer.WriteString(TypePropertyKey, _types[implementationType]);
+            writer.WriteString(TypePropertyKey, _serializer.GetKey(implementationType));
 
             writer.WritePropertyName(ValuePropertyKey);
             JsonSerializer.Serialize(writer, value, implementationType, options);

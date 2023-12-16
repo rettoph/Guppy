@@ -77,7 +77,7 @@ namespace Guppy.Resources.Providers
         {
             foreach(var (setting, value) in values)
             {
-                _values[setting].SetValue(value);
+                _values[setting].Value = value.Value;
             }
         }
     }

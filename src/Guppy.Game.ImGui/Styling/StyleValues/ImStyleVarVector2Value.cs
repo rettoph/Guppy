@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {
-    [PolymorphicJsonType(nameof(Vector2))]
+    [PolymorphicJsonType<ImStyleValue>(nameof(Vector2))]
     internal sealed class ImStyleVarVector2Value : ImStyleValue
     {
         public readonly ImGuiNET.ImGuiStyleVar Property;

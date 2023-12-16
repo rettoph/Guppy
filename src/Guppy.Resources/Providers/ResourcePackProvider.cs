@@ -101,29 +101,22 @@ namespace Guppy.Resources.Providers
                 {
                     _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFileName, localization);
 
-                    IFile resourceFile = _files.Get(FileType.Source, Path.Combine(directory, resourceFileName));
-                    Utf8JsonReader reader = new Utf8JsonReader(Encoding.ASCII.GetBytes(resourceFile.Content));
-                    reader.Read();
-
-                    reader.CheckToken(JsonTokenType.StartObject, true);
-                    reader.Read();
-
-                    while(reader.ReadPropertyName(out string? name))
+                    IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(FileType.Source, Path.Combine(directory, resourceFileName));
+                    foreach(ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
                     {
-                        if(!_resourceTypes.TryGet(name, out IResourceType? resourceType))
+                        if (!_resourceTypes.TryGet(resourceTypeValues.Type, out IResourceType? resourceType))
                         {
-                            _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(Load), name);
+                            _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(Load), resourceTypeValues.Type);
                             break;
                         }
 
-                        if(!resourceType.TryResolve(pack, name, localization, ref reader))
+                        foreach(var (name, json) in resourceTypeValues.Values)
                         {
-                            _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}", nameof(ResourcePackProvider), nameof(Load), name);
-                            break;
+                            if (!resourceType.TryResolve(pack, name, localization, json))
+                            {
+                                _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}", nameof(ResourcePackProvider), nameof(Load), name);
+                            }
                         }
-
-                        _logger.Information("{ClassName}::{MethodName} - Successfully loaded resource {ResourceName}", nameof(ResourcePackProvider), nameof(Load), name);
-                        reader.Read();
                     }
                 }
             }

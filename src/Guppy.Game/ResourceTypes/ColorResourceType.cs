@@ -14,18 +14,10 @@ using System.Threading.Tasks;
 namespace Guppy.Game.ResourceTypes
 {
     [AutoLoad]
-    internal class ColorResourceType : ResourceType<Color>
+    internal class ColorResourceType : DefaultResourceType<Color>
     {
-        private readonly IJsonSerializer _json;
-
-        public ColorResourceType(IJsonSerializer json)
+        public ColorResourceType(IJsonSerializer json) : base(json)
         {
-            _json = json;
-        }
-
-        protected override bool TryResolve(Resource<Color> resource, string root, ref Utf8JsonReader reader, out Color value)
-        {
-            return _json.TryDeserialize<Color>(ref reader, out value);
         }
     }
 }

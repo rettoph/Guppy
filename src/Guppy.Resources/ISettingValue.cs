@@ -9,7 +9,6 @@ namespace Guppy.Resources
     internal interface ISettingValue
     {
         Setting Setting { get; }
-
-        void SetValue(ISettingValue value);
+        object Value { get; set; }
     }
 }

@@ -1,18 +1,23 @@
-{
-  "Color.ImGuiFullScreenBackground": [ 50, 50, 50, 150 ],
-  "Color.ImGuiButtonGreen.Background": [ 50, 200, 50, 255 ],
-  "Color.ImGuiButtonGreen.Background.Hovered": [ 50, 255, 50, 255 ],
-  "Color.ImGuiButtonGreen.Background.Active": [ 50, 150, 50, 255 ],
-  "Color.ImGuiButtonGreen.Foreground": [ 50, 50, 50, 255 ],
-  "Color.ImGuiButtonRed.Background": [ 200, 50, 50, 255 ],
-  "Color.ImGuiButtonRed.Background.Hovered": [ 255, 50, 50, 255 ],
-  "Color.ImGuiButtonRed.Background.Active": [ 150, 50, 50, 255 ],
-  "Color.ImGuiButtonRed.Foreground": [ 200, 200, 200, 255 ],
-  "Color.TerminalDefault": [ 163, 163, 163, 255 ],
-  "Color.TerminalFatal": [ 255, 0, 0, 255 ],
-  "Color.TerminalError": [ 255, 119, 0, 255 ],
-  "Color.TerminalWarning": [ 255, 251, 0, 255 ],
-  "Color.TerminalInformation": [ 255, 255, 255, 255 ],
-  "Color.TerminalDebug": [ 0, 255, 221, 255 ],
-  "Color.TerminalVerbose": [ 234, 0, 255, 255 ]
-}
+[
+  {
+    "type": "Color",
+    "values": {
+      "Color.ImGuiFullScreenBackground": [ 50, 50, 50, 150 ],
+      "Color.ImGuiButtonGreen.Background": [ 50, 200, 50, 255 ],
+      "Color.ImGuiButtonGreen.Background.Hovered": [ 50, 255, 50, 255 ],
+      "Color.ImGuiButtonGreen.Background.Active": [ 50, 150, 50, 255 ],
+      "Color.ImGuiButtonGreen.Foreground": [ 50, 50, 50, 255 ],
+      "Color.ImGuiButtonRed.Background": [ 200, 50, 50, 255 ],
+      "Color.ImGuiButtonRed.Background.Hovered": [ 255, 50, 50, 255 ],
+      "Color.ImGuiButtonRed.Background.Active": [ 150, 50, 50, 255 ],
+      "Color.ImGuiButtonRed.Foreground": [ 200, 200, 200, 255 ],
+      "Color.TerminalDefault": [ 163, 163, 163, 255 ],
+      "Color.TerminalFatal": [ 255, 0, 0, 255 ],
+      "Color.TerminalError": [ 255, 119, 0, 255 ],
+      "Color.TerminalWarning": [ 255, 251, 0, 255 ],
+      "Color.TerminalInformation": [ 255, 255, 255, 255 ],
+      "Color.TerminalDebug": [ 0, 255, 221, 255 ],
+      "Color.TerminalVerbose": [ 234, 0, 255, 255 ]
+    }
+  }
+]

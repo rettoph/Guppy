@@ -3,7 +3,7 @@ using Guppy.Resources.Providers;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {
-    [PolymorphicJsonType(nameof(Single))]
+    [PolymorphicJsonType<ImStyleValue>(nameof(Single))]
     internal sealed class ImStyleVarFloatValue : ImStyleValue
     {
         public readonly ImGuiNET.ImGuiStyleVar Property;

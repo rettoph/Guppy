@@ -11,7 +11,6 @@ namespace Guppy.Game.ImGui.Styling
 {
     public class ImStyle
     {
-
         private Dictionary<string, ImStyleValue> _keyedValues = new Dictionary<string, ImStyleValue>();
         private List<ImStyleValue> _globalValues = new List<ImStyleValue>();
 

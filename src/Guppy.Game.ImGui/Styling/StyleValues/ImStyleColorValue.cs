@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {
-    [PolymorphicJsonType(nameof(Microsoft.Xna.Framework.Color))]
+    [PolymorphicJsonType<ImStyleValue>(nameof(Microsoft.Xna.Framework.Color))]
     internal sealed class ImStyleColorValue : ImStyleValue
     {
         private Color _colorValue;

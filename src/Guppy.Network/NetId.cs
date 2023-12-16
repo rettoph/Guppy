@@ -32,7 +32,7 @@ namespace Guppy.Network
             throw new ArgumentException();
         }
 
-        [PolymorphicJsonType(nameof(Byte))]
+        [PolymorphicJsonType<INetId>(nameof(Byte))]
         public readonly struct Byte : INetId<byte>
         {
             public static INetId Zero { get; } = Create(0);
@@ -85,7 +85,7 @@ namespace Guppy.Network
             }
         }
 
-        [PolymorphicJsonType(nameof(UShort))]
+        [PolymorphicJsonType<INetId>(nameof(UShort))]
         public readonly struct UShort : INetId<ushort>
         {
             public static INetId Zero { get; } = Create(0);

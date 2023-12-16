@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -16,11 +17,11 @@ namespace Guppy.Resources.ResourceTypes
 
         public virtual string Name => this.Type.Name;
 
-        public bool TryResolve(ResourcePack pack, string resourceName, string localization, ref Utf8JsonReader reader)
+        public bool TryResolve(ResourcePack pack, string resourceName, string localization, JsonElement json)
         {
             Resource<T> resource = Resource.Get<T>(resourceName);
 
-            if (this.TryResolve(resource, pack.RootDirectory, ref reader, out T? value))
+            if (this.TryResolve(resource, pack.RootDirectory, ref json, out T? value))
             {
                 pack.Add(resource, localization, value);
                 return true;
@@ -29,20 +30,37 @@ namespace Guppy.Resources.ResourceTypes
             return false;
         }
 
-        protected abstract bool TryResolve(Resource<T> resource, string root, ref Utf8JsonReader reader, [MaybeNullWhen(false)] out T value);
+        protected abstract bool TryResolve(Resource<T> resource, string root, ref JsonElement json, [MaybeNullWhen(false)] out T value);
     }
 
     public abstract class SimpleResourceType<T> : ResourceType<T>
         where T : notnull
     {
-        protected override bool TryResolve(Resource<T> resource, string root, ref Utf8JsonReader reader, out T value)
+        protected override bool TryResolve(Resource<T> resource, string root, ref JsonElement json, out T value)
         {
-            reader.CheckToken(JsonTokenType.String, true);
-            string input = reader.GetString() ?? string.Empty;
+            string input = json.GetString() ?? string.Empty;
 
             return this.TryResolve(resource, root, input, out value);
         }
 
         protected abstract bool TryResolve(Resource<T> resource, string root, string input, out T value);
+    }
+
+    public class DefaultResourceType<T> : ResourceType<T>
+        where T : notnull
+    {
+        private readonly IJsonSerializer _json;
+
+        protected DefaultResourceType(IJsonSerializer json)
+        {
+            _json = json;
+        }
+
+        protected override bool TryResolve(Resource<T> resource, string root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        {
+            value = _json.Deserialize<T>(ref json, out bool success);
+
+            return success;
+        }
     }
 }

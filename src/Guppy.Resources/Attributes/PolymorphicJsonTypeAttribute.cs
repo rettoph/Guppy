@@ -10,35 +10,32 @@ namespace Guppy.Resources.Attributes
     public class PolymorphicJsonTypeAttribute : GuppyConfigurationAttribute
     {
         public readonly string Key;
-        public readonly Type? Type;
+        public readonly Type BaseType;
+        public readonly Type? InstanceType;
 
-        public PolymorphicJsonTypeAttribute(string key, Type? type = null)
+        public PolymorphicJsonTypeAttribute(string key, Type? instanceType, Type baseType)
         {
             this.Key = key;
-            this.Type = type;
-
-            if(this.Type == null)
-            {
-                return;
-            }
-
-            ThrowIf.Type.IsNotGenericType(this.Type);
+            this.BaseType = baseType;
+            this.InstanceType = instanceType;
         }
 
         protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            if(classType.IsGenericTypeDefinition && this.Type?.GetGenericTypeDefinition() != classType)
+            Type instanceType = this.InstanceType ?? classType;
+
+            if(instanceType.IsGenericTypeDefinition)
             {
-                return;
+                throw new Exception();
             }
 
-            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, this.Type ?? classType)).SingleInstance();
+            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType(this.Key, instanceType, this.BaseType)).SingleInstance();
         }
     }
 
     public sealed class PolymorphicJsonTypeAttribute<T> : PolymorphicJsonTypeAttribute
     {
-        public PolymorphicJsonTypeAttribute(string key) : base(key, typeof(T))
+        public PolymorphicJsonTypeAttribute(string key, Type? instanceType = null) : base(key, instanceType, typeof(T))
         {
         }
     }

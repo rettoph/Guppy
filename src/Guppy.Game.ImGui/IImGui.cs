@@ -18,10 +18,10 @@ namespace Guppy.Game.ImGui
     {
         Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
 
-        ResourceValue<ImStyle> GetStyle(Resource<ImStyle> style);
+        ResourceValue<Styling.ImStyle> GetStyle(Resource<Styling.ImStyle> style);
 
-        IDisposable Apply(Resource<ImStyle> style);
-        IDisposable Apply(ImStyle style);
+        IDisposable Apply(Resource<Styling.ImStyle> style);
+        IDisposable Apply(Styling.ImStyle style);
         IDisposable Apply(string key);
 
         void TextCentered(string text)

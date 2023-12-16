@@ -18,26 +18,33 @@ namespace Guppy.Resources
 
         Setting ISettingValue.Setting => this.Setting;
 
+        object ISettingValue.Value
+        {
+            get => this.Value;
+            set
+            {
+                if(value is not T casted)
+                {
+                    throw new InvalidCastException();
+                }
+
+                this.Value = casted;
+            }
+        }
+
         public SettingValue(Setting<T> setting, T defaultValue) : base(defaultValue)
         {
             this.Setting = setting;
             this.DefaultValue = defaultValue;
         }
+        public SettingValue(Setting<T> setting) : this(setting, default!)
+        {
+
+        }
 
         public static implicit operator T(SettingValue<T> settingValue)
         {
             return settingValue.Value;
-        }
-
-        void ISettingValue.SetValue(ISettingValue value)
-        {
-            if(value is SettingValue<T> casted)
-            {
-                this.Value = casted.Value;
-                return;
-            }
-
-            throw new NotImplementedException();
         }
     }
 }

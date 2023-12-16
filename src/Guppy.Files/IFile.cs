@@ -15,7 +15,6 @@ namespace Guppy.Files
         string Content { get; set; }
     }
     public interface IFile<T> : IFile
-        where T : new()
     {
         T Value { get; set; }
         bool Success { get; }

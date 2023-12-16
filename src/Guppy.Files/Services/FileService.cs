@@ -2,13 +2,7 @@
 using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Serialization;
-using Guppy.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Files.Services
 {
@@ -54,7 +48,6 @@ namespace Guppy.Files.Services
         }
 
         public IFile<T> Get<T>(FileType type, string path, bool forceLoadFromDisk = false)
-            where T : new()
         {
             string fullPath = _paths.GetFullPath(type, path);
 
@@ -88,8 +81,6 @@ namespace Guppy.Files.Services
         }
 
         public void Save<T>(IFile<T> file)
-            where T : new()
-
         {
             DirectoryHelper.EnsureDirectoryExists(file.FullPath);
 

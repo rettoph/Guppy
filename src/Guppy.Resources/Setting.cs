@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -39,6 +40,24 @@ namespace Guppy.Resources
         internal static bool TryGet(string name, [MaybeNullWhen(false)] out Setting value)
         {
             return _settings.TryGet(name, out value);
+        }
+
+        public static Setting Get(Type type, string name)
+        {
+            if (_settings.TryGet(name, out Setting? cached))
+            {
+                return cached;
+            }
+
+            Type settingType = typeof(Setting<>).MakeGenericType(type);
+            Setting setting = (Setting)Activator.CreateInstance(
+                settingType, 
+                BindingFlags.NonPublic | BindingFlags.Instance,
+                null,
+                new object[] { name },
+                null)!;
+
+            return setting;
         }
 
         public static Setting<T> Get<T>(string name)
@@ -106,8 +125,15 @@ namespace Guppy.Resources
         {
             if (settingValue is SettingValue<T> casted)
             {
-                writer.WritePropertyName(casted.Setting.Name);
+                writer.WriteStartObject();
+
+                writer.WriteString(nameof(Setting.Name), casted.Setting.Name);
+                writer.WriteString(nameof(Setting.Type), casted.Setting.Type.Name);
+
+                writer.WritePropertyName(nameof(SettingValue<T>.Value));
                 JsonSerializer.Serialize(writer, casted.Value, options);
+
+                writer.WriteEndObject();
             }
         }
     }

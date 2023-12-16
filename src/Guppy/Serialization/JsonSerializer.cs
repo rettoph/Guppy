@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Common;
 using Guppy.Serialization;
 using Serilog;
 using STJ = System.Text.Json;
@@ -15,18 +16,10 @@ namespace Guppy.Serialization
         private readonly JsonSerializerOptions _options;
         private readonly ILogger _logger;
 
-        public JsonSerializer(ILogger logger, IEnumerable<JsonConverter> converters)
+        public JsonSerializer(ILogger logger, IConfiguration<JsonSerializerOptions> options)
         {
             _logger = logger;
-            _options = new JsonSerializerOptions()
-            {
-                WriteIndented = true
-            };
-
-            foreach (JsonConverter converter in converters)
-            {
-                _options.Converters.Add(converter);
-            }
+            _options = options.Value;
         }
 
         public T? Deserialize<T>(string json, out bool success)
@@ -74,6 +67,21 @@ namespace Guppy.Serialization
             {
                 success = false;
                 _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}>", nameof(JsonSerializer), nameof(Deserialize), typeof(T).Name);
+                return default!;
+            }
+        }
+
+        public T? Deserialize<T>(ref JsonElement json, out bool success)
+        {
+            try
+            {
+                success = true;
+                return STJ.JsonSerializer.Deserialize<T>(json, _options);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}> => '{JSON}'", nameof(JsonSerializer), nameof(Deserialize), typeof(T).Name, json);
                 return default!;
             }
         }

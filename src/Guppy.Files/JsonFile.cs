@@ -1,17 +1,9 @@
 ﻿using Guppy.Files.Enums;
 using Guppy.Serialization;
-using Guppy.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Guppy.Files
 {
     internal class JsonFile<T> : IFile<T>
-        where T : new()
     {
         private readonly IJsonSerializer _json;
         private T _value;
@@ -27,7 +19,7 @@ namespace Guppy.Files
             get => _json.Serialize(this.Value);
             set
             {
-                T result = _json.Deserialize<T>(value, out bool success) ?? new();
+                T result = _json.Deserialize<T>(value, out bool success) ?? Activator.CreateInstance<T>();
                 this.Success = success;
 
                 _value = result;
@@ -36,7 +28,7 @@ namespace Guppy.Files
         }
         public T Value
         {
-            get => _value ??= new();
+            get => _value ??= Activator.CreateInstance<T>();
             set => _value = value;
         }
 

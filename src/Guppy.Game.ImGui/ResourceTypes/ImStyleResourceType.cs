@@ -9,18 +9,10 @@ using System.Diagnostics.CodeAnalysis;
 namespace Guppy.Game.ImGui.ResourceTypes
 {
     [AutoLoad]
-    internal class ImStyleResourceType : ResourceType<ImStyle>
+    internal class ImStyleResourceType : DefaultResourceType<ImStyle>
     {
-        private readonly IJsonSerializer _json;
-
-        public ImStyleResourceType(IJsonSerializer json)
+        public ImStyleResourceType(IJsonSerializer json) : base(json)
         {
-            _json = json;
-        }
-
-        protected override bool TryResolve(Resource<ImStyle> resource, string root, ref Utf8JsonReader reader, [MaybeNullWhen(false)] out ImStyle value)
-        {
-            return _json.TryDeserialize<ImStyle>(ref reader, out value);
         }
     }
 }

@@ -15,6 +15,6 @@ namespace Guppy.Resources.ResourceTypes
         Type Type { get; }
         string Name { get; }
 
-        bool TryResolve(ResourcePack pack, string resource, string localization, ref Utf8JsonReader reader);
+        bool TryResolve(ResourcePack pack, string resource, string localization, JsonElement json);
     }
 }

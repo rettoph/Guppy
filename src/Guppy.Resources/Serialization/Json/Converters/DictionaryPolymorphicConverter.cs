@@ -1,5 +1,6 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Common.Providers;
+using Guppy.Resources.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,11 @@ namespace Guppy.Resources.Serialization.Json.Converters
     public sealed class DictionaryPolymorphicConverter<T> : JsonConverter<Dictionary<string, T>>
         where T : notnull
     {
-        private Map<string, Type> _types;
+        private IPolymorphicJsonSerializer<T> _serializer;
 
-        public DictionaryPolymorphicConverter(IAssemblyProvider assembly, IEnumerable<PolymorphicJsonType> types)
+        public DictionaryPolymorphicConverter(IAssemblyProvider assembly, IPolymorphicJsonSerializer<T> serializer)
         {
-            var typeTuples = types.Where(x => x.Type.IsAssignableTo(typeof(T))).Select(x => (x.Key, x.Type));
-            _types = new Map<string, Type>(typeTuples);
+            _serializer = serializer;
         }
 
         public override Dictionary<string, T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -31,8 +31,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
 
             while (reader.ReadPropertyName(out string? propertyName))
             {
-                Type type = _types[propertyName];
-                T instance = (T)JsonSerializer.Deserialize(ref reader, type, options)!;
+                T instance = _serializer.Deserialize(propertyName, ref reader, options);
                 reader.Read();
 
                 result.Add(propertyName, instance);

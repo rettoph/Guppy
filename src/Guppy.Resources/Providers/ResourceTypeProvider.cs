@@ -13,8 +13,6 @@ namespace Guppy.Resources.Providers
 {
     internal sealed class ResourceTypeProvider : IResourceTypeProvider
     {
-        private readonly Regex resourceNameRegex = new Regex("^(.+?)s{0,1}\\..+$");
-
         private readonly Dictionary<string, IResourceType> _types;
 
         public ResourceTypeProvider(IEnumerable<IResourceType> types)
@@ -24,24 +22,7 @@ namespace Guppy.Resources.Providers
 
         public bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType)
         {
-            Match resourceNameMatch = resourceNameRegex.Match(name);
-            if(resourceNameMatch.Success == false)
-            {
-                resourceType = null;
-                return false;
-            }
-
-            string resourceTypeName = resourceNameMatch.Groups[1].Value;
-            KeyValuePair<string, IResourceType> kvp = _types.FirstOrDefault(x => x.Key == resourceTypeName);
-
-            if(kvp.Value is null)
-            {
-                resourceType = null;
-                return false;
-            }
-
-            resourceType = kvp.Value;
-            return true;
+            return _types.TryGetValue(name, out resourceType);
         }
 
         /*

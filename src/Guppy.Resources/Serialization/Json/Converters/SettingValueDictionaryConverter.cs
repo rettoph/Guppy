@@ -17,22 +17,19 @@ namespace Guppy.Resources.Serialization.Json.Converters
         {
             Dictionary<Setting, ISettingValue> _dict = new Dictionary<Setting, ISettingValue>();
 
-            if(reader.CheckToken(JsonTokenType.StartObject, false))
+            if(reader.CheckToken(JsonTokenType.StartArray, false))
             {
-                while (reader.ReadPropertyName(out string? propertyName))
+                ISettingValue[]? values = JsonSerializer.Deserialize<ISettingValue[]>(ref reader, options);
+
+                if(values is not null)
                 {
-                    if(Setting.TryGet(propertyName, out Setting? setting) == false)
+                    foreach(ISettingValue value in values)
                     {
-                        throw new NotImplementedException();
+                        _dict.Add(value.Setting, value);
                     }
-
-                    var settingValue = setting.Deserialize(propertyName, ref reader, options);
-                    reader.Read();
-
-                    _dict[settingValue.Setting] = settingValue;
                 }
 
-                reader.CheckToken(JsonTokenType.EndObject, true);
+                reader.CheckToken(JsonTokenType.EndArray, true);
             }
 
             return _dict;
@@ -40,14 +37,14 @@ namespace Guppy.Resources.Serialization.Json.Converters
 
         public override void Write(Utf8JsonWriter writer, Dictionary<Setting, ISettingValue> dict, JsonSerializerOptions options)
         {
-            writer.WriteStartObject();
+            writer.WriteStartArray();
 
             foreach(var (setting, value) in dict.OrderBy(x => x.Key.Name))
             {
-                setting.Serialize(writer, value, options);
+                JsonSerializer.Serialize(writer, value!, options);
             }
 
-            writer.WriteEndObject();
+            writer.WriteEndArray();
         }
     }
 }

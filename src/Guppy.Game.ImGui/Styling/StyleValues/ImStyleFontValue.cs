@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {
-    [PolymorphicJsonType(nameof(TrueTypeFont))]
+    [PolymorphicJsonType<ImStyleValue>(nameof(TrueTypeFont))]
     internal class ImStyleFontValue : ImStyleValue
     {
         public readonly Ref<ImFontPtr> Font;

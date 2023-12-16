@@ -8,6 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Configurations\**" />
+    <Compile Remove="Serialization\Implementations\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="Serialization\Implementations\**" />
+    <None Remove="Configurations\**" />
+    <None Remove="Serialization\Implementations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="7.0.1" />
     <PackageReference Include="Serilog" Version="2.12.0" />
   </ItemGroup>
@@ -15,11 +24,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Common\Guppy.Common.csproj" />
     <ProjectReference Include="..\Guppy.Messaging\Guppy.Messaging.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-    <Folder Include="Serialization\Implementations\" />
   </ItemGroup>
 
 </Project>

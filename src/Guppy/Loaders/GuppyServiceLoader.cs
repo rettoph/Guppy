@@ -10,6 +10,7 @@ using Guppy.Serialization;
 using Guppy.Common.Autofac;
 using Guppy.Messaging;
 using Guppy.Common.Providers;
+using Guppy.Extensions.Autofac;
 
 namespace Guppy.Loaders
 {
@@ -44,17 +45,16 @@ namespace Guppy.Loaders
                 return logger;
             }).InstancePerLifetimeScope();
 
-            services.Register<JsonSerializerOptions>(p =>
+            services.Configure<JsonSerializerOptions>((p, options) =>
             {
-                var options = new JsonSerializerOptions();
+                options.PropertyNameCaseInsensitive = true;
+                options.WriteIndented = true;
 
                 foreach (JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
                 {
                     options.Converters.Add(converter);
                 }
-
-                return options;
-            }).InstancePerDependency();
+            });
 
             services.RegisterInstance(new JsonStringEnumConverter()).As<JsonConverter>().SingleInstance();
             services.RegisterType<Serialization.JsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
