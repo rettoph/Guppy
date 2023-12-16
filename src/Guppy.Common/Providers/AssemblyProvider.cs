@@ -36,10 +36,6 @@ namespace Guppy.Common.Providers
                 return;
             }
 
-            if(assembly.FullName.Contains("Guppy.Game.MonoGame"))
-            {
-
-            }
             Console.WriteLine($"{new string('\t', depth)}Loading: {assembly.FullName}...");
 
             // Recersively attempt to load all references assemblies as well...
