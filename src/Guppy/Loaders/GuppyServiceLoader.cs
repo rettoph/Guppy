@@ -11,6 +11,8 @@ using Guppy.Common.Autofac;
 using Guppy.Messaging;
 using Guppy.Common.Providers;
 using Guppy.Extensions.Autofac;
+using Guppy.Services;
+using Guppy.Common.Services;
 
 namespace Guppy.Loaders
 {
@@ -22,6 +24,7 @@ namespace Guppy.Loaders
             services.RegisteGuppyCommon();
 
             services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
+            services.RegisterType<ObjectTextFilterService>().As<IObjectTextFilterService>().SingleInstance();
 
             services.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 

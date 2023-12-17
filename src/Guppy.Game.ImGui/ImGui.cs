@@ -84,12 +84,12 @@ namespace Guppy.Game.ImGui
             return styleValue;
         }
 
-        public void ObjectViewer(object instance, string? filter = null, int maxDepth = 5, int currentDepth = 0)
+        public bool ObjectViewer(object instance, string filter = "", int maxDepth = 5, int currentDepth = 0)
         {
-            this.ObjectViewer(null, null, instance.GetType(), instance, filter, maxDepth, currentDepth);
+            return this.ObjectViewer(null, null, instance.GetType(), instance, filter, maxDepth, currentDepth);
         }
 
-        public bool ObjectViewer(int? index, string? name, Type type, object? instance, string? filter, int maxDepth, int currentDepth)
+        public bool ObjectViewer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth)
         {
             return _objectViewers.First(x => x.AppliesTo(type)).RenderObjectViewer(index, name, type, instance, this, filter, maxDepth, currentDepth);
         }

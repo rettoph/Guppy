@@ -1,19 +1,18 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Services;
 using Guppy.Enums;
-using Guppy.Files.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
+using Microsoft.Xna.Framework;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui
 {
     public abstract class ImGuiObjectViewer
     {
-        internal ImGuiObjectViewer()
+        protected readonly IObjectTextFilterService filter;
+
+        internal ImGuiObjectViewer(IObjectTextFilterService filter)
         {
+            this.filter = filter;
         }
 
         protected virtual string GetTitle(int? index, string? name, Type type, object? instance)
@@ -46,26 +45,44 @@ namespace Guppy.Game.ImGui
             return title.ToString();
         }
 
-        public abstract bool AppliesTo(Type type);
-        public virtual bool RenderObjectViewer(int? index, string? name, Type type, object? instance, IImGui imgui, string? filter, int maxDepth, int currentDepth)
+        private Vector4 _red = Color.Red.ToVector4();
+        private Vector4 _green = Color.LightGreen.ToVector4();
+        protected bool RenderTitle(IImGui imgui, string filter, string title)
         {
-            string title = this.GetTitle(index, name, type, instance);
-
-            if(currentDepth >= maxDepth)
+            if (filter.IsNullOrEmpty())
             {
                 imgui.Text(title);
-                return filter.IsNullOrEmpty() || title.Contains(filter!);
+                return false;
+            }
+            else if (title.Contains(filter))
+            {
+                imgui.TextColored(_green, title);
+                return true;
+            }
+            else
+            {
+                imgui.TextColored(_red, title);
+                return false;
+            }
+        }
+
+        public abstract bool AppliesTo(Type type);
+        public virtual bool RenderObjectViewer(int? index, string? name, Type type, object? instance, IImGui imgui, string filter, int maxDepth, int currentDepth)
+        {
+            if(currentDepth >= maxDepth || instance is null)
+            {
+                return this.RenderTitle(imgui, filter, this.GetTitle(index, name, type, instance));
             }
 
-            return this.RenderObjectViewer(title, type, instance, imgui, filter, maxDepth, currentDepth);
+            return this.InternalRenderObjectViewer(index, name, type, instance, imgui, filter, maxDepth, currentDepth);
         }
-        protected abstract bool RenderObjectViewer(string title, Type type, object? instance, IImGui imgui, string? filter, int maxDepth, int currentDepth);
+        protected abstract bool InternalRenderObjectViewer(int? index, string? name, Type type, object instance, IImGui imgui, string filter, int maxDepth, int currentDepth);
     }
 
     [Service<ImGuiObjectViewer>(ServiceLifetime.Singleton, true)]
     public abstract class ImGuiObjectViewer<T> : ImGuiObjectViewer
     {
-        public ImGuiObjectViewer() : base()
+        public ImGuiObjectViewer(IObjectTextFilterService filter) : base(filter)
         {
         }
 
@@ -74,11 +91,11 @@ namespace Guppy.Game.ImGui
             return type.IsAssignableTo(typeof(T));
         }
 
-        protected override bool RenderObjectViewer(string title, Type type, object? instance, IImGui imgui, string? filter, int maxDepth, int currentDepth)
+        protected override bool InternalRenderObjectViewer(int? index, string? name, Type type, object instance, IImGui imgui, string filter, int maxDepth, int currentDepth)
         {
-            return this.RenderObjectViewer(title, type, instance is null ? default : (T?)instance, imgui, filter, maxDepth, currentDepth);
+            return this.RenderObjectViewer(index, name, type, instance is null ? default : (T?)instance, imgui, filter, maxDepth, currentDepth);
         }
 
-        protected abstract bool RenderObjectViewer(string title, Type type, T? instance, IImGui imgui, string? filter, int maxDepth, int currentDepth);
+        protected abstract bool RenderObjectViewer(int? index, string? name, Type type, T? instance, IImGui imgui, string filter, int maxDepth, int currentDepth);
     }
 }
