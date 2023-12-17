@@ -18,5 +18,15 @@ namespace System
 
             return source.Remove(source.LastIndexOf(value));
         }
+
+        public static bool IsNullOrEmpty(this string? value)
+        {
+            return value is null || value == string.Empty;
+        }
+
+        public static bool IsNotNullOrEmpty(this string? value)
+        {
+            return value is not null && value != string.Empty;
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace Guppy.Game.ImGui.Loaders
 
             services.RegisterType<EmptyImGuiBatch>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ImGui>().As<IImGui>().SingleInstance();
+            services.RegisterType<DefaultImGuiObjectViewer>().SingleInstance();
 
             services.RegisterType<ImStyleConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<PolymorphicConverter<ImStyleValue>>().As<JsonConverter>().SingleInstance();
