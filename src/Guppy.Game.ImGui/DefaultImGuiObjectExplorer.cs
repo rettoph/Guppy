@@ -18,8 +18,8 @@ namespace Guppy.Game.ImGui
         private readonly IObjectTextFilterService _filter;
         private readonly IImGui _imgui;
         private Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo;
-        private Dictionary<uint, TextFilterResult> _headerStates;
 
+        private Dictionary<uint, TextFilterResult> _filterResults;
         private Vector4 _redForeground = Color.Red.ToVector4();
         private Vector4 _greenForeground = Color.LightGreen.ToVector4();
         private Vector4 _redBackground = Color.DarkRed.ToVector4();
@@ -30,7 +30,7 @@ namespace Guppy.Game.ImGui
             _filter = filter;
             _imgui = imgui;
             _typeInfo = new Dictionary<Type, (FieldInfo[], PropertyInfo[])>();
-            _headerStates = new Dictionary<uint, TextFilterResult>();
+            _filterResults = new Dictionary<uint, TextFilterResult>();
         }
 
         public override bool AppliesTo(Type type)
@@ -53,7 +53,7 @@ namespace Guppy.Game.ImGui
                 return this.DrawText(index, name, type, instance, filter);
             }
 
-            using (_imgui.ApplyID($"{nameof(DefaultImGuiObjectExplorer)}_{name}"))
+            using (_imgui.ApplyID($"{nameof(DefaultImGuiObjectExplorer)}_{name}_{index}"))
             {
                 uint id = _imgui.GetID(nameof(TextFilterResult));
                 ref TextFilterResult result = ref this.GetFilterResult(id);
@@ -97,7 +97,8 @@ namespace Guppy.Game.ImGui
                 }
                 else
                 {
-                    result = result.Max(_filter.Filter(instance, filter, maxDepth, currentDepth));
+                    var filterResult = _filter.Filter(instance, filter, maxDepth, currentDepth);
+                    result = result.Max(filterResult);
                 }
 
                 return result;
@@ -182,7 +183,7 @@ namespace Guppy.Game.ImGui
 
         private ref TextFilterResult GetFilterResult(uint id)
         {
-            ref TextFilterResult result = ref CollectionsMarshal.GetValueRefOrAddDefault(_headerStates, id, out _);
+            ref TextFilterResult result = ref CollectionsMarshal.GetValueRefOrAddDefault(_filterResults, id, out _);
 
             return ref result;
         }
@@ -196,9 +197,13 @@ namespace Guppy.Game.ImGui
                 return info;
             }
 
-            info.Item1 = type.GetFields(BindingFlags.Public | BindingFlags.Instance).ToArray();
-            info.Item2 = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            info.Item1 = type.GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => typeof(Delegate).IsAssignableFrom(x.FieldType) == false)
+                .ToArray();
+
+            info.Item2 = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
                 .Where(x => x.GetMethod!.GetParameters().Length == 0)
+                .Where(x => typeof(Delegate).IsAssignableFrom(x.PropertyType) == false)
                 .ToArray();
 
             return info;

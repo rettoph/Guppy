@@ -91,9 +91,13 @@ namespace Guppy
                 return info;
             }
 
-            info.Item1 = type.GetFields(BindingFlags.Public | BindingFlags.Instance).ToArray();
+            info.Item1 = type.GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .Where(x => typeof(Delegate).IsAssignableFrom(x.FieldType) == false)
+                .ToArray();
+
             info.Item2 = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
                 .Where(x => x.GetMethod!.GetParameters().Length == 0)
+                .Where(x => typeof(Delegate).IsAssignableFrom(x.PropertyType) == false)
                 .ToArray();
 
             return info;
