@@ -5,6 +5,7 @@ using Guppy.Files.Helpers;
 using Guppy.Game.ImGui.Constants;
 using Guppy.Game.ImGui.Messages;
 using Guppy.Game.ImGui.Serialization.Json.Converters;
+using Guppy.Game.ImGui.Services;
 using Guppy.Game.ImGui.Styling.StyleValueResources;
 using Guppy.Game.Input.Enums;
 using Guppy.Loaders;
@@ -30,7 +31,8 @@ namespace Guppy.Game.ImGui.Loaders
 
             services.RegisterType<EmptyImGuiBatch>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ImGui>().As<IImGui>().SingleInstance();
-            services.RegisterType<DefaultImGuiObjectViewer>().SingleInstance();
+            services.RegisterType<ImGuiObjectExplorerService>().As<IImGuiObjectExplorerService>().SingleInstance();
+            services.RegisterType<DefaultImGuiObjectExplorer>().AsSelf().As<ImGuiObjectExplorer>().SingleInstance();
 
             services.RegisterType<ImStyleConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<PolymorphicConverter<ImStyleValue>>().As<JsonConverter>().SingleInstance();

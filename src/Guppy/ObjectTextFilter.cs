@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Enums;
 using Guppy.Common.Services;
 using Guppy.Enums;
 using System;
@@ -21,7 +22,7 @@ namespace Guppy
 
         public abstract bool AppliesTo(object instance);
 
-        public abstract bool Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth);
+        public abstract TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth);
     }
 
     public abstract class ObjectTextFilter<T> : ObjectTextFilter
@@ -35,11 +36,11 @@ namespace Guppy
             return instance is T;
         }
 
-        public override bool Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth)
+        public override TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth)
         {
             return this.Filter((T)instance, input, filter, currentDepth, maxDepth);
         }
 
-        protected abstract bool Filter(T instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth);
+        protected abstract TextFilterResult Filter(T instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth);
     }
 }

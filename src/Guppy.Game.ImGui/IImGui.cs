@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Guppy.Common;
+using System.Drawing;
+using Microsoft.Xna.Framework;
 
 [assembly: InternalsVisibleTo("Guppy.Game.MonoGame")]
 
@@ -18,14 +20,27 @@ namespace Guppy.Game.ImGui
     {
         Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
 
-        ResourceValue<Styling.ImStyle> GetStyle(Resource<Styling.ImStyle> style);
+        ResourceValue<ImStyle> GetStyle(Resource<ImStyle> style);
 
-        IDisposable Apply(Resource<Styling.ImStyle> style);
-        IDisposable Apply(Styling.ImStyle style);
+        IDisposable Apply(Resource<ImStyle> style);
+        IDisposable Apply(ImStyle style);
         IDisposable Apply(string key);
 
-        bool ObjectViewer(object instance, string filter = "", int maxDepth = 5, int currentDepth = 0);
-        bool ObjectViewer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth);
+        IDisposable ApplyID(string id);
+
+        bool CollapsingHeader(string label, Vector4? color)
+        {
+            if(color is null)
+            {
+                return this.CollapsingHeader(label);
+            }
+
+            this.PushStyleColor(ImGuiCol.Header, color.Value);
+            bool result = this.CollapsingHeader(label);
+            this.PopStyleColor();
+
+            return result;
+        }
 
         void TextCentered(string text)
         {

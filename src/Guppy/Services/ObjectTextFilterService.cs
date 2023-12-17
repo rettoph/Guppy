@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Services;
+﻿using Guppy.Common.Enums;
+using Guppy.Common.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,22 +20,23 @@ namespace Guppy.Services
             _typeFilters = new Dictionary<Type, ObjectTextFilter>();
         }
 
-        public bool Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0)
+        public TextFilterResult Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0)
         {
             if(instance is null)
             {
-                return false;
+                return TextFilterResult.NotMatched;
             }
 
             if(input.IsNullOrEmpty())
             {
-                return true;
+                return TextFilterResult.None;
             }
 
             if(currentDepth >= maxDepth)
             {
                 return (instance.GetType().AssemblyQualifiedName is string assembly && assembly.Contains(input))
-                    || (instance.ToString() is string instanceString && instanceString.Contains(input));
+                    || (instance.ToString() is string instanceString && instanceString.Contains(input))
+                    ? TextFilterResult.Matched : TextFilterResult.NotMatched;
             }
 
             return this.GetFilter(instance).Filter(instance, input, this, maxDepth, currentDepth);

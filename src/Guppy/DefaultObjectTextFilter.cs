@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Common.Enums;
 using Guppy.Common.Services;
 using System;
 using System.Collections;
@@ -27,33 +28,33 @@ namespace Guppy
             return true;
         }
 
-        public override bool Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth)
+        public override TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth)
         {
             Type type = instance.GetType();
 
-            if (type.IsPrimitive || type == typeof(string))
+            if (instance.ToString() is string instanceString && instanceString.Contains(input))
             {
-                return (instance.ToString() ?? string.Empty).Contains(input);
+                return TextFilterResult.Matched;
             }
 
             if(type.AssemblyQualifiedName is string assembly && assembly.Contains(input))
             {
-                return true;
+                return TextFilterResult.Matched;
             }
 
             var (fields, properties) = this.GetTypeInfo(type);
             if (properties.Length == 0 && fields.Length == 0)
             {
-                return false;
+                return TextFilterResult.NotMatched;
             }
 
             foreach (PropertyInfo property in properties)
             {
                 object? propertyValue = property.GetValue(instance);
 
-                if(filter.Filter(propertyValue, input, maxDepth, currentDepth + 1))
+                if(filter.Filter(propertyValue, input, maxDepth, currentDepth + 1) == TextFilterResult.Matched)
                 {
-                    return true;
+                    return TextFilterResult.Matched;
                 }
             }
 
@@ -61,9 +62,9 @@ namespace Guppy
             {
                 object? fieldValue = field.GetValue(instance);
 
-                if (filter.Filter(fieldValue, input, maxDepth, currentDepth + 1))
+                if (filter.Filter(fieldValue, input, maxDepth, currentDepth + 1) == TextFilterResult.Matched)
                 {
-                    return true;
+                    return TextFilterResult.Matched;
                 }
             }
 
@@ -71,14 +72,14 @@ namespace Guppy
             {
                 foreach (var item in enumerable)
                 {
-                    if (filter.Filter(item, input, maxDepth, currentDepth + 1))
+                    if (filter.Filter(item, input, maxDepth, currentDepth + 1) == TextFilterResult.Matched)
                     {
-                        return true;
+                        return TextFilterResult.Matched;
                     }
                 }
             }
 
-            return false;
+            return TextFilterResult.NotMatched;
         }
 
         private (FieldInfo[], PropertyInfo[]) GetTypeInfo(Type type)

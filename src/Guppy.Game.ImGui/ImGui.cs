@@ -1,4 +1,5 @@
 ﻿using Guppy.Common;
+using Guppy.Game.ImGui.Helpers;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
@@ -11,19 +12,20 @@ namespace Guppy.Game.ImGui
 {
     internal partial class ImGui : IImGui, IDisposable
     {
-        private readonly ImGuiObjectViewer[] _objectViewers;
         private readonly Dictionary<Resource<ImStyle>, ResourceValue<ImStyle>> _styles;
         private readonly IResourceProvider _resources;
         private readonly IImguiBatch _batch;
         private readonly Stack<ImStyle> _styleStack;
 
-        public ImGui(IResourceProvider resources, IImguiBatch batch, DefaultImGuiObjectViewer defaultObjectViewer, IEnumerable<ImGuiObjectViewer> objectViewers)
+        private IDisposable _idPopper;
+
+        public ImGui(IResourceProvider resources, IImguiBatch batch)
         {
-            _objectViewers = objectViewers.Concat(defaultObjectViewer.Yield()).ToArray();
             _styles = new Dictionary<Resource<ImStyle>, ResourceValue<ImStyle>>();
             _resources = resources;
             _batch = batch;
             _styleStack = new Stack<ImStyle>();
+            _idPopper = new ImGuiPoppers.IdPopper(this);
         }
 
         public IDisposable Apply(Resource<ImStyle> style)
@@ -51,6 +53,13 @@ namespace Guppy.Game.ImGui
             }
 
             throw new KeyNotFoundException();
+        }
+
+        public IDisposable ApplyID(string id)
+        {
+            ((IImGui)this).PushID(id);
+
+            return _idPopper;
         }
 
         public void Dispose()
@@ -82,16 +91,6 @@ namespace Guppy.Game.ImGui
             styleValue = _resources.Get(style);
 
             return styleValue;
-        }
-
-        public bool ObjectViewer(object instance, string filter = "", int maxDepth = 5, int currentDepth = 0)
-        {
-            return this.ObjectViewer(null, null, instance.GetType(), instance, filter, maxDepth, currentDepth);
-        }
-
-        public bool ObjectViewer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth)
-        {
-            return _objectViewers.First(x => x.AppliesTo(type)).RenderObjectViewer(index, name, type, instance, this, filter, maxDepth, currentDepth);
         }
     }
 }

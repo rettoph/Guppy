@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guppy.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Guppy.Common.Services
 {
     public interface IObjectTextFilterService
     {
-        bool Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0);
+        TextFilterResult Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0);
     }
 }
