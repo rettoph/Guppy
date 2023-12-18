@@ -28,7 +28,7 @@ namespace Guppy
             return true;
         }
 
-        public override TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth)
+        public override TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             Type type = instance.GetType();
 
@@ -52,7 +52,7 @@ namespace Guppy
             {
                 object? propertyValue = property.GetValue(instance);
 
-                if(filter.Filter(propertyValue, input, maxDepth, currentDepth + 1) == TextFilterResult.Matched)
+                if(filter.Filter(propertyValue, input, maxDepth, currentDepth + 1, tree) == TextFilterResult.Matched)
                 {
                     return TextFilterResult.Matched;
                 }
@@ -62,7 +62,7 @@ namespace Guppy
             {
                 object? fieldValue = field.GetValue(instance);
 
-                if (filter.Filter(fieldValue, input, maxDepth, currentDepth + 1) == TextFilterResult.Matched)
+                if (filter.Filter(fieldValue, input, maxDepth, currentDepth + 1, tree) == TextFilterResult.Matched)
                 {
                     return TextFilterResult.Matched;
                 }
@@ -72,7 +72,7 @@ namespace Guppy
             {
                 foreach (var item in enumerable)
                 {
-                    if (filter.Filter(item, input, maxDepth, currentDepth + 1) == TextFilterResult.Matched)
+                    if (filter.Filter(item, input, maxDepth, currentDepth + 1, tree) == TextFilterResult.Matched)
                     {
                         return TextFilterResult.Matched;
                     }

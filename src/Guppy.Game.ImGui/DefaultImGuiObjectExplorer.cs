@@ -38,11 +38,11 @@ namespace Guppy.Game.ImGui
             return true;
         }
 
-        public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth)
+        public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             type = instance?.GetType() ?? type;
 
-            if (type.IsPrimitive || type == typeof(string) || instance is null || currentDepth >= maxDepth)
+            if (type.IsPrimitive || type == typeof(string) || instance is null || currentDepth >= maxDepth || (type.IsValueType == false && tree.Add(instance) == false))
             {
                 return this.DrawText(index, name, type, instance, filter);
             }
@@ -74,14 +74,14 @@ namespace Guppy.Game.ImGui
                     {
                         object? propertyValue = property.GetValue(instance);
 
-                        result = result.Max(this.explorer.DrawObjectExplorer(null, property.Name, property.PropertyType, propertyValue, filter, maxDepth, currentDepth + 1));
+                        result = result.Max(this.explorer.DrawObjectExplorer(null, property.Name, property.PropertyType, propertyValue, filter, maxDepth, currentDepth + 1, tree));
                     }
 
                     foreach (FieldInfo field in fields)
                     {
                         object? fieldValue = field.GetValue(instance);
 
-                        result = result.Max(this.explorer.DrawObjectExplorer(null, field.Name, field.FieldType, fieldValue, filter, maxDepth, currentDepth + 1));
+                        result = result.Max(this.explorer.DrawObjectExplorer(null, field.Name, field.FieldType, fieldValue, filter, maxDepth, currentDepth + 1, tree));
                     }
 
                     if (instance is IEnumerable enumerable)
@@ -89,7 +89,7 @@ namespace Guppy.Game.ImGui
                         int itemIndex = 0;
                         foreach (var item in enumerable)
                         {
-                            result = result.Max(this.explorer.DrawObjectExplorer(itemIndex++, null, item?.GetType() ?? typeof(object), item, filter, maxDepth, currentDepth + 1));
+                            result = result.Max(this.explorer.DrawObjectExplorer(itemIndex++, null, item?.GetType() ?? typeof(object), item, filter, maxDepth, currentDepth + 1, tree));
                         }
                     }
 
@@ -97,7 +97,7 @@ namespace Guppy.Game.ImGui
                 }
                 else
                 {
-                    var filterResult = _filter.Filter(instance, filter, maxDepth, currentDepth);
+                    var filterResult = _filter.Filter(instance, filter, maxDepth - currentDepth, 0, tree);
                     result = result.Max(filterResult);
                 }
 

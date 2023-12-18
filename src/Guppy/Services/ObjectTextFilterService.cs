@@ -20,9 +20,11 @@ namespace Guppy.Services
             _typeFilters = new Dictionary<Type, ObjectTextFilter>();
         }
 
-        public TextFilterResult Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0)
+        public TextFilterResult Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0, HashSet<object>? tree = null)
         {
-            if(instance is null)
+            tree ??= new HashSet<object>();
+
+            if (instance is null)
             {
                 return TextFilterResult.NotMatched;
             }
@@ -32,14 +34,14 @@ namespace Guppy.Services
                 return TextFilterResult.None;
             }
 
-            if(currentDepth >= maxDepth)
+            if(currentDepth >= maxDepth || (instance.GetType().IsValueType == false && tree.Add(instance) == false && currentDepth > 0))
             {
                 return (instance.GetType().AssemblyQualifiedName is string assembly && assembly.Contains(input))
                     || (instance.ToString() is string instanceString && instanceString.Contains(input))
                     ? TextFilterResult.Matched : TextFilterResult.NotMatched;
             }
 
-            return this.GetFilter(instance).Filter(instance, input, this, maxDepth, currentDepth);
+            return this.GetFilter(instance).Filter(instance, input, this, maxDepth, currentDepth, tree);
         }
 
         private ObjectTextFilter GetFilter(object instance)

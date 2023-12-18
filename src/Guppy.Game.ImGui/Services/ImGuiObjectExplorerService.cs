@@ -29,19 +29,19 @@ namespace Guppy.Game.ImGui.Services
             }
         }
 
-        public TextFilterResult DrawObjectExplorer(object instance, string filter = "", int maxDepth = 5)
+        public TextFilterResult DrawObjectExplorer(object instance, string filter = "", int maxDepth = 5, HashSet<object>? tree = null)
         {
-            return this.DrawObjectExplorer(null, null, instance.GetType(), instance, filter, maxDepth, 0);
+            return this.DrawObjectExplorer(null, null, instance.GetType(), instance, filter, maxDepth, 0, tree ?? new HashSet<object>());
         }
 
-        public TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth)
+        public TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             if(currentDepth >= maxDepth)
             {
-                return _defaultExplorer.DrawObjectExplorer(index, name, type, instance, filter, maxDepth, currentDepth);
+                return _defaultExplorer.DrawObjectExplorer(index, name, type, instance, filter, maxDepth, currentDepth, tree);
             }
 
-            return this.GetObjectExplorer(type).DrawObjectExplorer(index, name, type, instance, filter, maxDepth, currentDepth);
+            return this.GetObjectExplorer(type).DrawObjectExplorer(index, name, type, instance, filter, maxDepth, currentDepth, tree);
         }
 
         private ImGuiObjectExplorer GetObjectExplorer(Type type)

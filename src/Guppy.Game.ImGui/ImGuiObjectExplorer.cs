@@ -19,7 +19,7 @@ namespace Guppy.Game.ImGui
         }
 
         public abstract bool AppliesTo(Type type);
-        public abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth);
+        public abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 
     [Service<ImGuiObjectExplorer>(ServiceLifetime.Singleton, true)]
@@ -30,7 +30,7 @@ namespace Guppy.Game.ImGui
             return type.IsAssignableTo(typeof(T));
         }
 
-        public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth)
+        public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             return this.DrawObjectExplorer(
                 index: index, 
@@ -39,9 +39,10 @@ namespace Guppy.Game.ImGui
                 instance: instance is null ? default : (T?)instance, 
                 filter: filter,
                 maxDepth: maxDepth, 
-                currentDepth: currentDepth);
+                currentDepth: currentDepth,
+                tree: tree);
         }
 
-        protected abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, T? instance, string filter, int maxDepth, int currentDepth, IImGuiObjectExplorerService explorer);
+        protected abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, T? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 }
