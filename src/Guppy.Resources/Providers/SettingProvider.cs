@@ -41,7 +41,9 @@ namespace Guppy.Resources.Providers
                 return casted;
             }
 
-            throw new KeyNotFoundException(setting.Name);
+            value = casted = new SettingValue<T>(setting);
+
+            return casted;
         }
 
         public void Set<T>(Setting<T> setting, T value) where T : notnull
