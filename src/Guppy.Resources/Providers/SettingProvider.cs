@@ -42,6 +42,7 @@ namespace Guppy.Resources.Providers
             }
 
             value = casted = new SettingValue<T>(setting);
+            this.Save();
 
             return casted;
         }
@@ -49,6 +50,7 @@ namespace Guppy.Resources.Providers
         public void Set<T>(Setting<T> setting, T value) where T : notnull
         {
             this.Get(setting).Value = value;
+            this.Save();
         }
 
         public void Save()
