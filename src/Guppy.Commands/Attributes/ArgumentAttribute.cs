@@ -1,13 +1,6 @@
 ﻿using Guppy.Commands.Attributes;
 using Guppy.Commands.Extensions;
-using System;
-using System.Collections.Generic;
-using System.CommandLine;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Guppy.Commands.Arguments
 {
@@ -26,8 +19,8 @@ namespace Guppy.Commands.Arguments
         protected override Argument Build(MemberInfo member)
         {
             Argument option = new Argument(
-                propertyInfo: (PropertyInfo)member!, 
-                name: this.Name ?? "--" + member.Name.LowerCaseFirstLetter(), 
+                propertyInfo: (PropertyInfo)member!,
+                name: this.Name ?? "--" + member.Name.LowerCaseFirstLetter(),
                 description: this.Description);
 
             return option;

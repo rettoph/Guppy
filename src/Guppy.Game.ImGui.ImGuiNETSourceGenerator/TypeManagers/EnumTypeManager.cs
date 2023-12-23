@@ -1,8 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 {
@@ -14,7 +10,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 
         public override void GenerateSourceFiles(CodeBuilder source)
         {
-            using(source.File($"{this.GuppyType}.g.cs"))
+            using (source.File($"{this.GuppyType}.g.cs"))
             {
                 using (source.Section($"public enum {this.GuppyType}"))
                 {

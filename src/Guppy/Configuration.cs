@@ -1,11 +1,5 @@
 ﻿using Autofac;
-using Autofac.Core.Lifetime;
 using Guppy.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy
 {
@@ -18,7 +12,7 @@ namespace Guppy
         {
             this.Value = new();
 
-            foreach(var builder in builders)
+            foreach (var builder in builders)
             {
                 builder.Build(scope, this.Value);
             }

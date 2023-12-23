@@ -1,11 +1,5 @@
 ﻿using Guppy.Common.Enums;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui.Services
 {
@@ -23,7 +17,7 @@ namespace Guppy.Game.ImGui.Services
             _typeExplorers = new Dictionary<Type, ImGuiObjectExplorer>();
             _defaultExplorer = defaultExplorer;
 
-            foreach(var explorer in _explorers)
+            foreach (var explorer in _explorers)
             {
                 explorer.explorer = this;
             }
@@ -36,7 +30,7 @@ namespace Guppy.Game.ImGui.Services
 
         public TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
-            if(currentDepth >= maxDepth)
+            if (currentDepth >= maxDepth)
             {
                 return _defaultExplorer.DrawObjectExplorer(index, name, type, instance, filter, maxDepth, currentDepth, tree);
             }
@@ -48,7 +42,7 @@ namespace Guppy.Game.ImGui.Services
         {
             ref ImGuiObjectExplorer? explorer = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeExplorers, type, out bool exists);
 
-            if(exists)
+            if (exists)
             {
                 return explorer!;
             }

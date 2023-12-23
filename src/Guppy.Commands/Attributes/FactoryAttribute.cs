@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace Guppy.Commands.Attributes
 {
@@ -14,7 +9,7 @@ namespace Guppy.Commands.Attributes
 
         internal T Get(MemberInfo member)
         {
-            if(_memberHash != member.GetHashCode())
+            if (_memberHash != member.GetHashCode())
             {
                 _instance = this.Build(member);
                 _memberHash = member.GetHashCode();

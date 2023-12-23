@@ -53,7 +53,7 @@ namespace Guppy.Files.Services
 
             ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
 
-            if(!exists || forceLoadFromDisk)
+            if (!exists || forceLoadFromDisk)
             {
                 DirectoryHelper.EnsureDirectoryExists(fullPath);
 
@@ -72,7 +72,7 @@ namespace Guppy.Files.Services
                     }
                 }
             }
-            else if(file is StringFile stringFile)
+            else if (file is StringFile stringFile)
             {
                 file = new JsonFile<T>(stringFile, _json);
             }

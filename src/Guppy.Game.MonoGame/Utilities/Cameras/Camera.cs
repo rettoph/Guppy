@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Guppy.Game.MonoGame.Constants;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Game.MonoGame.Constants;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Game.MonoGame.Utilities.Cameras
 {

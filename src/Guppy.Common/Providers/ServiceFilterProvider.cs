@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Common.Providers
+﻿namespace Guppy.Common.Providers
 {
     internal sealed class ServiceFilterProvider : IServiceFilterProvider
     {
@@ -28,9 +22,9 @@ namespace Guppy.Common.Providers
                 _typeFilters.Add(type, filters);
             }
 
-            foreach(var filter in filters)
+            foreach (var filter in filters)
             {
-                if(!filter.Invoke(state))
+                if (!filter.Invoke(state))
                 {
                     return false;
                 }

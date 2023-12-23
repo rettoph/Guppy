@@ -1,15 +1,9 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Guppy.Common;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
 using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Common;
-using System.Drawing;
 using Microsoft.Xna.Framework;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Guppy.Game.MonoGame")]
 
@@ -30,7 +24,7 @@ namespace Guppy.Game.ImGui
 
         bool CollapsingHeader(string label, Vector4? color)
         {
-            if(color is null)
+            if (color is null)
             {
                 return this.CollapsingHeader(label);
             }

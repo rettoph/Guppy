@@ -1,11 +1,8 @@
 ﻿using Guppy.Common;
 using Guppy.Game.ImGui.Helpers;
-using Guppy.Resources;
 using Guppy.Resources.Attributes;
-using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using System.Runtime.CompilerServices;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {
@@ -31,7 +28,7 @@ namespace Guppy.Game.ImGui.Styling.StyleValueResources
 
         public override void Push()
         {
-            if(_colorValue != this.Color.Value)
+            if (_colorValue != this.Color.Value)
             {
                 _value = NumericsHelper.Convert(this.Color.Value);
                 _colorValue = this.Color.Value;

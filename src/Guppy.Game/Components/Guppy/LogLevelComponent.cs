@@ -4,11 +4,6 @@ using Guppy.Common;
 using Guppy.Game.Common;
 using Guppy.Resources.Providers;
 using Serilog.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.Components.Guppy
 {
@@ -28,7 +23,7 @@ namespace Guppy.Game.Components.Guppy
 
         public void Process(in Guid messageId, LogLevelCommand message)
         {
-            if(message.Value is null)
+            if (message.Value is null)
             {
                 _terminal.Write($"Current Log Level: ");
                 _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));

@@ -1,14 +1,9 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Enums;
 using Guppy.Common.Services;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy
 {
@@ -37,7 +32,7 @@ namespace Guppy
                 return TextFilterResult.Matched;
             }
 
-            if(type.AssemblyQualifiedName is string assembly && assembly.Contains(input))
+            if (type.AssemblyQualifiedName is string assembly && assembly.Contains(input))
             {
                 return TextFilterResult.Matched;
             }
@@ -52,7 +47,7 @@ namespace Guppy
             {
                 object? propertyValue = property.GetValue(instance);
 
-                if(filter.Filter(propertyValue, input, maxDepth, currentDepth + 1, tree) == TextFilterResult.Matched)
+                if (filter.Filter(propertyValue, input, maxDepth, currentDepth + 1, tree) == TextFilterResult.Matched)
                 {
                     return TextFilterResult.Matched;
                 }
@@ -86,7 +81,7 @@ namespace Guppy
         {
             ref (FieldInfo[], PropertyInfo[]) info = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeInfo, type, out bool exists);
 
-            if(exists)
+            if (exists)
             {
                 return info;
             }

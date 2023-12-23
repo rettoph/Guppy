@@ -1,13 +1,6 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
-using Guppy.Common.Extensions;
 using Guppy.Common.Providers;
 using Guppy.Messaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {
@@ -25,7 +18,7 @@ namespace Guppy.Providers
 
         public void Subscribe(IEnumerable<object> instances)
         {
-            foreach(IBaseSubscriber<TMessage> subscriber in instances.OfType<IBaseSubscriber<TMessage>>())
+            foreach (IBaseSubscriber<TMessage> subscriber in instances.OfType<IBaseSubscriber<TMessage>>())
             {
                 _service.Value.Subscribe(subscriber);
             }

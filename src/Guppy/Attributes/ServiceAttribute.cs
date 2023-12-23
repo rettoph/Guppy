@@ -22,9 +22,9 @@ namespace Guppy.Attributes
 
         protected override bool ShouldConfigure(ContainerBuilder builder, Type classType)
         {
-            var result =  base.ShouldConfigure(builder, classType);
+            var result = base.ShouldConfigure(builder, classType);
 
-            if(this.RequireAutoLoadAttribute)
+            if (this.RequireAutoLoadAttribute)
             {
                 result &= classType.HasCustomAttribute<AutoLoadAttribute>();
             }
@@ -42,7 +42,7 @@ namespace Guppy.Attributes
                     service.InstancePerDependency();
                     break;
                 case ServiceLifetime.Scoped:
-                    if(this.Tag is null)
+                    if (this.Tag is null)
                     {
                         service.InstancePerLifetimeScope();
                     }
@@ -50,7 +50,7 @@ namespace Guppy.Attributes
                     {
                         service.InstancePerMatchingLifetimeScope(this.Tag);
                     }
-                    
+
                     break;
                 case ServiceLifetime.Singleton:
                     service.InstancePerMatchingLifetimeScope(LifetimeScopeTags.MainScope);

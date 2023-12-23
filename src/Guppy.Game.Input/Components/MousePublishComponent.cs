@@ -1,22 +1,13 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.Input.Constants;
 using Guppy.Game.Input.Enums;
-using Guppy.Game.Input.Messages;
 using Guppy.Game.Input.Providers;
 using Guppy.Game.Input.Services;
-using Guppy.Game;
-using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Game.Common;
 
 namespace Guppy.Game.Input.Components
 {

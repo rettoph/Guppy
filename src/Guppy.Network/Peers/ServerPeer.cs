@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Common;
 using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
@@ -46,7 +45,7 @@ namespace Guppy.Network.Peers
         {
             var scopeId = request.Data.GetByte();
 
-            if(scopeId != NetScopeConstants.PeerScopeId)
+            if (scopeId != NetScopeConstants.PeerScopeId)
             {
                 // request.Reject();
                 throw new NotImplementedException();
@@ -58,7 +57,7 @@ namespace Guppy.Network.Peers
                 {
                     var accepted = true;
 
-                    if(this.ConnectionApproval is not null)
+                    if (this.ConnectionApproval is not null)
                     {
                         foreach (ConnectionApprovalDelegate del in this.ConnectionApproval.GetInvocationList())
                         {
@@ -66,7 +65,7 @@ namespace Guppy.Network.Peers
                         }
                     }
 
-                    if(accepted)
+                    if (accepted)
                     {
                         var peer = request.Accept();
 

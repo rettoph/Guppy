@@ -1,16 +1,7 @@
 ﻿using Guppy.Network.Definitions;
-using Guppy.Network.Identity;
-using Guppy.Network.Identity.Providers;
-using Guppy.Network.Peers;
 using Guppy.Network.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Services
 {
@@ -24,7 +15,7 @@ namespace Guppy.Network.Services
         private IDictionary<Type, NetMessageType> _messageTypes;
 
         public NetMessageService(
-            INetSerializerProvider serializers, 
+            INetSerializerProvider serializers,
             IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _serializers = serializers;
@@ -56,14 +47,14 @@ namespace Guppy.Network.Services
             return _messageIds[id];
         }
 
-        public NetMessageType<T> Get<T>() 
+        public NetMessageType<T> Get<T>()
             where T : notnull
         {
             try
             {
                 return (NetMessageType<T>)_messageTypes[typeof(T)];
             }
-            catch(KeyNotFoundException e)
+            catch (KeyNotFoundException e)
             {
                 throw new KeyNotFoundException($"{nameof(NetMessageService)}::{nameof(Get)} - No {nameof(NetMessageType)} registered for type {typeof(T).Name}", e);
             }

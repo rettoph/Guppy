@@ -5,7 +5,6 @@ using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Filters;
 using Guppy.Network.Enums;
 using Guppy.Network.Peers;
-using LiteNetLib;
 
 namespace Guppy.Network.Attributes
 {

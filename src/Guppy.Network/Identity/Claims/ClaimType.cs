@@ -1,12 +1,6 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Identity.Enums;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Identity.Claims
 {

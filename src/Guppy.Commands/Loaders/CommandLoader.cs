@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Commands.Services;
-using Guppy.Common;
 using Guppy.Common.Autofac;
 using Guppy.Loaders;
 using Guppy.Providers;

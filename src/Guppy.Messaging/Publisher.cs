@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Messaging
+﻿namespace Guppy.Messaging
 {
     internal abstract class Publisher<TBase>
         where TBase : class, IMessage
@@ -54,7 +48,7 @@ namespace Guppy.Messaging
         public override void Publish(in TBase message)
         {
             Guid messageid = Guid.NewGuid();
-            if(message is TMessage casted)
+            if (message is TMessage casted)
             {
                 foreach (IBaseSubscriber<TBase, TMessage> subscriber in _subscribers)
                 {
@@ -65,7 +59,7 @@ namespace Guppy.Messaging
 
         public override void TrySubscribe(IBaseSubscriber<TBase> subscriber)
         {
-            if(subscriber is IBaseSubscriber<TBase, TMessage> casted)
+            if (subscriber is IBaseSubscriber<TBase, TMessage> casted)
             {
                 _subscribers.Add(casted);
             }

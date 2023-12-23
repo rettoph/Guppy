@@ -1,12 +1,6 @@
-﻿using Guppy.Common;
-using Guppy.Game.Input;
+﻿using Guppy.Game.Input;
 using Guppy.Messaging;
 using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui.Messages
 {

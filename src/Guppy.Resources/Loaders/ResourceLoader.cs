@@ -1,14 +1,13 @@
 ﻿using Autofac;
-using Guppy.Loaders;
+using Guppy.Attributes;
 using Guppy.Files.Serialization.Json;
+using Guppy.Loaders;
 using Guppy.Resources.Configuration;
 using Guppy.Resources.Providers;
-using System.Text.Json.Serialization;
-using Guppy.Resources.Serialization.Json.Converters;
-using Guppy.Attributes;
-using Guppy.Serialization;
 using Guppy.Resources.Serialization.Json;
+using Guppy.Resources.Serialization.Json.Converters;
 using Serilog.Events;
+using System.Text.Json.Serialization;
 
 namespace Guppy.Resources.Loaders
 {

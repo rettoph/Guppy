@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Guppy.Serialization;
-using Guppy.Resources;
-using Guppy.Common;
+﻿using Guppy.Common;
 
 namespace Guppy.Resources
 {
@@ -22,7 +14,7 @@ namespace Guppy.Resources
             get => this.Value;
             set
             {
-                if(value is not T casted)
+                if (value is not T casted)
                 {
                     throw new InvalidCastException();
                 }

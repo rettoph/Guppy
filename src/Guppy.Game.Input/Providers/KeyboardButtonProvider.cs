@@ -1,12 +1,5 @@
-﻿using Guppy.Common;
-using Guppy.Game.Input.Enums;
-using Microsoft.Xna.Framework;
+﻿using Guppy.Game.Input.Enums;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.Input.Providers
 {
@@ -23,9 +16,9 @@ namespace Guppy.Game.Input.Providers
         {
             var state = Keyboard.GetState();
 
-            foreach(var key in _keys)
+            foreach (var key in _keys)
             {
-                if(key.Pressed == state.IsKeyDown(key.Source.KeyboardKey))
+                if (key.Pressed == state.IsKeyDown(key.Source.KeyboardKey))
                 {
                     continue;
                 }

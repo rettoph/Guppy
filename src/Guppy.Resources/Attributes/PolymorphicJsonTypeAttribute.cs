@@ -1,12 +1,10 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Resources.Serialization.Json;
-using Guppy.Serialization;
 
 namespace Guppy.Resources.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple =true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]
     public class PolymorphicJsonTypeAttribute : GuppyConfigurationAttribute
     {
         public readonly string Key;
@@ -24,7 +22,7 @@ namespace Guppy.Resources.Attributes
         {
             Type instanceType = this.InstanceType ?? classType;
 
-            if(instanceType.IsGenericTypeDefinition)
+            if (instanceType.IsGenericTypeDefinition)
             {
                 throw new Exception();
             }

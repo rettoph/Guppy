@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Common;
+﻿using Guppy.Common;
 using Guppy.Messaging;
 
 namespace Guppy
@@ -39,9 +32,9 @@ namespace Guppy
 
         public void Flush()
         {
-            foreach(Queue<IMessage> queue in _queuesArray)
+            foreach (Queue<IMessage> queue in _queuesArray)
             {
-                while(queue.TryDequeue(out IMessage? message))
+                while (queue.TryDequeue(out IMessage? message))
                 {
                     this.Publish(message);
                 }
@@ -50,7 +43,7 @@ namespace Guppy
 
         private Queue<IMessage> GetTypeQueue(Type type)
         {
-            if(_typeQueues.TryGetValue(type, out Queue<IMessage>? queue))
+            if (_typeQueues.TryGetValue(type, out Queue<IMessage>? queue))
             {
                 return queue;
             }

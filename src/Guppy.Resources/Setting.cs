@@ -1,13 +1,7 @@
 ﻿using Guppy.Common.Collections;
 using Standart.Hash.xxHash;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Guppy.Resources
 {
@@ -49,7 +43,7 @@ namespace Guppy.Resources
 
             Type settingType = typeof(Setting<>).MakeGenericType(type);
             Setting setting = (Setting)Activator.CreateInstance(
-                settingType, 
+                settingType,
                 BindingFlags.NonPublic | BindingFlags.Instance,
                 null,
                 new object[] { name },

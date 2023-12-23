@@ -1,9 +1,7 @@
 ﻿using Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator
 {
@@ -22,7 +20,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
                 string guppyMethodParameters = string.Join(", ", parameterManagers.Select(x => $"{x.parameter.GetPrefix()}{x.manager.GuppyParameterType} {x.parameter.Name.Sanitize()}"));
                 string imguiMethodParameters = string.Join(", ", parameterManagers.Select(x => $"{x.parameter.GetPrefix()}{x.manager.GetGuppyToImGuiConverter(x.parameter.Name.Sanitize())}"));
 
-                using(source.Section($"public unsafe {returnType.ReturnTypeName} {method.Name}({guppyMethodParameters})"))
+                using (source.Section($"public unsafe {returnType.ReturnTypeName} {method.Name}({guppyMethodParameters})"))
                 {
                     if (method.ReturnType.IsVoid())
                     {
@@ -58,7 +56,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
             FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance)
                 .Where(x => x.FieldType.IsGenericType == false).ToArray();
 
-            foreach(FieldInfo field in fields)
+            foreach (FieldInfo field in fields)
             {
                 AddDecoratingProperty(TypeManager.GetTypeManager(field.FieldType), field.Name, true, field.IsInitOnly, instance, source);
             }
@@ -81,11 +79,11 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
 
             using (source.Section($"public {typePrefix}{type.GuppyParameterType} {name}"))
             {
-                if(getter)
+                if (getter)
                 {
-                    using(source.Section("get"))
+                    using (source.Section("get"))
                     {
-                        
+
                         source.AppendLine($"return {typePrefix}{type.GetImGuiToGuppyConverter($"{instance}.{name}")};");
                     }
                 }

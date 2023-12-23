@@ -1,13 +1,6 @@
-﻿using Guppy.Common.Collections;
-using Guppy.Common.Providers;
-using Guppy.Resources.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Guppy.Resources.Providers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Guppy.Resources.Serialization.Json.Converters
@@ -33,9 +26,9 @@ namespace Guppy.Resources.Serialization.Json.Converters
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
 
-            while(reader.ReadPropertyName(out string? propertyName))
+            while (reader.ReadPropertyName(out string? propertyName))
             {
-                switch(propertyName)
+                switch (propertyName)
                 {
                     case TypePropertyKey:
                         type = reader.ReadString();
@@ -57,7 +50,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
         {
             Type implementationType = value.GetType();
 
-            if(implementationType == typeof(T))
+            if (implementationType == typeof(T))
             { // Recursion detected
                 return;
             }

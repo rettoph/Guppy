@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Game.ImGui
+﻿namespace Guppy.Game.ImGui
 {
     public class TrueTypeFont
     {
@@ -19,7 +13,7 @@ namespace Guppy.Game.ImGui
 
         internal unsafe IntPtr GetDataPtr()
         {
-            fixed(byte* ptr = _data)
+            fixed (byte* ptr = _data)
             {
                 return (IntPtr)ptr;
             }

@@ -1,18 +1,9 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Game.ImGui.Styling;
-using Guppy.Game.ImGui;
 using Guppy.Game.Input;
-using Guppy.Game;
+using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Messages;
 using Guppy.Resources.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Game.MonoGame.Constants;
-using Guppy.Game.MonoGame.Components.Guppy;
 
 namespace Guppy.Game.MonoGame.Components.Game
 {

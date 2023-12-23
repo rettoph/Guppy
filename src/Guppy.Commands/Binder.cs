@@ -1,17 +1,8 @@
-﻿using Guppy.Commands.Arguments;
-using Guppy.Commands.Extensions;
-using Guppy.Commands.TokenPropertySetters;
-using Guppy.Common;
-using System;
-using System.Collections.Generic;
+﻿using Guppy.Commands.TokenPropertySetters;
 using System.CommandLine;
-using System.CommandLine.Binding;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.CommandLine.Parsing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Commands
 {
@@ -40,7 +31,7 @@ namespace Guppy.Commands
             instance = new();
             bool result = true;
 
-            foreach(Option option in _command.Options)
+            foreach (Option option in _command.Options)
             {
                 try
                 {
@@ -63,7 +54,7 @@ namespace Guppy.Commands
                         continue;
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     context.Console.Error.WriteLine($"Error parsing option '{option.Names.FirstOrDefault()}'.");
                     context.Console.Error.WriteLine(e.Message);
@@ -95,7 +86,7 @@ namespace Guppy.Commands
                         continue;
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     context.Console.Error.WriteLine($"Error parsing argument '{argument.Name}'.");
                     context.Console.Error.WriteLine(e.Message);

@@ -20,10 +20,10 @@
         /// <param name="reference">A reference to be updated with the new value if valid.</param>
         /// <param name="value">The value to set the reference if valid.</param>
         public static bool InvokeIf<TSender, TArgs>(
-            this OnEventDelegate<TSender, TArgs>  eventDelegate, 
-            bool valid, 
-            TSender sender, 
-            ref TArgs reference, 
+            this OnEventDelegate<TSender, TArgs> eventDelegate,
+            bool valid,
+            TSender sender,
+            ref TArgs reference,
             TArgs value)
         {
             if (valid)

@@ -3,13 +3,8 @@ using Guppy.Game.Input.Constants;
 using Guppy.Game.Input.Enums;
 using Guppy.Game.Input.Messages;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.Input
 {
@@ -33,7 +28,7 @@ namespace Guppy.Game.Input
         public bool MoveTo(Vector2 position, [MaybeNullWhen(false)] out CursorMove movement)
         {
             Vector2 delta = position - this.Position;
-            if(delta == Vector2.Zero)
+            if (delta == Vector2.Zero)
             {
                 movement = null;
                 return false;
@@ -48,7 +43,7 @@ namespace Guppy.Game.Input
         public bool ScrollTo(int scroll, [MaybeNullWhen(false)] out CursorScroll scrolling)
         {
             int delta = scroll - this.Scroll;
-            if(delta == 0 )
+            if (delta == 0)
             {
                 scrolling = null;
                 return false;
@@ -64,7 +59,7 @@ namespace Guppy.Game.Input
         {
             ref bool valueRef = ref CollectionsMarshal.GetValueRefOrNullRef(_buttons, button);
 
-            if(value == valueRef)
+            if (value == valueRef)
             {
                 press = null;
                 return false;

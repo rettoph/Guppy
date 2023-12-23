@@ -1,11 +1,5 @@
-﻿using Guppy.Common.Collections;
-using Guppy.Network.Delegates;
-using Guppy.Network.Providers;
+﻿using Guppy.Network.Providers;
 using LiteNetLib.Utils;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
@@ -35,7 +29,7 @@ namespace Guppy.Network
 
         void INetSerializer.Serialize(NetDataWriter writer, in object instance)
         {
-            if(instance is T casted)
+            if (instance is T casted)
             {
                 this.Serialize(writer, in casted);
                 return;

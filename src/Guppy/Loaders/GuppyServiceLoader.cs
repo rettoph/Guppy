@@ -1,18 +1,18 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Providers;
-using Serilog;
-using Guppy.Common.Extensions.Autofac;
 using Guppy.Common;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using Guppy.Serialization;
 using Guppy.Common.Autofac;
-using Guppy.Messaging;
+using Guppy.Common.Extensions.Autofac;
 using Guppy.Common.Providers;
-using Guppy.Extensions.Autofac;
-using Guppy.Services;
 using Guppy.Common.Services;
+using Guppy.Extensions.Autofac;
+using Guppy.Messaging;
+using Guppy.Providers;
+using Guppy.Serialization;
+using Guppy.Services;
+using Serilog;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Guppy.Loaders
 {

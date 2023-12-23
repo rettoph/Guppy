@@ -1,12 +1,4 @@
 ﻿using Autofac;
-using Guppy.Common;
-using Guppy.Common.Collections;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Providers
 {

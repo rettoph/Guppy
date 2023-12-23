@@ -1,18 +1,11 @@
 ﻿using Autofac;
-using Autofac.Features.ResolveAnything;
 using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Autofac;
 using Guppy.Common.Providers;
-using Guppy.Common.Utilities;
 using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy
 {

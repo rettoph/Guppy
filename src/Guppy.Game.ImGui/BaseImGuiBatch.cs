@@ -2,22 +2,13 @@
 using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Game.ImGui.Messages;
-using Guppy.Game.ImGui.Styling;
 using Guppy.Game.Input;
-using Guppy.Game.Input.Services;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui
 {
@@ -85,9 +76,9 @@ namespace Guppy.Game.ImGui
 
             _resources.Initialize(components);
 
-            if(_fonts.Count > 0)
+            if (_fonts.Count > 0)
             {
-                foreach(Ref<ImFontPtr> font in _fonts.Values)
+                foreach (Ref<ImFontPtr> font in _fonts.Values)
                 {
                     font.Value.SetImFontPtr(this.IO.Fonts);
                 }
@@ -136,7 +127,7 @@ namespace Guppy.Game.ImGui
         /// </summary>
         public void Begin(GameTime gameTime)
         {
-            if(this.Running)
+            if (this.Running)
             {
                 throw new Exception();
             }
@@ -150,7 +141,7 @@ namespace Guppy.Game.ImGui
                 _mouseButtonEvents.Clear();
             }
 
-            if(_dirtyFonts)
+            if (_dirtyFonts)
             {
                 this.RebuildFontAtlas();
                 _dirtyFonts = false;
@@ -174,13 +165,14 @@ namespace Guppy.Game.ImGui
         {
             ImGuiNet.Render();
 
-            unsafe {
+            unsafe
+            {
                 var drawData = ImGuiNet.GetDrawData();
 
                 // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
                 drawData.ScaleClipRects(this.IO.DisplayFramebufferScale);
 
-                RenderDrawData(drawData); 
+                RenderDrawData(drawData);
             }
 
             this.Running = false;
@@ -261,7 +253,7 @@ namespace Guppy.Game.ImGui
         {
             ref Ref<ImFontPtr>? font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
 
-            if(exists)
+            if (exists)
             {
                 return font!;
             }

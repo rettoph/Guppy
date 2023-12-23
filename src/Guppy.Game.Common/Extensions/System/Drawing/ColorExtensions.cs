@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using XnaColor = Microsoft.Xna.Framework.Color;
+﻿using XnaColor = Microsoft.Xna.Framework.Color;
 
 namespace System.Drawing
 {

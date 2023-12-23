@@ -1,13 +1,8 @@
 ﻿using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using LiteNetLib;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Identity
 {
@@ -51,7 +46,7 @@ namespace Guppy.Network.Identity
 
         public void Set(params Claim[] claims)
         {
-            foreach(Claim claim in claims)
+            foreach (Claim claim in claims)
             {
                 _claims[claim.Key] = claim;
             }
@@ -64,7 +59,7 @@ namespace Guppy.Network.Identity
 
         public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T? value)
         {
-            if(_claims.TryGetValue(key, out var claim) && claim is Claim<T> casted)
+            if (_claims.TryGetValue(key, out var claim) && claim is Claim<T> casted)
             {
                 value = casted.Value;
                 return true;

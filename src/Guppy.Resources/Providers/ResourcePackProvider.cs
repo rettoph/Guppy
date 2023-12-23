@@ -1,18 +1,13 @@
-﻿using Guppy.Resources.Configuration;
+﻿using Guppy.Common.Attributes;
+using Guppy.Enums;
+using Guppy.Files;
+using Guppy.Files.Enums;
+using Guppy.Files.Services;
+using Guppy.Resources.Configuration;
 using Guppy.Resources.Constants;
 using Guppy.Resources.Loaders;
-using Guppy.Serialization;
-using Guppy.Files;
-using Guppy.Files.Services;
-using Guppy.Files.Enums;
-using Serilog;
 using Guppy.Resources.ResourceTypes;
-using System.Security.AccessControl;
-using System.Text.Json;
-using System.Text;
-using System.Reflection.PortableExecutable;
-using Guppy.Common.Attributes;
-using Guppy.Enums;
+using Serilog;
 
 namespace Guppy.Resources.Providers
 {
@@ -57,7 +52,7 @@ namespace Guppy.Resources.Providers
 
         public void Register(IFile<ResourcePackConfiguration> configuration)
         {
-            if(_registered.Value.Any(x => x.Value.Id == configuration.Value.Id))
+            if (_registered.Value.Any(x => x.Value.Id == configuration.Value.Id))
             {
                 _logger.Warning("{ClassName}::{MethodName} - Duplicate registration of resource pack {Id}, {Name}", nameof(ResourcePackProvider), nameof(Register), configuration.Value.Id, configuration.Value.Name);
                 return;
@@ -91,12 +86,12 @@ namespace Guppy.Resources.Providers
 
             foreach ((string localization, string[] resourceFileNames) in configuration.Value.Import)
             {
-                foreach(string resourceFileName in resourceFileNames)
+                foreach (string resourceFileName in resourceFileNames)
                 {
                     _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(Load), resourceFileName, localization);
 
                     IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(FileType.Source, Path.Combine(directory, resourceFileName));
-                    foreach(ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
+                    foreach (ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
                     {
                         if (!_resourceTypes.TryGet(resourceTypeValues.Type, out IResourceType? resourceType))
                         {
@@ -104,7 +99,7 @@ namespace Guppy.Resources.Providers
                             break;
                         }
 
-                        foreach(var (name, json) in resourceTypeValues.Values)
+                        foreach (var (name, json) in resourceTypeValues.Values)
                         {
                             if (!resourceType.TryResolve(pack, name, localization, json))
                             {

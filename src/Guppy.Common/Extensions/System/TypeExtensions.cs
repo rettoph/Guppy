@@ -1,10 +1,5 @@
 ﻿using Guppy.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System
 {
@@ -109,20 +104,20 @@ namespace System
         public static bool HasCustomAttributesIncludingInterfaces<T>(this Type type, bool inherit)
             where T : Attribute
         {
-            if(inherit == false)
+            if (inherit == false)
             {
                 return type.HasCustomAttribute<T>();
             }
 
-            if(type.HasCustomAttribute<T>())
+            if (type.HasCustomAttribute<T>())
             {
                 return true;
 
             }
 
-            foreach(Type interfaceType in type.GetInterfaces())
+            foreach (Type interfaceType in type.GetInterfaces())
             {
-                if(interfaceType.HasCustomAttribute<T>())
+                if (interfaceType.HasCustomAttribute<T>())
                 {
                     return true;
                 }
@@ -151,7 +146,7 @@ namespace System
                 throw new ArgumentException($"{nameof(genericTypeDefinition)} value of {genericTypeDefinition.Name} is not a valid Generic Type Definition.");
             }
 
-            if(genericTypeDefinition.IsInterface)
+            if (genericTypeDefinition.IsInterface)
             {
                 foreach (var interfaceType in type.GetInterfaces())
                 {
@@ -166,11 +161,11 @@ namespace System
 
             Type? currentType = type;
 
-            while(currentType is not null)
+            while (currentType is not null)
             {
-                if(currentType.IsGenericType)
+                if (currentType.IsGenericType)
                 {
-                    if(currentType.GetGenericTypeDefinition() == genericTypeDefinition)
+                    if (currentType.GetGenericTypeDefinition() == genericTypeDefinition)
                     {
                         return true;
                     }

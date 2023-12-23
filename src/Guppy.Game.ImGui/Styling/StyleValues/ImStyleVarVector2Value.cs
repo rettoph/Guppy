@@ -1,13 +1,6 @@
-﻿using Guppy.Game.ImGui;
-using Guppy.Game.ImGui.Helpers;
+﻿using Guppy.Game.ImGui.Helpers;
 using Guppy.Resources.Attributes;
-using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {

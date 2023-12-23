@@ -1,9 +1,4 @@
-﻿using Guppy.Common;
-using Guppy.Game.ImGui.Messages;
-using Guppy.Game.Input;
-using Guppy.Resources.Providers;
-using Guppy.Resources;
-using ImGuiNET;
+﻿using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

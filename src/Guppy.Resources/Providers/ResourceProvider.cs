@@ -1,18 +1,7 @@
-﻿using Guppy.Common;
-using Guppy.Common.Attributes;
-using Guppy.Common.Collections;
+﻿using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Resources.Constants;
-using Guppy.Resources.Loaders;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Resources.Providers
 {
@@ -38,13 +27,13 @@ namespace Guppy.Resources.Providers
 
             _packs.Initialize(components);
 
-            foreach(IResourceValue resourceValue in _cache.Values)
+            foreach (IResourceValue resourceValue in _cache.Values)
             {
                 resourceValue.ForceUpdate(this);
             }
         }
 
-        public ResourceValue<T> Get<T>(Resource<T> resource) 
+        public ResourceValue<T> Get<T>(Resource<T> resource)
             where T : notnull
         {
             ref IResourceValue? cachedValue = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
@@ -55,9 +44,9 @@ namespace Guppy.Resources.Providers
 
             cachedValue = new ResourceValue<T>(resource);
 
-            if(cachedValue is ResourceValue<T> casted)
+            if (cachedValue is ResourceValue<T> casted)
             {
-                if(this.Ready == false)
+                if (this.Ready == false)
                 {
                     return casted;
                 }
@@ -101,7 +90,7 @@ namespace Guppy.Resources.Providers
         {
             IEnumerable<Resource<T>> resources = _packs.GetAll().Select(x => x.GetAll<T>()).SelectMany(x => x).Distinct();
 
-            foreach(Resource<T> resource in resources)
+            foreach (Resource<T> resource in resources)
             {
                 yield return (resource, this.Get(resource));
             }

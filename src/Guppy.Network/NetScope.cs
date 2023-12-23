@@ -1,5 +1,4 @@
-﻿using Guppy.Common;
-using Guppy.Messaging;
+﻿using Guppy.Messaging;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
@@ -14,7 +13,7 @@ namespace Guppy.Network
 {
     public sealed class NetScope :
         ISubscriber<INetOutgoingMessage>,
-        ISubscriber<INetIncomingMessage<UserAction>>, 
+        ISubscriber<INetIncomingMessage<UserAction>>,
         IDisposable
     {
         internal byte id;
@@ -55,7 +54,7 @@ namespace Guppy.Network
 
             this.Users.Dispose();
 
-            if(this.Bound)
+            if (this.Bound)
             {
                 this.Peer!.Unbind(this);
             }
@@ -63,7 +62,7 @@ namespace Guppy.Network
 
         internal void BindTo(Peer peer, byte id)
         {
-            if(this.Bound == true)
+            if (this.Bound == true)
             {
                 throw new UnreachableException();
             }
@@ -76,7 +75,7 @@ namespace Guppy.Network
 
         internal void Unbind()
         {
-            if(this.Bound == false)
+            if (this.Bound == false)
             {
                 throw new UnreachableException();
             }
@@ -123,7 +122,7 @@ namespace Guppy.Network
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
 
-            if(newUser.NetPeer is null)
+            if (newUser.NetPeer is null)
             {
                 return;
             }
@@ -131,7 +130,7 @@ namespace Guppy.Network
             // Alert the new user of all existing users.
             foreach (User oldUser in this.Users)
             {
-                if(oldUser.Id == newUser.Id)
+                if (oldUser.Id == newUser.Id)
                 {
                     continue;
                 }

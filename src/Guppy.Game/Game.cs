@@ -1,8 +1,8 @@
-﻿using Guppy.Providers;
-using Guppy.Common.Extensions;
-using Microsoft.Xna.Framework;
-using Guppy.Game.Common.Enums;
+﻿using Guppy.Common.Extensions;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
+using Guppy.Providers;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game
 {
@@ -28,7 +28,7 @@ namespace Guppy.Game
 
         public void Draw(GameTime gameTime)
         {
-            foreach(IGuppyDrawable component in _drawableComponents)
+            foreach (IGuppyDrawable component in _drawableComponents)
             {
                 component.Draw(gameTime);
             }

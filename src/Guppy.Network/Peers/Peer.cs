@@ -1,11 +1,10 @@
 ﻿using Autofac;
-using Guppy.Common;
+using Guppy.Common.Autofac;
 using Guppy.Network.Constants;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity.Providers;
 using LiteNetLib;
 using System.Collections.ObjectModel;
-using Guppy.Common.Autofac;
 
 namespace Guppy.Network.Peers
 {
@@ -50,12 +49,12 @@ namespace Guppy.Network.Peers
 
         public void Bind(NetScope scope, byte id)
         {
-            if(scope.Bound)
+            if (scope.Bound)
             {
                 throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Bind)} - {nameof(Network.NetScope)} has already been bound to a {nameof(Peers.Peer)} instance.");
             }
 
-            if(!_scopes.TryAdd(id, scope))
+            if (!_scopes.TryAdd(id, scope))
             {
                 throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Bind)} - Another {nameof(Network.NetScope)} has already been bound to id '{id}'.");
             }
@@ -65,17 +64,17 @@ namespace Guppy.Network.Peers
 
         public void Unbind(NetScope scope)
         {
-            if(!scope.Bound)
+            if (!scope.Bound)
             {
                 throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Unbind)} - {nameof(Network.NetScope)} is not bound to any {nameof(Peers.Peer)}.");
             }
 
-            if(scope.Peer != this)
+            if (scope.Peer != this)
             {
                 throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Unbind)} - {nameof(Network.NetScope)} is not bound to the current {nameof(Peers.Peer)}.");
             }
 
-            if(!_scopes.Remove(scope.Id))
+            if (!_scopes.Remove(scope.Id))
             {
                 throw new InvalidOperationException($"{nameof(Peers.Peer)}::{nameof(Unbind)} - Unable to unbind {nameof(Network.NetScope)} from {nameof(Peers.Peer)}.");
             }
@@ -97,7 +96,7 @@ namespace Guppy.Network.Peers
 
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
-            while(!reader.EndOfData)
+            while (!reader.EndOfData)
             {
                 byte scopeId = reader.GetByte();
                 NetScope scope = _scopes[scopeId];

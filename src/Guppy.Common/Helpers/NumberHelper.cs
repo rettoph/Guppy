@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace Guppy.Common.Helpers
 {
@@ -15,12 +10,12 @@ namespace Guppy.Common.Helpers
 
         public static T SmoothStep(T lower, T upper, T amount)
         {
-            if(amount < lower)
+            if (amount < lower)
             {
                 return T.One;
             }
 
-            if(amount >= upper)
+            if (amount >= upper)
             {
                 return T.One;
             }

@@ -1,9 +1,4 @@
 ﻿using Guppy.Common.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Common.Filters
 {
@@ -21,7 +16,7 @@ namespace Guppy.Common.Filters
 
         public virtual bool AppliesTo(Type type)
         {
-            if(this.Type.IsGenericTypeDefinition && type.ImplementsGenericTypeDefinition(this.Type))
+            if (this.Type.IsGenericTypeDefinition && type.ImplementsGenericTypeDefinition(this.Type))
             {
                 return true;
             }

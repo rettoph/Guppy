@@ -1,10 +1,6 @@
 ﻿using Autofac;
-using Autofac.Configuration;
 using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Autofac;
-using Guppy.Common.Extensions.Autofac;
-using Guppy.Common.Providers;
 using Guppy.Loaders;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;

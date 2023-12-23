@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Common.Collections
 {
@@ -44,7 +40,7 @@ namespace Guppy.Common.Collections
 
         public bool TryAdd(T1 t1, T2 t2)
         {
-            if(!_forward.TryAdd(t1, t2))
+            if (!_forward.TryAdd(t1, t2))
             {
                 return false;
             }
@@ -81,7 +77,7 @@ namespace Guppy.Common.Collections
                 return false;
             }
 
-            if(!_forward.Remove(t1))
+            if (!_forward.Remove(t1))
             {
                 _reverse.Add(t2, t1);
                 return false;

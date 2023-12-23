@@ -1,20 +1,13 @@
-﻿using Guppy.Common.Extensions;
+﻿using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Game.ImGui.Styling;
+using Guppy.Common.Extensions;
+using Guppy.Game.Common.Enums;
+using Guppy.Game.Components;
 using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Styling;
+using Guppy.Resources;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Attributes;
-using Guppy.Game.MonoGame.Constants;
-using Guppy.Commands.Messages;
-using Guppy.Resources;
-using Guppy.Game.Components;
-using Guppy.Game.Common.Enums;
 
 namespace Guppy.Game.MonoGame.Components.Game
 {

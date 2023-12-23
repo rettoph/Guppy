@@ -1,13 +1,7 @@
 ﻿using Guppy.Network.Identity.Enums;
-using Guppy.Network.Identity.Providers;
 using LiteNetLib;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Identity.Services
 {
@@ -38,7 +32,7 @@ namespace Guppy.Network.Identity.Services
         }
         public void Dispose()
         {
-            while(_users.Any())
+            while (_users.Any())
             {
                 this.Remove(_users.Values.First());
             }
@@ -46,12 +40,12 @@ namespace Guppy.Network.Identity.Services
 
         public void Add(User user)
         {
-            if(user.State != UserState.Connected)
+            if (user.State != UserState.Connected)
             {
                 return;
             }
 
-            if(_users.TryAdd(user.Id, user))
+            if (_users.TryAdd(user.Id, user))
             {
                 user.OnStateChanged += this.HandleUserStateChanged;
 
@@ -61,7 +55,7 @@ namespace Guppy.Network.Identity.Services
 
         public void Remove(User user)
         {
-            if(_users.Remove(user.Id))
+            if (_users.Remove(user.Id))
             {
                 user.OnStateChanged -= this.HandleUserStateChanged;
 
@@ -82,7 +76,7 @@ namespace Guppy.Network.Identity.Services
 
         private void HandleUserStateChanged(User sender, UserState old, UserState value)
         {
-            if(value != UserState.Disconnected)
+            if (value != UserState.Disconnected)
             {
                 return;
             }

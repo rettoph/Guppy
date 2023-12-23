@@ -1,11 +1,6 @@
 ﻿using Guppy.Common.Enums;
 using Guppy.Common.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Services
 {
@@ -29,12 +24,12 @@ namespace Guppy.Services
                 return TextFilterResult.NotMatched;
             }
 
-            if(input.IsNullOrEmpty())
+            if (input.IsNullOrEmpty())
             {
                 return TextFilterResult.None;
             }
 
-            if(currentDepth >= maxDepth || (instance.GetType().IsValueType == false && tree.Add(instance) == false && currentDepth > 0))
+            if (currentDepth >= maxDepth || (instance.GetType().IsValueType == false && tree.Add(instance) == false && currentDepth > 0))
             {
                 return (instance.GetType().AssemblyQualifiedName is string assembly && assembly.Contains(input))
                     || (instance.ToString() is string instanceString && instanceString.Contains(input))
@@ -47,8 +42,8 @@ namespace Guppy.Services
         private ObjectTextFilter GetFilter(object instance)
         {
             ref ObjectTextFilter? filter = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeFilters, instance.GetType(), out bool exists);
-        
-            if(exists)
+
+            if (exists)
             {
                 return filter!;
             }

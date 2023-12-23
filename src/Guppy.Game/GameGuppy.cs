@@ -2,13 +2,11 @@
 using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.Enums;
-using Guppy.Game;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
-using System;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Game
@@ -64,7 +62,7 @@ namespace Guppy.Game
 
         public virtual void Draw(GameTime gameTime)
         {
-            foreach(IGuppyDrawable drawable in _drawComponents)
+            foreach (IGuppyDrawable drawable in _drawComponents)
             {
                 drawable.Draw(gameTime);
             }
@@ -80,7 +78,7 @@ namespace Guppy.Game
 
         public virtual void DrawGui(GameTime gameTime)
         {
-            foreach(IImGuiComponent component in _imguiComponents)
+            foreach (IImGuiComponent component in _imguiComponents)
             {
                 component.DrawImGui(gameTime);
             }

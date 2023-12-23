@@ -1,11 +1,4 @@
-﻿using Guppy.Common.Collections;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace Guppy.Game.MonoGame.Collections
 {
@@ -46,7 +39,7 @@ namespace Guppy.Game.MonoGame.Collections
 
         public virtual void EnsureClean()
         {
-            if(!this.dirty)
+            if (!this.dirty)
             {
                 return;
             }
@@ -55,7 +48,7 @@ namespace Guppy.Game.MonoGame.Collections
 
             this.items.Clear();
             this.items.AddRange(clean);
-  
+
             this.dirty = false;
         }
 
@@ -71,12 +64,12 @@ namespace Guppy.Game.MonoGame.Collections
 
         public virtual bool Remove(T item)
         {
-            if(_cache.Remove(item))
+            if (_cache.Remove(item))
             {
                 this.dirty = true;
                 return true;
             }
-            
+
             return false;
         }
 

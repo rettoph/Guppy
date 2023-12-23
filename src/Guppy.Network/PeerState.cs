@@ -13,7 +13,7 @@ namespace Guppy.Network
 
         public PeerState(ILifetimeScope scope)
         {
-            if(scope.HasTag(LifetimeScopeTags.GuppyScope))
+            if (scope.HasTag(LifetimeScopeTags.GuppyScope))
             {
                 scope.TryResolve(out _scope);
             }
@@ -21,17 +21,17 @@ namespace Guppy.Network
 
         public override bool Matches(object? value)
         {
-            if(_scope?.Peer is null)
+            if (_scope?.Peer is null)
             {
                 return false;
             }
 
-            if(value is Type peerType)
+            if (value is Type peerType)
             {
                 return _scope.Peer.GetType().IsAssignableTo(peerType);
             }
 
-            if(value is PeerType peerTypeEnum)
+            if (value is PeerType peerTypeEnum)
             {
                 return _scope.Peer.Type == peerTypeEnum;
             }

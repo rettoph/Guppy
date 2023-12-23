@@ -1,12 +1,4 @@
-﻿using Guppy.Common;
-using Guppy.Game.MonoGame.Loaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Game.MonoGame.Providers
+﻿namespace Guppy.Game.MonoGame.Providers
 {
     internal sealed class MenuProvider : IMenuProvider
     {

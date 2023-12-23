@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Guppy.Common;
-using Guppy.Serialization;
+﻿using Guppy.Common;
 using Serilog;
+using System.Text.Json;
 using STJ = System.Text.Json;
 
 namespace Guppy.Serialization

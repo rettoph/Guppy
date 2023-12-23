@@ -1,11 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.Serialization.Json.Converters
 {
@@ -15,9 +10,9 @@ namespace Guppy.Game.Serialization.Json.Converters
         {
             Vector2 output = Vector2.Zero;
 
-            while(reader.ReadPropertyName(out string? property))
+            while (reader.ReadPropertyName(out string? property))
             {
-                switch(property)
+                switch (property)
                 {
                     case nameof(Vector2.X):
                         output.X = reader.ReadSingle();

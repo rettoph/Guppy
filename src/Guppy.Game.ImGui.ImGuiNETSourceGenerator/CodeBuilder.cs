@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator
@@ -33,11 +32,11 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
 
         public CodeBuilder Section(string section = null)
         {
-            if(section != null)
+            if (section != null)
             {
                 this.AppendLine(section);
             }
-            
+
             this.AppendLine("{");
             _depth++;
 
@@ -46,7 +45,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
 
         public void AppendLine(string line = null)
         {
-            if(line == null || line == string.Empty)
+            if (line == null || line == string.Empty)
             {
                 _string.AppendLine();
                 return;
@@ -61,7 +60,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
             _depth--;
             this.AppendLine("}");
 
-            if(_depth == 0 && _fileName != null)
+            if (_depth == 0 && _fileName != null)
             {
                 _context.AddSource(_fileName, _string.ToString());
                 _fileName = null;

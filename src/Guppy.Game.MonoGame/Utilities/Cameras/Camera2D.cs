@@ -1,12 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Drawing;
-using Guppy.Common.Collections;
 
 namespace Guppy.Game.MonoGame.Utilities.Cameras
 {
@@ -132,7 +126,7 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
 
         public override void Update(GameTime gameTime)
         {
-            if(_dirtyViewportBounds)
+            if (_dirtyViewportBounds)
             {
                 this.ViewportBounds = this.BuildViewportBounds();
                 _dirtyViewportBounds = false;
@@ -145,12 +139,12 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
             if (MathHelper.Distance(_zoom, _targetZoom) > 0.0001f)
             { // Lerp to the zoom target
                 _zoom = MathHelper.Lerp(
-                    value1: _zoom, 
-                    value2: _targetZoom, 
+                    value1: _zoom,
+                    value2: _targetZoom,
                     amount: this.ZoomDamp * delataTime);
             }
 
-            if(Vector2.Distance(_velocity, _targetVelocity) > 0.001f)
+            if (Vector2.Distance(_velocity, _targetVelocity) > 0.001f)
             { // Lerp to velocity target
                 _velocity = Vector2.Lerp(
                     value1: _velocity,
@@ -164,8 +158,8 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
             if (Vector2.Distance(_position, _targetPosition) > 0.001f)
             { // Lerp to the position target
                 _position = Vector2.Lerp(
-                    value1: _position, 
-                    value2: _targetPosition, 
+                    value1: _position,
+                    value2: _targetPosition,
                     amount: this.MoveDamping * delataTime);
             }
         }

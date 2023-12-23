@@ -1,10 +1,8 @@
 ﻿using Autofac;
 using Guppy.Common;
 using Guppy.Common.Autofac;
-using Guppy.Common.Collections;
 using Guppy.Common.Extensions;
 using Guppy.Enums;
-using Guppy.Loaders;
 using System.Collections;
 
 namespace Guppy.Providers
@@ -30,7 +28,7 @@ namespace Guppy.Providers
 
         public void Initialize()
         {
-            if(_initialized == true)
+            if (_initialized == true)
             {
                 return;
             }
@@ -70,8 +68,8 @@ namespace Guppy.Providers
                 builder.RegisterType(guppyType).AsSelf().AsImplementedInterfaces().SingleInstance();
             });
             var guppy = scope.Resolve(guppyType) as IGuppy;
-            
-            if(guppy is null)
+
+            if (guppy is null)
             {
                 throw new NotImplementedException();
             }
@@ -94,11 +92,11 @@ namespace Guppy.Providers
 
         private void HandleGuppyDisposed(IDisposable args)
         {
-            if(args is IGuppy guppy)
+            if (args is IGuppy guppy)
             {
                 guppy.OnDispose -= this.HandleGuppyDisposed;
 
-                if(_scopes.Remove(guppy, out var scope))
+                if (_scopes.Remove(guppy, out var scope))
                 {
                     scope.Dispose();
                 }

@@ -1,13 +1,7 @@
 ﻿using Guppy.Common.Attributes;
-using Guppy.Game;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.MonoGame.Components.Guppy
 {

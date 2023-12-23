@@ -11,7 +11,7 @@ namespace Guppy.Attributes
 
         public virtual bool TryConfigure(ContainerBuilder builder, Type classType)
         {
-            if(this.ShouldConfigure(builder, classType))
+            if (this.ShouldConfigure(builder, classType))
             {
                 this.Configure(builder, classType);
                 return true;

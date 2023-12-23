@@ -1,9 +1,4 @@
 ﻿using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Providers
 {
@@ -59,7 +54,7 @@ namespace Guppy.Network.Providers
 
         private static void SignIfShould(bool should, INetId id, NetDataWriter writer)
         {
-            if(should)
+            if (should)
             {
                 id.Write(writer);
             }

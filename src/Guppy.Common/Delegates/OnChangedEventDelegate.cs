@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace System
+﻿namespace System
 {
     public delegate void OnChangedEventDelegate<TSender, TValue>(TSender sender, TValue old, TValue value);
 
@@ -20,17 +16,17 @@ namespace System
         /// <param name="old"></param>
         /// <param name="value"></param>
         public static bool InvokeIf<TSender, TValue>(
-            this OnChangedEventDelegate<TSender, TValue>? deltaDelegate, 
-            bool changed, 
-            TSender sender, 
-            ref TValue old, 
+            this OnChangedEventDelegate<TSender, TValue>? deltaDelegate,
+            bool changed,
+            TSender sender,
+            ref TValue old,
             TValue value)
         {
             if (!changed)
             { // Do nothing
                 return false;
             }
-            else if(deltaDelegate == default)
+            else if (deltaDelegate == default)
             { // Just update the reference
                 old = value;
             }
@@ -38,7 +34,7 @@ namespace System
             { // Invoke event and update reference
                 deltaDelegate.Invoke(sender, old, old = value);
             }
-                
+
             return true;
         }
     }

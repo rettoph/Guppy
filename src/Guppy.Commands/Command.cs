@@ -11,8 +11,8 @@
 
         public Command(
             Type type,
-            Type? parent, 
-            string name, 
+            Type? parent,
+            string name,
             string? description,
             Option[] options,
             Argument[] arguments)

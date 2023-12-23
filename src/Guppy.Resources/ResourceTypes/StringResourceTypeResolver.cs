@@ -1,6 +1,4 @@
 ﻿using Guppy.Attributes;
-using Guppy.Resources;
-using System.Text.Json;
 
 namespace Guppy.Resources.ResourceTypes
 {

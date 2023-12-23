@@ -1,10 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Enums;
-using Guppy.Common.Services;
 using Guppy.Enums;
 using Guppy.Game.ImGui.Services;
-using Microsoft.Xna.Framework;
-using System.Text;
 
 namespace Guppy.Game.ImGui
 {
@@ -33,12 +30,12 @@ namespace Guppy.Game.ImGui
         public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             return this.DrawObjectExplorer(
-                index: index, 
-                name: name, 
-                type: type, 
-                instance: instance is null ? default : (T?)instance, 
+                index: index,
+                name: name,
+                type: type,
+                instance: instance is null ? default : (T?)instance,
                 filter: filter,
-                maxDepth: maxDepth, 
+                maxDepth: maxDepth,
                 currentDepth: currentDepth,
                 tree: tree);
         }

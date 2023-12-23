@@ -1,17 +1,8 @@
-﻿using Guppy.Game;
-using Guppy.Game.Common;
-using Guppy.Resources.Providers;
-using Microsoft.Xna.Framework;
+﻿using Guppy.Game.Common;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Display;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.Serilog.Sinks
 {

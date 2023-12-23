@@ -1,10 +1,5 @@
 ﻿using Guppy.Common.Providers;
 using Guppy.Common.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Common.Implementations
 {
@@ -19,7 +14,7 @@ namespace Guppy.Common.Implementations
 
         public void Subscribe(IEnumerable<object> instances)
         {
-            foreach(var provider in _providers)
+            foreach (var provider in _providers)
             {
                 provider.Subscribe(instances);
             }

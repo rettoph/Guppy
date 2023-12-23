@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace Guppy.Messaging
 {
@@ -35,9 +30,9 @@ namespace Guppy.Messaging
 
         public void Unsubscribe(IBaseSubscriber<TBase> subscriber)
         {
-            if(_subscribers.Remove(subscriber))
+            if (_subscribers.Remove(subscriber))
             {
-                foreach(Publisher<TBase> publisher in _publishers.Values)
+                foreach (Publisher<TBase> publisher in _publishers.Values)
                 {
                     publisher.TryUnsubscribe(subscriber);
                 }

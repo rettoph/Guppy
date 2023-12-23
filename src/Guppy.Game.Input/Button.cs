@@ -1,5 +1,4 @@
-﻿using Guppy.Common;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Game.Input
 {

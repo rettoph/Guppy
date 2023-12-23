@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Common.Collections
 {
@@ -37,7 +32,7 @@ namespace Guppy.Common.Collections
 
         public DoubleDictionary(IEnumerable<(TKey1, TKey2, TValue)> items) : this(items.Count())
         {
-            foreach(var kkv in items)
+            foreach (var kkv in items)
             {
                 this.TryAdd(kkv.Item1, kkv.Item2, kkv.Item3);
             }
@@ -45,9 +40,9 @@ namespace Guppy.Common.Collections
 
         public bool TryAdd(TKey1 key1, TKey2 key2, TValue value)
         {
-            if(_dic1.TryAdd(key1, value))
+            if (_dic1.TryAdd(key1, value))
             {
-                if(_dic2.TryAdd(key2, value))
+                if (_dic2.TryAdd(key2, value))
                 {
                     return true;
                 }

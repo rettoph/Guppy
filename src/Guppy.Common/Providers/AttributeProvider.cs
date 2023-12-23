@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace Guppy.Common.Providers
 {
@@ -17,19 +11,19 @@ namespace Guppy.Common.Providers
 
         public TAttribute[] this[Type type] => _attributes[type];
 
-        public AttributeProvider(ITypeProvider<TType> types, bool inherit) 
+        public AttributeProvider(ITypeProvider<TType> types, bool inherit)
         {
             this.Types = types;
 
             _attributes = new Dictionary<Type, TAttribute[]>(this.Types.Count());
 
-            foreach(Type type in this.Types)
+            foreach (Type type in this.Types)
             {
                 _attributes.Add(type, type.GetCustomAttributesIncludingInterfaces<TAttribute>(inherit).ToArray());
             }
         }
 
-        public TAttribute[] Get<T>() 
+        public TAttribute[] Get<T>()
             where T : TType
         {
             return _attributes[typeof(T)];
@@ -37,7 +31,7 @@ namespace Guppy.Common.Providers
 
         public IEnumerator<(Type, TAttribute[])> GetEnumerator()
         {
-            foreach((Type type, TAttribute[] attributes) in _attributes)
+            foreach ((Type type, TAttribute[] attributes) in _attributes)
             {
                 yield return (type, attributes);
             }

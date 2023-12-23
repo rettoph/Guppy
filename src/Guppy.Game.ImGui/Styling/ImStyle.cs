@@ -1,8 +1,5 @@
 ﻿using Guppy.Common;
-using Guppy.Game.ImGui.Helpers;
 using Guppy.Game.ImGui.Styling.StyleValueResources;
-using Guppy.Resources;
-using Guppy.Resources.Providers;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
@@ -77,7 +74,7 @@ namespace Guppy.Game.ImGui.Styling
 
         internal void SetValues(List<ImStyleValue> values)
         {
-            foreach(var keyedValue in values.Where(x => x.Key is not null))
+            foreach (var keyedValue in values.Where(x => x.Key is not null))
             {
                 _keyedValues.Add(keyedValue.Key!, keyedValue);
             }

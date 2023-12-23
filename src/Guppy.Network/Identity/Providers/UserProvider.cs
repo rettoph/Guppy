@@ -1,13 +1,8 @@
 ﻿using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using LiteNetLib;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Identity.Providers
 {
@@ -17,7 +12,8 @@ namespace Guppy.Network.Identity.Providers
 
         public IEnumerable<NetPeer> Peers
         {
-            get {
+            get
+            {
                 foreach (User user in _users.Values)
                 {
                     if (user.NetPeer is not null)
@@ -48,7 +44,7 @@ namespace Guppy.Network.Identity.Providers
             var user = this.Get(id);
             user.Set(claims);
 
-            if(updatePeer)
+            if (updatePeer)
             {
                 user.NetPeer = peer;
             }
@@ -93,7 +89,7 @@ namespace Guppy.Network.Identity.Providers
 
         public void Remove(int id)
         {
-            if(_users.Remove(id, out var user))
+            if (_users.Remove(id, out var user))
             {
                 user.State = UserState.Disconnected;
                 this.OnUserDisconnected?.Invoke(this, user);

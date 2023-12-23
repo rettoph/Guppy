@@ -2,11 +2,6 @@
 using Guppy.Common;
 using Guppy.Common.Providers;
 using Guppy.Loaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Extensions.Autofac
 {
@@ -16,9 +11,9 @@ namespace Guppy.Extensions.Autofac
         {
             return lifetimeScope.BeginLifetimeScope(tag, builder =>
             {
-                foreach(IServiceLoader loader in lifetimeScope.Resolve<IEnumerable<IServiceLoader>>())
+                foreach (IServiceLoader loader in lifetimeScope.Resolve<IEnumerable<IServiceLoader>>())
                 {
-                    if(loader.LifetimeScopeTag.Equals(tag))
+                    if (loader.LifetimeScopeTag.Equals(tag))
                     {
                         loader.ConfigureServices(builder);
                     }

@@ -1,17 +1,11 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Attributes;
 using Guppy.Common.Extensions;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui;
-using Guppy.Game;
 using Guppy.Providers;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Game.Common.Enums;
-using Guppy.Game.Common;
 
 namespace Guppy.Game.MonoGame.Components.Game
 {
@@ -45,7 +39,7 @@ namespace Guppy.Game.MonoGame.Components.Game
         public void Draw(GameTime gameTime)
         {
             _batch.Begin(gameTime);
-            foreach(IImGuiComponent component in _components)
+            foreach (IImGuiComponent component in _components)
             {
                 component.DrawImGui(gameTime);
             }

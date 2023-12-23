@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Common.Enums
+﻿namespace Guppy.Common.Enums
 {
     public enum TextFilterResult
     {
@@ -17,7 +11,7 @@ namespace Guppy.Common.Enums
     {
         public static TextFilterResult Max(this TextFilterResult item1, TextFilterResult item2)
         {
-            if(item1 > item2)
+            if (item1 > item2)
             {
                 return item1;
             }

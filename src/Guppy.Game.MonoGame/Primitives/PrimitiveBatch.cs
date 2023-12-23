@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Guppy.Game.MonoGame.Utilities.Cameras;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Game.MonoGame.Primitives
 {
@@ -71,11 +66,11 @@ namespace Guppy.Game.MonoGame.Primitives
 
             shape.Transform(0, in color, ref transformation, out this.NextVertex(out _buffer[0]));
             shape.Transform(1, in color, ref transformation, out this.NextVertex(out _buffer[1]));
-            
-            for(int i = 2; i<shape.Length; i++)
+
+            for (int i = 2; i < shape.Length; i++)
             {
                 shape.Transform(i, in color, ref transformation, out this.NextVertex(out _buffer[2]));
-                
+
                 this.AddTriangleIndex(in _buffer[0]);
                 this.AddTriangleIndex(in _buffer[1]);
                 this.AddTriangleIndex(in _buffer[2]);
@@ -127,7 +122,7 @@ namespace Guppy.Game.MonoGame.Primitives
 
         public void Flush()
         {
-            if(_vertexCount == 0)
+            if (_vertexCount == 0)
             {
                 return;
             }
@@ -151,7 +146,7 @@ namespace Guppy.Game.MonoGame.Primitives
                 _triangleCount = 0;
             }
 
-            if(_lineCount != 0)
+            if (_lineCount != 0)
             {
                 _indexBuffer.SetData(_lineIndices, 0, _lineCount);
                 foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
@@ -165,7 +160,7 @@ namespace Guppy.Game.MonoGame.Primitives
 
         public void EnsureCapacity(int vertices)
         {
-            if(_vertexCount + vertices < BufferSize)
+            if (_vertexCount + vertices < BufferSize)
             {
                 return;
             }
@@ -186,7 +181,7 @@ namespace Guppy.Game.MonoGame.Primitives
         where TVertex : unmanaged, IVertexType
     {
         public PrimitiveBatch(GraphicsDevice graphicsDevice) : base(
-            graphicsDevice, 
+            graphicsDevice,
             new BasicEffect(graphicsDevice)
             {
                 VertexColorEnabled = true

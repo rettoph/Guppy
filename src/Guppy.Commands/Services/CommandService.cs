@@ -1,18 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.Commands.Extensions;
 using Guppy.Commands.TokenPropertySetters;
-using Guppy.Common;
-using Guppy.Common.Extensions;
-using Guppy.Common.Implementations;
-using Guppy.Common.Providers;
 using Guppy.Messaging;
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Guppy.Commands.Services
 {
@@ -24,7 +14,7 @@ namespace Guppy.Commands.Services
         private IConsole _console;
 
         public CommandService(
-            IEnumerable<Command> commands, 
+            IEnumerable<Command> commands,
             IEnumerable<ITokenPropertySetter> tokenSetters,
             IConsole console)
         {
@@ -42,7 +32,7 @@ namespace Guppy.Commands.Services
             }
 
             // Nest all commands as needed
-            foreach(KeyValuePair<Command, SCL.Command> keyValuePair in _commands)
+            foreach (KeyValuePair<Command, SCL.Command> keyValuePair in _commands)
             {
                 SCL.Command parent = keyValuePair.Key.Parent is null ? _root : _commands.First(x => x.Key.Type == keyValuePair.Key.Parent).Value;
                 parent.AddCommand(keyValuePair.Value);

@@ -1,8 +1,6 @@
-﻿using Guppy.Common;
-using Guppy.Messaging;
+﻿using Guppy.Messaging;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Guppy.Network
 {
@@ -29,7 +27,7 @@ namespace Guppy.Network
 
     public interface INetOutgoingMessage<T> : INetOutgoingMessage
         where T : notnull
-    { 
+    {
         new T Body { get; }
 
         new NetMessageType<T> Type { get; }

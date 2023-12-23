@@ -1,14 +1,8 @@
 ﻿using Guppy.Attributes;
 using Guppy.Common.Collections;
-using Guppy.Game.ImGui;
-using Guppy.Game;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Guppy.Game.Components;
+using Guppy.Game.ImGui;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Game
 {

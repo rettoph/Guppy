@@ -13,18 +13,18 @@ namespace Guppy.Common.Collections
 
         public bool TryEnqueue(TKey key, TValue value)
         {
-            if(!_dict.TryAdd(key, value))
+            if (!_dict.TryAdd(key, value))
             {
                 return false;
             }
 
-            _queue.Enqueue(key); 
+            _queue.Enqueue(key);
             return true;
         }
 
         public bool TryDequeue([MaybeNullWhen(false)] out TValue value)
         {
-            if(!_queue.TryDequeue(out TKey? key))
+            if (!_queue.TryDequeue(out TKey? key))
             {
                 value = default;
                 return false;
@@ -51,7 +51,7 @@ namespace Guppy.Common.Collections
 
         public bool TryPeek([MaybeNullWhen(false)] out TValue value)
         {
-            if(_queue.TryPeek(out TKey? key))
+            if (_queue.TryPeek(out TKey? key))
             {
                 value = _dict[key];
                 return true;
@@ -65,7 +65,7 @@ namespace Guppy.Common.Collections
         {
             ref TValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(_dict, key, out exists);
 
-            if(exists == false)
+            if (exists == false)
             {
                 _queue.Enqueue(key);
             }

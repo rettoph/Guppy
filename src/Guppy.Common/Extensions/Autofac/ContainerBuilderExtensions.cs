@@ -1,13 +1,7 @@
 ﻿using Autofac;
-using Guppy.Common.Autofac;
 using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
 using Guppy.Common.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Common.Extensions.Autofac
 {

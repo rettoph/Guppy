@@ -1,12 +1,6 @@
-﻿using Guppy.Attributes;
-using Guppy.Resources.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Guppy.Resources.Providers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Guppy.Resources.Serialization.Json.Converters
 {
@@ -28,9 +22,9 @@ namespace Guppy.Resources.Serialization.Json.Converters
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
 
-            while(reader.ReadPropertyName(out string? propertyName))
+            while (reader.ReadPropertyName(out string? propertyName))
             {
-                switch(propertyName)
+                switch (propertyName)
                 {
                     case nameof(Setting.Name):
                         name = reader.ReadString();

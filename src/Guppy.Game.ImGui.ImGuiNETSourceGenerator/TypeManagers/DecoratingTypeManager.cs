@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 {
@@ -13,13 +10,13 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 
         public override void GenerateSourceFiles(CodeBuilder source)
         {
-            if(this.ImGuiType.IsByRef || this.ImGuiType.IsPointer)
+            if (this.ImGuiType.IsByRef || this.ImGuiType.IsPointer)
             {
                 TypeManager.GetTypeManager(this.ImGuiType.GetElementType());
                 return;
             }
 
-            using(source.File($"{this.GuppyType}.g.cs"))
+            using (source.File($"{this.GuppyType}.g.cs"))
             {
                 using (source.Section($"public unsafe partial {(this.ImGuiType.IsValueType ? "struct" : "class")} {this.GuppyType}"))
                 {

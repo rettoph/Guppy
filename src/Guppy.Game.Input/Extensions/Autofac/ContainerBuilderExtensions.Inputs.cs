@@ -1,8 +1,4 @@
-﻿using Autofac;
-using Guppy;
-using Guppy.Common;
-using Guppy.Game.Input;
-using Guppy.Providers;
+﻿using Guppy.Game.Input;
 using Microsoft.Xna.Framework.Input;
 
 namespace Autofac
@@ -20,7 +16,7 @@ namespace Autofac
         {
             builder.Register(p => new Button<TData>(key, defaultSource, data.Select(x => (x.Item1 == ButtonState.Pressed, x.Item2)).ToArray())).As<IButton>().SingleInstance();
         }
-        
+
         public static void RegisterInput<TData>(this ContainerBuilder builder, string key, ButtonSource defaultSource, (KeyState, TData)[] data)
             where TData : IInput
         {

@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Common;
 using Guppy.Messaging;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
@@ -35,7 +34,7 @@ namespace Guppy.Network.Peers
             var user = new User(-1, claims);
             var action = user.CreateAction(UserAction.Actions.ConnectionRequest, ClaimAccessibility.Protected);
 
-            using(var request = this.NetScope.Messages.Create(in action))
+            using (var request = this.NetScope.Messages.Create(in action))
             {
                 _peer = this.Manager.Connect(address, port, request.Writer);
             }

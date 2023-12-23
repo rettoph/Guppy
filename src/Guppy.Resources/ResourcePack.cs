@@ -26,7 +26,7 @@ namespace Guppy.Resources
         public void Add<T>(Resource<T> resource, string localization, T value)
             where T : notnull
         {
-            if(!_resources.TryGetValue(resource, out var values))
+            if (!_resources.TryGetValue(resource, out var values))
             {
                 _resources[resource] = values = new();
             }
@@ -50,7 +50,7 @@ namespace Guppy.Resources
                 return false;
             }
 
-            if(values.TryGetValue(localization, out object? cached))
+            if (values.TryGetValue(localization, out object? cached))
             {
                 value = (T)cached;
                 return true;

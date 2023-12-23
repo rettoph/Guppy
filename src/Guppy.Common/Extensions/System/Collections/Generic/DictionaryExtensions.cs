@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Collections.Generic
+﻿namespace System.Collections.Generic
 {
     public static class DictionaryExtensions
     {
@@ -13,7 +7,7 @@ namespace System.Collections.Generic
         {
             var clone = new Dictionary<TKey, TValue>();
 
-            foreach(KeyValuePair<TKey, TValue> kvp in source)
+            foreach (KeyValuePair<TKey, TValue> kvp in source)
             {
                 clone.Add(kvp.Key, kvp.Value);
             }
@@ -24,7 +18,7 @@ namespace System.Collections.Generic
         public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> source, Dictionary<TKey, TValue>? value)
             where TKey : notnull
         {
-            if(value is null)
+            if (value is null)
             {
                 return source;
             }

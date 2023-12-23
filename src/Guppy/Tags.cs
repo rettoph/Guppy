@@ -1,11 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core.Lifetime;
 using Guppy.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy
 {
@@ -30,9 +25,9 @@ namespace Guppy
         {
             Tags? scope = this;
 
-            while(scope is not null)
+            while (scope is not null)
             {
-                if(scope._autofac.Tag == tag)
+                if (scope._autofac.Tag == tag)
                 {
                     return true;
                 }

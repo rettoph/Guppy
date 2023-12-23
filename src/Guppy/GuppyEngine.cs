@@ -1,11 +1,5 @@
 ﻿using Autofac;
-using Guppy.Attributes;
 using Guppy.Common;
-using Guppy.Common.Extensions;
-using Guppy.Common.Providers;
-using Guppy.Common.Utilities;
-using Guppy.Enums;
-using Guppy.Loaders;
 using Guppy.Providers;
 using System.Reflection;
 

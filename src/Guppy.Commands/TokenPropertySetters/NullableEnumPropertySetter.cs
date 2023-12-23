@@ -1,12 +1,6 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
-using System;
-using System.Collections.Generic;
 using System.CommandLine.Parsing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Commands.TokenPropertySetters
 {
@@ -20,7 +14,7 @@ namespace Guppy.Commands.TokenPropertySetters
 
         public bool SetValue(PropertyInfo property, object instance, Token token)
         {
-            if(Enum.TryParse(Nullable.GetUnderlyingType(property.PropertyType)!, token.Value, true, out var result))
+            if (Enum.TryParse(Nullable.GetUnderlyingType(property.PropertyType)!, token.Value, true, out var result))
             {
                 property.SetValue(instance, result);
                 return true;

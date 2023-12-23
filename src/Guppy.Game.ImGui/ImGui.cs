@@ -3,9 +3,6 @@ using Guppy.Game.ImGui.Helpers;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
 using Guppy.Resources.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Game.ImGui
@@ -43,9 +40,9 @@ namespace Guppy.Game.ImGui
 
         public IDisposable Apply(string key)
         {
-            foreach(ImStyle style in _styleStack)
+            foreach (ImStyle style in _styleStack)
             {
-                if(style.TryGetValue(key, out var value))
+                if (style.TryGetValue(key, out var value))
                 {
                     value.Push();
                     return value;
@@ -64,7 +61,7 @@ namespace Guppy.Game.ImGui
 
         public void Dispose()
         {
-            if(_styleStack.TryPop(out ImStyle? style))
+            if (_styleStack.TryPop(out ImStyle? style))
             {
                 style.Pop();
             }

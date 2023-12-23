@@ -1,12 +1,5 @@
-﻿using Guppy.Common;
-using Guppy.Game.Input.Enums;
-using Microsoft.Xna.Framework;
+﻿using Guppy.Game.Input.Enums;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.Input.Providers
 {
@@ -23,9 +16,9 @@ namespace Guppy.Game.Input.Providers
         {
             var state = Mouse.GetState();
 
-            foreach(var button in _buttons)
+            foreach (var button in _buttons)
             {
-                if(button.Pressed == state.IsButtonDown(button.Source.MouseButton))
+                if (button.Pressed == state.IsButtonDown(button.Source.MouseButton))
                 {
                     continue;
                 }

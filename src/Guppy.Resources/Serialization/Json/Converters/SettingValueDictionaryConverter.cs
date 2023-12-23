@@ -1,13 +1,5 @@
-﻿using Guppy.Common.Collections;
-using Guppy.Resources;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Guppy.Resources.Serialization.Json.Converters
 {
@@ -17,13 +9,13 @@ namespace Guppy.Resources.Serialization.Json.Converters
         {
             Dictionary<Setting, ISettingValue> _dict = new Dictionary<Setting, ISettingValue>();
 
-            if(reader.CheckToken(JsonTokenType.StartArray, false))
+            if (reader.CheckToken(JsonTokenType.StartArray, false))
             {
                 ISettingValue[]? values = JsonSerializer.Deserialize<ISettingValue[]>(ref reader, options);
 
-                if(values is not null)
+                if (values is not null)
                 {
-                    foreach(ISettingValue value in values)
+                    foreach (ISettingValue value in values)
                     {
                         _dict.Add(value.Setting, value);
                     }
@@ -39,7 +31,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
         {
             writer.WriteStartArray();
 
-            foreach(var (setting, value) in dict.OrderBy(x => x.Key.Name))
+            foreach (var (setting, value) in dict.OrderBy(x => x.Key.Name))
             {
                 JsonSerializer.Serialize(writer, value!, options);
             }

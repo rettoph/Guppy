@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Common
+﻿namespace Guppy.Common
 {
     public static class ThrowIf
     {
@@ -25,7 +19,7 @@ namespace Guppy.Common
 
             public static void IsNotGenericTypeImplementation(System.Type genericTypeDefinition, System.Type implementation)
             {
-                if(implementation.ImplementsGenericTypeDefinition(genericTypeDefinition))
+                if (implementation.ImplementsGenericTypeDefinition(genericTypeDefinition))
                 {
                     return;
                 }

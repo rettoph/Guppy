@@ -1,12 +1,7 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Providers;
 using LiteNetLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
@@ -37,10 +32,10 @@ namespace Guppy.Network
         private readonly Factory<INetOutgoingMessage<T>> _outgoingFactory;
 
         public NetMessageType(
-            byte id, 
-            Type body, 
-            DeliveryMethod defaultDeliveryMethod, 
-            byte defaultOutgoingChannel, 
+            byte id,
+            Type body,
+            DeliveryMethod defaultDeliveryMethod,
+            byte defaultOutgoingChannel,
             INetSerializerProvider serializers,
             NetScope scope) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
         {

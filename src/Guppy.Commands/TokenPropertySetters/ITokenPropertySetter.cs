@@ -1,12 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
-using System;
-using System.Collections.Generic;
 using System.CommandLine.Parsing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Commands.TokenPropertySetters
 {

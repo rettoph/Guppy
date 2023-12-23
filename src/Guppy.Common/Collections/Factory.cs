@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Guppy.Common.Collections
+﻿namespace Guppy.Common.Collections
 {
     public class Factory<T> : Pool<T>
         where T : class

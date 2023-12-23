@@ -1,17 +1,13 @@
 ﻿using Autofac;
-using Guppy.Game.MonoGame;
-using Guppy.Loaders;
+using Guppy.Common.Autofac;
+using Guppy.Game.ImGui;
+using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Constants;
 using Guppy.Game.MonoGame.Messages;
 using Guppy.Game.MonoGame.Primitives;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+using Guppy.Loaders;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Guppy.Attributes;
-using Guppy.Game.MonoGame.Components.Guppy;
-using Guppy.Common.Autofac;
-using Guppy.Game.ImGui;
 
 namespace Guppy.Game.MonoGame.Loaders
 {

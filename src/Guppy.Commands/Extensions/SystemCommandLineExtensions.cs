@@ -1,15 +1,8 @@
 ﻿using Guppy.Commands.TokenPropertySetters;
-using Guppy.Common;
 using Guppy.Messaging;
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Binding;
 using System.CommandLine.Invocation;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Commands.Extensions
 {
@@ -19,7 +12,7 @@ namespace Guppy.Commands.Extensions
         {
             SCL.Command scl = new SCL.Command(command.Name, command.Description);
 
-            foreach(SCL.Option option in command.Options.Select(o => o.SCL))
+            foreach (SCL.Option option in command.Options.Select(o => o.SCL))
             {
                 scl.AddOption(option);
             }
@@ -63,7 +56,7 @@ namespace Guppy.Commands.Extensions
         internal record OptionBinder(SCL.Option Option, Func<InvocationContext, object?> Binder);
         internal static OptionBinder GetSystemOptionBinder(this Option option)
         {
-            return(OptionBinder)GenericInvoker(OptionFactory, option.PropertyInfo.PropertyType, option)!;
+            return (OptionBinder)GenericInvoker(OptionFactory, option.PropertyInfo.PropertyType, option)!;
         }
 
         private static readonly MethodInfo OptionFactory = GetMethodInfo(nameof(OptionFactoryMethod));
@@ -91,7 +84,7 @@ namespace Guppy.Commands.Extensions
 
             scl.SetHandler(context =>
                 {
-                    if(binder.TryGetBoundValue(context, out T instance))
+                    if (binder.TryGetBoundValue(context, out T instance))
                     {
                         broker.Publish(instance);
                     }

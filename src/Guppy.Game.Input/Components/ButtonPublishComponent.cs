@@ -1,12 +1,10 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Attributes;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.Input.Providers;
 using Guppy.Game.Input.Services;
-using Guppy.Game;
-using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
-using Guppy.Game.Common;
 
 namespace Guppy.Game.Input.Components
 {

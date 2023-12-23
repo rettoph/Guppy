@@ -1,9 +1,8 @@
-﻿using Guppy.Game.Input.Providers;
-using Guppy.Loaders;
-using Autofac;
-using Guppy.Game.Input.Services;
-using Guppy.Game.Input.Components;
+﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Game.Input.Providers;
+using Guppy.Game.Input.Services;
+using Guppy.Loaders;
 
 namespace Guppy.Game.Input.Loaders
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace System
+﻿namespace System
 {
     /// <summary>
     /// Multicast Predicate Delegate that will return false
@@ -32,7 +28,7 @@ namespace System
                     if (!v(sender, args))
                     {
                         return false;
-                    }  
+                    }
                 }
             }
 

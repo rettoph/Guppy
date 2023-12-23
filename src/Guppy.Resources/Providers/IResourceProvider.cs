@@ -1,12 +1,4 @@
-﻿using Guppy.Common.Collections;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Resources.Providers
+﻿namespace Guppy.Resources.Providers
 {
     public interface IResourceProvider : IGlobalComponent
     {
@@ -15,7 +7,7 @@ namespace Guppy.Resources.Providers
         ResourceValue<T> Get<T>(Resource<T> resource)
             where T : notnull;
 
-        IEnumerable<(Resource, T)> GetAll<T>() 
+        IEnumerable<(Resource, T)> GetAll<T>()
             where T : notnull;
 
         IResourceProvider Set<T>(Resource<T> resource, T value)

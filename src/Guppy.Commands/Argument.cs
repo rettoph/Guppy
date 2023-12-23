@@ -1,11 +1,6 @@
 ﻿using Guppy.Commands.Extensions;
-using System;
-using System.Collections.Generic;
 using System.CommandLine.Invocation;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Commands
 {

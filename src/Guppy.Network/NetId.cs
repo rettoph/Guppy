@@ -1,11 +1,5 @@
 ﻿using Guppy.Resources.Attributes;
 using LiteNetLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network
 {
@@ -13,7 +7,7 @@ namespace Guppy.Network
     {
         public static INetId<T> Create<T>(T value)
         {
-            if(typeof(T) == typeof(byte))
+            if (typeof(T) == typeof(byte))
             {
                 return new NetId.Byte()
                 {
@@ -63,7 +57,7 @@ namespace Guppy.Network
 
             public bool Equals(INetId? other)
             {
-                if(other is NetId.Byte casted)
+                if (other is NetId.Byte casted)
                 {
                     return casted.Value == this.Value;
                 }

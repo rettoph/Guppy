@@ -1,12 +1,5 @@
 ﻿using Guppy.Common.Collections;
-using Guppy.Network.Definitions;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Providers
 {
@@ -19,16 +12,16 @@ namespace Guppy.Network.Providers
             _serializers = new DoubleDictionary<INetId, Type, INetSerializer>(serializers.Count());
 
             byte id = 0;
-            foreach(var serializer in serializers)
+            foreach (var serializer in serializers)
             {
-                if(_serializers.TryAdd(NetId.Create(id), serializer.Type, serializer))
+                if (_serializers.TryAdd(NetId.Create(id), serializer.Type, serializer))
                 {
                     serializer.Id = NetId.Create(id);
                     id += 1;
                 }
             }
 
-            foreach(var serializer in _serializers.Values)
+            foreach (var serializer in _serializers.Values)
             {
                 serializer.Initialize(this);
             }
@@ -52,7 +45,7 @@ namespace Guppy.Network.Providers
             {
                 return _serializers[type];
             }
-            catch(KeyNotFoundException e)
+            catch (KeyNotFoundException e)
             {
                 throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {type.Name}", e);
             }

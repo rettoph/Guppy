@@ -3,11 +3,6 @@ using Guppy.Game.Common;
 using Guppy.Resources.Providers;
 using Microsoft.Xna.Framework;
 using Serilog.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game
 {

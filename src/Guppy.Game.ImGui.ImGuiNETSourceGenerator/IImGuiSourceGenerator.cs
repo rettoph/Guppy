@@ -1,13 +1,6 @@
 ﻿using Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers;
 using ImGuiNET;
 using Microsoft.CodeAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator
 {
@@ -18,7 +11,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
         {
             CodeBuilder source = new CodeBuilder(ref context, context.Compilation.AssemblyName);
 
-            using(source.File("IImGui.g.cs"))
+            using (source.File("IImGui.g.cs"))
             {
                 using (source.Section("public partial interface IImGui"))
                 {

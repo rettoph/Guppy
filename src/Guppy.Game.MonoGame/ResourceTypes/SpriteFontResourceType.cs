@@ -1,16 +1,9 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Files.Helpers;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.MonoGame.ResourceTypes
 {

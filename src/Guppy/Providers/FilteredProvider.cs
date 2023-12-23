@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Common;
-using Guppy.Common.Implementations;
 using Guppy.Common.Providers;
 
 namespace Guppy.Providers
@@ -23,7 +22,7 @@ namespace Guppy.Providers
         {
             return new Filtered<T>(
                 _state,
-                _filters, 
+                _filters,
                 _context.Resolve<Lazy<IEnumerable<T>>>());
         }
 

@@ -1,13 +1,8 @@
 ﻿using Guppy.Common.Enums;
 using Guppy.Common.Services;
-using Guppy.Game.ImGui.Services;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -107,22 +102,22 @@ namespace Guppy.Game.ImGui
 
         private TextFilterResult BasicFilter(string filter, string? name, Type type, object? instance)
         {
-            if(filter.IsNullOrEmpty())
+            if (filter.IsNullOrEmpty())
             {
                 return TextFilterResult.None;
             }
 
-            if(name is string nameString && nameString.Contains(filter))
+            if (name is string nameString && nameString.Contains(filter))
             {
                 return TextFilterResult.Matched;
             }
 
-            if(type.AssemblyQualifiedName is string assembly && assembly.Contains(filter))
+            if (type.AssemblyQualifiedName is string assembly && assembly.Contains(filter))
             {
                 return TextFilterResult.Matched;
             }
 
-            if(instance?.ToString() is string instanceString && instanceString.Contains(filter))
+            if (instance?.ToString() is string instanceString && instanceString.Contains(filter))
             {
                 return TextFilterResult.Matched;
             }

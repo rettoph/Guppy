@@ -1,11 +1,5 @@
 ﻿using Guppy.Common.Collections;
 using Standart.Hash.xxHash;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Guppy.Resources
 {
@@ -32,11 +26,11 @@ namespace Guppy.Resources
         {
             return _resources[id];
         }
-        
+
         public static Resource<T> Get<T>(string name)
             where T : notnull
         {
-            if(_resources.TryGet(name, out Resource? resource))
+            if (_resources.TryGet(name, out Resource? resource))
             {
                 return (Resource<T>)resource;
             }

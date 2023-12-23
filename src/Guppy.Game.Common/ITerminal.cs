@@ -12,7 +12,7 @@ namespace Guppy.Game.Common
         Color Color { get; set; }
 
         void Write(string value);
-        
+
         void Write(string value, Color color);
 
         void WriteLine(string value);

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using OSPlatformStruct = System.Runtime.InteropServices.OSPlatform;
 
 namespace Guppy.Common.Helpers
@@ -23,7 +17,7 @@ namespace Guppy.Common.Helpers
                 [OSPlatformStruct.Linux] = new[] { "so" }
             };
 
-            if(NativeHelper.GetOSPlatformExtensions(platformExtensions, out var platform, out var extensions))
+            if (NativeHelper.GetOSPlatformExtensions(platformExtensions, out var platform, out var extensions))
             {
                 NativeHelper.OSPlatform = platform;
                 NativeHelper.Extensions = extensions!;
@@ -37,13 +31,13 @@ namespace Guppy.Common.Helpers
 
         public static void Load(string directory, params string[] fileNames)
         {
-            foreach(string fileName in fileNames)
+            foreach (string fileName in fileNames)
             {
-                foreach(string extension in NativeHelper.Extensions)
+                foreach (string extension in NativeHelper.Extensions)
                 {
                     string path = Path.Combine(directory, $"{fileName}.{extension}");
 
-                    if(File.Exists(path))
+                    if (File.Exists(path))
                     {
                         NativeLibrary.Load(path);
                     }
@@ -56,7 +50,7 @@ namespace Guppy.Common.Helpers
             [MaybeNullWhen(false)] out OSPlatformStruct? platform,
             [MaybeNullWhen(false)] out string[]? extensions)
         {
-            foreach((OSPlatform platformVal, string[] extensionsVal) in platformExtensions)
+            foreach ((OSPlatform platformVal, string[] extensionsVal) in platformExtensions)
             {
                 if (RuntimeInformation.IsOSPlatform(platformVal))
                 {

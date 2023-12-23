@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator
 {
@@ -15,7 +13,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
 
         public static string GetPrefix(this ParameterInfo parameter)
         {
-            if(parameter.IsOut)
+            if (parameter.IsOut)
             {
                 return "out ";
             }
@@ -46,7 +44,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
 
         public static string ToGuppyName(this string value)
         {
-            if(value.StartsWith("Gui"))
+            if (value.StartsWith("Gui"))
             {
                 value = "Im" + value;
             }

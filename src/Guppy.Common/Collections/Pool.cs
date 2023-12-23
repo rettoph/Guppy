@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Common.Collections
 {
@@ -32,7 +28,7 @@ namespace Guppy.Common.Collections
         /// <inheritdoc />
         public virtual bool TryPull([MaybeNullWhen(false)] out T instance)
         {
-            if(_pool.TryPop(out instance))
+            if (_pool.TryPop(out instance))
             {
                 _poolSize--;
 

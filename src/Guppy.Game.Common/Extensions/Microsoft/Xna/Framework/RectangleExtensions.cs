@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Microsoft.Xna.Framework
+﻿namespace Microsoft.Xna.Framework
 {
     public static class RectangleExtensions
     {

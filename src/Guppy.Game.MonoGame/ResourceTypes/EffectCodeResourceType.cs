@@ -3,9 +3,7 @@ using Guppy.Files.Helpers;
 using Guppy.Game.MonoGame.Graphics.Effects;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
-using Microsoft.Xna.Framework.Graphics;
 using Serilog;
-using System.Text.Json;
 
 namespace Guppy.Game.MonoGame.ResourceTypes
 {
@@ -39,7 +37,7 @@ namespace Guppy.Game.MonoGame.ResourceTypes
                 value = new EffectCode(bytes);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.Error(ex, "{ClassName}::{MethodName} - Exception loading {Resource} at {Path}", nameof(EffectCodeResourceType), nameof(TryResolve), resource.Name, path);
                 value = null!;

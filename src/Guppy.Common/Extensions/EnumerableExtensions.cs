@@ -1,10 +1,5 @@
 ﻿using Guppy.Common.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Common.Extensions
 {
@@ -28,7 +23,7 @@ namespace Guppy.Common.Extensions
 
             }
 
-            if(item is ISequenceable<TSequence> sequenceable && sequenceable.Sequence is not null)
+            if (item is ISequenceable<TSequence> sequenceable && sequenceable.Sequence is not null)
             {
                 return sequenceable.Sequence.Value;
             }

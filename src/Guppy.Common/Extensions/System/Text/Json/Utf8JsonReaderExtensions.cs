@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace System.Text.Json
 {
@@ -12,7 +6,7 @@ namespace System.Text.Json
     {
         private static bool FalseOrException(bool exception)
         {
-            if(exception)
+            if (exception)
             {
                 throw new JsonException();
             }
@@ -32,12 +26,12 @@ namespace System.Text.Json
 
         public static bool CheckPropertyName(ref this Utf8JsonReader reader, string value, bool required)
         {
-            if(!reader.CheckToken(JsonTokenType.PropertyName, required))
+            if (!reader.CheckToken(JsonTokenType.PropertyName, required))
             {
                 return FalseOrException(required);
             }
 
-            if(reader.GetString() != value)
+            if (reader.GetString() != value)
             {
                 return FalseOrException(required);
             }
@@ -53,12 +47,12 @@ namespace System.Text.Json
 
         public static bool ReadPropertyName(ref this Utf8JsonReader reader, [MaybeNullWhen(false)] out string propertyName)
         {
-            if(reader.CheckToken(JsonTokenType.StartObject, false))
+            if (reader.CheckToken(JsonTokenType.StartObject, false))
             {
                 reader.Read();
             }
 
-            if(reader.CheckToken(JsonTokenType.EndObject, false))
+            if (reader.CheckToken(JsonTokenType.EndObject, false))
             {
                 propertyName = default;
                 return false;

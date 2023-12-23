@@ -1,11 +1,6 @@
-﻿using Guppy.Game;
-using Guppy.Game.Common;
-using System;
-using System.Collections.Generic;
+﻿using Guppy.Game.Common;
 using System.CommandLine.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.MonoGame
 {
@@ -22,7 +17,7 @@ namespace Guppy.Game.MonoGame
 
         public override void Write(string? value)
         {
-            if(value is null)
+            if (value is null)
             {
                 return;
             }
@@ -30,9 +25,9 @@ namespace Guppy.Game.MonoGame
             int newLineIndex;
             int lineStart = 0;
 
-            while(-1 != (newLineIndex = value.IndexOf('\n', lineStart)))
+            while (-1 != (newLineIndex = value.IndexOf('\n', lineStart)))
             {
-                if(lineStart == newLineIndex)
+                if (lineStart == newLineIndex)
                 {
                     _terminal.NewLine();
                 }
@@ -42,9 +37,9 @@ namespace Guppy.Game.MonoGame
                 }
 
                 lineStart = newLineIndex + 1;
-            } 
+            }
 
-            if(lineStart < value.Length)
+            if (lineStart < value.Length)
             {
                 this.WriteToTerminal(_terminal, value[lineStart..]);
             }

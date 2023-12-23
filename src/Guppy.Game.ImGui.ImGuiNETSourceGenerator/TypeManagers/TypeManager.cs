@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 {
@@ -11,12 +10,12 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
     {
         public static TypeManager GetTypeManager(Type type)
         {
-            if(_instances.TryGetValue(type, out TypeManager manager))
+            if (_instances.TryGetValue(type, out TypeManager manager))
             {
                 return manager;
             }
 
-            if(type.Assembly == typeof(ImGui).Assembly && type.IsEnum)
+            if (type.Assembly == typeof(ImGui).Assembly && type.IsEnum)
             {
                 manager = new EnumTypeManager(type);
             }
@@ -37,7 +36,7 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
 
         public static void GenerateAllSourceFiles(CodeBuilder source)
         {
-            if(_sourceGenerators.Any() == false)
+            if (_sourceGenerators.Any() == false)
             {
                 foreach (TypeManager manager in _instances.Values)
                 {

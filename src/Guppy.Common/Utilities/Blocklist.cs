@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Common.Utilities
+﻿namespace Guppy.Common.Utilities
 {
     public class BlockList
     {
@@ -24,12 +18,12 @@ namespace Guppy.Common.Utilities
         {
             bool result = true;
 
-            if(this.Whitelist is not null)
+            if (this.Whitelist is not null)
             {
                 result &= values.Intersect(this.Whitelist).Any();
             }
 
-            if(this.Blacklist is not null)
+            if (this.Blacklist is not null)
             {
                 result &= !values.Intersect(this.Blacklist).Any();
             }

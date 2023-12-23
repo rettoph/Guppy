@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.MonoGame
 {
@@ -28,7 +24,7 @@ namespace Guppy.Game.MonoGame
 
         public bool TryAppend(char value, [MaybeNullWhen(true)] out MonoGameTerminalLine previousLine)
         {
-            if(value == '\n')
+            if (value == '\n')
             {
                 previousLine = this.NewLine();
                 return false;
@@ -48,7 +44,7 @@ namespace Guppy.Game.MonoGame
 
         private void AddSegment()
         {
-            if(this.Text.Length == 0)
+            if (this.Text.Length == 0)
             {
                 return;
             }

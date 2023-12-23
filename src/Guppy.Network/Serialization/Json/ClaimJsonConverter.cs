@@ -1,12 +1,7 @@
 ﻿using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Guppy.Network.Serialization.Json
 {
@@ -33,7 +28,7 @@ namespace Guppy.Network.Serialization.Json
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
 
-            while(reader.ReadProperty(out Properties property))
+            while (reader.ReadProperty(out Properties property))
             {
                 switch (property)
                 {
@@ -82,7 +77,7 @@ namespace Guppy.Network.Serialization.Json
             JsonSerializer.Serialize(writer, claim.CreatedAt, options);
 
             var value = claim.GetValue();
-            if(value is not null)
+            if (value is not null)
             {
                 writer.WritePropertyName(Properties.Value);
                 JsonSerializer.Serialize(writer, value, value.GetType(), options);

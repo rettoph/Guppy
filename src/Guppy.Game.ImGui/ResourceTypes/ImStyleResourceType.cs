@@ -1,10 +1,7 @@
-﻿using Guppy.Resources.ResourceTypes;
+﻿using Guppy.Attributes;
 using Guppy.Game.ImGui.Styling;
-using Guppy.Resources;
-using System.Text.Json;
-using Guppy.Attributes;
+using Guppy.Resources.ResourceTypes;
 using Guppy.Serialization;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Game.ImGui.ResourceTypes
 {

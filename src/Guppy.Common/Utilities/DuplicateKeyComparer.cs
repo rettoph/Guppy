@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Guppy.Common.Utilities
+﻿namespace Guppy.Common.Utilities
 {
     public sealed class DuplicateKeyComparer<TKey> : IComparer<TKey>
         where TKey : IComparable

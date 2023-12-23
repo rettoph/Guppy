@@ -1,12 +1,6 @@
 ﻿using Guppy.Common;
-using Guppy.Game;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Guppy.Game.MonoGame
 {
