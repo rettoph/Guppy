@@ -1,7 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
 

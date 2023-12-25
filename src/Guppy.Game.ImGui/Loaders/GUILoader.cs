@@ -10,7 +10,6 @@ using Guppy.Game.ImGui.Styling.StyleValueResources;
 using Guppy.Game.Input.Enums;
 using Guppy.Loaders;
 using Guppy.Resources.Serialization.Json.Converters;
-using ImGuiNET;
 using Microsoft.Xna.Framework.Input;
 using System.Text.Json.Serialization;
 

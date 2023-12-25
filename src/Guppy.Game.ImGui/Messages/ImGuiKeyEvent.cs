@@ -1,6 +1,5 @@
 ﻿using Guppy.Game.Input;
 using Guppy.Messaging;
-using ImGuiNET;
 
 namespace Guppy.Game.ImGui.Messages
 {
