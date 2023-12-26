@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <RuntimeIdentifiers>win-x64;win-x86;linux-x64;linux-arm;linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,13 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="natives\**\*.dll" Condition=" '$(OS)' == 'Windows_NT' ">
+    <Content Include="natives\**\*.dll" Condition=" $(RuntimeIdentifier.Contains('win')) ">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="natives\**\*.so" Condition=" '$(OS)' == 'UNIX' ">
+    <Content Include="natives\**\*.so" Condition=" $(RuntimeIdentifier.Contains('linux')) ">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
