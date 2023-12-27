@@ -27,6 +27,7 @@ namespace Guppy.Game
         private IImGuiComponent[] _imguiComponents;
 
         public IGuppyComponent[] Components { get; private set; }
+        public ILifetimeScope Scope { get; private set; }
 
         public virtual string Name => this.GetType().Name;
 
@@ -39,6 +40,7 @@ namespace Guppy.Game
             _imguiComponents = Array.Empty<IImGuiComponent>();
 
             this.Components = Array.Empty<IGuppyComponent>();
+            this.Scope = null!;
 
 
             this.Id = CalculateId(this);
@@ -58,6 +60,8 @@ namespace Guppy.Game
             {
                 component.Initialize(this);
             }
+
+            this.Scope = scope;
         }
 
         public virtual void Draw(GameTime gameTime)

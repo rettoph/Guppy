@@ -3,7 +3,6 @@
   "Name": "Guppy - MonoGame",
   "Import": {
     "en-US": [
-      "colors.json",
       "true-type-fonts.json",
       "imstyles.json"
     ]

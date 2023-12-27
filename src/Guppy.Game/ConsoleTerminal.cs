@@ -1,4 +1,5 @@
-﻿using Guppy.Game.Common;
+﻿using Guppy.Common.Helpers;
+using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using System.CommandLine.IO;
 
@@ -9,6 +10,7 @@ namespace Guppy.Game
         TextWriter ITerminal.Out => Console.Out;
 
         public Color Color { get; set; }
+
 
         public ConsoleTerminal(ITerminalTheme theme)
         {
@@ -29,7 +31,10 @@ namespace Guppy.Game
 
         public void Write(string value, Color color)
         {
-            Console.Write(value);
+            using (ConsoleHelper.ApplyForegroundColor(color))
+            {
+                Console.Write(value);
+            }
         }
 
         public void WriteLine(string value)
@@ -39,7 +44,10 @@ namespace Guppy.Game
 
         public void WriteLine(string value, Color color)
         {
-            Console.WriteLine(value);
+            using (ConsoleHelper.ApplyForegroundColor(color))
+            {
+                Console.WriteLine(value);
+            }
         }
     }
 }

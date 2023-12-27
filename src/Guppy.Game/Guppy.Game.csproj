@@ -13,6 +13,12 @@
   <ItemGroup>
     <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Guppy\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />

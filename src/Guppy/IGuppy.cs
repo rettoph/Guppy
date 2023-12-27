@@ -8,6 +8,7 @@ namespace Guppy
         string Name { get; }
 
         IGuppyComponent[] Components { get; }
+        ILifetimeScope Scope { get; }
 
         event OnEventDelegate<IDisposable>? OnDispose;
 

@@ -1,8 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Common.Collections
 {
-    public class Map<T1, T2>
+    public class Map<T1, T2> : IEnumerable<(T1, T2)>
         where T1 : notnull
         where T2 : notnull
     {
@@ -94,6 +95,19 @@ namespace Guppy.Common.Collections
         public bool TryGet(T2 key2, [MaybeNullWhen(false)] out T1 value1)
         {
             return _reverse.TryGetValue(key2, out value1);
+        }
+
+        public IEnumerator<(T1, T2)> GetEnumerator()
+        {
+            foreach (KeyValuePair<T1, T2> kvp in _forward)
+            {
+                yield return (kvp.Key, kvp.Value);
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }
