@@ -4,9 +4,6 @@
 [submodule "libraries/ImGui.NET"]
 	path = libraries/ImGui.NET
 	url = https://github.com/ImGuiNET/ImGui.NET
-[submodule "libraries/MonoGame.Extended"]
-	path = libraries/MonoGame.Extended
-	url = https://github.com/rettoph/MonoGame.Extended
 [submodule "libraries/MonoGame"]
 	path = libraries/MonoGame
 	url = https://github.com/cpt-max/MonoGame
