@@ -25,16 +25,17 @@ namespace Guppy.Network.Identity
 
         public event OnChangedEventDelegate<User, UserState> OnStateChanged;
 
-        public User(int id, params Claim[] claims) : this(id, null, claims)
+        internal User(int id, params Claim[] claims) : this(id, null, claims)
         {
 
         }
-        public User(int id, NetPeer? netPeer, params Claim[] claims)
+        internal User(int id, NetPeer? netPeer, params Claim[] claims)
         {
             this.Id = id;
             this.NetPeer = netPeer;
             this.CreatedAt = DateTime.UtcNow;
             this.State = UserState.Disconnected;
+            this.OnStateChanged = null!;
 
             _claims = claims.ToDictionary(x => x.Key);
         }
