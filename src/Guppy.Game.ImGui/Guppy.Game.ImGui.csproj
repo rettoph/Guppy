@@ -5,7 +5,23 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <RuntimeIdentifiers>win-x64;win-x86;linux-x64;linux-arm;linux-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RuntimeIdentifier)' != '' AND '$(RuntimeIdentifier)' != null ">
+    <CurrentRuntime>$(RuntimeIdentifier)</CurrentRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'Windows_NT' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ) ">
+    <CurrentRuntime>win-x64</CurrentRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ) ">
+    <CurrentRuntime>linux-x64</CurrentRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64' ) ">
+    <CurrentRuntime>linux-arm64</CurrentRuntime>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +34,9 @@
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy\Guppy.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="natives\**\*.dll" Condition=" $(RuntimeIdentifier.Contains('win')) OR ( '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'Windows_NT' )">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="natives\**\*.so" Condition=" $(RuntimeIdentifier.Contains('linux')) OR ( '$(RuntimeIdentifier)' == '' AND '$(OS)' == 'UNIX' ) ">
+  
+  <ItemGroup Condition=" '$(CurrentRuntime)' != '' AND '$(CurrentRuntime)' != null " >
+    <Content Include="natives\$(CurrentRuntime)\*" Link="natives\%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
