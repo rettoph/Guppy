@@ -61,7 +61,7 @@ namespace Guppy.Common.Collections
             return false;
         }
 
-        public ref TValue GetOrEnqueue(TKey key, out bool exists)
+        public ref TValue? GetOrEnqueue(TKey key, out bool exists)
         {
             ref TValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(_dict, key, out exists);
 
@@ -70,7 +70,7 @@ namespace Guppy.Common.Collections
                 _queue.Enqueue(key);
             }
 
-            return ref value!;
+            return ref value;
         }
 
         public void Clear()
