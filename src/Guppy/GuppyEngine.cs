@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Guppy
 {
-    public sealed class GuppyEngine
+    public class GuppyEngine
     {
         public IEnumerable<Assembly> Libraries { get; private set; }
 
