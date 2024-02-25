@@ -9,7 +9,7 @@ namespace Guppy.Network
     [AutoLoad]
     internal class PeerState : State
     {
-        private readonly NetScope? _scope;
+        private readonly INetScope? _scope;
 
         public PeerState(ILifetimeScope scope)
         {

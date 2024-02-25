@@ -14,8 +14,8 @@ namespace Guppy.Network.Identity
 
         private Dictionary<string, Claim> _claims;
 
-        public int Id { get; }
-        public NetPeer? NetPeer { get; internal set; }
+        public readonly int Id;
+        public readonly NetPeer? NetPeer;
         public DateTime CreatedAt { get; }
         public UserState State
         {

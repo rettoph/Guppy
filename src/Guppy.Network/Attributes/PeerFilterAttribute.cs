@@ -30,7 +30,7 @@ namespace Guppy.Network.Attributes
     }
 
     public class PeerTypeFilterAttribute<TPeer> : PeerFilterAttribute
-        where TPeer : Peer
+        where TPeer : IPeer
     {
         public PeerTypeFilterAttribute() : base(typeof(TPeer))
         {

@@ -10,7 +10,7 @@ namespace Guppy.Network.Services
         private readonly INetSerializerProvider _serializers;
         private readonly IEnumerable<NetMessageTypeDefinition> _definitions;
 
-        private NetScope _netScope;
+        private INetScope _scope;
         private IDictionary<byte, NetMessageType> _messageIds;
         private IDictionary<Type, NetMessageType> _messageTypes;
 
@@ -23,10 +23,10 @@ namespace Guppy.Network.Services
 
             _messageIds = default!;
             _messageTypes = default!;
-            _netScope = default!;
+            _scope = default!;
         }
 
-        void INetMessageService.Initialize(NetScope netScope)
+        void INetMessageService.Initialize(INetScope netScope)
         {
             byte id = 0;
             IList<NetMessageType> messages = _definitions.Select(definition =>
@@ -37,7 +37,7 @@ namespace Guppy.Network.Services
                     netScope: netScope);
             }).ToList();
 
-            _netScope = netScope;
+            _scope = netScope;
             _messageIds = messages.ToDictionary(x => x.Id, x => x);
             _messageTypes = messages.ToDictionary(x => x.Body, x => x);
         }
@@ -72,15 +72,13 @@ namespace Guppy.Network.Services
         public INetOutgoingMessage<T> Create<T>(in T body)
             where T : notnull
         {
+            // In an attempt to make client users have no peer attached ive broken client message sending, as this method made sure
+            // to add the server peer as a default recipient for client messages
+            // I would really like to make client/server specific implementations for this service, NetScope, and others
+
             var message = this.Get<T>().CreateOutgoing();
             message.Write(in body);
 
-            if (_netScope.Peer?.Users.Current?.NetPeer is null)
-            {
-                return message;
-            }
-
-            message.AddRecipient(_netScope.Peer!.Users.Current!.NetPeer!);
             return message;
         }
     }

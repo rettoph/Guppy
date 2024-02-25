@@ -1,7 +1,6 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Network.Providers;
 using LiteNetLib;
-using System.Runtime.CompilerServices;
 
 namespace Guppy.Network
 {
@@ -26,10 +25,10 @@ namespace Guppy.Network
     public sealed class NetMessageType<T> : NetMessageType
         where T : notnull
     {
-        private readonly NetScope _scope;
+        private readonly INetScope _scope;
         private readonly INetSerializerProvider _serializers;
-        private readonly Factory<INetIncomingMessage<T>> _incomingFactory;
-        private readonly Factory<INetOutgoingMessage<T>> _outgoingFactory;
+        private readonly Factory<NetIncomingMessage<T>> _incomingFactory;
+        private readonly Factory<NetOutgoingMessage<T>> _outgoingFactory;
 
         public NetMessageType(
             byte id,
@@ -37,20 +36,20 @@ namespace Guppy.Network
             DeliveryMethod defaultDeliveryMethod,
             byte defaultOutgoingChannel,
             INetSerializerProvider serializers,
-            NetScope scope) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
+            INetScope scope) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
         {
             _scope = scope;
             _serializers = serializers;
-            _incomingFactory = new Factory<INetIncomingMessage<T>>(this.IncomingFactoryMethod);
-            _outgoingFactory = new Factory<INetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
+            _incomingFactory = new Factory<NetIncomingMessage<T>>(this.IncomingFactoryMethod);
+            _outgoingFactory = new Factory<NetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
         }
 
-        private INetIncomingMessage<T> IncomingFactoryMethod()
+        private NetIncomingMessage<T> IncomingFactoryMethod()
         {
             return new NetIncomingMessage<T>(this, _scope, _serializers);
         }
 
-        private INetOutgoingMessage<T> OutgoingFactoryMethod()
+        private NetOutgoingMessage<T> OutgoingFactoryMethod()
         {
             return new NetOutgoingMessage<T>(this, _scope, _serializers);
         }
@@ -67,12 +66,12 @@ namespace Guppy.Network
 
         internal void Recycle(NetIncomingMessage<T> message)
         {
-            _incomingFactory.TryReturn(ref Unsafe.AsRef<INetIncomingMessage<T>>(message));
+            _incomingFactory.TryReturn(ref message);
         }
 
         internal void Recycle(NetOutgoingMessage<T> message)
         {
-            _outgoingFactory.TryReturn(ref Unsafe.AsRef<INetOutgoingMessage<T>>(message));
+            _outgoingFactory.TryReturn(ref message);
         }
     }
 }

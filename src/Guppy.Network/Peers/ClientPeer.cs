@@ -10,7 +10,7 @@ using LiteNetLib;
 
 namespace Guppy.Network.Peers
 {
-    public class ClientPeer : Peer, ISubscriber<INetIncomingMessage<UserAction>>
+    internal class ClientPeer : Peer, IClientPeer, ISubscriber<INetIncomingMessage<UserAction>>
     {
         private NetPeer? _peer;
 
@@ -26,13 +26,13 @@ namespace Guppy.Network.Peers
 
             this.Manager.Start();
 
-            this.NetScope.Bus.Subscribe(this);
+            this.NetScopeBus.Subscribe(this);
         }
 
         public void Connect(string address, int port, params Claim[] claims)
         {
-            var user = new User(-1, claims);
-            var action = user.CreateAction(UserAction.Actions.ConnectionRequest, ClaimAccessibility.Protected);
+            User user = new User(-1, claims);
+            UserAction action = user.CreateAction(UserActionTypes.ConnectionRequest, ClaimAccessibility.Protected);
 
             using (var request = this.NetScope.Messages.Create(in action))
             {
@@ -42,15 +42,25 @@ namespace Guppy.Network.Peers
 
         public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
         {
-            switch (message.Body.Action)
+            switch (message.Body.Type)
             {
-                case UserAction.Actions.Connected:
+                case UserActionTypes.Connected:
                     this.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
                     break;
-                case UserAction.Actions.CurrentUserConnected:
-                    this.Users.Current = this.Users.UpdateOrCreate(message.Body.Id, _peer, message.Body.Claims);
+                case UserActionTypes.CurrentUserConnected:
+                    this.Users.Current = this.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
                     break;
             }
+        }
+
+        protected override void Send(INetOutgoingMessage message)
+        {
+            if (message.Recipients.Count == 0)
+            {
+                _peer!.Send(message.Writer, message.OutgoingChannel, message.DeliveryMethod);
+            }
+
+            base.Send(message);
         }
     }
 }

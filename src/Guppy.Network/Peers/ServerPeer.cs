@@ -5,13 +5,13 @@ using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
-using Guppy.Network.Identity.Providers;
+using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
 using LiteNetLib;
 
 namespace Guppy.Network.Peers
 {
-    public class ServerPeer : Peer
+    internal class ServerPeer : Peer, IServerPeer
     {
         public override PeerType Type => PeerType.Server;
 
@@ -36,14 +36,14 @@ namespace Guppy.Network.Peers
             this.Manager.Start(port);
         }
 
-        private void HandleUserConnected(IUserProvider sender, User newUser)
+        private void HandleUserConnected(IUserService sender, User newUser)
         {
             this.NetScope.Users.Add(newUser);
         }
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            var scopeId = request.Data.GetByte();
+            byte scopeId = request.Data.GetByte();
 
             if (scopeId != NetScopeConstants.PeerScopeId)
             {
@@ -51,11 +51,11 @@ namespace Guppy.Network.Peers
                 throw new NotImplementedException();
             }
 
-            using (var data = this.NetScope.Messages.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
+            using (INetIncomingMessage data = this.NetScope.Messages.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
             {
                 if (data is INetIncomingMessage<UserAction> casted)
                 {
-                    var accepted = true;
+                    bool accepted = true;
 
                     if (this.ConnectionApproval is not null)
                     {
@@ -67,11 +67,11 @@ namespace Guppy.Network.Peers
 
                     if (accepted)
                     {
-                        var peer = request.Accept();
+                        NetPeer peer = request.Accept();
 
-                        var user = this.Users.UpdateOrCreate(peer.Id, peer, casted.Body.Claims);
+                        User user = this.Users.Create(peer.Id, peer, casted.Body.Claims);
 
-                        this.NetScope.Messages.Create(user.CreateAction(UserAction.Actions.CurrentUserConnected, ClaimAccessibility.Protected))
+                        this.NetScope.Messages.Create(user.CreateAction(UserActionTypes.CurrentUserConnected, ClaimAccessibility.Protected))
                             .AddRecipient(peer)
                             .Send()
                             .Recycle();

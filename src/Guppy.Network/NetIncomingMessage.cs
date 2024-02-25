@@ -8,49 +8,46 @@ namespace Guppy.Network
     internal sealed class NetIncomingMessage<T> : INetIncomingMessage<T>
         where T : notnull
     {
-        private readonly NetScope _scope;
+        private readonly INetScope _scope;
         private readonly NetMessageType<T> _type;
         private readonly INetSerializerProvider _serializers;
         private readonly INetSerializer<T> _serializer;
-        private NetPeer? _peer;
-        private T _body;
-        private byte _channel;
-        private DeliveryMethod _deliveryMethod;
 
-        T INetIncomingMessage<T>.Body => _body;
+        public T Body { get; private set; }
 
-        public byte Channel => _channel;
+        public byte Channel { get; private set; }
 
-        public DeliveryMethod DeliveryMethod => _deliveryMethod;
+        public DeliveryMethod DeliveryMethod { get; private set; }
 
-        NetMessageType<T> INetIncomingMessage<T>.Type => _type;
+        public NetMessageType<T> Type { get; private set; }
 
-        NetPeer? INetIncomingMessage.Peer => _peer!;
+        public NetPeer? Peer { get; private set; }
 
-        object INetIncomingMessage.Body => _body;
+        object INetIncomingMessage.Body => this.Body;
 
-        NetMessageType INetIncomingMessage.Type => _type;
+        NetMessageType INetIncomingMessage.Type => this.Type;
 
         Type IMessage.Type { get; } = typeof(INetIncomingMessage<T>);
 
         internal NetIncomingMessage(
             NetMessageType<T> type,
-            NetScope scope,
+            INetScope scope,
             INetSerializerProvider serializers)
         {
-            _body = default!;
             _type = type;
             _scope = scope;
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
+
+            this.Body = default!;
         }
 
         public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
         {
-            _peer = peer;
-            _body = _serializer.Deserialize(reader);
-            _channel = channel;
-            _deliveryMethod = deliveryMethod;
+            this.Peer = peer;
+            this.Body = _serializer.Deserialize(reader);
+            this.Channel = channel;
+            this.DeliveryMethod = deliveryMethod;
         }
 
         public void Recycle()
@@ -60,7 +57,7 @@ namespace Guppy.Network
 
         public INetIncomingMessage<T> Enqueue()
         {
-            _scope.Bus.Enqueue(this);
+            _scope.Enqueue(this);
 
             return this;
         }

@@ -7,39 +7,34 @@ using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
 using Guppy.Network.Peers;
 using Guppy.Network.Services;
-using System.Diagnostics;
 
 namespace Guppy.Network
 {
-    public sealed class NetScope :
+    internal sealed class NetScope :
+        INetScope,
         ISubscriber<INetOutgoingMessage>,
         ISubscriber<INetIncomingMessage<UserAction>>,
         IDisposable
     {
-        internal byte id;
+        private readonly IBus _bus;
 
-        public byte Id
-        {
-            get => this.id;
-            set => this.id = value;
-        }
-        public Peer? Peer { get; private set; }
-        public bool Bound { get; private set; }
-        public IUserService Users { get; }
+        public NetScopeState State { get; set; }
 
-        public readonly IBus Bus;
-
-        public readonly INetMessageService Messages;
+        public byte Id { get; private set; }
+        public IPeer? Peer { get; private set; }
+        public INetScopeUserService Users { get; }
+        public INetMessageService Messages { get; }
 
         public NetScope(
             INetMessageService messages,
             IBus bus)
         {
-            this.Users = new UserService();
-            this.Bus = bus;
+            _bus = bus;
+
+            this.Users = new NetScopeUserService();
             this.Messages = messages;
 
-            this.Bus.Subscribe(this);
+            _bus.Subscribe(this);
 
             this.Users.OnUserJoined += this.HandleUserJoined;
             this.Users.OnUserLeft += this.HandleUserLeft;
@@ -47,47 +42,51 @@ namespace Guppy.Network
 
         public void Dispose()
         {
-            this.Bus.Unsubscribe(this);
+            _bus.Unsubscribe(this);
 
             this.Users.OnUserJoined -= this.HandleUserJoined;
             this.Users.OnUserLeft -= this.HandleUserLeft;
 
             this.Users.Dispose();
 
-            if (this.Bound)
+            if (this.State == NetScopeState.AttachedToPeer)
             {
-                this.Peer!.Unbind(this);
+                this.Peer!.DetachNetScope(this);
             }
         }
 
-        internal void BindTo(Peer peer, byte id)
+        public void AttachPeer(IPeer peer, byte id)
         {
-            if (this.Bound == true)
+            if (this.State == NetScopeState.AttachedToPeer)
             {
-                throw new UnreachableException();
+                throw new InvalidOperationException($"{nameof(NetScope)}::{nameof(AttachPeer)} - {nameof(NetScope)} has already been bound to an {nameof(IPeer)} instance.");
+            }
+
+            if (peer.TryAttachNetScope(this, id) == false)
+            {
+                throw new Exception();
             }
 
             this.Id = id;
             this.Peer = peer;
-            this.Bound = true;
+            this.State = NetScopeState.AttachedToPeer;
             this.Messages.Initialize(this);
         }
 
-        internal void Unbind()
+        public void DetachPeer()
         {
-            if (this.Bound == false)
+            if (this.State == NetScopeState.DetachedFromPeer)
             {
-                throw new UnreachableException();
+                throw new InvalidOperationException($"{nameof(NetScope)}::{nameof(DetachPeer)} - {nameof(NetScope)} is not bound to an {nameof(IPeer)} instance.");
             }
 
-            this.Id = default;
+            this.Peer!.DetachNetScope(this);
             this.Peer = null;
-            this.Bound = false;
         }
 
         public void Process(in Guid messageId, INetOutgoingMessage message)
         {
-            message.Send();
+            this.Send(message);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
@@ -97,20 +96,20 @@ namespace Guppy.Network
                 return;
             }
 
-            var user = this.Peer.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
+            User user = this.Peer.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
 
-            switch (message.Body.Action)
+            switch (message.Body.Type)
             {
-                case UserAction.Actions.UserJoined:
+                case UserActionTypes.UserJoined:
                     this.Users.Add(user);
                     break;
-                case UserAction.Actions.UserLeft:
+                case UserActionTypes.UserLeft:
                     this.Users.Remove(user);
                     break;
             }
         }
 
-        private void HandleUserJoined(IUserService sender, User newUser)
+        private void HandleUserJoined(INetScopeUserService sender, User newUser)
         {
             if (this.Peer!.Type != PeerType.Server)
             {
@@ -118,7 +117,7 @@ namespace Guppy.Network
             }
 
             // Alert all users of the new user.
-            this.Messages.Create(newUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+            this.Messages.Create(newUser.CreateAction(UserActionTypes.UserJoined, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
 
@@ -135,22 +134,37 @@ namespace Guppy.Network
                     continue;
                 }
 
-                this.Messages.Create(oldUser.CreateAction(UserAction.Actions.UserJoined, ClaimAccessibility.Public))
+                this.Messages.Create(oldUser.CreateAction(UserActionTypes.UserJoined, ClaimAccessibility.Public))
                     .AddRecipient(newUser.NetPeer)
                     .Enqueue();
             }
         }
 
-        private void HandleUserLeft(IUserService sender, User user)
+        private void HandleUserLeft(INetScopeUserService sender, User user)
         {
             if (this.Peer!.Type != PeerType.Server)
             {
                 return;
             }
 
-            this.Messages.Create(user.CreateAction(UserAction.Actions.UserLeft, ClaimAccessibility.Public))
+            this.Messages.Create(user.CreateAction(UserActionTypes.UserLeft, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
                 .Enqueue();
+        }
+
+        public void Enqueue(INetIncomingMessage message)
+        {
+            _bus.Enqueue(message);
+        }
+
+        public void Enqueue(INetOutgoingMessage message)
+        {
+            _bus.Enqueue(message);
+        }
+
+        public void Send(INetOutgoingMessage message)
+        {
+            this.Peer!.Send(message);
         }
     }
 }

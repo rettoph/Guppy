@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Network.Enums;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Messages;
 using LiteNetLib.Utils;
@@ -13,7 +14,7 @@ namespace Guppy.Network.Serialization.NetSerializers
             var instance = new UserAction()
             {
                 Id = reader.GetInt(),
-                Action = reader.GetEnum<UserAction.Actions>(),
+                Type = reader.GetEnum<UserActionTypes>(),
                 Claims = new Claim[reader.GetInt()]
             };
 
@@ -28,7 +29,7 @@ namespace Guppy.Network.Serialization.NetSerializers
         public override void Serialize(NetDataWriter writer, in UserAction instance)
         {
             writer.Put(instance.Id);
-            writer.Put(instance.Action);
+            writer.Put(instance.Type);
             writer.Put(instance.Claims.Length);
 
             foreach (Claim claim in instance.Claims)

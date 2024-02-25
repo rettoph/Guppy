@@ -2,70 +2,69 @@
 using Guppy.Network.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using System.Collections.ObjectModel;
 
 namespace Guppy.Network
 {
     internal sealed class NetOutgoingMessage<T> : INetOutgoingMessage<T>
         where T : notnull
     {
-        private readonly NetScope _scope;
-        private readonly NetDataWriter _writer;
-        private readonly NetMessageType<T> _type;
+        private readonly INetScope _scope;
         private readonly INetSerializer<T> _serializer;
         private readonly INetSerializerProvider _serializers;
         private readonly List<NetPeer> _recipients;
-        private T _body;
-        private byte _outgoingChannel;
-        private DeliveryMethod _deliveryMethod;
 
 
-        object INetOutgoingMessage.Body => _body;
-        NetMessageType INetOutgoingMessage.Type => _type;
-        public T Body => _body;
-        public byte OutgoingChannel => _outgoingChannel;
-        public DeliveryMethod DeliveryMethod => _deliveryMethod;
-        public NetMessageType<T> Type => _type;
-        public NetDataWriter Writer => _writer;
+        object INetOutgoingMessage.Body => this.Body;
+        NetMessageType INetOutgoingMessage.Type => this.Type;
+        public T Body { get; private set; }
+        public byte OutgoingChannel { get; private set; }
+        public DeliveryMethod DeliveryMethod { get; private set; }
+        public NetMessageType<T> Type { get; }
+        public NetDataWriter Writer { get; }
 
         Type IMessage.Type { get; } = typeof(INetOutgoingMessage<T>);
 
+        public IReadOnlyList<NetPeer> Recipients { get; }
+
         internal NetOutgoingMessage(
             NetMessageType<T> type,
-            NetScope scope,
+            INetScope scope,
             INetSerializerProvider serializers)
         {
-            _body = default!;
             _scope = scope;
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
-
-            _type = type;
-
             _recipients = new List<NetPeer>();
-            _writer = new NetDataWriter();
 
-            _outgoingChannel = this.Type.DefaultOutgoingChannel;
-            _deliveryMethod = this.Type.DefaultDeliveryMethod;
+            this.Body = default!;
+            this.Type = type;
+            this.OutgoingChannel = this.Type.DefaultOutgoingChannel;
+            this.DeliveryMethod = this.Type.DefaultDeliveryMethod;
+            this.Writer = new NetDataWriter();
 
-            _writer.Put(_scope.id);
-            _writer.Put(_type.Id);
+
+            this.Recipients = new ReadOnlyCollection<NetPeer>(_recipients);
+
+            this.Writer.Put(_scope.Id);
+            this.Writer.Put(this.Type.Id);
         }
 
         public void Write(in T body)
         {
-            _body = body;
+            this.Body = body;
 
-            _serializer.Serialize(_writer, in body);
+            _serializer.Serialize(this.Writer, in body);
         }
 
         public void Recycle()
         {
-            _writer.SetPosition(1 + NetId.Byte.SizeInBytes);
+            this.Writer.SetPosition(1 + NetId.Byte.SizeInBytes);
 
             _recipients.Clear();
 
-            _outgoingChannel = this.Type.DefaultOutgoingChannel;
-            _deliveryMethod = this.Type.DefaultDeliveryMethod;
+            this.OutgoingChannel = this.Type.DefaultOutgoingChannel;
+            this.DeliveryMethod = this.Type.DefaultDeliveryMethod;
 
             this.Type.Recycle(this);
         }
@@ -86,31 +85,28 @@ namespace Guppy.Network
 
         public INetOutgoingMessage<T> SetOutgoingChannel(byte outgoingChannel)
         {
-            _outgoingChannel = outgoingChannel;
+            this.OutgoingChannel = outgoingChannel;
 
             return this;
         }
 
         public INetOutgoingMessage<T> SetDeliveryMethod(DeliveryMethod deliveryMethod)
         {
-            _deliveryMethod = deliveryMethod;
+            this.DeliveryMethod = deliveryMethod;
 
             return this;
         }
 
         public INetOutgoingMessage<T> Send()
         {
-            foreach (NetPeer recipient in _recipients)
-            {
-                recipient.Send(_writer, _outgoingChannel, _deliveryMethod);
-            }
+            _scope.Send(this);
 
             return this;
         }
 
         public INetOutgoingMessage<T> Enqueue()
         {
-            _scope.Bus.Enqueue(this);
+            _scope.Enqueue(this);
 
             return this;
         }

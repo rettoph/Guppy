@@ -1,19 +1,21 @@
-﻿using Guppy.Network.Identity.Enums;
+﻿using Guppy.Network.Identity.Claims;
+using Guppy.Network.Identity.Enums;
 using LiteNetLib;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Network.Identity.Services
 {
-    internal sealed class UserService : IUserService, IDisposable
+    public class UserService : IUserService
     {
-        private Dictionary<int, User> _users;
+        private Dictionary<int, User> _idsUsers;
+        private Dictionary<NetPeer, User> _peersUsers;
 
         public IEnumerable<NetPeer> Peers
         {
             get
             {
-                foreach (User user in _users.Values)
+                foreach (User user in _idsUsers.Values)
                 {
                     if (user.NetPeer is not null)
                     {
@@ -23,75 +25,82 @@ namespace Guppy.Network.Identity.Services
             }
         }
 
-        public event OnEventDelegate<IUserService, User>? OnUserJoined;
-        public event OnEventDelegate<IUserService, User>? OnUserLeft;
+        User? IUserService.Current { get; set; }
+
+        public event OnEventDelegate<IUserService, User>? OnUserConnected;
+        public event OnEventDelegate<IUserService, User>? OnUserDisconnected;
 
         public UserService()
         {
-            _users = new Dictionary<int, User>();
+            _idsUsers = new Dictionary<int, User>();
+            _peersUsers = new Dictionary<NetPeer, User>();
         }
-        public void Dispose()
+
+        public User GetById(int id)
         {
-            while (_users.Any())
+            return _idsUsers[id];
+        }
+
+        public User Create(int id, NetPeer? peer, params Claim[] claims)
+        {
+            User user = new User(id, peer, claims);
+            Add(user);
+
+            return user;
+        }
+
+        public User Update(int id, params Claim[] claims)
+        {
+            User user = GetById(id);
+            user.Set(claims);
+
+            return user;
+        }
+
+        public User UpdateOrCreate(int id, params Claim[] claims)
+        {
+            if (TryGet(id, out var user))
             {
-                this.Remove(_users.Values.First());
+                Update(id, claims);
+            }
+            else
+            {
+                user = new User(id, null, claims);
+                Add(user);
+            }
+
+            return user;
+        }
+
+        public void Remove(int id)
+        {
+            if (_idsUsers.Remove(id, out User? user))
+            {
+                user.State = UserState.Disconnected;
+                OnUserDisconnected?.Invoke(this, user);
             }
         }
 
         public void Add(User user)
         {
-            if (user.State != UserState.Connected)
-            {
-                return;
-            }
-
-            if (_users.TryAdd(user.Id, user))
-            {
-                user.OnStateChanged += this.HandleUserStateChanged;
-
-                this.OnUserJoined?.Invoke(this, user);
-            }
-        }
-
-        public void Remove(User user)
-        {
-            if (_users.Remove(user.Id))
-            {
-                user.OnStateChanged -= this.HandleUserStateChanged;
-
-                this.OnUserLeft?.Invoke(this, user);
-            }
-        }
-
-
-        public User Get(int id)
-        {
-            return _users[id];
+            _idsUsers.Add(user.Id, user);
+            user.State = UserState.Connected;
+            OnUserConnected?.Invoke(this, user);
         }
 
         public bool TryGet(int id, [MaybeNullWhen(false)] out User user)
         {
-            return _users.TryGetValue(id, out user);
-        }
-
-        private void HandleUserStateChanged(User sender, UserState old, UserState value)
-        {
-            if (value != UserState.Disconnected)
-            {
-                return;
-            }
-
-            this.Remove(sender);
+            return _idsUsers.TryGetValue(id, out user);
         }
 
         public IEnumerator<User> GetEnumerator()
         {
-            return _users.Values.GetEnumerator();
+            return _idsUsers.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Guppy.Network
         DeliveryMethod DeliveryMethod { get; }
         NetDataWriter Writer { get; }
         new NetMessageType Type { get; }
+        IReadOnlyList<NetPeer> Recipients { get; }
 
         INetOutgoingMessage AddRecipient(NetPeer recipient);
 

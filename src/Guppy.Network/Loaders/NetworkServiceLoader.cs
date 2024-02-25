@@ -17,9 +17,9 @@ namespace Guppy.Network.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<NetSerializerProvider>().As<INetSerializerProvider>().InstancePerLifetimeScope();
-            services.RegisterType<NetScope>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
-            services.RegisterType<ClientPeer>().SingleInstance();
-            services.RegisterType<ServerPeer>().SingleInstance();
+            services.RegisterType<NetScope>().As<INetScope>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+            services.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();
+            services.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
             services.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();
 
             services.RegisterType<PolymorphicConverter<INetId>>().As<JsonConverter>().SingleInstance();

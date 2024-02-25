@@ -5,7 +5,7 @@ namespace Guppy.Network.Services
 {
     public interface INetMessageService
     {
-        internal void Initialize(NetScope netScope);
+        internal void Initialize(INetScope netScope);
 
         NetMessageType Get(byte id);
 
