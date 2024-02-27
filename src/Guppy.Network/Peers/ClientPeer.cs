@@ -2,22 +2,19 @@
 using Guppy.Messaging;
 using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
-using Guppy.Network.Extensions.Identity;
 using Guppy.Network.Groups;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
-using Guppy.Network.Identity.Enums;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;
-using LiteNetLib;
 
 namespace Guppy.Network.Peers
 {
-    internal class ClientPeer : Peer, IClientPeer, ISubscriber<INetIncomingMessage<UserAction>>
+    internal class ClientPeer : Peer, IClientPeer, ISubscriber<INetIncomingMessage<UserAction>>, ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
     {
-        private NetPeer? _peer;
-
         public override PeerType Type => PeerType.Client;
+
+        public User? ServerUser { get; private set; }
 
         public ClientPeer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
         {
@@ -32,12 +29,19 @@ namespace Guppy.Network.Peers
 
         public void Connect(string address, int port, params Claim[] claims)
         {
-            User user = new User(-1, claims);
-            UserAction action = user.CreateAction(UserActionTypes.ConnectionRequest, ClaimAccessibility.Protected);
-
-            using (var request = this.Group.CreateMessage(in action))
+            if (this.State == Enums.PeerState.NotStarted)
             {
-                _peer = this.Manager.Connect(address, port, request.Writer);
+                this.Start();
+            }
+
+            ConnectionRequestData requestData = new ConnectionRequestData()
+            {
+                Claims = claims
+            };
+
+            using (var request = this.Group.CreateMessage(in requestData))
+            {
+                this.Manager.Connect(address, port, request.Writer);
             }
         }
 
@@ -46,10 +50,7 @@ namespace Guppy.Network.Peers
             switch (message.Body.Type)
             {
                 case UserActionTypes.Connected:
-                    this.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
-                    break;
-                case UserActionTypes.CurrentUserConnected:
-                    this.Users.Current = this.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
+                    this.Users.UpdateOrCreate(message.Body.UserDto);
                     break;
             }
         }
@@ -58,7 +59,7 @@ namespace Guppy.Network.Peers
         {
             if (message.Recipients.Count == 0)
             {
-                _peer!.Send(message.Writer, message.OutgoingChannel, message.DeliveryMethod);
+                this.ServerUser!.NetPeer!.Send(message.Writer, message.OutgoingChannel, message.DeliveryMethod);
             }
 
             base.Send(message);
@@ -67,6 +68,17 @@ namespace Guppy.Network.Peers
         protected override INetGroup GroupFactory(byte id)
         {
             return new ClientNetGroup(id, this);
+        }
+
+        public void Process(in Guid messageId, INetIncomingMessage<ConnectionRequestResponse> message)
+        {
+            if (message.Body.Type != ConnectionRequestResponseType.Accepted)
+            {
+                throw new InvalidOperationException();
+            }
+
+            this.ServerUser = this.Users.Create(message.Sender.Peer, message.Body.SystemUser!);
+            this.Users.Current = this.Users.Create(null, message.Body.CurrentUser!);
         }
     }
 }

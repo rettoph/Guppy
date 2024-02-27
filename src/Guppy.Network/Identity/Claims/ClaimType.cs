@@ -24,6 +24,7 @@ namespace Guppy.Network.Identity.Claims
             ClaimType.Register<uint>((w, v) => w.Put(v), r => r.GetUInt());
             ClaimType.Register<long>((w, v) => w.Put(v), r => r.GetLong());
             ClaimType.Register<ulong>((w, v) => w.Put(v), r => r.GetULong());
+            ClaimType.Register<UserType>((w, v) => w.Put(v), r => r.GetEnum<UserType>());
         }
 
         public static ClaimType<T> Register<T>(Action<NetDataWriter, T> netSerializer, Func<NetDataReader, T> netDeserializer)

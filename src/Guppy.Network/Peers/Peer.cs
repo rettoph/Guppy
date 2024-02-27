@@ -14,17 +14,17 @@ namespace Guppy.Network.Peers
     internal abstract class Peer : IDisposable, IPeer, IBaseSubscriber<IMessage>
     {
         private readonly IBus _bus;
-        private readonly INetScope _defaultNetScope;
 
         public readonly EventBasedNetListener Listener;
         public readonly NetManager Manager;
-        public readonly INetGroup Group;
         public abstract PeerType Type { get; }
+        public Enums.PeerState State { get; private set; }
 
         public IUserService Users { get; }
         public INetMessageService Messages { get; }
         public INetGroupService Groups { get; }
         public INetScope DefaultNetScope { get; }
+        public INetGroup Group { get; private set; }
 
         public Peer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
@@ -37,7 +37,8 @@ namespace Guppy.Network.Peers
             this.Users = new UserService();
             this.Messages = new NetMessageService(this, serializers, messages);
             this.Groups = new NetGroupService(this.GroupFactory);
-            this.Group = this.Groups.GetById(NetScopeConstants.PeerScopeId);
+            this.Group = null!;
+            this.State = Enums.PeerState.NotStarted;
 
             this.Listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
@@ -52,6 +53,10 @@ namespace Guppy.Network.Peers
         protected virtual void Start()
         {
             _bus.Subscribe(this);
+
+            this.Group = this.Groups.GetById(NetScopeConstants.PeerScopeId);
+
+            this.State = Enums.PeerState.Started;
         }
 
         public void Flush()
@@ -61,11 +66,11 @@ namespace Guppy.Network.Peers
             _bus.Flush();
         }
 
-        private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
+        private void HandleNetworkReceiveEvent(NetPeer sender, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             while (!reader.EndOfData)
             {
-                this.Messages.Read(reader, channel, deliveryMethod).Enqueue();
+                this.Messages.Read(sender, reader, channel, deliveryMethod).Enqueue();
             }
         }
 

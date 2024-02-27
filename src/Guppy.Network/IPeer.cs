@@ -7,6 +7,7 @@ namespace Guppy.Network
     public interface IPeer
     {
         PeerType Type { get; }
+        Enums.PeerState State { get; }
         IUserService Users { get; }
         INetMessageService Messages { get; }
         INetGroupService Groups { get; }

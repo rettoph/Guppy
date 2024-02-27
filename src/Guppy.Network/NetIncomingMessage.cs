@@ -12,6 +12,8 @@ namespace Guppy.Network
         private readonly INetSerializerProvider _serializers;
         private readonly INetSerializer<T> _serializer;
 
+        public ISender Sender { get; private set; }
+
         public T Body { get; private set; }
 
         public byte Channel { get; private set; }
@@ -37,18 +39,20 @@ namespace Guppy.Network
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
 
+            this.Sender = new Sender(_peer.Users);
             this.Body = default!;
             this.Group = default!;
             this.Type = type;
         }
 
-        public void Read(NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
+        public void Read(NetPeer sender, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
         {
             byte groupId = reader.GetByte();
             this.Group = _peer.Groups.GetById(groupId);
             this.Body = _serializer.Deserialize(reader);
             this.Channel = channel;
             this.DeliveryMethod = deliveryMethod;
+            this.Sender.Peer = sender;
         }
 
         public void Recycle()

@@ -1,4 +1,5 @@
 ﻿using Guppy.Network.Identity.Claims;
+using Guppy.Network.Identity.Dtos;
 using LiteNetLib;
 using System.Diagnostics.CodeAnalysis;
 
@@ -13,11 +14,16 @@ namespace Guppy.Network.Identity.Services
 
         IEnumerable<NetPeer> Peers { get; }
 
-        User Create(int id, NetPeer? peer, params Claim[] claims);
-        User Update(int id, params Claim[] claims);
-        User UpdateOrCreate(int id, params Claim[] claims);
+        internal User Create(NetPeer? peer, Claim[] claims, params Claim[] additionalClaims);
+        internal User Create(NetPeer? peer, UserDto userDto, params Claim[] additionalClaims);
+        internal User Update(int id, IEnumerable<Claim> claims);
+        User UpdateOrCreate(UserDto userDto);
+
         User GetById(int id);
         bool TryGet(int id, [MaybeNullWhen(false)] out User user);
+
+        User GetByNetPeer(NetPeer peer);
+
         void Add(User user);
         void Remove(int id);
     }

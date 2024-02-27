@@ -6,7 +6,6 @@ using Guppy.Network.Groups;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
-using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
 using Guppy.Network.Providers;
 using LiteNetLib;
@@ -17,7 +16,7 @@ namespace Guppy.Network.Peers
     {
         public override PeerType Type => PeerType.Server;
 
-        public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, INetIncomingMessage<UserAction> data);
+        public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, INetIncomingMessage<ConnectionRequestData> data);
 
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
@@ -25,15 +24,13 @@ namespace Guppy.Network.Peers
         {
             this.Listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
             this.Listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
-
-            this.Users.OnUserConnected += this.HandleUserConnected;
         }
 
         public void Start(int port, params Claim[] claims)
         {
-            base.Start();
+            this.Users.Current = this.Users.Create(null, claims, Claim.Public(UserType.Server));
 
-            this.Users.Current = this.Users.UpdateOrCreate(-1, claims);
+            base.Start();
 
             this.Manager.Start(port);
         }
@@ -43,16 +40,11 @@ namespace Guppy.Network.Peers
             return new ServerNetGroup(id, this);
         }
 
-        private void HandleUserConnected(IUserService sender, User newUser)
-        {
-            this.Group.Users.Add(newUser);
-        }
-
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            using (INetIncomingMessage data = this.Messages.Read(request.Data, 0, DeliveryMethod.ReliableOrdered))
+            using (INetIncomingMessage data = this.Messages.Read(null!, request.Data, 0, DeliveryMethod.ReliableOrdered))
             {
-                if (data is INetIncomingMessage<UserAction> casted)
+                if (data is INetIncomingMessage<ConnectionRequestData> casted)
                 {
                     bool accepted = true;
 
@@ -68,12 +60,14 @@ namespace Guppy.Network.Peers
                     {
                         NetPeer peer = request.Accept();
 
-                        User user = this.Users.Create(peer.Id, peer, casted.Body.Claims);
+                        User user = this.Users.Create(peer, casted.Body.Claims, Claim.Public(UserType.User));
 
-                        this.Group.CreateMessage(user.CreateAction(UserActionTypes.CurrentUserConnected, ClaimAccessibility.Protected))
-                            .AddRecipient(peer)
-                            .Send()
-                            .Recycle();
+                        this.Group.CreateMessage(new ConnectionRequestResponse()
+                        {
+                            Type = ConnectionRequestResponseType.Accepted,
+                            SystemUser = this.Users.Current!.ToDto(ClaimAccessibility.Public),
+                            CurrentUser = user.ToDto(ClaimAccessibility.Protected)
+                        }).AddRecipient(peer).Send().Recycle();
 
                         return;
                     }

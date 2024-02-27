@@ -44,7 +44,14 @@ namespace Guppy.Network
         void INetScope.Remove(INetGroup group)
         {
             _groups.Remove(group);
-            this.Type = _groups.Select(x => x.Peer.Type).Aggregate((t1, t2) => t1 | t2);
+            if (_groups.Count == 0)
+            {
+                this.Type = PeerType.None;
+            }
+            else
+            {
+                this.Type = _groups.Select(x => x.Peer.Type).Aggregate((t1, t2) => t1 | t2);
+            }
         }
 
         public void Process(in Guid messageId, INetOutgoingMessage message)

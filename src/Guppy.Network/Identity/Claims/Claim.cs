@@ -24,9 +24,19 @@ namespace Guppy.Network.Identity.Claims
             return new Claim<T>(key, value, accessibility);
         }
 
+        public static Claim Create<T>(T value, ClaimAccessibility accessibility)
+        {
+            return new Claim<T>(typeof(T).AssemblyQualifiedName ?? throw new Exception(), value, accessibility);
+        }
+
         public static Claim Public<T>(string key, T value)
         {
             return Claim.Create(key, value, ClaimAccessibility.Public);
+        }
+
+        public static Claim Public<T>(T value)
+        {
+            return Claim.Create(value, ClaimAccessibility.Public);
         }
 
         public static Claim Protected<T>(string key, T value)
@@ -34,9 +44,19 @@ namespace Guppy.Network.Identity.Claims
             return Claim.Create(key, value, ClaimAccessibility.Protected);
         }
 
+        public static Claim Protected<T>(T value)
+        {
+            return Claim.Create(value, ClaimAccessibility.Protected);
+        }
+
         public static Claim Private<T>(string key, T value)
         {
             return Claim.Create(key, value, ClaimAccessibility.Private);
+        }
+
+        public static Claim Private<T>(T value)
+        {
+            return Claim.Create(value, ClaimAccessibility.Private);
         }
 
         public void Serialize(NetDataWriter writer)

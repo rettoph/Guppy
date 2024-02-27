@@ -14,15 +14,15 @@ namespace Guppy.Network.Groups
         {
             base.Process(message);
 
-            User user = Peer.Users.UpdateOrCreate(message.Body.Id, message.Body.Claims);
+            User user = Peer.Users.UpdateOrCreate(message.Body.UserDto);
 
             switch (message.Body.Type)
             {
                 case UserActionTypes.UserJoined:
-                    Users.Add(user);
+                    this.Users.Add(user);
                     break;
                 case UserActionTypes.UserLeft:
-                    Users.Remove(user);
+                    this.Users.Remove(user);
                     break;
             }
         }

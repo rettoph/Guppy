@@ -8,8 +8,6 @@ namespace Guppy.Network.Identity
 {
     public class User : IEnumerable<Claim>
     {
-        public static readonly User DefaultUser = new User(0);
-
         private UserState _state;
 
         private Dictionary<string, Claim> _claims;
@@ -25,11 +23,11 @@ namespace Guppy.Network.Identity
 
         public event OnChangedEventDelegate<User, UserState> OnStateChanged;
 
-        internal User(int id, params Claim[] claims) : this(id, null, claims)
+        internal User(int id, IEnumerable<Claim> claims) : this(id, null, claims)
         {
 
         }
-        internal User(int id, NetPeer? netPeer, params Claim[] claims)
+        internal User(int id, NetPeer? netPeer, IEnumerable<Claim> claims)
         {
             this.Id = id;
             this.NetPeer = netPeer;
@@ -45,7 +43,7 @@ namespace Guppy.Network.Identity
             _claims[key] = new Claim<T>(key, value, accessibility);
         }
 
-        public void Set(params Claim[] claims)
+        public void Set(IEnumerable<Claim> claims)
         {
             foreach (Claim claim in claims)
             {

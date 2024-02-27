@@ -59,11 +59,11 @@ namespace Guppy.Network.Services
             }
         }
 
-        public INetIncomingMessage Read(NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
+        public INetIncomingMessage Read(NetPeer sender, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             byte id = reader.GetByte();
             var message = _messageIds[id].CreateIncoming();
-            message.Read(reader, ref channel, ref deliveryMethod);
+            message.Read(sender, reader, ref channel, ref deliveryMethod);
 
             return message;
         }

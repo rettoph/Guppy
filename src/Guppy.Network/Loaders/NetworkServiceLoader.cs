@@ -2,12 +2,15 @@
 using Guppy.Attributes;
 using Guppy.Common.Autofac;
 using Guppy.Loaders;
+using Guppy.Network.Constants;
 using Guppy.Network.Groups;
+using Guppy.Network.Messages;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
 using Guppy.Network.Serialization.Json;
 using Guppy.Network.Services;
 using Guppy.Resources.Serialization.Json.Converters;
+using LiteNetLib;
 using System.Text.Json.Serialization;
 
 namespace Guppy.Network.Loaders
@@ -29,6 +32,10 @@ namespace Guppy.Network.Loaders
             services.RegisterType<UShortNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
+
+            services.AddNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+            services.AddNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+            services.AddNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
         }
     }
 }

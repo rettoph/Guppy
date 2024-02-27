@@ -10,7 +10,7 @@ namespace Guppy.Network.Services
         NetMessageType<T> Get<T>()
             where T : notnull;
 
-        INetIncomingMessage Read(NetDataReader reader, byte channel, DeliveryMethod deliveryMethod);
+        INetIncomingMessage Read(NetPeer sender, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod);
 
         INetOutgoingMessage<T> Create<T>(in INetGroup group, in T body)
             where T : notnull;
