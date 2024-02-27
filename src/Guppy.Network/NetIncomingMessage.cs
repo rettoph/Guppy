@@ -8,8 +8,7 @@ namespace Guppy.Network
     internal sealed class NetIncomingMessage<T> : INetIncomingMessage<T>
         where T : notnull
     {
-        private readonly INetScope _scope;
-        private readonly NetMessageType<T> _type;
+        private readonly IPeer _peer;
         private readonly INetSerializerProvider _serializers;
         private readonly INetSerializer<T> _serializer;
 
@@ -21,7 +20,7 @@ namespace Guppy.Network
 
         public NetMessageType<T> Type { get; private set; }
 
-        public NetPeer? Peer { get; private set; }
+        public INetGroup Group { get; private set; }
 
         object INetIncomingMessage.Body => this.Body;
 
@@ -30,21 +29,23 @@ namespace Guppy.Network
         Type IMessage.Type { get; } = typeof(INetIncomingMessage<T>);
 
         internal NetIncomingMessage(
-            NetMessageType<T> type,
-            INetScope scope,
-            INetSerializerProvider serializers)
+            IPeer peer,
+            INetSerializerProvider serializers,
+            NetMessageType<T> type)
         {
-            _type = type;
-            _scope = scope;
+            _peer = peer;
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
 
             this.Body = default!;
+            this.Group = default!;
+            this.Type = type;
         }
 
-        public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
+        public void Read(NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
         {
-            this.Peer = peer;
+            byte groupId = reader.GetByte();
+            this.Group = _peer.Groups.GetById(groupId);
             this.Body = _serializer.Deserialize(reader);
             this.Channel = channel;
             this.DeliveryMethod = deliveryMethod;
@@ -52,12 +53,12 @@ namespace Guppy.Network
 
         public void Recycle()
         {
-            _type.Recycle(this);
+            this.Type.Recycle(this);
         }
 
         public INetIncomingMessage<T> Enqueue()
         {
-            _scope.Enqueue(this);
+            this.Group.Scope.Enqueue(this);
 
             return this;
         }

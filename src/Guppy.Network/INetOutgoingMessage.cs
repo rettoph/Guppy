@@ -33,7 +33,7 @@ namespace Guppy.Network
 
         new NetMessageType<T> Type { get; }
 
-        void Write(in T body);
+        void Write(in INetGroup group, in T body);
 
         new INetOutgoingMessage<T> AddRecipient(NetPeer recipient);
 

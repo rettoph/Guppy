@@ -25,7 +25,7 @@ namespace Guppy.Network
     public sealed class NetMessageType<T> : NetMessageType
         where T : notnull
     {
-        private readonly INetScope _scope;
+        private readonly IPeer _peer;
         private readonly INetSerializerProvider _serializers;
         private readonly Factory<NetIncomingMessage<T>> _incomingFactory;
         private readonly Factory<NetOutgoingMessage<T>> _outgoingFactory;
@@ -35,10 +35,10 @@ namespace Guppy.Network
             Type body,
             DeliveryMethod defaultDeliveryMethod,
             byte defaultOutgoingChannel,
-            INetSerializerProvider serializers,
-            INetScope scope) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
+            IPeer peer,
+            INetSerializerProvider serializers) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
         {
-            _scope = scope;
+            _peer = peer;
             _serializers = serializers;
             _incomingFactory = new Factory<NetIncomingMessage<T>>(this.IncomingFactoryMethod);
             _outgoingFactory = new Factory<NetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
@@ -46,12 +46,12 @@ namespace Guppy.Network
 
         private NetIncomingMessage<T> IncomingFactoryMethod()
         {
-            return new NetIncomingMessage<T>(this, _scope, _serializers);
+            return new NetIncomingMessage<T>(_peer, _serializers, this);
         }
 
         private NetOutgoingMessage<T> OutgoingFactoryMethod()
         {
-            return new NetOutgoingMessage<T>(this, _scope, _serializers);
+            return new NetOutgoingMessage<T>(_peer, _serializers, this);
         }
 
         public override INetIncomingMessage<T> CreateIncoming()

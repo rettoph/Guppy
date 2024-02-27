@@ -6,13 +6,13 @@ namespace Guppy.Network
 {
     public interface INetIncomingMessage : IMessage, INetMessage, IRecyclable
     {
-        NetPeer? Peer { get; }
+        INetGroup Group { get; }
         object Body { get; }
         byte Channel { get; }
         DeliveryMethod DeliveryMethod { get; }
         new NetMessageType Type { get; }
 
-        public void Read(NetPeer? peer, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod);
+        public void Read(NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod);
 
         INetIncomingMessage Enqueue();
     }

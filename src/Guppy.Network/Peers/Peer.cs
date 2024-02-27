@@ -2,38 +2,42 @@
 using Guppy.Common.Autofac;
 using Guppy.Messaging;
 using Guppy.Network.Constants;
+using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity.Services;
+using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib;
-using System.Collections.ObjectModel;
 
 namespace Guppy.Network.Peers
 {
-    internal abstract class Peer : IDisposable, IPeer
+    internal abstract class Peer : IDisposable, IPeer, IBaseSubscriber<IMessage>
     {
-        private readonly IDictionary<byte, INetScope> _scopes;
+        private readonly IBus _bus;
+        private readonly INetScope _defaultNetScope;
 
         public readonly EventBasedNetListener Listener;
         public readonly NetManager Manager;
-        public readonly INetScope NetScope;
-        public readonly IBus NetScopeBus;
+        public readonly INetGroup Group;
+        public abstract PeerType Type { get; }
 
         public IUserService Users { get; }
-        public abstract PeerType Type { get; }
-        public IReadOnlyDictionary<byte, INetScope> Scopes { get; }
+        public INetMessageService Messages { get; }
+        public INetGroupService Groups { get; }
+        public INetScope DefaultNetScope { get; }
 
-        public Peer(ILifetimeScope scope)
+        public Peer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
-            _scopes = new Dictionary<byte, INetScope>();
-
             ILifetimeScope innerScope = scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope);
-            this.NetScope = innerScope.Resolve<INetScope>();
-            this.NetScopeBus = innerScope.Resolve<IBus>();
+            _bus = innerScope.Resolve<IBus>();
+            this.DefaultNetScope = innerScope.Resolve<INetScope>();
 
             this.Listener = new EventBasedNetListener();
             this.Manager = new NetManager(this.Listener);
             this.Users = new UserService();
-            this.Scopes = new ReadOnlyDictionary<byte, INetScope>(_scopes);
+            this.Messages = new NetMessageService(this, serializers, messages);
+            this.Groups = new NetGroupService(this.GroupFactory);
+            this.Group = this.Groups.GetById(NetScopeConstants.PeerScopeId);
 
             this.Listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
@@ -47,52 +51,21 @@ namespace Guppy.Network.Peers
 
         protected virtual void Start()
         {
-            this.NetScope.AttachPeer(this, NetScopeConstants.PeerScopeId);
-        }
-
-        bool IPeer.TryAttachNetScope(INetScope scope, byte id)
-        {
-            if (!_scopes.TryAdd(id, scope))
-            {
-                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(IPeer.TryAttachNetScope)} - Another {nameof(Network.NetScope)} has already been bound to id '{id}'.");
-            }
-
-            return true;
-        }
-
-        void IPeer.DetachNetScope(INetScope scope)
-        {
-            if (scope.Peer != this)
-            {
-                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Unbind)} - {nameof(Network.NetScope)} is not bound to the current {nameof(Peer)}.");
-            }
-
-            if (!_scopes.Remove(scope.Id))
-            {
-                throw new InvalidOperationException($"{nameof(Peer)}::{nameof(Unbind)} - Unable to unbind {nameof(Network.NetScope)} from {nameof(Peer)}.");
-            }
-        }
-
-        public void Unbind(byte id)
-        {
-            _scopes.Remove(id);
+            _bus.Subscribe(this);
         }
 
         public void Flush()
         {
             this.Manager.PollEvents();
 
-            this.NetScopeBus.Flush();
+            _bus.Flush();
         }
 
         private void HandleNetworkReceiveEvent(NetPeer peer, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             while (!reader.EndOfData)
             {
-                byte scopeId = reader.GetByte();
-                INetScope scope = _scopes[scopeId];
-
-                scope.Messages.Read(peer, reader, channel, deliveryMethod).Enqueue();
+                this.Messages.Read(reader, channel, deliveryMethod).Enqueue();
             }
         }
 
@@ -108,5 +81,7 @@ namespace Guppy.Network.Peers
                 recipient.Send(message.Writer, message.OutgoingChannel, message.DeliveryMethod);
             }
         }
+
+        protected abstract INetGroup GroupFactory(byte id);
     }
 }

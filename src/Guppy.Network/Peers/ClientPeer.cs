@@ -1,11 +1,14 @@
 ﻿using Autofac;
 using Guppy.Messaging;
+using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
+using Guppy.Network.Groups;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Messages;
+using Guppy.Network.Providers;
 using LiteNetLib;
 
 namespace Guppy.Network.Peers
@@ -16,7 +19,7 @@ namespace Guppy.Network.Peers
 
         public override PeerType Type => PeerType.Client;
 
-        public ClientPeer(ILifetimeScope scope) : base(scope)
+        public ClientPeer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
         {
         }
 
@@ -25,8 +28,6 @@ namespace Guppy.Network.Peers
             base.Start();
 
             this.Manager.Start();
-
-            this.NetScopeBus.Subscribe(this);
         }
 
         public void Connect(string address, int port, params Claim[] claims)
@@ -34,7 +35,7 @@ namespace Guppy.Network.Peers
             User user = new User(-1, claims);
             UserAction action = user.CreateAction(UserActionTypes.ConnectionRequest, ClaimAccessibility.Protected);
 
-            using (var request = this.NetScope.Messages.Create(in action))
+            using (var request = this.Group.CreateMessage(in action))
             {
                 _peer = this.Manager.Connect(address, port, request.Writer);
             }
@@ -61,6 +62,11 @@ namespace Guppy.Network.Peers
             }
 
             base.Send(message);
+        }
+
+        protected override INetGroup GroupFactory(byte id)
+        {
+            return new ClientNetGroup(id, this);
         }
     }
 }

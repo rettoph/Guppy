@@ -9,7 +9,7 @@ namespace Guppy.Network
     internal sealed class NetOutgoingMessage<T> : INetOutgoingMessage<T>
         where T : notnull
     {
-        private readonly INetScope _scope;
+        private readonly IPeer _peer;
         private readonly INetSerializer<T> _serializer;
         private readonly INetSerializerProvider _serializers;
         private readonly List<NetPeer> _recipients;
@@ -20,6 +20,7 @@ namespace Guppy.Network
         public T Body { get; private set; }
         public byte OutgoingChannel { get; private set; }
         public DeliveryMethod DeliveryMethod { get; private set; }
+        public INetGroup Group { get; private set; }
         public NetMessageType<T> Type { get; }
         public NetDataWriter Writer { get; }
 
@@ -28,16 +29,17 @@ namespace Guppy.Network
         public IReadOnlyList<NetPeer> Recipients { get; }
 
         internal NetOutgoingMessage(
-            NetMessageType<T> type,
-            INetScope scope,
-            INetSerializerProvider serializers)
+            IPeer peer,
+            INetSerializerProvider serializers,
+            NetMessageType<T> type)
         {
-            _scope = scope;
+            _peer = peer;
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
             _recipients = new List<NetPeer>();
 
             this.Body = default!;
+            this.Group = default!;
             this.Type = type;
             this.OutgoingChannel = this.Type.DefaultOutgoingChannel;
             this.DeliveryMethod = this.Type.DefaultDeliveryMethod;
@@ -46,20 +48,21 @@ namespace Guppy.Network
 
             this.Recipients = new ReadOnlyCollection<NetPeer>(_recipients);
 
-            this.Writer.Put(_scope.Id);
             this.Writer.Put(this.Type.Id);
         }
 
-        public void Write(in T body)
+        public void Write(in INetGroup group, in T body)
         {
-            this.Body = body;
+            this.Group = group;
+            this.Writer.Put(group.Id);
 
+            this.Body = body;
             _serializer.Serialize(this.Writer, in body);
         }
 
         public void Recycle()
         {
-            this.Writer.SetPosition(1 + NetId.Byte.SizeInBytes);
+            this.Writer.SetPosition(sizeof(byte) * 1); // The message type byte
 
             _recipients.Clear();
 
@@ -99,14 +102,14 @@ namespace Guppy.Network
 
         public INetOutgoingMessage<T> Send()
         {
-            _scope.Send(this);
+            _peer.Send(this);
 
             return this;
         }
 
         public INetOutgoingMessage<T> Enqueue()
         {
-            _scope.Enqueue(this);
+            this.Group.Scope.Enqueue(this);
 
             return this;
         }

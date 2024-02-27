@@ -1,12 +1,14 @@
 ﻿using Autofac;
-using Guppy.Network.Constants;
+using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Extensions.Identity;
+using Guppy.Network.Groups;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Identity.Services;
 using Guppy.Network.Messages;
+using Guppy.Network.Providers;
 using LiteNetLib;
 
 namespace Guppy.Network.Peers
@@ -19,7 +21,7 @@ namespace Guppy.Network.Peers
 
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
-        public ServerPeer(ILifetimeScope scope) : base(scope)
+        public ServerPeer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
         {
             this.Listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
             this.Listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;
@@ -36,22 +38,19 @@ namespace Guppy.Network.Peers
             this.Manager.Start(port);
         }
 
+        protected override INetGroup GroupFactory(byte id)
+        {
+            return new ServerNetGroup(id, this);
+        }
+
         private void HandleUserConnected(IUserService sender, User newUser)
         {
-            this.NetScope.Users.Add(newUser);
+            this.Group.Users.Add(newUser);
         }
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            byte scopeId = request.Data.GetByte();
-
-            if (scopeId != NetScopeConstants.PeerScopeId)
-            {
-                // request.Reject();
-                throw new NotImplementedException();
-            }
-
-            using (INetIncomingMessage data = this.NetScope.Messages.Read(null, request.Data, 0, DeliveryMethod.ReliableOrdered))
+            using (INetIncomingMessage data = this.Messages.Read(request.Data, 0, DeliveryMethod.ReliableOrdered))
             {
                 if (data is INetIncomingMessage<UserAction> casted)
                 {
@@ -71,7 +70,7 @@ namespace Guppy.Network.Peers
 
                         User user = this.Users.Create(peer.Id, peer, casted.Body.Claims);
 
-                        this.NetScope.Messages.Create(user.CreateAction(UserActionTypes.CurrentUserConnected, ClaimAccessibility.Protected))
+                        this.Group.CreateMessage(user.CreateAction(UserActionTypes.CurrentUserConnected, ClaimAccessibility.Protected))
                             .AddRecipient(peer)
                             .Send()
                             .Recycle();

@@ -7,42 +7,41 @@ namespace Guppy.Network.Services
 {
     internal sealed class NetMessageService : INetMessageService
     {
+        private readonly IPeer _peer;
         private readonly INetSerializerProvider _serializers;
         private readonly IEnumerable<NetMessageTypeDefinition> _definitions;
 
-        private INetScope _scope;
+        private INetGroup _scope;
         private IDictionary<byte, NetMessageType> _messageIds;
         private IDictionary<Type, NetMessageType> _messageTypes;
 
         public NetMessageService(
+            IPeer peer,
             INetSerializerProvider serializers,
             IEnumerable<NetMessageTypeDefinition> definitions)
         {
+            _peer = peer;
             _serializers = serializers;
             _definitions = definitions;
 
             _messageIds = default!;
             _messageTypes = default!;
             _scope = default!;
-        }
 
-        void INetMessageService.Initialize(INetScope netScope)
-        {
             byte id = 0;
             IList<NetMessageType> messages = _definitions.Select(definition =>
             {
                 return definition.Build(
                     id: id++,
-                    serializers: _serializers,
-                    netScope: netScope);
+                    peer: _peer,
+                    serializers: _serializers);
             }).ToList();
 
-            _scope = netScope;
             _messageIds = messages.ToDictionary(x => x.Id, x => x);
             _messageTypes = messages.ToDictionary(x => x.Body, x => x);
         }
 
-        public NetMessageType Get(byte id)
+        public NetMessageType GetById(byte id)
         {
             return _messageIds[id];
         }
@@ -60,26 +59,27 @@ namespace Guppy.Network.Services
             }
         }
 
-        public INetIncomingMessage Read(NetPeer? peer, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
+        public INetIncomingMessage Read(NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             byte id = reader.GetByte();
             var message = _messageIds[id].CreateIncoming();
-            message.Read(peer, reader, ref channel, ref deliveryMethod);
+            message.Read(reader, ref channel, ref deliveryMethod);
 
             return message;
         }
 
-        public INetOutgoingMessage<T> Create<T>(in T body)
+        public INetOutgoingMessage<T> Create<T>(in INetGroup group, in T body)
             where T : notnull
         {
-            // In an attempt to make client users have no peer attached ive broken client message sending, as this method made sure
-            // to add the server peer as a default recipient for client messages
-            // I would really like to make client/server specific implementations for this service, NetScope, and others
-
             var message = this.Get<T>().CreateOutgoing();
-            message.Write(in body);
+            message.Write(in group, in body);
 
             return message;
+        }
+
+        public INetOutgoingMessage<T> Create<T>(in byte groupId, in T body) where T : notnull
+        {
+            return this.Create(_peer.Groups.GetById(groupId), in body);
         }
     }
 }

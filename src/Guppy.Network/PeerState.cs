@@ -21,19 +21,14 @@ namespace Guppy.Network
 
         public override bool Matches(object? value)
         {
-            if (_scope?.Peer is null)
+            if (_scope?.Type is null)
             {
                 return false;
             }
 
-            if (value is Type peerType)
-            {
-                return _scope.Peer.GetType().IsAssignableTo(peerType);
-            }
-
             if (value is PeerType peerTypeEnum)
             {
-                return _scope.Peer.Type == peerTypeEnum;
+                return _scope.Type.HasFlag(peerTypeEnum);
             }
 
             return false;

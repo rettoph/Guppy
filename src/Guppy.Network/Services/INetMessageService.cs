@@ -5,16 +5,17 @@ namespace Guppy.Network.Services
 {
     public interface INetMessageService
     {
-        internal void Initialize(INetScope netScope);
-
-        NetMessageType Get(byte id);
+        NetMessageType GetById(byte id);
 
         NetMessageType<T> Get<T>()
             where T : notnull;
 
-        INetIncomingMessage Read(NetPeer? peer, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod);
+        INetIncomingMessage Read(NetDataReader reader, byte channel, DeliveryMethod deliveryMethod);
 
-        INetOutgoingMessage<T> Create<T>(in T body)
+        INetOutgoingMessage<T> Create<T>(in INetGroup group, in T body)
+            where T : notnull;
+
+        INetOutgoingMessage<T> Create<T>(in byte groupId, in T body)
             where T : notnull;
     }
 }

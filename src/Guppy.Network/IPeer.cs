@@ -1,16 +1,16 @@
 ﻿using Guppy.Network.Enums;
 using Guppy.Network.Identity.Services;
+using Guppy.Network.Services;
 
-namespace Guppy.Network.Peers
+namespace Guppy.Network
 {
     public interface IPeer
     {
         PeerType Type { get; }
         IUserService Users { get; }
-        IReadOnlyDictionary<byte, INetScope> Scopes { get; }
-
-        internal bool TryAttachNetScope(INetScope scope, byte id);
-        internal void DetachNetScope(INetScope scope);
+        INetMessageService Messages { get; }
+        INetGroupService Groups { get; }
+        INetScope DefaultNetScope { get; }
 
         void Flush();
 

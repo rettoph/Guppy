@@ -2,6 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Common.Autofac;
 using Guppy.Loaders;
+using Guppy.Network.Groups;
 using Guppy.Network.Peers;
 using Guppy.Network.Providers;
 using Guppy.Network.Serialization.Json;
@@ -17,6 +18,7 @@ namespace Guppy.Network.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<NetSerializerProvider>().As<INetSerializerProvider>().InstancePerLifetimeScope();
+            services.Register<INetGroup>(ctx => ctx.Resolve<INetScope>().Groups.FirstOrDefault() ?? NotImplementedNetGroup.Instance);
             services.RegisterType<NetScope>().As<INetScope>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
             services.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();
             services.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
