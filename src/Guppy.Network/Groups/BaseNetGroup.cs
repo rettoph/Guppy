@@ -51,7 +51,7 @@ namespace Guppy.Network.Groups
 
         public INetOutgoingMessage<T> CreateMessage<T>(in T body) where T : notnull
         {
-            return Peer.Messages.Create(this, body);
+            return this.Peer.Messages.Create(this, body);
         }
 
         void INetGroup.Process(INetIncomingMessage<UserAction> message)

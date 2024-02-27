@@ -10,6 +10,8 @@ namespace Guppy.Network.Groups
     {
         public ServerNetGroup(byte id, IPeer peer) : base(id, peer)
         {
+            this.Users.Add(peer.Users.Current!);
+
             this.Users.OnUserJoined += HandleUserJoined;
             this.Users.OnUserLeft += HandleUserLeft;
         }

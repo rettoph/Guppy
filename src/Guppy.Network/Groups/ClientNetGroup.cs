@@ -14,7 +14,7 @@ namespace Guppy.Network.Groups
         {
             base.Process(message);
 
-            User user = Peer.Users.UpdateOrCreate(message.Body.UserDto);
+            User user = this.Peer.Users.UpdateOrCreate(message.Body.UserDto);
 
             switch (message.Body.Type)
             {
