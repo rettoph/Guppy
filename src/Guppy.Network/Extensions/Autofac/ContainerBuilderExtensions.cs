@@ -8,7 +8,7 @@ using LiteNetLib;
 
 namespace Autofac
 {
-    public static class IServiceCollectionExtensions
+    public static class ContainerBuilderExtensions
     {
         public static void AddNetSerializer(this ContainerBuilder services, Type netSerializerType)
         {

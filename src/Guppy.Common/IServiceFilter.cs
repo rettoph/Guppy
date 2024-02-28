@@ -1,4 +1,4 @@
-﻿using Guppy.Common.Providers;
+﻿using Autofac;
 
 namespace Guppy.Common
 {
@@ -6,6 +6,6 @@ namespace Guppy.Common
     {
         bool AppliesTo(Type type);
 
-        bool Invoke(IStateProvider state);
+        bool Invoke(ILifetimeScope scope);
     }
 }

@@ -9,18 +9,18 @@ namespace Guppy.Providers
         where TMessage : class, IMessage
         where TBroker : IBroker<TMessage>
     {
-        private readonly Lazy<TBroker> _service;
+        private readonly Lazy<TBroker> _broker;
 
-        public BulkGuppyBrokerSubscriptionProvider(Lazy<TBroker> bus)
+        public BulkGuppyBrokerSubscriptionProvider(Lazy<TBroker> broker)
         {
-            _service = bus;
+            _broker = broker;
         }
 
         public void Subscribe(IEnumerable<object> instances)
         {
             foreach (IBaseSubscriber<TMessage> subscriber in instances.OfType<IBaseSubscriber<TMessage>>())
             {
-                _service.Value.Subscribe(subscriber);
+                _broker.Value.Subscribe(subscriber);
             }
         }
 
@@ -28,7 +28,7 @@ namespace Guppy.Providers
         {
             foreach (IBaseSubscriber<TMessage> subscriber in instances.OfType<IBaseSubscriber<TMessage>>())
             {
-                _service.Value.Unsubscribe(subscriber);
+                _broker.Value.Unsubscribe(subscriber);
             }
         }
     }

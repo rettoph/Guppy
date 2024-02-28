@@ -1,7 +1,8 @@
 ﻿using Autofac;
 using Guppy.Common;
 using Guppy.Common.Extensions.Autofac;
-using Guppy.Common.Filters;
+using Guppy.StateMachine;
+using Guppy.StateMachine.Filters;
 
 namespace Guppy.Attributes
 {
@@ -18,7 +19,9 @@ namespace Guppy.Attributes
 
         protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new ServiceFilter(classType, this.GuppyType));
+            builder.RegisterFilter(new StateServiceFilter<Type>(classType, new State<Type>(
+                key: StateKey<Type>.Create<IGuppy>(),
+                value: this.GuppyType)));
         }
     }
 

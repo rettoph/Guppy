@@ -1,4 +1,5 @@
-﻿using Guppy.Common;
+﻿using Autofac;
+using Guppy.Common;
 using Guppy.Common.Providers;
 
 namespace Guppy
@@ -6,7 +7,7 @@ namespace Guppy
     internal sealed class Filtered<T> : IFiltered<T>
         where T : class
     {
-        private readonly IStateProvider _state;
+        private readonly ILifetimeScope _scope;
         private readonly IServiceFilterProvider _filters;
         private readonly Lazy<IEnumerable<T>> _unfiltered;
 
@@ -18,23 +19,23 @@ namespace Guppy
         public IEnumerable<T> Instances => _instances ??= this.GetInstances();
 
         public Filtered(
-            IStateProvider state,
+            ILifetimeScope scope,
             IServiceFilterProvider filters,
             Lazy<IEnumerable<T>> unfiltered)
         {
-            _state = state;
+            _scope = scope;
             _filters = filters;
             _unfiltered = unfiltered;
         }
 
         private T GetInstance()
         {
-            return _unfiltered.Value.First(x => _filters.Filter(_state, x));
+            return _unfiltered.Value.First(x => _filters.Filter(_scope, x));
         }
 
         private T[] GetInstances()
         {
-            return _unfiltered.Value.Where(x => _filters.Filter(_state, x)).ToArray();
+            return _unfiltered.Value.Where(x => _filters.Filter(_scope, x)).ToArray();
         }
     }
 }

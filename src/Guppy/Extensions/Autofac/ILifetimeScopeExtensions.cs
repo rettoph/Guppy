@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Common;
-using Guppy.Common.Providers;
 using Guppy.Loaders;
 
 namespace Guppy.Extensions.Autofac
@@ -31,11 +30,6 @@ namespace Guppy.Extensions.Autofac
         public static bool IsTag(this ILifetimeScope lifetimeScope, object tag)
         {
             return lifetimeScope.Tag.Equals(tag);
-        }
-
-        public static bool StateMatches(this ILifetimeScope lifetimeScope, object state)
-        {
-            return lifetimeScope.Resolve<IStateProvider>().Matches(state);
         }
     }
 }

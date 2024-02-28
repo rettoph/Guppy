@@ -1,40 +1,24 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Extensions.Autofac;
-using Guppy.Common.Filters;
 using Guppy.Network.Enums;
-using Guppy.Network.Peers;
+using Guppy.StateMachine;
+using Guppy.StateMachine.Filters;
 
 namespace Guppy.Network.Attributes
 {
     public class PeerFilterAttribute : GuppyConfigurationAttribute
     {
-        public readonly object State;
+        public readonly PeerType RequiredPeerType;
 
-        public PeerFilterAttribute(PeerType flags)
+        public PeerFilterAttribute(PeerType requiredPeerType)
         {
-            this.State = flags;
-        }
-        protected internal PeerFilterAttribute(Type type)
-        {
-            ThrowIf.Type.IsNotAssignableFrom<Peer>(type);
-
-            this.State = type;
+            this.RequiredPeerType = requiredPeerType;
         }
 
         protected override void Configure(ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new ServiceFilter(classType, this.State));
-        }
-    }
-
-    public class PeerTypeFilterAttribute<TPeer> : PeerFilterAttribute
-        where TPeer : IPeer
-    {
-        public PeerTypeFilterAttribute() : base(typeof(TPeer))
-        {
-
+            builder.RegisterFilter(new StateServiceFilter<PeerType>(classType, new State<PeerType>(this.RequiredPeerType)));
         }
     }
 }

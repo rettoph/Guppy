@@ -6,13 +6,13 @@ namespace Guppy.Providers
 {
     internal sealed class FilteredProvider : IFilteredProvider
     {
-        private readonly IStateProvider _state;
+        private readonly ILifetimeScope _scope;
         private readonly IComponentContext _context;
         private readonly IServiceFilterProvider _filters;
 
-        public FilteredProvider(IComponentContext context, IServiceFilterProvider filters, IStateProvider state)
+        public FilteredProvider(IComponentContext context, IServiceFilterProvider filters, ILifetimeScope scope)
         {
-            _state = state;
+            _scope = scope;
             _context = context;
             _filters = filters;
         }
@@ -21,7 +21,7 @@ namespace Guppy.Providers
             where T : class
         {
             return new Filtered<T>(
-                _state,
+                _scope,
                 _filters,
                 _context.Resolve<Lazy<IEnumerable<T>>>());
         }

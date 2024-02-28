@@ -1,7 +1,9 @@
-﻿namespace Guppy.Common.Providers
+﻿using Autofac;
+
+namespace Guppy.Common.Providers
 {
     public interface IServiceFilterProvider
     {
-        bool Filter(IStateProvider state, object service);
+        bool Filter(ILifetimeScope scope, object service);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Guppy.Common.Providers
+﻿using Autofac;
+
+namespace Guppy.Common.Providers
 {
     internal sealed class ServiceFilterProvider : IServiceFilterProvider
     {
@@ -6,14 +8,13 @@
         private IDictionary<Type, IServiceFilter[]> _typeFilters;
 
         public ServiceFilterProvider(
-            IStateProvider state,
             IEnumerable<IServiceFilter> filters)
         {
             _filters = filters.ToArray();
             _typeFilters = new Dictionary<Type, IServiceFilter[]>();
         }
 
-        public bool Filter(IStateProvider state, object service)
+        public bool Filter(ILifetimeScope scope, object service)
         {
             var type = service.GetType();
             if (!_typeFilters.TryGetValue(type, out var filters))
@@ -24,7 +25,7 @@
 
             foreach (var filter in filters)
             {
-                if (!filter.Invoke(state))
+                if (!filter.Invoke(scope))
                 {
                     return false;
                 }

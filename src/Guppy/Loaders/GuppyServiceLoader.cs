@@ -10,6 +10,7 @@ using Guppy.Messaging;
 using Guppy.Providers;
 using Guppy.Serialization;
 using Guppy.Services;
+using Guppy.StateMachine.Services;
 using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -39,6 +40,7 @@ namespace Guppy.Loaders
 
             services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
             services.RegisterType<BulkGuppyBrokerSubscriptionProvider<IBus, IMessage>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            services.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
 
             services.Register<ILogger>(p =>
             {

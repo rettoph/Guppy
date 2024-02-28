@@ -3,15 +3,17 @@ using Guppy.Attributes;
 using Guppy.Common.Autofac;
 using Guppy.Extensions.Autofac;
 using Guppy.Network.Enums;
+using Guppy.Providers;
+using Guppy.StateMachine;
 
 namespace Guppy.Network
 {
     [AutoLoad]
-    internal class PeerState : State
+    internal class PeerGuppyStateProvider : StateProvider
     {
         private readonly INetScope? _scope;
 
-        public PeerState(ILifetimeScope scope)
+        public PeerGuppyStateProvider(ILifetimeScope scope)
         {
             if (scope.HasTag(LifetimeScopeTags.GuppyScope))
             {
@@ -19,19 +21,9 @@ namespace Guppy.Network
             }
         }
 
-        public override bool Matches(object? value)
+        public override IEnumerable<IState> GetStates()
         {
-            if (_scope?.Type is null)
-            {
-                return false;
-            }
-
-            if (value is PeerType peerTypeEnum)
-            {
-                return _scope.Type.HasFlag(peerTypeEnum);
-            }
-
-            return false;
+            yield return new State<PeerType>(() => _scope?.Type ?? PeerType.None, (x, y) => x.HasFlag(y));
         }
     }
 }
