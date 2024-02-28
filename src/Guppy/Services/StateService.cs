@@ -6,11 +6,16 @@ namespace Guppy.Services
 {
     internal class StateService : IStateService
     {
-        private Dictionary<IStateKey, IState> _states;
+        private readonly Dictionary<IStateKey, IState> _states;
 
         public StateService(IEnumerable<IStateProvider> states)
         {
             _states = states.SelectMany(x => x.GetStates()).ToDictionary(x => x.Key, x => x);
+        }
+
+        public IEnumerable<IState> GetAll()
+        {
+            return _states.Values;
         }
 
         public bool Matches<T>(IStateKey<T> key, T? value)

@@ -3,6 +3,8 @@ namespace Guppy.StateMachine
 {
     public class StateKey<T> : IStateKey<T>, IEquatable<StateKey<T>?>
     {
+        private const string Default = nameof(Default);
+
         public Type Type { get; }
         public string Value { get; }
 
@@ -14,7 +16,7 @@ namespace Guppy.StateMachine
 
         public static StateKey<T> Create()
         {
-            return new StateKey<T>(typeof(T).AssemblyQualifiedName ?? throw new Exception());
+            return new StateKey<T>(Default);
         }
 
         public static StateKey<T> Create(string value)
@@ -24,7 +26,7 @@ namespace Guppy.StateMachine
 
         public static StateKey<T> Create<TValue>()
         {
-            return new StateKey<T>(typeof(TValue).AssemblyQualifiedName ?? throw new Exception());
+            return new StateKey<T>(typeof(TValue).Name);
         }
 
         public override bool Equals(object? obj)
