@@ -18,6 +18,11 @@ namespace Guppy.Services
             return _states.Values;
         }
 
+        public IState<T> GetByKey<T>(IStateKey<T> key)
+        {
+            return _states[key] as IState<T> ?? throw new Exception();
+        }
+
         public bool Matches<T>(IStateKey<T> key, T? value)
         {
             if (_states.TryGetValue(key, out IState? state) == false)

@@ -2,6 +2,8 @@
 {
     public interface IStateService
     {
+        IState<T> GetByKey<T>(IStateKey<T> key);
+
         IEnumerable<IState> GetAll();
 
         bool Matches<T>(IState<T> state);
