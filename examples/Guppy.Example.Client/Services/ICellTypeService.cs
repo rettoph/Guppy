@@ -4,6 +4,6 @@ namespace Guppy.Example.Client.Services
 {
     public interface ICellTypeService
     {
-        void Update(ref Cell input, ref Cell output);
+        void Update(ref CellPair cell, Grid input, Grid output);
     }
 }

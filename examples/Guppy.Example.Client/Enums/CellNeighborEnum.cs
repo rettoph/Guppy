@@ -1,0 +1,30 @@
+﻿namespace Guppy.Example.Client.Enums
+{
+    public enum CellNeighborEnum
+    {
+        UpLeft,
+        Up,
+        UpRight,
+        Left,
+        Leftx2,
+        Leftx3,
+        Leftx4,
+        Leftx5,
+        Leftx6,
+        Leftx7,
+        Leftx8,
+        Leftx9,
+        Right,
+        Rightx2,
+        Rightx3,
+        Rightx4,
+        Rightx5,
+        Rightx6,
+        Rightx7,
+        Rightx8,
+        Rightx9,
+        DownLeft,
+        Down,
+        DownRight
+    }
+}

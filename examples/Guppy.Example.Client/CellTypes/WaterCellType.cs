@@ -4,8 +4,8 @@ using Guppy.Example.Client.Enums;
 namespace Guppy.Example.Client.CellTypes
 {
     [AutoLoad]
-    internal sealed class SandCellType : BaseGravityCellType
+    internal class WaterCellType : BaseLiquidCellType
     {
-        public override CellTypeEnum Type => CellTypeEnum.Sand;
+        public override CellTypeEnum Type => CellTypeEnum.Water;
     }
 }

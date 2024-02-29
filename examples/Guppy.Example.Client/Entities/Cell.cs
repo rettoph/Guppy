@@ -1,41 +1,29 @@
-﻿using Guppy.Example.Client.Enum;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.Entities
 {
-    public unsafe struct Cell
+    public struct Cell
     {
-        public static Cell Void = new Cell()
+        public static readonly Cell Null = new Cell(-1, -1, -1)
         {
-            Type = CellTypeEnum.Void
+            Type = CellTypeEnum.Null
         };
 
-        private Cell*[] _neighbors;
-
         public readonly int Index;
-        public readonly int X;
-        public readonly int Y;
+        public readonly short X;
+        public readonly short Y;
+        public bool Awake;
         public CellTypeEnum Type;
+        public byte InactivityCount;
 
-        public ref Cell this[CellNeighborEnum neighbor]
-        {
-            get => ref Unsafe.AsRef<Cell>(_neighbors[(int)neighbor]);
-        }
-
-        public Cell(int index, int x, int y) : this()
+        public Cell(int index, short x, short y)
         {
             this.Index = index;
             this.X = x;
             this.Y = y;
+            this.Awake = false;
             this.Type = CellTypeEnum.Air;
-
-            _neighbors = new Cell*[8];
-        }
-
-        public void SetNeighbor(CellNeighborEnum neighbor, ref Cell cell)
-        {
-            _neighbors[(int)neighbor] = (Cell*)Unsafe.AsPointer<Cell>(ref cell);
+            this.InactivityCount = 0;
         }
     }
 }

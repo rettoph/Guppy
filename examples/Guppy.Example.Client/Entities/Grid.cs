@@ -1,33 +1,27 @@
-using Guppy.Attributes;
-using Guppy.Example.Client.CellTypes;
-using Guppy.Example.Client.Enum;
+using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Services;
-using Guppy.Game.Common;
-using Guppy.Game.MonoGame.Primitives;
-using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Example.Client.Entities
 {
     public class Grid
     {
+        private Cell _nullCell;
+
+        private Grid _output;
         private ICellTypeService _cellTypes;
 
-        public short Width { get; }
-        public short Height { get; }
+        public int Width { get; }
+        public int Height { get; }
         public int Length { get; }
         public Cell[] Cells { get; }
 
-        public Grid Output { get; set; }
-
-        public Grid(short width, short height, ICellTypeService cellTypes) : this(width, height, cellTypes, null)
+        public Grid(int width, int height, ICellTypeService cellTypes) : this(width, height, cellTypes, null)
         {
 
         }
 
-        private Grid(short width, short height, ICellTypeService cellTypes, Grid? grid)
+        private Grid(int width, int height, ICellTypeService cellTypes, Grid? grid)
         {
             this.Width = width;
             this.Height = height;
@@ -36,39 +30,54 @@ namespace Guppy.Example.Client.Entities
             this.Cells = new Cell[this.Width * this.Height];
             _cellTypes = cellTypes;
 
-            for (short i = 0; i < this.Cells.Length; i++)
-            {
-                this.Cells[i] = new Cell(i, i % this.Width, i / this.Height);
-
-                this.SetNeighbors(ref this.Cells[i]);
-            }
-
-            this.Output = grid ?? new Grid(width, height, cellTypes, this);
-        }
-
-        public Grid Update(GameTime gameTime)
-        {
             for (int i = 0; i < this.Cells.Length; i++)
             {
-                ref Cell input = ref this.Cells[i];
-                ref Cell output = ref this.Output.Cells[i];
+                this.Cells[i] = new Cell(i, (short)(i % this.Width), (short)(i / this.Width));
+            }
 
-                output.Type = CellTypeEnum.Air;
+            _output = grid ?? new Grid(width, height, cellTypes, this);
+        }
 
-                if (input.Type == CellTypeEnum.Air)
+        public Grid Update(GameTime gameTime, out int awake)
+        {
+            awake = 0;
+            for (int i = 0; i < this.Cells.Length; i++)
+            {
+                this.GetPair(i, out CellPair pair);
+
+                if (pair.Input.Awake == false)
                 {
+                    if (pair.Output.Type == CellTypeEnum.Air)
+                    {
+                        pair.Output.Type = pair.Input.Type;
+
+                        if (pair.Output.Awake == false)
+                        {
+                            pair.Output.InactivityCount = pair.Input.InactivityCount;
+                            pair.Output.Awake = pair.Input.Awake;
+                        }
+                    }
+
+                    pair.Input.Type = CellTypeEnum.Air;
+                    pair.Input.InactivityCount = 0;
+                    pair.Input.Awake = false;
+
                     continue;
                 }
 
-                _cellTypes.Update(ref input, ref output);
+                _cellTypes.Update(ref pair, this, _output);
+                pair.Input.Awake = false;
+                pair.Input.Type = CellTypeEnum.Air;
+                pair.Input.InactivityCount = 0;
+
+                awake++;
+                if (pair.Output.InactivityCount > 10 && pair.Output.Awake == true)
+                {
+                    pair.Output.Awake = false;
+                }
             }
 
-            return this.Output;
-        }
-
-        private void SetNeighbors(ref Cell cell)
-        {
-            cell.SetNeighbor(CellNeighborEnum.Down, ref this.GetCell(cell.X, cell.Y + 1));
+            return _output;
         }
 
         public ref Cell GetCell(int x, int y)
@@ -77,10 +86,52 @@ namespace Guppy.Example.Client.Entities
 
             if (index == -1)
             {
-                return ref Cell.Void;
+                return ref _nullCell;
             }
 
             return ref this.Cells[index];
+        }
+
+        public ref Cell GetCell(int index)
+        {
+            if (index == -1)
+            {
+                return ref _nullCell;
+            }
+
+            return ref this.Cells[index];
+        }
+
+        public void GetPair(int index, out CellPair pair)
+        {
+            CellPair.Create(this, _output, index, out pair);
+        }
+
+        public void GetPair(int x, int y, out CellPair pair)
+        {
+            int index = this.CalculateIndex(x, y);
+            CellPair.Create(this, _output, index, out pair);
+        }
+
+        public IEnumerable<int> GetCellIndices(Vector2 position, int radius)
+        {
+            int posX = (int)position.X;
+            int posY = (int)position.Y;
+            for (int x = -radius; x < radius; x++)
+            {
+                for (int y = -radius; y < radius; y++)
+                {
+                    if ((x * x) + (y * y) <= radius * radius)
+                    {
+                        Cell cell = this.GetCell(posX + x, posY + y);
+
+                        if (cell.Index != -1)
+                        {
+                            yield return cell.Index;
+                        }
+                    }
+                }
+            }
         }
 
         public int CalculateIndex(int x, int y)
@@ -95,7 +146,7 @@ namespace Guppy.Example.Client.Entities
                 return -1;
             }
 
-            return x + (y * (this.Height));
+            return x + (y * (this.Width));
         }
     }
 }

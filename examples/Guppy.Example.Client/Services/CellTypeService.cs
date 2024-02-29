@@ -1,6 +1,6 @@
 using Guppy.Example.Client.CellTypes;
 using Guppy.Example.Client.Entities;
-using Guppy.Example.Client.Enum;
+using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.Services
 {
@@ -13,9 +13,9 @@ namespace Guppy.Example.Client.Services
             _cellTypes = cellTypes.ToDictionary(x => x.Type, x => x);
         }
 
-        public void Update(ref Cell input, ref Cell output)
+        public void Update(ref CellPair cell, Grid input, Grid output)
         {
-            _cellTypes[input.Type].Update(ref input, ref output);
+            _cellTypes[cell.Input.Type].Update(ref cell, input, output);
         }
     }
 }
