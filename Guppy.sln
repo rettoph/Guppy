@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Input", "src\Gup
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.MonoGame", "src\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj", "{A9382912-A564-4F8D-8A68-1BFB01589B5D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.StateMachine", "src\Guppy.StateMachine\Guppy.StateMachine.csproj", "{63CAC941-4F76-48A5-AA9A-1C29C4133060}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Verbose|Any CPU = Debug_Verbose|Any CPU
@@ -277,6 +279,18 @@ Global
 		{A9382912-A564-4F8D-8A68-1BFB01589B5D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9382912-A564-4F8D-8A68-1BFB01589B5D}.Release|x64.ActiveCfg = Release|x64
 		{A9382912-A564-4F8D-8A68-1BFB01589B5D}.Release|x64.Build.0 = Release|x64
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug_Verbose|x64.ActiveCfg = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug_Verbose|x64.Build.0 = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Debug|x64.Build.0 = Debug|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Release|x64.ActiveCfg = Release|Any CPU
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -303,6 +317,7 @@ Global
 		{5BC4A3B4-DB7D-4B5F-BB65-EE5149C9CCBA} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 		{C520BC96-47AD-4A63-A5D4-E2AFE90C3867} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 		{A9382912-A564-4F8D-8A68-1BFB01589B5D} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
+		{63CAC941-4F76-48A5-AA9A-1C29C4133060} = {0F92B93E-89C2-42BE-87A8-27690B69E7A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}

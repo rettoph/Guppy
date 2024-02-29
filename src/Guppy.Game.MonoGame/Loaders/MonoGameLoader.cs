@@ -24,6 +24,8 @@ namespace Guppy.Game.MonoGame.Loaders
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));
+            services.RegisterGeneric(typeof(StaticPrimitiveBatch<,>));
+            services.RegisterGeneric(typeof(StaticPrimitiveBatch<>));
 
             services.RegisterInput(Inputs.ToggleDebugger, Keys.F1, new[]
             {
