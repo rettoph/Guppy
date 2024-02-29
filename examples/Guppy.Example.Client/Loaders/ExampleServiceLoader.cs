@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Attributes;
+using Guppy.Example.Client.Services;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Guppy.Loaders;
 
@@ -11,6 +12,7 @@ namespace Guppy.Example.Client.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<Camera2D>().As<Camera>().AsSelf().SingleInstance();
+            services.RegisterType<CellTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
         }
     }
 }

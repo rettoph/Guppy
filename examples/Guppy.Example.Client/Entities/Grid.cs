@@ -1,101 +1,69 @@
-﻿using Guppy.Attributes;
+using Guppy.Attributes;
 using Guppy.Example.Client.CellTypes;
 using Guppy.Example.Client.Enum;
+using Guppy.Example.Client.Services;
 using Guppy.Game.Common;
 using Guppy.Game.MonoGame.Primitives;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Example.Client.Entities
 {
-    [AutoLoad]
-    [GuppyFilter<MainGuppy>]
-    public class Grid : IGuppyComponent, IGuppyDrawable, IGuppyUpdateable
+    public class Grid
     {
-        private Cell[] _cells;
-        private float _elapsedTime;
-        private Dictionary<CellTypeEnum, ICellType> _cellTypes;
+        private ICellTypeService _cellTypes;
 
-        private readonly StaticPrimitiveBatch<VertexPositionColor> _primitiveBatch;
-        private readonly Camera2D _camera;
+        public short Width { get; }
+        public short Height { get; }
+        public int Length { get; }
+        public Cell[] Cells { get; }
 
-        public short Width { get; private set; }
-        public short Height { get; private set; }
+        public Grid Output { get; set; }
 
-        public Grid(StaticPrimitiveBatch<VertexPositionColor> primitiveBatch, Camera2D camera, IEnumerable<ICellType> cellTypes)
+        public Grid(short width, short height, ICellTypeService cellTypes) : this(width, height, cellTypes, null)
         {
-            _cells = Array.Empty<Cell>();
-            _camera = camera;
-            _primitiveBatch = primitiveBatch;
-            _cellTypes = cellTypes.ToDictionary(x => x.Type, x => x);
+
         }
 
-        public void Initialize(short width, short height)
+        private Grid(short width, short height, ICellTypeService cellTypes, Grid? grid)
         {
             this.Width = width;
             this.Height = height;
+            this.Length = this.Width * this.Height;
 
-            _cells = new Cell[this.Width * this.Height];
-            _primitiveBatch.Initialize(_cells.Length, PrimitiveType.PointList, Enumerable.Range(0, _cells.Length).Select(x => (short)x).ToArray());
+            this.Cells = new Cell[this.Width * this.Height];
+            _cellTypes = cellTypes;
 
-            for (short i = 0; i < _cells.Length; i++)
+            for (short i = 0; i < this.Cells.Length; i++)
             {
-                _cells[i] = new Cell(i, i % this.Width, i / this.Height);
-                _primitiveBatch.Vertices[i].Position = new Vector3(_cells[i].X, _cells[i].Y, 0);
+                this.Cells[i] = new Cell(i, i % this.Width, i / this.Height);
 
-                this.SetNeighbors(ref _cells[i]);
+                this.SetNeighbors(ref this.Cells[i]);
             }
 
-            for (int i = 0; i < 1000; i++)
-            {
-                int index = Random.Shared.Next(0, _cells.Length);
-                _cells[index].Type = CellTypeEnum.Sand;
-            }
+            this.Output = grid ?? new Grid(width, height, cellTypes, this);
         }
 
-        public void Initialize(IGuppy guppy)
+        public Grid Update(GameTime gameTime)
         {
-            this.Initialize(100, 100);
-        }
-
-        public void Draw(GameTime gameTime)
-        {
-            _camera.Update(gameTime);
-            for (short i = 0; i < _cells.Length; i++)
+            for (int i = 0; i < this.Cells.Length; i++)
             {
-                _primitiveBatch.Vertices[i].Color = _cells[i].Type switch
-                {
-                    CellTypeEnum.Sand => Color.SandyBrown,
-                    _ => Color.Transparent
-                };
-            }
+                ref Cell input = ref this.Cells[i];
+                ref Cell output = ref this.Output.Cells[i];
 
-            _primitiveBatch.Draw(_camera);
+                output.Type = CellTypeEnum.Air;
 
-            //_test.Begin(_camera);
-            //_test.DrawLine(new VertexPositionColor() { Position = new Vector3(0, 0, 0), Color = Color.Red }, new VertexPositionColor() { Position = new Vector3(100, 1000, 0), Color = Color.Red });
-            //_test.End();
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            if ((_elapsedTime += gameTime.ElapsedGameTime.Milliseconds) < 500)
-            {
-                return;
-            }
-            _elapsedTime -= 500;
-
-            for (int i = 0; i < _cells.Length; i++)
-            {
-                ref Cell cell = ref _cells[i];
-                if (cell.Type == CellTypeEnum.Air)
+                if (input.Type == CellTypeEnum.Air)
                 {
                     continue;
                 }
 
-                _cellTypes[cell.Type].Update(ref cell, this);
+                _cellTypes.Update(ref input, ref output);
             }
+
+            return this.Output;
         }
 
         private void SetNeighbors(ref Cell cell)
@@ -103,7 +71,7 @@ namespace Guppy.Example.Client.Entities
             cell.SetNeighbor(CellNeighborEnum.Down, ref this.GetCell(cell.X, cell.Y + 1));
         }
 
-        private ref Cell GetCell(int x, int y)
+        public ref Cell GetCell(int x, int y)
         {
             int index = this.CalculateIndex(x, y);
 
@@ -112,10 +80,10 @@ namespace Guppy.Example.Client.Entities
                 return ref Cell.Void;
             }
 
-            return ref _cells[index];
+            return ref this.Cells[index];
         }
 
-        private int CalculateIndex(int x, int y)
+        public int CalculateIndex(int x, int y)
         {
             if (x < 0 || x >= this.Width)
             {

@@ -1,5 +1,6 @@
 ﻿using Guppy.Example.Client.Enum;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Guppy.Example.Client.Entities
 {
@@ -10,7 +11,7 @@ namespace Guppy.Example.Client.Entities
             Type = CellTypeEnum.Void
         };
 
-        private Cell** _neighbors;
+        private Cell*[] _neighbors;
 
         public readonly int Index;
         public readonly int X;
@@ -28,6 +29,8 @@ namespace Guppy.Example.Client.Entities
             this.X = x;
             this.Y = y;
             this.Type = CellTypeEnum.Air;
+
+            _neighbors = new Cell*[8];
         }
 
         public void SetNeighbor(CellNeighborEnum neighbor, ref Cell cell)

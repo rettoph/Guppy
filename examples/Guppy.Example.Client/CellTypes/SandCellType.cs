@@ -9,9 +9,15 @@ namespace Guppy.Example.Client.CellTypes
     {
         public CellTypeEnum Type => CellTypeEnum.Sand;
 
-        public void Update(ref Cell cell, Grid grid)
+        public void Update(ref Cell input, ref Cell output)
         {
-            throw new NotImplementedException();
+            ref Cell down = ref output[CellNeighborEnum.Down];
+
+            if(down.Type == CellTypeEnum.Air)
+            {
+                down.Type = input.Type;
+                output.Type = CellTypeEnum.Air;
+            }
         }
     }
 }
