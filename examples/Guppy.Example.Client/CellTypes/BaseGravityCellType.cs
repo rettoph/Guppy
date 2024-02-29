@@ -12,15 +12,17 @@ namespace Guppy.Example.Client.CellTypes
             this.Displaces = displaces | CellTypeEnum.Air;
         }
 
-        protected override CellStepResult Step(ref CellPair cell, Grid input, Grid output)
+        protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
         {
-            input.GetPair(cell.Input.X + 0, cell.Input.Y + 1, out CellPair below);
-            if (below.Input.Type == CellTypeEnum.Null)
+            ref Cell below = ref output.GetCell(cell.X + 0, cell.Y + 1);
+
+            // input.GetPair(cell.Input.X + 0, cell.Input.Y + 1, out CellPair below);
+            if (below.Latest.Type == CellTypeEnum.Null)
             {
-                return this.Update(ref cell.Output, CellTypeEnum.Air, 0, output);
+                return this.Update(ref cell, CellTypeEnum.Air, 0, output);
             }
 
-            if (below.BothIn(this.Displaces))
+            if (this.Displaces.HasFlag(below.Latest.Type))
             {
                 return this.Displace(ref cell, ref below, 0, output);
             }
@@ -39,19 +41,19 @@ namespace Guppy.Example.Client.CellTypes
             return CellStepResult.Inactive;
         }
 
-        protected virtual CellStepResult Displace(ref CellPair start, ref CellPair end, byte inactivityCount, Grid grid)
+        protected virtual CellStepResult Displace(ref Cell first, ref Cell second, byte inactivityCount, Grid grid)
         {
-            CellTypeEnum placeholder = start.OutputType;
-            CellStepResult a = this.Update(ref start.Output, end.OutputType, inactivityCount, grid);
-            CellStepResult b = this.Update(ref end.Output, placeholder, inactivityCount, grid);
+            CellTypeEnum placeholder = first.Latest.Type;
+            CellStepResult a = this.Update(ref first, second.Latest.Type, inactivityCount, grid);
+            CellStepResult b = this.Update(ref second, placeholder, inactivityCount, grid);
 
             return a == CellStepResult.Active || b == CellStepResult.Active ? CellStepResult.Active : CellStepResult.Inactive;
         }
 
-        private CellStepResult TryFallSide(ref CellPair cell, Grid input, Grid output, int side)
+        private CellStepResult TryFallSide(ref Cell cell, Grid input, Grid output, int side)
         {
-            input.GetPair(cell.Input.X + side, cell.Input.Y + 1, out CellPair belowSide);
-            if (belowSide.BothIn(this.Displaces))
+            ref Cell belowSide = ref output.GetCell(cell.X + side, cell.Y + 1);
+            if (this.Displaces.HasFlag(belowSide.Latest.Type))
             {
                 return this.Displace(ref cell, ref belowSide, 0, output);
             }

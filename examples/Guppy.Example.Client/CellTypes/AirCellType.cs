@@ -9,9 +9,9 @@ namespace Guppy.Example.Client.CellTypes
     {
         public override CellTypeEnum Type => CellTypeEnum.Air;
 
-        protected override CellStepResult Step(ref CellPair cell, Grid input, Grid output)
+        protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
         {
-            return cell.Output.Type == CellTypeEnum.Air ? CellStepResult.Inactive : CellStepResult.Active;
+            return cell.Type == CellTypeEnum.Air ? CellStepResult.Inactive : CellStepResult.Active;
         }
     }
 }

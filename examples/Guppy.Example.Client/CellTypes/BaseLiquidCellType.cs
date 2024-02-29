@@ -9,48 +9,43 @@ namespace Guppy.Example.Client.CellTypes
         {
         }
 
-        protected override CellStepResult Step(ref CellPair pair, Grid input, Grid output)
+        protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
         {
-            if (base.Step(ref pair, input, output) == CellStepResult.Active)
+            if (base.Step(ref cell, input, output) == CellStepResult.Active)
             {
                 return CellStepResult.Active;
             }
 
 
             // Try to move X cells left or right
-            int side = Random.Shared.Next(0, 2) == 0 ? 1 : -1;
-            if (this.TryFlowSide(ref pair, input, output, side) == CellStepResult.Active)
+            int side = Random.Shared.Next(0, 2) == 0 ? -1 : 1;
+            if (this.TryFlowSide(ref cell, input, output, side) == CellStepResult.Active)
             {
                 return CellStepResult.Active;
             }
 
-            if (this.TryFlowSide(ref pair, input, output, side * -1) == CellStepResult.Active)
-            {
-                return CellStepResult.Active;
-            }
+            //if (this.TryFlowSide(ref cell, input, output, side * -1) == CellStepResult.Active)
+            //{
+            //    return CellStepResult.Active;
+            //}
 
             return CellStepResult.Inactive;
         }
 
-        private CellStepResult TryFlowSide(ref CellPair pair, Grid input, Grid output, int direction)
+        private CellStepResult TryFlowSide(ref Cell cell, Grid input, Grid output, int direction)
         {
-            if (pair.Input.InactivityCount == 0)
+            for (int i = 1; i < 15; i++)
             {
-                return CellStepResult.Inactive;
-            }
+                ref Cell side = ref output.GetCell(cell.X + (direction * i), cell.Y);
 
-            for (int i = 1; i < 20; i++)
-            {
-                input.GetPair(pair.Input.X + (direction * i), pair.Input.Y, out CellPair side);
-
-                if (side.Either(pair.Input.Type))
+                if ((side.Updated == true && side.Type == this.Type) || (side.Updated == false && side.Old.Type == this.Type))
                 {
                     continue;
                 }
 
-                if (side.Both(CellTypeEnum.Air))
+                if (this.Displaces.HasFlag(side.Latest.Type))
                 {
-                    return this.Update(ref side.Output, pair.Input.Type, 0, output);
+                    return this.Displace(ref cell, ref side, 0, output);
                 }
 
                 break;

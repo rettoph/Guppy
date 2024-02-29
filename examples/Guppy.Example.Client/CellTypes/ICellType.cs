@@ -10,6 +10,6 @@ namespace Guppy.Example.Client.CellTypes
     {
         CellTypeEnum Type { get; }
 
-        void Update(ref CellPair cell, Grid source, Grid output);
+        void Update(ref Cell cell, Grid old, Grid output);
     }
 }

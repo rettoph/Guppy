@@ -69,7 +69,7 @@ namespace Guppy.Example.Client.Entities
             this.SetInput(CellTypeEnum.Sand, 10);
         }
 
-        public void Initialize(int width, int height)
+        public unsafe void Initialize(int width, int height)
         {
             _grid = new Grid(width, height, _cellTypes);
 
@@ -97,7 +97,7 @@ namespace Guppy.Example.Client.Entities
             //this.Initialize(1, 10);
         }
 
-        public void Draw(GameTime gameTime)
+        public unsafe void Draw(GameTime gameTime)
         {
             _camera.Update(gameTime);
             for (int i = 0; i < _grid.Length; i++)
@@ -110,7 +110,7 @@ namespace Guppy.Example.Client.Entities
             _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X, _mouse.Position.Y, 0) * _camera.Projection);
         }
 
-        public void Update(GameTime gameTime)
+        public unsafe void Update(GameTime gameTime)
         {
             if (_lastScrollValue != _mouse.Scroll)
             {

@@ -1,12 +1,14 @@
 ﻿using Guppy.Example.Client.Enums;
+using Guppy.Example.Client.Utilities;
 
 namespace Guppy.Example.Client.Entities
 {
-    public struct Cell
+    public unsafe struct Cell : IDisposable
     {
-        public static readonly Cell Null = new Cell(-1, -1, -1)
+        public static Cell Null = new Cell(-1, -1, -1)
         {
-            Type = CellTypeEnum.Null
+            Type = CellTypeEnum.Null,
+            Updated = true,
         };
 
         public readonly int Index;
@@ -16,6 +18,10 @@ namespace Guppy.Example.Client.Entities
         public CellTypeEnum Type;
         public byte InactivityCount;
         public bool Updated;
+        public NativeArray<int> Neighbors;
+        public Cell* OldPtr;
+        public ref Cell Old => ref this.OldPtr[0];
+        public Cell Latest => this.GetLatest();
 
         public Cell(int index, short x, short y)
         {
@@ -25,6 +31,22 @@ namespace Guppy.Example.Client.Entities
             this.Awake = false;
             this.Type = CellTypeEnum.Air;
             this.InactivityCount = 0;
+            this.Neighbors = new NativeArray<int>(5);
+        }
+
+        private Cell GetLatest()
+        {
+            if (this.Updated)
+            {
+                return this;
+            }
+
+            return this.Old;
+        }
+
+        public void Dispose()
+        {
+            this.Neighbors.Dispose();
         }
     }
 }

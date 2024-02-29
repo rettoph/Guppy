@@ -13,9 +13,9 @@ namespace Guppy.Example.Client.Services
             _cellTypes = cellTypes.ToDictionary(x => x.Type, x => x);
         }
 
-        public void Update(ref CellPair cell, Grid input, Grid output)
+        public void Update(ref Cell cell, Grid old, Grid output)
         {
-            _cellTypes[cell.Input.Type].Update(ref cell, input, output);
+            _cellTypes[cell.Old.Type].Update(ref cell, old, output);
         }
     }
 }
