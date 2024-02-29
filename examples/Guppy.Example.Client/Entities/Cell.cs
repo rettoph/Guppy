@@ -15,6 +15,7 @@ namespace Guppy.Example.Client.Entities
         public bool Awake;
         public CellTypeEnum Type;
         public byte InactivityCount;
+        public bool Updated;
 
         public Cell(int index, short x, short y)
         {

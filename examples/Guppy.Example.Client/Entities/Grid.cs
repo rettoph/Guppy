@@ -41,10 +41,25 @@ namespace Guppy.Example.Client.Entities
         public Grid Update(GameTime gameTime, out int awake)
         {
             awake = 0;
-            for (int i = 0; i < this.Cells.Length; i++)
+            for (int i = 0; i < this.Cells.Length; i += 2)
             {
-                this.GetPair(i, out CellPair pair);
+                awake += this.Update(i);
+            }
 
+            for (int i = 1; i < this.Cells.Length; i += 2)
+            {
+                awake += this.Update(i);
+            }
+
+            return _output;
+        }
+
+        private int Update(int index)
+        {
+            this.GetPair(index, out CellPair pair);
+
+            try
+            {
                 if (pair.Input.Awake == false)
                 {
                     if (pair.Output.Type == CellTypeEnum.Air)
@@ -58,26 +73,22 @@ namespace Guppy.Example.Client.Entities
                         }
                     }
 
-                    pair.Input.Type = CellTypeEnum.Air;
-                    pair.Input.InactivityCount = 0;
-                    pair.Input.Awake = false;
-
-                    continue;
+                    return 0;
                 }
 
                 _cellTypes.Update(ref pair, this, _output);
+
+                return 1;
+            }
+            finally
+            {
+                pair.Input.Updated = false;
                 pair.Input.Awake = false;
                 pair.Input.Type = CellTypeEnum.Air;
                 pair.Input.InactivityCount = 0;
 
-                awake++;
-                if (pair.Output.InactivityCount > 10 && pair.Output.Awake == true)
-                {
-                    pair.Output.Awake = false;
-                }
+                pair.Output.Updated = true;
             }
-
-            return _output;
         }
 
         public ref Cell GetCell(int x, int y)

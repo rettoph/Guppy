@@ -5,6 +5,10 @@ namespace Guppy.Example.Client.CellTypes
 {
     internal abstract class BaseLiquidCellType : BaseGravityCellType
     {
+        protected BaseLiquidCellType(CellTypeEnum displaces) : base(displaces)
+        {
+        }
+
         protected override CellStepResult Step(ref CellPair pair, Grid input, Grid output)
         {
             if (base.Step(ref pair, input, output) == CellStepResult.Active)
@@ -20,6 +24,11 @@ namespace Guppy.Example.Client.CellTypes
                 return CellStepResult.Active;
             }
 
+            if (this.TryFlowSide(ref pair, input, output, side * -1) == CellStepResult.Active)
+            {
+                return CellStepResult.Active;
+            }
+
             return CellStepResult.Inactive;
         }
 
@@ -30,35 +39,24 @@ namespace Guppy.Example.Client.CellTypes
                 return CellStepResult.Inactive;
             }
 
-            int? openIndex = null;
-            int yRadius = 0;
-
             for (int i = 1; i < 20; i++)
             {
-                yRadius++;
                 input.GetPair(pair.Input.X + (direction * i), pair.Input.Y, out CellPair side);
 
-                if (
-                       (side.Input.Type != CellTypeEnum.Air && side.Input.Type != pair.Input.Type)
-                    || (side.Output.Type != CellTypeEnum.Air && side.Output.Type != pair.Input.Type)
-                )
+                if (side.Either(pair.Input.Type))
                 {
-                    break;
+                    continue;
                 }
 
                 if (side.Both(CellTypeEnum.Air))
                 {
-                    openIndex = side.Output.Index;
+                    return this.Update(ref side.Output, pair.Input.Type, 0, output);
                 }
 
-            }
+                break;
+            };
 
-            if (openIndex.HasValue == false)
-            {
-                return CellStepResult.Inactive;
-            }
-
-            return this.Update(ref output.Cells[openIndex.Value], pair.Input.Type, 0, output);
+            return CellStepResult.Inactive;
         }
     }
 }

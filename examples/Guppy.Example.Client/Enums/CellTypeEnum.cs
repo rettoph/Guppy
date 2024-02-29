@@ -1,10 +1,12 @@
 ﻿namespace Guppy.Example.Client.Enums
 {
-    public enum CellTypeEnum : byte
+    [Flags]
+    public enum CellTypeEnum
     {
-        Null,
-        Air,
-        Sand,
-        Water
+        Null = 0,
+        Air = 1,
+        Sand = 2,
+        Water = 4,
+        Concrete = 8
     }
 }

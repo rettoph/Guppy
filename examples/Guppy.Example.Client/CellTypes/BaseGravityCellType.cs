@@ -5,50 +5,24 @@ namespace Guppy.Example.Client.CellTypes
 {
     internal abstract class BaseGravityCellType : BaseCellType
     {
-        // public void Update(ref Cell input, Grid output)
-        // {
-        //     if (this.Step(ref input, output) == false)
-        //     {
-        //         ref Cell outputCell = ref output.Cells[input.Index];
-        // 
-        //         outputCell.Update(input.Type);
-        //     }
-        // }
-        // 
-        // protected virtual bool Step(ref Cell input, Grid output)
-        // {
-        //     // Try to move 1 cell down
-        //     ref Cell belowInput = ref input.GetNeighbor(0, 1);
-        //     ref Cell belowOutput = ref output.GetCell(belowInput.Index);
-        //     if (belowInput.Type == CellTypeEnum.Air && belowOutput.Type == CellTypeEnum.Air)
-        //     {
-        //         output.Cells[input.Index].Update(CellTypeEnum.Air);
-        //         belowOutput.Update(input.Type);
-        // 
-        //         return true;
-        //     }
-        // 
-        //     // Try to move one cell down left/right
-        //     int belowSide = Random.Shared.Next(0, 2) == 0 ? -1 : 1;
-        //     ref Cell belowSideInput = ref input.GetNeighbor(belowSide, 1);
-        //     ref Cell belowSideOutout = ref output.GetCell(belowSideInput.Index);
-        //     if (belowSideInput.Type == CellTypeEnum.Air && belowSideOutout.Type == CellTypeEnum.Air)
-        //     {
-        //         output.Cells[input.Index].Update(CellTypeEnum.Air);
-        //         belowSideOutout.Update(input.Type);
-        // 
-        //         return true;
-        //     }
-        // 
-        //     return false;
-        // }
+        public CellTypeEnum Displaces { get; set; }
+
+        protected BaseGravityCellType(CellTypeEnum displaces)
+        {
+            this.Displaces = displaces | CellTypeEnum.Air;
+        }
 
         protected override CellStepResult Step(ref CellPair cell, Grid input, Grid output)
         {
             input.GetPair(cell.Input.X + 0, cell.Input.Y + 1, out CellPair below);
-            if (below.Both(CellTypeEnum.Air))
+            if (below.Input.Type == CellTypeEnum.Null)
             {
-                return this.Update(ref below.Output, cell.Input.Type, 0, output);
+                return this.Update(ref cell.Output, CellTypeEnum.Air, 0, output);
+            }
+
+            if (below.BothIn(this.Displaces))
+            {
+                return this.Displace(ref cell, ref below, 0, output);
             }
 
             int belowSide = Random.Shared.Next(0, 2) == 0 ? -1 : 1;
@@ -65,12 +39,21 @@ namespace Guppy.Example.Client.CellTypes
             return CellStepResult.Inactive;
         }
 
+        protected virtual CellStepResult Displace(ref CellPair start, ref CellPair end, byte inactivityCount, Grid grid)
+        {
+            CellTypeEnum placeholder = start.OutputType;
+            CellStepResult a = this.Update(ref start.Output, end.OutputType, inactivityCount, grid);
+            CellStepResult b = this.Update(ref end.Output, placeholder, inactivityCount, grid);
+
+            return a == CellStepResult.Active || b == CellStepResult.Active ? CellStepResult.Active : CellStepResult.Inactive;
+        }
+
         private CellStepResult TryFallSide(ref CellPair cell, Grid input, Grid output, int side)
         {
             input.GetPair(cell.Input.X + side, cell.Input.Y + 1, out CellPair belowSide);
-            if (belowSide.Both(CellTypeEnum.Air))
+            if (belowSide.BothIn(this.Displaces))
             {
-                return this.Update(ref belowSide.Output, cell.Input.Type, 0, output);
+                return this.Displace(ref cell, ref belowSide, 0, output);
             }
 
             return CellStepResult.Inactive;

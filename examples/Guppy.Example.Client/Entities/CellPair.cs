@@ -7,6 +7,8 @@ namespace Guppy.Example.Client.Entities
         public readonly ref Cell Input;
         public readonly ref Cell Output;
 
+        public CellTypeEnum OutputType => this.Output.Updated ? this.Output.Type : this.Input.Type;
+
         private CellPair(ref Cell input, ref Cell output)
         {
             this.Input = ref input;
@@ -21,6 +23,12 @@ namespace Guppy.Example.Client.Entities
         public bool Both(CellTypeEnum type)
         {
             return this.Input.Type == type && this.Output.Type == type;
+        }
+
+        public bool BothIn(CellTypeEnum flags)
+        {
+            bool result = flags.HasFlag(this.Input.Type) && flags.HasFlag(this.Output.Type);
+            return result;
         }
 
         public static void Create(Grid input, Grid output, int index, out CellPair pair)

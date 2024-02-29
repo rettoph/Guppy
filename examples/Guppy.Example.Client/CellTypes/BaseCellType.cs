@@ -5,10 +5,21 @@ namespace Guppy.Example.Client.CellTypes
 {
     internal abstract class BaseCellType : ICellType
     {
+        protected BaseCellType(int maxInactivityCount = 10)
+        {
+            this.MaxInactivityCount = maxInactivityCount;
+        }
+
         public abstract CellTypeEnum Type { get; }
+        public int MaxInactivityCount { get; set; }
 
         public void Update(ref CellPair cell, Grid input, Grid output)
         {
+            if (cell.Output.Updated)
+            {
+                return;
+            }
+
             if (this.Step(ref cell, input, output) == CellStepResult.Inactive)
             {
                 cell.Output.Type = cell.Input.Type;
@@ -19,13 +30,24 @@ namespace Guppy.Example.Client.CellTypes
             {
                 this.WakeupNearbyCells(ref cell.Output, output);
             }
+
+            if (cell.Output.InactivityCount > 10 && cell.Output.Awake == true)
+            {
+                cell.Output.Awake = false;
+            }
         }
 
         protected virtual CellStepResult Update(ref Cell cell, CellTypeEnum type, byte inactivityCount, Grid grid)
         {
+            if (cell.Type == CellTypeEnum.Null || type == CellTypeEnum.Null)
+            {
+                return CellStepResult.Inactive;
+            }
+
             cell.Type = type;
             cell.InactivityCount = inactivityCount;
             cell.Awake = true;
+            cell.Updated = true;
 
             if (inactivityCount == 0)
             {

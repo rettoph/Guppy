@@ -28,6 +28,14 @@ namespace Guppy.Example.Client.Entities
         private Grid _grid;
         private double _elapsedTime;
         private int _awake;
+        private int _inputTypeIndex;
+        private CellTypeEnum[] _inputTypes = new[]
+        {
+            CellTypeEnum.Sand,
+            CellTypeEnum.Water,
+            CellTypeEnum.Concrete,
+            CellTypeEnum.Air
+        };
 
         private readonly StaticPrimitiveBatch<VertexPositionColor> _inputBatch;
         private readonly PointPrimitiveBatch<VertexPositionColor> _gridBatch;
@@ -106,7 +114,8 @@ namespace Guppy.Example.Client.Entities
         {
             if (_lastScrollValue != _mouse.Scroll)
             {
-                this.SetInput(_inputCellType == CellTypeEnum.Sand ? CellTypeEnum.Water : CellTypeEnum.Sand, 10);
+                CellTypeEnum inputType = _inputTypes[(_inputTypeIndex++ % _inputTypes.Length)];
+                this.SetInput(inputType, 10);
             }
 
             _lastScrollValue = _mouse.Scroll;
@@ -121,6 +130,11 @@ namespace Guppy.Example.Client.Entities
 
             if (_inputActive)
             {
+                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius + 1))
+                {
+                    _grid.Cells[index].Awake = true;
+                }
+
                 foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius))
                 {
                     _grid.Cells[index].Type = _inputCellType;
@@ -153,6 +167,7 @@ namespace Guppy.Example.Client.Entities
             {
                 CellTypeEnum.Sand => Color.SandyBrown,
                 CellTypeEnum.Water => Color.Blue,
+                CellTypeEnum.Concrete => Color.Gray,
                 _ => Color.Transparent
             };
         }
