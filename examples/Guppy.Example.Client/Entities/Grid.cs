@@ -28,8 +28,8 @@ namespace Guppy.Example.Client.Entities
         {
             _cellTypes = cellTypes;
 
-            this.Width = width;
-            this.Height = height;
+            this.Width = width + (width % 2);
+            this.Height = height + (height % 2);
             this.Length = this.Width * this.Height;
 
             this.Cells = (Cell*)Marshal.AllocHGlobal(this.Length * sizeof(Cell));
@@ -56,6 +56,7 @@ namespace Guppy.Example.Client.Entities
             {
                 return;
             }
+            _disposed = true;
 
             _output.Dispose();
 
@@ -244,9 +245,14 @@ namespace Guppy.Example.Client.Entities
                 }
             }
 
-            if (_cellUpdateOrder.Any(x => x == -1) || _cellUpdateOrder.Distinct().Count() != _cellUpdateOrder.Length)
+            if (_cellUpdateOrder.Any(x => x == -1))
             {
                 throw new Exception();
+            }
+
+            if(_cellUpdateOrder.Distinct().Count() != _cellUpdateOrder.Length)
+            {
+                var test = _cellUpdateOrder.GroupBy(x => x).OrderByDescending(x => x.Count()).ToArray();
             }
         }
     }

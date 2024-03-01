@@ -21,6 +21,7 @@ namespace Guppy.Example.Client.Entities
     {
         private const int InputIndicatorVertices = 30;
 
+        private RenderTarget2D _renderTarget;
         private int _lastScrollValue;
         private CellTypeEnum _inputCellType;
         private bool _inputActive;
@@ -44,17 +45,31 @@ namespace Guppy.Example.Client.Entities
         private readonly GameWindow _window;
         private readonly ICursor _mouse;
         private readonly IImGui _imgui;
+        private readonly GraphicsDevice _graphics;
+        private readonly SpriteBatch _spriteBatch;
 
-        public World(IImGui imgui, ICursorProvider cursors, PointPrimitiveBatch<VertexPositionColor> gridBatch, StaticPrimitiveBatch<VertexPositionColor> primitiveBatch, Camera2D camera, ICellTypeService cellTypes, GameWindow window)
+        public World(
+            SpriteBatch spriteBatch,
+            GraphicsDevice graphics,
+            IImGui imgui, 
+            ICursorProvider cursors, 
+            PointPrimitiveBatch<VertexPositionColor> gridBatch, 
+            StaticPrimitiveBatch<VertexPositionColor> primitiveBatch, 
+            Camera2D camera, 
+            ICellTypeService cellTypes, 
+            GameWindow window)
         {
             _imgui = imgui;
             _grid = null!;
+            _renderTarget = null!;
             _camera = camera;
             _gridBatch = gridBatch;
             _inputBatch = primitiveBatch;
             _cellTypes = cellTypes;
             _window = window;
             _mouse = cursors.Get(Cursors.Mouse);
+            _graphics = graphics;
+            _spriteBatch = spriteBatch;
 
             _camera.Center = false;
             _window.ClientSizeChanged += this.HandleClientSizeChanged;
@@ -71,6 +86,9 @@ namespace Guppy.Example.Client.Entities
 
         public unsafe void Initialize(int width, int height)
         {
+            _grid?.Dispose();
+            _renderTarget?.Dispose();
+
             _grid = new Grid(width, height, _cellTypes);
 
             _gridBatch.Initialize(_grid.Length);
@@ -89,16 +107,19 @@ namespace Guppy.Example.Client.Entities
 
             _grid.Cells[0].Type = CellTypeEnum.Sand;
             _grid.Cells[0].Awake = true;
+
+            _renderTarget = new RenderTarget2D(_graphics, width, height);
         }
 
         public void Initialize(IGuppy guppy)
         {
-            this.Initialize(_window.ClientBounds.Width, _window.ClientBounds.Height);
+            this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
             //this.Initialize(1, 10);
         }
 
         public unsafe void Draw(GameTime gameTime)
         {
+            _graphics.SetRenderTarget(_renderTarget);
             _camera.Update(gameTime);
             for (int i = 0; i < _grid.Length; i++)
             {
@@ -107,7 +128,13 @@ namespace Guppy.Example.Client.Entities
 
             _gridBatch.Draw(_camera);
 
-            _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X, _mouse.Position.Y, 0) * _camera.Projection);
+            _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X / 2, _mouse.Position.Y / 2, 0) * _camera.Projection);
+        
+            _graphics.SetRenderTarget(null);
+
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_renderTarget, _graphics.Viewport.Bounds, Color.White);
+            _spriteBatch.End();
         }
 
         public unsafe void Update(GameTime gameTime)
@@ -130,12 +157,12 @@ namespace Guppy.Example.Client.Entities
 
             if (_inputActive)
             {
-                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius + 1))
+                foreach (int index in _grid.GetCellIndices(_mouse.Position / 2, _inputRadius + 1))
                 {
                     _grid.Cells[index].Awake = true;
                 }
 
-                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius))
+                foreach (int index in _grid.GetCellIndices(_mouse.Position / 2, _inputRadius))
                 {
                     _grid.Cells[index].Type = _inputCellType;
                     _grid.Cells[index].InactivityCount = 0;
@@ -179,7 +206,7 @@ namespace Guppy.Example.Client.Entities
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
         {
-            this.Initialize(_window.ClientBounds.Width, _window.ClientBounds.Height);
+            this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
         }
 
         public void RenderDebugInfo(GameTime gameTime)
