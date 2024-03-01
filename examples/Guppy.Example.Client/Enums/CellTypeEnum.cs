@@ -7,6 +7,7 @@
         Air = 1,
         Sand = 2,
         Water = 4,
-        Concrete = 8
+        Concrete = 8,
+        Plant = 16
     }
 }

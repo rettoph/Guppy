@@ -35,6 +35,7 @@ namespace Guppy.Example.Client.Entities
             CellTypeEnum.Sand,
             CellTypeEnum.Water,
             CellTypeEnum.Concrete,
+            CellTypeEnum.Plant,
             CellTypeEnum.Air
         };
 
@@ -195,6 +196,7 @@ namespace Guppy.Example.Client.Entities
                 CellTypeEnum.Sand => Color.SandyBrown,
                 CellTypeEnum.Water => Color.Blue,
                 CellTypeEnum.Concrete => Color.Gray,
+                CellTypeEnum.Plant => Color.Green,
                 _ => Color.Transparent
             };
         }
