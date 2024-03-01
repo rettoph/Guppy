@@ -106,10 +106,7 @@ namespace Guppy.Example.Client.Entities
             }
             finally
             {
-                if (cell.Old.Type == CellTypeEnum.Null)
-                {
-
-                }
+                cell.Old.Displaced = false;
                 cell.Old.Updated = false;
                 cell.Old.Awake = false;
                 cell.Old.Type = CellTypeEnum.Air;

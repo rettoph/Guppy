@@ -43,7 +43,7 @@ namespace Guppy.Example.Client.CellTypes
                     continue;
                 }
 
-                if (this.Displaces.HasFlag(side.Latest.Type))
+                if (this.CanDisplace(ref side))
                 {
                     return this.Displace(ref cell, ref side, 0, output);
                 }

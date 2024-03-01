@@ -22,7 +22,7 @@ namespace Guppy.Example.Client.CellTypes
                 return this.Update(ref cell, CellTypeEnum.Air, 0, output);
             }
 
-            if (this.Displaces.HasFlag(below.Latest.Type))
+            if (this.CanDisplace(ref below))
             {
                 return this.Displace(ref cell, ref below, 0, output);
             }
@@ -44,16 +44,25 @@ namespace Guppy.Example.Client.CellTypes
         protected virtual CellStepResult Displace(ref Cell first, ref Cell second, byte inactivityCount, Grid grid)
         {
             CellTypeEnum placeholder = first.Latest.Type;
+
             CellStepResult a = this.Update(ref first, second.Latest.Type, inactivityCount, grid);
+            first.Displaced = true;
+
             CellStepResult b = this.Update(ref second, placeholder, inactivityCount, grid);
+            second.Displaced = true;
 
             return a == CellStepResult.Active || b == CellStepResult.Active ? CellStepResult.Active : CellStepResult.Inactive;
+        }
+
+        protected bool CanDisplace(ref Cell cell)
+        {
+            return (cell.Displaced == false || cell.Type == CellTypeEnum.Air) && this.Displaces.HasFlag(cell.Latest.Type);
         }
 
         private CellStepResult TryFallSide(ref Cell cell, Grid input, Grid output, int side)
         {
             ref Cell belowSide = ref output.GetCell(cell.X + side, cell.Y + 1);
-            if (this.Displaces.HasFlag(belowSide.Latest.Type))
+            if (this.CanDisplace(ref belowSide))
             {
                 return this.Displace(ref cell, ref belowSide, 0, output);
             }

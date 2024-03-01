@@ -14,14 +14,16 @@ namespace Guppy.Example.Client.Entities
         public readonly int Index;
         public readonly short X;
         public readonly short Y;
-        public bool Awake;
         public CellTypeEnum Type;
         public byte InactivityCount;
-        public bool Updated;
         public NativeArray<int> Neighbors;
         public Cell* OldPtr;
         public ref Cell Old => ref this.OldPtr[0];
         public Cell Latest => this.GetLatest();
+
+        public bool Awake;
+        public bool Updated;
+        public bool Displaced;
 
         public Cell(int index, short x, short y)
         {
