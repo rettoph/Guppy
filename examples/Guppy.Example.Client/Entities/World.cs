@@ -17,7 +17,9 @@ namespace Guppy.Example.Client.Entities
 {
     [AutoLoad]
     [GuppyFilter<MainGuppy>]
-    public class World : IGuppyComponent, IGuppyDrawable, IGuppyUpdateable, IInputSubscriber<PlaceSandInput>, IDebugComponent
+    public class World : IGuppyComponent, IGuppyDrawable, IGuppyUpdateable, IDebugComponent,
+        IInputSubscriber<PlaceSandInput>,
+        IInputSubscriber<SelectCellTypeInput>
     {
         private const int InputIndicatorVertices = 30;
 
@@ -204,6 +206,11 @@ namespace Guppy.Example.Client.Entities
         public void Process(in Guid messageId, PlaceSandInput message)
         {
             _inputActive = message.Active;
+        }
+
+        public void Process(in Guid messageId, SelectCellTypeInput message)
+        {
+            this.SetInput(message.Type, _inputRadius);
         }
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
