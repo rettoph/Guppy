@@ -30,6 +30,7 @@ namespace Guppy.Common.Providers
                 return;
             }
 
+            _assemblies.Add(assembly);
             Console.WriteLine($"{new string('\t', depth)}Loading: {assembly.FullName}...");
 
             // Recersively attempt to load all references assemblies as well...
@@ -48,6 +49,11 @@ namespace Guppy.Common.Providers
             if (forced)
             {
                 return _assemblies.Add(assembly);
+            }
+
+            if (_assemblies.Contains(assembly))
+            {
+                return false;
             }
 
             if (this.Libraries.Length == 0)

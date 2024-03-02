@@ -17,7 +17,13 @@ namespace Guppy.Game.MonoGame
         // [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         // public static extern void SDL_MaximizeWindow(IntPtr window);
 
-        public GuppyMonoGame(string company, string name, IEnumerable<Assembly>? libraries = null) : this(new GuppyEngine(company, name, libraries))
+        public GuppyMonoGame(string company, string name, IEnumerable<Assembly>? libraries = null) : this(
+            engine: new GuppyEngine(
+                company: company,
+                name: name,
+                libraries: (libraries ?? Enumerable.Empty<Assembly>()).Concat(typeof(GuppyMonoGame).Assembly)
+            )
+        )
         {
 
         }
