@@ -47,6 +47,11 @@ namespace Guppy.Example.Client.Loaders
                 (true, new SelectCellTypeInput(Enums.CellTypeEnum.Concrete)),
             });
 
+            services.RegisterInput("SelectCellType_05", Keys.D5, new[]
+{
+                (true, new SelectCellTypeInput(Enums.CellTypeEnum.Fire)),
+            });
+
             services.RegisterInput("SelectCellType_00", Keys.D0, new[]
             {
                 (true, new SelectCellTypeInput(Enums.CellTypeEnum.Water)),

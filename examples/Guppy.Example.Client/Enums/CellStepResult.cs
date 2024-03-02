@@ -2,7 +2,7 @@
 {
     public enum CellStepResult
     {
-        Active,
-        Inactive,
+        Inactive = 0,
+        Active = 1,
     }
 }

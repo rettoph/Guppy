@@ -23,15 +23,16 @@ namespace Guppy.Example.Client.CellTypes
             if (this.Step(ref cell, old, output) == CellStepResult.Inactive)
             {
                 cell.Type = cell.Old.Type;
-                cell.InactivityCount = ++cell.Old.InactivityCount;
+                cell.InactivityCount = (byte)(cell.Old.InactivityCount + 1);
                 cell.Awake = true;
+                cell.Updated = true;
             }
             else
             {
                 this.WakeupNearbyCells(ref cell, output);
             }
 
-            if (cell.InactivityCount > 10 && cell.Awake == true)
+            if (cell.InactivityCount > this.MaxInactivityCount && cell.Awake == true)
             {
                 cell.Awake = false;
             }

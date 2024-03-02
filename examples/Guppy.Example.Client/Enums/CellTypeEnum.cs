@@ -8,6 +8,9 @@
         Sand = 2,
         Water = 4,
         Concrete = 8,
-        Plant = 16
+        Plant = 16,
+        Fire = 32,
+        Smolder = 64,
+        Ash = 128
     }
 }

@@ -54,12 +54,12 @@ namespace Guppy.Example.Client.Entities
         public World(
             SpriteBatch spriteBatch,
             GraphicsDevice graphics,
-            IImGui imgui, 
-            ICursorProvider cursors, 
-            PointPrimitiveBatch<VertexPositionColor> gridBatch, 
-            StaticPrimitiveBatch<VertexPositionColor> primitiveBatch, 
-            Camera2D camera, 
-            ICellTypeService cellTypes, 
+            IImGui imgui,
+            ICursorProvider cursors,
+            PointPrimitiveBatch<VertexPositionColor> gridBatch,
+            StaticPrimitiveBatch<VertexPositionColor> primitiveBatch,
+            Camera2D camera,
+            ICellTypeService cellTypes,
             GameWindow window)
         {
             _imgui = imgui;
@@ -132,7 +132,7 @@ namespace Guppy.Example.Client.Entities
             _gridBatch.Draw(_camera);
 
             _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X / 2, _mouse.Position.Y / 2, 0) * _camera.Projection);
-        
+
             _graphics.SetRenderTarget(null);
 
             _spriteBatch.Begin();
@@ -195,11 +195,15 @@ namespace Guppy.Example.Client.Entities
         {
             return cellType switch
             {
+                CellTypeEnum.Air => Color.DarkGray,
                 CellTypeEnum.Sand => Color.SandyBrown,
                 CellTypeEnum.Water => Color.Blue,
                 CellTypeEnum.Concrete => Color.Gray,
                 CellTypeEnum.Plant => Color.Green,
-                _ => Color.Transparent
+                CellTypeEnum.Fire => Random.Shared.Next(0, 6) == 0 ? Color.Orange : Color.Red,
+                CellTypeEnum.Smolder => Random.Shared.Next(0, 15) == 0 ? Color.Orange : Color.Black,
+                CellTypeEnum.Ash => Color.LightGray,
+                _ => Color.Pink
             };
         }
 

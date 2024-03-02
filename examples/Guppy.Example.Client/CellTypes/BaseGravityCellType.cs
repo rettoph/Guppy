@@ -7,7 +7,7 @@ namespace Guppy.Example.Client.CellTypes
     {
         public CellTypeEnum Displaces { get; set; }
 
-        protected BaseGravityCellType(CellTypeEnum displaces)
+        protected BaseGravityCellType(CellTypeEnum displaces, int maxInactivityCount = 10) : base(maxInactivityCount)
         {
             this.Displaces = displaces | CellTypeEnum.Air;
         }

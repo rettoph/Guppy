@@ -13,13 +13,13 @@ namespace Guppy.Example.Client.CellTypes
         {
             CellStepResult result = CellStepResult.Inactive;
 
-            for(int i=0; i<cell.Neighbors.Length; i++)
+            for (int i = 0; i < cell.Neighbors.Length; i++)
             {
                 ref Cell neighbor = ref output.Cells[cell.Neighbors[i]];
 
-                if(neighbor.Latest.Type == CellTypeEnum.Water)
+                if (neighbor.Latest.Type == CellTypeEnum.Water)
                 {
-                    if(Random.Shared.Next(0, 10) == 0)
+                    if (Random.Shared.Next(0, 10) == 0)
                     {
                         this.Update(ref neighbor, this.Type, 0, output);
                         result |= CellStepResult.Active;
@@ -27,10 +27,11 @@ namespace Guppy.Example.Client.CellTypes
                 }
             }
 
-            if(result == CellStepResult.Inactive && cell.InactivityCount >= this.MaxInactivityCount)
+            if (result == CellStepResult.Active)
             {
-                
+                this.Update(ref cell, this.Type, 0, output);
             }
+
 
             return result;
         }
