@@ -47,12 +47,12 @@ namespace Guppy.Game.Input.Components
                 _inputs.Publish(press);
             }
 
-            if (_cursor.SetPress(CursorButtons.Middle, state.LeftButton == ButtonState.Pressed, out press))
+            if (_cursor.SetPress(CursorButtons.Middle, state.MiddleButton == ButtonState.Pressed, out press))
             {
                 _inputs.Publish(press);
             }
 
-            if (_cursor.SetPress(CursorButtons.Right, state.LeftButton == ButtonState.Pressed, out press))
+            if (_cursor.SetPress(CursorButtons.Right, state.RightButton == ButtonState.Pressed, out press))
             {
                 _inputs.Publish(press);
             }
