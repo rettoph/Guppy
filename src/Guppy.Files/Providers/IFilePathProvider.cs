@@ -2,8 +2,9 @@
 
 namespace Guppy.Files.Providers
 {
-    public interface IFileTypePathProvider
+    public interface IFilePathProvider
     {
+        string GetFullPath(FileLocation location);
         string GetFullPath(FileType type, string path);
     }
 }

@@ -9,20 +9,19 @@ namespace Guppy.Files.Services
     internal class FileService : IFileService
     {
         private readonly IJsonSerializer _json;
-        private readonly IFileTypePathProvider _paths;
+        private readonly IFilePathProvider _paths;
         private Dictionary<string, IFile> _cache;
 
-        public FileService(IJsonSerializer json, IFileTypePathProvider paths)
+        public FileService(IJsonSerializer json, IFilePathProvider paths)
         {
             _json = json;
             _paths = paths;
             _cache = new Dictionary<string, IFile>();
         }
 
-        public IFile Get(FileType type, string path, bool forceLoadFromDisk = false)
+        public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
         {
-            string fullPath = _paths.GetFullPath(type, path);
-
+            string fullPath = _paths.GetFullPath(location);
             ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
 
             if (!exists || forceLoadFromDisk)
@@ -36,8 +35,7 @@ namespace Guppy.Files.Services
                         string content = reader.ReadToEnd();
 
                         file = new StringFile(
-                            type: type,
-                            path: path,
+                            location: location,
                             fullPath: fullPath,
                             content: content);
                     }
@@ -47,10 +45,14 @@ namespace Guppy.Files.Services
             return file ?? throw new Exception();
         }
 
-        public IFile<T> Get<T>(FileType type, string path, bool forceLoadFromDisk = false)
+        public IFile Get(FileType type, string path, bool forceLoadFromDisk = false)
         {
-            string fullPath = _paths.GetFullPath(type, path);
+            return this.Get(new FileLocation(type, path), forceLoadFromDisk);
+        }
 
+        public IFile<T> Get<T>(FileLocation location, bool forceLoadFromDisk = false)
+        {
+            string fullPath = _paths.GetFullPath(location);
             ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
 
             if (!exists || forceLoadFromDisk)
@@ -64,8 +66,7 @@ namespace Guppy.Files.Services
                         string content = reader.ReadToEnd();
 
                         file = new JsonFile<T>(
-                            type: type,
-                            path: path,
+                            location: location,
                             fullPath: fullPath,
                             content: content,
                             json: _json);
@@ -78,6 +79,11 @@ namespace Guppy.Files.Services
             }
 
             return file as IFile<T> ?? throw new Exception();
+        }
+
+        public IFile<T> Get<T>(FileType type, string path, bool forceLoadFromDisk = false)
+        {
+            return this.Get<T>(new FileLocation(type, path), forceLoadFromDisk);
         }
 
         public void Save<T>(IFile<T> file)

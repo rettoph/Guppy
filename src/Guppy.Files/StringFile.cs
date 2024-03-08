@@ -1,12 +1,8 @@
-﻿using Guppy.Files.Enums;
-
-namespace Guppy.Files
+﻿namespace Guppy.Files
 {
     internal class StringFile : IFile
     {
-        public FileType Type { get; }
-
-        public string Path { get; }
+        public FileLocation Location { get; }
 
         public string FullPath { get; }
 
@@ -14,10 +10,9 @@ namespace Guppy.Files
 
         public bool Success { get; private set; }
 
-        public StringFile(FileType type, string path, string fullPath, string content)
+        public StringFile(FileLocation location, string fullPath, string content)
         {
-            this.Type = type;
-            this.Path = path;
+            this.Location = location;
             this.FullPath = fullPath;
             this.Content = content;
         }

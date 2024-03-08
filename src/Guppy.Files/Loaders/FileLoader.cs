@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Files.Providers;
+using Guppy.Files.Serialization.Json;
 using Guppy.Files.Services;
 using Guppy.Loaders;
+using System.Text.Json.Serialization;
 
 namespace Guppy.Files.Loaders
 {
@@ -11,7 +13,9 @@ namespace Guppy.Files.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<DefaultFilePathProvider>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<IFileLocationJsonConverter>().As<JsonConverter>().SingleInstance();
+
+            services.RegisterType<FilePathProvider>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterType<FileService>().AsImplementedInterfaces().SingleInstance();
         }

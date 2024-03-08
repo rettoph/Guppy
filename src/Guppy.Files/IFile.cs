@@ -1,11 +1,8 @@
-﻿using Guppy.Files.Enums;
-
-namespace Guppy.Files
+﻿namespace Guppy.Files
 {
     public interface IFile
     {
-        FileType Type { get; }
-        string Path { get; }
+        FileLocation Location { get; }
         string FullPath { get; }
         string Content { get; set; }
     }

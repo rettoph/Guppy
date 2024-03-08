@@ -1,5 +1,4 @@
-﻿using Guppy.Files.Enums;
-using Guppy.Files.Services;
+﻿using Guppy.Files.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -17,28 +16,14 @@ namespace Guppy.Files.Serialization.Json
 
         public override IFile<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            reader.CheckToken(JsonTokenType.StartArray, true);
-            reader.Read();
+            FileLocation location = JsonSerializer.Deserialize<FileLocation>(ref reader, options);
 
-            FileType type = JsonSerializer.Deserialize<FileType>(ref reader, options);
-            reader.Read();
-
-            string path = reader.ReadString();
-
-            reader.CheckToken(JsonTokenType.EndArray, true);
-
-            return _files.Value.Get<T>(type, path);
+            return _files.Value.Get<T>(location);
         }
 
         public override void Write(Utf8JsonWriter writer, IFile<T> value, JsonSerializerOptions options)
         {
-            writer.WriteStartArray();
-
-            JsonSerializer.Serialize(writer, value.Type, options);
-
-            writer.WriteStringValue(value.Path);
-
-            writer.WriteEndArray();
+            JsonSerializer.Serialize(writer, value.Location, options);
         }
     }
 }

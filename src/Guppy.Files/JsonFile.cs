@@ -1,5 +1,4 @@
-﻿using Guppy.Files.Enums;
-using Guppy.Serialization;
+﻿using Guppy.Serialization;
 
 namespace Guppy.Files
 {
@@ -8,10 +7,7 @@ namespace Guppy.Files
         private readonly IJsonSerializer _json;
         private T _value;
 
-        public FileType Type { get; }
-
-        public string Path { get; }
-
+        public FileLocation Location { get; }
         public string FullPath { get; }
 
         public string Content
@@ -34,18 +30,17 @@ namespace Guppy.Files
 
         public bool Success { get; private set; }
 
-        public JsonFile(FileType type, string path, string fullPath, string content, IJsonSerializer json)
+        public JsonFile(FileLocation location, string fullPath, string content, IJsonSerializer json)
         {
             _value = default!;
             _json = json;
 
-            this.Type = type;
-            this.Path = path;
+            this.Location = location;
             this.FullPath = fullPath;
             this.Content = content;
         }
 
-        public JsonFile(StringFile source, IJsonSerializer json) : this(source.Type, source.Path, source.FullPath, source.Content, json)
+        public JsonFile(StringFile source, IJsonSerializer json) : this(source.Location, source.FullPath, source.Content, json)
         {
 
         }

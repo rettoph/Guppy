@@ -14,7 +14,7 @@ namespace Guppy.Resources
 
         private Dictionary<Resource, Dictionary<string, object>> _resources;
 
-        public ResourcePack(IFile<ResourcePackConfiguration> configuration)
+        internal ResourcePack(IFile<ResourcePackConfiguration> configuration)
         {
             this.Id = configuration.Value.Id;
             this.Name = configuration.Value.Name;
