@@ -8,7 +8,7 @@ namespace Guppy.Files
         private T _value;
 
         public FileLocation Location { get; }
-        public string FullPath { get; }
+        public FileLocation Source { get; }
 
         public string Content
         {
@@ -30,17 +30,16 @@ namespace Guppy.Files
 
         public bool Success { get; private set; }
 
-        public JsonFile(FileLocation location, string fullPath, string content, IJsonSerializer json)
+        public JsonFile(FileLocation location, FileLocation source, string content, IJsonSerializer json)
         {
             _value = default!;
             _json = json;
 
-            this.Location = location;
-            this.FullPath = fullPath;
+            this.Source = source;
             this.Content = content;
         }
 
-        public JsonFile(StringFile source, IJsonSerializer json) : this(source.Location, source.FullPath, source.Content, json)
+        public JsonFile(StringFile source, IJsonSerializer json) : this(source.Location, source.Source, source.Content, json)
         {
 
         }

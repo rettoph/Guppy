@@ -3,17 +3,16 @@
     internal class StringFile : IFile
     {
         public FileLocation Location { get; }
-
-        public string FullPath { get; }
+        public FileLocation Source { get; }
 
         public string Content { get; set; }
 
         public bool Success { get; private set; }
 
-        public StringFile(FileLocation location, string fullPath, string content)
+        public StringFile(FileLocation location, FileLocation source, string content)
         {
             this.Location = location;
-            this.FullPath = fullPath;
+            this.Source = source;
             this.Content = content;
         }
     }

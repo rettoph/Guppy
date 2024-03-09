@@ -1,5 +1,4 @@
-﻿using Guppy.Files;
-using Guppy.Resources.Configuration;
+﻿using Guppy.Resources.Configuration;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,7 +8,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
     {
         public override ResourcePacksConfiguration? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            List<FileLocation> packs = JsonSerializer.Deserialize<List<FileLocation>>(ref reader, options) ?? new List<FileLocation>();
+            List<ResourcePackConfiguration> packs = JsonSerializer.Deserialize<List<ResourcePackConfiguration>>(ref reader, options) ?? new List<ResourcePackConfiguration>();
             ResourcePacksConfiguration configuration = new ResourcePacksConfiguration(packs);
 
             return configuration;

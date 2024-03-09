@@ -1,10 +1,8 @@
 ﻿using Autofac;
 using Guppy.Attributes;
 using Guppy.Files.Serialization.Json;
-using Guppy.Files.Services;
 using Guppy.Loaders;
 using Guppy.Resources.Configuration;
-using Guppy.Resources.Extensions;
 using Guppy.Resources.Providers;
 using Guppy.Resources.Serialization.Json;
 using Guppy.Resources.Serialization.Json.Converters;
@@ -18,6 +16,7 @@ namespace Guppy.Resources.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
+
             services.RegisterType<SettingProvider>().As<ISettingProvider>().SingleInstance();
             services.RegisterType<ResourcePackProvider>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourceProvider>().AsImplementedInterfaces().SingleInstance();
@@ -33,8 +32,6 @@ namespace Guppy.Resources.Loaders
             services.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<Int32, object>(nameof(Int32))).SingleInstance();
             services.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<String, object>(nameof(String))).SingleInstance();
             services.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<LogEventLevel, object>(nameof(LogEventLevel))).SingleInstance();
-
-            services.Register<ResourcePacksConfiguration>(ctx => ctx.Resolve<IFileService>().GetResourcePacksConfiguration().Value).SingleInstance();
         }
     }
 }

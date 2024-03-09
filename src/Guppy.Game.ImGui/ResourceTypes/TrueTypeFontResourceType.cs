@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Files;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
 using Serilog;
@@ -15,9 +16,9 @@ namespace Guppy.Game.ImGui.ResourceTypes
             _logger = logger;
         }
 
-        protected override bool TryResolve(Resource<TrueTypeFont> resource, string root, string input, out TrueTypeFont value)
+        protected override bool TryResolve(Resource<TrueTypeFont> resource, DirectoryLocation root, string input, out TrueTypeFont value)
         {
-            string path = Path.Combine(root, input);
+            string path = Path.Combine(root.Path, input);
 
             try
             {

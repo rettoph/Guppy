@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Files;
 using Guppy.Files.Helpers;
 using Guppy.Resources;
 using Guppy.Resources.ResourceTypes;
@@ -19,9 +20,9 @@ namespace Guppy.Game.MonoGame.ResourceTypes
             _content = content;
         }
 
-        protected override bool TryResolve(Resource<SpriteFont> resource, string root, string input, out SpriteFont value)
+        protected override bool TryResolve(Resource<SpriteFont> resource, DirectoryLocation root, string input, out SpriteFont value)
         {
-            _content.RootDirectory = root;
+            _content.RootDirectory = root.Path;
 
             value = _content.Load<SpriteFont>(DirectoryHelper.Normalize(input));
             return true;

@@ -1,16 +1,30 @@
-﻿using Guppy.Files.Enums;
-
-namespace Guppy.Files
+﻿namespace Guppy.Files
 {
     public struct FileLocation
     {
-        public readonly FileType Type;
-        public readonly string Path;
+        public readonly DirectoryLocation Directory;
+        public readonly string Name;
+        public string Path => System.IO.Path.Combine(this.Directory.Path, this.Name);
 
-        public FileLocation(FileType type, string path)
+        public FileLocation(DirectoryLocation directory, string name)
         {
-            this.Type = type;
-            this.Path = path;
+            this.Directory = directory;
+            this.Name = name;
+        }
+
+        public static FileLocation AppData(string path, string name)
+        {
+            return new FileLocation(DirectoryLocation.AppData(path), name);
+        }
+
+        public static FileLocation CurrentDirectory(string path, string name)
+        {
+            return new FileLocation(DirectoryLocation.CurrentDirectory(path), name);
+        }
+
+        public static FileLocation Source(string path, string name)
+        {
+            return new FileLocation(DirectoryLocation.Source(path), name);
         }
     }
 }

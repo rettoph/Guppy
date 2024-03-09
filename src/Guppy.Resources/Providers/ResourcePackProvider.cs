@@ -2,10 +2,9 @@
 using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Files;
-using Guppy.Files.Enums;
 using Guppy.Files.Services;
 using Guppy.Resources.Configuration;
-using Guppy.Resources.Extensions;
+using Guppy.Resources.Constants;
 using Guppy.Resources.ResourceTypes;
 using Serilog;
 
@@ -16,46 +15,32 @@ namespace Guppy.Resources.Providers
     {
         private readonly IFileService _files;
         private IDictionary<Guid, ResourcePack> _packs;
-        private IFile<ResourcePacksConfiguration> _packsConfiguration;
+        private IFile<ResourcePacksConfiguration> _configuration;
         private readonly IResourceTypeProvider _resourceTypes;
         private readonly ILogger _logger;
 
         public ResourcePackProvider(
             IFileService files,
-            IEnumerable<ResourcePack> packs,
+            IFiltered<ResourcePackConfiguration> packs,
             IResourceTypeProvider resourceTypes,
-            ILogger logger,
-            IConfiguration<ResourcePacksConfiguration> packsConfiguration)
+            ILogger logger)
         {
             _files = files;
-            _packsConfiguration = _files.GetResourcePacksConfiguration();
+            _configuration = _files.Get<ResourcePacksConfiguration>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration));
             _resourceTypes = resourceTypes;
             _logger = logger;
+            _packs = new Dictionary<Guid, ResourcePack>();
 
-            _packs = packs.ToDictionary(x => x.Id, x => x);
-
-            _packsConfiguration.Value = packsConfiguration.Value.Merge(_packsConfiguration.Value);
-            _files.Save(_packsConfiguration);
+            _configuration.Value = _configuration.Value.AddRange(packs.Instances);
+            _files.Save(_configuration);
         }
 
         protected override void Initialize(IGlobalComponent[] components)
         {
-            foreach (FileLocation packConfigurationLocation in _packsConfiguration.Value.Packs)
+            foreach (ResourcePackConfiguration packConfiguration in _configuration.Value.Packs)
             {
-                this.Load(packConfigurationLocation);
+                this.Load(packConfiguration);
             }
-        }
-
-        public void Register(FileLocation packConfiguration)
-        {
-            _packsConfiguration.Value.Add(packConfiguration);
-
-            this.Load(packConfiguration);
-        }
-
-        public void Register(FileType type, string path)
-        {
-            this.Register(new FileLocation(type, path));
         }
 
         public IEnumerable<ResourcePack> GetAll()
@@ -68,25 +53,27 @@ namespace Guppy.Resources.Providers
             return _packs[id];
         }
 
-        private ResourcePack GetOrCreatePack(IFile<ResourcePackConfiguration> configuration)
+        private ResourcePack GetOrCreatePack(IFile<ResourcePackEntryConfiguration> entry)
         {
-            if (!_packs.TryGetValue(configuration.Value.Id, out var pack))
+            if (!_packs.TryGetValue(entry.Value.Id, out var pack))
             {
-                _packs[configuration.Value.Id] = pack = new ResourcePack(configuration);
+                _packs[entry.Value.Id] = pack = new ResourcePack(
+                    entry: entry,
+                    rootDirectory: entry.Source.Directory);
             }
 
             return pack;
         }
 
-        private void Load(FileLocation location)
+        private void Load(ResourcePackConfiguration configuration)
         {
-            IFile<ResourcePackConfiguration> configuration = _files.Get<ResourcePackConfiguration>(location);
-            string directory = Path.GetDirectoryName(configuration.FullPath) ?? throw new NotImplementedException();
+            IFile<ResourcePackEntryConfiguration> entry = _files.Get<ResourcePackEntryConfiguration>(new FileLocation(configuration.EntryDirectory, "pack.json"));
+            DirectoryLocation directory = entry.Source.Directory;
 
-            ResourcePack pack = this.GetOrCreatePack(configuration);
+            ResourcePack pack = this.GetOrCreatePack(entry);
             _logger.Information("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
 
-            foreach ((string localization, string[] resourceFileNames) in configuration.Value.Import)
+            foreach ((string localization, string[] resourceFileNames) in entry.Value.Import)
             {
                 foreach (string resourceFileName in resourceFileNames)
                 {
@@ -95,11 +82,11 @@ namespace Guppy.Resources.Providers
             }
         }
 
-        private void ImportResourceFile(string resourceFileName, ResourcePack pack, string directory, string localization)
+        private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
         {
             _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(ImportResourceFile), resourceFileName, localization);
 
-            IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(FileType.Source, Path.Combine(directory, resourceFileName));
+            IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(new FileLocation(directory, resourceFileName));
             foreach (ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
             {
                 this.ResolveResourceTypeValues(resourceTypeValues, pack, localization);

@@ -1,9 +1,28 @@
-﻿using System.Reflection;
+﻿using Guppy.Files.Enums;
+using System.Reflection;
 
 namespace Guppy.Files.Helpers
 {
     public static class DirectoryHelper
     {
+        public static void EnsureDirectoryExists(FileLocation source)
+        {
+            DirectoryHelper.EnsureDirectoryExists(source.Directory);
+        }
+
+        public static void EnsureDirectoryExists(DirectoryLocation source)
+        {
+            if (source.Type != DirectoryType.Source)
+            {
+                throw new ArgumentException();
+            }
+
+            if (!Directory.Exists(source.Path))
+            {
+                Directory.CreateDirectory(source.Path);
+            }
+        }
+
         public static void EnsureDirectoryExists(string filePath)
         {
             string directory = Path.GetDirectoryName(filePath) ?? throw new NotImplementedException();

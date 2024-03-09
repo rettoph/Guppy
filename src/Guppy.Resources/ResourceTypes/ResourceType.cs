@@ -1,4 +1,5 @@
-﻿using Guppy.Serialization;
+﻿using Guppy.Files;
+using Guppy.Serialization;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -24,20 +25,20 @@ namespace Guppy.Resources.ResourceTypes
             return false;
         }
 
-        protected abstract bool TryResolve(Resource<T> resource, string root, ref JsonElement json, [MaybeNullWhen(false)] out T value);
+        protected abstract bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value);
     }
 
     public abstract class SimpleResourceType<T> : ResourceType<T>
         where T : notnull
     {
-        protected override bool TryResolve(Resource<T> resource, string root, ref JsonElement json, out T value)
+        protected override bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, out T value)
         {
             string input = json.GetString() ?? string.Empty;
 
             return this.TryResolve(resource, root, input, out value);
         }
 
-        protected abstract bool TryResolve(Resource<T> resource, string root, string input, out T value);
+        protected abstract bool TryResolve(Resource<T> resource, DirectoryLocation root, string input, out T value);
     }
 
     public class DefaultResourceType<T> : ResourceType<T>
@@ -50,7 +51,7 @@ namespace Guppy.Resources.ResourceTypes
             _json = json;
         }
 
-        protected override bool TryResolve(Resource<T> resource, string root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        protected override bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
         {
             value = _json.Deserialize<T>(ref json, out bool success);
 

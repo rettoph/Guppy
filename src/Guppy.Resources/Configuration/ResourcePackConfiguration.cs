@@ -1,9 +1,9 @@
-﻿namespace Guppy.Resources.Configuration
+﻿using Guppy.Files;
+
+namespace Guppy.Resources.Configuration
 {
-    internal class ResourcePackConfiguration
+    public class ResourcePackConfiguration
     {
-        public Guid Id { get; init; }
-        public string Name { get; init; } = string.Empty;
-        public Dictionary<string, string[]> Import { get; init; } = new Dictionary<string, string[]>();
+        public DirectoryLocation EntryDirectory { get; set; }
     }
 }

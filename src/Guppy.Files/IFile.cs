@@ -3,7 +3,7 @@
     public interface IFile
     {
         FileLocation Location { get; }
-        string FullPath { get; }
+        FileLocation Source { get; }
         string Content { get; set; }
     }
     public interface IFile<T> : IFile

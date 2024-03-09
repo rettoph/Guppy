@@ -1,4 +1,5 @@
 ﻿using Guppy.Attributes;
+using Guppy.Files;
 using Guppy.Files.Helpers;
 using Guppy.Game.MonoGame.Graphics.Effects;
 using Guppy.Resources;
@@ -17,9 +18,9 @@ namespace Guppy.Game.MonoGame.ResourceTypes
             _logger = logger;
         }
 
-        protected override bool TryResolve(Resource<EffectCode> resource, string root, string input, out EffectCode value)
+        protected override bool TryResolve(Resource<EffectCode> resource, DirectoryLocation root, string input, out EffectCode value)
         {
-            string path = DirectoryHelper.Combine(root, input);
+            string path = DirectoryHelper.Combine(root.Path, input);
 
             try
             {

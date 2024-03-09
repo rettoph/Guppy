@@ -1,5 +1,4 @@
-﻿using Guppy.Files.Enums;
-using Guppy.Files.Helpers;
+﻿using Guppy.Files.Helpers;
 using Guppy.Files.Providers;
 using Guppy.Serialization;
 using System.Runtime.InteropServices;
@@ -9,10 +8,10 @@ namespace Guppy.Files.Services
     internal class FileService : IFileService
     {
         private readonly IJsonSerializer _json;
-        private readonly IFilePathProvider _paths;
+        private readonly IPathProvider _paths;
         private Dictionary<string, IFile> _cache;
 
-        public FileService(IJsonSerializer json, IFilePathProvider paths)
+        public FileService(IJsonSerializer json, IPathProvider paths)
         {
             _json = json;
             _paths = paths;
@@ -21,14 +20,14 @@ namespace Guppy.Files.Services
 
         public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
         {
-            string fullPath = _paths.GetFullPath(location);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
+            FileLocation source = _paths.GetSourceLocation(location);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, location.Path, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
-                DirectoryHelper.EnsureDirectoryExists(fullPath);
+                DirectoryHelper.EnsureDirectoryExists(source.Path);
 
-                using (FileStream stream = File.Open(fullPath, FileMode.OpenOrCreate))
+                using (FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate))
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
@@ -36,7 +35,7 @@ namespace Guppy.Files.Services
 
                         file = new StringFile(
                             location: location,
-                            fullPath: fullPath,
+                            source: source,
                             content: content);
                     }
                 }
@@ -45,21 +44,16 @@ namespace Guppy.Files.Services
             return file ?? throw new Exception();
         }
 
-        public IFile Get(FileType type, string path, bool forceLoadFromDisk = false)
-        {
-            return this.Get(new FileLocation(type, path), forceLoadFromDisk);
-        }
-
         public IFile<T> Get<T>(FileLocation location, bool forceLoadFromDisk = false)
         {
-            string fullPath = _paths.GetFullPath(location);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, fullPath, out bool exists);
+            FileLocation source = _paths.GetSourceLocation(location);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, location.Path, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
-                DirectoryHelper.EnsureDirectoryExists(fullPath);
+                DirectoryHelper.EnsureDirectoryExists(source.Path);
 
-                using (FileStream stream = File.Open(fullPath, FileMode.OpenOrCreate))
+                using (FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate))
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
@@ -67,7 +61,7 @@ namespace Guppy.Files.Services
 
                         file = new JsonFile<T>(
                             location: location,
-                            fullPath: fullPath,
+                            source: source,
                             content: content,
                             json: _json);
                     }
@@ -81,18 +75,13 @@ namespace Guppy.Files.Services
             return file as IFile<T> ?? throw new Exception();
         }
 
-        public IFile<T> Get<T>(FileType type, string path, bool forceLoadFromDisk = false)
-        {
-            return this.Get<T>(new FileLocation(type, path), forceLoadFromDisk);
-        }
-
         public void Save<T>(IFile<T> file)
         {
-            DirectoryHelper.EnsureDirectoryExists(file.FullPath);
+            DirectoryHelper.EnsureDirectoryExists(file.Source.Directory.Path);
 
             string json = _json.Serialize(file.Value);
 
-            File.WriteAllText(file.FullPath, json);
+            File.WriteAllText(file.Source.Path, json);
         }
     }
 }

@@ -13,9 +13,10 @@ namespace Guppy.Files.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<IFileLocationJsonConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<DirectoryLocationJsonConverter>().As<JsonConverter>().SingleInstance();
+            services.RegisterType<FileLocationJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            services.RegisterType<FilePathProvider>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<PathProvider>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterType<FileService>().AsImplementedInterfaces().SingleInstance();
         }

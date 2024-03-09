@@ -1,12 +1,13 @@
 ﻿using Autofac;
 using Guppy.Common.Autofac;
-using Guppy.Files.Enums;
+using Guppy.Files;
 using Guppy.Game.ImGui;
 using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Constants;
 using Guppy.Game.MonoGame.Messages;
 using Guppy.Game.MonoGame.Primitives;
 using Guppy.Loaders;
+using Guppy.Resources.Configuration;
 using Guppy.Resources.Extensions.Autofac;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -29,6 +30,11 @@ namespace Guppy.Game.MonoGame.Loaders
             services.RegisterGeneric(typeof(StaticPrimitiveBatch<,>));
             services.RegisterGeneric(typeof(StaticPrimitiveBatch<>));
 
+            services.RegisterResourcePack(new ResourcePackConfiguration()
+            {
+                EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyMonoGamePack.Directory)
+            });
+
             services.RegisterInput(Inputs.ToggleDebugger, Keys.F1, new[]
             {
                 (ButtonState.Pressed, Toggle<GuppyDebugWindowComponent>.Instance)
@@ -37,11 +43,6 @@ namespace Guppy.Game.MonoGame.Loaders
             services.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
             {
                 (ButtonState.Pressed, Toggle<TerminalWindowComponent>.Instance)
-            });
-
-            services.ConfigureResourcePacks((scope, packs) =>
-            {
-                packs.Add(FileType.CurrentDirectory, Path.Combine(GuppyMonoGamePack.Directory, "pack.json"));
             });
         }
     }

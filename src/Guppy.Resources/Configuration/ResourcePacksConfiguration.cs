@@ -1,39 +1,33 @@
 ﻿using Guppy.Files;
-using Guppy.Files.Enums;
 
 namespace Guppy.Resources.Configuration
 {
-    public sealed class ResourcePacksConfiguration
+    internal sealed class ResourcePacksConfiguration
     {
-        private readonly HashSet<FileLocation> _packs;
+        private readonly Dictionary<DirectoryLocation, ResourcePackConfiguration> _packs;
 
-        internal IEnumerable<FileLocation> Packs => _packs;
+        internal IEnumerable<ResourcePackConfiguration> Packs => _packs.Values;
 
-        public ResourcePacksConfiguration() : this(new List<FileLocation>())
+        public ResourcePacksConfiguration() : this(new List<ResourcePackConfiguration>())
         {
         }
-        public ResourcePacksConfiguration(List<FileLocation> packs)
+        public ResourcePacksConfiguration(List<ResourcePackConfiguration> packs)
         {
-            _packs = new HashSet<FileLocation>(packs);
+            _packs = packs.ToDictionary(x => x.EntryDirectory, x => x);
         }
 
-        public ResourcePacksConfiguration Add(FileLocation location)
+        public ResourcePacksConfiguration Add(ResourcePackConfiguration pack)
         {
-            _packs.Add(location);
+            _packs.Add(pack.EntryDirectory, pack);
 
             return this;
         }
 
-        public ResourcePacksConfiguration Add(FileType type, string path)
+        public ResourcePacksConfiguration AddRange(IEnumerable<ResourcePackConfiguration> packs)
         {
-            return this.Add(new FileLocation(type, path));
-        }
-
-        public ResourcePacksConfiguration Merge(ResourcePacksConfiguration configuration)
-        {
-            foreach (FileLocation pack in configuration.Packs)
+            foreach (ResourcePackConfiguration pack in packs)
             {
-                _packs.Add(pack);
+                _packs.TryAdd(pack.EntryDirectory, pack);
             }
 
             return this;

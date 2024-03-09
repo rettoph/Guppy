@@ -8,17 +8,18 @@ namespace Guppy.Resources
 {
     public sealed class ResourcePack
     {
-        public readonly Guid Id;
-        public readonly string Name;
-        public readonly string RootDirectory;
+        private readonly IFile<ResourcePackEntryConfiguration> _entry;
+
+        public Guid Id => _entry.Value.Id;
+        public string Name => _entry.Value.Name;
+        public readonly DirectoryLocation RootDirectory;
 
         private Dictionary<Resource, Dictionary<string, object>> _resources;
 
-        internal ResourcePack(IFile<ResourcePackConfiguration> configuration)
+        internal ResourcePack(IFile<ResourcePackEntryConfiguration> entry, DirectoryLocation rootDirectory)
         {
-            this.Id = configuration.Value.Id;
-            this.Name = configuration.Value.Name;
-            this.RootDirectory = Path.GetDirectoryName(configuration.FullPath)!;
+            _entry = entry;
+            this.RootDirectory = rootDirectory;
 
             _resources = new Dictionary<Resource, Dictionary<string, object>>();
         }

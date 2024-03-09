@@ -1,5 +1,4 @@
 ﻿using Guppy.Files;
-using Guppy.Files.Enums;
 using Guppy.Files.Services;
 using Guppy.Resources.Constants;
 using System.Runtime.InteropServices;
@@ -16,7 +15,7 @@ namespace Guppy.Resources.Providers
         {
             _values = new Dictionary<Setting, ISettingValue>();
             _files = files;
-            _file = _files.Get<Dictionary<Setting, ISettingValue>>(FileType.AppData, FilePaths.Settings, true);
+            _file = _files.Get<Dictionary<Setting, ISettingValue>>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.Settings), true);
 
             this.UpdateValues(_file.Value);
         }
