@@ -14,17 +14,17 @@ namespace Guppy.Resources.Providers
             _types = new Map<string, Type>(typeTuples);
         }
 
-        public TBase Deserialize(string key, ref JsonElement element, JsonSerializerOptions options)
+        public TBase Deserialize(string key, ref JsonElement element, JsonSerializerOptions options, out Type type)
         {
-            Type type = _types[key];
+            type = _types[key];
             TBase instance = (TBase)JsonSerializer.Deserialize(element, type, options)!;
 
             return instance;
         }
 
-        public TBase Deserialize(string key, ref Utf8JsonReader reader, JsonSerializerOptions options)
+        public TBase Deserialize(string key, ref Utf8JsonReader reader, JsonSerializerOptions options, out Type type)
         {
-            Type type = _types[key];
+            type = _types[key];
             TBase instance = (TBase)JsonSerializer.Deserialize(ref reader, type, options)!;
 
             return instance;

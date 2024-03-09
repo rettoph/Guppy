@@ -43,7 +43,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return _serializer.Deserialize(type, ref value, options);
+            return _serializer.Deserialize(type, ref value, options, out _);
         }
 
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)

@@ -53,7 +53,7 @@ namespace Guppy.Resources.Serialization.Json.Converters
             Type settingValueType = typeof(SettingValue<>).MakeGenericType(implementationType);
             ISettingValue settingValue = (ISettingValue)Activator.CreateInstance(settingValueType, setting)!;
 
-            settingValue.Value = _serializer.Deserialize(type, ref value, options);
+            settingValue.Value = _serializer.Deserialize(type, ref value, options, out _);
 
             return settingValue;
         }
