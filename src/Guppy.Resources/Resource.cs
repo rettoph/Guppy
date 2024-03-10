@@ -27,6 +27,12 @@ namespace Guppy.Resources
             return _resources[id];
         }
 
+        public static Resource<T> Get<T>(Guid id)
+            where T : notnull
+        {
+            return (Resource<T>)_resources[id];
+        }
+
         public static Resource<T> Get<T>(string name)
             where T : notnull
         {
