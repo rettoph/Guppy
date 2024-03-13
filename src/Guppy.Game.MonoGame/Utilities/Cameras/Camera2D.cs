@@ -180,8 +180,6 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
                         this.Position.Y - this.ViewportBounds.Height / 2,
                         0f,
                         1f);
-
-                projection *= Matrix.CreateScale(this.Zoom);
             }
             else
             {
@@ -192,14 +190,12 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
                     this.Position.Y,
                     0f,
                     1f);
-
-                projection *= Matrix.CreateScale(this.Zoom);
             }
         }
 
         protected override void SetView(ref Matrix view)
         {
-            view = Matrix.Identity;
+            view = Matrix.CreateScale(this.Zoom, this.Zoom, 1);
         }
 
         public override Vector3 Project(Vector3 source)
