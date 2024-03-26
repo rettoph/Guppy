@@ -166,7 +166,7 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
 
         protected override void SetWorld(ref Matrix world)
         {
-            world = Matrix.Identity;
+            world = Matrix.CreateTranslation(-this.Position.X, -this.Position.Y, 0);
         }
 
         protected override void SetProjection(ref Matrix projection)
@@ -174,22 +174,22 @@ namespace Guppy.Game.MonoGame.Utilities.Cameras
             if (this.Center)
             {
                 projection = Matrix.CreateOrthographicOffCenter(
-                        this.Position.X - this.ViewportBounds.Width / 2,
-                        this.Position.X + this.ViewportBounds.Width / 2,
-                        this.Position.Y + this.ViewportBounds.Height / 2,
-                        this.Position.Y - this.ViewportBounds.Height / 2,
-                        0f,
-                        1f);
+                        0 - this.ViewportBounds.Width / 2,
+                        0 + this.ViewportBounds.Width / 2,
+                        0 + this.ViewportBounds.Height / 2,
+                        0 - this.ViewportBounds.Height / 2,
+                        -1000f,
+                        1000f);
             }
             else
             {
                 projection = Matrix.CreateOrthographicOffCenter(
-                    this.Position.X,
-                    this.Position.X + this.ViewportBounds.Width,
-                    this.Position.Y + this.ViewportBounds.Height,
-                    this.Position.Y,
-                    0f,
-                    1f);
+                    0,
+                    this.ViewportBounds.Width,
+                    this.ViewportBounds.Height,
+                    0,
+                    -1000f,
+                    1000f);
             }
         }
 
