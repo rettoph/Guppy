@@ -5,13 +5,19 @@ namespace Guppy.Common.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static T[] Sequence<T, TSequence>(this IEnumerable<T> items, TSequence defaultSequence)
+        public static T[] Sequence<T, TSequence>(this IEnumerable<T> items, TSequence defaultSequence, bool reverse = false)
             where TSequence : unmanaged, Enum
         {
-            return items.Select(x => (item: x, sequence: EnumerableExtensions.GetSequence<T, TSequence>(x, defaultSequence)))
+            IEnumerable<T> sequenced = items.Select(x => (item: x, sequence: EnumerableExtensions.GetSequence<T, TSequence>(x, defaultSequence)))
                 .OrderBy(x => x.sequence)
-                .Select(x => x.item)
-                .ToArray();
+                .Select(x => x.item);
+
+            if (reverse)
+            {
+                sequenced = sequenced.Reverse();
+            }
+
+            return sequenced.ToArray();
         }
 
         private static TSequence GetSequence<T, TSequence>(T item, TSequence defaultSequence)
