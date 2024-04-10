@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Common;
-using Guppy.Common.Providers;
+using Guppy.Common.Services;
 
 namespace Guppy
 {
@@ -8,7 +8,7 @@ namespace Guppy
         where T : class
     {
         private readonly ILifetimeScope _scope;
-        private readonly IServiceFilterProvider _filters;
+        private readonly IServiceFilterService _filters;
         private readonly Lazy<IEnumerable<T>> _unfiltered;
 
         private T? _instance;
@@ -20,7 +20,7 @@ namespace Guppy
 
         public Filtered(
             ILifetimeScope scope,
-            IServiceFilterProvider filters,
+            IServiceFilterService filters,
             Lazy<IEnumerable<T>> unfiltered)
         {
             _scope = scope;

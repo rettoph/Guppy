@@ -1,4 +1,4 @@
-﻿using Guppy.Common.Providers;
+﻿using Guppy.Common.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -11,7 +11,7 @@ namespace Guppy.Network.Serialization.Json
 
         private Dictionary<string, Type> _implementationTypes;
 
-        public NetIdJsonConverter(IAssemblyProvider assembly)
+        public NetIdJsonConverter(IAssemblyService assembly)
         {
             _implementationTypes = assembly.GetTypes<INetId>()
                 .ToDictionary(

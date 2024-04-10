@@ -1,11 +1,10 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common.Providers;
 using Guppy.Messaging;
 
 namespace Guppy.Providers
 {
     [GuppyFilter<IGuppy>]
-    public class BulkGuppyBrokerSubscriptionProvider<TBroker, TMessage> : IBulkSubscriptionProvider
+    public class BulkGuppyBrokerSubscriptionProvider<TBroker, TMessage> : IMagicBroker
         where TMessage : class, IMessage
         where TBroker : IBroker<TMessage>
     {

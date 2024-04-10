@@ -1,13 +1,13 @@
 ﻿using Autofac;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common.Services
 {
-    internal sealed class ServiceFilterProvider : IServiceFilterProvider
+    internal sealed class ServiceFilterService : IServiceFilterService
     {
         private IServiceFilter[] _filters;
         private IDictionary<Type, IServiceFilter[]> _typeFilters;
 
-        public ServiceFilterProvider(
+        public ServiceFilterService(
             IEnumerable<IServiceFilter> filters)
         {
             _filters = filters.ToArray();

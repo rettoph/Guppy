@@ -1,17 +1,17 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common.Services;
+using Guppy.Messaging.Services;
 
 namespace Guppy.Components.Guppy
 {
     [AutoLoad]
     internal class GuppyBulkSubscriptionComponent : GuppyComponent
     {
-        private readonly IBulkSubscriptionService _subscriptions;
+        private readonly IMagicBrokerService _brokers;
         private IGuppyComponent[] _components;
 
-        public GuppyBulkSubscriptionComponent(IBulkSubscriptionService subscriptions)
+        public GuppyBulkSubscriptionComponent(IMagicBrokerService brokers)
         {
-            _subscriptions = subscriptions;
+            _brokers = brokers;
             _components = Array.Empty<IGuppyComponent>();
         }
 
@@ -21,12 +21,12 @@ namespace Guppy.Components.Guppy
 
             _components = guppy.Components;
 
-            _subscriptions.Subscribe(_components);
+            _brokers.Subscribe(_components);
         }
 
         public void Dispose()
         {
-            _subscriptions.Unsubscribe(_components);
+            _brokers.Unsubscribe(_components);
         }
     }
 }

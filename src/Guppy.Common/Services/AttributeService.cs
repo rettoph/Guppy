@@ -1,23 +1,23 @@
 ﻿using System.Collections;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common.Services
 {
-    internal sealed class AttributeProvider<TType, TAttribute> : IAttributeProvider<TType, TAttribute>
+    internal sealed class AttributeService<TType, TAttribute> : IAttributeService<TType, TAttribute>
         where TAttribute : Attribute
     {
         private Dictionary<Type, TAttribute[]> _attributes;
 
-        public ITypeProvider<TType> Types { get; }
+        public ITypeService<TType> Types { get; }
 
         public TAttribute[] this[Type type] => _attributes[type];
 
-        public AttributeProvider(ITypeProvider<TType> types, bool inherit)
+        public AttributeService(ITypeService<TType> types, bool inherit)
         {
-            this.Types = types;
+            Types = types;
 
-            _attributes = new Dictionary<Type, TAttribute[]>(this.Types.Count());
+            _attributes = new Dictionary<Type, TAttribute[]>(Types.Count());
 
-            foreach (Type type in this.Types)
+            foreach (Type type in Types)
             {
                 _attributes.Add(type, type.GetCustomAttributesIncludingInterfaces<TAttribute>(inherit).ToArray());
             }
@@ -39,7 +39,7 @@ namespace Guppy.Common.Providers
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

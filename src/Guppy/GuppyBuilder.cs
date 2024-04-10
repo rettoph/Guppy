@@ -2,7 +2,7 @@
 using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Autofac;
-using Guppy.Common.Providers;
+using Guppy.Common.Services;
 using Guppy.Extensions.Autofac;
 using Guppy.Loaders;
 using System.Reflection;
@@ -11,7 +11,7 @@ namespace Guppy
 {
     internal sealed class GuppyBuilder
     {
-        public readonly IAssemblyProvider Assemblies;
+        public readonly IAssemblyService Assemblies;
         public readonly IGuppyEnvironment Environment;
         public readonly ContainerBuilder ContainerBuilder;
 
@@ -21,7 +21,7 @@ namespace Guppy
             IEnumerable<Assembly> libraries,
             Action<ContainerBuilder>? build)
         {
-            Assemblies = new AssemblyProvider(libraries);
+            Assemblies = new AssemblyService(libraries);
             Environment = environment;
 
             ContainerBuilder = new ContainerBuilder();
@@ -60,7 +60,7 @@ namespace Guppy
             return configuration.Build();
         }
 
-        private void HandleAssemblyLoaded(IAssemblyProvider sender, Assembly assembly)
+        private void HandleAssemblyLoaded(IAssemblyService sender, Assembly assembly)
         {
             // First initialize all assembly loaders
             var loaders = assembly.GetTypes()

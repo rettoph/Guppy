@@ -1,6 +1,6 @@
-﻿namespace Guppy.Common.Providers
+﻿namespace Guppy.Common.Services
 {
-    public interface IFilteredProvider
+    public interface IFilteredService
     {
         IFiltered<T> Get<T>()
             where T : class;

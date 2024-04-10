@@ -1,6 +1,4 @@
 ﻿using Autofac;
-using Guppy.Common.Implementations;
-using Guppy.Common.Providers;
 using Guppy.Common.Services;
 
 namespace Guppy.Common.Extensions.Autofac
@@ -9,8 +7,7 @@ namespace Guppy.Common.Extensions.Autofac
     {
         public static void RegisteGuppyCommon(this ContainerBuilder services)
         {
-            services.RegisterType<ServiceFilterProvider>().As<IServiceFilterProvider>().InstancePerLifetimeScope();
-            services.RegisterType<BulkSubscriptionService>().As<IBulkSubscriptionService>().InstancePerLifetimeScope();
+            services.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
         }
 
         public static void RegisterFilter(this ContainerBuilder builder, IServiceFilter filter)

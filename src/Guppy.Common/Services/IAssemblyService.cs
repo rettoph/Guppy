@@ -1,12 +1,12 @@
 ﻿using System.Reflection;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common.Services
 {
-    public interface IAssemblyProvider : IEnumerable<Assembly>
+    public interface IAssemblyService : IEnumerable<Assembly>
     {
         AssemblyName[] Libraries { get; }
 
-        event OnEventDelegate<IAssemblyProvider, Assembly>? OnAssemblyLoaded;
+        event OnEventDelegate<IAssemblyService, Assembly>? OnAssemblyLoaded;
 
         /// <summary>
         /// Load the given <paramref name="assembly"/> if it references any of the required
@@ -17,22 +17,22 @@ namespace Guppy.Common.Providers
         void Load(Assembly assembly, bool forced = false);
 
         /// <summary>
-        /// Create a <see cref="ITypeProvider{T}"/> for the requested
+        /// Create a <see cref="ITypeService{T}"/> for the requested
         /// <typeparamref name="T"/> type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        ITypeProvider<T> GetTypes<T>();
+        ITypeService<T> GetTypes<T>();
 
         /// <summary>
-        /// Create a <see cref="ITypeProvider{T}"/> for the requested
+        /// Create a <see cref="ITypeService{T}"/> for the requested
         /// <typeparamref name="T"/> type so long as the <see cref="Type"/>.
         /// matches the recieved <paramref name="predicate"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        ITypeProvider<T> GetTypes<T>(Func<Type, bool> predicate);
+        ITypeService<T> GetTypes<T>(Func<Type, bool> predicate);
 
         /// <summary>
         /// Return a cached table of all the <typeparamref name="TType"/> instances
@@ -41,7 +41,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TType"></typeparam>
         /// <typeparam name="TAttribute"></typeparam>
         /// <returns></returns>
-        IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
+        IAttributeService<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        IAttributeProvider<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate, bool inherit)
+        IAttributeService<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TType"></typeparam>
         /// <typeparam name="TAttribute"></typeparam>
         /// <returns></returns>
-        IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(bool inherit)
+        IAttributeService<object, TAttribute> GetAttributes<TAttribute>(bool inherit)
             where TAttribute : Attribute;
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Guppy.Common.Providers
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        IAttributeProvider<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
+        IAttributeService<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute;
     }
 }

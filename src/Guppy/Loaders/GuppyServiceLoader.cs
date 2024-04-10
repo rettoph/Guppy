@@ -3,10 +3,10 @@ using Guppy.Attributes;
 using Guppy.Common;
 using Guppy.Common.Autofac;
 using Guppy.Common.Extensions.Autofac;
-using Guppy.Common.Providers;
 using Guppy.Common.Services;
 using Guppy.Extensions.Autofac;
 using Guppy.Messaging;
+using Guppy.Messaging.Services;
 using Guppy.Providers;
 using Guppy.Serialization;
 using Guppy.Services;
@@ -38,9 +38,10 @@ namespace Guppy.Loaders
             services.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
 
-            services.RegisterType<FilteredProvider>().As<IFilteredProvider>().InstancePerLifetimeScope();
+            services.RegisterType<FilteredProvider>().As<IFilteredService>().InstancePerLifetimeScope();
             services.RegisterType<BulkGuppyBrokerSubscriptionProvider<IBus, IMessage>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             services.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
+            services.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
 
             services.Register<ILogger>(p =>
             {

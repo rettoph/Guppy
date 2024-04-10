@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 
-namespace Guppy.Common.Providers
+namespace Guppy.Common.Services
 {
-    internal class TypeProvider<T> : ITypeProvider<T>
+    internal class TypeService<T> : ITypeService<T>
     {
         public readonly List<Type> _types;
 
-        public TypeProvider(IEnumerable<Type> types)
+        public TypeService(IEnumerable<Type> types)
         {
             _types = new List<Type>(types);
         }
@@ -33,7 +33,7 @@ namespace Guppy.Common.Providers
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

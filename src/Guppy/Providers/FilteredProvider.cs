@@ -1,16 +1,16 @@
 ﻿using Autofac;
 using Guppy.Common;
-using Guppy.Common.Providers;
+using Guppy.Common.Services;
 
 namespace Guppy.Providers
 {
-    internal sealed class FilteredProvider : IFilteredProvider
+    internal sealed class FilteredProvider : IFilteredService
     {
         private readonly ILifetimeScope _scope;
         private readonly IComponentContext _context;
-        private readonly IServiceFilterProvider _filters;
+        private readonly IServiceFilterService _filters;
 
-        public FilteredProvider(IComponentContext context, IServiceFilterProvider filters, ILifetimeScope scope)
+        public FilteredProvider(IComponentContext context, IServiceFilterService filters, ILifetimeScope scope)
         {
             _scope = scope;
             _context = context;

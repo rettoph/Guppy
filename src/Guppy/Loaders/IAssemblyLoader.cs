@@ -1,9 +1,9 @@
-﻿using Guppy.Common.Providers;
+﻿using Guppy.Common.Services;
 
 namespace Guppy.Loaders
 {
     public interface IAssemblyLoader
     {
-        void ConfigureAssemblies(IAssemblyProvider assemblies);
+        void ConfigureAssemblies(IAssemblyService assemblies);
     }
 }
