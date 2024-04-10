@@ -15,7 +15,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
     {
         private readonly ICommandService _commands;
         private readonly IImGui _imgui;
-        private readonly ResourceValue<ImStyle> _debugWindowStyle;
+        private readonly Resource<ImStyle> _debugWindowStyle;
         private readonly MonoGameTerminal _terminal;
 
         private string _filter;
@@ -33,7 +33,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
         {
             _commands = commands;
             _imgui = imgui;
-            _debugWindowStyle = imgui.GetStyle(Resources.ImGuiStyles.DebugWindow);
+            _debugWindowStyle = Resources.ImGuiStyles.DebugWindow;
             _terminal = terminal;
             _filter = string.Empty;
             _input = string.Empty;

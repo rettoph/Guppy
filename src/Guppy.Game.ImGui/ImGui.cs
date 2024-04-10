@@ -2,24 +2,18 @@
 using Guppy.Game.ImGui.Helpers;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
-using Guppy.Resources.Providers;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game.ImGui
 {
     internal partial class ImGui : IImGui, IDisposable
     {
-        private readonly Dictionary<Resource<ImStyle>, ResourceValue<ImStyle>> _styles;
-        private readonly IResourceProvider _resources;
         private readonly IImguiBatch _batch;
         private readonly Stack<ImStyle> _styleStack;
 
         private IDisposable _idPopper;
 
-        public ImGui(IResourceProvider resources, IImguiBatch batch)
+        public ImGui(IImguiBatch batch)
         {
-            _styles = new Dictionary<Resource<ImStyle>, ResourceValue<ImStyle>>();
-            _resources = resources;
             _batch = batch;
             _styleStack = new Stack<ImStyle>();
             _idPopper = new ImGuiPoppers.IdPopper(this);
@@ -27,7 +21,7 @@ namespace Guppy.Game.ImGui
 
         public IDisposable Apply(Resource<ImStyle> style)
         {
-            return this.Apply(this.GetStyle(style));
+            return this.Apply(style.Value);
         }
 
         public IDisposable Apply(ImStyle style)
@@ -75,19 +69,6 @@ namespace Guppy.Game.ImGui
             }
 
             return _batch.GetFont(ttf, size);
-        }
-
-        public ResourceValue<ImStyle> GetStyle(Resource<ImStyle> style)
-        {
-            ref ResourceValue<ImStyle>? styleValue = ref CollectionsMarshal.GetValueRefOrAddDefault(_styles, style, out bool exists);
-            if (exists)
-            {
-                return styleValue!;
-            }
-
-            styleValue = _resources.Get(style);
-
-            return styleValue;
         }
     }
 }

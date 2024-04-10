@@ -1,24 +1,30 @@
 ﻿using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Resources.Constants;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Resources.Providers
 {
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal class ResourceProvider : GlobalComponent, IResourceProvider
+    internal class ResourceProvider : GlobalComponent, IResourceProvider, IDisposable
     {
         private ISettingProvider _settings;
         private IResourcePackProvider _packs;
-        private Dictionary<Resource, IResourceValue> _cache;
         private SettingValue<string> _localization;
 
         public ResourceProvider(ISettingProvider settings, IResourcePackProvider packs)
         {
             _settings = settings;
             _packs = packs;
-            _cache = new Dictionary<Resource, IResourceValue>();
             _localization = _settings.Get(Settings.Localization);
+
+            ResourceHelper.OnAdded += this.HandleResourceAdded;
+        }
+
+        public void Dispose()
+        {
+            ResourceHelper.OnAdded -= this.HandleResourceAdded;
+
+            ResourceHelper.Clear();
         }
 
         protected override void Initialize(IGlobalComponent[] components)
@@ -27,35 +33,14 @@ namespace Guppy.Resources.Providers
 
             _packs.Initialize(components);
 
-            foreach (IResourceValue resourceValue in _cache.Values)
+            foreach (IResource resource in ResourceHelper.GetAll())
             {
-                resourceValue.ForceUpdate(this);
+                resource.Initialize(this);
             }
         }
 
-        public ResourceValue<T> Get<T>(Resource<T> resource)
-            where T : notnull
+        public void RefreshAll()
         {
-            ref IResourceValue? cachedValue = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, resource, out bool exists);
-            if (exists)
-            {
-                return (ResourceValue<T>)cachedValue!;
-            }
-
-            cachedValue = new ResourceValue<T>(resource);
-
-            if (cachedValue is ResourceValue<T> casted)
-            {
-                if (this.Ready == false)
-                {
-                    return casted;
-                }
-
-                cachedValue.ForceUpdate(this);
-
-                return casted;
-            }
-
             throw new NotImplementedException();
         }
 
@@ -86,25 +71,14 @@ namespace Guppy.Resources.Providers
             return valuesToCache.LastOrDefault() ?? throw new NotImplementedException();
         }
 
-        public IEnumerable<(Resource, T)> GetAll<T>() where T : notnull
+        private void HandleResourceAdded(object? sender, IResource resource)
         {
-            IEnumerable<Resource<T>> resources = _packs.GetAll().Select(x => x.GetAll<T>()).SelectMany(x => x).Distinct();
-
-            foreach (Resource<T> resource in resources)
+            if (this.Ready == false)
             {
-                yield return (resource, this.Get(resource));
+                return;
             }
-        }
 
-        public IResourceProvider Set<T>(Resource<T> resource, T value) where T : notnull
-        {
-            throw new NotImplementedException();
-
-            // ref T[] cache = ref this.GetCache(resource);
-            // Array.Resize(ref cache, cache.Length + 1);
-            // _cache[resource] = value;
-            // 
-            // return this;
+            resource.Initialize(this);
         }
     }
 }

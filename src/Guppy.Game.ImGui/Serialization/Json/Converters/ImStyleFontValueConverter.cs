@@ -36,7 +36,7 @@ namespace Guppy.Game.ImGui.Serialization.Json.Converters
                         break;
 
                     case nameof(ImFontPtr.TTF):
-                        ttf = Resources.Resource.Get<TrueTypeFont>(reader.ReadString());
+                        ttf = Resource<TrueTypeFont>.Get(reader.ReadString());
                         break;
                 }
             }

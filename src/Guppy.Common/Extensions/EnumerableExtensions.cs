@@ -5,6 +5,11 @@ namespace Guppy.Common.Extensions
 {
     public static class EnumerableExtensions
     {
+        public static IEnumerable<(T, int)> Indices<T>(this IEnumerable<T> items)
+        {
+            return items.Select((x, i) => (x, i));
+        }
+
         public static T[] Sequence<T, TSequence>(this IEnumerable<T> items, TSequence defaultSequence, bool reverse = false)
             where TSequence : unmanaged, Enum
         {

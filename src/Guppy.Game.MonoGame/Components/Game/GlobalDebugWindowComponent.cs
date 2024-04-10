@@ -14,7 +14,7 @@ namespace Guppy.Game.MonoGame.Components.Game
     [AutoLoad]
     internal class GlobalDebugWindowComponent : GlobalComponent, IImGuiComponent
     {
-        private readonly ResourceValue<ImStyle> _debugWindowStyle;
+        private readonly Resource<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;
@@ -23,7 +23,7 @@ namespace Guppy.Game.MonoGame.Components.Game
         {
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
-            _debugWindowStyle = imgui.GetStyle(Resources.ImGuiStyles.DebugWindow);
+            _debugWindowStyle = Resources.ImGuiStyles.DebugWindow;
 
             _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }

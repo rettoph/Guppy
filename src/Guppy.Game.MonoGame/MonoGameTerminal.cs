@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.Collections;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
+using Serilog.Events;
 using System.CommandLine.IO;
 
 namespace Guppy.Game.MonoGame
@@ -34,14 +35,14 @@ namespace Guppy.Game.MonoGame
         public MonoGameTerminal(ITerminalTheme theme)
         {
             _out = new MonoGameTerminalTextWriter(this);
-            this.Error = new MonoGameTerminalErrorTextWriter(this, theme.Error);
+            this.Error = new MonoGameTerminalErrorTextWriter(this, theme.Get(LogEventLevel.Error));
             this.Theme = theme;
 
             this.IsOutputRedirected = true;
             this.IsErrorRedirected = true;
             this.IsInputRedirected = true;
 
-            this.Color = theme.Default;
+            this.Color = theme.Get(default!).Value;
         }
 
         public void WriteLine(string value)

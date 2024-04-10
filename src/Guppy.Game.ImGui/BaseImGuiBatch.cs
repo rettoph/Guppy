@@ -260,8 +260,7 @@ namespace Guppy.Game.ImGui
 
             font = new Ref<ImFontPtr>(default!);
 
-            ResourceValue<TrueTypeFont> ttfInstance = _resources.Get(ttf);
-            font.Value = new ImFontPtr(ttfInstance, size);
+            font.Value = new ImFontPtr(ttf, size);
 
             if (this.Ready)
             {

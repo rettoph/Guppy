@@ -12,9 +12,9 @@ namespace Guppy.Game.ImGui.Styling.StyleValueResources
         private Num.Vector4 _value;
 
         public readonly ImGuiNET.ImGuiCol Property;
-        public readonly Ref<Color> Color;
+        public readonly IRef<Color> Color;
 
-        public ImStyleColorValue(string? key, ImGuiCol col, Ref<Color> color) : base(key)
+        public ImStyleColorValue(string? key, ImGuiCol col, IRef<Color> color) : base(key)
         {
             this.Property = ImGuiColConverter.ConvertToImGui(col);
             this.Color = color;

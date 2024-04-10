@@ -14,7 +14,7 @@ namespace Guppy.Resources.ResourceTypes
 
         public bool TryResolve(ResourcePack pack, string resourceName, string localization, JsonElement json)
         {
-            Resource<T> resource = Resource.Get<T>(resourceName);
+            Resource<T> resource = Resource<T>.Get(resourceName);
 
             if (this.TryResolve(resource, pack.RootDirectory, ref json, out T? value))
             {

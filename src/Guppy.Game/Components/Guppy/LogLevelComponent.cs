@@ -26,7 +26,7 @@ namespace Guppy.Game.Components.Guppy
             if (message.Value is null)
             {
                 _terminal.Write($"Current Log Level: ");
-                _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
+                _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel).Value);
 
                 return;
             }
@@ -34,7 +34,7 @@ namespace Guppy.Game.Components.Guppy
             LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value.Value;
 
             _terminal.Write($"Set Log Level: ");
-            _terminal.WriteLine(message.Value.Value.ToString(), _terminal.Theme.Get(message.Value.Value));
+            _terminal.WriteLine(message.Value.Value.ToString(), _terminal.Theme.Get(message.Value.Value).Value);
         }
     }
 }

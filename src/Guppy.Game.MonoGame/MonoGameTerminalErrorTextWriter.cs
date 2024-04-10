@@ -6,9 +6,9 @@ namespace Guppy.Game.MonoGame
 {
     internal class MonoGameTerminalErrorTextWriter : MonoGameTerminalTextWriter
     {
-        private readonly Ref<Color> _errColor;
+        private readonly IRef<Color> _errColor;
 
-        public MonoGameTerminalErrorTextWriter(MonoGameTerminal terminal, Ref<Color> errColor) : base(terminal)
+        public MonoGameTerminalErrorTextWriter(MonoGameTerminal terminal, IRef<Color> errColor) : base(terminal)
         {
             _errColor = errColor;
         }
@@ -17,7 +17,7 @@ namespace Guppy.Game.MonoGame
         {
             var color = terminal.Color;
 
-            terminal.Color = _errColor;
+            terminal.Color = _errColor.Value;
             terminal.Write(value);
 
             terminal.Color = color;
@@ -25,12 +25,12 @@ namespace Guppy.Game.MonoGame
 
         protected override void WriteLineToTerminal(ITerminal terminal, string value)
         {
-            terminal.WriteLine(value, _errColor);
+            terminal.WriteLine(value, _errColor.Value);
         }
 
         protected override void WriteToTerminal(ITerminal terminal, string value)
         {
-            terminal.Write(value, _errColor);
+            terminal.Write(value, _errColor.Value);
         }
     }
 }

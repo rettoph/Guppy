@@ -20,7 +20,7 @@ namespace Guppy.Game.Serilog.Sinks
         public void Emit(LogEvent logEvent)
         {
             var color = _terminal.Color;
-            _terminal.Color = _terminal.Theme.Get(logEvent.Level);
+            _terminal.Color = _terminal.Theme.Get(logEvent.Level).Value;
             _formatter.Format(logEvent, _terminal.Out);
             _terminal.Color = color;
         }

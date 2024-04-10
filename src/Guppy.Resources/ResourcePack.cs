@@ -14,14 +14,14 @@ namespace Guppy.Resources
         public string Name => _entry.Value.Name;
         public readonly DirectoryLocation RootDirectory;
 
-        private Dictionary<Resource, Dictionary<string, object>> _resources;
+        private Dictionary<IResource, Dictionary<string, object>> _resources;
 
         internal ResourcePack(IFile<ResourcePackEntryConfiguration> entry, DirectoryLocation rootDirectory)
         {
             _entry = entry;
             this.RootDirectory = rootDirectory;
 
-            _resources = new Dictionary<Resource, Dictionary<string, object>>();
+            _resources = new Dictionary<IResource, Dictionary<string, object>>();
         }
 
         public void Add<T>(Resource<T> resource, string localization, T value)
