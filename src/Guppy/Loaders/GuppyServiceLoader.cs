@@ -30,7 +30,7 @@ namespace Guppy.Loaders
             services.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             services.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();
-            services.RegisterType<Bus>().As<IBus>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+            services.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             services.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
@@ -39,7 +39,6 @@ namespace Guppy.Loaders
             services.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
 
             services.RegisterType<FilteredProvider>().As<IFilteredService>().InstancePerLifetimeScope();
-            services.RegisterType<BulkGuppyBrokerSubscriptionProvider<IBus, IMessage>>().AsImplementedInterfaces().InstancePerLifetimeScope();
             services.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
             services.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
 

@@ -21,16 +21,16 @@ namespace Guppy
             IEnumerable<Assembly> libraries,
             Action<ContainerBuilder>? build)
         {
-            Assemblies = new AssemblyService(libraries);
-            Environment = environment;
+            this.Assemblies = new AssemblyService(libraries);
+            this.Environment = environment;
 
-            ContainerBuilder = new ContainerBuilder();
-            ContainerBuilder.RegisterInstance(Assemblies);
-            ContainerBuilder.RegisterInstance(Environment);
+            this.ContainerBuilder = new ContainerBuilder();
+            this.ContainerBuilder.RegisterInstance(Assemblies);
+            this.ContainerBuilder.RegisterInstance(Environment);
 
-            Assemblies.OnAssemblyLoaded += HandleAssemblyLoaded;
-            Assemblies.Load(entry);
-            Assemblies.OnAssemblyLoaded -= HandleAssemblyLoaded;
+            this.Assemblies.OnAssemblyLoaded += HandleAssemblyLoaded;
+            this.Assemblies.Load(entry);
+            this.Assemblies.OnAssemblyLoaded -= HandleAssemblyLoaded;
 
             var guppyConfigurationAttributes = Assemblies.GetAttributes<GuppyConfigurationAttribute>(true);
             foreach ((Type type, GuppyConfigurationAttribute[] attributes) in guppyConfigurationAttributes)

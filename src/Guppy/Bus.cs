@@ -3,7 +3,7 @@ using Guppy.Messaging;
 
 namespace Guppy
 {
-    internal class Bus : Broker<IMessage>, IBus
+    internal class Bus : MagicBroker<IMessage>, IBus
     {
         private (Type type, int queue)[] _queueConfigurations;
         private Dictionary<Type, Queue<IMessage>> _typeQueues;

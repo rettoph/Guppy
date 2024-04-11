@@ -9,19 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Configurations\**" />
-    <Compile Remove="Extensions\Microsoft\**" />
-    <EmbeddedResource Remove="Configurations\**" />
-    <EmbeddedResource Remove="Extensions\Microsoft\**" />
-    <None Remove="Configurations\**" />
-    <None Remove="Extensions\Microsoft\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
     <ProjectReference Include="..\Guppy.StateMachine\Guppy.StateMachine.csproj" />

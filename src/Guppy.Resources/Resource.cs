@@ -181,7 +181,7 @@ namespace Guppy.Resources
         internal static void Clear()
         {
             // TODO: This should clear and dispose all resources
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
     }
 }
