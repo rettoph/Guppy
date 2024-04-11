@@ -19,7 +19,7 @@ namespace Guppy.Resources
     public struct Resource<T> : IResource, IEquatable<Resource<T>>, IRef<T>
         where T : notnull
     {
-        private int _index;
+        private readonly int _index;
 
         public readonly Guid Id;
         public readonly UnmanagedString Name;
@@ -48,7 +48,7 @@ namespace Guppy.Resources
             _cache.Remove(this.Name);
 
             StaticValueCollection<Resource<T>, T>.Push(_index);
-            StaticCollection<IResource>.Remove(this);
+            StaticCollection<IResource>.Remove(this, false);
 
             this.Name.Dispose();
         }
@@ -129,7 +129,7 @@ namespace Guppy.Resources
 
             _cache.Clear();
 
-            StaticValueCollection<IResource, T>.Clear();
+            StaticValueCollection<Resource<T>, T>.Clear();
         }
     }
 }

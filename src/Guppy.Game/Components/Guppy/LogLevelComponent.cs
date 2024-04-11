@@ -1,9 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Commands;
-using Guppy.Common;
 using Guppy.Game.Common;
-using Guppy.Resources.Services;
-using Serilog.Events;
 
 namespace Guppy.Game.Components.Guppy
 {
@@ -11,14 +8,12 @@ namespace Guppy.Game.Components.Guppy
     internal class LogLevelComponent : GuppyComponent, ICommandSubscriber<LogLevelCommand>
     {
         private readonly ITerminal _terminal;
-        private readonly Ref<LogEventLevel> _logLevel;
 
-        public LogLevelComponent(ITerminal terminal, ISettingService settings)
+        public LogLevelComponent(ITerminal terminal)
         {
             _terminal = terminal;
-            _logLevel = settings.Get(Settings.LogLevel);
 
-            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value;
+            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = Settings.LogLevel;
         }
 
         public void Process(in Guid messageId, LogLevelCommand message)
@@ -31,7 +26,7 @@ namespace Guppy.Game.Components.Guppy
                 return;
             }
 
-            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value.Value;
+            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = Settings.LogLevel.Value = message.Value.Value;
 
             _terminal.Write($"Set Log Level: ");
             _terminal.WriteLine(message.Value.Value.ToString(), _terminal.Theme.Get(message.Value.Value).Value);

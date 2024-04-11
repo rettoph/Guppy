@@ -10,13 +10,11 @@ namespace Guppy.Resources.Services
     {
         private ISettingService _settings;
         private IResourcePackService _packs;
-        private SettingValue<string> _localization;
 
         public ResourceService(ISettingService settings, IResourcePackService packs)
         {
             _settings = settings;
             _packs = packs;
-            _localization = _settings.Get(Settings.Localization);
 
             StaticCollection<IResource>.OnAdded += this.HandleResourceAdded;
         }
@@ -52,17 +50,17 @@ namespace Guppy.Resources.Services
             List<T> valuesToCache = new List<T>();
             foreach (ResourcePack pack in _packs.GetAll())
             {
-                if (pack.TryGet(resource, _localization.Setting.DefaultValue, out T? packValue))
+                if (pack.TryGet(resource, Settings.Localization.DefaultValue, out T? packValue))
                 {
                     valuesToCache.Add(packValue);
                 }
             }
 
-            if (_localization != _localization.Setting.DefaultValue)
+            if (Settings.Localization.Value != Settings.Localization.DefaultValue)
             {
                 foreach (ResourcePack pack in _packs.GetAll())
                 {
-                    if (pack.TryGet(resource, _localization, out T? packValue))
+                    if (pack.TryGet(resource, Settings.Localization.Value, out T? packValue))
                     {
                         valuesToCache.Add(packValue);
                     }

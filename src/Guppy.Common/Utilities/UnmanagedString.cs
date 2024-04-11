@@ -36,6 +36,12 @@ namespace Guppy.Common.Utilities
 
         public void Dispose()
         {
+            if (_length == -1)
+            {
+                return;
+            }
+
+            _length = -1;
             Marshal.FreeHGlobal(_ptr);
         }
 

@@ -17,14 +17,14 @@
             OnAdded?.Invoke(null, owner);
         }
 
-        public static void Remove(T owner)
+        public static void Remove(T owner, bool dispose)
         {
             if (_owners.Remove(owner) == false)
             {
                 return;
             }
 
-            if (owner is IDisposable disposable)
+            if (dispose && owner is IDisposable disposable)
             {
                 disposable.Dispose();
             }
@@ -40,7 +40,12 @@
         public static void Clear()
         {
             // TODO: This should clear and dispose all resources
-            throw new NotImplementedException();
+            foreach (IDisposable disposable in _owners.OfType<IDisposable>().ToList())
+            {
+                disposable.Dispose();
+            }
+
+            _owners.Clear();
         }
     }
 

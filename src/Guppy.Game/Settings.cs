@@ -11,6 +11,6 @@ namespace Guppy.Game
         private const LogEventLevel DefaultLogLevel = LogEventLevel.Information;
 #endif
 
-        public static Setting<LogEventLevel> LogLevel = Setting.Get<LogEventLevel>(nameof(LogLevel), DefaultLogLevel, "Serilog LogEventLevel. Valid Values: Verbose, Debug, Information, Warning, Fatal.");
+        public static Setting<LogEventLevel> LogLevel = Setting<LogEventLevel>.Get(nameof(LogLevel), "Serilog LogEventLevel. Valid Values: Verbose, Debug, Information, Warning, Fatal.", DefaultLogLevel);
     }
 }

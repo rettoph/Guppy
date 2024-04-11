@@ -1,11 +1,7 @@
 ﻿using Guppy.Attributes;
 using Guppy.Commands.Services;
-using Guppy.Common;
 using Guppy.Game.Common;
 using Guppy.Game.ImGui;
-using Guppy.Game.ImGui.Styling;
-using Guppy.Resources;
-using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Guppy
@@ -15,7 +11,6 @@ namespace Guppy.Game.MonoGame.Components.Guppy
     {
         private readonly ICommandService _commands;
         private readonly IImGui _imgui;
-        private readonly Resource<ImStyle> _debugWindowStyle;
         private readonly MonoGameTerminal _terminal;
 
         private string _filter;
@@ -25,23 +20,18 @@ namespace Guppy.Game.MonoGame.Components.Guppy
         private int _lines;
         private bool _scrolledToBottom;
 
-        private Ref<bool> _enabled;
-
         private IGuppy _guppy;
 
-        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ISettingService settings, ICommandService commands)
+        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands)
         {
             _commands = commands;
             _imgui = imgui;
-            _debugWindowStyle = Resources.ImGuiStyles.DebugWindow;
             _terminal = terminal;
             _filter = string.Empty;
             _input = string.Empty;
             _inputContainerHeight = 0;
             _scrolledToBottom = true;
             _guppy = null!;
-
-            _enabled = settings.Get(Settings.IsTerminalWindowEnabled);
         }
 
         public override void Initialize(IGuppy guppy)
@@ -53,12 +43,12 @@ namespace Guppy.Game.MonoGame.Components.Guppy
 
         public void DrawImGui(GameTime gameTime)
         {
-            if (_enabled == false)
+            if (Settings.IsTerminalWindowEnabled == false)
             {
                 return;
             }
 
-            using (_imgui.Apply(_debugWindowStyle))
+            using (_imgui.Apply(Resources.ImGuiStyles.DebugWindow))
             {
                 _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                 _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);

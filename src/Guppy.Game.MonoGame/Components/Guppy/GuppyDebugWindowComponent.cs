@@ -1,12 +1,10 @@
 ﻿using Guppy.Attributes;
-using Guppy.Common;
 using Guppy.Common.Extensions;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
-using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Guppy
@@ -17,18 +15,15 @@ namespace Guppy.Game.MonoGame.Components.Guppy
         private readonly Resource<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
         private IDebugComponent[] _components;
-        private Ref<bool> _enabled;
         private IGuppy _guppy;
         private ImGuiWindowClassPtr _class;
 
-        public GuppyDebugWindowComponent(IImGui imgui, ISettingService settings)
+        public GuppyDebugWindowComponent(IImGui imgui)
         {
             _guppy = null!;
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
             _debugWindowStyle = Resources.ImGuiStyles.DebugWindow;
-
-            _enabled = settings.Get(Settings.IsDebugWindowEnabled);
         }
 
         public override void Initialize(IGuppy guppy)
@@ -41,7 +36,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
 
         public void DrawImGui(GameTime gameTime)
         {
-            if (_enabled == false)
+            if (Settings.IsDebugWindowEnabled == false)
             {
                 return;
             }
