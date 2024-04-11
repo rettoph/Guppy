@@ -74,7 +74,7 @@ namespace Guppy.Game.ImGui
         {
             base.Initialize(components);
 
-            _resources.Initialize(components);
+            _resources.Initialize();
 
             if (_fonts.Count > 0)
             {

@@ -8,6 +8,7 @@ namespace Guppy.Resources.Services
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
     internal class ResourceService : GlobalComponent, IResourceService, IDisposable
     {
+        private bool _initialized;
         private ISettingService _settings;
         private IResourcePackService _packs;
 
@@ -30,12 +31,25 @@ namespace Guppy.Resources.Services
         {
             base.Initialize(components);
 
-            _packs.Initialize(components);
+            this.Initialize();
+        }
+
+        public void Initialize()
+        {
+            if (_initialized)
+            {
+                return;
+            }
+
+            _settings.Initialize();
+            _packs.Initialize();
 
             foreach (IResource resource in StaticCollection<IResource>.GetAll())
             {
                 resource.Initialize(this);
             }
+
+            _initialized = true;
         }
 
         public void RefreshAll()

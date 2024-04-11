@@ -2,6 +2,7 @@
 {
     public interface ISettingService
     {
+        void Initialize();
         void Save();
     }
 }

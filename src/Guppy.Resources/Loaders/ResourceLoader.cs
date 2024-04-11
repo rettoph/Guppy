@@ -17,7 +17,7 @@ namespace Guppy.Resources.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
 
-            services.RegisterType<SettingService>().As<ISettingService>().SingleInstance();
+            services.RegisterType<SettingService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourcePackService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourceService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourceTypeService>().As<IResourceTypeService>().SingleInstance();

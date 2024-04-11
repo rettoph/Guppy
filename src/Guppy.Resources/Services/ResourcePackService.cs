@@ -13,6 +13,7 @@ namespace Guppy.Resources.Services
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
     internal sealed class ResourcePackService : GlobalComponent, IResourcePackService, IGlobalComponent
     {
+        private bool _initialized;
         private readonly IFileService _files;
         private IDictionary<Guid, ResourcePack> _packs;
         private IFile<ResourcePacksConfiguration> _configuration;
@@ -37,10 +38,22 @@ namespace Guppy.Resources.Services
 
         protected override void Initialize(IGlobalComponent[] components)
         {
+            this.Initialize();
+        }
+
+        public void Initialize()
+        {
+            if (_initialized)
+            {
+                return;
+            }
+
             foreach (ResourcePackConfiguration packConfiguration in _configuration.Value.Packs)
             {
                 this.Load(packConfiguration);
             }
+
+            _initialized = true;
         }
 
         public IEnumerable<ResourcePack> GetAll()
