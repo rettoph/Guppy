@@ -1,6 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Utilities;
 using Guppy.Resources.Services;
+using Guppy.Resources.Utilities;
 using Standart.Hash.xxHash;
 using System.Runtime.InteropServices;
 
@@ -18,39 +19,36 @@ namespace Guppy.Resources
     public struct Resource<T> : IResource, IEquatable<Resource<T>>, IRef<T>
         where T : notnull
     {
-        private readonly int _index;
+        private int _index;
 
         public readonly Guid Id;
         public readonly UnmanagedString Name;
         public Type Type => typeof(T);
         public T Value
         {
-            get => _values[_index];
-            set => _values[_index] = value;
+            get => StaticValueCollection<Resource<T>, T>.Get(_index);
+            set => StaticValueCollection<Resource<T>, T>.Set(_index, value);
         }
 
         Guid IResource.Id => this.Id;
         UnmanagedString IResource.Name => this.Name;
 
-        internal unsafe Resource(string name)
+        private unsafe Resource(string name)
         {
-            _index = Resource<T>.PopValueIndex();
+            _index = StaticValueCollection<Resource<T>, T>.Pop();
 
             uint128 nameHash = xxHash128.ComputeHash(name);
             Guid* pNameHash = (Guid*)&nameHash;
             this.Id = pNameHash[0];
             this.Name = new UnmanagedString(name);
-
-            ResourceHelper.Add(this);
         }
 
         public void Dispose()
         {
             _cache.Remove(this.Name);
 
-            ResourceHelper.Remove(this);
-
-            Resource<T>.PushValueIndex(_index);
+            StaticValueCollection<Resource<T>, T>.Push(_index);
+            StaticCollection<IResource>.Remove(this);
 
             this.Name.Dispose();
         }
@@ -112,6 +110,8 @@ namespace Guppy.Resources
             }
 
             resource = new Resource<T>(name);
+            StaticCollection<IResource>.Add(resource);
+
             return resource;
         }
 
@@ -128,60 +128,8 @@ namespace Guppy.Resources
             }
 
             _cache.Clear();
-            _values.Clear();
-            _indices.Clear();
-        }
 
-        private static Stack<int> _indices = new Stack<int>();
-        private static List<T> _values = new List<T>();
-        private static int PopValueIndex()
-        {
-            if (_indices.TryPop(out int index))
-            {
-                return index;
-            }
-
-            _values.Add(default!);
-            return _values.Count - 1;
-        }
-        private static void PushValueIndex(int index)
-        {
-            if (_values[index] is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
-            _indices.Push(index);
-        }
-    }
-
-    internal static class ResourceHelper
-    {
-        private static List<IResource> _values = new List<IResource>();
-
-        public static event EventHandler<IResource>? OnAdded;
-
-        public static IEnumerable<IResource> GetAll()
-        {
-            return _values;
-        }
-
-        public static void Add(IResource value)
-        {
-            _values.Add(value);
-
-            ResourceHelper.OnAdded?.Invoke(null, value);
-        }
-
-        public static void Remove(IResource value)
-        {
-            _values.Remove(value);
-        }
-
-        internal static void Clear()
-        {
-            // TODO: This should clear and dispose all resources
-            // throw new NotImplementedException();
+            StaticValueCollection<IResource, T>.Clear();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Guppy.Common.Attributes;
 using Guppy.Enums;
 using Guppy.Resources.Constants;
+using Guppy.Resources.Utilities;
 
 namespace Guppy.Resources.Services
 {
@@ -17,14 +18,14 @@ namespace Guppy.Resources.Services
             _packs = packs;
             _localization = _settings.Get(Settings.Localization);
 
-            ResourceHelper.OnAdded += this.HandleResourceAdded;
+            StaticCollection<IResource>.OnAdded += this.HandleResourceAdded;
         }
 
         public void Dispose()
         {
-            ResourceHelper.OnAdded -= this.HandleResourceAdded;
+            StaticCollection<IResource>.OnAdded -= this.HandleResourceAdded;
 
-            ResourceHelper.Clear();
+            StaticCollection<IResource>.Clear();
         }
 
         protected override void Initialize(IGlobalComponent[] components)
@@ -33,7 +34,7 @@ namespace Guppy.Resources.Services
 
             _packs.Initialize(components);
 
-            foreach (IResource resource in ResourceHelper.GetAll())
+            foreach (IResource resource in StaticCollection<IResource>.GetAll())
             {
                 resource.Initialize(this);
             }
@@ -79,6 +80,12 @@ namespace Guppy.Resources.Services
             }
 
             resource.Initialize(this);
+        }
+
+        public IEnumerable<Resource<T>> GetAll<T>()
+            where T : notnull
+        {
+            return Resource<T>.GetAll();
         }
     }
 }
