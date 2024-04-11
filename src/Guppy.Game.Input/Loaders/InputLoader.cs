@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Attributes;
-using Guppy.Game.Input.Providers;
 using Guppy.Game.Input.Services;
 using Guppy.Loaders;
 
@@ -11,9 +10,9 @@ namespace Guppy.Game.Input.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<KeyboardButtonProvider>().AsImplementedInterfaces().SingleInstance();
-            services.RegisterType<MouseButtonProvider>().AsImplementedInterfaces().SingleInstance();
-            services.RegisterType<CursorProvider>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<KeyboardButtonService>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<MouseButtonService>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<CursorService>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterType<InputService>().AsImplementedInterfaces().SingleInstance();
         }

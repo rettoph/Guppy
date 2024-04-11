@@ -1,5 +1,5 @@
 ﻿using Guppy.Common.Collections;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib;
 
 namespace Guppy.Network
@@ -26,7 +26,7 @@ namespace Guppy.Network
         where T : notnull
     {
         private readonly IPeer _peer;
-        private readonly INetSerializerProvider _serializers;
+        private readonly INetSerializerService _serializers;
         private readonly Factory<NetIncomingMessage<T>> _incomingFactory;
         private readonly Factory<NetOutgoingMessage<T>> _outgoingFactory;
 
@@ -36,7 +36,7 @@ namespace Guppy.Network
             DeliveryMethod defaultDeliveryMethod,
             byte defaultOutgoingChannel,
             IPeer peer,
-            INetSerializerProvider serializers) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
+            INetSerializerService serializers) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
         {
             _peer = peer;
             _serializers = serializers;

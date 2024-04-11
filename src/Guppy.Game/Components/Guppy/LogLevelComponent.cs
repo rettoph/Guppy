@@ -2,7 +2,7 @@
 using Guppy.Commands;
 using Guppy.Common;
 using Guppy.Game.Common;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Serilog.Events;
 
 namespace Guppy.Game.Components.Guppy
@@ -13,7 +13,7 @@ namespace Guppy.Game.Components.Guppy
         private readonly ITerminal _terminal;
         private readonly Ref<LogEventLevel> _logLevel;
 
-        public LogLevelComponent(ITerminal terminal, ISettingProvider settings)
+        public LogLevelComponent(ITerminal terminal, ISettingService settings)
         {
             _terminal = terminal;
             _logLevel = settings.Get(Settings.LogLevel);

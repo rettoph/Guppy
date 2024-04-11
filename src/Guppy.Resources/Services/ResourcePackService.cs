@@ -8,21 +8,21 @@ using Guppy.Resources.Constants;
 using Guppy.Resources.ResourceTypes;
 using Serilog;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal sealed class ResourcePackProvider : GlobalComponent, IResourcePackProvider, IGlobalComponent
+    internal sealed class ResourcePackService : GlobalComponent, IResourcePackService, IGlobalComponent
     {
         private readonly IFileService _files;
         private IDictionary<Guid, ResourcePack> _packs;
         private IFile<ResourcePacksConfiguration> _configuration;
-        private readonly IResourceTypeProvider _resourceTypes;
+        private readonly IResourceTypeService _resourceTypes;
         private readonly ILogger _logger;
 
-        public ResourcePackProvider(
+        public ResourcePackService(
             IFileService files,
             IFiltered<ResourcePackConfiguration> packs,
-            IResourceTypeProvider resourceTypes,
+            IResourceTypeService resourceTypes,
             ILogger logger)
         {
             _files = files;
@@ -71,7 +71,7 @@ namespace Guppy.Resources.Providers
             DirectoryLocation directory = entry.Source.Directory;
 
             ResourcePack pack = this.GetOrCreatePack(entry);
-            _logger.Information("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackProvider), nameof(Load), pack.Name, pack.Id);
+            _logger.Information("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackService), nameof(Load), pack.Name, pack.Id);
 
             foreach ((string localization, string[] resourceFileNames) in entry.Value.Import)
             {
@@ -84,7 +84,7 @@ namespace Guppy.Resources.Providers
 
         private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
         {
-            _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackProvider), nameof(ImportResourceFile), resourceFileName, localization);
+            _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackService), nameof(ImportResourceFile), resourceFileName, localization);
 
             IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(new FileLocation(directory, resourceFileName));
             foreach (ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
@@ -97,7 +97,7 @@ namespace Guppy.Resources.Providers
         {
             if (_resourceTypes.TryGet(resourceTypeValues.Type, out IResourceType? resourceType) == false)
             {
-                _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackProvider), nameof(ResolveResourceTypeValues), resourceTypeValues.Type);
+                _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource type defined by {ResourceName}, unknown.", nameof(ResourcePackService), nameof(ResolveResourceTypeValues), resourceTypeValues.Type);
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace Guppy.Resources.Providers
             {
                 if (resourceType.TryResolve(pack, name, localization, json) == false)
                 {
-                    _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}", nameof(ResourcePackProvider), nameof(ResolveResourceTypeValues), name);
+                    _logger.Error("{ClassName}::{MethodName} - Unable to resolve resource {ResourceName}", nameof(ResourcePackService), nameof(ResolveResourceTypeValues), name);
                     continue;
                 }
             }

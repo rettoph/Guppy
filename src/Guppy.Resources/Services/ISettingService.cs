@@ -1,6 +1,6 @@
-﻿namespace Guppy.Resources.Providers
+﻿namespace Guppy.Resources.Services
 {
-    public interface ISettingProvider
+    public interface ISettingService
     {
         SettingValue<T> Get<T>(Setting<T> setting)
             where T : notnull;

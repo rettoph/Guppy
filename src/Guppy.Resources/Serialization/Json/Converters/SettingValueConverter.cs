@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Providers;
+﻿using Guppy.Resources.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,9 +6,9 @@ namespace Guppy.Resources.Serialization.Json.Converters
 {
     internal class SettingValueConverter : JsonConverter<ISettingValue>
     {
-        private IPolymorphicJsonSerializer<object> _serializer;
+        private IPolymorphicJsonSerializerService<object> _serializer;
 
-        public SettingValueConverter(IPolymorphicJsonSerializer<object> serializer)
+        public SettingValueConverter(IPolymorphicJsonSerializerService<object> serializer)
         {
             _serializer = serializer;
         }

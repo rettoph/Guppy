@@ -38,8 +38,8 @@ namespace Guppy.Loaders
             services.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
             services.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
 
-            services.RegisterType<FilteredProvider>().As<IFilteredService>().InstancePerLifetimeScope();
-            services.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
+            services.RegisterType<FilteredService>().As<IFilteredService>().InstancePerLifetimeScope();
+            services.RegisterType<Services.StateService>().As<IStateService>().InstancePerLifetimeScope();
             services.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
 
             services.Register<ILogger>(p =>

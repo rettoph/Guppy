@@ -2,13 +2,13 @@
 using Guppy.Resources.Serialization.Json;
 using System.Text.Json;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
-    internal class PolymorphicJsonSerializer<TBase> : IPolymorphicJsonSerializer<TBase>
+    internal class PolymorphicJsonSerializerService<TBase> : IPolymorphicJsonSerializerService<TBase>
     {
         private readonly Map<string, Type> _types;
 
-        public PolymorphicJsonSerializer(IEnumerable<PolymorphicJsonType> types)
+        public PolymorphicJsonSerializerService(IEnumerable<PolymorphicJsonType> types)
         {
             var typeTuples = types.Where(x => x.BaseType == typeof(TBase)).Select(x => (x.Key, x.InstanceType));
             _types = new Map<string, Type>(typeTuples);

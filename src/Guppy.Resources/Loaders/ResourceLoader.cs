@@ -3,7 +3,7 @@ using Guppy.Attributes;
 using Guppy.Files.Serialization.Json;
 using Guppy.Loaders;
 using Guppy.Resources.Configuration;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Guppy.Resources.Serialization.Json;
 using Guppy.Resources.Serialization.Json.Converters;
 using Serilog.Events;
@@ -17,11 +17,11 @@ namespace Guppy.Resources.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
 
-            services.RegisterType<SettingProvider>().As<ISettingProvider>().SingleInstance();
-            services.RegisterType<ResourcePackProvider>().AsImplementedInterfaces().SingleInstance();
-            services.RegisterType<ResourceProvider>().AsImplementedInterfaces().SingleInstance();
-            services.RegisterType<ResourceTypeProvider>().As<IResourceTypeProvider>().SingleInstance();
-            services.RegisterGeneric(typeof(PolymorphicJsonSerializer<>)).As(typeof(IPolymorphicJsonSerializer<>)).InstancePerDependency();
+            services.RegisterType<SettingService>().As<ISettingService>().SingleInstance();
+            services.RegisterType<ResourcePackService>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<ResourceService>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<ResourceTypeService>().As<IResourceTypeService>().SingleInstance();
+            services.RegisterGeneric(typeof(PolymorphicJsonSerializerService<>)).As(typeof(IPolymorphicJsonSerializerService<>)).InstancePerDependency();
 
             services.RegisterType<ResourcePacksConfigurationConverter>().As<JsonConverter>().SingleInstance();
             services.RegisterType<IFileJsonConverter<ResourcePackConfiguration>>().As<JsonConverter>().SingleInstance();

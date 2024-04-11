@@ -4,7 +4,7 @@ using Guppy.Enums;
 using Guppy.Game.ImGui.Messages;
 using Guppy.Game.Input;
 using Guppy.Resources;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -20,7 +20,7 @@ namespace Guppy.Game.ImGui
         private bool _dirtyFonts;
         private readonly Dictionary<(Resource<TrueTypeFont>, int), Ref<ImFontPtr>> _fonts;
 
-        private readonly IResourceProvider _resources;
+        private readonly IResourceService _resources;
         private DateTime _begin;
 
         // Textures
@@ -54,7 +54,7 @@ namespace Guppy.Game.ImGui
             }
         }
 
-        public BaseImGuiBatch(IResourceProvider resources)
+        public BaseImGuiBatch(IResourceService resources)
         {
             this.Context = ImGuiNet.CreateContext();
             ImGuiNet.SetCurrentContext(this.Context);

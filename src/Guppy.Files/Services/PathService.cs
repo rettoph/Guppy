@@ -2,13 +2,13 @@
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 
-namespace Guppy.Files.Providers
+namespace Guppy.Files.Services
 {
-    internal class PathProvider : IPathProvider
+    internal class PathService : IPathService
     {
         private readonly IGuppyEnvironment _environment;
 
-        public PathProvider(IGuppyEnvironment environment)
+        public PathService(IGuppyEnvironment environment)
         {
             _environment = environment;
         }
@@ -27,17 +27,17 @@ namespace Guppy.Files.Providers
 
         public DirectoryLocation GetSourceLocation(DirectoryType type, string path)
         {
-            return this.GetSourceLocation(new DirectoryLocation(type, path));
+            return GetSourceLocation(new DirectoryLocation(type, path));
         }
 
         public FileLocation GetSourceLocation(FileLocation file)
         {
-            return new FileLocation(this.GetSourceLocation(file.Directory), file.Name);
+            return new FileLocation(GetSourceLocation(file.Directory), file.Name);
         }
 
         public FileLocation GetSourceLocation(DirectoryType type, string path, string name)
         {
-            return this.GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
+            return GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
         }
     }
 }

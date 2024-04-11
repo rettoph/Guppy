@@ -1,5 +1,5 @@
 ﻿using Guppy.Messaging;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
@@ -9,7 +9,7 @@ namespace Guppy.Network
         where T : notnull
     {
         private readonly IPeer _peer;
-        private readonly INetSerializerProvider _serializers;
+        private readonly INetSerializerService _serializers;
         private readonly INetSerializer<T> _serializer;
 
         public ISender Sender { get; private set; }
@@ -32,7 +32,7 @@ namespace Guppy.Network
 
         internal NetIncomingMessage(
             IPeer peer,
-            INetSerializerProvider serializers,
+            INetSerializerService serializers,
             NetMessageType<T> type)
         {
             _peer = peer;

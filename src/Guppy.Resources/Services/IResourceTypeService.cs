@@ -1,9 +1,9 @@
 ﻿using Guppy.Resources.ResourceTypes;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
-    public interface IResourceTypeProvider
+    public interface IResourceTypeService
     {
         bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType);
     }

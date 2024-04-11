@@ -6,7 +6,7 @@ using Guppy.Game.Components;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Game
@@ -19,7 +19,7 @@ namespace Guppy.Game.MonoGame.Components.Game
         private IDebugComponent[] _components;
         private Ref<bool> _enabled;
 
-        public GlobalDebugWindowComponent(IImGui imgui, ISettingProvider settings)
+        public GlobalDebugWindowComponent(IImGui imgui, ISettingService settings)
         {
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;

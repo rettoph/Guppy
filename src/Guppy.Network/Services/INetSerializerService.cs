@@ -1,6 +1,6 @@
-﻿namespace Guppy.Network.Providers
+﻿namespace Guppy.Network.Services
 {
-    public interface INetSerializerProvider : IEnumerable<INetSerializer>
+    public interface INetSerializerService : IEnumerable<INetSerializer>
     {
         INetSerializer<T> Get<T>()
             where T : notnull;

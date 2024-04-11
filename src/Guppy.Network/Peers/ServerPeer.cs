@@ -7,7 +7,7 @@ using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Identity.Enums;
 using Guppy.Network.Messages;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib;
 
 namespace Guppy.Network.Peers
@@ -20,7 +20,7 @@ namespace Guppy.Network.Peers
 
         public event ConnectionApprovalDelegate? ConnectionApproval;
 
-        public ServerPeer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
+        public ServerPeer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
         {
             this.Listener.ConnectionRequestEvent += this.HandleConnectionRequestEvent;
             this.Listener.PeerDisconnectedEvent += this.HandlePeerDisconnectedEvent;

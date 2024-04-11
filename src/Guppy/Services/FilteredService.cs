@@ -2,15 +2,15 @@
 using Guppy.Common;
 using Guppy.Common.Services;
 
-namespace Guppy.Providers
+namespace Guppy.Services
 {
-    internal sealed class FilteredProvider : IFilteredService
+    internal sealed class FilteredService : IFilteredService
     {
         private readonly ILifetimeScope _scope;
         private readonly IComponentContext _context;
         private readonly IServiceFilterService _filters;
 
-        public FilteredProvider(IComponentContext context, IServiceFilterService filters, ILifetimeScope scope)
+        public FilteredService(IComponentContext context, IServiceFilterService filters, ILifetimeScope scope)
         {
             _scope = scope;
             _context = context;
@@ -29,13 +29,13 @@ namespace Guppy.Providers
         public T? Instance<T>()
             where T : class
         {
-            return this.Get<T>().Instance;
+            return Get<T>().Instance;
         }
 
         public IEnumerable<T> Instances<T>()
             where T : class
         {
-            return this.Get<T>().Instances;
+            return Get<T>().Instances;
         }
     }
 }

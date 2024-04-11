@@ -6,7 +6,7 @@ using Guppy.Game.Components;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Guppy
@@ -21,7 +21,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
         private IGuppy _guppy;
         private ImGuiWindowClassPtr _class;
 
-        public GuppyDebugWindowComponent(IImGui imgui, ISettingProvider settings)
+        public GuppyDebugWindowComponent(IImGui imgui, ISettingService settings)
         {
             _guppy = null!;
             _components = Array.Empty<IDebugComponent>();

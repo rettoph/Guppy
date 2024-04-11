@@ -5,7 +5,6 @@ using Guppy.Network.Constants;
 using Guppy.Network.Definitions;
 using Guppy.Network.Enums;
 using Guppy.Network.Identity.Services;
-using Guppy.Network.Providers;
 using Guppy.Network.Services;
 using LiteNetLib;
 
@@ -26,7 +25,7 @@ namespace Guppy.Network.Peers
         public INetScope DefaultNetScope { get; }
         public INetGroup Group { get; private set; }
 
-        public Peer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages)
+        public Peer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
             ILifetimeScope innerScope = scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope);
             _bus = innerScope.Resolve<IBus>();

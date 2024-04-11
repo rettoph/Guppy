@@ -5,7 +5,7 @@ using Guppy.Game.Common;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Guppy
@@ -29,7 +29,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
 
         private IGuppy _guppy;
 
-        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ISettingProvider settings, ICommandService commands)
+        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ISettingService settings, ICommandService commands)
         {
             _commands = commands;
             _imgui = imgui;

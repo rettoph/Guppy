@@ -1,6 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Utilities;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using Standart.Hash.xxHash;
 using System.Runtime.InteropServices;
 
@@ -12,7 +12,7 @@ namespace Guppy.Resources
         UnmanagedString Name { get; }
         Type Type { get; }
 
-        internal void Initialize(ResourceProvider resources);
+        internal void Initialize(ResourceService resources);
     }
 
     public struct Resource<T> : IResource, IEquatable<Resource<T>>, IRef<T>
@@ -55,12 +55,12 @@ namespace Guppy.Resources
             this.Name.Dispose();
         }
 
-        void IResource.Initialize(ResourceProvider resources)
+        void IResource.Initialize(ResourceService resources)
         {
             this.SetValue(resources);
         }
 
-        internal void SetValue(ResourceProvider resources)
+        internal void SetValue(ResourceService resources)
         {
             this.Value = resources.GetPackValue(this);
         }

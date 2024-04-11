@@ -1,5 +1,4 @@
 ﻿using Guppy.Files.Helpers;
-using Guppy.Files.Providers;
 using Guppy.Serialization;
 using System.Runtime.InteropServices;
 
@@ -8,10 +7,10 @@ namespace Guppy.Files.Services
     internal class FileService : IFileService
     {
         private readonly IJsonSerializer _json;
-        private readonly IPathProvider _paths;
+        private readonly IPathService _paths;
         private Dictionary<string, IFile> _cache;
 
-        public FileService(IJsonSerializer json, IPathProvider paths)
+        public FileService(IJsonSerializer json, IPathService paths)
         {
             _json = json;
             _paths = paths;

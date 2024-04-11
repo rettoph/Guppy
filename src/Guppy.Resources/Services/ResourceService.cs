@@ -2,16 +2,16 @@
 using Guppy.Enums;
 using Guppy.Resources.Constants;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
     [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal class ResourceProvider : GlobalComponent, IResourceProvider, IDisposable
+    internal class ResourceService : GlobalComponent, IResourceService, IDisposable
     {
-        private ISettingProvider _settings;
-        private IResourcePackProvider _packs;
+        private ISettingService _settings;
+        private IResourcePackService _packs;
         private SettingValue<string> _localization;
 
-        public ResourceProvider(ISettingProvider settings, IResourcePackProvider packs)
+        public ResourceService(ISettingService settings, IResourcePackService packs)
         {
             _settings = settings;
             _packs = packs;

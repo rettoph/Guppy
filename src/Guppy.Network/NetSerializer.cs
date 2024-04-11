@@ -1,4 +1,4 @@
-﻿using Guppy.Network.Providers;
+﻿using Guppy.Network.Services;
 using LiteNetLib.Utils;
 
 namespace Guppy.Network
@@ -19,7 +19,7 @@ namespace Guppy.Network
         public Type Type { get; } = typeof(T);
 
 
-        public virtual void Initialize(INetSerializerProvider serializers)
+        public virtual void Initialize(INetSerializerService serializers)
         {
         }
 

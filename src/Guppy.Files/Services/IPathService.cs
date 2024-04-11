@@ -1,8 +1,8 @@
 ﻿using Guppy.Files.Enums;
 
-namespace Guppy.Files.Providers
+namespace Guppy.Files.Services
 {
-    public interface IPathProvider
+    public interface IPathService
     {
         DirectoryLocation GetSourceLocation(DirectoryLocation directory);
         DirectoryLocation GetSourceLocation(DirectoryType type, string path);

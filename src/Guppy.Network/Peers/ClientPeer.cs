@@ -6,7 +6,7 @@ using Guppy.Network.Groups;
 using Guppy.Network.Identity;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Messages;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 
 namespace Guppy.Network.Peers
 {
@@ -16,7 +16,7 @@ namespace Guppy.Network.Peers
 
         public User? ServerUser { get; private set; }
 
-        public ClientPeer(ILifetimeScope scope, INetSerializerProvider serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
+        public ClientPeer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
         {
         }
 

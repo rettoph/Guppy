@@ -1,5 +1,4 @@
 ﻿using Guppy.Network.Definitions;
-using Guppy.Network.Providers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
@@ -8,7 +7,7 @@ namespace Guppy.Network.Services
     internal sealed class NetMessageService : INetMessageService
     {
         private readonly IPeer _peer;
-        private readonly INetSerializerProvider _serializers;
+        private readonly INetSerializerService _serializers;
         private readonly IEnumerable<NetMessageTypeDefinition> _definitions;
 
         private INetGroup _scope;
@@ -17,7 +16,7 @@ namespace Guppy.Network.Services
 
         public NetMessageService(
             IPeer peer,
-            INetSerializerProvider serializers,
+            INetSerializerService serializers,
             IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _peer = peer;

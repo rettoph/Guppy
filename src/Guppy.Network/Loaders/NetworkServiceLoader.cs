@@ -6,7 +6,6 @@ using Guppy.Network.Constants;
 using Guppy.Network.Groups;
 using Guppy.Network.Messages;
 using Guppy.Network.Peers;
-using Guppy.Network.Providers;
 using Guppy.Network.Serialization.Json;
 using Guppy.Network.Services;
 using Guppy.Resources.Serialization.Json.Converters;
@@ -20,7 +19,7 @@ namespace Guppy.Network.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<NetSerializerProvider>().As<INetSerializerProvider>().InstancePerLifetimeScope();
+            services.RegisterType<NetSerializerService>().As<INetSerializerService>().InstancePerLifetimeScope();
             services.Register<INetGroup>(ctx => ctx.Resolve<INetScope>().Groups.FirstOrDefault() ?? NotImplementedNetGroup.Instance);
             services.RegisterType<NetScope>().As<INetScope>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
             services.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();

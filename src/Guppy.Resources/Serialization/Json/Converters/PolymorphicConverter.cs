@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Providers;
+﻿using Guppy.Resources.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -11,9 +11,9 @@ namespace Guppy.Resources.Serialization.Json.Converters
         public const string TypePropertyKey = "Type";
         public const string ValuePropertyKey = "Value";
 
-        private IPolymorphicJsonSerializer<T> _serializer;
+        private IPolymorphicJsonSerializerService<T> _serializer;
 
-        public PolymorphicConverter(IPolymorphicJsonSerializer<T> serializer)
+        public PolymorphicConverter(IPolymorphicJsonSerializerService<T> serializer)
         {
             _serializer = serializer;
         }

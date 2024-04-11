@@ -1,12 +1,12 @@
 ﻿using Guppy.Common;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Resources
 {
     internal interface IResourceValue
     {
-        void ForceUpdate(ResourceProvider resources);
+        void ForceUpdate(ResourceService resources);
     }
 
     public sealed class ResourceValue<T> : Ref<T>, IResourceValue, IDisposable
@@ -19,12 +19,12 @@ namespace Guppy.Resources
             this.Resource = resource;
         }
 
-        void IResourceValue.ForceUpdate(ResourceProvider resources)
+        void IResourceValue.ForceUpdate(ResourceService resources)
         {
             this.ForceUpdate(resources);
         }
 
-        internal void ForceUpdate(ResourceProvider resources)
+        internal void ForceUpdate(ResourceService resources)
         {
             this.Value = resources.GetPackValue(this.Resource);
         }

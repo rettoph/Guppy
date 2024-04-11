@@ -2,7 +2,7 @@
 using Guppy.Network.Enums;
 using Guppy.Network.Identity.Dtos;
 using Guppy.Network.Messages;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib.Utils;
 
 namespace Guppy.Network.Serialization.NetSerializers
@@ -12,7 +12,7 @@ namespace Guppy.Network.Serialization.NetSerializers
     {
         private INetSerializer<UserDto> _userDtoSerializer = null!;
 
-        public override void Initialize(INetSerializerProvider serializers)
+        public override void Initialize(INetSerializerService serializers)
         {
             base.Initialize(serializers);
 

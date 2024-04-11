@@ -1,9 +1,9 @@
 ﻿using Guppy.Game.Input.Enums;
 using Microsoft.Xna.Framework.Input;
 
-namespace Guppy.Game.Input.Providers
+namespace Guppy.Game.Input.Services
 {
-    internal sealed class KeyboardButtonProvider : IButtonProvider
+    internal sealed class KeyboardButtonService : IButtonService
     {
         private IButton[] _keys = Array.Empty<IButton>();
 

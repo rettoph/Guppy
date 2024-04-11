@@ -1,5 +1,5 @@
 ﻿using Guppy.Common.Services;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,9 +8,9 @@ namespace Guppy.Resources.Serialization.Json.Converters
     public sealed class DictionaryPolymorphicConverter<T> : JsonConverter<Dictionary<Type, T>>
         where T : notnull
     {
-        private IPolymorphicJsonSerializer<T> _serializer;
+        private IPolymorphicJsonSerializerService<T> _serializer;
 
-        public DictionaryPolymorphicConverter(IAssemblyService assembly, IPolymorphicJsonSerializer<T> serializer)
+        public DictionaryPolymorphicConverter(IAssemblyService assembly, IPolymorphicJsonSerializerService<T> serializer)
         {
             _serializer = serializer;
         }

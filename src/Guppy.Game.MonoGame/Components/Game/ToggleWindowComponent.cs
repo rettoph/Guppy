@@ -3,7 +3,7 @@ using Guppy.Common;
 using Guppy.Game.Input;
 using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Messages;
-using Guppy.Resources.Providers;
+using Guppy.Resources.Services;
 
 namespace Guppy.Game.MonoGame.Components.Game
 {
@@ -13,7 +13,7 @@ namespace Guppy.Game.MonoGame.Components.Game
         private Ref<bool> _debug;
         private Ref<bool> _terminal;
 
-        public ToggleWindowComponent(ISettingProvider settings)
+        public ToggleWindowComponent(ISettingService settings)
         {
             _debug = settings.Get(Settings.IsDebugWindowEnabled);
             _terminal = settings.Get(Settings.IsTerminalWindowEnabled);

@@ -1,6 +1,6 @@
-﻿namespace Guppy.Game.Input.Providers
+﻿namespace Guppy.Game.Input.Services
 {
-    public interface ICursorProvider
+    public interface ICursorService
     {
         ICursor Get(Guid id);
         void Add(ICursor cursor);

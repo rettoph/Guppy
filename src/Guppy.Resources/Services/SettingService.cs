@@ -3,15 +3,15 @@ using Guppy.Files.Services;
 using Guppy.Resources.Constants;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
-    internal sealed class SettingProvider : ISettingProvider, IDisposable
+    internal sealed class SettingService : ISettingService, IDisposable
     {
         private readonly IFileService _files;
         private readonly Dictionary<Setting, ISettingValue> _values;
         private readonly IFile<Dictionary<Setting, ISettingValue>> _file;
 
-        public SettingProvider(IFileService files)
+        public SettingService(IFileService files)
         {
             _values = new Dictionary<Setting, ISettingValue>();
             _files = files;

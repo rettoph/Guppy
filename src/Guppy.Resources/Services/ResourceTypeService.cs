@@ -1,13 +1,13 @@
 ﻿using Guppy.Resources.ResourceTypes;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
-    internal sealed class ResourceTypeProvider : IResourceTypeProvider
+    internal sealed class ResourceTypeService : IResourceTypeService
     {
         private readonly Dictionary<string, IResourceType> _types;
 
-        public ResourceTypeProvider(IEnumerable<IResourceType> types)
+        public ResourceTypeService(IEnumerable<IResourceType> types)
         {
             _types = types.ToDictionary(x => x.Name, x => x);
         }

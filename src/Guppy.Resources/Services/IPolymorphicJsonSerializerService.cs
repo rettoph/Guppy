@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 
-namespace Guppy.Resources.Providers
+namespace Guppy.Resources.Services
 {
-    public interface IPolymorphicJsonSerializer<TBase>
+    public interface IPolymorphicJsonSerializerService<TBase>
     {
         string GetKey(Type implementationType);
         Type GetImplementationType(string key);

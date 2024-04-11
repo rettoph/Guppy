@@ -1,10 +1,11 @@
-﻿using LiteNetLib.Utils;
+﻿using Guppy.Network.Services;
+using LiteNetLib.Utils;
 
 namespace Guppy.Network.Providers
 {
     public static class INetSerializerProviderExtensions
     {
-        public static void Serialize<T>(this INetSerializerProvider serializers, NetDataWriter writer, bool sign, in T instance)
+        public static void Serialize<T>(this INetSerializerService serializers, NetDataWriter writer, bool sign, in T instance)
             where T : notnull
         {
             var serializer = serializers.Get<T>();
@@ -14,7 +15,7 @@ namespace Guppy.Network.Providers
             serializer.Serialize(writer, in instance);
         }
 
-        public static void Serialize(this INetSerializerProvider serializers, NetDataWriter writer, in object instance)
+        public static void Serialize(this INetSerializerService serializers, NetDataWriter writer, in object instance)
         {
             var serializer = serializers.Get(instance.GetType());
 
@@ -30,7 +31,7 @@ namespace Guppy.Network.Providers
         /// <param name="serializers"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public static T Deserialize<T>(this INetSerializerProvider serializers, NetDataReader reader)
+        public static T Deserialize<T>(this INetSerializerService serializers, NetDataReader reader)
             where T : notnull
         {
             var serializer = serializers.Get<T>();
@@ -44,7 +45,7 @@ namespace Guppy.Network.Providers
         /// <param name="serializers"></param>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public static object Deserialize(this INetSerializerProvider serializers, NetDataReader reader)
+        public static object Deserialize(this INetSerializerService serializers, NetDataReader reader)
         {
             var id = NetId.Byte.Read(reader);
             var serializer = serializers.Get(id);

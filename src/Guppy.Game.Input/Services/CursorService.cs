@@ -1,14 +1,14 @@
-﻿namespace Guppy.Game.Input.Providers
+﻿namespace Guppy.Game.Input.Services
 {
-    internal sealed class CursorProvider : ICursorProvider
+    internal sealed class CursorService : ICursorService
     {
         private IList<ICursor> _cursors;
 
-        public CursorProvider()
+        public CursorService()
         {
             _cursors = new List<ICursor>();
 
-            this.Add(new Cursor());
+            Add(new Cursor());
         }
 
         public void Add(ICursor cursor)

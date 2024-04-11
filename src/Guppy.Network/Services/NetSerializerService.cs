@@ -1,13 +1,13 @@
 ﻿using Guppy.Common.Collections;
 using System.Collections;
 
-namespace Guppy.Network.Providers
+namespace Guppy.Network.Services
 {
-    internal sealed class NetSerializerProvider : INetSerializerProvider
+    internal sealed class NetSerializerService : INetSerializerService
     {
         private DoubleDictionary<INetId, Type, INetSerializer> _serializers;
 
-        public NetSerializerProvider(IEnumerable<INetSerializer> serializers)
+        public NetSerializerService(IEnumerable<INetSerializer> serializers)
         {
             _serializers = new DoubleDictionary<INetId, Type, INetSerializer>(serializers.Count());
 
@@ -35,7 +35,7 @@ namespace Guppy.Network.Providers
             }
             catch (KeyNotFoundException e)
             {
-                throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {typeof(T).Name}", e);
+                throw new KeyNotFoundException($"{nameof(NetSerializerService)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {typeof(T).Name}", e);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Guppy.Network.Providers
             }
             catch (KeyNotFoundException e)
             {
-                throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {type.Name}", e);
+                throw new KeyNotFoundException($"{nameof(NetSerializerService)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for type {type.Name}", e);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Guppy.Network.Providers
             }
             catch (KeyNotFoundException e)
             {
-                throw new KeyNotFoundException($"{nameof(NetSerializerProvider)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for id {id.Value}", e);
+                throw new KeyNotFoundException($"{nameof(NetSerializerService)}::{nameof(Get)} - No {nameof(INetSerializer)} registered for id {id.Value}", e);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Guppy.Network.Providers
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

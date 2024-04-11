@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib;
 
 namespace Guppy.Network.Definitions
@@ -12,7 +12,7 @@ namespace Guppy.Network.Definitions
         public abstract DeliveryMethod DefaultDeliveryMethod { get; }
         public abstract byte DefaultOutgoingChannel { get; }
 
-        internal abstract NetMessageType Build(byte id, IPeer peer, INetSerializerProvider serializers);
+        internal abstract NetMessageType Build(byte id, IPeer peer, INetSerializerService serializers);
     }
 
     public abstract class NetMessageTypeDefinition<TBody> : NetMessageTypeDefinition
@@ -20,7 +20,7 @@ namespace Guppy.Network.Definitions
     {
         public override Type Body => typeof(TBody);
 
-        internal override NetMessageType Build(byte id, IPeer peer, INetSerializerProvider serializers)
+        internal override NetMessageType Build(byte id, IPeer peer, INetSerializerService serializers)
         {
             return new NetMessageType<TBody>(id, this.Body, this.DefaultDeliveryMethod, this.DefaultOutgoingChannel, peer, serializers);
         }

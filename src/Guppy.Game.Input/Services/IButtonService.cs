@@ -1,6 +1,6 @@
-﻿namespace Guppy.Game.Input.Providers
+﻿namespace Guppy.Game.Input.Services
 {
-    public interface IButtonProvider
+    public interface IButtonService
     {
         IEnumerable<IInput> Update();
         void Clean(IEnumerable<IButton> buttons);

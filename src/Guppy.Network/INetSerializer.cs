@@ -1,6 +1,6 @@
 ﻿using Guppy.Attributes;
 using Guppy.Enums;
-using Guppy.Network.Providers;
+using Guppy.Network.Services;
 using LiteNetLib.Utils;
 
 namespace Guppy.Network
@@ -12,7 +12,7 @@ namespace Guppy.Network
 
         Type Type { get; }
 
-        void Initialize(INetSerializerProvider serializers);
+        void Initialize(INetSerializerService serializers);
 
         void Serialize(NetDataWriter writer, in object instance);
 

@@ -2,7 +2,6 @@
 using Guppy.Common.Attributes;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.Input.Providers;
 using Guppy.Game.Input.Services;
 using Microsoft.Xna.Framework;
 
@@ -14,12 +13,12 @@ namespace Guppy.Game.Input.Components
     {
         private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;
-        private readonly IButtonProvider[] _providers;
+        private readonly IButtonService[] _providers;
 
         public ButtonPublishComponent(
             IInputService inputs,
             IEnumerable<IButton> buttons,
-            IEnumerable<IButtonProvider> providers)
+            IEnumerable<IButtonService> providers)
         {
             _inputs = inputs;
             _buttons = buttons.ToDictionary(x => x.Key, x => x);
