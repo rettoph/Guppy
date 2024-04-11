@@ -1,7 +1,7 @@
 ﻿using Guppy.Common.Attributes;
+using Guppy.Common.Utilities;
 using Guppy.Enums;
 using Guppy.Resources.Constants;
-using Guppy.Resources.Utilities;
 
 namespace Guppy.Resources.Services
 {
@@ -24,7 +24,7 @@ namespace Guppy.Resources.Services
         {
             StaticCollection<IResource>.OnAdded -= this.HandleResourceAdded;
 
-            StaticCollection<IResource>.Clear();
+            StaticCollection<IResource>.Clear(true);
         }
 
         protected override void Initialize(IGlobalComponent[] components)

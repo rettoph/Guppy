@@ -1,7 +1,6 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Utilities;
-using Guppy.Resources.Utilities;
-using Standart.Hash.xxHash;
+using Guppy.Resources.Extensions.System;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Resources
@@ -10,7 +9,7 @@ namespace Guppy.Resources
     {
         Guid Id { get; }
         string Name { get; }
-        string Description { get; }
+        string Description { get; set; }
         Type Type { get; }
         object DefaultValue { get; }
         object Value { get; set; }
@@ -19,29 +18,38 @@ namespace Guppy.Resources
     public struct Setting<T> : ISetting, IRef<T>
         where T : notnull
     {
-        private readonly int _defaultIndex;
         private readonly int _currentIndex;
-        private readonly UnmanagedString _name;
-        private readonly UnmanagedString _description;
+        private readonly StaticValue<ISetting, string> _name;
+        private readonly StaticValue<ISetting, string> _description;
+        private readonly StaticValue<ISetting, T> _default;
+        private readonly StaticValue<ISetting, T> _current;
 
         public readonly Guid Id;
         public string Name => _name.Value;
-        public string Description => _description.Value;
+        public string Description
+        {
+            get => _description.Value;
+            set => _description.SetValue(value);
+        }
         public Type Type => typeof(T);
         public T DefaultValue
         {
-            get => StaticValueCollection<Setting<T>, T>.Get(_defaultIndex);
-            set => StaticValueCollection<Setting<T>, T>.Set(_defaultIndex, value);
+            get => _default.Value;
+            set => _default.SetValue(value);
         }
         public T Value
         {
-            get => StaticValueCollection<Setting<T>, T>.Get(_currentIndex);
-            set => StaticValueCollection<Setting<T>, T>.Set(_currentIndex, value);
+            get => _current.Value;
+            set => _current.SetValue(value);
         }
 
         Guid ISetting.Id => this.Id;
         string ISetting.Name => this.Name;
-        string ISetting.Description => this.Description;
+        string ISetting.Description
+        {
+            get => this.Description;
+            set => this.Description = value;
+        }
         Type ISetting.Type => this.Type;
         object ISetting.DefaultValue => this.DefaultValue;
         object ISetting.Value
@@ -60,28 +68,24 @@ namespace Guppy.Resources
 
         private unsafe Setting(string name, string description, T defaultValue)
         {
-            _defaultIndex = StaticValueCollection<Setting<T>, T>.Pop();
-            _currentIndex = StaticValueCollection<Setting<T>, T>.Pop();
-            _name = new UnmanagedString(name);
-            _description = new UnmanagedString(description);
+            _name = new StaticValue<ISetting, string>(name);
+            _description = new StaticValue<ISetting, string>(description);
+            _default = new StaticValue<ISetting, T>(defaultValue);
+            _current = new StaticValue<ISetting, T>(defaultValue);
 
-            uint128 nameHash = xxHash128.ComputeHash(name);
-            Guid* pNameHash = (Guid*)&nameHash;
-            this.Id = pNameHash[0];
-            this.DefaultValue = defaultValue;
-            this.Value = defaultValue;
+            this.Id = name.xxHash128();
         }
 
         public void Dispose()
         {
-            _cache.Remove(this.Name);
-
-            StaticValueCollection<Setting<T>, T>.Push(_defaultIndex);
-            StaticValueCollection<Setting<T>, T>.Push(_currentIndex);
             StaticCollection<ISetting>.Remove(this, false);
+
+            _cache.Remove(this.Name);
 
             _name.Dispose();
             _description.Dispose();
+            _default.Dispose();
+            _current.Dispose();
         }
 
         public override bool Equals(object? obj)
@@ -127,6 +131,8 @@ namespace Guppy.Resources
             ref Setting<T> resource = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, name, out bool exists);
             if (exists)
             {
+                resource.Description = description;
+
                 return resource;
             }
 
@@ -139,18 +145,6 @@ namespace Guppy.Resources
         public static IEnumerable<Setting<T>> GetAll()
         {
             return _cache.Values;
-        }
-
-        public static void Clear()
-        {
-            while (_cache.Count > 0)
-            {
-                _cache.Values.First().Dispose();
-            }
-
-            _cache.Clear();
-
-            StaticValueCollection<Setting<T>, T>.Clear();
         }
     }
 }

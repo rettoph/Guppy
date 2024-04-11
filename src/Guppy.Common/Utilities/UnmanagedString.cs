@@ -1,35 +1,21 @@
-﻿using Guppy.Common.Extensions;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Guppy.Common.Utilities
 {
     public unsafe struct UnmanagedString : IDisposable
     {
-        private readonly nint _ptr;
+        private nint _ptr;
         private int _length;
 
-        public string Value
-        {
-            get => Marshal.PtrToStringAnsi((nint)_ptr, _length);
-            set
-            {
-                if (value.Length > _length)
-                {
-                    throw new NotImplementedException();
-                }
-
-                char* cPtr = (char*)_ptr;
-                foreach ((char c, int i) in value.Indices())
-                {
-                    cPtr[i] = c;
-                }
-
-                _length = value.Length;
-            }
-        }
+        public string Value => Marshal.PtrToStringAnsi(_ptr, _length);
 
         public UnmanagedString(string value)
         {
+            if (value == string.Empty)
+            {
+                return;
+            }
+
             _ptr = Marshal.StringToHGlobalAnsi(value);
             _length = value.Length;
         }

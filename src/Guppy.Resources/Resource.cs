@@ -1,8 +1,7 @@
 ﻿using Guppy.Common;
 using Guppy.Common.Utilities;
+using Guppy.Resources.Extensions.System;
 using Guppy.Resources.Services;
-using Guppy.Resources.Utilities;
-using Standart.Hash.xxHash;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Resources
@@ -10,7 +9,7 @@ namespace Guppy.Resources
     public interface IResource : IEquatable<IResource>, IDisposable
     {
         Guid Id { get; }
-        UnmanagedString Name { get; }
+        string Name { get; }
         Type Type { get; }
 
         internal void Initialize(ResourceService resources);
@@ -19,38 +18,37 @@ namespace Guppy.Resources
     public struct Resource<T> : IResource, IEquatable<Resource<T>>, IRef<T>
         where T : notnull
     {
-        private readonly int _index;
+        private readonly StaticValue<IResource, string> _name;
+        private readonly StaticValue<IResource, T> _value;
 
         public readonly Guid Id;
-        public readonly UnmanagedString Name;
+        public readonly string Name => _name.Value;
         public Type Type => typeof(T);
         public T Value
         {
-            get => StaticValueCollection<Resource<T>, T>.Get(_index);
-            set => StaticValueCollection<Resource<T>, T>.Set(_index, value);
+            get => _value.Value;
+            set => _value.SetValue(value);
         }
 
         Guid IResource.Id => this.Id;
-        UnmanagedString IResource.Name => this.Name;
+        string IResource.Name => this.Name;
 
         private unsafe Resource(string name)
         {
-            _index = StaticValueCollection<Resource<T>, T>.Pop();
+            _name = new StaticValue<IResource, string>(name);
+            _value = new StaticValue<IResource, T>();
 
-            uint128 nameHash = xxHash128.ComputeHash(name);
-            Guid* pNameHash = (Guid*)&nameHash;
-            this.Id = pNameHash[0];
-            this.Name = new UnmanagedString(name);
+            this.Id = name.xxHash128();
         }
 
         public void Dispose()
         {
-            _cache.Remove(this.Name);
-
-            StaticValueCollection<Resource<T>, T>.Push(_index);
             StaticCollection<IResource>.Remove(this, false);
 
-            this.Name.Dispose();
+            _cache.Remove(this.Name);
+
+            _name.Dispose();
+            _value.Dispose();
         }
 
         void IResource.Initialize(ResourceService resources)
@@ -118,18 +116,6 @@ namespace Guppy.Resources
         public static IEnumerable<Resource<T>> GetAll()
         {
             return _cache.Values;
-        }
-
-        public static void Clear()
-        {
-            while (_cache.Count > 0)
-            {
-                _cache.Values.First().Dispose();
-            }
-
-            _cache.Clear();
-
-            StaticValueCollection<Resource<T>, T>.Clear();
         }
     }
 }

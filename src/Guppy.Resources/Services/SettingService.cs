@@ -1,7 +1,7 @@
-﻿using Guppy.Files;
+﻿using Guppy.Common.Utilities;
+using Guppy.Files;
 using Guppy.Files.Services;
 using Guppy.Resources.Constants;
-using Guppy.Resources.Utilities;
 
 namespace Guppy.Resources.Services
 {
@@ -46,7 +46,7 @@ namespace Guppy.Resources.Services
         {
             this.Save();
 
-            StaticCollection<ISetting>.Clear();
+            StaticCollection<ISetting>.Clear(true);
         }
     }
 }
