@@ -37,9 +37,18 @@ namespace Guppy.Common.Helpers
                 {
                     string path = Path.Combine(directory, $"{fileName}.{extension}");
 
-                    if (File.Exists(path))
+                    if (File.Exists(path) == false)
+                    {
+                        throw new FileNotFoundException(path);
+                    }
+
+                    try
                     {
                         NativeLibrary.Load(path);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw GuppyLogger.LogException($"Exception loading native library {path}", ex);
                     }
                 }
             }

@@ -15,7 +15,7 @@ namespace Guppy.Files
             get => _json.Serialize(this.Value);
             set
             {
-                T result = _json.Deserialize<T>(value, out bool success) ?? Activator.CreateInstance<T>();
+                T result = _json.Deserialize<T>(value, out bool success);
                 this.Success = success;
 
                 _value = result;

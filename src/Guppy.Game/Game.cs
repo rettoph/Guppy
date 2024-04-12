@@ -1,4 +1,5 @@
-﻿using Guppy.Common.Extensions;
+﻿using Guppy.Common;
+using Guppy.Common.Extensions;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Providers;
@@ -23,7 +24,14 @@ namespace Guppy.Game
 
         public void Initialize()
         {
-            this.Guppies.Initialize();
+            try
+            {
+                this.Guppies.Initialize();
+            }
+            catch (Exception ex)
+            {
+                throw GuppyLogger.LogException(ex.Message, ex);
+            }
         }
 
         public void Draw(GameTime gameTime)
