@@ -1,12 +1,12 @@
 ﻿using Autofac;
-using Guppy.Common.Autofac;
+using Guppy.Engine.Common.Autofac;
 using Guppy.Files;
 using Guppy.Game.ImGui;
 using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Constants;
 using Guppy.Game.MonoGame.Messages;
 using Guppy.Game.MonoGame.Primitives;
-using Guppy.Loaders;
+using Guppy.Engine.Loaders;
 using Guppy.Resources.Configuration;
 using Guppy.Resources.Extensions.Autofac;
 using Microsoft.Xna.Framework.Graphics;

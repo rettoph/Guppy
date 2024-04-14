@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Engine.Attributes;
 using Guppy.Files.Serialization.Json;
 using Guppy.Files.Services;
-using Guppy.Loaders;
+using Guppy.Engine.Loaders;
 using System.Text.Json.Serialization;
 
 namespace Guppy.Files.Loaders

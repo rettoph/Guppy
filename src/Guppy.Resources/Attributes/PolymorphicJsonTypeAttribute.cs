@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Engine.Attributes;
 using Guppy.Resources.Serialization.Json;
 
 namespace Guppy.Resources.Attributes

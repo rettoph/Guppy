@@ -1,7 +1,7 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Game.ImGui.Styling;
 using Guppy.Resources.ResourceTypes;
-using Guppy.Serialization;
+using Guppy.Engine.Serialization;
 
 namespace Guppy.Game.ImGui.ResourceTypes
 {

@@ -1,9 +1,9 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Autofac;
-using Guppy.Extensions.Autofac;
+using Guppy.Engine.Attributes;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Extensions.Autofac;
 using Guppy.Network.Enums;
-using Guppy.Providers;
+using Guppy.Engine.Providers;
 using Guppy.StateMachine;
 
 namespace Guppy.Network

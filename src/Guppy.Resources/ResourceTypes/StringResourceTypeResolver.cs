@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Files;
 
 namespace Guppy.Resources.ResourceTypes

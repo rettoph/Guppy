@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Extensions.Autofac;
+using Guppy.Engine.Extensions.Autofac;
 using Guppy.Game.MonoGame.Loaders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;

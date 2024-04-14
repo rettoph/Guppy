@@ -1,8 +1,8 @@
-﻿using Guppy.Common.Collections;
+﻿using Guppy.Engine.Common.Collections;
 using Microsoft.Xna.Framework;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Common.Helpers
+namespace Guppy.Game.Helpers
 {
     public static class ConsoleHelper
     {

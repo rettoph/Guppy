@@ -32,7 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
     <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
-    <ProjectReference Include="..\Guppy\Guppy.csproj" />
+    <ProjectReference Include="..\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition=" '$(CurrentRuntime)' != '' AND '$(CurrentRuntime)' != null " >

@@ -1,7 +1,8 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Game.Common;
-using Guppy.Providers;
+using Guppy.Engine.Providers;
 using Microsoft.Xna.Framework;
+using Guppy.Engine;
 
 namespace Guppy.Game.Components.Game
 {

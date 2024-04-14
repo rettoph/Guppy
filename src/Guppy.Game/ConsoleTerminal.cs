@@ -1,5 +1,5 @@
-﻿using Guppy.Common.Helpers;
-using Guppy.Game.Common;
+﻿using Guppy.Game.Common;
+using Guppy.Game.Helpers;
 using Microsoft.Xna.Framework;
 using System.CommandLine.IO;
 

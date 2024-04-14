@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Network.Identity.Claims;
 using Guppy.Network.Messages;
 using LiteNetLib.Utils;

@@ -1,4 +1,6 @@
-﻿namespace Guppy.Game.Common
+﻿using Guppy.Engine;
+
+namespace Guppy.Game.Common
 {
     public interface IGameGuppy : IGuppy, IGuppyUpdateable, IGuppyDrawable
     {

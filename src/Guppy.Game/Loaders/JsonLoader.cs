@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Engine.Attributes;
 using Guppy.Game.Serialization.Json.Converters;
-using Guppy.Loaders;
+using Guppy.Engine.Loaders;
 using System.Text.Json.Serialization;
 
 namespace Guppy.Game.Loaders

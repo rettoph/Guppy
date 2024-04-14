@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Autofac;
-using Guppy.Loaders;
+using Guppy.Engine.Attributes;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Loaders;
 using Guppy.Network.Constants;
 using Guppy.Network.Groups;
 using Guppy.Network.Messages;

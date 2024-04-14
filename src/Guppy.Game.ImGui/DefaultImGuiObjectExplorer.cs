@@ -1,5 +1,5 @@
-﻿using Guppy.Common.Enums;
-using Guppy.Common.Services;
+﻿using Guppy.Engine.Common.Enums;
+using Guppy.Engine.Common.Services;
 using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Reflection;

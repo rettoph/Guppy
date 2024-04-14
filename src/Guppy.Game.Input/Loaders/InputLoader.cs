@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Engine.Attributes;
 using Guppy.Game.Input.Services;
-using Guppy.Loaders;
+using Guppy.Engine.Loaders;
 
 namespace Guppy.Game.Input.Loaders
 {

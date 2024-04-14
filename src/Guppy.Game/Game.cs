@@ -1,9 +1,10 @@
-﻿using Guppy.Common;
-using Guppy.Common.Extensions;
+﻿using Guppy.Engine.Common;
+using Guppy.Engine.Common.Extensions;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
-using Guppy.Providers;
+using Guppy.Engine.Providers;
 using Microsoft.Xna.Framework;
+using Guppy.Engine;
 
 namespace Guppy.Game
 {

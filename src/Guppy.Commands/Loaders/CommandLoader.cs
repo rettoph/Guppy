@@ -1,8 +1,8 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Engine.Attributes;
 using Guppy.Commands.Services;
-using Guppy.Common.Autofac;
-using Guppy.Loaders;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Loaders;
 using Guppy.Messaging;
 using System.CommandLine;
 using System.CommandLine.IO;

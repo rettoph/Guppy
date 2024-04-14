@@ -1,6 +1,6 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Resources.ResourceTypes;
-using Guppy.Serialization;
+using Guppy.Engine.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ResourceTypes

@@ -1,10 +1,10 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Autofac;
-using Guppy.Extensions.Autofac;
+using Guppy.Engine.Attributes;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Extensions.Autofac;
 using Guppy.Files;
 using Guppy.Game.Common;
-using Guppy.Loaders;
+using Guppy.Engine.Loaders;
 using Guppy.Resources.Configuration;
 using Guppy.Resources.Extensions.Autofac;
 using Serilog;

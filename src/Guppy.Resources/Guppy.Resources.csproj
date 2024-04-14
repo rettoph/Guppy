@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Files\Guppy.Files.csproj" />
-    <ProjectReference Include="..\Guppy\Guppy.csproj" />
+    <ProjectReference Include="..\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
 
 </Project>

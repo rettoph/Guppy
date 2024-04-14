@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Configurations\**" />
+    <Compile Remove="Serialization\Implementations\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="Serialization\Implementations\**" />
+    <None Remove="Configurations\**" />
+    <None Remove="Serialization\Implementations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.12.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Messaging\Guppy.Messaging.csproj" />
+    <ProjectReference Include="..\Guppy.StateMachine\Guppy.StateMachine.csproj" />
+  </ItemGroup>
+
+</Project>

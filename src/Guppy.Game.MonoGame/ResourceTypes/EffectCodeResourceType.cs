@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Files;
 using Guppy.Files.Helpers;
 using Guppy.Game.MonoGame.Graphics.Effects;

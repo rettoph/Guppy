@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Guppy.Attributes;
-using Guppy.Common.Extensions.Autofac;
+using Guppy.Engine.Attributes;
+using Guppy.Engine.Common.Extensions.Autofac;
 using Guppy.Network.Enums;
 using Guppy.StateMachine;
 using Guppy.StateMachine.Filters;
