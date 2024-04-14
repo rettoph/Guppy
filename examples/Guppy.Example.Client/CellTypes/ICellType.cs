@@ -1,5 +1,5 @@
-﻿using Guppy.Attributes;
-using Guppy.Enums;
+﻿using Guppy.Engine.Attributes;
+using Guppy.Engine.Enums;
 using Guppy.Example.Client.Entities;
 using Guppy.Example.Client.Enums;
 

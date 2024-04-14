@@ -1,4 +1,4 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine.Attributes;
 using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.CellTypes

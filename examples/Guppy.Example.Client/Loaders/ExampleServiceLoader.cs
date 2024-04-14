@@ -1,11 +1,11 @@
 ﻿using Autofac;
-using Guppy.Attributes;
+using Guppy.Engine.Attributes;
+using Guppy.Engine.Loaders;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Game.Input.Enums;
 using Guppy.Game.MonoGame.Primitives;
 using Guppy.Game.MonoGame.Utilities.Cameras;
-using Guppy.Loaders;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Example.Client.Loaders

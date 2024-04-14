@@ -1,4 +1,5 @@
-﻿using Guppy.Attributes;
+﻿using Guppy.Engine;
+using Guppy.Engine.Attributes;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
@@ -7,7 +8,7 @@ using Guppy.Game.Components;
 using Guppy.Game.ImGui;
 using Guppy.Game.Input;
 using Guppy.Game.Input.Constants;
-using Guppy.Game.Input.Providers;
+using Guppy.Game.Input.Services;
 using Guppy.Game.MonoGame.Primitives;
 using Guppy.Game.MonoGame.Utilities.Cameras;
 using Microsoft.Xna.Framework;
@@ -55,7 +56,7 @@ namespace Guppy.Example.Client.Entities
             SpriteBatch spriteBatch,
             GraphicsDevice graphics,
             IImGui imgui,
-            ICursorProvider cursors,
+            ICursorService cursors,
             PointPrimitiveBatch<VertexPositionColor> gridBatch,
             StaticPrimitiveBatch<VertexPositionColor> primitiveBatch,
             Camera2D camera,
