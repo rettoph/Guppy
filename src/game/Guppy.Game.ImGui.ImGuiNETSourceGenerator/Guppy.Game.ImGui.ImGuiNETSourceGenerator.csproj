@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" GeneratePathProperty="true" PrivateAssets="all" />
+    <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" GeneratePathProperty="true" PrivateAssets="all" />
   </ItemGroup>
   
   <PropertyGroup>
@@ -24,7 +24,7 @@
 
   <Target Name="GetDependencyTargetPaths">
     <ItemGroup>
-      <TargetPathWithTargetPlatformMoniker Include="$(ProjectDir)\..\..\libraries\ImGui.NET\bin\Debug\ImGui.NET\netstandard2.0\ImGui.NET.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(ProjectDir)\..\..\..\libraries\ImGui.NET\bin\Debug\ImGui.NET\netstandard2.0\ImGui.NET.dll" IncludeRuntimeDependency="false" />
     </ItemGroup>
   </Target>
 </Project>

@@ -21,12 +21,12 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
     <ProjectReference Include="..\Guppy.Commands\Guppy.Commands.csproj" />
     <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui\Guppy.Game.ImGui.csproj" />
-    <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
-    <ProjectReference Include="..\Guppy.Engine\Guppy.Engine.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
 
 </Project>

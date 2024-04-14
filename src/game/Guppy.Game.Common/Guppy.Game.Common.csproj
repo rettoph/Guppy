@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="..\Guppy.Commands\Guppy.Commands.csproj" />
   </ItemGroup>
 
 </Project>

@@ -25,14 +25,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
+    <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
     <ProjectReference Include="..\Guppy.Game.ImGui.ImGuiNETSourceGenerator\Guppy.Game.ImGui.ImGuiNETSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
-    <ProjectReference Include="..\Guppy.Resources\Guppy.Resources.csproj" />
-    <ProjectReference Include="..\Guppy.Engine\Guppy.Engine.csproj" />
+	<ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Resources\Guppy.Resources.csproj" />
+    <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition=" '$(CurrentRuntime)' != '' AND '$(CurrentRuntime)' != null " >

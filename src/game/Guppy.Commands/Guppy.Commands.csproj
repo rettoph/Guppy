@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
-    <ProjectReference Include="..\Guppy.StateMachine\Guppy.StateMachine.csproj" />
-    <ProjectReference Include="..\Guppy.Engine\Guppy.Engine.csproj" />
+    <ProjectReference Include="..\..\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.StateMachine\Guppy.StateMachine.csproj" />
+    <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,8 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
-    <ProjectReference Include="..\Guppy.Messaging\Guppy.Messaging.csproj" />
-    <ProjectReference Include="..\Guppy.StateMachine\Guppy.StateMachine.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Messaging\Guppy.Messaging.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.StateMachine\Guppy.StateMachine.csproj" />
   </ItemGroup>
 
 </Project>
