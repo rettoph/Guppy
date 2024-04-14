@@ -23,7 +23,7 @@ namespace Guppy.Game.ImGui.Loaders
             string nativesDirectory = DirectoryHelper.Combine(DirectoryHelper.GetEntryDirectory(), NativeConstants.Directory);
             NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
 
-            services.RegisterType<EmptyImGuiBatch>().AsImplementedInterfaces().SingleInstance();
+            services.RegisterType<NotImplementedImguiBatch>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ImGui>().As<IImGui>().SingleInstance();
             services.RegisterType<ImGuiObjectExplorerService>().As<IImGuiObjectExplorerService>().SingleInstance();
             services.RegisterType<DefaultImGuiObjectExplorer>().AsSelf().As<ImGuiObjectExplorer>().SingleInstance();

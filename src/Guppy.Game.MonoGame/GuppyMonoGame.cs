@@ -1,33 +1,22 @@
 ﻿using Guppy.Game.Common;
-using Guppy.Game.Extensions;
+using Guppy.Game.Common.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Reflection;
 
 namespace Guppy.Game.MonoGame
 {
     public class GuppyMonoGame : Microsoft.Xna.Framework.Game
     {
+        private readonly GuppyContext _context;
         private readonly GraphicsDeviceManager _graphics;
         private IGame? _game;
-        private GuppyEngine _engine;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
         // [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         // public static extern void SDL_MaximizeWindow(IntPtr window);
 
-        public GuppyMonoGame(string company, string name, IEnumerable<Assembly>? libraries = null) : this(
-            engine: new GuppyEngine(
-                company: company,
-                name: name,
-                libraries: (libraries ?? Enumerable.Empty<Assembly>()).Concat(typeof(GuppyMonoGame).Assembly)
-            )
-        )
-        {
-
-        }
-        public GuppyMonoGame(GuppyEngine engine)
+        public GuppyMonoGame(GuppyContext context)
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -46,7 +35,7 @@ namespace Guppy.Game.MonoGame
             _graphics.ApplyChanges();
 
 
-            _engine = engine;
+            _context = context;
         }
 
         /// <summary>
@@ -62,10 +51,10 @@ namespace Guppy.Game.MonoGame
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                IGame game = _engine.StartGame(builder =>
+                IGame game = GuppyEngine.Start(_context, builder =>
                 {
                     builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
-                });
+                }).StartGame();
 
                 game.Initialize();
 
@@ -146,11 +135,7 @@ namespace Guppy.Game.MonoGame
     public class GuppyMonoGame<TGuppy> : GuppyMonoGame
         where TGuppy : class, IGuppy
     {
-        public GuppyMonoGame(GuppyEngine engine) : base(engine)
-        {
-        }
-
-        public GuppyMonoGame(string company, string name, IEnumerable<Assembly>? libraries = null) : base(company, name, libraries)
+        public GuppyMonoGame(GuppyContext context) : base(context)
         {
         }
 

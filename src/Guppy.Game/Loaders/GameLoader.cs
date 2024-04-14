@@ -15,7 +15,7 @@ namespace Guppy.Game
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<Game>().As<IGame>().SingleInstance();
+            services.RegisterType<Game>().As<IGame>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.EngineScope);
 
             services.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
             services.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();

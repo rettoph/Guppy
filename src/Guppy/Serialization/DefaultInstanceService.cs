@@ -56,6 +56,21 @@ namespace Guppy.Serialization
 
             public object BuildInstance(Type type)
             {
+                if (type.IsInterface)
+                {
+                    throw new ArgumentException();
+                }
+
+                if (type.IsAbstract)
+                {
+                    throw new ArgumentException();
+                }
+
+                if (type.IsGenericTypeDefinition)
+                {
+                    throw new ArgumentException();
+                }
+
                 return Activator.CreateInstance(type) ?? throw new NotImplementedException();
             }
         }

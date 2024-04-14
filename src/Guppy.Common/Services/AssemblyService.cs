@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Guppy.Common.Contexts;
+using System.Collections;
 using System.Reflection;
 
 namespace Guppy.Common.Services
@@ -11,11 +12,11 @@ namespace Guppy.Common.Services
 
         public event OnEventDelegate<IAssemblyService, Assembly>? OnAssemblyLoaded;
 
-        public AssemblyService(IEnumerable<Assembly>? libraries)
+        public AssemblyService(IGuppyContext context)
         {
             _assemblies = new HashSet<Assembly>();
 
-            Libraries = libraries?.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
+            Libraries = context.Libraries.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
         }
 
         public void Load(Assembly assembly, bool forced = false)

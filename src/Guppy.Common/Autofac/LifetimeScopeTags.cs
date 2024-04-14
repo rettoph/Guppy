@@ -2,7 +2,8 @@
 {
     public static class LifetimeScopeTags
     {
-        public const string MainScope = nameof(MainScope);
+        public const string BootScope = nameof(BootScope);
+        public const string EngineScope = nameof(EngineScope);
         public const string GuppyScope = nameof(GuppyScope);
     }
 }

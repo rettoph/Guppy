@@ -53,7 +53,7 @@ namespace Guppy.Attributes
 
                     break;
                 case ServiceLifetime.Singleton:
-                    service.InstancePerMatchingLifetimeScope(LifetimeScopeTags.MainScope);
+                    service.InstancePerMatchingLifetimeScope(LifetimeScopeTags.EngineScope);
                     break;
             }
         }

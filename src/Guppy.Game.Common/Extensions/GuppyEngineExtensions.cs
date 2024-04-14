@@ -1,16 +1,12 @@
-﻿using Autofac;
-using System.Reflection;
+﻿using Guppy.Common;
 
 namespace Guppy.Game.Common.Extensions
 {
     public static class GuppyEngineExtensions
     {
-        public static IGame StartGame(
-            this GuppyEngine engine,
-            Action<ContainerBuilder>? build = null,
-            Assembly? entry = null)
+        public static IGame StartGame(this IGuppyEngine engine)
         {
-            return engine.Start(build, entry).Scope.Resolve<IGame>();
+            return engine.Resolve<IGame>();
         }
     }
 }

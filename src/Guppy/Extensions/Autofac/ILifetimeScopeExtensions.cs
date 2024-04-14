@@ -12,7 +12,9 @@ namespace Guppy.Extensions.Autofac
             {
                 return lifetimeScope.BeginLifetimeScope(tag, builder =>
                 {
-                    foreach (IServiceLoader loader in lifetimeScope.Resolve<IEnumerable<IServiceLoader>>())
+                    var loaders = lifetimeScope.Resolve<IEnumerable<IServiceLoader>>();
+
+                    foreach (IServiceLoader loader in loaders)
                     {
                         try
                         {

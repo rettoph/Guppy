@@ -1,4 +1,4 @@
-﻿using Guppy.Common;
+﻿using Guppy.Common.Contexts;
 using Guppy.Files.Enums;
 using Guppy.Files.Helpers;
 
@@ -6,18 +6,18 @@ namespace Guppy.Files.Services
 {
     internal class PathService : IPathService
     {
-        private readonly IGuppyEnvironment _environment;
+        private readonly IGuppyContext _context;
 
-        public PathService(IGuppyEnvironment environment)
+        public PathService(IGuppyContext context)
         {
-            _environment = environment;
+            _context = context;
         }
 
         public DirectoryLocation GetSourceLocation(DirectoryLocation directory)
         {
             string path = directory.Type switch
             {
-                DirectoryType.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _environment.Company, _environment.Name, directory.Path),
+                DirectoryType.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _context.Company, _context.Name, directory.Path),
                 DirectoryType.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), directory.Path),
                 _ => directory.Path
             };

@@ -7,7 +7,7 @@ namespace Guppy.Loaders
     [ServiceLoaderAutoLoad]
     public interface IServiceLoader
     {
-        object LifetimeScopeTag => LifetimeScopeTags.MainScope;
+        object LifetimeScopeTag => LifetimeScopeTags.EngineScope;
 
         void ConfigureServices(ContainerBuilder services);
     }
