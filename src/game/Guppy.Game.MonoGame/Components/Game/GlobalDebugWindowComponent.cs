@@ -5,8 +5,8 @@ using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Styling;
-using Guppy.Resources;
-using Guppy.Resources.Services;
+using Guppy.Core.Resources;
+using Guppy.Core.Resources.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Game

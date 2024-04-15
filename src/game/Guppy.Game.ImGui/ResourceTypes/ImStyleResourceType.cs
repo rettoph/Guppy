@@ -1,6 +1,6 @@
 ﻿using Guppy.Engine.Attributes;
 using Guppy.Game.ImGui.Styling;
-using Guppy.Resources.ResourceTypes;
+using Guppy.Core.Resources.ResourceTypes;
 using Guppy.Engine.Serialization;
 
 namespace Guppy.Game.ImGui.ResourceTypes

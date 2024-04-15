@@ -1,7 +1,7 @@
 ﻿using Guppy.Engine.Attributes;
 using Guppy.Commands.Extensions;
 using Guppy.Commands.TokenPropertySetters;
-using Guppy.Messaging;
+using Guppy.Core.Messaging;
 using System.CommandLine;
 using Guppy.Engine;
 

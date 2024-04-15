@@ -1,4 +1,4 @@
-﻿using Guppy.Resources.Attributes;
+﻿using Guppy.Core.Resources.Attributes;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {

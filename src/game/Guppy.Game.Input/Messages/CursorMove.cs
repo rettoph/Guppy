@@ -1,4 +1,4 @@
-﻿using Guppy.Messaging;
+﻿using Guppy.Core.Messaging;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Input.Messages

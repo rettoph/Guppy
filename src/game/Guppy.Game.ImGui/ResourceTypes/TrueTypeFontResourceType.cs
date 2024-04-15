@@ -1,7 +1,7 @@
 ﻿using Guppy.Engine.Attributes;
-using Guppy.Files;
-using Guppy.Resources;
-using Guppy.Resources.ResourceTypes;
+using Guppy.Core.Files;
+using Guppy.Core.Resources;
+using Guppy.Core.Resources.ResourceTypes;
 using Serilog;
 
 namespace Guppy.Game.ImGui.ResourceTypes

@@ -1,4 +1,4 @@
-﻿using Guppy.Resources;
+﻿using Guppy.Core.Resources;
 using Serilog.Events;
 
 namespace Guppy.Game

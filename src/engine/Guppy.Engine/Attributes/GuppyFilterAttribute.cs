@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Extensions.Autofac;
-using Guppy.StateMachine;
-using Guppy.StateMachine.Filters;
+using Guppy.Core.StateMachine;
+using Guppy.Core.StateMachine.Filters;
 
 namespace Guppy.Engine.Attributes
 {

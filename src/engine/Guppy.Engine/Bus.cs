@@ -1,6 +1,6 @@
 ﻿using Guppy.Engine.Common;
 using Guppy.Engine.Messaging;
-using Guppy.Messaging;
+using Guppy.Core.Messaging;
 
 namespace Guppy.Engine
 {

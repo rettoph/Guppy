@@ -1,5 +1,5 @@
 ﻿using Guppy.Engine.Attributes;
-using Guppy.Messaging;
+using Guppy.Core.Messaging;
 
 namespace Guppy.Commands.Messages
 {

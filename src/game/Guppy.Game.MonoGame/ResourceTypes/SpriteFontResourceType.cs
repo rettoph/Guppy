@@ -1,8 +1,8 @@
 ﻿using Guppy.Engine.Attributes;
-using Guppy.Files;
-using Guppy.Files.Helpers;
-using Guppy.Resources;
-using Guppy.Resources.ResourceTypes;
+using Guppy.Core.Files;
+using Guppy.Core.Files.Helpers;
+using Guppy.Core.Resources;
+using Guppy.Core.Resources.ResourceTypes;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 

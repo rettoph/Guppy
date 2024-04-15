@@ -1,7 +1,7 @@
 ﻿using Guppy.Commands;
 using Guppy.Commands.Arguments;
 using Guppy.Commands.Attributes;
-using Guppy.Messaging;
+using Guppy.Core.Messaging;
 using Serilog.Core;
 using Serilog.Events;
 

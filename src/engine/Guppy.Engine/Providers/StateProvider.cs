@@ -1,7 +1,7 @@
 ﻿using Guppy.Engine.Attributes;
 using Guppy.Engine.Enums;
-using Guppy.StateMachine;
-using Guppy.StateMachine.Providers;
+using Guppy.Core.StateMachine;
+using Guppy.Core.StateMachine.Providers;
 
 namespace Guppy.Engine.Providers
 {

@@ -1,9 +1,9 @@
 ﻿using Guppy.Engine.Attributes;
-using Guppy.Files;
-using Guppy.Files.Helpers;
+using Guppy.Core.Files;
+using Guppy.Core.Files.Helpers;
 using Guppy.Game.MonoGame.Graphics.Effects;
-using Guppy.Resources;
-using Guppy.Resources.ResourceTypes;
+using Guppy.Core.Resources;
+using Guppy.Core.Resources.ResourceTypes;
 using Serilog;
 
 namespace Guppy.Game.MonoGame.ResourceTypes

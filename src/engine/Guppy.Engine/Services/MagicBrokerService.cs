@@ -1,7 +1,7 @@
 ﻿using Guppy.Engine.Common;
-using Guppy.Messaging;
-using Guppy.Messaging.Extensions;
-using Guppy.Messaging.Services;
+using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Extensions;
+using Guppy.Core.Messaging.Services;
 
 namespace Guppy.Engine.Services
 {

@@ -1,6 +1,6 @@
 ﻿using Guppy.Game.ImGui;
 using Guppy.Game.ImGui.Styling;
-using Guppy.Resources;
+using Guppy.Core.Resources;
 
 namespace Guppy.Game.MonoGame
 {

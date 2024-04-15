@@ -2,7 +2,7 @@
 using Guppy.Engine.Attributes;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Extensions.Autofac;
-using Guppy.StateMachine;
+using Guppy.Core.StateMachine;
 
 namespace Guppy.Engine.Providers
 {

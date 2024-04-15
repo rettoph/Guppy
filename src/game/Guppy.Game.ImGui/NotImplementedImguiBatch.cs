@@ -1,5 +1,5 @@
 ﻿using Guppy.Engine.Common;
-using Guppy.Resources;
+using Guppy.Core.Resources;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ImGui

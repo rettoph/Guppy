@@ -1,7 +1,7 @@
 ﻿using Guppy.Engine.Common;
 using Guppy.Game.ImGui.Helpers;
 using Guppy.Game.ImGui.Styling;
-using Guppy.Resources;
+using Guppy.Core.Resources;
 
 namespace Guppy.Game.ImGui
 {

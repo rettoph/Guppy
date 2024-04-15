@@ -1,5 +1,5 @@
 ﻿using Guppy.Engine.Attributes;
-using Guppy.Messaging.Services;
+using Guppy.Core.Messaging.Services;
 
 namespace Guppy.Engine.Components.Global
 {

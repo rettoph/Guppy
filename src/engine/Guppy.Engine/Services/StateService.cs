@@ -1,6 +1,6 @@
-﻿using Guppy.StateMachine;
-using Guppy.StateMachine.Providers;
-using Guppy.StateMachine.Services;
+﻿using Guppy.Core.StateMachine;
+using Guppy.Core.StateMachine.Providers;
+using Guppy.Core.StateMachine.Services;
 
 namespace Guppy.Engine.Services
 {

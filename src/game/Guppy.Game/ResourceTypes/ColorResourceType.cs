@@ -1,5 +1,5 @@
 ﻿using Guppy.Engine.Attributes;
-using Guppy.Resources.ResourceTypes;
+using Guppy.Core.Resources.ResourceTypes;
 using Guppy.Engine.Serialization;
 using Microsoft.Xna.Framework;
 

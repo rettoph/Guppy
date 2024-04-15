@@ -2,11 +2,11 @@
 using Guppy.Engine.Attributes;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Extensions.Autofac;
-using Guppy.Files;
+using Guppy.Core.Files;
 using Guppy.Game.Common;
 using Guppy.Engine.Loaders;
-using Guppy.Resources.Configuration;
-using Guppy.Resources.Extensions.Autofac;
+using Guppy.Core.Resources.Configuration;
+using Guppy.Core.Resources.Extensions.Autofac;
 using Serilog;
 namespace Guppy.Game
 {

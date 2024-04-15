@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Engine.Attributes;
 using Guppy.Engine.Common.Helpers;
-using Guppy.Files.Helpers;
+using Guppy.Core.Files.Helpers;
 using Guppy.Game.ImGui.Constants;
 using Guppy.Game.ImGui.Messages;
 using Guppy.Game.ImGui.Serialization.Json.Converters;
@@ -9,7 +9,7 @@ using Guppy.Game.ImGui.Services;
 using Guppy.Game.ImGui.Styling.StyleValueResources;
 using Guppy.Game.Input.Enums;
 using Guppy.Engine.Loaders;
-using Guppy.Resources.Serialization.Json.Converters;
+using Guppy.Core.Resources.Serialization.Json.Converters;
 using Microsoft.Xna.Framework.Input;
 using System.Text.Json.Serialization;
 
