@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
-using Guppy.Engine.Common.Extensions.Autofac;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Network.Enums;
 using Guppy.Core.StateMachine;
 using Guppy.Core.StateMachine.Filters;
@@ -16,7 +16,7 @@ namespace Guppy.Core.Network.Attributes
             this.RequiredPeerType = requiredPeerType;
         }
 
-        protected override void Configure(ContainerBuilder builder, Type classType)
+        protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
             builder.RegisterFilter(new StateServiceFilter<PeerType>(classType, new State<PeerType>(this.RequiredPeerType)));
         }

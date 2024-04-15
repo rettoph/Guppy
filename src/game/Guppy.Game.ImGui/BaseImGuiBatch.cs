@@ -1,11 +1,11 @@
-﻿using Guppy.Engine;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Attributes;
-using Guppy.Engine.Enums;
-using Guppy.Game.ImGui.Messages;
-using Guppy.Game.Input;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources;
 using Guppy.Core.Resources.Services;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
+using Guppy.Game.ImGui.Messages;
+using Guppy.Game.Input;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;

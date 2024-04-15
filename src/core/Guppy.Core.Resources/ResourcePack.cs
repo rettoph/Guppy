@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Files;
+﻿using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Configuration;
 using Guppy.Core.Resources.Constants;
 using System.Diagnostics.CodeAnalysis;

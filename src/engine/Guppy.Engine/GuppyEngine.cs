@@ -1,11 +1,11 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
+using Autofac.Features.ResolveAnything;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Contexts;
+using Guppy.Core.Common.Services;
+using Guppy.Core.Extensions;
 using Guppy.Engine.Common;
-using Guppy.Engine.Common.Autofac;
-using Guppy.Engine.Common.Contexts;
-using Guppy.Engine.Common.Services;
-using Guppy.Engine.Extensions.Autofac;
-using Guppy.Engine.Loaders;
+using Guppy.Engine.Common.Loaders;
 using System.Reflection;
 
 namespace Guppy.Engine
@@ -36,7 +36,6 @@ namespace Guppy.Engine
         #region Static
         private static readonly object _lock;
         private static IGuppyEngine? _instance;
-        private static IContainer? _head;
 
         public static IGuppyContext? Context => _instance?.Context;
 
@@ -56,33 +55,39 @@ namespace Guppy.Engine
 
                 // Construct a service container to store factory related services
                 // Used for boot loggers, engine loaders, and related services
-                ContainerBuilder headBuilder = new ContainerBuilder();
-                GuppyEngine.RegisterFactoryServices(headBuilder, context);
+                ContainerBuilder bootBuilder = new ContainerBuilder();
+                bootBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+                bootBuilder.RegisterCoreServices(context);
 
                 // Construct the factory service and prepare for assembly loading.
-                _head = headBuilder.Build();
-                IAssemblyService assemblies = _head.Resolve<IAssemblyService>();
+                IContainer boot = bootBuilder.Build();
+                IAssemblyService assemblies = boot.Resolve<IAssemblyService>();
 
                 assemblies.OnAssemblyLoaded += HandleAssemblyLoaded;
-                assemblies.Load(_head.Resolve<IGuppyContext>().Entry);
+                assemblies.Load(boot.Resolve<IGuppyContext>().Entry);
                 assemblies.OnAssemblyLoaded -= HandleAssemblyLoaded;
 
-                // Construct the engine container
-                return _instance = _head.BeginLifetimeScope(LifetimeScopeTags.BootScope, engine =>
-                {
-                    // Automatically invoke all loaded GuppyConfigurationAttribute instances
-                    IAttributeService<object, GuppyConfigurationAttribute> typeAttributes = assemblies.GetAttributes<GuppyConfigurationAttribute>(true);
-                    foreach ((Type type, GuppyConfigurationAttribute[] attributes) in typeAttributes)
-                    {
-                        foreach (GuppyConfigurationAttribute attribute in attributes)
-                        {
-                            attribute.TryConfigure(engine, type);
-                        }
-                    }
+                // Begin boot phase 2 - call all boot attributes
 
-                    // Run the custom builder actions last
-                    builder?.Invoke(engine);
-                }).BeginGuppyScope(LifetimeScopeTags.EngineScope).Resolve<IGuppyEngine>();
+                // Construct the engine container
+                ContainerBuilder engineBuilder = new ContainerBuilder();
+                engineBuilder.RegisterCoreServices(context, assemblies);
+                engineBuilder.RegisterType<GuppyEngine>().As<IGuppyEngine>().SingleInstance();
+
+                // Automatically invoke all loaded GuppyConfigurationAttribute instances
+                IAttributeService<object, GuppyConfigurationAttribute> typeAttributes = assemblies.GetAttributes<GuppyConfigurationAttribute>(true);
+                foreach ((Type type, GuppyConfigurationAttribute[] attributes) in typeAttributes)
+                {
+                    foreach (GuppyConfigurationAttribute attribute in attributes)
+                    {
+                        attribute.TryConfigure(boot, engineBuilder, type);
+                    }
+                }
+
+                // Run any custom builder actions
+                builder?.Invoke(engineBuilder);
+
+                return _instance = engineBuilder.Build().Resolve<IGuppyEngine>();
             }
         }
 
@@ -95,13 +100,6 @@ namespace Guppy.Engine
             }
 
             return _instance.Resolve<T>();
-        }
-
-        private static void RegisterFactoryServices(ContainerBuilder builder, IGuppyContext context)
-        {
-            builder.RegisterInstance(context).SingleInstance();
-            builder.RegisterType<AssemblyService>().As<IAssemblyService>().SingleInstance();
-            builder.RegisterType<GuppyEngine>().As<IGuppyEngine>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.EngineScope);
         }
 
         private static void HandleAssemblyLoaded(IAssemblyService sender, Assembly assembly)

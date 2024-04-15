@@ -1,4 +1,5 @@
-﻿using Guppy.Engine.Common.Contexts;
+﻿using Guppy.Core.Common.Contexts;
+using Guppy.Engine.Common;
 using System.Reflection;
 
 namespace Guppy.Engine
@@ -16,10 +17,18 @@ namespace Guppy.Engine
         public GuppyContext(string company, string name, IEnumerable<Assembly>? libraries = null, Assembly? entry = null)
         {
             entry ??= Assembly.GetEntryAssembly() ?? throw new NotImplementedException();
-            libraries ??= Enumerable.Empty<Assembly>();
-            libraries = libraries.Concat([
-                typeof(GuppyEngine).Assembly
-            ]).ToArray();
+
+            if (libraries is null)
+            {
+                libraries = Enumerable.Empty<Assembly>();
+            }
+            else
+            {
+                libraries = libraries.Concat([
+                    typeof(GuppyEngine).Assembly,
+                typeof(IGuppyEngine).Assembly
+                ]).ToArray();
+            }
 
             this.Company = company;
             this.Name = name;

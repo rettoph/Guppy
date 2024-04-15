@@ -1,5 +1,5 @@
-﻿using Guppy.Engine.Attributes;
-using Guppy.Engine.Enums;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

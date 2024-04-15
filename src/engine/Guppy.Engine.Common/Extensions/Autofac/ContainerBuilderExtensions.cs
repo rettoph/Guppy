@@ -1,18 +1,49 @@
 ﻿using Autofac;
-using Guppy.Engine.Common.Services;
+using Guppy.Core.Common;
+using Guppy.Engine.Common.Loaders;
 
 namespace Guppy.Engine.Common.Extensions.Autofac
 {
     public static class ContainerBuilderExtensions
     {
-        public static void RegisteGuppyCommon(this ContainerBuilder services)
+        /// <summary>
+        /// Create an instance of said service loader and invoke onto the given builder
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static ContainerBuilder RegisterServiceLoader(this ContainerBuilder builder, Type type, IContainer? boot = null)
         {
-            services.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
+            ThrowIf.Type.IsNotAssignableFrom<IServiceLoader>(type);
+
+            IServiceLoader instance = boot is null ? (IServiceLoader?)Activator.CreateInstance(type) ?? throw new Exception() : (IServiceLoader)boot.Resolve(type);
+            return builder.RegisterServiceLoader(instance);
         }
 
-        public static void RegisterFilter(this ContainerBuilder builder, IServiceFilter filter)
+        /// <summary>
+        /// Create an instance of said service loader and invoke onto the given builder
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ContainerBuilder RegisterServiceLoader<T>(this ContainerBuilder builder, IContainer? boot = null)
+            where T : IServiceLoader
         {
-            builder.RegisterInstance(filter).As<IServiceFilter>().SingleInstance();
+            IServiceLoader instance = boot is null ? Activator.CreateInstance<T>() : (IServiceLoader)boot.Resolve<T>();
+            return builder.RegisterServiceLoader(instance);
+        }
+
+        /// <summary>
+        /// Run an instance of said service loader and invoke onto the given builder
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static ContainerBuilder RegisterServiceLoader(this ContainerBuilder builder, IServiceLoader instance)
+        {
+            instance.ConfigureServices(builder);
+
+            return builder;
         }
     }
 }

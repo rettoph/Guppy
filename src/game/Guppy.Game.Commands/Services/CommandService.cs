@@ -1,9 +1,9 @@
-﻿using Guppy.Engine.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Messaging;
+using Guppy.Engine.Common;
 using Guppy.Game.Commands.Extensions;
 using Guppy.Game.Commands.TokenPropertySetters;
-using Guppy.Core.Messaging;
 using System.CommandLine;
-using Guppy.Engine;
 
 namespace Guppy.Game.Commands.Services
 {

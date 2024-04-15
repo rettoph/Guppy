@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
-using Guppy.Engine.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common.Loaders;
 
 namespace Guppy.Game.MonoGame.Loaders
 {

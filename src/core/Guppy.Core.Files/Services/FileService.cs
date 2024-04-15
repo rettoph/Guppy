@@ -1,16 +1,18 @@
-﻿using Guppy.Engine.Serialization;
-using Guppy.Core.Files.Helpers;
+﻿using Guppy.Core.Files.Common;
+using Guppy.Core.Files.Common.Helpers;
+using Guppy.Core.Files.Common.Services;
+using Guppy.Core.Serialization.Common.Services;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Files.Services
 {
     internal class FileService : IFileService
     {
-        private readonly IJsonSerializer _json;
+        private readonly IJsonSerializationService _json;
         private readonly IPathService _paths;
         private Dictionary<string, IFile> _cache;
 
-        public FileService(IJsonSerializer json, IPathService paths)
+        public FileService(IJsonSerializationService json, IPathService paths)
         {
             _json = json;
             _paths = paths;

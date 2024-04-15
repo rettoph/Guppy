@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Guppy.Core.Files.Common;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Files.Serialization.Json

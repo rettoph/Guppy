@@ -1,4 +1,4 @@
-﻿using Guppy.Engine.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging;
 
 namespace Guppy.Game.Commands.Messages

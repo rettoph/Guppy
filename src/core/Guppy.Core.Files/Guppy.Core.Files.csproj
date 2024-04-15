@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Files.Common\Guppy.Core.Files.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Serialization.Common\Guppy.Core.Serialization.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Serialization\Guppy.Core.Serialization.csproj" />
   </ItemGroup>
 
 </Project>

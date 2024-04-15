@@ -1,9 +1,10 @@
-﻿using Guppy.Engine.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
 using Guppy.Game.Commands.Services;
 using Guppy.Game.Common;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;
-using Guppy.Engine;
 
 namespace Guppy.Game.MonoGame.Components.Guppy
 {

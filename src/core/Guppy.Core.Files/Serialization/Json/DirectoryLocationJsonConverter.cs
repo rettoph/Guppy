@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Files.Enums;
+﻿using Guppy.Core.Files.Common;
+using Guppy.Core.Files.Common.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

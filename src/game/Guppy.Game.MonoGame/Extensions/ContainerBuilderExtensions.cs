@@ -1,11 +1,11 @@
 ﻿using Autofac;
+using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Engine.Extensions.Autofac;
-using Guppy.Game.MonoGame.Loaders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Game.MonoGame
+namespace Guppy.Core.Files
 {
     public static class ContainerBuilderExtensions
     {
@@ -27,7 +27,8 @@ namespace Guppy.Game.MonoGame
             builder.RegisterInstance<ContentManager>(content).SingleInstance();
             builder.RegisterInstance<GameWindow>(window).SingleInstance();
 
-            return builder.RegisterServiceLoader<MonoGameLoader>().AddTag(nameof(RegisterMonoGame));
+            return builder.AddTag(nameof(RegisterMonoGame));
+            // return builder.RegisterServiceLoader<MonoGameLoader>().AddTag(nameof(RegisterMonoGame));
         }
     }
 }

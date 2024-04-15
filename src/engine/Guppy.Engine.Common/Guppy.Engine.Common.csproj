@@ -5,15 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU;x64</Platforms>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.12.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\libraries\Autofac\src\Autofac\Autofac.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Common\Guppy.Core.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
   </ItemGroup>
 
 </Project>

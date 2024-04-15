@@ -1,5 +1,5 @@
-﻿using Guppy.Engine.Attributes;
-using Guppy.Core.Files;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Files.Common;
 
 namespace Guppy.Core.Resources.ResourceTypes
 {

@@ -1,5 +1,5 @@
-﻿using Guppy.Engine.Common;
-using Guppy.Engine.Common.Utilities;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Resources.Extensions.System;
 using System.Runtime.InteropServices;
 

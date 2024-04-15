@@ -1,8 +1,8 @@
-﻿using Guppy.Engine;
-using Guppy.Engine.Common.Attributes;
-using Guppy.Engine.Common.Utilities;
-using Guppy.Engine.Enums;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Resources.Constants;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 
 namespace Guppy.Core.Resources.Services
 {

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Commands.Extensions;
 
 namespace Guppy.Game.Commands.Attributes
@@ -17,7 +17,7 @@ namespace Guppy.Game.Commands.Attributes
             this.Description = description;
         }
 
-        protected override void Configure(ContainerBuilder builder, Type classType)
+        protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
             Command command = new Command(
                 type: classType,

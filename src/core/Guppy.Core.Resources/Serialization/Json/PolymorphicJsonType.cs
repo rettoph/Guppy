@@ -1,4 +1,4 @@
-﻿using Guppy.Engine.Common;
+﻿using Guppy.Core.Common;
 
 namespace Guppy.Core.Resources.Serialization.Json
 {

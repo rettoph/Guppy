@@ -1,6 +1,6 @@
-﻿using Guppy.Engine;
-using Guppy.Engine.Attributes;
-using Guppy.Engine.Common.Attributes;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Input.Services;

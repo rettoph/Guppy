@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Files;
-using Guppy.Engine.Serialization;
+﻿using Guppy.Core.Files.Common;
+using Guppy.Core.Serialization.Common.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
@@ -44,9 +44,9 @@ namespace Guppy.Core.Resources.ResourceTypes
     public class DefaultResourceType<T> : ResourceType<T>
         where T : notnull
     {
-        private readonly IJsonSerializer _json;
+        private readonly IJsonSerializationService _json;
 
-        protected DefaultResourceType(IJsonSerializer json)
+        protected DefaultResourceType(IJsonSerializationService json)
         {
             _json = json;
         }

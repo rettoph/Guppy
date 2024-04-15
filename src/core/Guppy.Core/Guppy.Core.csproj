@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Files\Guppy.Core.Files.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Messaging\Guppy.Core.Messaging.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Serialization\Guppy.Core.Serialization.csproj" />
+  </ItemGroup>
+
+</Project>

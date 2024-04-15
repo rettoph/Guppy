@@ -1,4 +1,4 @@
-﻿using Guppy.Engine.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Resources;
 using Microsoft.Xna.Framework;
 

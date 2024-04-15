@@ -1,6 +1,6 @@
-﻿using Guppy.Engine;
-using Guppy.Engine.Attributes;
-using Guppy.Engine.Common.Collections;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Collections;
+using Guppy.Engine.Common.Components;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui;
 using Microsoft.Xna.Framework;

@@ -1,12 +1,12 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
-using Guppy.Engine.Common.Autofac;
-using Guppy.Engine.Extensions.Autofac;
-using Guppy.Core.Files;
-using Guppy.Game.Common;
-using Guppy.Engine.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Configuration;
 using Guppy.Core.Resources.Extensions.Autofac;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Common.Loaders;
+using Guppy.Game.Common;
 using Serilog;
 namespace Guppy.Game
 {
@@ -15,7 +15,7 @@ namespace Guppy.Game
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<Game>().As<IGame>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.EngineScope);
+            services.RegisterType<Game>().As<IGame>().SingleInstance();
 
             services.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
             services.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();

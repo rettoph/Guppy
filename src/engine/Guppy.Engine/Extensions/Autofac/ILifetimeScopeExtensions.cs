@@ -1,6 +1,5 @@
 ﻿using Autofac;
-using Guppy.Engine.Common;
-using Guppy.Engine.Loaders;
+using Guppy.Core.Common;
 
 namespace Guppy.Engine.Extensions.Autofac
 {
@@ -12,23 +11,6 @@ namespace Guppy.Engine.Extensions.Autofac
             {
                 return lifetimeScope.BeginLifetimeScope(tag, builder =>
                 {
-                    var loaders = lifetimeScope.Resolve<IEnumerable<IServiceLoader>>();
-
-                    foreach (IServiceLoader loader in loaders)
-                    {
-                        try
-                        {
-                            if (loader.LifetimeScopeTag.Equals(tag))
-                            {
-                                loader.ConfigureServices(builder);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            GuppyLogger.LogException($"{nameof(ILifetimeScopeExtensions)}::{nameof(BeginGuppyScope)} -  Exception calling {loader.GetType().GetFormattedName()}{nameof(IServiceLoader.ConfigureServices)}, Tag = {tag}", ex);
-                        }
-                    }
-
                     build?.Invoke(builder);
                 });
             }
@@ -46,6 +28,11 @@ namespace Guppy.Engine.Extensions.Autofac
         public static bool IsTag(this ILifetimeScope lifetimeScope, object tag)
         {
             return lifetimeScope.Tag.Equals(tag);
+        }
+
+        public static bool IsRoot(this ILifetimeScope lifetimeScope)
+        {
+            return lifetimeScope.Resolve<ITags>() is null;
         }
     }
 }

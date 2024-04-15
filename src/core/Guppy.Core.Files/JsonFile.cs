@@ -1,10 +1,11 @@
-﻿using Guppy.Engine.Serialization;
+﻿using Guppy.Core.Files.Common;
+using Guppy.Core.Serialization.Common.Services;
 
 namespace Guppy.Core.Files
 {
     internal class JsonFile<T> : IFile<T>
     {
-        private readonly IJsonSerializer _json;
+        private readonly IJsonSerializationService _json;
         private T _value;
 
         public FileLocation Location { get; }
@@ -30,16 +31,17 @@ namespace Guppy.Core.Files
 
         public bool Success { get; private set; }
 
-        public JsonFile(FileLocation location, FileLocation source, string content, IJsonSerializer json)
+        public JsonFile(FileLocation location, FileLocation source, string content, IJsonSerializationService json)
         {
             _value = default!;
             _json = json;
 
+            this.Location = location;
             this.Source = source;
             this.Content = content;
         }
 
-        public JsonFile(StringFile source, IJsonSerializer json) : this(source.Location, source.Source, source.Content, json)
+        public JsonFile(StringFile source, IJsonSerializationService json) : this(source.Location, source.Source, source.Content, json)
         {
 
         }

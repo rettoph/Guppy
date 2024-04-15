@@ -1,5 +1,5 @@
-﻿using Guppy.Engine.Attributes;
-using Guppy.Engine.Enums;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.Network.Services;
 using LiteNetLib.Utils;
 

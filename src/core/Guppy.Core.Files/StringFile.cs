@@ -1,4 +1,6 @@
-﻿namespace Guppy.Core.Files
+﻿using Guppy.Core.Files.Common;
+
+namespace Guppy.Core.Files
 {
     internal class StringFile : IFile
     {

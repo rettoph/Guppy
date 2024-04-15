@@ -1,16 +1,15 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Autofac;
-using Guppy.Engine.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Services;
-using Guppy.Engine.Extensions.Autofac;
-using Guppy.Engine.Providers;
-using Guppy.Engine.Serialization;
-using Guppy.Engine.Services;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Messaging;
 using Guppy.Core.Messaging.Services;
 using Guppy.Core.StateMachine.Services;
+using Guppy.Engine.Common.Autofac;
+using Guppy.Engine.Common.Loaders;
+using Guppy.Engine.Common.Services;
+using Guppy.Engine.Providers;
+using Guppy.Engine.Services;
 using Serilog;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -22,26 +21,13 @@ namespace Guppy.Engine.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisteGuppyCommon();
-
             services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
             services.RegisterType<ObjectTextFilterService>().As<IObjectTextFilterService>().SingleInstance();
 
-            services.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            services.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();
-            services.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
-
-            services.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
-            services.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
-
-            services.RegisterType<FilteredService>().As<IFilteredService>().InstancePerLifetimeScope();
             services.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
             services.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
-            services.RegisterType<DefaultInstanceService>().As<IDefaultInstanceService>().InstancePerDependency();
+
+            services.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             services.Register<ILogger>(p =>
             {
@@ -63,7 +49,6 @@ namespace Guppy.Engine.Loaders
             });
 
             services.RegisterInstance(new JsonStringEnumConverter()).As<JsonConverter>().SingleInstance();
-            services.RegisterType<Serialization.JsonSerializer>().As<IJsonSerializer>().InstancePerDependency();
         }
     }
 }

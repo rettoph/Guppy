@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Serialization.Json;
 
 namespace Guppy.Core.Resources.Attributes
@@ -18,7 +18,7 @@ namespace Guppy.Core.Resources.Attributes
             this.InstanceType = instanceType;
         }
 
-        protected override void Configure(ContainerBuilder builder, Type classType)
+        protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
             Type instanceType = this.InstanceType ?? classType;
 

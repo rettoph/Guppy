@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
+using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Extensions.Autofac;
 using Guppy.Core.Network.Enums;

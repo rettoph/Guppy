@@ -1,11 +1,11 @@
 ﻿using Autofac;
-using Guppy.Engine.Attributes;
-using Guppy.Core.Files.Serialization.Json;
-using Guppy.Engine.Loaders;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Files.Common.Serialization.Json;
 using Guppy.Core.Resources.Configuration;
 using Guppy.Core.Resources.Serialization.Json;
 using Guppy.Core.Resources.Serialization.Json.Converters;
 using Guppy.Core.Resources.Services;
+using Guppy.Engine.Common.Loaders;
 using Serilog.Events;
 using System.Text.Json.Serialization;
 
@@ -16,7 +16,6 @@ namespace Guppy.Core.Resources.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-
             services.RegisterType<SettingService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourcePackService>().AsImplementedInterfaces().SingleInstance();
             services.RegisterType<ResourceService>().AsImplementedInterfaces().SingleInstance();
