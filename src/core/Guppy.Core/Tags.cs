@@ -10,6 +10,8 @@ namespace Guppy.Core
 
         private ILifetimeScope _autofac;
 
+        public bool IsRoot => _parent is null;
+
         public Tags(ILifetimeScope autofac)
         {
             _autofac = autofac;

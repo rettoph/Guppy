@@ -32,7 +32,8 @@ namespace Guppy.Engine.Extensions.Autofac
 
         public static bool IsRoot(this ILifetimeScope lifetimeScope)
         {
-            return lifetimeScope.Resolve<ITags>() is null;
+            ITags tags = lifetimeScope.Resolve<ITags>();
+            return tags.IsRoot;
         }
     }
 }
