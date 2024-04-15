@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources;
+﻿using Guppy.Core.Resources.Common;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Game.ImGui

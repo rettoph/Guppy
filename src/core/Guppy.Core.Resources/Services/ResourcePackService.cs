@@ -2,9 +2,11 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
-using Guppy.Core.Resources.Configuration;
-using Guppy.Core.Resources.Constants;
-using Guppy.Core.Resources.ResourceTypes;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Configuration;
+using Guppy.Core.Resources.Common.Constants;
+using Guppy.Core.Resources.Common.ResourceTypes;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Serilog;

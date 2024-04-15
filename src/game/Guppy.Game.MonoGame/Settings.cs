@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources;
+﻿using Guppy.Core.Resources.Common;
 
 namespace Guppy.Game.MonoGame
 {

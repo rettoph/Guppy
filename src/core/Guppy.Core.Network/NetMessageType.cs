@@ -1,15 +1,16 @@
 ﻿using Guppy.Core.Common.Collections;
-using Guppy.Core.Network.Services;
+using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 
-namespace Guppy.Core.Network
+namespace Guppy.Core.Network.Common
 {
-    public abstract class NetMessageType
+    internal abstract class NetMessageType : INetMessageType
     {
-        public readonly byte Id;
-        public readonly Type Body;
-        public readonly DeliveryMethod DefaultDeliveryMethod;
-        public readonly byte DefaultOutgoingChannel;
+        public byte Id { get; }
+        public Type Body { get; }
+        public DeliveryMethod DefaultDeliveryMethod { get; }
+        public byte DefaultOutgoingChannel { get; }
 
         protected NetMessageType(byte id, Type header, DeliveryMethod defaultDeliveryMethod, byte defaultOutgoingChannel)
         {
@@ -20,28 +21,45 @@ namespace Guppy.Core.Network
         }
 
         public abstract INetIncomingMessage CreateIncoming();
-    }
 
-    public sealed class NetMessageType<T> : NetMessageType
-        where T : notnull
-    {
-        private readonly IPeer _peer;
-        private readonly INetSerializerService _serializers;
-        private readonly Factory<NetIncomingMessage<T>> _incomingFactory;
-        private readonly Factory<NetOutgoingMessage<T>> _outgoingFactory;
-
-        public NetMessageType(
+        public static NetMessageType Create(
+            Type type,
             byte id,
-            Type body,
             DeliveryMethod defaultDeliveryMethod,
             byte defaultOutgoingChannel,
             IPeer peer,
-            INetSerializerService serializers) : base(id, body, defaultDeliveryMethod, defaultOutgoingChannel)
+            INetSerializerService serializers)
         {
-            _peer = peer;
+            Type netMessageTypeType = typeof(NetMessageType<>).MakeGenericType(type);
+
+            return (NetMessageType?)Activator.CreateInstance(netMessageTypeType, [id, defaultDeliveryMethod, defaultOutgoingChannel, peer, serializers]) ?? throw new Exception();
+        }
+    }
+
+    internal sealed class NetMessageType<T> : NetMessageType, INetMessageType<T>
+        where T : notnull
+    {
+        private readonly Peer _peer;
+        private readonly INetSerializerService _serializers;
+        private readonly Factory<INetIncomingMessage<T>> _incomingFactory;
+        private readonly Factory<INetOutgoingMessage<T>> _outgoingFactory;
+
+        public NetMessageType(
+            byte id,
+            DeliveryMethod defaultDeliveryMethod,
+            byte defaultOutgoingChannel,
+            IPeer peer,
+            INetSerializerService serializers) : base(id, typeof(T), defaultDeliveryMethod, defaultOutgoingChannel)
+        {
+            if (peer is not Peer casted)
+            {
+                throw new NotImplementedException();
+            }
+
+            _peer = casted;
             _serializers = serializers;
-            _incomingFactory = new Factory<NetIncomingMessage<T>>(this.IncomingFactoryMethod);
-            _outgoingFactory = new Factory<NetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
+            _incomingFactory = new Factory<INetIncomingMessage<T>>(this.IncomingFactoryMethod);
+            _outgoingFactory = new Factory<INetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
         }
 
         private NetIncomingMessage<T> IncomingFactoryMethod()
@@ -64,12 +82,12 @@ namespace Guppy.Core.Network
             return _outgoingFactory.BuildInstance();
         }
 
-        internal void Recycle(NetIncomingMessage<T> message)
+        public void Recycle(INetIncomingMessage<T> message)
         {
             _incomingFactory.TryReturn(ref message);
         }
 
-        internal void Recycle(NetOutgoingMessage<T> message)
+        public void Recycle(INetOutgoingMessage<T> message)
         {
             _outgoingFactory.TryReturn(ref message);
         }

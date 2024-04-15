@@ -1,20 +1,19 @@
 ﻿using Autofac;
-using Guppy.Core.Messaging;
-using Guppy.Core.Network.Definitions;
-using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Groups;
-using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Identity.Claims;
-using Guppy.Core.Network.Messages;
-using Guppy.Core.Network.Services;
+using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common.Claims;
+using Guppy.Core.Network.Common.Definitions;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Groups;
+using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Services;
 
-namespace Guppy.Core.Network.Peers
+namespace Guppy.Core.Network.Common.Peers
 {
     internal class ClientPeer : Peer, IClientPeer, ISubscriber<INetIncomingMessage<UserAction>>, ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
     {
         public override PeerType Type => PeerType.Client;
 
-        public User? ServerUser { get; private set; }
+        public IUser? ServerUser { get; private set; }
 
         public ClientPeer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
         {
@@ -55,7 +54,7 @@ namespace Guppy.Core.Network.Peers
             }
         }
 
-        protected override void Send(INetOutgoingMessage message)
+        public override void Send(INetOutgoingMessage message)
         {
             if (message.Recipients.Count == 0)
             {

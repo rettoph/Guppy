@@ -4,9 +4,11 @@ using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Extensions;
-using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Extensions;
+using Guppy.Core.Resources.Extensions;
 using Guppy.Core.Serialization.Extensions;
 using Guppy.Core.Services;
+using Guppy.Core.StateMachine.Extensions;
 
 namespace Guppy.Core.Extensions
 {
@@ -33,8 +35,6 @@ namespace Guppy.Core.Extensions
 
             builder.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-            builder.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();
-
             builder.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
             builder.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
             builder.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
@@ -44,7 +44,11 @@ namespace Guppy.Core.Extensions
             builder.RegisterType<FilteredService>().As<IFilteredService>().InstancePerLifetimeScope();
             builder.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
 
-            builder.RegisterCoreSerializationServices().RegisterCoreFileServices();
+            builder.RegisterCoreSerializationServices()
+                .RegisterCoreFileServices()
+                .RegisterCoreStateMachineServices()
+                .RegisterCoreMessagingServices()
+                .RegisterCoreResourcesServices();
 
             return builder.AddTag(nameof(RegisterCoreServices));
         }

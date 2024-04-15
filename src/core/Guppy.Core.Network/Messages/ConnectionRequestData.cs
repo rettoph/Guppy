@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Network.Identity.Claims;
+﻿using Guppy.Core.Network.Common.Claims;
 
-namespace Guppy.Core.Network.Messages
+namespace Guppy.Core.Network.Common.Messages
 {
     internal class ConnectionRequestData
     {

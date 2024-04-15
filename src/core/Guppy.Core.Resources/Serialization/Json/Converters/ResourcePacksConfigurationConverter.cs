@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Configuration;
+﻿using Guppy.Core.Resources.Common.Configuration;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

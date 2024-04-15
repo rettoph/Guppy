@@ -1,4 +1,6 @@
-﻿namespace Guppy.Core.Messaging
+﻿using Guppy.Core.Messaging.Common;
+
+namespace Guppy.Core.Messaging
 {
     public class BusConfiguration
     {

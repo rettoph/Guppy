@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;

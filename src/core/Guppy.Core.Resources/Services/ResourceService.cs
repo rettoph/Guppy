@@ -1,6 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Utilities;
-using Guppy.Core.Resources.Constants;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Constants;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 
@@ -47,7 +49,7 @@ namespace Guppy.Core.Resources.Services
 
             foreach (IResource resource in StaticCollection<IResource>.GetAll())
             {
-                resource.Initialize(this);
+                resource.Refresh();
             }
 
             _initialized = true;
@@ -58,7 +60,7 @@ namespace Guppy.Core.Resources.Services
             throw new NotImplementedException();
         }
 
-        internal T GetPackValue<T>(Resource<T> resource)
+        public T GetLatestValue<T>(Resource<T> resource)
             where T : notnull
         {
             // TODO: Load default somehow
@@ -92,7 +94,7 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
-            resource.Initialize(this);
+            resource.Refresh();
         }
 
         public IEnumerable<Resource<T>> GetAll<T>()

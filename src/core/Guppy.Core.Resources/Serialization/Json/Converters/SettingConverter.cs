@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Resources.Services;
+﻿using Guppy.Core.Resources.Common;
+using Guppy.Core.Serialization.Common.Services;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;

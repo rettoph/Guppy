@@ -1,10 +1,11 @@
 ﻿
-using Guppy.Core.Messaging;
-using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Messages;
+using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Groups;
+using Guppy.Core.Network.Common.Messages;
 using System.Collections.ObjectModel;
 
-namespace Guppy.Core.Network
+namespace Guppy.Core.Network.Common
 {
     internal sealed class NetScope : INetScope, ISubscriber<INetOutgoingMessage>, ISubscriber<INetIncomingMessage<UserAction>>
     {
@@ -35,13 +36,13 @@ namespace Guppy.Core.Network
             _bus.Enqueue(message);
         }
 
-        void INetScope.Add(INetGroup group)
+        public void Add(INetGroup group)
         {
             _groups.Add(group);
             this.Type |= group.Peer.Type;
         }
 
-        void INetScope.Remove(INetGroup group)
+        public void Remove(INetGroup group)
         {
             _groups.Remove(group);
             if (_groups.Count == 0)
@@ -61,7 +62,10 @@ namespace Guppy.Core.Network
 
         public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
         {
-            message.Group.Process(message);
+            if (message.Group is BaseNetGroup casted)
+            {
+                casted.Process(message);
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Common.Implementations;
 using Guppy.Engine.Common;
 using Guppy.Game.Commands.Extensions;
 using Guppy.Game.Commands.TokenPropertySetters;

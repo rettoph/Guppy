@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Messages;
+﻿using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Peers;
 
-namespace Guppy.Core.Network.Groups
+namespace Guppy.Core.Network.Common.Groups
 {
     internal sealed class ClientNetGroup : BaseNetGroup
     {
@@ -10,11 +10,11 @@ namespace Guppy.Core.Network.Groups
         {
         }
 
-        protected override void Process(INetIncomingMessage<UserAction> message)
+        public override void Process(INetIncomingMessage<UserAction> message)
         {
             base.Process(message);
 
-            User user = this.Peer.Users.UpdateOrCreate(message.Body.UserDto);
+            IUser user = this.Peer.Users.UpdateOrCreate(message.Body.UserDto);
 
             switch (message.Body.Type)
             {

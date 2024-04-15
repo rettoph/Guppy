@@ -1,9 +1,11 @@
-﻿using Guppy.Core.Messaging;
-using Guppy.Core.Network.Services;
+﻿using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Serialization;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
-namespace Guppy.Core.Network
+namespace Guppy.Core.Network.Common
 {
     internal sealed class NetIncomingMessage<T> : INetIncomingMessage<T>
         where T : notnull
@@ -12,7 +14,7 @@ namespace Guppy.Core.Network
         private readonly INetSerializerService _serializers;
         private readonly INetSerializer<T> _serializer;
 
-        public ISender Sender { get; private set; }
+        public Sender Sender { get; private set; }
 
         public T Body { get; private set; }
 
@@ -20,20 +22,20 @@ namespace Guppy.Core.Network
 
         public DeliveryMethod DeliveryMethod { get; private set; }
 
-        public NetMessageType<T> Type { get; private set; }
+        public INetMessageType<T> Type { get; private set; }
 
         public INetGroup Group { get; private set; }
 
         object INetIncomingMessage.Body => this.Body;
-
-        NetMessageType INetIncomingMessage.Type => this.Type;
+        ISender INetIncomingMessage.Sender => this.Sender;
+        INetMessageType INetIncomingMessage.Type => this.Type;
 
         Type IMessage.Type { get; } = typeof(INetIncomingMessage<T>);
 
         internal NetIncomingMessage(
             IPeer peer,
             INetSerializerService serializers,
-            NetMessageType<T> type)
+            INetMessageType<T> type)
         {
             _peer = peer;
             _serializers = serializers;

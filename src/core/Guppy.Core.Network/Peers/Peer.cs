@@ -1,14 +1,14 @@
 ﻿using Autofac;
+using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common.Constants;
+using Guppy.Core.Network.Common.Definitions;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Identity.Services;
+using Guppy.Core.Network.Common.Services;
 using Guppy.Engine.Common.Autofac;
-using Guppy.Core.Messaging;
-using Guppy.Core.Network.Constants;
-using Guppy.Core.Network.Definitions;
-using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Identity.Services;
-using Guppy.Core.Network.Services;
 using LiteNetLib;
 
-namespace Guppy.Core.Network.Peers
+namespace Guppy.Core.Network.Common.Peers
 {
     internal abstract class Peer : IDisposable, IPeer, IBaseSubscriber<IMessage>
     {
@@ -17,13 +17,15 @@ namespace Guppy.Core.Network.Peers
         public readonly EventBasedNetListener Listener;
         public readonly NetManager Manager;
         public abstract PeerType Type { get; }
-        public Enums.PeerState State { get; private set; }
+        public PeerState State { get; private set; }
+        public UserService Users { get; }
 
-        public IUserService Users { get; }
         public INetMessageService Messages { get; }
         public INetGroupService Groups { get; }
         public INetScope DefaultNetScope { get; }
         public INetGroup Group { get; private set; }
+
+        IUserService IPeer.Users => this.Users;
 
         public Peer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
@@ -73,12 +75,7 @@ namespace Guppy.Core.Network.Peers
             }
         }
 
-        void IPeer.Send(INetOutgoingMessage message)
-        {
-            this.Send(message);
-        }
-
-        protected virtual void Send(INetOutgoingMessage message)
+        public virtual void Send(INetOutgoingMessage message)
         {
             foreach (NetPeer recipient in message.Recipients)
             {

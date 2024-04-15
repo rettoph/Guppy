@@ -1,7 +1,9 @@
-﻿using Guppy.Core.Network.Identity.Services;
-using Guppy.Core.Network.Messages;
+﻿using Guppy.Core.Network.Common.Identity.Services;
+using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Services;
 
-namespace Guppy.Core.Network.Groups
+namespace Guppy.Core.Network.Common.Groups
 {
     internal abstract class BaseNetGroup :
         INetGroup,
@@ -10,7 +12,9 @@ namespace Guppy.Core.Network.Groups
         public byte Id { get; private set; }
         public IPeer Peer { get; private set; }
         public INetScopeUserService Users { get; }
-        public INetScope Scope { get; private set; }
+        public NetScope Scope { get; private set; }
+
+        INetScope INetGroup.Scope => this.Scope;
 
         public BaseNetGroup(byte id, IPeer peer)
         {
@@ -34,7 +38,12 @@ namespace Guppy.Core.Network.Groups
                 Detach();
             }
 
-            this.Scope = scope;
+            if (scope is not NetScope casted)
+            {
+                throw new ArgumentException();
+            }
+
+            this.Scope = casted;
             this.Scope.Add(this);
         }
 
@@ -54,12 +63,7 @@ namespace Guppy.Core.Network.Groups
             return this.Peer.Messages.Create(this, body);
         }
 
-        void INetGroup.Process(INetIncomingMessage<UserAction> message)
-        {
-            Process(message);
-        }
-
-        protected virtual void Process(INetIncomingMessage<UserAction> message)
+        public virtual void Process(INetIncomingMessage<UserAction> message)
         {
         }
     }

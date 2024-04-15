@@ -1,27 +1,29 @@
-﻿using Guppy.Core.Messaging;
-using Guppy.Core.Network.Services;
+﻿using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Serialization;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Collections.ObjectModel;
 
-namespace Guppy.Core.Network
+namespace Guppy.Core.Network.Common
 {
     internal sealed class NetOutgoingMessage<T> : INetOutgoingMessage<T>
         where T : notnull
     {
-        private readonly IPeer _peer;
+        private readonly Peer _peer;
         private readonly INetSerializer<T> _serializer;
         private readonly INetSerializerService _serializers;
         private readonly List<NetPeer> _recipients;
 
 
         object INetOutgoingMessage.Body => this.Body;
-        NetMessageType INetOutgoingMessage.Type => this.Type;
+        INetMessageType INetOutgoingMessage.Type => this.Type;
         public T Body { get; private set; }
         public byte OutgoingChannel { get; private set; }
         public DeliveryMethod DeliveryMethod { get; private set; }
         public INetGroup Group { get; private set; }
-        public NetMessageType<T> Type { get; }
+        public INetMessageType<T> Type { get; }
         public NetDataWriter Writer { get; }
 
         Type IMessage.Type { get; } = typeof(INetOutgoingMessage<T>);
@@ -29,7 +31,7 @@ namespace Guppy.Core.Network
         public IReadOnlyList<NetPeer> Recipients { get; }
 
         internal NetOutgoingMessage(
-            IPeer peer,
+            Peer peer,
             INetSerializerService serializers,
             NetMessageType<T> type)
         {

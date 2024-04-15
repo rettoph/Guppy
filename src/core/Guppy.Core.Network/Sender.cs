@@ -1,13 +1,12 @@
-﻿using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Identity.Services;
+﻿using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 
-namespace Guppy.Core.Network
+namespace Guppy.Core.Network.Common
 {
     internal sealed class Sender : ISender
     {
         private readonly IUserService _users;
-        private User? _user;
+        private IUser? _user;
         private NetPeer? _peer;
 
         public Sender(IUserService users)
@@ -30,6 +29,6 @@ namespace Guppy.Core.Network
             }
         }
 
-        public User User => _user ??= _users.GetByNetPeer(_peer!);
+        public IUser User => _user ??= _users.GetByNetPeer(_peer!);
     }
 }

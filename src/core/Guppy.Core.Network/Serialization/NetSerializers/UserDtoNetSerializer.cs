@@ -1,9 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Identity.Claims;
-using Guppy.Core.Network.Identity.Dtos;
+using Guppy.Core.Network.Common.Claims;
+using Guppy.Core.Network.Common.Dtos;
 using LiteNetLib.Utils;
 
-namespace Guppy.Core.Network.Serialization.NetSerializers
+namespace Guppy.Core.Network.Common.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class UserDtoNetSerializer : NetSerializer<UserDto>

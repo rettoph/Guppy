@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LiteNetLib", "LiteNetLib", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteNetLib", "libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj", "{99308755-52D9-4288-98C4-13878F0FEA94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Network", "src\core\Guppy.Core.Network\Guppy.Core.Network.csproj", "{7536CB63-087A-4893-9753-208D2290D9B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Network.Common", "src\core\Guppy.Core.Network.Common\Guppy.Core.Network.Common.csproj", "{7536CB63-087A-4893-9753-208D2290D9B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Resources", "src\core\Guppy.Core.Resources\Guppy.Core.Resources.csproj", "{EEF6CE2D-B457-4DDE-8A2A-7DD028E8BE4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Resources.Common", "src\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj", "{EEF6CE2D-B457-4DDE-8A2A-7DD028E8BE4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImGui.NET", "ImGui.NET", "{A5B46F90-972A-4AA0-BBF8-1EF86726D9FC}"
 EndProject
@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonoGame", "MonoGame", "{28
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.Framework.DesktopGL", "libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj", "{54008FE1-0F71-4A8A-94E0-480D8DF3B89E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Messaging", "src\core\Guppy.Core.Messaging\Guppy.Core.Messaging.csproj", "{CDB189F0-76D6-46D7-B792-1F31D453C929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Messaging.Common", "src\core\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj", "{CDB189F0-76D6-46D7-B792-1F31D453C929}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{4CE46767-C139-409E-900F-111C39246C15}"
 EndProject
@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Input", "src\gam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.MonoGame", "src\game\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj", "{A9382912-A564-4F8D-8A68-1BFB01589B5D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.StateMachine", "src\core\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj", "{63CAC941-4F76-48A5-AA9A-1C29C4133060}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.StateMachine.Common", "src\core\Guppy.Core.StateMachine.Common\Guppy.Core.StateMachine.Common.csproj", "{63CAC941-4F76-48A5-AA9A-1C29C4133060}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Engine.Common", "src\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj", "{E1801768-781F-45DD-816B-484D9CE109F1}"
 EndProject

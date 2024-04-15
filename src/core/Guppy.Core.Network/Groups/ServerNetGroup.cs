@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Extensions.Identity;
-using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Identity.Enums;
-using Guppy.Core.Network.Identity.Services;
+﻿using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions.Identity;
+using Guppy.Core.Network.Common.Identity.Enums;
+using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Services;
 
-namespace Guppy.Core.Network.Groups
+namespace Guppy.Core.Network.Common.Groups
 {
     internal sealed class ServerNetGroup : BaseNetGroup
     {
@@ -24,7 +24,7 @@ namespace Guppy.Core.Network.Groups
             this.Users.OnUserLeft -= HandleUserLeft;
         }
 
-        private void HandleUserJoined(INetScopeUserService sender, User newUser)
+        private void HandleUserJoined(INetScopeUserService sender, IUser newUser)
         {
             // Alert all users of the new user.
             this.CreateMessage(newUser.CreateAction(UserActionTypes.UserJoined, ClaimAccessibility.Public))
@@ -37,7 +37,7 @@ namespace Guppy.Core.Network.Groups
             }
 
             // Alert the new user of all existing users.
-            foreach (User oldUser in this.Users)
+            foreach (IUser oldUser in this.Users)
             {
                 if (oldUser.Id == newUser.Id)
                 {
@@ -50,7 +50,7 @@ namespace Guppy.Core.Network.Groups
             }
         }
 
-        private void HandleUserLeft(INetScopeUserService sender, User user)
+        private void HandleUserLeft(INetScopeUserService sender, IUser user)
         {
             this.CreateMessage(user.CreateAction(UserActionTypes.UserLeft, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)

@@ -25,7 +25,7 @@
     <ProjectReference Include="..\Guppy.Game.Commands\Guppy.Game.Commands.csproj" />
     <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui\Guppy.Game.ImGui.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Resources\Guppy.Core.Resources.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
     <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
 

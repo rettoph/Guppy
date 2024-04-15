@@ -1,7 +1,8 @@
 ﻿using Guppy.Core.Common.Collections;
+using Guppy.Core.Network.Common.Serialization;
 using System.Collections;
 
-namespace Guppy.Core.Network.Services
+namespace Guppy.Core.Network.Common.Services
 {
     internal sealed class NetSerializerService : INetSerializerService
     {

@@ -3,6 +3,7 @@ using Autofac.Features.ResolveAnything;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Services;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Extensions;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Loaders;
@@ -87,7 +88,13 @@ namespace Guppy.Engine
                 // Run any custom builder actions
                 builder?.Invoke(engineBuilder);
 
-                return _instance = engineBuilder.Build().Resolve<IGuppyEngine>();
+                var container = engineBuilder.Build();
+                _instance = container.Resolve<IGuppyEngine>();
+
+                StaticInstance<IContainer>.Initialize(container, true);
+                StaticInstance<IGuppyEngine>.Initialize(_instance, true);
+
+                return _instance;
             }
         }
 

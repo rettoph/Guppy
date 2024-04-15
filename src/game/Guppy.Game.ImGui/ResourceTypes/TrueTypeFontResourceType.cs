@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Files.Common;
-using Guppy.Core.Resources;
-using Guppy.Core.Resources.ResourceTypes;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Core.Common.Attributes;
 using Serilog;
 

@@ -3,7 +3,7 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Game.Commands.Services;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Common.Loaders;
-using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Common;
 using System.CommandLine;
 using System.CommandLine.IO;
 

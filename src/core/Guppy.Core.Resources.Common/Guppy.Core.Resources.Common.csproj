@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Guppy.Core.Resources</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="6.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Files.Common\Guppy.Core.Files.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Serialization.Common\Guppy.Core.Serialization.Common.csproj" />
+  </ItemGroup>
+
+</Project>

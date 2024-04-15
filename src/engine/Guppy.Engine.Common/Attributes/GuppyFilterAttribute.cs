@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.StateMachine;
-using Guppy.Core.StateMachine.Filters;
+using Guppy.Core.StateMachine.Common;
+using Guppy.Core.StateMachine.Common.Filters;
 using Guppy.Engine.Common;
 
 namespace Guppy.Core.Common.Attributes

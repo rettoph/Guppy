@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Resources.ResourceTypes;
+﻿using Guppy.Core.Resources.Common.ResourceTypes;
+using Guppy.Core.Resources.Common.Services;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Resources.Services
@@ -16,28 +17,5 @@ namespace Guppy.Core.Resources.Services
         {
             return _types.TryGetValue(name, out resourceType);
         }
-
-        /*
-        private readonly Regex rgbaArrayRegex = new Regex("^(\\d{1,3}),(\\d{1,3}),(\\d{1,3}),(\\d{1,3})$");
-
-        protected override bool TryResolve(Resource<Color> resource, string input, out Color value)
-        {
-            Match rgbaArray = rgbaArrayRegex.Match(input);
-            if (rgbaArray.Success)
-            {
-                value = new Color(
-                    r: byte.Parse(rgbaArray.Groups[1].Value),
-                    g: byte.Parse(rgbaArray.Groups[2].Value),
-                    b: byte.Parse(rgbaArray.Groups[3].Value),
-                    alpha: byte.Parse(rgbaArray.Groups[4].Value)
-                );
-
-                return true;
-            }
-
-            value = default!;
-            return false;
-        }
-        */
     }
 }

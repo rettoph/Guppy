@@ -1,16 +1,15 @@
 ﻿using Autofac;
-using Guppy.Core.Network.Definitions;
-using Guppy.Core.Network.Enums;
-using Guppy.Core.Network.Extensions.Identity;
-using Guppy.Core.Network.Groups;
-using Guppy.Core.Network.Identity;
-using Guppy.Core.Network.Identity.Claims;
-using Guppy.Core.Network.Identity.Enums;
-using Guppy.Core.Network.Messages;
-using Guppy.Core.Network.Services;
+using Guppy.Core.Network.Common.Claims;
+using Guppy.Core.Network.Common.Definitions;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
+using Guppy.Core.Network.Common.Groups;
+using Guppy.Core.Network.Common.Identity.Enums;
+using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 
-namespace Guppy.Core.Network.Peers
+namespace Guppy.Core.Network.Common.Peers
 {
     internal class ServerPeer : Peer, IServerPeer
     {
@@ -60,7 +59,7 @@ namespace Guppy.Core.Network.Peers
                     {
                         NetPeer peer = request.Accept();
 
-                        User user = this.Users.Create(peer, casted.Body.Claims, Claim.Public(UserType.User));
+                        IUser user = this.Users.Create(peer, casted.Body.Claims, Claim.Public(UserType.User));
 
                         this.Group.CreateMessage(new ConnectionRequestResponse()
                         {

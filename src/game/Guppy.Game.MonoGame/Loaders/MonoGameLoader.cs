@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Files.Common;
-using Guppy.Core.Resources.Configuration;
-using Guppy.Core.Resources.Extensions.Autofac;
+using Guppy.Core.Resources.Common.Configuration;
+using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Common.Loaders;
 using Guppy.Game.ImGui;

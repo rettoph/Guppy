@@ -1,5 +1,5 @@
 ﻿using Guppy.Game.Commands.TokenPropertySetters;
-using Guppy.Core.Messaging;
+using Guppy.Core.Messaging.Common;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Reflection;

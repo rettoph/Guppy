@@ -2,10 +2,6 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Messaging;
-using Guppy.Core.Messaging.Services;
-using Guppy.Core.StateMachine.Services;
-using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Common.Loaders;
 using Guppy.Engine.Common.Services;
 using Guppy.Engine.Providers;
@@ -23,11 +19,6 @@ namespace Guppy.Engine.Loaders
         {
             services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
             services.RegisterType<ObjectTextFilterService>().As<IObjectTextFilterService>().SingleInstance();
-
-            services.RegisterType<StateService>().As<IStateService>().InstancePerLifetimeScope();
-            services.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
-
-            services.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
 
             services.Register<ILogger>(p =>
             {

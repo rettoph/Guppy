@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Network.Identity.Claims;
-using Guppy.Core.Network.Identity.Enums;
+﻿using Guppy.Core.Network.Common.Claims;
+using Guppy.Core.Network.Common.Identity.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Guppy.Core.Network.Serialization.Json
+namespace Guppy.Core.Network.Common.Serialization.Json
 {
     internal sealed class ClaimJsonConverter : JsonConverter<Claim>
     {
@@ -56,8 +56,7 @@ namespace Guppy.Core.Network.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            Claim claim = type.Create(key, value ?? throw new JsonException(), accessibility);
-            claim.CreatedAt = createdAt;
+            Claim claim = type.Create(key, value ?? throw new JsonException(), accessibility, createdAt);
 
             return claim;
         }

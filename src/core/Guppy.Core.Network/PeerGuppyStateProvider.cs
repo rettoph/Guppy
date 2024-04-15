@@ -1,15 +1,15 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.StateMachine.Common;
+using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Extensions.Autofac;
-using Guppy.Core.Network.Enums;
-using Guppy.Engine.Providers;
-using Guppy.Core.StateMachine;
 
-namespace Guppy.Core.Network
+namespace Guppy.Core.Network.Common
 {
     [AutoLoad]
-    internal class PeerGuppyStateProvider : StateProvider
+    internal class PeerGuppyStateProvider : IStateProvider
     {
         private readonly INetScope? _scope;
 
@@ -21,7 +21,7 @@ namespace Guppy.Core.Network
             }
         }
 
-        public override IEnumerable<IState> GetStates()
+        public IEnumerable<IState> GetStates()
         {
             yield return new State<PeerType>(() => _scope?.Type ?? PeerType.None, (x, y) => x.HasFlag(y));
         }

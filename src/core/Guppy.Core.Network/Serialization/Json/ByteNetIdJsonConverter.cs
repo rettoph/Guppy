@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Guppy.Core.Network.Serialization.Json
+namespace Guppy.Core.Network.Common.Serialization.Json
 {
     internal sealed class ByteNetIdJsonConverter : JsonConverter<NetId.Byte>
     {

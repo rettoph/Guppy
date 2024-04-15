@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Resources.ResourceTypes;
+using Guppy.Core.Resources.Common.ResourceTypes;
 using Microsoft.Xna.Framework;
 using Guppy.Core.Serialization.Common.Services;
 

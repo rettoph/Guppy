@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging.Services;
+using Guppy.Core.Messaging.Common.Services;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 

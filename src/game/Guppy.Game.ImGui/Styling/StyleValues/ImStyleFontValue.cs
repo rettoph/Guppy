@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Resources.Attributes;
+using Guppy.Core.Serialization.Common.Attributes;
 
 namespace Guppy.Game.ImGui.Styling.StyleValueResources
 {

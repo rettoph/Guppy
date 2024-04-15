@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Network.Identity.Services;
-using Guppy.Core.Network.Messages;
+﻿using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Services;
 
-namespace Guppy.Core.Network.Groups
+namespace Guppy.Core.Network.Common.Groups
 {
     internal class NotImplementedNetGroup : INetGroup
     {
@@ -54,11 +54,6 @@ namespace Guppy.Core.Network.Groups
         }
 
         void INetGroup.Detach()
-        {
-            throw new NotImplementedException();
-        }
-
-        void INetGroup.Process(INetIncomingMessage<UserAction> message)
         {
             throw new NotImplementedException();
         }

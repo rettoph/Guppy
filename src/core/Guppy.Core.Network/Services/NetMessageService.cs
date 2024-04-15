@@ -1,51 +1,42 @@
-﻿using Guppy.Core.Network.Definitions;
+﻿using Guppy.Core.Network.Common.Definitions;
+using Guppy.Core.Network.Common.Peers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
-namespace Guppy.Core.Network.Services
+namespace Guppy.Core.Network.Common.Services
 {
     internal sealed class NetMessageService : INetMessageService
     {
         private readonly IPeer _peer;
-        private readonly INetSerializerService _serializers;
-        private readonly IEnumerable<NetMessageTypeDefinition> _definitions;
 
         private INetGroup _scope;
         private IDictionary<byte, NetMessageType> _messageIds;
         private IDictionary<Type, NetMessageType> _messageTypes;
 
-        public NetMessageService(
-            IPeer peer,
-            INetSerializerService serializers,
-            IEnumerable<NetMessageTypeDefinition> definitions)
+        public NetMessageService(IPeer peer, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> definitions)
         {
             _peer = peer;
-            _serializers = serializers;
-            _definitions = definitions;
 
             _messageIds = default!;
             _messageTypes = default!;
             _scope = default!;
 
             byte id = 0;
-            IList<NetMessageType> messages = _definitions.Select(definition =>
+            IList<NetMessageType> messages = definitions.Select(definition =>
             {
-                return definition.Build(
-                    id: id++,
-                    peer: _peer,
-                    serializers: _serializers);
+                return NetMessageType.Create(definition.Body, id++, definition.DefaultDeliveryMethod, definition.DefaultOutgoingChannel, peer, serializers);
             }).ToList();
 
             _messageIds = messages.ToDictionary(x => x.Id, x => x);
             _messageTypes = messages.ToDictionary(x => x.Body, x => x);
         }
 
-        public NetMessageType GetById(byte id)
+        public INetMessageType GetById(byte id)
         {
             return _messageIds[id];
         }
 
-        public NetMessageType<T> Get<T>()
+        public INetMessageType<T> Get<T>()
             where T : notnull
         {
             try

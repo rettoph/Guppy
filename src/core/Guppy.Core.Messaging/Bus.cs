@@ -1,8 +1,10 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Implementations;
 
 namespace Guppy.Core.Messaging
 {
-    public class Bus : MagicBroker<IMessage>, IBus
+    internal class Bus : MagicBroker<IMessage>, IBus
     {
         private (Type type, int queue)[] _queueConfigurations;
         private Dictionary<Type, Queue<IMessage>> _typeQueues;
