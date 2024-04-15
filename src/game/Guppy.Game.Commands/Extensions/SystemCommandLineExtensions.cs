@@ -1,10 +1,10 @@
-﻿using Guppy.Commands.TokenPropertySetters;
+﻿using Guppy.Game.Commands.TokenPropertySetters;
 using Guppy.Core.Messaging;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Reflection;
 
-namespace Guppy.Commands.Extensions
+namespace Guppy.Game.Commands.Extensions
 {
     internal static class SystemCommandLineExtensions
     {

@@ -1,8 +1,8 @@
-﻿using Guppy.Commands.Extensions;
+﻿using Guppy.Game.Commands.Extensions;
 using System.CommandLine.Invocation;
 using System.Reflection;
 
-namespace Guppy.Commands
+namespace Guppy.Game.Commands
 {
     public sealed class Option
     {

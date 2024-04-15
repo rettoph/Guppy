@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Messaging;
 
-namespace Guppy.Commands
+namespace Guppy.Game.Commands
 {
     public interface ICommand : IMessage
     {

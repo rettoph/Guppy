@@ -1,8 +1,8 @@
-﻿using Guppy.Commands.Attributes;
-using Guppy.Commands.Extensions;
+﻿using Guppy.Game.Commands.Attributes;
+using Guppy.Game.Commands.Extensions;
 using System.Reflection;
 
-namespace Guppy.Commands.Arguments
+namespace Guppy.Game.Commands.Arguments
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class ArgumentAttribute : FactoryAttribute<Argument>

@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Messaging;
 
-namespace Guppy.Commands.Services
+namespace Guppy.Game.Commands.Services
 {
     public interface ICommandService : IBroker<ICommand>
     {

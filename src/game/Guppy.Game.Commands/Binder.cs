@@ -1,10 +1,10 @@
-﻿using Guppy.Commands.TokenPropertySetters;
+﻿using Guppy.Game.Commands.TokenPropertySetters;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 
-namespace Guppy.Commands
+namespace Guppy.Game.Commands
 {
     internal class Binder<T>
         where T : ICommand, new()

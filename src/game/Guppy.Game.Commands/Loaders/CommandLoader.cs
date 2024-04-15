@@ -1,13 +1,13 @@
 ﻿using Autofac;
 using Guppy.Engine.Attributes;
-using Guppy.Commands.Services;
+using Guppy.Game.Commands.Services;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Loaders;
 using Guppy.Core.Messaging;
 using System.CommandLine;
 using System.CommandLine.IO;
 
-namespace Guppy.Commands.Loaders
+namespace Guppy.Game.Commands.Loaders
 {
     [AutoLoad]
     internal sealed class CommandLoader : IServiceLoader

@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Guppy.Engine.Attributes;
-using Guppy.Commands.Extensions;
+using Guppy.Game.Commands.Extensions;
 
-namespace Guppy.Commands.Attributes
+namespace Guppy.Game.Commands.Attributes
 {
     public class CommandAttribute : GuppyConfigurationAttribute
     {

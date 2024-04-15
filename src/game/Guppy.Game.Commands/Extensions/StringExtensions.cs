@@ -1,4 +1,4 @@
-﻿namespace Guppy.Commands.Extensions
+﻿namespace Guppy.Game.Commands.Extensions
 {
     internal static class StringExtensions
     {

@@ -2,7 +2,7 @@
 using System.CommandLine.Parsing;
 using System.Reflection;
 
-namespace Guppy.Commands.TokenPropertySetters
+namespace Guppy.Game.Commands.TokenPropertySetters
 {
     [AutoLoad]
     internal class NullableEnumPropertySetter : ITokenPropertySetter
