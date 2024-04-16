@@ -42,14 +42,14 @@ namespace Guppy.Core.Common.Extensions.Autofac
             return GetTags(builder).Contains(tag);
         }
 
-        public static ContainerBuilder BuildOnce(this ContainerBuilder builder, string tag, Action<ContainerBuilder> buildeAction)
+        public static ContainerBuilder EnsureRegisteredOnce(this ContainerBuilder builder, string tag, Action<ContainerBuilder> build)
         {
             if (builder.HasTag(tag))
             {
                 return builder;
             }
 
-            buildeAction(builder);
+            build(builder);
 
             builder.AddTag(tag);
 

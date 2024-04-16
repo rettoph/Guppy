@@ -5,6 +5,7 @@ using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Game.Extensions;
+using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common;
 using Guppy.Game.MonoGame.Common.Constants;
@@ -27,9 +28,9 @@ namespace Guppy.Game.MonoGame.Extensions
             ContentManager content,
             GameWindow window)
         {
-            return builder.BuildOnce(nameof(RegisterMonoGameServices), builder =>
+            return builder.EnsureRegisteredOnce(nameof(RegisterMonoGameServices), builder =>
             {
-                builder.RegisterCommonGameServices().RegisterGameInputServices();
+                builder.RegisterCommonGameServices().RegisterGameMonoGameImGuiServices().RegisterGameInputServices();
 
                 builder.RegisterInstance(game).SingleInstance();
                 builder.RegisterInstance<GraphicsDeviceManager>(graphics).SingleInstance();

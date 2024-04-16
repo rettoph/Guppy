@@ -1,7 +1,7 @@
 ﻿using Guppy.Game.Input.Common;
 using Guppy.Core.Messaging.Common;
 
-namespace Guppy.Game.ImGui.Common.Messages
+namespace Guppy.Game.ImGui.MonoGame.Common.Messages
 {
     internal sealed class ImGuiMouseButtonEvent : Message<ImGuiMouseButtonEvent>, IInput
     {

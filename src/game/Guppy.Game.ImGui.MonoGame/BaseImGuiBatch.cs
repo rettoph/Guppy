@@ -4,14 +4,14 @@ using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.ImGui.Common.Messages;
+using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.MonoGame.Common.Messages;
 using Guppy.Game.Input.Common;
-using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Game.ImGui.Common
+namespace Guppy.Game.ImGui.MonoGame
 {
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     internal abstract class BaseImGuiBatch : GlobalComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch
@@ -61,7 +61,7 @@ namespace Guppy.Game.ImGui.Common
             ImGuiNet.SetCurrentContext(this.Context);
             this.IO = ImGuiNet.GetIO();
 
-            this.IO.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
+            this.IO.ConfigFlags |= ImGuiNET.ImGuiConfigFlags.DockingEnable;
 
             _fonts = new Dictionary<(Resource<TrueTypeFont>, int), Ref<ImFontPtr>>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();

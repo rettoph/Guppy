@@ -1,8 +1,9 @@
 ﻿using Guppy.Core.Resources.Common.Services;
+using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Game.ImGui.Common
+namespace Guppy.Game.ImGui.MonoGame
 {
     internal class MonoGameImGuiBatch : BaseImGuiBatch, IDisposable
     {

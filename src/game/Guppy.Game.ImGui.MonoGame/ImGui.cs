@@ -4,7 +4,7 @@ using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Helpers;
 using Guppy.Game.ImGui.Common.Styling;
 
-namespace Guppy.Game.ImGui
+namespace Guppy.Game.ImGui.MonoGame
 {
     internal partial class ImGui : IImGui, IDisposable
     {

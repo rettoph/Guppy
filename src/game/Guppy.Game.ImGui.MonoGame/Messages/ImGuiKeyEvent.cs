@@ -1,7 +1,8 @@
-﻿using Guppy.Game.Input.Common;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
+using Guppy.Game.ImGui.Common;
+using Guppy.Game.Input.Common;
 
-namespace Guppy.Game.ImGui.Common.Messages
+namespace Guppy.Game.ImGui.MonoGame.Common.Messages
 {
     internal sealed class ImGuiKeyEvent : Message<ImGuiKeyEvent>, IInput
     {

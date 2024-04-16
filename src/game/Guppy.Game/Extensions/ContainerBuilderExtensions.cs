@@ -15,7 +15,7 @@ namespace Guppy.Game.Extensions
     {
         public static ContainerBuilder RegisterCommonGameServices(this ContainerBuilder builder)
         {
-            return builder.BuildOnce(nameof(RegisterCommonGameServices), builder =>
+            return builder.EnsureRegisteredOnce(nameof(RegisterCommonGameServices), builder =>
             {
                 builder.RegisterCoreCommandServices();
 

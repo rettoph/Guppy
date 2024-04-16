@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Guppy.Game.ImGui</_Parameter1>
+      <_Parameter1>Guppy.Game.ImGui.MonoGame</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
   
