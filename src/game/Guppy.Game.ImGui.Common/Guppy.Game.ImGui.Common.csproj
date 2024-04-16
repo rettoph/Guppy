@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>Guppy.Game.ImGui</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  
+  <PropertyGroup Condition=" '$(RuntimeIdentifier)' != '' AND '$(RuntimeIdentifier)' != null ">
+    <CurrentRuntime>$(RuntimeIdentifier)</CurrentRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'Windows_NT' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ) ">
+    <CurrentRuntime>win-x64</CurrentRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ) ">
+    <CurrentRuntime>linux-x64</CurrentRuntime>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64' ) ">
+    <CurrentRuntime>linux-arm64</CurrentRuntime>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
+    <ProjectReference Include="..\..\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator\Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	  <ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup Condition=" '$(CurrentRuntime)' != '' AND '$(CurrentRuntime)' != null ">
+    <Content Include="natives\$(CurrentRuntime)\*" Link="natives\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.Numerics">
+      <Alias>Num</Alias>
+    </Using>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="ImGuiNET.ImGui">
+      <Alias>ImGuiNet</Alias>
+    </Using>
+  </ItemGroup>
+
+</Project>

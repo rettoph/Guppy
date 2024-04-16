@@ -6,7 +6,7 @@ using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
 using System.Runtime.InteropServices;

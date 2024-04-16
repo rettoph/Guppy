@@ -1,7 +1,8 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Game.ImGui.Helpers;
-using Guppy.Game.ImGui.Styling;
 using Guppy.Core.Resources.Common;
+using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Helpers;
+using Guppy.Game.ImGui.Common.Styling;
 
 namespace Guppy.Game.ImGui
 {

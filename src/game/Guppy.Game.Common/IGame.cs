@@ -1,4 +1,4 @@
-﻿using Guppy.Engine.Providers;
+﻿using Guppy.Engine.Common.Providers;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common

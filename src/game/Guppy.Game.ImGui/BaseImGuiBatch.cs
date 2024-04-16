@@ -4,14 +4,14 @@ using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.ImGui.Messages;
+using Guppy.Game.ImGui.Common.Messages;
 using Guppy.Game.Input;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Game.ImGui
+namespace Guppy.Game.ImGui.Common
 {
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
     internal abstract class BaseImGuiBatch : GlobalComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch

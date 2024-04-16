@@ -4,7 +4,6 @@ using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Autofac;
 using Guppy.Engine.Common.Loaders;
-using Guppy.Game.ImGui;
 using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Constants;
 using Guppy.Game.MonoGame.Messages;
@@ -22,8 +21,6 @@ namespace Guppy.Game.MonoGame.Loaders
             services.RegisterType<SpriteBatch>().SingleInstance();
 
             services.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
-
-            services.RegisterType<MonoGameImGuiBatch>().AsImplementedInterfaces().SingleInstance();
 
             services.RegisterGeneric(typeof(PrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PrimitiveBatch<>));

@@ -1,8 +1,8 @@
-﻿using Guppy.Game.MonoGame.Utilities.Cameras;
+﻿using Guppy.Game.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Game.MonoGame.Primitives
+namespace Guppy.Game.Primitives
 {
     public class PointPrimitiveBatch<TVertex, TEffect>
         where TVertex : unmanaged, IVertexType

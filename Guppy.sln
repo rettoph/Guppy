@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImPlot.NET", "libraries\ImG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Files", "src\core\Guppy.Files\Guppy.Files.csproj", "{5EEACE31-78D0-47BC-9E2B-945395B72497}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Commands", "src\game\Guppy.Game.Commands\Guppy.Game.Commands.csproj", "{3833644D-CCDE-42E5-9548-7254BD308AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Commands.Common", "src\game\Guppy.Game.Commands.Common\Guppy.Game.Commands.Common.csproj", "{3833644D-CCDE-42E5-9548-7254BD308AF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonoGame", "MonoGame", "{28E588A4-64B9-442F-A7E0-FD6ED06FF0C4}"
 EndProject
@@ -39,9 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game", "src\game\Gupp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Common", "src\game\Guppy.Game.Common\Guppy.Game.Common.csproj", "{2D5B42C7-89DB-4C20-BF5D-3859360DB4BF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.ImGui", "src\game\Guppy.Game.ImGui\Guppy.Game.ImGui.csproj", "{50F464E7-1431-48E5-AF1A-73701075BFEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.ImGui.Common", "src\game\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj", "{50F464E7-1431-48E5-AF1A-73701075BFEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.ImGui.ImGuiNETSourceGenerator", "src\game\Guppy.Game.ImGui.ImGuiNETSourceGenerator\Guppy.Game.ImGui.ImGuiNETSourceGenerator.csproj", "{5BC4A3B4-DB7D-4B5F-BB65-EE5149C9CCBA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator", "src\game\Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator\Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.csproj", "{5BC4A3B4-DB7D-4B5F-BB65-EE5149C9CCBA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Input", "src\game\Guppy.Game.Input\Guppy.Game.Input.csproj", "{C520BC96-47AD-4A63-A5D4-E2AFE90C3867}"
 EndProject

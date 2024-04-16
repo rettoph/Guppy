@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />
+    <ProjectReference Include="..\..\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.StateMachine.Common\Guppy.Core.StateMachine.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.CommandLine">
+      <Alias>SCL</Alias>
+    </Using>
+  </ItemGroup>
+</Project>

@@ -5,40 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(RuntimeIdentifier)' != '' AND '$(RuntimeIdentifier)' != null ">
-    <CurrentRuntime>$(RuntimeIdentifier)</CurrentRuntime>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'Windows_NT' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ) ">
-    <CurrentRuntime>win-x64</CurrentRuntime>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'X64' ) ">
-    <CurrentRuntime>linux-x64</CurrentRuntime>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64' ) ">
-    <CurrentRuntime>linux-arm64</CurrentRuntime>
-  </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
-    <ProjectReference Include="..\Guppy.Game.ImGui.ImGuiNETSourceGenerator\Guppy.Game.ImGui.ImGuiNETSourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-  </ItemGroup>
-	
-  <ItemGroup>
-	<ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
-    <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup Condition=" '$(CurrentRuntime)' != '' AND '$(CurrentRuntime)' != null " >
-    <Content Include="natives\$(CurrentRuntime)\*" Link="natives\%(Filename)%(Extension)">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

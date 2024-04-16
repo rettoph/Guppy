@@ -5,12 +5,12 @@ using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Components;
-using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Common;
 using Guppy.Game.Input;
 using Guppy.Game.Input.Constants;
 using Guppy.Game.Input.Services;
-using Guppy.Game.MonoGame.Primitives;
-using Guppy.Game.MonoGame.Utilities.Cameras;
+using Guppy.Game.Primitives;
+using Guppy.Game.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

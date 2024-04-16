@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\game\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj" />
+    <ProjectReference Include="..\..\src\game\Guppy.Game\Guppy.Game.csproj" />
   </ItemGroup>
 
 </Project>

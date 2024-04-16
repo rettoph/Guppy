@@ -28,8 +28,4 @@
     <ProjectReference Include="..\..\core\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Serialization\" />
-  </ItemGroup>
-
 </Project>

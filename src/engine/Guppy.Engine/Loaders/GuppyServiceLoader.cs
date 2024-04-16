@@ -3,6 +3,7 @@ using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Loaders;
+using Guppy.Engine.Common.Providers;
 using Guppy.Engine.Common.Services;
 using Guppy.Engine.Providers;
 using Guppy.Engine.Services;

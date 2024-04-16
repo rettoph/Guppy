@@ -2,7 +2,7 @@
 using Guppy.Core.Common.Collections;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Components;
-using Guppy.Game.ImGui;
+using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Game

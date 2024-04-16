@@ -1,7 +1,6 @@
-﻿using Guppy.Game.Commands;
-using Guppy.Game.Commands.Arguments;
-using Guppy.Game.Commands.Attributes;
-using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common;
+using Guppy.Game.Commands.Common;
+using Guppy.Game.Commands.Common.Attributes;
 using Serilog.Core;
 using Serilog.Events;
 
