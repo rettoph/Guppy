@@ -5,7 +5,7 @@ using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.ImGui.Common.Messages;
-using Guppy.Game.Input;
+using Guppy.Game.Input.Common;
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;

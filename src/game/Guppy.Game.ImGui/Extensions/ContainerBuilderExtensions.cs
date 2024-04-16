@@ -9,7 +9,7 @@ using Guppy.Game.ImGui.Common.Messages;
 using Guppy.Game.ImGui.Common.Serialization.Json.Converters;
 using Guppy.Game.ImGui.Common.Services;
 using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
-using Guppy.Game.Input.Enums;
+using Guppy.Game.Input.Common.Enums;
 using Microsoft.Xna.Framework.Input;
 using System.Text.Json.Serialization;
 

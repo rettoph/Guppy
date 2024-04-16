@@ -1,4 +1,6 @@
-﻿using Guppy.Game.Input.Enums;
+﻿using Guppy.Game.Input.Common;
+using Guppy.Game.Input.Common.Enums;
+using Guppy.Game.Input.Common.Services;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Game.Input.Services

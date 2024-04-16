@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.ImGui.Common", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator", "src\game\Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator\Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.csproj", "{5BC4A3B4-DB7D-4B5F-BB65-EE5149C9CCBA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Input", "src\game\Guppy.Game.Input\Guppy.Game.Input.csproj", "{C520BC96-47AD-4A63-A5D4-E2AFE90C3867}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Input.Common", "src\game\Guppy.Game.Input.Common\Guppy.Game.Input.Common.csproj", "{C520BC96-47AD-4A63-A5D4-E2AFE90C3867}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.MonoGame", "src\game\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj", "{A9382912-A564-4F8D-8A68-1BFB01589B5D}"
 EndProject

@@ -1,4 +1,7 @@
-﻿namespace Guppy.Game.Input.Services
+﻿using Guppy.Game.Input.Common;
+using Guppy.Game.Input.Common.Services;
+
+namespace Guppy.Game.Input.Services
 {
     internal sealed class CursorService : ICursorService
     {
@@ -8,7 +11,7 @@
         {
             _cursors = new List<ICursor>();
 
-            Add(new Cursor());
+            this.Add(new MouseCursor());
         }
 
         public void Add(ICursor cursor)

@@ -17,11 +17,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
     <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Commands\Guppy.Core.Commands.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui\Guppy.Game.ImGui.csproj" />
+    <ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
     <ProjectReference Include="..\Guppy.Game\Guppy.Game.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Commands\Guppy.Core.Commands.csproj" />
     <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
 

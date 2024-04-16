@@ -3,7 +3,8 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.Input.Services;
+using Guppy.Game.Input.Common;
+using Guppy.Game.Input.Common.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Input.Components

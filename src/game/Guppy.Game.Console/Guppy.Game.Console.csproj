@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Guppy.Game.Input.Common\Guppy.Game.Input.Common.csproj" />
-  </ItemGroup>
-
 </Project>

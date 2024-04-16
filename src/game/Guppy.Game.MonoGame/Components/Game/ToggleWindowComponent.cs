@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Components;
-using Guppy.Game.Input;
+using Guppy.Game.Input.Common;
 using Guppy.Game.MonoGame.Components.Guppy;
 using Guppy.Game.MonoGame.Messages;
 

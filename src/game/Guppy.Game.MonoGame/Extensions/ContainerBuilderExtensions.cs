@@ -1,11 +1,12 @@
 ﻿using Autofac;
 using Guppy.Core.Commands.Extensions;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Game.Input.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Core.Files
+namespace Guppy.Game.MonoGame.Extensions
 {
     public static class ContainerBuilderExtensions
     {
@@ -21,7 +22,7 @@ namespace Guppy.Core.Files
                 return builder;
             }
 
-            builder.RegisterCoreCommandServices();
+            builder.RegisterCoreCommandServices().RegisterGameInputServices();
 
             builder.RegisterInstance(game).SingleInstance();
             builder.RegisterInstance<GraphicsDeviceManager>(graphics).SingleInstance();

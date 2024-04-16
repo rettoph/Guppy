@@ -3,7 +3,7 @@ using Guppy.Engine.Attributes;
 using Guppy.Engine.Loaders;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
-using Guppy.Game.Input.Enums;
+using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.Primitives;
 using Guppy.Game.Utilities.Cameras;
 using Microsoft.Xna.Framework.Input;
