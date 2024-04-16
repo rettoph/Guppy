@@ -22,7 +22,7 @@ namespace Guppy.Game.MonoGame.Components.Game
         {
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
-            _debugWindowStyle = Resources.ImGuiStyles.DebugWindow;
+            _debugWindowStyle = Common.Resources.ImGuiStyles.DebugWindow;
         }
 
         protected override void Initialize(IGlobalComponent[] components)
@@ -34,7 +34,7 @@ namespace Guppy.Game.MonoGame.Components.Game
 
         public void DrawImGui(GameTime gameTime)
         {
-            if (Settings.IsDebugWindowEnabled == false)
+            if (Common.Settings.IsDebugWindowEnabled == false)
             {
                 return;
             }

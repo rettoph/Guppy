@@ -3,6 +3,7 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.MonoGame.Common;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Guppy

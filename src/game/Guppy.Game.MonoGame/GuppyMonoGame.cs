@@ -56,7 +56,7 @@ namespace Guppy.Game.MonoGame
             {
                 IGame game = GuppyEngine.Start(_context, builder =>
                 {
-                    builder.RegisterMonoGame(this, _graphics, this.Content, this.Window);
+                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window);
                 }).StartGame();
 
                 game.Initialize();

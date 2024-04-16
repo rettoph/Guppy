@@ -11,12 +11,12 @@ namespace Guppy.Game.MonoGame.Components.Game
     {
         public void Process(in Guid messageId, Toggle<GuppyDebugWindowComponent> message)
         {
-            Settings.IsDebugWindowEnabled.Value = !Settings.IsDebugWindowEnabled.Value;
+            Common.Settings.IsDebugWindowEnabled.Value = !Common.Settings.IsDebugWindowEnabled.Value;
         }
 
         public void Process(in Guid messageId, Toggle<TerminalWindowComponent> message)
         {
-            Settings.IsTerminalWindowEnabled.Value = !Settings.IsTerminalWindowEnabled.Value;
+            Common.Settings.IsTerminalWindowEnabled.Value = !Common.Settings.IsTerminalWindowEnabled.Value;
         }
     }
 }

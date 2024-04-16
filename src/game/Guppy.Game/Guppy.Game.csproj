@@ -22,9 +22,9 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Commands\Guppy.Core.Commands.csproj" />
     <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui\Guppy.Game.ImGui.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
     <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
 

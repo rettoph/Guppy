@@ -5,7 +5,7 @@ using DrawingColor = System.Drawing.Color;
 
 namespace Guppy.Game.Serialization.Json.Converters
 {
-    public sealed class ColorConverter : JsonConverter<Color>
+    internal sealed class ColorConverter : JsonConverter<Color>
     {
         private enum Properties
         {

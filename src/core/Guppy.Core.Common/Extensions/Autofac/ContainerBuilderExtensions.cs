@@ -37,9 +37,23 @@ namespace Guppy.Core.Common.Extensions.Autofac
             return builder;
         }
 
-        public static bool HasTag(this ContainerBuilder engine, string tag)
+        public static bool HasTag(this ContainerBuilder builder, string tag)
         {
-            return GetTags(engine).Contains(tag);
+            return GetTags(builder).Contains(tag);
+        }
+
+        public static ContainerBuilder BuildOnce(this ContainerBuilder builder, string tag, Action<ContainerBuilder> buildeAction)
+        {
+            if (builder.HasTag(tag))
+            {
+                return builder;
+            }
+
+            buildeAction(builder);
+
+            builder.AddTag(tag);
+
+            return builder;
         }
     }
 }

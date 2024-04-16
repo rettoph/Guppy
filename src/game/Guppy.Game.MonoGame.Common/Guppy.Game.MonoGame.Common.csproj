@@ -8,8 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
   </ItemGroup>
-
 </Project>

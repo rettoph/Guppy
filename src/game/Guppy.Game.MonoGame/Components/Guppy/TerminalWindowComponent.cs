@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Commands.Common.Services;
+using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
-using Guppy.Core.Commands.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
@@ -45,12 +45,12 @@ namespace Guppy.Game.MonoGame.Components.Guppy
 
         public void DrawImGui(GameTime gameTime)
         {
-            if (Settings.IsTerminalWindowEnabled == false)
+            if (Common.Settings.IsTerminalWindowEnabled == false)
             {
                 return;
             }
 
-            using (_imgui.Apply(Resources.ImGuiStyles.DebugWindow))
+            using (_imgui.Apply(Common.Resources.ImGuiStyles.DebugWindow))
             {
                 _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                 _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
