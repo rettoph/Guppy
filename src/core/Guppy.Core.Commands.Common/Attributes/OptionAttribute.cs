@@ -1,8 +1,7 @@
-﻿using Guppy.Game.Commands.Common.Attributes;
-using Guppy.Game.Commands.Common.Extensions;
+﻿using Guppy.Core.Commands.Common.Extensions;
 using System.Reflection;
 
-namespace Guppy.Game.Commands.Common.Arguments
+namespace Guppy.Core.Commands.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class OptionAttribute : FactoryAttribute<Option>

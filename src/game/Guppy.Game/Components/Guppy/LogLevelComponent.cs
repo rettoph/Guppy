@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Components;
-using Guppy.Game.Commands.Common;
+using Guppy.Core.Commands.Common;
 using Guppy.Game.Common;
 
 namespace Guppy.Game.Components.Guppy

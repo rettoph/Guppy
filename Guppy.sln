@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImPlot.NET", "libraries\ImG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Files", "src\core\Guppy.Files\Guppy.Files.csproj", "{5EEACE31-78D0-47BC-9E2B-945395B72497}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Game.Commands.Common", "src\game\Guppy.Game.Commands.Common\Guppy.Game.Commands.Common.csproj", "{3833644D-CCDE-42E5-9548-7254BD308AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guppy.Core.Commands.Common", "src\core\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj", "{3833644D-CCDE-42E5-9548-7254BD308AF4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonoGame", "MonoGame", "{28E588A4-64B9-442F-A7E0-FD6ED06FF0C4}"
 EndProject

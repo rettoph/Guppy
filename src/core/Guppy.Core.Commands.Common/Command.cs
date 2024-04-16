@@ -1,4 +1,4 @@
-﻿namespace Guppy.Game.Commands.Common
+﻿namespace Guppy.Core.Commands.Common
 {
     public sealed class Command
     {

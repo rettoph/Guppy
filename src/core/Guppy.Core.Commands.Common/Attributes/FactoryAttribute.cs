@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Guppy.Game.Commands.Common.Attributes
+namespace Guppy.Core.Commands.Common.Attributes
 {
     public abstract class FactoryAttribute<T> : Attribute
     {

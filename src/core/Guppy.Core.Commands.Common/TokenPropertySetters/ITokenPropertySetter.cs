@@ -3,7 +3,7 @@ using Guppy.Core.Common.Enums;
 using System.CommandLine.Parsing;
 using System.Reflection;
 
-namespace Guppy.Game.Commands.Common.TokenPropertySetters
+namespace Guppy.Core.Commands.Common.TokenPropertySetters
 {
     [Service<ITokenPropertySetter>(ServiceLifetime.Scoped, true)]
     public interface ITokenPropertySetter

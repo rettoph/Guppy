@@ -1,21 +1,27 @@
-﻿using Guppy.Game.Commands.Common.TokenPropertySetters;
+﻿using Guppy.Core.Commands.Common.Extensions;
+using Guppy.Core.Commands.Common.TokenPropertySetters;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 
-namespace Guppy.Game.Commands.Common
+namespace Guppy.Core.Commands.Common
 {
     internal class Binder<T>
         where T : ICommand, new()
     {
         private readonly Command _command;
         private readonly Dictionary<Type, ITokenPropertySetter> _tokenSetters;
+        private readonly Dictionary<Option, Func<InvocationContext, object?>> _optionBinders;
+        private readonly Dictionary<Argument, Func<InvocationContext, object?>> _argumentBinders;
 
         public Binder(Command command, ITokenPropertySetter[] tokenSetters)
         {
             _command = command;
             _tokenSetters = new Dictionary<Type, ITokenPropertySetter>();
+
+            _optionBinders = _command.Options.ToDictionary(x => x, x => x.GetSystemOptionBinder().Binder);
+            _argumentBinders = _command.Arguments.ToDictionary(x => x, x => x.GetSystemArgumentBinder().Binder);
 
             _tokenSetters = command.Arguments
                 .Select(x => x.PropertyInfo.PropertyType)
@@ -35,7 +41,7 @@ namespace Guppy.Game.Commands.Common
             {
                 try
                 {
-                    object? value = option.GetValue(context);
+                    object? value = _optionBinders[option](context);
 
                     if (value is null)
                     {
@@ -67,7 +73,7 @@ namespace Guppy.Game.Commands.Common
             {
                 try
                 {
-                    object? value = argument.GetValue(context);
+                    object? value = _argumentBinders[argument](context);
 
                     if (value is null)
                     {

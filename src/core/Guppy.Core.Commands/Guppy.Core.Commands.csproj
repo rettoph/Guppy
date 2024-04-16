@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libraries\Autofac\src\Autofac\Autofac.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.CommandLine">
+      <Alias>SCL</Alias>
+    </Using>
+  </ItemGroup>
+  
+</Project>

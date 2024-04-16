@@ -1,10 +1,10 @@
-﻿using Guppy.Game.Commands.Common.TokenPropertySetters;
+﻿using Guppy.Core.Commands.Common.TokenPropertySetters;
 using Guppy.Core.Messaging.Common;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Reflection;
 
-namespace Guppy.Game.Commands.Common.Extensions
+namespace Guppy.Core.Commands.Common.Extensions
 {
     internal static class SystemCommandLineExtensions
     {
@@ -12,12 +12,12 @@ namespace Guppy.Game.Commands.Common.Extensions
         {
             SCL.Command scl = new SCL.Command(command.Name, command.Description);
 
-            foreach (SCL.Option option in command.Options.Select(o => o.SCL))
+            foreach (SCL.Option option in command.Options.Select(o => o.GetSystemOptionBinder().Option))
             {
                 scl.AddOption(option);
             }
 
-            foreach (SCL.Argument argument in command.Arguments.Select(o => o.SCL))
+            foreach (SCL.Argument argument in command.Arguments.Select(o => o.GetSystemArgumentBinder().Argument))
             {
                 scl.AddArgument(argument);
             }
