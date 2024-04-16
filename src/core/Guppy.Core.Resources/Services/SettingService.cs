@@ -1,14 +1,14 @@
-﻿using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common.Services;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common.Components;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal sealed class SettingService : GlobalComponent, ISettingService, IDisposable
+    internal sealed class SettingService : IHostedService, ISettingService, IDisposable
     {
         private bool _initialized;
         private readonly IFileService _files;
@@ -20,11 +20,16 @@ namespace Guppy.Core.Resources.Services
             _file = null!;
         }
 
-        protected override void Initialize(IGlobalComponent[] components)
+        public Task StartAsync(CancellationToken cancellation)
         {
-            base.Initialize(components);
-
             this.Initialize();
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellation)
+        {
+            return Task.CompletedTask;
         }
 
         public void Initialize()

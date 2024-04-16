@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
@@ -7,14 +7,11 @@ using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common.Components;
-using Guppy.Engine.Common.Enums;
 using Serilog;
 
 namespace Guppy.Core.Resources.Services
 {
-    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal sealed class ResourcePackService : GlobalComponent, IResourcePackService, IGlobalComponent
+    internal sealed class ResourcePackService : IHostedService, IResourcePackService
     {
         private bool _initialized;
         private readonly IFileService _files;
@@ -39,9 +36,16 @@ namespace Guppy.Core.Resources.Services
             _files.Save(_configuration);
         }
 
-        protected override void Initialize(IGlobalComponent[] components)
+        public Task StartAsync(CancellationToken cancellation)
         {
             this.Initialize();
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellation)
+        {
+            return Task.CompletedTask;
         }
 
         public void Initialize()

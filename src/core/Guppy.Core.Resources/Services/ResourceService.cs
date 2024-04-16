@@ -1,15 +1,12 @@
-﻿using Guppy.Core.Common.Attributes;
+﻿using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Utilities;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common.Components;
-using Guppy.Engine.Common.Enums;
 
 namespace Guppy.Core.Resources.Services
 {
-    [Sequence<InitializeSequence>(InitializeSequence.PreInitialize)]
-    internal class ResourceService : GlobalComponent, IResourceService, IDisposable
+    internal class ResourceService : IHostedService, IResourceService, IDisposable
     {
         private bool _initialized;
         private ISettingService _settings;
@@ -30,11 +27,16 @@ namespace Guppy.Core.Resources.Services
             StaticCollection<IResource>.Clear(true);
         }
 
-        protected override void Initialize(IGlobalComponent[] components)
+        public Task StartAsync(CancellationToken cancellation)
         {
-            base.Initialize(components);
-
             this.Initialize();
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellation)
+        {
+            return Task.CompletedTask;
         }
 
         public void Initialize()
@@ -89,7 +91,7 @@ namespace Guppy.Core.Resources.Services
 
         private void HandleResourceAdded(object? sender, IResource resource)
         {
-            if (this.Ready == false)
+            if (_initialized == false)
             {
                 return;
             }

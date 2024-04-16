@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Features.ResolveAnything;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Services;
@@ -16,17 +17,31 @@ namespace Guppy.Engine
         private readonly IGuppyContext _context;
         private readonly ILifetimeScope _scope;
 
+        private readonly IHostedService[] _hostedServices;
+
         IGuppyContext IGuppyEngine.Context => _context;
 
-        public GuppyEngine(IGuppyContext context, ILifetimeScope scope)
+        public GuppyEngine(IGuppyContext context, ILifetimeScope scope, IFiltered<IHostedService> hostedServices)
         {
             _context = context;
             _scope = scope;
+
+            _hostedServices = hostedServices.Instances.ToArray();
+
+            CancellationTokenSource startToken = new CancellationTokenSource(5000);
+            foreach (IHostedService hostedService in _hostedServices)
+            {
+                hostedService.StartAsync(startToken.Token);
+            }
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            CancellationTokenSource stopToken = new CancellationTokenSource(5000);
+            foreach (IHostedService hostedService in _hostedServices)
+            {
+                hostedService.StopAsync(stopToken.Token);
+            }
         }
 
         T IGuppyEngine.Resolve<T>()
@@ -89,12 +104,9 @@ namespace Guppy.Engine
                 builder?.Invoke(engineBuilder);
 
                 var container = engineBuilder.Build();
-                _instance = container.Resolve<IGuppyEngine>();
-
                 StaticInstance<IContainer>.Initialize(container, true);
-                StaticInstance<IGuppyEngine>.Initialize(_instance, true);
 
-                return _instance;
+                return _instance = Singleton<IGuppyEngine>.Instance;
             }
         }
 
