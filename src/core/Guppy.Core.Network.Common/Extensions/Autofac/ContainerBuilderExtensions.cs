@@ -1,6 +1,9 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Contexts;
 using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Delegates;
+using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Serialization.NetSerializers;
 using LiteNetLib;
@@ -50,6 +53,20 @@ namespace Autofac
             where T : notnull
         {
             services.AddNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
+        }
+
+        /// <summary>
+        /// Configure scoped <see cref="Guppy.Core.Network.Common.INetScope{T}"/> instance.
+        /// Traditionally this is done on scope creation with a custom builder action.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="peerType"></param>
+        /// <param name="groupId"></param>
+        public static void RegisterNetScope<T>(this ContainerBuilder services, PeerType peerType, byte groupId)
+        {
+            services.RegisterInstance<NetScopeContext<T>>(new NetScopeContext<T>(peerType, groupId)).SingleInstance();
+            services.Register<INetScope>(ctc => ctc.Resolve<INetScope<T>>()).InstancePerLifetimeScope();
         }
     }
 }

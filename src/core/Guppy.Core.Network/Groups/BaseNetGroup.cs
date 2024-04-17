@@ -1,7 +1,8 @@
-﻿using Guppy.Core.Network.Common.Identity.Services;
-using Guppy.Core.Network.Common.Messages;
+﻿using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common.Identity.Services;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using System.Collections.ObjectModel;
 
 namespace Guppy.Core.Network.Common.Groups
 {
@@ -9,21 +10,28 @@ namespace Guppy.Core.Network.Common.Groups
         INetGroup,
         IDisposable
     {
+        private List<INetScope> _scopes;
+        private List<IBus> _relays;
+
         public byte Id { get; private set; }
         public IPeer Peer { get; private set; }
         public INetScopeUserService Users { get; }
-        public NetScope Scope { get; private set; }
+        public IReadOnlyList<INetScope> Scopes { get; private set; }
+        public IReadOnlyList<IBus> Relays { get; private set; }
 
-        INetScope INetGroup.Scope => this.Scope;
+        IReadOnlyList<INetScope> INetGroup.Scopes => this.Scopes;
+        IReadOnlyList<IBus> INetGroup.Relays => this.Relays;
 
         public BaseNetGroup(byte id, IPeer peer)
         {
+            _scopes = new List<INetScope>();
+            _relays = new List<IBus>();
+
             this.Id = id;
             this.Peer = peer;
             this.Users = new NetScopeUserService();
-            this.Scope = null!;
-
-            Attach(this.Peer.DefaultNetScope);
+            this.Scopes = new ReadOnlyCollection<INetScope>(_scopes);
+            this.Relays = new ReadOnlyCollection<IBus>(_relays);
         }
 
         public virtual void Dispose()
@@ -31,40 +39,40 @@ namespace Guppy.Core.Network.Common.Groups
             this.Users.Dispose();
         }
 
-        public void Attach(INetScope scope)
-        {
-            if (this.Scope is not null)
-            {
-                Detach();
-            }
-
-            if (scope is not NetScope casted)
-            {
-                throw new ArgumentException();
-            }
-
-            this.Scope = casted;
-            this.Scope.Add(this);
-        }
-
-        public void Detach()
-        {
-            if (this.Scope is null)
-            {
-                throw new InvalidOperationException($"{nameof(BaseNetGroup)}::{nameof(Detach)} - {nameof(BaseNetGroup)} is not bound to an {nameof(INetScope)} instance.");
-            }
-
-            this.Scope.Remove(this);
-            this.Scope = null!;
-        }
-
-        public INetOutgoingMessage<T> CreateMessage<T>(in T body) where T : notnull
+        public INetOutgoingMessage<T> CreateMessage<T>(in T body)
+            where T : notnull
         {
             return this.Peer.Messages.Create(this, body);
         }
 
-        public virtual void Process(INetIncomingMessage<UserAction> message)
+        public void Publish(INetIncomingMessage im)
         {
+            foreach (IBus relay in _relays)
+            {
+                relay.Enqueue(im);
+            }
+        }
+
+        internal void Add(INetScope scope, IBus relay)
+        {
+            _scopes.Add(scope);
+            _relays.Add(relay);
+        }
+
+        internal void Remove(INetScope scope, IBus relay)
+        {
+            _scopes.Remove(scope);
+            _relays.Remove(relay);
+        }
+
+        public void Add(IBus relay)
+        {
+            _relays.Add(relay);
+        }
+
+        public void Remove(IBus relay)
+        {
+            _relays.Remove(relay);
         }
     }
 }

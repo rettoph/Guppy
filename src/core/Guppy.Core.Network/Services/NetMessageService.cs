@@ -66,10 +66,5 @@ namespace Guppy.Core.Network.Common.Services
 
             return message;
         }
-
-        public INetOutgoingMessage<T> Create<T>(in byte groupId, in T body) where T : notnull
-        {
-            return this.Create(_peer.Groups.GetById(groupId), in body);
-        }
     }
 }

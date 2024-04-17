@@ -9,7 +9,7 @@ namespace Guppy.Core.Network.Common.Services
         event OnEventDelegate<IUserService, IUser>? OnUserConnected;
         event OnEventDelegate<IUserService, IUser>? OnUserDisconnected;
 
-        public IUser? Current { get; }
+        public IUser Current { get; }
 
         IEnumerable<NetPeer> Peers { get; }
 
@@ -20,7 +20,6 @@ namespace Guppy.Core.Network.Common.Services
 
         IUser GetByNetPeer(NetPeer peer);
 
-        void Add(IUser user);
         void Remove(int id);
     }
 }

@@ -7,21 +7,21 @@ namespace Guppy.Core.Messaging.Services
 {
     internal sealed class MagicBrokerService : IMagicBrokerService
     {
-        private readonly IMagicBroker[] _brokers;
+        private readonly IFiltered<IMagicBroker> _brokers;
 
         public MagicBrokerService(IFiltered<IMagicBroker> brokers)
         {
-            _brokers = brokers.Instances.ToArray();
+            _brokers = brokers;
         }
 
         public void Subscribe(IEnumerable<object> subscribers)
         {
-            _brokers.SubscribeMany(subscribers);
+            _brokers.Instances.SubscribeMany(subscribers);
         }
 
         public void Unsubscribe(IEnumerable<object> subscribers)
         {
-            _brokers.UnsubscribeMany(subscribers);
+            _brokers.Instances.UnsubscribeMany(subscribers);
         }
     }
 }

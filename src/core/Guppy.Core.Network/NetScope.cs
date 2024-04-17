@@ -1,29 +1,43 @@
-﻿
+﻿using Autofac;
 using Guppy.Core.Messaging.Common;
-using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Contexts;
 using Guppy.Core.Network.Common.Groups;
-using Guppy.Core.Network.Common.Messages;
-using System.Collections.ObjectModel;
 
 namespace Guppy.Core.Network.Common
 {
-    internal sealed class NetScope : INetScope, ISubscriber<INetOutgoingMessage>, ISubscriber<INetIncomingMessage<UserAction>>
+    internal sealed class NetScope<T> : INetScope<T>,
+        IDisposable,
+        ISubscriber<INetOutgoingMessage>
     {
         private readonly IBus _bus;
-        private readonly List<INetGroup> _groups;
 
-        public IReadOnlyList<INetGroup> Groups { get; }
+        private BaseNetGroup Group { get; }
 
-        public PeerType Type { get; private set; }
+        INetGroup INetScope.Group => this.Group;
 
-        public NetScope(IBus bus)
+        public NetScope(IBus bus, ILifetimeScope scope, NetScopeContext<T> context)
         {
             _bus = bus;
-            _groups = new List<INetGroup>();
 
-            this.Groups = new ReadOnlyCollection<INetGroup>(_groups);
+            this.Group = context.GetGroup<BaseNetGroup>(scope);
+            this.Group.Add(this, _bus);
 
             _bus.Subscribe(this);
+        }
+
+        public void Dispose()
+        {
+            _bus.Unsubscribe(this);
+            this.Group.Remove(this, _bus);
+        }
+
+        public INetOutgoingMessage<TBody> CreateMessage<TBody>(in TBody body)
+            where TBody : notnull
+        {
+            INetOutgoingMessage<TBody> om = this.Group.Peer.Messages.Create(this.Group, body);
+            this.Enqueue(om);
+
+            return om;
         }
 
         public void Enqueue(INetIncomingMessage message)
@@ -36,36 +50,9 @@ namespace Guppy.Core.Network.Common
             _bus.Enqueue(message);
         }
 
-        public void Add(INetGroup group)
-        {
-            _groups.Add(group);
-            this.Type |= group.Peer.Type;
-        }
-
-        public void Remove(INetGroup group)
-        {
-            _groups.Remove(group);
-            if (_groups.Count == 0)
-            {
-                this.Type = PeerType.None;
-            }
-            else
-            {
-                this.Type = _groups.Select(x => x.Peer.Type).Aggregate((t1, t2) => t1 | t2);
-            }
-        }
-
         public void Process(in Guid messageId, INetOutgoingMessage message)
         {
             message.Send();
-        }
-
-        public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
-        {
-            if (message.Group is BaseNetGroup casted)
-            {
-                casted.Process(message);
-            }
         }
     }
 }

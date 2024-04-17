@@ -9,7 +9,6 @@ namespace Guppy.Core.Network.Common
     {
         int Id { get; }
         NetPeer? NetPeer { get; }
-        DateTime CreatedAt { get; }
         UserState State { get; }
 
         event OnChangedEventDelegate<IUser, UserState> OnStateChanged;

@@ -62,16 +62,16 @@ namespace Guppy.Core.Network.Common
             this.Type.Recycle(this);
         }
 
-        public INetIncomingMessage<T> Enqueue()
+        public INetIncomingMessage<T> Publish()
         {
-            this.Group.Scope.Enqueue(this);
+            this.Group.Publish(this);
 
             return this;
         }
 
-        INetIncomingMessage INetIncomingMessage.Enqueue()
+        INetIncomingMessage INetIncomingMessage.Publish()
         {
-            return this.Enqueue();
+            return this.Publish();
         }
 
         void IDisposable.Dispose()

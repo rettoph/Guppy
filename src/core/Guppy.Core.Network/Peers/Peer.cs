@@ -22,7 +22,6 @@ namespace Guppy.Core.Network.Common.Peers
 
         public INetMessageService Messages { get; }
         public INetGroupService Groups { get; }
-        public INetScope DefaultNetScope { get; }
         public INetGroup Group { get; private set; }
 
         IUserService IPeer.Users => this.Users;
@@ -31,7 +30,6 @@ namespace Guppy.Core.Network.Common.Peers
         {
             ILifetimeScope innerScope = scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope);
             _bus = innerScope.Resolve<IBus>();
-            this.DefaultNetScope = innerScope.Resolve<INetScope>();
 
             this.Listener = new EventBasedNetListener();
             this.Manager = new NetManager(this.Listener);
@@ -39,7 +37,7 @@ namespace Guppy.Core.Network.Common.Peers
             this.Messages = new NetMessageService(this, serializers, messages);
             this.Groups = new NetGroupService(this.GroupFactory);
             this.Group = null!;
-            this.State = Enums.PeerState.NotStarted;
+            this.State = PeerState.NotStarted;
 
             this.Listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
@@ -56,8 +54,9 @@ namespace Guppy.Core.Network.Common.Peers
             _bus.Subscribe(this);
 
             this.Group = this.Groups.GetById(NetScopeConstants.PeerScopeId);
+            this.Group.Add(_bus);
 
-            this.State = Enums.PeerState.Started;
+            this.State = PeerState.Started;
         }
 
         public void Flush()
@@ -71,7 +70,7 @@ namespace Guppy.Core.Network.Common.Peers
         {
             while (!reader.EndOfData)
             {
-                this.Messages.Read(sender, reader, channel, deliveryMethod).Enqueue();
+                this.Messages.Read(sender, reader, channel, deliveryMethod).Publish();
             }
         }
 

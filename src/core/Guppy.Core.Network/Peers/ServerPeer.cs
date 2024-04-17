@@ -13,6 +13,8 @@ namespace Guppy.Core.Network.Common.Peers
 {
     internal class ServerPeer : Peer, IServerPeer
     {
+        private int _nextUserId;
+
         public override PeerType Type => PeerType.Server;
 
         public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, INetIncomingMessage<ConnectionRequestData> data);
@@ -27,7 +29,8 @@ namespace Guppy.Core.Network.Common.Peers
 
         public void Start(int port, params Claim[] claims)
         {
-            this.Users.Current = this.Users.Create(null, claims, Claim.Public(UserType.Server));
+            this.Users.Current.Set(claims.Concat(Claim.Public(UserType.Server)));
+            this.Users.Current.Initialize(_nextUserId++, null);
 
             base.Start();
 
@@ -59,7 +62,7 @@ namespace Guppy.Core.Network.Common.Peers
                     {
                         NetPeer peer = request.Accept();
 
-                        IUser user = this.Users.Create(peer, casted.Body.Claims, Claim.Public(UserType.User));
+                        IUser user = this.Users.Create(casted.Body.Claims, Claim.Public(UserType.User)).Initialize(_nextUserId++, peer);
 
                         this.Group.CreateMessage(new ConnectionRequestResponse()
                         {

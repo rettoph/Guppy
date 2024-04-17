@@ -27,9 +27,9 @@ namespace Guppy.Core.Network.Common.Groups
         private void HandleUserJoined(INetScopeUserService sender, IUser newUser)
         {
             // Alert all users of the new user.
-            this.CreateMessage(newUser.CreateAction(UserActionTypes.UserJoined, ClaimAccessibility.Public))
+            this.Peer.Group.CreateMessage(newUser.CreateAction(this.Id, UserActionTypes.UserJoined, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
-                .Enqueue();
+                .Send();
 
             if (newUser.NetPeer is null)
             {
@@ -44,17 +44,17 @@ namespace Guppy.Core.Network.Common.Groups
                     continue;
                 }
 
-                this.CreateMessage(oldUser.CreateAction(UserActionTypes.UserJoined, ClaimAccessibility.Public))
+                this.Peer.Group.CreateMessage(oldUser.CreateAction(this.Id, UserActionTypes.UserJoined, ClaimAccessibility.Public))
                     .AddRecipient(newUser.NetPeer)
-                    .Enqueue();
+                    .Send();
             }
         }
 
         private void HandleUserLeft(INetScopeUserService sender, IUser user)
         {
-            this.CreateMessage(user.CreateAction(UserActionTypes.UserLeft, ClaimAccessibility.Public))
+            this.Peer.Group.CreateMessage(user.CreateAction(this.Id, UserActionTypes.UserLeft, ClaimAccessibility.Public))
                 .AddRecipients(this.Users.Peers)
-                .Enqueue();
+                .Send();
         }
     }
 }

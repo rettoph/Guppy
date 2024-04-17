@@ -45,13 +45,14 @@ namespace Guppy.Engine.Providers
             _initialized = true;
         }
 
-        T IGuppyProvider.Create<T>()
+        T IGuppyProvider.Create<T>(Action<ContainerBuilder>? guppyBuilder)
         {
             this.Initialize();
 
             var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope, builder =>
             {
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
+                guppyBuilder?.Invoke(builder);
             });
             var guppy = scope.Resolve<T>();
 
@@ -60,7 +61,7 @@ namespace Guppy.Engine.Providers
             return guppy;
         }
 
-        IGuppy IGuppyProvider.Create(Type guppyType)
+        IGuppy IGuppyProvider.Create(Type guppyType, Action<ContainerBuilder>? guppyBuilder)
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
 
@@ -69,6 +70,7 @@ namespace Guppy.Engine.Providers
             var scope = _scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope, builder =>
             {
                 builder.RegisterType(guppyType).AsSelf().AsImplementedInterfaces().SingleInstance();
+                guppyBuilder?.Invoke(builder);
             });
             var guppy = scope.Resolve(guppyType) as IGuppy;
 

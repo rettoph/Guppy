@@ -2,7 +2,6 @@
 {
     public enum UserActionTypes
     {
-        Connected,
         UserJoined,
         UserLeft
     }

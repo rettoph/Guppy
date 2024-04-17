@@ -9,7 +9,9 @@ using Guppy.Core.Network.Common.Services;
 
 namespace Guppy.Core.Network.Common.Peers
 {
-    internal class ClientPeer : Peer, IClientPeer, ISubscriber<INetIncomingMessage<UserAction>>, ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
+    internal class ClientPeer : Peer, IClientPeer,
+        ISubscriber<INetIncomingMessage<UserAction>>,
+        ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
     {
         public override PeerType Type => PeerType.Client;
 
@@ -46,10 +48,15 @@ namespace Guppy.Core.Network.Common.Peers
 
         public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
         {
+            IUser user = this.Users.UpdateOrCreate(message.Body.UserDto);
+
             switch (message.Body.Type)
             {
-                case UserActionTypes.Connected:
-                    this.Users.UpdateOrCreate(message.Body.UserDto);
+                case UserActionTypes.UserJoined:
+                    this.Groups.GetById(message.Body.GroupId).Users.Add(user);
+                    break;
+                case UserActionTypes.UserLeft:
+                    this.Groups.GetById(message.Body.GroupId).Users.Remove(user);
                     break;
             }
         }
@@ -76,8 +83,10 @@ namespace Guppy.Core.Network.Common.Peers
                 throw new InvalidOperationException();
             }
 
-            this.ServerUser = this.Users.Create(message.Sender.Peer, message.Body.SystemUser!);
-            this.Users.Current = this.Users.Create(null, message.Body.CurrentUser!);
+            this.ServerUser = this.Users.Create(message.Body.SystemUser!.Claims).Initialize(message.Body.SystemUser.Id, message.Sender.Peer);
+
+            this.Users.Current.Set(message.Body.CurrentUser!.Claims);
+            this.Users.Current.Initialize(message.Body.CurrentUser.Id, null);
         }
     }
 }

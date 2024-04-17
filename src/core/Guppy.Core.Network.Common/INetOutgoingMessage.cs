@@ -22,8 +22,6 @@ namespace Guppy.Core.Network.Common
         INetOutgoingMessage SetDeliveryMethod(DeliveryMethod deliveryMethod);
 
         INetOutgoingMessage Send();
-
-        INetOutgoingMessage Enqueue();
     }
 
     public interface INetOutgoingMessage<T> : INetOutgoingMessage
@@ -44,7 +42,5 @@ namespace Guppy.Core.Network.Common
         new INetOutgoingMessage<T> SetDeliveryMethod(DeliveryMethod deliveryMethod);
 
         new INetOutgoingMessage<T> Send();
-
-        new INetOutgoingMessage<T> Enqueue();
     }
 }

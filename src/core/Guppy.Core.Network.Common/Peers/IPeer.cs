@@ -10,7 +10,7 @@ namespace Guppy.Core.Network.Common.Peers
         IUserService Users { get; }
         INetMessageService Messages { get; }
         INetGroupService Groups { get; }
-        INetScope DefaultNetScope { get; }
+        INetGroup Group { get; }
 
         void Flush();
     }

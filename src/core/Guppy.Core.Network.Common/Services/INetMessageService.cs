@@ -14,8 +14,5 @@ namespace Guppy.Core.Network.Common.Services
 
         INetOutgoingMessage<T> Create<T>(in INetGroup group, in T body)
             where T : notnull;
-
-        INetOutgoingMessage<T> Create<T>(in byte groupId, in T body)
-            where T : notnull;
     }
 }

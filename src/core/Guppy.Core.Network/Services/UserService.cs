@@ -4,13 +4,13 @@ using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Network.Common.Identity.Services
 {
     public class UserService : IUserService
     {
-        private int _nextUserId;
         private Dictionary<int, User> _idsUsers;
         private Dictionary<NetPeer, User> _peersUsers;
 
@@ -28,17 +28,18 @@ namespace Guppy.Core.Network.Common.Identity.Services
             }
         }
 
-        public User? Current { get; set; }
-        IUser? IUserService.Current => this.Current;
+        public User Current { get; }
+        IUser IUserService.Current => this.Current;
 
         public event OnEventDelegate<IUserService, IUser>? OnUserConnected;
         public event OnEventDelegate<IUserService, IUser>? OnUserDisconnected;
 
         public UserService()
         {
-            _nextUserId = 0;
             _idsUsers = new Dictionary<int, User>();
             _peersUsers = new Dictionary<NetPeer, User>();
+
+            this.Current = this.Create(Array.Empty<Claim>());
         }
 
         public User GetById(int id)
@@ -73,19 +74,10 @@ namespace Guppy.Core.Network.Common.Identity.Services
             return _peersUsers[peer];
         }
 
-        public User Create(NetPeer? peer, Claim[] claims, params Claim[] additionalClaims)
+        public User Create(Claim[] claims, params Claim[] additionalClaims)
         {
-            User user = new User(_nextUserId++, peer, claims.Concat(additionalClaims));
-            this.Add(user);
-
-            return user;
-        }
-
-        public User Create(NetPeer? peer, UserDto userDto, params Claim[] additionalClaims)
-        {
-            User user = new User(userDto.Id, peer, userDto.Claims.Concat(additionalClaims));
-            this.Add(user);
-            _nextUserId = Math.Max(userDto.Id + 1, _nextUserId);
+            User user = new User(claims.Concat(additionalClaims));
+            user.OnStateChanged += this.HandleUserStateChanged;
 
             return user;
         }
@@ -106,8 +98,7 @@ namespace Guppy.Core.Network.Common.Identity.Services
             }
             else
             {
-                user = new User(userDto.Id, null, userDto.Claims);
-                this.Add(user);
+                user = new User(userDto.Claims);
             }
 
             return user;
@@ -115,33 +106,10 @@ namespace Guppy.Core.Network.Common.Identity.Services
 
         public void Remove(int id)
         {
-            if (_idsUsers.Remove(id, out User? user))
+            if (this.TryGet(id, out User? user))
             {
-                if (user.NetPeer is not null)
-                {
-                    _peersUsers.Remove(user.NetPeer);
-                }
-
-                user.State = UserState.Disconnected;
-                this.OnUserDisconnected?.Invoke(this, user);
+                user.Dispose();
             }
-        }
-
-        public void Add(IUser user)
-        {
-            if (user is not User casted)
-            {
-                throw new ArgumentException();
-
-            }
-            _idsUsers.Add(user.Id, casted);
-            if (user.NetPeer is not null)
-            {
-                _peersUsers.Add(user.NetPeer, casted);
-            }
-
-            casted.State = UserState.Connected;
-            this.OnUserConnected?.Invoke(this, user);
         }
 
         IEnumerator<IUser> IEnumerable<IUser>.GetEnumerator()
@@ -157,6 +125,48 @@ namespace Guppy.Core.Network.Common.Identity.Services
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        private void HandleUserStateChanged(IUser sender, UserState old, UserState value)
+        {
+            if (sender is not User user)
+            {
+                throw new ArgumentException();
+            }
+
+            if (value == UserState.Connected)
+            {
+                _idsUsers.Add(user.Id, user);
+                if (user.NetPeer is not null)
+                {
+                    _peersUsers.Add(user.NetPeer, user);
+                }
+
+                this.OnUserConnected?.Invoke(this, user);
+
+                return;
+            }
+
+            if (value == UserState.Disconnected)
+            {
+                user.OnStateChanged -= this.HandleUserStateChanged;
+
+                if (_idsUsers.Remove(user.Id) == false)
+                {
+                    return;
+                }
+
+                if (sender.NetPeer is not null)
+                {
+                    _peersUsers.Remove(sender.NetPeer);
+                }
+
+                this.OnUserDisconnected?.Invoke(this, user);
+
+                return;
+            }
+
+            throw new UnreachableException();
         }
     }
 }

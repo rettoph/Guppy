@@ -10,19 +10,22 @@ namespace Guppy.Core.Network.Common
     [AutoLoad]
     internal class PeerGuppyStateProvider : IStateProvider
     {
-        private readonly INetScope? _scope;
+        private readonly IEnumerable<INetScope> _scopes;
 
         public PeerGuppyStateProvider(ILifetimeScope scope)
         {
             if (scope.IsRoot() == false)
             {
-                scope.TryResolve(out _scope);
+                scope.TryResolve(out _scopes);
             }
+
+            _scopes ??= Enumerable.Empty<INetScope>();
         }
 
         public IEnumerable<IState> GetStates()
         {
-            yield return new State<PeerType>(() => _scope?.Type ?? PeerType.None, (x, y) => x.HasFlag(y));
+            PeerType flags = _scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
+            yield return new State<PeerType>(() => flags, (x, y) => x.HasFlag(y));
         }
     }
 }

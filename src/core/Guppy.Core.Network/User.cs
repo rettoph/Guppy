@@ -6,36 +6,37 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Network.Common
 {
-    public class User : IUser
+    public class User : IUser, IDisposable
     {
         private UserState _state;
 
         private Dictionary<string, Claim> _claims;
 
-        public int Id { get; }
-        public NetPeer? NetPeer { get; }
-        public DateTime CreatedAt { get; }
+        public int Id { get; private set; }
+        public NetPeer? NetPeer { get; private set; }
         public UserState State
         {
             get => _state;
-            internal set => this.OnStateChanged!.InvokeIf(_state != value, this, ref _state, value);
+            private set => this.OnStateChanged!.InvokeIf(_state != value, this, ref _state, value);
         }
 
         public event OnChangedEventDelegate<IUser, UserState> OnStateChanged;
 
-        internal User(int id, IEnumerable<Claim> claims) : this(id, null, claims)
+        internal User(IEnumerable<Claim> claims)
         {
-
-        }
-        internal User(int id, NetPeer? netPeer, IEnumerable<Claim> claims)
-        {
-            this.Id = id;
-            this.NetPeer = netPeer;
-            this.CreatedAt = DateTime.UtcNow;
             this.State = UserState.Disconnected;
             this.OnStateChanged = null!;
 
             _claims = claims.ToDictionary(x => x.Key);
+        }
+
+        public User Initialize(int id, NetPeer? netPeer)
+        {
+            this.Id = id;
+            this.NetPeer = netPeer;
+            this.State = UserState.Connected;
+
+            return this;
         }
 
         public void Set<T>(string key, T value, ClaimAccessibility accessibility)
@@ -76,6 +77,11 @@ namespace Guppy.Core.Network.Common
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
+        }
+
+        public void Dispose()
+        {
+            this.State = UserState.Disconnected;
         }
     }
 }

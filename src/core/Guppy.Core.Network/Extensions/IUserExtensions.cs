@@ -6,10 +6,11 @@ namespace Guppy.Core.Network.Common.Extensions.Identity
 {
     public static class UserExtensions
     {
-        internal static UserAction CreateAction(this IUser user, UserActionTypes type, ClaimAccessibility accessibility)
+        internal static UserAction CreateAction(this IUser user, byte groupId, UserActionTypes type, ClaimAccessibility accessibility)
         {
             return new UserAction()
             {
+                GroupId = groupId,
                 Type = type,
                 UserDto = user.ToDto(accessibility)
             };

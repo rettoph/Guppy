@@ -15,7 +15,7 @@ namespace Guppy.Core.Network.Common
 
         public void Read(NetPeer sender, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod);
 
-        INetIncomingMessage Enqueue();
+        INetIncomingMessage Publish();
     }
 
     public interface INetIncomingMessage<T> : INetIncomingMessage
@@ -25,6 +25,6 @@ namespace Guppy.Core.Network.Common
 
         new INetMessageType<T> Type { get; }
 
-        new INetIncomingMessage<T> Enqueue();
+        new INetIncomingMessage<T> Publish();
     }
 }

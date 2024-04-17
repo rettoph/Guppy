@@ -109,13 +109,6 @@ namespace Guppy.Core.Network.Common
             return this;
         }
 
-        public INetOutgoingMessage<T> Enqueue()
-        {
-            this.Group.Scope.Enqueue(this);
-
-            return this;
-        }
-
         public void Dispose()
         {
             this.Recycle();
@@ -144,11 +137,6 @@ namespace Guppy.Core.Network.Common
         INetOutgoingMessage INetOutgoingMessage.Send()
         {
             return this.Send();
-        }
-
-        INetOutgoingMessage INetOutgoingMessage.Enqueue()
-        {
-            return this.Enqueue();
         }
     }
 }
