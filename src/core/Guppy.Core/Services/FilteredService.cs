@@ -25,17 +25,5 @@ namespace Guppy.Core.Services
                 _filters,
                 _context.Resolve<Lazy<IEnumerable<T>>>());
         }
-
-        public T? Instance<T>()
-            where T : class
-        {
-            return Get<T>().Instance;
-        }
-
-        public IEnumerable<T> Instances<T>()
-            where T : class
-        {
-            return Get<T>().Instances;
-        }
     }
 }

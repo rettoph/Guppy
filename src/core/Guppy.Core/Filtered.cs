@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Services;
+using System.Collections;
 
 namespace Guppy.Core
 {
@@ -11,12 +12,7 @@ namespace Guppy.Core
         private readonly IServiceFilterService _filters;
         private readonly Lazy<IEnumerable<T>> _unfiltered;
 
-        private T? _instance;
-        private T[]? _instances;
-
-        public T Instance => _instance ??= this.GetInstance();
-
-        public IEnumerable<T> Instances => _instances ??= this.GetInstances();
+        private IEnumerable<T>? _instances;
 
         public Filtered(
             ILifetimeScope scope,
@@ -28,14 +24,19 @@ namespace Guppy.Core
             _unfiltered = unfiltered;
         }
 
-        private T GetInstance()
-        {
-            return _unfiltered.Value.First(x => _filters.Filter(_scope, x));
-        }
-
-        private T[] GetInstances()
+        private IEnumerable<T> GetInstances()
         {
             return _unfiltered.Value.Where(x => _filters.Filter(_scope, x)).ToArray();
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return (_instances ??= this.GetInstances()).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

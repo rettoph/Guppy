@@ -17,7 +17,7 @@ namespace Guppy.Engine
         private readonly IGuppyContext _context;
         private readonly ILifetimeScope _scope;
 
-        private readonly IHostedService[] _hostedServices;
+        private readonly IFiltered<IHostedService> _hostedServices;
 
         IGuppyContext IGuppyEngine.Context => _context;
 
@@ -26,7 +26,7 @@ namespace Guppy.Engine
             _context = context;
             _scope = scope;
 
-            _hostedServices = hostedServices.Instances.ToArray();
+            _hostedServices = hostedServices;
 
             CancellationTokenSource startToken = new CancellationTokenSource(5000);
             foreach (IHostedService hostedService in _hostedServices)

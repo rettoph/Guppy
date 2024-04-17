@@ -7,12 +7,12 @@ namespace Guppy.Core.Serialization.Services
 {
     internal sealed class DefaultInstanceService : IDefaultInstanceService
     {
-        private IDefaultInstanceFactory[] _factories;
+        private IFiltered<IDefaultInstanceFactory> _factories;
         private Dictionary<Type, IDefaultInstanceFactory> _typeFactories;
 
         public DefaultInstanceService(IFiltered<IDefaultInstanceFactory> factories)
         {
-            _factories = factories.Instances.ToArray();
+            _factories = factories;
             _typeFactories = new Dictionary<Type, IDefaultInstanceFactory>();
         }
 

@@ -32,7 +32,7 @@ namespace Guppy.Core.Resources.Services
             _logger = logger;
             _packs = new Dictionary<Guid, ResourcePack>();
 
-            _configuration.Value = _configuration.Value.AddRange(packs.Instances);
+            _configuration.Value = _configuration.Value.AddRange(packs);
             _files.Save(_configuration);
         }
 

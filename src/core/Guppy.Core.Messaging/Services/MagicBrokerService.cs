@@ -16,12 +16,12 @@ namespace Guppy.Core.Messaging.Services
 
         public void Subscribe(IEnumerable<object> subscribers)
         {
-            _brokers.Instances.SubscribeMany(subscribers);
+            _brokers.SubscribeMany(subscribers);
         }
 
         public void Unsubscribe(IEnumerable<object> subscribers)
         {
-            _brokers.Instances.UnsubscribeMany(subscribers);
+            _brokers.UnsubscribeMany(subscribers);
         }
     }
 }

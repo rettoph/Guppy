@@ -52,7 +52,7 @@ namespace Guppy.Game
 
         public virtual void Initialize(ILifetimeScope scope)
         {
-            this.Components = scope.Resolve<IFiltered<IGuppyComponent>>().Instances.Sequence(InitializeSequence.Initialize).ToArray();
+            this.Components = scope.Resolve<IFiltered<IGuppyComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
 
             _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
             _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
