@@ -1,15 +1,14 @@
 ﻿using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Guppy
+namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
-    internal class TerminalWindowComponent : GuppyComponent, IImGuiComponent
+    internal class TerminalWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
         private readonly IImGui _imgui;
@@ -22,9 +21,9 @@ namespace Guppy.Game.MonoGame.Components.Guppy
         private int _lines;
         private bool _scrolledToBottom;
 
-        private IGuppy _guppy;
+        private IScene _scene;
 
-        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands)
+        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene)
         {
             _commands = commands;
             _imgui = imgui;
@@ -33,14 +32,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
             _input = string.Empty;
             _inputContainerHeight = 0;
             _scrolledToBottom = true;
-            _guppy = null!;
-        }
-
-        public override void Initialize(IGuppy guppy)
-        {
-            base.Initialize(guppy);
-
-            _guppy = guppy;
+            _scene = scene;
         }
 
         public void DrawImGui(GameTime gameTime)
@@ -62,7 +54,7 @@ namespace Guppy.Game.MonoGame.Components.Guppy
                 _imgui.SetNextWindowClass(windowClass);
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
                 _imgui.SetNextWindowSize(new Vector2(800, 600), ImGuiCond.FirstUseEver);
-                if (_imgui.Begin($"Terminal:{_guppy.Name} - {_guppy.Id}", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
+                if (_imgui.Begin($"Terminal:{_scene.Name} - {_scene.Id}", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
                 {
                     if (_imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
                     {

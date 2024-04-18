@@ -2,14 +2,11 @@
 using Guppy.Core.Commands.Common.Extensions;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Common.TokenPropertySetters;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common.Implementations;
-using Guppy.Engine.Common;
 using System.CommandLine;
 
 namespace Guppy.Core.Commands.Services
 {
-    [GuppyFilter<IGuppy>]
     internal sealed class CommandService : MagicBroker<ICommand>, ICommandService
     {
         private readonly RootCommand _root;

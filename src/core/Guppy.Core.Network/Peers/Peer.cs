@@ -5,7 +5,6 @@ using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Identity.Services;
 using Guppy.Core.Network.Common.Services;
-using Guppy.Engine.Common.Autofac;
 using LiteNetLib;
 
 namespace Guppy.Core.Network.Common.Peers
@@ -28,7 +27,7 @@ namespace Guppy.Core.Network.Common.Peers
 
         public Peer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
-            ILifetimeScope innerScope = scope.BeginLifetimeScope(LifetimeScopeTags.GuppyScope);
+            ILifetimeScope innerScope = scope.BeginLifetimeScope();
             _bus = innerScope.Resolve<IBus>();
 
             this.Listener = new EventBasedNetListener();

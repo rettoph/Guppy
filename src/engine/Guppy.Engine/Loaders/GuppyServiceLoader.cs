@@ -3,9 +3,7 @@ using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Loaders;
-using Guppy.Engine.Common.Providers;
 using Guppy.Engine.Common.Services;
-using Guppy.Engine.Providers;
 using Guppy.Engine.Services;
 using Serilog;
 using System.Text.Json;
@@ -18,7 +16,6 @@ namespace Guppy.Engine.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<GuppyProvider>().As<IGuppyProvider>().SingleInstance();
             services.RegisterType<ObjectTextFilterService>().As<IObjectTextFilterService>().SingleInstance();
 
             services.Register<ILogger>(p =>

@@ -6,15 +6,24 @@ namespace Guppy.Core.Common.Attributes
 {
     public class ServiceAttribute : GuppyConfigurationAttribute
     {
-        public readonly Type? ServiceType;
+        public readonly IEnumerable<Type> ServiceTypes;
         public readonly ServiceLifetime Lifetime;
+        public readonly bool AsImplementedInterfaces;
         public readonly bool RequireAutoLoadAttribute;
         public readonly object? Tag;
 
-        public ServiceAttribute(ServiceLifetime lifetime, Type? serviceType, bool requireAutoLoadAttribute, object? tag = null)
+        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute, object? tag = null) : this(lifetime, null, true, requireAutoLoadAttribute, tag)
+        {
+
+        }
+        public ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceTypes, bool requireAutoLoadAttribute, object? tag = null) : this(lifetime, serviceTypes, false, requireAutoLoadAttribute, tag)
+        {
+        }
+        public ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, bool asImplementedInterfaces, bool requireAutoLoadAttribute, object? tag = null)
         {
             this.Lifetime = lifetime;
-            this.ServiceType = serviceType;
+            this.ServiceTypes = serviceType ?? Array.Empty<Type>();
+            this.AsImplementedInterfaces = asImplementedInterfaces;
             this.RequireAutoLoadAttribute = requireAutoLoadAttribute;
             this.Tag = tag;
         }
@@ -33,7 +42,20 @@ namespace Guppy.Core.Common.Attributes
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            var service = builder.RegisterType(classType).As(this.ServiceType ?? classType);
+            var service = builder.RegisterType(classType).As(classType);
+
+            foreach (Type serviceType in this.ServiceTypes)
+            {
+                ThrowIf.Type.IsNotAssignableFrom(serviceType, classType);
+
+                service.As(serviceType);
+            }
+
+            if (this.AsImplementedInterfaces)
+            {
+                service.AsImplementedInterfaces();
+            }
+
 
             switch (this.Lifetime)
             {
@@ -60,7 +82,7 @@ namespace Guppy.Core.Common.Attributes
 
     public class ServiceAttribute<TService> : ServiceAttribute
     {
-        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute, object? tag = null) : base(lifetime, typeof(TService), requireAutoLoadAttribute, tag)
+        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute, object? tag = null) : base(lifetime, [typeof(TService)], false, requireAutoLoadAttribute, tag)
         {
         }
     }

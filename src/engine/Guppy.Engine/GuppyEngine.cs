@@ -3,30 +3,35 @@ using Autofac.Features.ResolveAnything;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Utilities;
 using Guppy.Core.Extensions;
 using Guppy.Engine.Common;
+using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Loaders;
 using System.Reflection;
 
 namespace Guppy.Engine
 {
-    public sealed class GuppyEngine : IGuppyEngine, IDisposable
+    public class GuppyEngine : IGuppyEngine, IDisposable
     {
-        private readonly IGuppyContext _context;
-        private readonly ILifetimeScope _scope;
+        private readonly ILifetimeScope _container;
 
         private readonly IFiltered<IHostedService> _hostedServices;
+        private readonly IFiltered<IEngineComponent> _components;
 
-        IGuppyContext IGuppyEngine.Context => _context;
+        public IGuppyContext Context { get; }
+        public IEnumerable<IEngineComponent> Components => _components;
 
-        public GuppyEngine(IGuppyContext context, ILifetimeScope scope, IFiltered<IHostedService> hostedServices)
+        public GuppyEngine(GuppyContext context, Action<ContainerBuilder>? builder = null)
         {
-            _context = context;
-            _scope = scope;
+            _container = GuppyEngine.Build(this, context, builder);
+            _hostedServices = _container.Resolve<IFiltered<IHostedService>>();
+            _components = _container.Resolve<IFiltered<IEngineComponent>>();
 
-            _hostedServices = hostedServices;
+            this.Context = context;
 
             CancellationTokenSource startToken = new CancellationTokenSource(5000);
             foreach (IHostedService hostedService in _hostedServices)
@@ -42,31 +47,52 @@ namespace Guppy.Engine
             {
                 hostedService.StopAsync(stopToken.Token);
             }
+
+            _container.Dispose();
         }
 
-        T IGuppyEngine.Resolve<T>()
+        IGuppyEngine IGuppyEngine.Start()
         {
-            return _scope.Resolve<T>();
+            return this.Start();
+        }
+
+        protected virtual void Initialize()
+        {
+            foreach (IEngineComponent component in _components.Sequence(InitializeSequence.Initialize))
+            {
+                component.Initialize();
+            }
+        }
+
+        public GuppyEngine Start()
+        {
+            this.Initialize();
+
+            return this;
+        }
+
+        public T Resolve<T>()
+            where T : notnull
+        {
+            return _container.Resolve<T>();
         }
 
         #region Static
         private static readonly object _lock;
         private static IGuppyEngine? _instance;
 
-        public static IGuppyContext? Context => _instance?.Context;
-
         static GuppyEngine()
         {
             _lock = new object();
         }
 
-        public static IGuppyEngine Start(GuppyContext context, Action<ContainerBuilder>? builder = null)
+        private static IContainer Build(GuppyEngine engine, GuppyContext context, Action<ContainerBuilder>? builder = null)
         {
             lock (_lock)
             {
                 if (_instance is not null)
                 {
-                    throw new Exception($"{nameof(GuppyEngine)}::{nameof(Start)} - An {nameof(IGuppyEngine)} instance has already been created.");
+                    throw new Exception($"{nameof(GuppyEngine)}::{nameof(Build)} - An {nameof(IGuppyEngine)} instance has already been created.");
                 }
 
                 // Construct a service container to store factory related services
@@ -88,7 +114,7 @@ namespace Guppy.Engine
                 // Construct the engine container
                 ContainerBuilder engineBuilder = new ContainerBuilder();
                 engineBuilder.RegisterCoreServices(context, assemblies);
-                engineBuilder.RegisterType<GuppyEngine>().As<IGuppyEngine>().SingleInstance();
+                engineBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
 
                 // Automatically invoke all loaded GuppyConfigurationAttribute instances
                 IAttributeService<object, GuppyConfigurationAttribute> typeAttributes = assemblies.GetAttributes<GuppyConfigurationAttribute>(true);
@@ -106,19 +132,8 @@ namespace Guppy.Engine
                 var container = engineBuilder.Build();
                 StaticInstance<IContainer>.Initialize(container, true);
 
-                return _instance = Singleton<IGuppyEngine>.Instance;
+                return container;
             }
-        }
-
-        public static T Resolve<T>()
-            where T : notnull
-        {
-            if (_instance is null)
-            {
-                throw new NotImplementedException();
-            }
-
-            return _instance.Resolve<T>();
         }
 
         private static void HandleAssemblyLoaded(IAssemblyService sender, Assembly assembly)

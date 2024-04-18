@@ -1,6 +1,11 @@
 ﻿namespace Guppy.Core.Messaging.Common
 {
-    public interface IBaseSubscriber<TBase>
+    public interface IBaseSubscriber
+    {
+
+    }
+
+    public interface IBaseSubscriber<TBase> : IBaseSubscriber
         where TBase : class, IMessage
     {
     }

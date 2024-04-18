@@ -15,11 +15,11 @@ namespace Guppy.Core.Network.Common
 
         INetGroup INetScope.Group => this.Group;
 
-        public NetScope(IBus bus, ILifetimeScope scope, NetScopeContext<T> context)
+        public NetScope(IBus bus, ILifetimeScope scope, IEnumerable<NetScopeContext<T>> context)
         {
             _bus = bus;
 
-            this.Group = context.GetGroup<BaseNetGroup>(scope);
+            this.Group = context.Single().GetGroup<BaseNetGroup>(scope);
             this.Group.Add(this, _bus);
 
             _bus.Subscribe(this);

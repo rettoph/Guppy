@@ -1,15 +1,15 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Input.Common;
-using Guppy.Game.MonoGame.Components.Guppy;
+using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.Messages;
 
 namespace Guppy.Game.MonoGame.Components.Game
 {
     [AutoLoad]
-    internal class ToggleWindowComponent : GlobalComponent, IInputSubscriber<Toggle<GuppyDebugWindowComponent>>, IInputSubscriber<Toggle<TerminalWindowComponent>>
+    internal class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<TerminalWindowComponent>>
     {
-        public void Process(in Guid messageId, Toggle<GuppyDebugWindowComponent> message)
+        public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)
         {
             Common.Settings.IsDebugWindowEnabled.Value = !Common.Settings.IsDebugWindowEnabled.Value;
         }

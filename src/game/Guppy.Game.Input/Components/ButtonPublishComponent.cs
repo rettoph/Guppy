@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -11,7 +10,7 @@ namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class ButtonPublishComponent : GlobalComponent, IGuppyUpdateable
+    internal sealed class ButtonPublishComponent : EngineComponent, IGuppyUpdateable
     {
         private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;
@@ -30,11 +29,6 @@ namespace Guppy.Game.Input.Components
             {
                 provider.Clean(_buttons.Values);
             }
-        }
-
-        public void Initialize(IGuppy guppy)
-        {
-            //
         }
 
         public void Update(GameTime gameTime)

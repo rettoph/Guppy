@@ -1,8 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
@@ -12,24 +12,26 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Game
 {
     [AutoLoad]
-    internal class GlobalDebugWindowComponent : GlobalComponent, IImGuiComponent
+    internal class EngineDebugWindowComponent : EngineComponent, IImGuiComponent
     {
+        private readonly IGameEngine _engine;
         private readonly Resource<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
         private IDebugComponent[] _components;
 
-        public GlobalDebugWindowComponent(IImGui imgui, ISettingService settings)
+        public EngineDebugWindowComponent(IImGui imgui, IGameEngine engine)
         {
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
+            _engine = engine;
             _debugWindowStyle = Common.Resources.ImGuiStyles.DebugWindow;
         }
 
-        protected override void Initialize(IGlobalComponent[] components)
+        protected override void Initialize()
         {
-            base.Initialize(components);
+            base.Initialize();
 
-            _components = components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _components = _engine.Components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
         public void DrawImGui(GameTime gameTime)

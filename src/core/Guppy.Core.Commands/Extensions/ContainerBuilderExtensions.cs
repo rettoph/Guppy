@@ -3,7 +3,6 @@ using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Services;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Messaging.Common;
-using Guppy.Engine.Common.Autofac;
 
 namespace Guppy.Core.Commands.Extensions
 {
@@ -17,7 +16,7 @@ namespace Guppy.Core.Commands.Extensions
             }
 
 
-            builder.RegisterType<CommandService>().As<ICommandService>().As<IMagicBroker>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+            builder.RegisterType<CommandService>().As<ICommandService>().As<IMagicBroker>().InstancePerLifetimeScope();
 
             return builder.AddTag(nameof(RegisterCoreCommandServices));
         }

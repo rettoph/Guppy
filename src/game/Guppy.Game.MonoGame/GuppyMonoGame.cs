@@ -1,7 +1,5 @@
 ﻿using Guppy.Engine;
-using Guppy.Engine.Common;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,7 +10,7 @@ namespace Guppy.Game.MonoGame
     {
         private readonly GuppyContext _context;
         private readonly GraphicsDeviceManager _graphics;
-        private IGame? _game;
+        private IGameEngine? _engine;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -54,20 +52,18 @@ namespace Guppy.Game.MonoGame
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                IGame game = GuppyEngine.Start(_context, builder =>
+                var engine = new GameEngine(_context, builder =>
                 {
                     builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window);
-                }).StartGame();
+                });
 
-                game.Initialize();
+                this.Initialize(engine);
 
-                this.Initialize(game);
-
-                _game = game;
+                _engine = engine;
             });
         }
 
-        protected virtual void Initialize(IGame game)
+        protected virtual void Initialize(IGameEngine engine)
         {
 
         }
@@ -89,21 +85,21 @@ namespace Guppy.Game.MonoGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _game?.Dispose();
+            _engine?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _game?.Dispose();
+            _engine?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _game?.Dispose();
+            _engine?.Dispose();
 
             Environment.Exit(0);
         }
@@ -118,7 +114,8 @@ namespace Guppy.Game.MonoGame
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _game?.Update(gameTime);
+            throw new NotImplementedException();
+            // _engine?.Update(gameTime);
         }
 
         /// <summary>
@@ -131,22 +128,23 @@ namespace Guppy.Game.MonoGame
 
             this.GraphicsDevice.Clear(Color.Black);
 
-            _game?.Draw(gameTime);
+            throw new NotImplementedException();
+            // _engine?.Draw(gameTime);
         }
     }
 
     public class GuppyMonoGame<TGuppy> : GuppyMonoGame
-        where TGuppy : class, IGuppy
+        where TGuppy : class, IScene
     {
         public GuppyMonoGame(GuppyContext context) : base(context)
         {
         }
 
-        protected override void Initialize(IGame game)
+        protected override void Initialize(IGameEngine engine)
         {
-            base.Initialize(game);
+            base.Initialize(engine);
 
-            game.Guppies.Create<TGuppy>();
+            engine.Scenes.Create<TGuppy>();
         }
     }
 }

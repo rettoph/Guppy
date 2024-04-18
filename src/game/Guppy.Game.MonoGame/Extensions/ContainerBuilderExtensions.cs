@@ -3,14 +3,13 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Autofac;
 using Guppy.Game.Extensions;
 using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common;
 using Guppy.Game.MonoGame.Common.Constants;
 using Guppy.Game.MonoGame.Common.Primitives;
-using Guppy.Game.MonoGame.Components.Guppy;
+using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.Messages;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -41,7 +40,7 @@ namespace Guppy.Game.MonoGame.Extensions
                 builder.RegisterType<Screen>().As<IScreen>().InstancePerLifetimeScope();
                 builder.RegisterType<SpriteBatch>().SingleInstance();
 
-                builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+                builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
                 builder.RegisterGeneric(typeof(PrimitiveBatch<,>));
                 builder.RegisterGeneric(typeof(PrimitiveBatch<>));
@@ -55,7 +54,7 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1, new[]
                 {
-                    (ButtonState.Pressed, Toggle<GuppyDebugWindowComponent>.Instance)
+                    (ButtonState.Pressed, Toggle<SceneDebugWindowComponent>.Instance)
                 });
 
                 builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]

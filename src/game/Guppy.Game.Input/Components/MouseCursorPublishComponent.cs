@@ -13,7 +13,7 @@ namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
-    internal sealed class MouseCursorPublishComponent : GlobalComponent, IGuppyUpdateable
+    internal sealed class MouseCursorPublishComponent : EngineComponent, IGuppyUpdateable
     {
         private readonly IInputService _inputs;
         private readonly ICursor _cursor;

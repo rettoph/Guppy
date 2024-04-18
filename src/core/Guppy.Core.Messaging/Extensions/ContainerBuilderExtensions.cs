@@ -4,7 +4,6 @@ using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Implementations;
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Messaging.Services;
-using Guppy.Engine.Common.Autofac;
 
 namespace Guppy.Core.Messaging.Extensions
 {
@@ -19,7 +18,7 @@ namespace Guppy.Core.Messaging.Extensions
 
             builder.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+            builder.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerLifetimeScope();
 
             // TODO: Check if this is used for anything?
             builder.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();

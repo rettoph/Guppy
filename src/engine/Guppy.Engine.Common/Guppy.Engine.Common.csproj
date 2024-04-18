@@ -13,4 +13,8 @@
     <ProjectReference Include="..\..\core\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Providers\" />
+  </ItemGroup>
+
 </Project>

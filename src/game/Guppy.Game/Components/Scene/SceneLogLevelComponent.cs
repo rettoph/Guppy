@@ -1,16 +1,16 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Components;
-using Guppy.Core.Commands.Common;
+﻿using Guppy.Core.Commands.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Components;
 
 namespace Guppy.Game.Components.Guppy
 {
     [AutoLoad]
-    internal class LogLevelComponent : GuppyComponent, ICommandSubscriber<LogLevelCommand>
+    internal class SceneLogLevelComponent : SceneComponent, ICommandSubscriber<LogLevelCommand>
     {
         private readonly ITerminal _terminal;
 
-        public LogLevelComponent(ITerminal terminal)
+        public SceneLogLevelComponent(ITerminal terminal)
         {
             _terminal = terminal;
 

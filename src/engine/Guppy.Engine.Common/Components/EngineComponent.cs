@@ -3,24 +3,24 @@ using Guppy.Core.Common.Enums;
 
 namespace Guppy.Engine.Common.Components
 {
-    [Service<IGlobalComponent>(ServiceLifetime.Scoped, true)]
-    public abstract class GlobalComponent : IGlobalComponent
+    [Service(ServiceLifetime.Singleton, true)]
+    public abstract class EngineComponent : IEngineComponent
     {
         public bool Ready { get; private set; } = false;
 
-        void IGlobalComponent.Initialize(IGlobalComponent[] components)
+        void IEngineComponent.Initialize()
         {
             if (this.Ready)
             {
                 return;
             }
 
-            this.Initialize(components);
+            this.Initialize();
 
             this.Ready = true;
         }
 
-        protected virtual void Initialize(IGlobalComponent[] components)
+        protected virtual void Initialize()
         {
         }
     }

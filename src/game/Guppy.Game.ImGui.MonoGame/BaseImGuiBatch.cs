@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 namespace Guppy.Game.ImGui.MonoGame
 {
     [Sequence<InitializeSequence>(InitializeSequence.PostInitialize)]
-    internal abstract class BaseImGuiBatch : GlobalComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch
+    internal abstract class BaseImGuiBatch : EngineComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
@@ -71,9 +71,9 @@ namespace Guppy.Game.ImGui.MonoGame
             _resources = resources;
         }
 
-        protected override void Initialize(IGlobalComponent[] components)
+        protected override void Initialize()
         {
-            base.Initialize(components);
+            base.Initialize();
 
             _resources.Initialize();
 

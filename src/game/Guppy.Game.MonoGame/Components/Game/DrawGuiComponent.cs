@@ -1,10 +1,9 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions;
-using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
-using Guppy.Engine.Common.Providers;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Services;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 
@@ -12,29 +11,33 @@ namespace Guppy.Game.MonoGame.Components.Game
 {
     [AutoLoad]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DrawGuiComponent : GlobalComponent, IGuppyDrawable
+    internal class DrawGuiComponent : EngineComponent, IGuppyDrawable, IDisposable
     {
+        private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
-        private readonly IGuppyProvider _guppies;
-        private readonly List<GameGuppy> _frameables;
+        private readonly List<Guppy.Game.Scene> _scenes;
         private IImGuiComponent[] _components;
 
-        public DrawGuiComponent(IGuppyProvider guppies, IImguiBatch batch)
+        public DrawGuiComponent(IImguiBatch batch, IGameEngine engine)
         {
             _batch = batch;
-            _guppies = guppies;
-            _frameables = _guppies.OfType<GameGuppy>().ToList();
+            _engine = engine;
             _components = Array.Empty<IImGuiComponent>();
+            _scenes = _engine.Scenes.GetAll().OfType<Guppy.Game.Scene>().ToList();
 
-            _guppies.OnGuppyCreated += HandleGuppyCreated;
-            _guppies.OnGuppyDestroyed += HandleGuppyDestroyed;
+            _engine.Scenes.OnSceneCreated += this.HandleSceneCreated;
+            _engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
         }
 
-        protected override void Initialize(IGlobalComponent[] components)
+        protected override void Initialize()
         {
-            base.Initialize(components);
+            _components = _engine.Components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
+        }
 
-            _components = components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
+        public void Dispose()
+        {
+            _engine.Scenes.OnSceneCreated -= this.HandleSceneCreated;
+            _engine.Scenes.OnSceneDestroyed -= this.HandleSceneDestroyed;
         }
 
         public void Draw(GameTime gameTime)
@@ -45,26 +48,26 @@ namespace Guppy.Game.MonoGame.Components.Game
                 component.DrawImGui(gameTime);
             }
 
-            foreach (GameGuppy frameable in _frameables)
+            foreach (Guppy.Game.Scene scene in _scenes)
             {
-                frameable.DrawGui(gameTime);
+                scene.DrawGui(gameTime);
             }
             _batch.End();
         }
 
-        private void HandleGuppyCreated(IGuppyProvider sender, IGuppy args)
+        private void HandleSceneCreated(ISceneService sender, IScene args)
         {
-            if (args is GameGuppy frameable)
+            if (args is Guppy.Game.Scene scene)
             {
-                _frameables.Add(frameable);
+                _scenes.Add(scene);
             }
         }
 
-        private void HandleGuppyDestroyed(IGuppyProvider sender, IGuppy args)
+        private void HandleSceneDestroyed(ISceneService sender, IScene args)
         {
-            if (args is GameGuppy frameable)
+            if (args is Guppy.Game.Scene scene)
             {
-                _frameables.Remove(frameable);
+                _scenes.Remove(scene);
             }
         }
     }

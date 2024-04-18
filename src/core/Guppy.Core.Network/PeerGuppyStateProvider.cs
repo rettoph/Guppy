@@ -24,7 +24,12 @@ namespace Guppy.Core.Network.Common
 
         public IEnumerable<IState> GetStates()
         {
-            PeerType flags = _scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
+            PeerType flags = PeerType.None;
+            if (_scopes.Any() == true)
+            {
+                flags = _scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
+            }
+
             yield return new State<PeerType>(() => flags, (x, y) => x.HasFlag(y));
         }
     }

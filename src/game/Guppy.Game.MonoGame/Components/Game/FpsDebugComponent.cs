@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Game
 {
     [AutoLoad]
-    internal class FpsDebugComponent : GlobalComponent, IDebugComponent
+    internal class FpsDebugComponent : EngineComponent, IDebugComponent
     {
 
         private Buffer<double> _sampleBuffer = new Buffer<double>(20);

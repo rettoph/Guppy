@@ -1,10 +1,9 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
-using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
@@ -13,10 +12,10 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Game
 {
-    public abstract class GameGuppy : IGuppy, IGameGuppy
+    public abstract class Scene : IScene
     {
         private static Dictionary<Type, short> _count = new Dictionary<Type, short>();
-        private static ulong CalculateId(GameGuppy instance)
+        private static ulong CalculateId(Scene instance)
         {
             ref short count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
             uint hash = xxHash32.ComputeHash(instance.GetType().AssemblyQualifiedName);
@@ -28,40 +27,41 @@ namespace Guppy.Game
         private IGuppyUpdateable[] _updateComponents;
         private IImGuiComponent[] _imguiComponents;
 
-        public IGuppyComponent[] Components { get; private set; }
-        public ILifetimeScope Scope { get; private set; }
+        public ISceneComponent[] Components { get; private set; }
 
         public virtual string Name => this.GetType().Name;
 
-        public ulong Id { get; set; }
+        public ulong Id { get; }
 
-        public GameGuppy()
+        public Scene()
         {
             _drawComponents = Array.Empty<IGuppyDrawable>();
             _updateComponents = Array.Empty<IGuppyUpdateable>();
             _imguiComponents = Array.Empty<IImGuiComponent>();
 
-            this.Components = Array.Empty<IGuppyComponent>();
-            this.Scope = null!;
+            this.Components = Array.Empty<ISceneComponent>();
 
 
             this.Id = CalculateId(this);
         }
 
-        public virtual void Initialize(ILifetimeScope scope)
+        void IScene.Initialize(ILifetimeScope scope)
         {
-            this.Components = scope.Resolve<IFiltered<IGuppyComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
+            this.Initialize(scope);
+        }
+
+        protected virtual void Initialize(ILifetimeScope scope)
+        {
+            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
+
+            foreach (ISceneComponent component in this.Components)
+            {
+                component.Initialize();
+            }
 
             _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
             _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
             _imguiComponents = this.Components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
-
-            foreach (IGuppyComponent component in this.Components)
-            {
-                component.Initialize(this);
-            }
-
-            this.Scope = scope;
         }
 
         public virtual void Draw(GameTime gameTime)
