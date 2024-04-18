@@ -10,6 +10,8 @@ namespace Guppy.Game
 {
     internal sealed class Game : IGame
     {
+        private bool _disposing;
+
         private IGuppyDrawable[] _drawableComponents;
         private IGuppyUpdateable[] _updateableComonents;
 
@@ -53,6 +55,12 @@ namespace Guppy.Game
 
         public void Dispose()
         {
+            if (_disposing)
+            {
+                return;
+            }
+
+            _disposing = true;
             this.Guppies.Dispose();
         }
     }

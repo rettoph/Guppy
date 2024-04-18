@@ -3,15 +3,13 @@ using Guppy.Engine.Common.Components;
 
 namespace Guppy.Engine.Common
 {
-    public interface IGuppy : IDisposable
+    public interface IGuppy
     {
         ulong Id { get; }
         string Name { get; }
 
         IGuppyComponent[] Components { get; }
         ILifetimeScope Scope { get; }
-
-        event OnEventDelegate<IDisposable>? OnDispose;
 
         void Initialize(ILifetimeScope scope);
 

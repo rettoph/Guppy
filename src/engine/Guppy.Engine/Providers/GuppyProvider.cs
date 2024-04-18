@@ -45,7 +45,8 @@ namespace Guppy.Engine.Providers
             _initialized = true;
         }
 
-        T IGuppyProvider.Create<T>(Action<ContainerBuilder>? guppyBuilder)
+        public T Create<T>(Action<ContainerBuilder>? guppyBuilder)
+            where T : class, IGuppy
         {
             this.Initialize();
 
@@ -61,7 +62,7 @@ namespace Guppy.Engine.Providers
             return guppy;
         }
 
-        IGuppy IGuppyProvider.Create(Type guppyType, Action<ContainerBuilder>? guppyBuilder)
+        public IGuppy Create(Type guppyType, Action<ContainerBuilder>? guppyBuilder)
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppy>(guppyType);
 
@@ -84,31 +85,24 @@ namespace Guppy.Engine.Providers
             return guppy;
         }
 
+        public void Destroy(IGuppy guppy)
+        {
+            if (_scopes.Remove(guppy, out var scope))
+            {
+                scope.Dispose();
+            }
+
+            _guppies.Remove(guppy);
+            this.OnGuppyDestroyed?.Invoke(this, guppy);
+        }
+
         private void Configure(IGuppy guppy, ILifetimeScope scope)
         {
-            guppy.OnDispose += this.HandleGuppyDisposed;
-
             guppy.Initialize(scope);
             _scopes.Add(guppy, scope);
             _guppies.Add(guppy);
 
             this.OnGuppyCreated?.Invoke(this, guppy);
-        }
-
-        private void HandleGuppyDisposed(IDisposable args)
-        {
-            if (args is IGuppy guppy)
-            {
-                guppy.OnDispose -= this.HandleGuppyDisposed;
-
-                if (_scopes.Remove(guppy, out var scope))
-                {
-                    scope.Dispose();
-                }
-
-                _guppies.Remove(guppy);
-                this.OnGuppyDestroyed?.Invoke(this, guppy);
-            }
         }
 
         public IEnumerator<IGuppy> GetEnumerator()
@@ -124,6 +118,11 @@ namespace Guppy.Engine.Providers
         public void Dispose()
         {
             _scope.Dispose();
+
+            while (_guppies.Any())
+            {
+                this.Destroy(_guppies.First());
+            }
         }
     }
 }

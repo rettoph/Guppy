@@ -48,8 +48,6 @@ namespace Guppy.Game
             this.Id = CalculateId(this);
         }
 
-        public event OnEventDelegate<IDisposable>? OnDispose;
-
         public virtual void Initialize(ILifetimeScope scope)
         {
             this.Components = scope.Resolve<IFiltered<IGuppyComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
@@ -88,11 +86,6 @@ namespace Guppy.Game
             {
                 component.DrawImGui(gameTime);
             }
-        }
-
-        public virtual void Dispose()
-        {
-            this.OnDispose?.Invoke(this);
         }
     }
 }

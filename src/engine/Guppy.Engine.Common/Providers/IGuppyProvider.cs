@@ -15,5 +15,11 @@ namespace Guppy.Engine.Common.Providers
 
         T Create<T>(Action<ContainerBuilder>? builder = null)
             where T : class, IGuppy;
+
+        /// <summary>
+        /// Remove, dispose, and cleanup the given IGuppy instance
+        /// </summary>
+        /// <param name="guppy"></param>
+        void Destroy(IGuppy guppy);
     }
 }
