@@ -1,15 +1,17 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Autofac;
+using Guppy.Game.Extensions;
 
 namespace Guppy.Game.Console.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterConsoleGame(this ContainerBuilder builder)
+        public static ContainerBuilder RegisterConsoleGameServices(this ContainerBuilder builder)
         {
-            return builder.EnsureRegisteredOnce(nameof(RegisterConsoleGame), builder =>
+            return builder.EnsureRegisteredOnce(nameof(RegisterConsoleGameServices), builder =>
             {
+                builder.RegisterCommonGameServices();
                 builder.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
             });
         }

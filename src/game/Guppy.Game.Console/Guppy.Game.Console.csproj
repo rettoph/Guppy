@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\Guppy.Core.Common\Guppy.Core.Common.csproj" />
-    <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Game\Guppy.Game.csproj" />
   </ItemGroup>
 
 </Project>
