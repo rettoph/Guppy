@@ -5,12 +5,11 @@ using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Game
+namespace Guppy.Game.Common
 {
     public abstract class Scene : IScene
     {
@@ -25,7 +24,6 @@ namespace Guppy.Game
 
         private IGuppyDrawable[] _drawComponents;
         private IGuppyUpdateable[] _updateComponents;
-        private IImGuiComponent[] _imguiComponents;
 
         public ISceneComponent[] Components { get; private set; }
 
@@ -37,7 +35,6 @@ namespace Guppy.Game
         {
             _drawComponents = Array.Empty<IGuppyDrawable>();
             _updateComponents = Array.Empty<IGuppyUpdateable>();
-            _imguiComponents = Array.Empty<IImGuiComponent>();
 
             this.Components = Array.Empty<ISceneComponent>();
 
@@ -61,7 +58,6 @@ namespace Guppy.Game
 
             _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
             _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
-            _imguiComponents = this.Components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
         }
 
         public virtual void Draw(GameTime gameTime)
@@ -77,14 +73,6 @@ namespace Guppy.Game
             foreach (IGuppyUpdateable updateable in _updateComponents)
             {
                 updateable.Update(gameTime);
-            }
-        }
-
-        public virtual void DrawGui(GameTime gameTime)
-        {
-            foreach (IImGuiComponent component in _imguiComponents)
-            {
-                component.DrawImGui(gameTime);
             }
         }
     }

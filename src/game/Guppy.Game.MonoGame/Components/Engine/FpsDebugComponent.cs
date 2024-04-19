@@ -5,7 +5,7 @@ using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Game
+namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
     internal class FpsDebugComponent : EngineComponent, IDebugComponent

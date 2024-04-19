@@ -7,23 +7,23 @@ using Guppy.Game.Common.Services;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Game
+namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class DrawGuiComponent : EngineComponent, IGuppyDrawable, IDisposable
+    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
+    internal class BeginImGuiComponent : EngineComponent, IGuppyDrawable, IDisposable
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
-        private readonly List<Guppy.Game.Scene> _scenes;
+        private readonly List<Game.Common.Scene> _scenes;
         private IImGuiComponent[] _components;
 
-        public DrawGuiComponent(IImguiBatch batch, IGameEngine engine)
+        public BeginImGuiComponent(IImguiBatch batch, IGameEngine engine)
         {
             _batch = batch;
             _engine = engine;
             _components = Array.Empty<IImGuiComponent>();
-            _scenes = _engine.Scenes.GetAll().OfType<Guppy.Game.Scene>().ToList();
+            _scenes = _engine.Scenes.GetAll().OfType<Game.Common.Scene>().ToList();
 
             _engine.Scenes.OnSceneCreated += this.HandleSceneCreated;
             _engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
@@ -47,17 +47,11 @@ namespace Guppy.Game.MonoGame.Components.Game
             {
                 component.DrawImGui(gameTime);
             }
-
-            foreach (Guppy.Game.Scene scene in _scenes)
-            {
-                scene.DrawGui(gameTime);
-            }
-            _batch.End();
         }
 
         private void HandleSceneCreated(ISceneService sender, IScene args)
         {
-            if (args is Guppy.Game.Scene scene)
+            if (args is Game.Common.Scene scene)
             {
                 _scenes.Add(scene);
             }
@@ -65,7 +59,7 @@ namespace Guppy.Game.MonoGame.Components.Game
 
         private void HandleSceneDestroyed(ISceneService sender, IScene args)
         {
-            if (args is Guppy.Game.Scene scene)
+            if (args is Game.Common.Scene scene)
             {
                 _scenes.Remove(scene);
             }

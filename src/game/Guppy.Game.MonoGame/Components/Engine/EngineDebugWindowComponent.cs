@@ -9,7 +9,7 @@ using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Game
+namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
     internal class EngineDebugWindowComponent : EngineComponent, IImGuiComponent

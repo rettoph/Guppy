@@ -5,10 +5,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Content\Guppy\**\*.*">
@@ -21,7 +17,6 @@
     <ProjectReference Include="..\..\core\Guppy.Core.Commands\Guppy.Core.Commands.csproj" />
     <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
-    <ProjectReference Include="..\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
   </ItemGroup>
 
 </Project>

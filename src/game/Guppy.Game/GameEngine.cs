@@ -37,11 +37,6 @@ namespace Guppy.Game
             {
                 component.Draw(gameTime);
             }
-
-            foreach (IScene scene in this.Scenes.GetAll())
-            {
-                scene.Draw(gameTime);
-            }
         }
 
         public void Update(GameTime gameTime)
@@ -49,11 +44,6 @@ namespace Guppy.Game
             foreach (IGuppyUpdateable component in _updateableComonents)
             {
                 component.Update(gameTime);
-            }
-
-            foreach (IScene scene in this.Scenes.GetAll())
-            {
-                scene.Update(gameTime);
             }
         }
 

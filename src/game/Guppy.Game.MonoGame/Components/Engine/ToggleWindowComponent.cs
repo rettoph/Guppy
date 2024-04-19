@@ -4,7 +4,7 @@ using Guppy.Game.Input.Common;
 using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.Messages;
 
-namespace Guppy.Game.MonoGame.Components.Game
+namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
     internal class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<TerminalWindowComponent>>
