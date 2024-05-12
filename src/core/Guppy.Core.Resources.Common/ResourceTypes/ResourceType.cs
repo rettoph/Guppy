@@ -16,26 +16,32 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
         {
             Resource<T> resource = Resource<T>.Get(resourceName);
 
-            if (this.TryResolve(resource, pack.RootDirectory, ref json, out T? value))
+            if (this.TryGetResolver(resource, pack.RootDirectory, ref json, out ResourceResolver<T>? resolver))
             {
-                pack.Add(resource, localization, value);
+                pack.Add(resource, localization, resolver);
                 return true;
             }
 
             return false;
         }
 
-        protected abstract bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value);
+        protected abstract bool TryGetResolver(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out ResourceResolver<T> resolver);
     }
 
     public abstract class SimpleResourceType<T> : ResourceType<T>
         where T : notnull
     {
-        protected override bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, out T value)
+        protected override bool TryGetResolver(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out ResourceResolver<T> resolver)
         {
             string input = json.GetString() ?? string.Empty;
+            if (this.TryResolve(resource, root, input, out T value) == true)
+            {
+                resolver = new ResourceResolver<T>(() => value);
+                return true;
+            }
 
-            return this.TryResolve(resource, root, input, out value);
+            resolver = null;
+            return false;
         }
 
         protected abstract bool TryResolve(Resource<T> resource, DirectoryLocation root, string input, out T value);
@@ -51,9 +57,10 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
             _json = json;
         }
 
-        protected override bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        protected override bool TryGetResolver(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out ResourceResolver<T> resolver)
         {
-            value = _json.Deserialize<T>(ref json, out bool success);
+            T value = _json.Deserialize<T>(ref json, out bool success);
+            resolver = new ResourceResolver<T>(() => value);
 
             return success;
         }

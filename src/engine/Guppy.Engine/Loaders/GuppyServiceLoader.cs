@@ -30,6 +30,7 @@ namespace Guppy.Engine.Loaders
             {
                 options.PropertyNameCaseInsensitive = true;
                 options.WriteIndented = true;
+                options.Converters.Add(new JsonStringEnumConverter());
 
                 foreach (JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
                 {
