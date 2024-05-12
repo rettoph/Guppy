@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Autofac;
 using Guppy.Game.Extensions;
 
 namespace Guppy.Game.Console.Extensions
@@ -12,7 +11,7 @@ namespace Guppy.Game.Console.Extensions
             return builder.EnsureRegisteredOnce(nameof(RegisterConsoleGameServices), builder =>
             {
                 builder.RegisterCommonGameServices();
-                builder.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerMatchingLifetimeScope(LifetimeScopeTags.GuppyScope);
+                builder.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
             });
         }
     }

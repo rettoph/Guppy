@@ -2,7 +2,6 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
@@ -13,15 +12,16 @@ namespace Guppy.Game.Common
 {
     public abstract class Scene : IScene
     {
-        private static Dictionary<Type, short> _count = new Dictionary<Type, short>();
+        private static Dictionary<Type, ushort> _count = new Dictionary<Type, ushort>();
         private static ulong CalculateId(Scene instance)
         {
-            ref short count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
+            ref ushort count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
             uint hash = xxHash32.ComputeHash(instance.GetType().AssemblyQualifiedName);
 
             return (ulong)hash << 32 | (ulong)count++;
         }
 
+        private ILifetimeScope _scope;
         private IGuppyDrawable[] _drawComponents;
         private IGuppyUpdateable[] _updateComponents;
 
@@ -33,6 +33,7 @@ namespace Guppy.Game.Common
 
         public Scene()
         {
+            _scope = null!;
             _drawComponents = Array.Empty<IGuppyDrawable>();
             _updateComponents = Array.Empty<IGuppyUpdateable>();
 
@@ -49,6 +50,8 @@ namespace Guppy.Game.Common
 
         protected virtual void Initialize(ILifetimeScope scope)
         {
+            _scope = scope;
+
             this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
 
             foreach (ISceneComponent component in this.Components)
@@ -74,6 +77,12 @@ namespace Guppy.Game.Common
             {
                 updateable.Update(gameTime);
             }
+        }
+
+        public T Resolve<T>()
+            where T : notnull
+        {
+            return _scope.Resolve<T>();
         }
     }
 }

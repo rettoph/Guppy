@@ -11,5 +11,7 @@ namespace Guppy.Game.Common
         ISceneComponent[] Components { get; }
 
         void Initialize(ILifetimeScope scope);
+
+        T Resolve<T>() where T : notnull;
     }
 }
