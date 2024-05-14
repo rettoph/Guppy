@@ -42,7 +42,7 @@
         }
 
         private static readonly Stack<int> _indices = new Stack<int>();
-        private static readonly List<TValue> _values = new List<TValue>();
+        private static readonly List<TValue> _values = new List<TValue>() { default! };
 
         private static int Pop()
         {
