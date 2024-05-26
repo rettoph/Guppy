@@ -1,5 +1,11 @@
 ﻿namespace Guppy.Core.Common.Utilities
 {
+    /// <summary>
+    /// Offers an unmanaged struct that can be used as a reference to a managed object
+    /// This is done with static magic and technically not safe, as the managed object
+    /// can be disposed or removed at any time. Use with care.
+    /// </summary>
+    /// <typeparam name="TValue"></typeparam>
     public struct UnmanagedReference<TValue> : IRef<TValue>, IDisposable
     {
         private readonly int _index;
@@ -74,6 +80,15 @@
         }
     }
 
+    /// <summary>
+    /// Offers an unmanaged struct that can be used as a reference to a managed object
+    /// This is done with static magic and technically not safe, as the managed object
+    /// can be disposed or removed at any time. Use with care.
+    /// 
+    /// The Namespace simply offers an extra layer of distinction between the backing static dictionary.
+    /// </summary>
+    /// <typeparam name="TNamespace"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     public struct UnmanagedReference<TNamespace, TValue> : IRef<TValue>, IDisposable
     {
         private readonly int _index;
