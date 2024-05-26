@@ -18,8 +18,8 @@ namespace Guppy.Core.Resources.Common
     public struct Resource<T> : IResource, IEquatable<Resource<T>>, IRef<T>
         where T : notnull
     {
-        private readonly StaticValue<IResource, string> _name;
-        private readonly StaticValue<IResource, T> _value;
+        private readonly UnmanagedReference<IResource, string> _name;
+        private readonly UnmanagedReference<IResource, T> _value;
 
         public readonly Guid Id;
         public readonly string Name => _name.Value;
@@ -35,8 +35,8 @@ namespace Guppy.Core.Resources.Common
 
         private unsafe Resource(string name)
         {
-            _name = new StaticValue<IResource, string>(name);
-            _value = new StaticValue<IResource, T>();
+            _name = new UnmanagedReference<IResource, string>(name);
+            _value = new UnmanagedReference<IResource, T>();
 
             this.Id = name.xxHash128();
         }

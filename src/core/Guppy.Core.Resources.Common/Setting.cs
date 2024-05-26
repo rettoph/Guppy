@@ -19,10 +19,10 @@ namespace Guppy.Core.Resources.Common
         where T : notnull
     {
         private readonly int _currentIndex;
-        private readonly StaticValue<ISetting, string> _name;
-        private readonly StaticValue<ISetting, string> _description;
-        private readonly StaticValue<ISetting, T> _default;
-        private readonly StaticValue<ISetting, T> _current;
+        private readonly UnmanagedReference<ISetting, string> _name;
+        private readonly UnmanagedReference<ISetting, string> _description;
+        private readonly UnmanagedReference<ISetting, T> _default;
+        private readonly UnmanagedReference<ISetting, T> _current;
 
         public readonly Guid Id;
         public string Name => _name.Value;
@@ -68,10 +68,10 @@ namespace Guppy.Core.Resources.Common
 
         private unsafe Setting(string name, string description, T defaultValue)
         {
-            _name = new StaticValue<ISetting, string>(name);
-            _description = new StaticValue<ISetting, string>(description);
-            _default = new StaticValue<ISetting, T>(defaultValue);
-            _current = new StaticValue<ISetting, T>(defaultValue);
+            _name = new UnmanagedReference<ISetting, string>(name);
+            _description = new UnmanagedReference<ISetting, string>(description);
+            _default = new UnmanagedReference<ISetting, T>(defaultValue);
+            _current = new UnmanagedReference<ISetting, T>(defaultValue);
 
             this.Id = name.xxHash128();
         }
