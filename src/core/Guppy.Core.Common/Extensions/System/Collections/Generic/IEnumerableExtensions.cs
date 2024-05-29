@@ -20,11 +20,11 @@ namespace System.Collections.Generic
             this IEnumerable<TInput> input,
             Func<TInput, TKey1> keySelector1,
             Func<TInput, TKey2> keySelector2,
-            Func<TInput, TValue> valueSelector)
+            Func<TInput, TValue> elementSelector)
                 where TKey1 : notnull
                 where TKey2 : notnull
         {
-            var kkvps = input.Select(x => (keySelector1(x), keySelector2(x), valueSelector(x)));
+            var kkvps = input.Select(x => (keySelector1(x), keySelector2(x), elementSelector(x))).ToArray();
 
             return new DoubleDictionary<TKey1, TKey2, TValue>(kkvps);
         }

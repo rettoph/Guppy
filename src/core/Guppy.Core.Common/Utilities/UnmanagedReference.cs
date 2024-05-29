@@ -70,11 +70,6 @@
 
         private static void Push(int index)
         {
-            if (_values[index] is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
             _values[index] = default!;
             _indices.Push(index);
         }
@@ -153,11 +148,6 @@
 
         private static void Push(int index)
         {
-            if (_values[index] is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-
             _values[index] = default!;
             _indices.Push(index);
         }
