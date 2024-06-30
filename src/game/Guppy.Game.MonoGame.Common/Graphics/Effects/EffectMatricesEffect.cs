@@ -10,7 +10,7 @@ namespace Guppy.Game.MonoGame.Common.Graphics.Effects
     /// assumes the recieving <see cref="Effect"/> contains a WorldViewProjection
     /// <see cref="Matrix"/> <see cref="EffectParameter"/>.
     /// </summary>
-    [Service(ServiceLifetime.Transient, true)]
+    [Service(ServiceLifetime.Transient, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class EffectMatricesEffect : Effect, IEffectMatrices
     {
         #region Private Fields

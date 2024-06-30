@@ -4,7 +4,7 @@ using LiteNetLib;
 
 namespace Guppy.Core.Network.Common.Definitions
 {
-    [Service<NetMessageTypeDefinition>(ServiceLifetime.Singleton, true)]
+    [Service<NetMessageTypeDefinition>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class NetMessageTypeDefinition
     {
         public abstract Type Body { get; }

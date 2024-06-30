@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Messaging.Common
 {
-    public interface IBroker<TBase>
+    public interface IBroker<TBase> : IBaseBroker
         where TBase : class, IMessage
     {
         public void Publish(in TBase message);

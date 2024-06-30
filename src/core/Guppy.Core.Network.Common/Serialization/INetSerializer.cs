@@ -5,7 +5,7 @@ using LiteNetLib.Utils;
 
 namespace Guppy.Core.Network.Common.Serialization
 {
-    [Service<INetSerializer>(ServiceLifetime.Singleton, true)]
+    [Service<INetSerializer>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public interface INetSerializer
     {
         INetId Id { get; set; }

@@ -8,23 +8,18 @@ namespace Guppy.Core.Common.Attributes
     {
         public readonly IEnumerable<Type> ServiceTypes;
         public readonly ServiceLifetime Lifetime;
-        public readonly bool AsImplementedInterfaces;
-        public readonly bool RequireAutoLoadAttribute;
+        public readonly ServiceRegistrationFlags RegistrationFlags;
         public readonly object? Tag;
 
-        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute, object? tag = null) : this(lifetime, null, true, requireAutoLoadAttribute, tag)
+        public ServiceAttribute(ServiceLifetime lifetime, ServiceRegistrationFlags registrationFlags, object? tag = null) : this(lifetime, null, registrationFlags, tag)
         {
 
         }
-        public ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceTypes, bool requireAutoLoadAttribute, object? tag = null) : this(lifetime, serviceTypes, false, requireAutoLoadAttribute, tag)
-        {
-        }
-        public ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, bool asImplementedInterfaces, bool requireAutoLoadAttribute, object? tag = null)
+        public ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, ServiceRegistrationFlags registrationFlags, object? tag = null)
         {
             this.Lifetime = lifetime;
             this.ServiceTypes = serviceType ?? Array.Empty<Type>();
-            this.AsImplementedInterfaces = asImplementedInterfaces;
-            this.RequireAutoLoadAttribute = requireAutoLoadAttribute;
+            this.RegistrationFlags = registrationFlags;
             this.Tag = tag;
         }
 
@@ -32,7 +27,7 @@ namespace Guppy.Core.Common.Attributes
         {
             var result = base.ShouldConfigure(boot, builder, classType);
 
-            if (this.RequireAutoLoadAttribute)
+            if (this.RegistrationFlags.HasFlag(ServiceRegistrationFlags.RequireAutoLoadAttribute))
             {
                 result &= classType.HasCustomAttribute<AutoLoadAttribute>();
             }
@@ -42,7 +37,12 @@ namespace Guppy.Core.Common.Attributes
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            var service = builder.RegisterType(classType).As(classType);
+            var service = builder.RegisterType(classType);
+
+            if (this.RegistrationFlags.HasFlag(ServiceRegistrationFlags.AsSelf))
+            {
+                service.As(classType);
+            }
 
             foreach (Type serviceType in this.ServiceTypes)
             {
@@ -51,7 +51,7 @@ namespace Guppy.Core.Common.Attributes
                 service.As(serviceType);
             }
 
-            if (this.AsImplementedInterfaces)
+            if (this.RegistrationFlags.HasFlag(ServiceRegistrationFlags.AsImplementedInterfaces))
             {
                 service.AsImplementedInterfaces();
             }
@@ -82,7 +82,7 @@ namespace Guppy.Core.Common.Attributes
 
     public class ServiceAttribute<TService> : ServiceAttribute
     {
-        public ServiceAttribute(ServiceLifetime lifetime, bool requireAutoLoadAttribute, object? tag = null) : base(lifetime, [typeof(TService)], false, requireAutoLoadAttribute, tag)
+        public ServiceAttribute(ServiceLifetime lifetime, ServiceRegistrationFlags registrationFlags, object? tag = null) : base(lifetime, [typeof(TService)], registrationFlags, tag)
         {
         }
     }

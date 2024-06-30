@@ -5,7 +5,7 @@ using Guppy.Game.Common.Attributes;
 namespace Guppy.Game.Common.Components
 {
     [SceneFilter<IScene>]
-    [Service(ServiceLifetime.Scoped, true)]
+    [Service(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute | ServiceRegistrationFlags.AsImplementedInterfaces)]
     public interface ISceneComponent
     {
         void Initialize();

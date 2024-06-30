@@ -5,7 +5,7 @@ using Guppy.Engine.Common.Services;
 
 namespace Guppy.Engine
 {
-    [Service<ObjectTextFilter>(ServiceLifetime.Singleton, true)]
+    [Service<ObjectTextFilter>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class ObjectTextFilter
     {
         public readonly int Priority;

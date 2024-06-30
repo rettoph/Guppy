@@ -4,7 +4,7 @@ using Guppy.Game.Input.Common.Services;
 
 namespace Guppy.Game.Input.Services
 {
-    internal class InputService : MagicBroker<IInput>, IInputService
+    internal class InputService : Broker<IInput>, IInputService
     {
     }
 }

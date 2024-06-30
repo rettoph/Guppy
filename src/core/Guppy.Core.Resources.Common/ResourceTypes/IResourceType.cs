@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Guppy.Core.Resources.Common.ResourceTypes
 {
-    [Service<IResourceType>(ServiceLifetime.Singleton, true)]
+    [Service<IResourceType>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public interface IResourceType
     {
         Type Type { get; }

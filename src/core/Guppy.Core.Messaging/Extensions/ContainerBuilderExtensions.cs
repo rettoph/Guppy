@@ -16,9 +16,9 @@ namespace Guppy.Core.Messaging.Extensions
                 return builder;
             }
 
-            builder.RegisterType<MagicBrokerService>().As<IMagicBrokerService>().InstancePerLifetimeScope();
+            builder.RegisterType<BrokerService>().As<IBrokerService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<Bus>().As<IBus>().As<IMagicBroker>().InstancePerLifetimeScope();
+            builder.RegisterType<Bus>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             // TODO: Check if this is used for anything?
             builder.RegisterType<Broker<IMessage>>().As<IBroker<IMessage>>().InstancePerDependency();

@@ -4,7 +4,7 @@ using Guppy.Core.Messaging.Common.Implementations;
 
 namespace Guppy.Core.Messaging
 {
-    internal class Bus : MagicBroker<IMessage>, IBus
+    internal class Bus : Broker<IMessage>, IBus
     {
         private (Type type, int queue)[] _queueConfigurations;
         private Dictionary<Type, Queue<IMessage>> _typeQueues;

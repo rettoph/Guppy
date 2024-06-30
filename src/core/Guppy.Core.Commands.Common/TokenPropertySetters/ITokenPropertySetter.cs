@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Guppy.Core.Commands.Common.TokenPropertySetters
 {
-    [Service<ITokenPropertySetter>(ServiceLifetime.Scoped, true)]
+    [Service<ITokenPropertySetter>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public interface ITokenPropertySetter
     {
         bool AppliesTo(Type type);

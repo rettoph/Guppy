@@ -3,7 +3,7 @@ using Guppy.Core.Common.Enums;
 
 namespace Guppy.Core.Serialization.Common.Factories
 {
-    [Service<IDefaultInstanceFactory>(ServiceLifetime.Singleton, true)]
+    [Service<IDefaultInstanceFactory>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public interface IDefaultInstanceFactory
     {
         bool CanConstructType(Type type);

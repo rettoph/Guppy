@@ -28,6 +28,28 @@ namespace Guppy.Core.Messaging.Common.Implementations
             }
         }
 
+        public bool TrySubscribe(IBaseSubscriber subscriber)
+        {
+            if (subscriber is IBaseSubscriber<TBase> casted == false)
+            {
+                return false;
+            }
+
+            this.Subscribe(casted);
+            return true;
+        }
+
+        public bool TryUnsubscribe(IBaseSubscriber subscriber)
+        {
+            if (subscriber is IBaseSubscriber<TBase> casted == false)
+            {
+                return false;
+            }
+
+            this.Unsubscribe(casted);
+            return true;
+        }
+
         public void Unsubscribe(IBaseSubscriber<TBase> subscriber)
         {
             if (_subscribers.Remove(subscriber))
