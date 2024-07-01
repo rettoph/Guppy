@@ -1,15 +1,13 @@
-﻿using Autofac;
-
-namespace Guppy.Game.Common.Services
+﻿namespace Guppy.Game.Common.Services
 {
     public interface ISceneService
     {
         event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
 
-        IScene Create(Type guppyType, Action<ContainerBuilder>? builder = null);
+        IScene Create(Type guppyType, Action<ISceneConfiguration>? configuration = null);
 
-        T Create<T>(Action<ContainerBuilder>? builder = null)
+        T Create<T>(Action<ISceneConfiguration>? configuration = null)
             where T : class, IScene;
 
         /// <summary>

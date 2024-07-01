@@ -18,7 +18,6 @@ namespace Guppy.Core.Resources.Common
     public struct Setting<T> : ISetting, IRef<T>
         where T : notnull
     {
-        private readonly int _currentIndex;
         private readonly UnmanagedReference<ISetting, string> _name;
         private readonly UnmanagedReference<ISetting, string> _description;
         private readonly UnmanagedReference<ISetting, T> _default;

@@ -1,0 +1,72 @@
+﻿using Guppy.Core.Common;
+using Guppy.Game.Common;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+
+namespace Guppy.Game
+{
+    internal sealed class SceneConfiguration : ISceneConfiguration
+    {
+        private Dictionary<string, object> _values;
+
+        public SceneConfiguration()
+        {
+            _values = new Dictionary<string, object>();
+        }
+
+        public ISceneConfiguration Set<T>(string key, T value)
+            where T : notnull
+        {
+            ref T valueRef = ref this.Get<T>(key, out _);
+            valueRef = value;
+
+            return this;
+        }
+
+        public ref T Get<T>(string key, out bool exists)
+        {
+            ref object? valueObject = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, key, out exists);
+            if (exists == false)
+            {
+                Ref<T> value = new Ref<T>(default!);
+                valueObject = value;
+                return ref value.Value;
+            }
+
+            if (valueObject is Ref<T> cached)
+            {
+                return ref cached.Value;
+            }
+
+            throw new InvalidOperationException($"{nameof(SceneConfiguration)}::{nameof(Get)} - Invalid type for key '{key}', expected {typeof(T).Name} but got {valueObject.GetType().GenericTypeArguments[0].Name}");
+        }
+
+        public T? Get<T>(string key)
+        {
+            if (this.TryGet<T>(key, out T? value))
+            {
+                return value;
+            }
+
+            return default;
+        }
+
+        public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
+        {
+            if (_values.TryGetValue(key, out object? valueRefObject) == false)
+            {
+                value = default;
+                return false;
+            }
+
+            if (valueRefObject is not Ref<T> valueRef)
+            {
+                value = default;
+                return false;
+            }
+
+            value = valueRef.Value;
+            return true;
+        }
+    }
+}

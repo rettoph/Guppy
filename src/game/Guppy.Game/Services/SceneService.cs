@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 
 namespace Guppy.Game.Services
@@ -23,35 +24,41 @@ namespace Guppy.Game.Services
             _scopes = new Dictionary<IScene, ILifetimeScope>();
         }
 
-        public T Create<T>(Action<ContainerBuilder>? guppyBuilder)
+        public T Create<T>(Action<ISceneConfiguration>? configurator)
             where T : class, IScene
         {
-            var scope = _scope.BeginLifetimeScope(builder =>
+            ISceneConfiguration configuration = new SceneConfiguration();
+            configurator?.Invoke(configuration);
+
+            ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
             {
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
-                guppyBuilder?.Invoke(builder);
+                configuration.GetContainerBuilder()?.Invoke(builder);
             });
-            var scene = scope.Resolve<T>();
+            T scene = scope.Resolve<T>();
 
             this.Configure(scene, scope);
 
             return scene;
         }
 
-        public IScene Create(Type guppyType, Action<ContainerBuilder>? guppyBuilder)
+        public IScene Create(Type sceneType, Action<ISceneConfiguration>? configurator)
         {
-            ThrowIf.Type.IsNotAssignableFrom<IScene>(guppyType);
+            ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
-            var scope = _scope.BeginLifetimeScope(builder =>
+            ISceneConfiguration configuration = new SceneConfiguration();
+            configurator?.Invoke(configuration);
+
+            ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
             {
-                builder.RegisterType(guppyType).AsSelf().AsImplementedInterfaces().SingleInstance();
-                guppyBuilder?.Invoke(builder);
+                builder.RegisterType(sceneType).AsSelf().AsImplementedInterfaces().SingleInstance();
+                configuration.GetContainerBuilder()?.Invoke(builder);
             });
-            var guppy = scope.Resolve(guppyType) as IScene ?? throw new NotImplementedException();
+            IScene scene = scope.Resolve(sceneType) as IScene ?? throw new NotImplementedException();
 
-            this.Configure(guppy, scope);
+            this.Configure(scene, scope);
 
-            return guppy;
+            return scene;
         }
 
         public void Destroy(IScene guppy)

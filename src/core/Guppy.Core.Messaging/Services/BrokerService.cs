@@ -11,6 +11,7 @@ namespace Guppy.Core.Messaging.Services
         private readonly ILifetimeScope _scope;
         private readonly HashSet<IBaseBroker> _brokers;
         private readonly HashSet<IBaseSubscriber> _subscribers;
+        private readonly Dictionary<Type, IBaseSubscriber[]> _scopeSubscriptions;
 
         public BrokerService(ILifetimeScope scope, IFiltered<IBaseBroker> brokers)
         {
@@ -18,6 +19,7 @@ namespace Guppy.Core.Messaging.Services
 
             _brokers = new HashSet<IBaseBroker>(brokers);
             _subscribers = new HashSet<IBaseSubscriber>();
+            _scopeSubscriptions = new Dictionary<Type, IBaseSubscriber[]>();
         }
 
         public void Dispose()
@@ -87,12 +89,16 @@ namespace Guppy.Core.Messaging.Services
             IFiltered<TSubscribers> instances = _scope.Resolve<IFiltered<TSubscribers>>();
             IEnumerable<IBaseSubscriber> subscribers = instances.OfType<IBaseSubscriber>();
             this.AddSubscribers(subscribers);
+            _scopeSubscriptions.Add(typeof(TSubscribers), subscribers.ToArray());
         }
 
         public void RemoveSubscribers<TSubscribers>() where TSubscribers : class
         {
-            IFiltered<TSubscribers> instances = _scope.Resolve<IFiltered<TSubscribers>>();
-            IEnumerable<IBaseSubscriber> subscribers = instances.OfType<IBaseSubscriber>();
+            if (_scopeSubscriptions.TryGetValue(typeof(TSubscribers), out IBaseSubscriber[]? subscribers) == false)
+            {
+                return;
+            }
+
             this.RemoveSubscribers(subscribers);
         }
 
