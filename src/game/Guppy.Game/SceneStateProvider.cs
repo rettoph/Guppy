@@ -8,7 +8,7 @@ using Guppy.Game.Common;
 namespace Guppy.Engine.Providers
 {
     [AutoLoad]
-    internal sealed class SceneStateProvider : IStateProvider
+    internal sealed class SceneStateProvider : BaseStateProvider
     {
         private readonly IScene? _scene;
 
@@ -20,9 +20,17 @@ namespace Guppy.Engine.Providers
             }
         }
 
-        public IEnumerable<IState> GetStates()
+        public override bool TryGet(IStateKey key, out object? state)
         {
-            yield return new State<Type>(StateKey<Type>.Create<IScene>(), _scene?.GetType(), (x, y) => x?.IsAssignableTo(y) ?? false);
+            switch (key)
+            {
+                case IStateKey<Type> { Value: nameof(IScene) }:
+                    state = _scene?.GetType();
+                    return true;
+                default:
+                    state = null;
+                    return false;
+            }
         }
     }
 }

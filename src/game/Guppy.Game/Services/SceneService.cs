@@ -32,6 +32,7 @@ namespace Guppy.Game.Services
 
             ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
             {
+                builder.RegisterInstance<ISceneConfiguration>(configuration);
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
                 configuration.GetContainerBuilder()?.Invoke(builder);
             });

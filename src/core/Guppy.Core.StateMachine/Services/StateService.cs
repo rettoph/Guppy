@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.StateMachine.Common;
+using Guppy.Core.StateMachine.Common.Enums;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Core.StateMachine.Common.Services;
 
@@ -6,41 +7,50 @@ namespace Guppy.StateMachine.Services
 {
     internal class StateService : IStateService
     {
-        private readonly Dictionary<IStateKey, IState> _states;
+        private readonly IStateProvider[] _providers;
 
-        public StateService(IEnumerable<IStateProvider> states)
+        public StateService(IEnumerable<IStateProvider> providers)
         {
-            _states = states.SelectMany(x => x.GetStates()).ToDictionary(x => x.Key, x => x);
+            _providers = providers.ToArray();
         }
 
-        public IEnumerable<IState> GetAll()
+        public T? GetByKey<T>(IStateKey<T> key)
         {
-            return _states.Values;
-        }
-
-        public IState<T> GetByKey<T>(IStateKey<T> key)
-        {
-            return _states[key] as IState<T> ?? throw new Exception();
-        }
-
-        public bool Matches<T>(IStateKey<T> key, T? value)
-        {
-            if (_states.TryGetValue(key, out IState? state) == false)
+            foreach (IStateProvider provider in _providers)
             {
-                return false;
+                if (provider.TryGet(key, out object? state) == false)
+                {
+                    continue;
+                }
+
+                if (state is not T casted)
+                {
+                    continue;
+                }
+
+                return casted;
             }
 
-            if (state is not IState<T> casted)
-            {
-                return false;
-            }
-
-            return casted.Equals(value);
+            return default;
         }
 
-        public bool Matches<T>(IState<T> state)
+        public bool Matches<T>(IStateKey<T> key, T value)
         {
-            return this.Matches(state.Key, state.Value);
+            foreach (IStateProvider provider in _providers)
+            {
+                TryMatchResultEnum result = provider.TryMatch(key, value);
+                switch (result)
+                {
+                    case TryMatchResultEnum.NotApplicable:
+                        continue;
+                    case TryMatchResultEnum.NotMatched:
+                        return false;
+                    case TryMatchResultEnum.Matched:
+                        return true;
+                }
+            }
+
+            return false;
         }
     }
 }

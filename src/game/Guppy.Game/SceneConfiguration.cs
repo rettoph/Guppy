@@ -41,14 +41,19 @@ namespace Guppy.Game
             throw new InvalidOperationException($"{nameof(SceneConfiguration)}::{nameof(Get)} - Invalid type for key '{key}', expected {typeof(T).Name} but got {valueObject.GetType().GenericTypeArguments[0].Name}");
         }
 
-        public T? Get<T>(string key)
+        public T GetOrDefault<T>(string key, T defaultValue)
         {
             if (this.TryGet<T>(key, out T? value))
             {
                 return value;
             }
 
-            return default;
+            return defaultValue;
+        }
+
+        public T? Get<T>(string key)
+        {
+            return this.GetOrDefault<T>(key, default!);
         }
 
         public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
@@ -67,6 +72,11 @@ namespace Guppy.Game
 
             value = valueRef.Value;
             return true;
+        }
+
+        public IEnumerable<KeyValuePair<string, object>> GetAllValues()
+        {
+            return _values;
         }
     }
 }

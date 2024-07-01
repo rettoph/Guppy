@@ -8,7 +8,7 @@ using Guppy.Core.StateMachine.Common.Providers;
 namespace Guppy.Core.Network.Common
 {
     [AutoLoad]
-    internal class PeerGuppyStateProvider : IStateProvider
+    internal class PeerGuppyStateProvider : BaseStateProvider
     {
         private readonly IEnumerable<INetScope> _scopes;
 
@@ -22,15 +22,17 @@ namespace Guppy.Core.Network.Common
             _scopes ??= Enumerable.Empty<INetScope>();
         }
 
-        public IEnumerable<IState> GetStates()
+        public override bool TryGet(IStateKey key, out object? state)
         {
-            PeerType flags = PeerType.None;
-            if (_scopes.Any() == true)
+            switch (key)
             {
-                flags = _scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
+                case IStateKey<PeerType> { Value: StateKey.DefaultValue }:
+                    state = _scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
+                    return true;
+                default:
+                    state = null;
+                    return false;
             }
-
-            yield return new State<PeerType>(() => flags, (x, y) => x.HasFlag(y));
         }
     }
 }

@@ -20,12 +20,14 @@ namespace Guppy.Core.StateMachine.Common.Filters
     {
         public readonly Type ServiceType;
 
-        public readonly IState<TState> RequiredState;
+        public readonly IStateKey<TState> Key;
+        public readonly TState Value;
 
-        public StateServiceFilter(Type serviceType, IState<TState> requiredState)
+        public StateServiceFilter(Type serviceType, IStateKey<TState> key, TState value)
         {
             this.ServiceType = serviceType;
-            this.RequiredState = requiredState;
+            this.Key = key;
+            this.Value = value;
         }
 
         public override bool AppliesTo(Type type)
@@ -42,15 +44,8 @@ namespace Guppy.Core.StateMachine.Common.Filters
 
         public override bool Invoke(IStateService states)
         {
-            bool result = states.Matches(this.RequiredState);
+            bool result = states.Matches(this.Key, this.Value);
             return result;
-        }
-    }
-
-    public class StateServiceFilter<TService, TState> : StateServiceFilter<TState>
-    {
-        public StateServiceFilter(IState<TState> requiredState) : base(typeof(TService), requiredState)
-        {
         }
     }
 }

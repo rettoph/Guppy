@@ -4,9 +4,12 @@
     {
         string Value { get; }
         Type Type { get; }
+
+        public bool Equals(Type type, string value);
+        public bool Equals(IStateKey key);
     }
 
-    public interface IStateKey<in T> : IStateKey
+    public interface IStateKey<T> : IStateKey
     {
 
     }

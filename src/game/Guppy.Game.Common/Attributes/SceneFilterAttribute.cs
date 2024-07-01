@@ -9,26 +9,24 @@ namespace Guppy.Game.Common.Attributes
 {
     public class SceneFilterAttribute : GuppyConfigurationAttribute
     {
-        public readonly Type GameSceneType;
+        public readonly Type SceneType;
 
-        public SceneFilterAttribute(Type gameSceneType)
+        public SceneFilterAttribute(Type sceneType)
         {
-            ThrowIf.Type.IsNotAssignableFrom<IScene>(gameSceneType);
+            ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
-            this.GameSceneType = gameSceneType;
+            this.SceneType = sceneType;
         }
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new StateServiceFilter<Type>(classType, new State<Type>(
-                key: StateKey<Type>.Create<IScene>(),
-                value: this.GameSceneType)));
+            builder.RegisterFilter(new StateServiceFilter<Type?>(classType, StateKey<Type?>.Create<IScene>(), this.SceneType));
         }
     }
 
-    public class SceneFilterAttribute<TGameScene> : SceneFilterAttribute
-        where TGameScene : IScene
+    public class SceneFilterAttribute<TScene> : SceneFilterAttribute
+        where TScene : IScene
     {
-        public SceneFilterAttribute() : base(typeof(TGameScene)) { }
+        public SceneFilterAttribute() : base(typeof(TScene)) { }
     }
 }
