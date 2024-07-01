@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
@@ -8,31 +9,33 @@ namespace Guppy.Game.Services
 {
     internal sealed class SceneService : ISceneService
     {
-        private ILifetimeScope _scope;
-        private List<IScene> _scenes;
-        private Dictionary<IScene, ILifetimeScope> _scopes;
+        private readonly ILifetimeScope _scope;
+        private readonly List<IScene> _scenes;
+        private readonly Dictionary<IScene, ILifetimeScope> _scopes;
+        private readonly IConfigurationService _configurations;
 
         public ILifetimeScope Scope => _scope;
 
         public event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         public event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
 
-        public SceneService(ILifetimeScope scope)
+        public SceneService(ILifetimeScope scope, IConfigurationService configurations)
         {
             _scenes = new List<IScene>();
             _scope = scope;
             _scopes = new Dictionary<IScene, ILifetimeScope>();
+            _configurations = configurations;
         }
 
         public T Create<T>(Action<ISceneConfiguration>? configurator)
             where T : class, IScene
         {
-            ISceneConfiguration configuration = new SceneConfiguration();
+            ISceneConfiguration configuration = this.GetConfiguration(typeof(T));
             configurator?.Invoke(configuration);
 
             ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
             {
-                builder.RegisterInstance<ISceneConfiguration>(configuration);
+                builder.RegisterInstance(configuration);
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
                 configuration.GetContainerBuilder()?.Invoke(builder);
             });
@@ -47,11 +50,13 @@ namespace Guppy.Game.Services
         {
             ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
-            ISceneConfiguration configuration = new SceneConfiguration();
+            ISceneConfiguration configuration = this.GetConfiguration(sceneType);
             configurator?.Invoke(configuration);
+
 
             ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
             {
+                builder.RegisterInstance(configuration);
                 builder.RegisterType(sceneType).AsSelf().AsImplementedInterfaces().SingleInstance();
                 configuration.GetContainerBuilder()?.Invoke(builder);
             });
@@ -95,6 +100,18 @@ namespace Guppy.Game.Services
         public IEnumerable<IScene> GetAll()
         {
             return _scenes;
+        }
+
+        private ISceneConfiguration GetConfiguration(Type sceneType)
+        {
+            ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
+
+            Type sceneConfigurationType = typeof(SceneConfiguration<>).MakeGenericType(sceneType);
+            SceneConfiguration configuration = (SceneConfiguration)(Activator.CreateInstance(sceneConfigurationType) ?? throw new NotImplementedException());
+
+            _configurations.Configure(configuration);
+
+            return configuration;
         }
     }
 }

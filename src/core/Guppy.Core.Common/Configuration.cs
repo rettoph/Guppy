@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Common
 {
@@ -7,19 +8,20 @@ namespace Guppy.Core.Common
     {
         public T Value { get; }
 
-        public Configuration(ILifetimeScope scope, IEnumerable<ConfigurationBuilder<T>> builders)
+        public Configuration(IConfigurationService configurations)
         {
-            this.Value = new();
-
-            foreach (var builder in builders)
-            {
-                builder.Build(scope, this.Value);
-            }
+            this.Value = new T();
+            configurations.Configure(this.Value);
         }
     }
 
-    internal class ConfigurationBuilder<T>
-        where T : new()
+    internal abstract class ConfigurationBuilder
+    {
+        public abstract bool CanBuild(Type type);
+        public abstract void Build(ILifetimeScope scope, object instance);
+    }
+
+    internal class ConfigurationBuilder<T> : ConfigurationBuilder
     {
         private Action<ILifetimeScope, T> _builder;
 
@@ -28,9 +30,19 @@ namespace Guppy.Core.Common
             _builder = builder;
         }
 
-        public void Build(ILifetimeScope scope, T instance)
+        public override bool CanBuild(Type type)
         {
-            _builder(scope, instance);
+            return type.IsAssignableTo<T>();
+        }
+
+        public override void Build(ILifetimeScope scope, object instance)
+        {
+            if (instance is not T casted)
+            {
+                return;
+            }
+
+            _builder(scope, casted);
         }
     }
 }

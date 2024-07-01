@@ -32,6 +32,7 @@ namespace Guppy.Core.Resources.Common
 
         Guid IResource.Id => this.Id;
         string IResource.Name => this.Name;
+        object? IRef.Value => this.Value;
 
         private unsafe Resource(string name)
         {

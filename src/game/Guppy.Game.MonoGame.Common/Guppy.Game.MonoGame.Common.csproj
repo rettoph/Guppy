@@ -11,8 +11,4 @@
     <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Attributes\" />
-  </ItemGroup>
 </Project>

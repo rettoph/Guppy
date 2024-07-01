@@ -1,5 +1,4 @@
-﻿using Guppy.Game.Common;
-using Guppy.Game.MonoGame.Common.Constants;
+﻿using Guppy.Game.MonoGame.Common.Constants;
 
 namespace Guppy.Game.MonoGame.Common.Extensions
 {

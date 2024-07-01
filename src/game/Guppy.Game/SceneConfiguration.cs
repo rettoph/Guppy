@@ -1,15 +1,18 @@
-﻿using Guppy.Core.Common;
+﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Game.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Game
 {
-    internal sealed class SceneConfiguration : ISceneConfiguration
+    internal abstract class SceneConfiguration : ISceneConfiguration
     {
+        public abstract Type Type { get; }
+
         private Dictionary<string, object> _values;
 
-        public SceneConfiguration()
+        internal SceneConfiguration()
         {
             _values = new Dictionary<string, object>();
         }
@@ -64,19 +67,31 @@ namespace Guppy.Game
                 return false;
             }
 
-            if (valueRefObject is not Ref<T> valueRef)
+            if (valueRefObject is IRef<T> valueRef)
             {
-                value = default;
-                return false;
+                value = valueRef.Value;
+                return true;
             }
 
-            value = valueRef.Value;
-            return true;
+            if (valueRefObject is IRef objectRefObject && objectRefObject.Type.IsAssignableTo<T>())
+            {
+                value = (T?)objectRefObject.Value;
+                return value is not null;
+            }
+
+            value = default;
+            return false;
         }
 
         public IEnumerable<KeyValuePair<string, object>> GetAllValues()
         {
             return _values;
         }
+    }
+
+    internal sealed class SceneConfiguration<TScene> : SceneConfiguration, ISceneConfiguration<TScene>
+        where TScene : class, IScene
+    {
+        public override Type Type => typeof(TScene);
     }
 }

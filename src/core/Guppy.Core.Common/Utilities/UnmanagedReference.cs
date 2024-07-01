@@ -16,6 +16,9 @@
             set => _values[_index] = value;
         }
 
+        public Type Type => typeof(TValue);
+        object? IRef.Value => this.Value;
+
         public UnmanagedReference()
         {
             _index = Pop();
@@ -93,6 +96,9 @@
             get => _values[_index];
             set => _values[_index] = value;
         }
+
+        public Type Type => typeof(TValue);
+        object? IRef.Value => this.Value;
 
         public UnmanagedReference()
         {

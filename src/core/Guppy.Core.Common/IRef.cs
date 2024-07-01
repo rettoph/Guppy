@@ -1,7 +1,13 @@
 ﻿namespace Guppy.Core.Common
 {
-    public interface IRef<T>
+    public interface IRef
     {
-        T Value { get; set; }
+        Type Type { get; }
+        object? Value { get; }
+    }
+
+    public interface IRef<T> : IRef
+    {
+        new T Value { get; set; }
     }
 }

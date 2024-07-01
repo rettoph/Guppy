@@ -43,6 +43,7 @@ namespace Guppy.Core.Extensions
 
             builder.RegisterType<FilteredService>().As<IFilteredService>().InstancePerLifetimeScope();
             builder.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
+            builder.RegisterType<ConfigurationService>().As<IConfigurationService>().InstancePerLifetimeScope();
 
             builder.RegisterCoreSerializationServices()
                 .RegisterCoreFileServices()

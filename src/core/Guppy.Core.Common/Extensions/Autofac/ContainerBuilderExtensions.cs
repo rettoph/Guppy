@@ -11,9 +11,8 @@ namespace Guppy.Core.Common.Extensions.Autofac
         }
 
         public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)
-            where T : new()
         {
-            services.RegisterInstance(new ConfigurationBuilder<T>(builder));
+            services.RegisterInstance(new ConfigurationBuilder<T>(builder)).As<ConfigurationBuilder>();
         }
 
         private static readonly ConditionalWeakTable<ContainerBuilder, HashSet<string>> _tags = new();

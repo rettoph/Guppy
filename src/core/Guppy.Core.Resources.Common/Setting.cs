@@ -64,6 +64,7 @@ namespace Guppy.Core.Resources.Common
                 this.Value = casted;
             }
         }
+        object? IRef.Value => this.Value;
 
         private unsafe Setting(string name, string description, T defaultValue)
         {

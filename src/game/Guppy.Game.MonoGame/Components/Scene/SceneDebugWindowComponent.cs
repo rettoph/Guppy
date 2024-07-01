@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
@@ -12,6 +13,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
+    [SceneHasDebugWindowFilter]
     internal sealed class SceneDebugWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly Resource<ImStyle> _debugWindowStyle;
