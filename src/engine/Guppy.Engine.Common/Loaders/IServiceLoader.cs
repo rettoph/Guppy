@@ -6,6 +6,6 @@ namespace Guppy.Engine.Common.Loaders
     [ServiceLoaderAutoLoad]
     public interface IServiceLoader
     {
-        void ConfigureServices(ContainerBuilder services);
+        void ConfigureServices(ContainerBuilder builder);
     }
 }
