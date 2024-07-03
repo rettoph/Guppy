@@ -3,11 +3,13 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
+using Guppy.Game.MonoGame.Common.Attributes;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
+    [SceneHasTerminalWindowFilter]
     internal class TerminalWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
