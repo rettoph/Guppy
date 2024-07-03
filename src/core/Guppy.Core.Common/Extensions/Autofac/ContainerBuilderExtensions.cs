@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Builder;
 using System.Runtime.CompilerServices;
 
 namespace Guppy.Core.Common.Extensions.Autofac
@@ -53,6 +54,12 @@ namespace Guppy.Core.Common.Extensions.Autofac
             builder.AddTag(tag);
 
             return builder;
+        }
+
+        public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterInstanceFrom<T>(this ContainerBuilder builder, ILifetimeScope scope)
+            where T : class
+        {
+            return builder.RegisterInstance<T>(scope.Resolve<T>());
         }
     }
 }
