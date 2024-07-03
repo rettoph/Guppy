@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libraries\Autofac\src\Autofac\Autofac.csproj" />
     <ProjectReference Include="..\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj" />
     <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
   </ItemGroup>
