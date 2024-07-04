@@ -21,15 +21,30 @@ namespace Guppy.Game.Common
             return (ulong)hash << 32 | (ulong)count++;
         }
 
+        private bool _enabled;
+        private bool _visible;
         private ILifetimeScope _scope;
         private IGuppyDrawable[] _drawComponents;
         private IGuppyUpdateable[] _updateComponents;
+
+        public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
+        public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
 
         public ISceneComponent[] Components { get; private set; }
 
         public virtual string Name => this.GetType().Name;
 
         public ulong Id { get; }
+        public bool Enabled
+        {
+            get => _enabled;
+            set => this.OnEnabledChanged!.InvokeIf(_enabled != value, this, ref _enabled, value);
+        }
+        public bool Visible
+        {
+            get => _visible;
+            set => this.OnVisibleChanged!.InvokeIf(_visible != value, this, ref _visible, value);
+        }
 
         public Scene()
         {
@@ -41,6 +56,9 @@ namespace Guppy.Game.Common
 
 
             this.Id = CalculateId(this);
+
+            this.Visible = true;
+            this.Enabled = true;
         }
 
         void IScene.Initialize(ILifetimeScope scope)
