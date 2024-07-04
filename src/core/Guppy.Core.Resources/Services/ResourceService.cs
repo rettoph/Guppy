@@ -12,6 +12,8 @@ namespace Guppy.Core.Resources.Services
         private ISettingService _settings;
         private IResourcePackService _packs;
 
+        private SettingValue<string> _localization;
+
         public ResourceService(ISettingService settings, IResourcePackService packs)
         {
             _settings = settings;
@@ -49,6 +51,8 @@ namespace Guppy.Core.Resources.Services
             _settings.Initialize();
             _packs.Initialize();
 
+            _localization = _settings.GetValue(Settings.Localization);
+
             foreach (IResource resource in StaticCollection<IResource>.GetAll())
             {
                 resource.Refresh();
@@ -75,11 +79,11 @@ namespace Guppy.Core.Resources.Services
                 }
             }
 
-            if (Settings.Localization.Value != Settings.Localization.DefaultValue)
+            if (_localization != Settings.Localization.DefaultValue)
             {
                 foreach (ResourcePack pack in _packs.GetAll())
                 {
-                    if (pack.TryGet(resource, Settings.Localization.Value, out T? packValue))
+                    if (pack.TryGet(resource, _localization, out T? packValue))
                     {
                         valuesToCache.Add(packValue);
                     }

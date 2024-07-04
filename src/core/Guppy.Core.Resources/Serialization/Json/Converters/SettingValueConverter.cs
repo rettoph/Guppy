@@ -1,21 +1,20 @@
 ﻿using Guppy.Core.Resources.Common;
 using Guppy.Core.Serialization.Common.Services;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Resources.Serialization.Json.Converters
 {
-    internal class SettingConverter : JsonConverter<ISetting>
+    internal class SettingValueConverter : JsonConverter<ISettingValue>
     {
         private IPolymorphicJsonSerializerService<object> _serializer;
 
-        public SettingConverter(IPolymorphicJsonSerializerService<object> serializer)
+        public SettingValueConverter(IPolymorphicJsonSerializerService<object> serializer)
         {
             _serializer = serializer;
         }
 
-        public override ISetting? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ISettingValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string name = string.Empty;
             string description = string.Empty;
@@ -29,19 +28,19 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
             {
                 switch (propertyName)
                 {
-                    case nameof(ISetting.Name):
+                    case nameof(Setting<object>.Name):
                         name = reader.ReadString();
                         break;
 
-                    case nameof(ISetting.Description):
+                    case nameof(Setting<object>.Description):
                         description = reader.ReadString();
                         break;
 
-                    case nameof(ISetting.Type):
+                    case nameof(Setting<object>.Type):
                         type = reader.ReadString();
                         break;
 
-                    case nameof(ISetting.Value):
+                    case nameof(SettingValue<object>.Value):
                         value = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
                         reader.Read();
                         break;
@@ -50,25 +49,24 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            Type implementationType = _serializer.GetImplementationType(type);
-            object valueInstance = _serializer.Deserialize(type, ref value, options, out _);
-            var getterInfo = typeof(Setting<>).MakeGenericType(implementationType).GetMethod(nameof(Setting<object>.Get), BindingFlags.Static | BindingFlags.Public) ?? throw new NotImplementedException();
-            ISetting setting = getterInfo.Invoke(null, [name, description, valueInstance]) as ISetting ?? throw new NotImplementedException();
+            Type settingValueType = _serializer.GetImplementationType(type);
+            object settingValueValue = _serializer.Deserialize(type, ref value, options, out _);
+            ISetting setting = Setting.Get(name, description, settingValueType, settingValueValue);
 
-            setting.Value = valueInstance;
+            ISettingValue settingValue = SettingValue.Create(setting, settingValueValue);
 
-            return setting;
+            return settingValue;
         }
 
-        public override void Write(Utf8JsonWriter writer, ISetting value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ISettingValue value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
-            writer.WriteString(nameof(ISetting.Name), value.Name);
-            writer.WriteString(nameof(ISetting.Description), value.Description);
-            writer.WriteString(nameof(ISetting.Type), value.Type.Name);
+            writer.WriteString(nameof(Setting<object>.Name), value.Setting.Name);
+            writer.WriteString(nameof(Setting<object>.Description), value.Setting.Description);
+            writer.WriteString(nameof(Setting<object>.Type), value.Type.Name);
 
-            writer.WritePropertyName(nameof(ISetting.Value));
+            writer.WritePropertyName(nameof(SettingValue<object>.Value));
             JsonSerializer.Serialize(writer, value.Value, options);
 
             writer.WriteEndObject();

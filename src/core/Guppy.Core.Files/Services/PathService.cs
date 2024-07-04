@@ -29,17 +29,17 @@ namespace Guppy.Core.Files.Services
 
         public DirectoryLocation GetSourceLocation(DirectoryType type, string path)
         {
-            return GetSourceLocation(new DirectoryLocation(type, path));
+            return this.GetSourceLocation(new DirectoryLocation(type, path));
         }
 
         public FileLocation GetSourceLocation(FileLocation file)
         {
-            return new FileLocation(GetSourceLocation(file.Directory), file.Name);
+            return new FileLocation(this.GetSourceLocation(file.Directory), file.Name);
         }
 
         public FileLocation GetSourceLocation(DirectoryType type, string path, string name)
         {
-            return GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
+            return this.GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
         }
     }
 }

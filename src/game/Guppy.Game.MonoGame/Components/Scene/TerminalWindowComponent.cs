@@ -1,5 +1,7 @@
 ﻿using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
@@ -25,7 +27,9 @@ namespace Guppy.Game.MonoGame.Components.Scene
 
         private IScene _scene;
 
-        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene)
+        private SettingValue<bool> _isTerminalWindowEnabled;
+
+        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settings)
         {
             _commands = commands;
             _imgui = imgui;
@@ -35,11 +39,12 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _inputContainerHeight = 0;
             _scrolledToBottom = true;
             _scene = scene;
+            _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
         }
 
         public void DrawImGui(GameTime gameTime)
         {
-            if (Common.Settings.IsTerminalWindowEnabled == false)
+            if (_isTerminalWindowEnabled == false)
             {
                 return;
             }

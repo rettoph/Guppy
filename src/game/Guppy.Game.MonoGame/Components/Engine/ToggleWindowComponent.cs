@@ -1,4 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Game.Input.Common;
 using Guppy.Game.MonoGame.Components.Scene;
@@ -7,16 +9,25 @@ using Guppy.Game.MonoGame.Messages;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<TerminalWindowComponent>>
+    internal sealed class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<TerminalWindowComponent>>
     {
+        private SettingValue<bool> _isDebugWindowEnabled;
+        private SettingValue<bool> _isTerminalWindowEnabled;
+
+        public ToggleWindowComponent(ISettingService settings)
+        {
+            _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
+            _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
+        }
+
         public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)
         {
-            Common.Settings.IsDebugWindowEnabled.Value = !Common.Settings.IsDebugWindowEnabled.Value;
+            _isDebugWindowEnabled.Value = !_isDebugWindowEnabled.Value;
         }
 
         public void Process(in Guid messageId, Toggle<TerminalWindowComponent> message)
         {
-            Common.Settings.IsTerminalWindowEnabled.Value = !Common.Settings.IsTerminalWindowEnabled.Value;
+            _isTerminalWindowEnabled.Value = !_isTerminalWindowEnabled.Value;
         }
     }
 }

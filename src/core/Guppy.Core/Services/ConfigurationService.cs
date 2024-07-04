@@ -9,10 +9,10 @@ namespace Guppy.Core.Services
         private readonly ILifetimeScope _scope;
         private readonly ConfigurationBuilder[] _builders;
 
-        public ConfigurationService(ILifetimeScope scope)
+        public ConfigurationService(ILifetimeScope scope, IEnumerable<ConfigurationBuilder> builders)
         {
             _scope = scope;
-            _builders = _scope.Resolve<IEnumerable<ConfigurationBuilder>>().ToArray();
+            _builders = builders.ToArray();
         }
 
         public void Configure<T>(T instance)

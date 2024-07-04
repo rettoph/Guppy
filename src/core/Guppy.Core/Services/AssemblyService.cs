@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Contexts;
+﻿using Autofac;
+using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Services;
 using System.Collections;
 using System.Reflection;
@@ -13,21 +14,21 @@ namespace Guppy.Core.Services
 
         public event OnEventDelegate<IAssemblyService, Assembly>? OnAssemblyLoaded;
 
-        public AssemblyService(IGuppyContext context)
+        public AssemblyService(IEnumerable<Assembly> libraries)
         {
             _assemblies = new HashSet<Assembly>();
 
-            this.Libraries = context.Libraries.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
+            this.Libraries = libraries.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
         }
 
         public void Load(Assembly assembly, bool forced = false)
         {
-            Load(assembly, forced, 0);
+            this.Load(assembly, forced, 0);
         }
 
         private void Load(Assembly assembly, bool forced, int depth)
         {
-            if (!ShouldLoad(assembly, forced))
+            if (!this.ShouldLoad(assembly, forced))
             {
                 return;
             }
@@ -43,7 +44,7 @@ namespace Guppy.Core.Services
                 Load(reference, false, depth + 1);
             }
 
-            OnAssemblyLoaded?.Invoke(this, assembly);
+            this.OnAssemblyLoaded?.Invoke(this, assembly);
         }
 
         private bool ShouldLoad(Assembly assembly, bool forced)
@@ -58,17 +59,17 @@ namespace Guppy.Core.Services
                 return false;
             }
 
-            if (Libraries.Length == 0)
+            if (this.Libraries.Length == 0)
             {
                 return _assemblies.Add(assembly);
             }
 
-            if (Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(assembly.GetName(), r)))
+            if (this.Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(assembly.GetName(), r)))
             { // Check if the recieved assembly is an existing library...
                 return _assemblies.Add(assembly);
             }
 
-            if (assembly.GetReferencedAssemblies().Any(nan => Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(nan, r))))
+            if (assembly.GetReferencedAssemblies().Any(nan => this.Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(nan, r))))
             { // Ensure the assembly references a required library...
                 return _assemblies.Add(assembly);
             }
@@ -103,7 +104,7 @@ namespace Guppy.Core.Services
         public IAttributeService<object, TAttribute> GetAttributes<TAttribute>(bool inherit)
             where TAttribute : Attribute
         {
-            return GetAttributes<object, TAttribute>(inherit);
+            return this.GetAttributes<object, TAttribute>(inherit);
         }
 
         public IAttributeService<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
@@ -119,7 +120,13 @@ namespace Guppy.Core.Services
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
+        }
+
+        internal static AssemblyService Factory(IComponentContext context)
+        {
+            IGuppyContext guppy = context.Resolve<IGuppyContext>();
+            return new AssemblyService(guppy.Libraries);
         }
     }
 }

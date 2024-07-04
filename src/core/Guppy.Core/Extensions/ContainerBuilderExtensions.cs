@@ -24,7 +24,7 @@ namespace Guppy.Core.Extensions
 
             if (assemblies is null)
             {
-                builder.RegisterType<AssemblyService>().As<IAssemblyService>().SingleInstance();
+                builder.Register<AssemblyService>(AssemblyService.Factory).As<IAssemblyService>().SingleInstance();
             }
             else
             {

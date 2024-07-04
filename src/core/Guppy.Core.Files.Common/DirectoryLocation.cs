@@ -13,19 +13,19 @@ namespace Guppy.Core.Files.Common
             this.Path = path;
         }
 
-        public static DirectoryLocation AppData(string path)
+        public static DirectoryLocation AppData(string? path = null)
         {
-            return new DirectoryLocation(DirectoryType.AppData, path);
+            return new DirectoryLocation(DirectoryType.AppData, path ?? string.Empty);
         }
 
-        public static DirectoryLocation CurrentDirectory(string path)
+        public static DirectoryLocation CurrentDirectory(string? path = null)
         {
-            return new DirectoryLocation(DirectoryType.CurrentDirectory, path);
+            return new DirectoryLocation(DirectoryType.CurrentDirectory, path ?? string.Empty);
         }
 
-        public static DirectoryLocation Source(string path)
+        public static DirectoryLocation Source(string? path = null)
         {
-            return new DirectoryLocation(DirectoryType.Source, path);
+            return new DirectoryLocation(DirectoryType.Source, path ?? string.Empty);
         }
     }
 }
