@@ -9,6 +9,7 @@ using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common;
 using Guppy.Game.MonoGame.Common.Constants;
 using Guppy.Game.MonoGame.Common.Primitives;
+using Guppy.Game.MonoGame.Components.Engine;
 using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.Messages;
 using Microsoft.Xna.Framework;
@@ -59,7 +60,7 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
                 {
-                    (ButtonState.Pressed, Toggle<TerminalWindowComponent>.Instance)
+                    (ButtonState.Pressed, Toggle<EngineTerminalWindowComponent>.Instance)
                 });
             });
         }

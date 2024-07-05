@@ -20,8 +20,8 @@ namespace Guppy.Engine.Loaders
 
             services.Register<ILogger>(p =>
             {
-                var configuration = p.Resolve<IConfiguration<LoggerConfiguration>>().Value;
-                var logger = configuration.CreateLogger();
+                LoggerConfiguration configuration = p.Resolve<IConfiguration<LoggerConfiguration>>().Value;
+                ILogger logger = configuration.CreateLogger();
 
                 return logger;
             }).InstancePerLifetimeScope();

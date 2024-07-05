@@ -12,7 +12,5 @@
 
         IEnumerable<ResourceValue<T>> GetValues<T>()
             where T : notnull;
-
-        void Refresh();
     }
 }

@@ -45,16 +45,6 @@
             this.Dispose(true);
         }
 
-        public TValue GetValueOrFallback(TValue fallback)
-        {
-            if (this.Value is not null)
-            {
-                return this.Value;
-            }
-
-            return fallback;
-        }
-
         public void SetValue(TValue value)
         {
             this.Value = value;
@@ -134,16 +124,6 @@
         public void Dispose()
         {
             this.Dispose(true);
-        }
-
-        public TValue GetValueOrFallback(TValue fallback)
-        {
-            if (this.Value is not null)
-            {
-                return this.Value;
-            }
-
-            return fallback;
         }
 
         public void SetValue(TValue value)

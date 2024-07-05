@@ -30,16 +30,6 @@
             set => this.Value = value;
         }
 
-        public T GetValueOrFallback(T fallback)
-        {
-            if (this.Value is not null)
-            {
-                return this.Value;
-            }
-
-            return fallback;
-        }
-
         protected override object? GetValue()
         {
             return this.Value;

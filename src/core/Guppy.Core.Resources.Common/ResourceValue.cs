@@ -36,7 +36,10 @@ namespace Guppy.Core.Resources.Common
         object IResourceValue.Value => this.Value;
         object? IRef.Value => this.Value;
 
-        public ResourceValue(Resource<T> resource) : this(resource, Enumerable.Empty<T>())
+        public ResourceValue(Resource<T> resource) : this(resource, resource.DefaultValue)
+        {
+        }
+        public ResourceValue(Resource<T> resource, T? value) : this(resource, value is null ? Enumerable.Empty<T>() : value.Yield())
         {
         }
         public ResourceValue(Resource<T> resource, IEnumerable<T> values) : this()
@@ -44,16 +47,6 @@ namespace Guppy.Core.Resources.Common
             _value = new UnmanagedReference<ResourceValue<T>, List<T>>(values.ToList());
 
             this.Resource = resource;
-        }
-
-        public T GetValueOrFallback(T fallback)
-        {
-            if (_value.Value.Count > 0)
-            {
-                return _value.Value[0];
-            }
-
-            return fallback;
         }
 
         public IEnumerable<T> All()

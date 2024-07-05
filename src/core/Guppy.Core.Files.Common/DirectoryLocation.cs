@@ -27,5 +27,10 @@ namespace Guppy.Core.Files.Common
         {
             return new DirectoryLocation(DirectoryType.Source, path ?? string.Empty);
         }
+
+        public override string ToString()
+        {
+            return $"({this.Type}):{this.Path}";
+        }
     }
 }

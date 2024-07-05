@@ -2,18 +2,16 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Styling;
-using Guppy.Game.MonoGame.Common.Attributes;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Scene
+namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [SceneHasTerminalWindowFilter]
-    internal class TerminalWindowComponent : SceneComponent, IImGuiComponent
+    internal class EngineTerminalWindowComponent : EngineComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
         private readonly IImGui _imgui;
@@ -26,12 +24,10 @@ namespace Guppy.Game.MonoGame.Components.Scene
         private int _lines;
         private bool _scrolledToBottom;
 
-        private IScene _scene;
-
         private SettingValue<bool> _isTerminalWindowEnabled;
         private ResourceValue<ImStyle> _debugWindowStyle;
 
-        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService)
+        public EngineTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService)
         {
             _commands = commands;
             _imgui = imgui;
@@ -40,7 +36,6 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _input = string.Empty;
             _inputContainerHeight = 0;
             _scrolledToBottom = true;
-            _scene = scene;
             _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
         }
@@ -64,7 +59,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
                 _imgui.SetNextWindowClass(windowClass);
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
                 _imgui.SetNextWindowSize(new Vector2(800, 600), ImGuiCond.FirstUseEver);
-                if (_imgui.Begin($"Terminal:{_scene.Name} - {_scene.Id}", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
+                if (_imgui.Begin($"Engine Terminal", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
                 {
                     if (_imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
                     {

@@ -53,7 +53,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
                 _imgui.SetNextWindowClass(windowClass);
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
-                if (_imgui.Begin($"Game Debug Window"))
+                if (_imgui.Begin($"Engine Debug Window"))
                 {
                     foreach (IDebugComponent component in _components)
                     {

@@ -63,12 +63,16 @@ namespace Guppy.Core.Resources.Services
             _settings.Value.Initialize();
             _localization = _settings.Value.GetValue(Settings.Localization);
 
+            _logger.Debug("{ClassName}::{MethodName} - Preparing to import resource packs", nameof(ResourcePackService), nameof(Initialize));
+
             foreach (ResourcePackConfiguration packConfiguration in _configuration.Value.Packs)
             {
                 this.Load(packConfiguration);
             }
 
             _initialized = true;
+
+            _logger.Debug("{ClassName}::{MethodName} - Done. Imported ({Count}) resource packs", nameof(ResourcePackService), nameof(Initialize), _packs.Count);
         }
 
         public IEnumerable<ResourcePack> GetAll()
@@ -123,11 +127,12 @@ namespace Guppy.Core.Resources.Services
 
         private void Load(ResourcePackConfiguration configuration)
         {
-            IFile<ResourcePackEntryConfiguration> entry = _files.Get<ResourcePackEntryConfiguration>(new FileLocation(configuration.EntryDirectory, "pack.json"));
+            FileLocation entryLocation = new FileLocation(configuration.EntryDirectory, "pack.json");
+            IFile<ResourcePackEntryConfiguration> entry = _files.Get<ResourcePackEntryConfiguration>(entryLocation);
             DirectoryLocation directory = entry.Source.Directory;
 
             ResourcePack pack = this.GetOrCreatePack(entry);
-            _logger.Information("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId}", nameof(ResourcePackService), nameof(Load), pack.Name, pack.Id);
+            _logger.Debug("{ClassName}::{MethodName} - Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", nameof(ResourcePackService), nameof(Load), pack.Name, pack.Id);
 
             foreach ((string localization, string[] resourceFileNames) in entry.Value.Import)
             {
@@ -136,13 +141,16 @@ namespace Guppy.Core.Resources.Services
                     this.ImportResourceFile(resourceFileName, pack, directory, localization);
                 }
             }
+
+            _logger.Debug("{ClassName}::{MethodName} - Done. Loaded ({Count}) resources", nameof(ResourcePackService), nameof(Load), pack.GetAllDefinedResources().Count());
         }
 
         private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
         {
-            _logger.Information("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackService), nameof(ImportResourceFile), resourceFileName, localization);
+            FileLocation resourceFileLocation = new FileLocation(directory, resourceFileName);
+            _logger.Verbose("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackService), nameof(ImportResourceFile), resourceFileLocation, localization);
 
-            IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(new FileLocation(directory, resourceFileName));
+            IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(resourceFileLocation);
             foreach (ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
             {
                 this.ResolveResourceTypeValues(resourceTypeValues, pack, localization);

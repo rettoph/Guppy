@@ -17,17 +17,20 @@ namespace Guppy.Core.Resources.Common
         where T : notnull
     {
         private readonly UnmanagedReference<IResource, string> _name;
+        private readonly UnmanagedReference<Setting<T>, T?> _default;
 
         public readonly Guid Id;
         public readonly string Name => _name.Value;
         public Type Type => typeof(T);
+        public T? DefaultValue => _default.Value;
 
         Guid IResource.Id => this.Id;
         string IResource.Name => this.Name;
 
-        private unsafe Resource(string name)
+        private unsafe Resource(string name, T? defaultValue)
         {
             _name = new UnmanagedReference<IResource, string>(name);
+            _default = new UnmanagedReference<Setting<T>, T?>(defaultValue);
 
             this.Id = name.xxHash128();
         }
@@ -74,7 +77,7 @@ namespace Guppy.Core.Resources.Common
         }
 
         private static readonly Dictionary<string, Resource<T>> _cache = new Dictionary<string, Resource<T>>();
-        public static Resource<T> Get(string name)
+        public static Resource<T> Get(string name, T? defaultValue = default)
         {
             ref Resource<T> resource = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, name, out bool exists);
             if (exists)
@@ -82,7 +85,7 @@ namespace Guppy.Core.Resources.Common
                 return resource;
             }
 
-            resource = new Resource<T>(name);
+            resource = new Resource<T>(name, defaultValue);
             StaticCollection<IResource>.Add(resource);
 
             return resource;

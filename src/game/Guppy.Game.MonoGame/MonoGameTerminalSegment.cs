@@ -10,7 +10,7 @@ namespace Guppy.Game.MonoGame
 
         public MonoGameTerminalSegment(IRef<Color> color, string text)
         {
-            this.Color = color.GetValueOrFallback(Microsoft.Xna.Framework.Color.White).ToVector4();
+            this.Color = color.Value.ToVector4();
             this.Text = text;
         }
     }

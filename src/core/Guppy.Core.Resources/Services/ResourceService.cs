@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Serilog;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
@@ -8,13 +9,15 @@ namespace Guppy.Core.Resources.Services
     internal class ResourceService : IHostedService, IResourceService, IDisposable
     {
         private bool _initialized;
-        private Lazy<IResourcePackService> _packs;
+        private readonly Lazy<IResourcePackService> _packs;
+        private readonly Lazy<ILogger> _logger;
 
         private Dictionary<Guid, IResourceValue> _values;
 
-        public ResourceService(Lazy<ISettingService> settings, Lazy<IResourcePackService> packs)
+        public ResourceService(Lazy<ISettingService> settings, Lazy<IResourcePackService> packs, Lazy<ILogger> logger)
         {
             _packs = packs;
+            _logger = logger;
             _values = new Dictionary<Guid, IResourceValue>();
         }
 
@@ -49,23 +52,20 @@ namespace Guppy.Core.Resources.Services
 
             _packs.Value.Initialize();
 
-            _initialized = true;
-
-            this.Refresh();
-        }
-
-        public void Refresh()
-        {
-            if (_initialized == false)
-            {
-                return;
-            }
+            _logger.Value.Debug("{ClassName}::{MethodName} - Preparing to build resource value dictionary", nameof(ResourceService), nameof(Initialize));
 
             foreach (IResource resource in _packs.Value.GetDefinedResources())
             {
                 this.CacheGetOrAddValues(resource).Refresh(_packs.Value);
             }
 
+            _logger.Value.Debug("{ClassName}::{MethodName} - Done. Found ({Count}) resources", nameof(ResourceService), nameof(Initialize), _values.Count);
+            foreach (IResourceValue value in _values.Values)
+            {
+                _logger.Value.Verbose("{ClassName}::{MethodName} - Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", nameof(ResourceService), nameof(Initialize), value.Resource.Name, value.Resource.Type.GetFormattedName(), value.Value, value.All().Count());
+            }
+
+            _initialized = true;
         }
 
         public ResourceValue<T> GetValue<T>(Resource<T> resource)

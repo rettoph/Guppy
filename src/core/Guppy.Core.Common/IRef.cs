@@ -9,7 +9,5 @@
     public interface IRef<T> : IRef
     {
         new T Value { get; set; }
-
-        T GetValueOrFallback(T fallback);
     }
 }

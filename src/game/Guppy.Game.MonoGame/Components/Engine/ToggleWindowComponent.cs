@@ -9,7 +9,7 @@ using Guppy.Game.MonoGame.Messages;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal sealed class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<TerminalWindowComponent>>
+    internal sealed class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowComponent>>
     {
         private SettingValue<bool> _isDebugWindowEnabled;
         private SettingValue<bool> _isTerminalWindowEnabled;
@@ -25,7 +25,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
             _isDebugWindowEnabled.Value = !_isDebugWindowEnabled.Value;
         }
 
-        public void Process(in Guid messageId, Toggle<TerminalWindowComponent> message)
+        public void Process(in Guid messageId, Toggle<EngineTerminalWindowComponent> message)
         {
             _isTerminalWindowEnabled.Value = !_isTerminalWindowEnabled.Value;
         }

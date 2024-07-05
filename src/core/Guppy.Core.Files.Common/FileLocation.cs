@@ -26,5 +26,10 @@
         {
             return new FileLocation(DirectoryLocation.Source(path), name);
         }
+
+        public override string ToString()
+        {
+            return $"{this.Directory}/{this.Name}";
+        }
     }
 }

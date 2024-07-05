@@ -5,6 +5,8 @@ using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Services;
+using Serilog;
+using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
@@ -14,12 +16,14 @@ namespace Guppy.Core.Resources.Services
         private readonly IFileService _files;
         private IFile<IEnumerable<ISettingValue>> _file;
         private Dictionary<Guid, ISettingValue> _values;
+        private ILogger _logger;
 
         public ISettingValue this[ISetting setting] => _values[setting.Id];
 
-        public SettingService(IFileService files)
+        public SettingService(IFileService files, ILogger logger)
         {
             _files = files;
+            _logger = logger;
             _file = null!;
             _values = null!;
         }
@@ -43,15 +47,24 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
-            _file = _files.Get<IEnumerable<ISettingValue>>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.Settings), true);
+            FileLocation location = new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
+            _logger.Debug("{ClassName}::{MethodName} - Preparing to import setting values from '{SettingFileLocation}'", nameof(SettingService), nameof(Initialize), location);
+
+            _file = _files.Get<IEnumerable<ISettingValue>>(location, true);
             _values = _file.Value.ToDictionary(x => x.Setting.Id, x => x);
 
             _initialized = true;
+
+            _logger.Debug("{ClassName}::{MethodName} - Done. Imported ({Count}) values", nameof(SettingService), nameof(Initialize), _values.Count);
+            foreach (ISettingValue value in _values.Values)
+            {
+                _logger.Verbose("{ClassName}::{MethodName} - Setting = {Setting}, Type = {Type}, Value = {Value}", nameof(SettingService), nameof(Initialize), value.Setting.Name, value.Type.GetFormattedName(), value.Value);
+            }
         }
 
         public void Save()
         {
-            _file.Value = StaticCollection<ISetting>.GetAll().Select(x => SettingValue.Create(x));
+            _file.Value = _values.Values;
             _files.Save(_file);
         }
 
@@ -64,7 +77,16 @@ namespace Guppy.Core.Resources.Services
 
         public SettingValue<T> GetValue<T>(Setting<T> setting) where T : notnull
         {
-            return (SettingValue<T>)_values[setting.Id];
+            ref ISettingValue? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, setting.Id, out bool exists);
+            if (exists == true)
+            {
+                return (SettingValue<T>)cache!;
+            }
+
+            SettingValue<T> value = new SettingValue<T>(setting);
+            cache = value;
+
+            return value;
         }
 
         public ISettingValue GetValue(ISetting setting)
