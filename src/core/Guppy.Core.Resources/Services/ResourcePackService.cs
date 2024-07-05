@@ -19,11 +19,15 @@ namespace Guppy.Core.Resources.Services
         private IFile<ResourcePacksConfiguration> _configuration;
         private readonly IResourceTypeService _resourceTypes;
         private readonly ILogger _logger;
+        private Lazy<ISettingService> _settings;
+
+        private SettingValue<string> _localization;
 
         public ResourcePackService(
             IFileService files,
             IFiltered<ResourcePackConfiguration> packs,
             IResourceTypeService resourceTypes,
+            Lazy<ISettingService> settings,
             ILogger logger)
         {
             _files = files;
@@ -31,6 +35,7 @@ namespace Guppy.Core.Resources.Services
             _resourceTypes = resourceTypes;
             _logger = logger;
             _packs = new Dictionary<Guid, ResourcePack>();
+            _settings = settings;
 
             _configuration.Value = _configuration.Value.AddRange(packs);
             _files.Save(_configuration);
@@ -55,6 +60,9 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
+            _settings.Value.Initialize();
+            _localization = _settings.Value.GetValue(Settings.Localization);
+
             foreach (ResourcePackConfiguration packConfiguration in _configuration.Value.Packs)
             {
                 this.Load(packConfiguration);
@@ -71,6 +79,34 @@ namespace Guppy.Core.Resources.Services
         public ResourcePack GetById(Guid id)
         {
             return _packs[id];
+        }
+
+        public IEnumerable<IResource> GetDefinedResources()
+        {
+            return this.GetAll().SelectMany(x => x.GetAllDefinedResources()).Distinct();
+        }
+
+        public IEnumerable<T> GetDefinedValues<T>(Resource<T> resource)
+            where T : notnull
+        {
+            foreach (ResourcePack pack in this.GetAll())
+            {
+                if (pack.TryGetDefinedValue(resource, Settings.Localization.DefaultValue, out T? packValue))
+                {
+                    yield return packValue;
+                }
+            }
+
+            if (_localization != Settings.Localization.DefaultValue)
+            {
+                foreach (ResourcePack pack in this.GetAll())
+                {
+                    if (pack.TryGetDefinedValue(resource, _localization, out T? packValue))
+                    {
+                        yield return packValue;
+                    }
+                }
+            }
         }
 
         private ResourcePack GetOrCreatePack(IFile<ResourcePackEntryConfiguration> entry)

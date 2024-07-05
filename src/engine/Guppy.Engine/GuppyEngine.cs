@@ -129,7 +129,7 @@ namespace Guppy.Engine
                 // Run any custom builder actions
                 builder?.Invoke(engineBuilder);
 
-                var container = engineBuilder.Build();
+                IContainer container = engineBuilder.Build();
                 StaticInstance<IContainer>.Initialize(container, true);
 
                 return container;

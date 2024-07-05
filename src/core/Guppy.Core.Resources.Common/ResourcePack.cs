@@ -42,7 +42,7 @@ namespace Guppy.Core.Resources.Common
             this.Add(resource, Localization.es_US, resolver);
         }
 
-        public bool TryGet<T>(Resource<T> resource, string localization, [MaybeNullWhen(false)] out T value)
+        public bool TryGetDefinedValue<T>(Resource<T> resource, string localization, [MaybeNullWhen(false)] out T value)
             where T : notnull
         {
             if (!_resolvers.TryGetValue(resource, out var resolvers))
@@ -62,10 +62,15 @@ namespace Guppy.Core.Resources.Common
             return false;
         }
 
-        public IEnumerable<Resource<T>> GetAll<T>()
+        public IEnumerable<Resource<T>> GetAllDefinedResources<T>()
             where T : notnull
         {
             return _resolvers.Keys.OfType<Resource<T>>();
+        }
+
+        public IEnumerable<IResource> GetAllDefinedResources()
+        {
+            return _resolvers.Keys;
         }
     }
 }

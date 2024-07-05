@@ -17,20 +17,20 @@ namespace Guppy.Game.MonoGame.Components.Scene
     [SceneHasDebugWindowFilter]
     internal sealed class SceneDebugWindowComponent : SceneComponent, IImGuiComponent
     {
-        private readonly Resource<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
         private IDebugComponent[] _components;
         private IScene _scene;
         private ImGuiWindowClassPtr _class;
+        private ResourceValue<ImStyle> _debugWindowStyle;
         private SettingValue<bool> _isDebugWindowEnabled;
 
-        public SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settings)
+        public SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService)
         {
             _scene = scene;
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
-            _debugWindowStyle = Common.Resources.ImGuiStyles.DebugWindow;
-            _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
+            _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+            _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
         }
 
         protected override void Initialize()

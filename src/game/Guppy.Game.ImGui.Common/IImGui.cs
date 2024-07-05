@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Core.Resources.Common;
+using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
 
@@ -14,6 +14,7 @@ namespace Guppy.Game.ImGui.Common
         Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
 
         IDisposable Apply(Resource<ImStyle> style);
+        IDisposable Apply(ResourceValue<ImStyle> style);
         IDisposable Apply(ImStyle style);
         IDisposable Apply(string key);
 

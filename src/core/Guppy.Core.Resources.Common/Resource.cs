@@ -1,7 +1,5 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common.Utilities;
 using Guppy.Core.Resources.Common.Extensions.System;
-using Guppy.Core.Resources.Common.Services;
 using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Common
@@ -12,32 +10,24 @@ namespace Guppy.Core.Resources.Common
         string Name { get; }
         Type Type { get; }
 
-        internal void Refresh();
+        internal IResourceValue CreateValue();
     }
 
-    public struct Resource<T> : IResource, IEquatable<Resource<T>>, IRef<T>
+    public struct Resource<T> : IResource, IEquatable<Resource<T>>
         where T : notnull
     {
         private readonly UnmanagedReference<IResource, string> _name;
-        private readonly UnmanagedReference<IResource, T> _value;
 
         public readonly Guid Id;
         public readonly string Name => _name.Value;
         public Type Type => typeof(T);
-        public T Value
-        {
-            get => _value.Value;
-            set => _value.SetValue(value);
-        }
 
         Guid IResource.Id => this.Id;
         string IResource.Name => this.Name;
-        object? IRef.Value => this.Value;
 
         private unsafe Resource(string name)
         {
             _name = new UnmanagedReference<IResource, string>(name);
-            _value = new UnmanagedReference<IResource, T>();
 
             this.Id = name.xxHash128();
         }
@@ -49,17 +39,6 @@ namespace Guppy.Core.Resources.Common
             _cache.Remove(this.Name);
 
             _name.Dispose();
-            _value.Dispose();
-        }
-
-        void IResource.Refresh()
-        {
-            this.Refresh();
-        }
-
-        internal void Refresh()
-        {
-            this.Value = Singleton<IResourceService>.Instance.GetLatestValue(this);
         }
 
         public override bool Equals(object? obj)
@@ -94,11 +73,6 @@ namespace Guppy.Core.Resources.Common
             return !(left == right);
         }
 
-        public static implicit operator T(Resource<T> resource)
-        {
-            return resource.Value;
-        }
-
         private static readonly Dictionary<string, Resource<T>> _cache = new Dictionary<string, Resource<T>>();
         public static Resource<T> Get(string name)
         {
@@ -117,6 +91,11 @@ namespace Guppy.Core.Resources.Common
         public static IEnumerable<Resource<T>> GetAll()
         {
             return _cache.Values;
+        }
+
+        IResourceValue IResource.CreateValue()
+        {
+            return new ResourceValue<T>(this);
         }
     }
 }

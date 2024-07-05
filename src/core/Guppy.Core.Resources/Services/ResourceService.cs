@@ -1,32 +1,31 @@
 ﻿using Guppy.Core.Common.Services;
-using Guppy.Core.Common.Utilities;
 using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Services;
+using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
     internal class ResourceService : IHostedService, IResourceService, IDisposable
     {
         private bool _initialized;
-        private ISettingService _settings;
-        private IResourcePackService _packs;
+        private Lazy<IResourcePackService> _packs;
 
-        private SettingValue<string> _localization;
+        private Dictionary<Guid, IResourceValue> _values;
 
-        public ResourceService(ISettingService settings, IResourcePackService packs)
+        public ResourceService(Lazy<ISettingService> settings, Lazy<IResourcePackService> packs)
         {
-            _settings = settings;
             _packs = packs;
-
-            StaticCollection<IResource>.OnAdded += this.HandleResourceAdded;
+            _values = new Dictionary<Guid, IResourceValue>();
         }
 
         public void Dispose()
         {
-            StaticCollection<IResource>.OnAdded -= this.HandleResourceAdded;
+            foreach (IResourceValue resourceValue in _values.Values)
+            {
+                resourceValue.Dispose();
+            }
 
-            StaticCollection<IResource>.Clear(true);
+            _values.Clear();
         }
 
         public Task StartAsync(CancellationToken cancellation)
@@ -48,59 +47,56 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
-            _settings.Initialize();
-            _packs.Initialize();
-
-            _localization = _settings.GetValue(Settings.Localization);
-
-            foreach (IResource resource in StaticCollection<IResource>.GetAll())
-            {
-                resource.Refresh();
-            }
+            _packs.Value.Initialize();
 
             _initialized = true;
+
+            this.Refresh();
         }
 
-        public void RefreshAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public T GetLatestValue<T>(Resource<T> resource)
-            where T : notnull
-        {
-            // TODO: Load default somehow
-            List<T> valuesToCache = new List<T>();
-            foreach (ResourcePack pack in _packs.GetAll())
-            {
-                if (pack.TryGet(resource, Settings.Localization.DefaultValue, out T? packValue))
-                {
-                    valuesToCache.Add(packValue);
-                }
-            }
-
-            if (_localization != Settings.Localization.DefaultValue)
-            {
-                foreach (ResourcePack pack in _packs.GetAll())
-                {
-                    if (pack.TryGet(resource, _localization, out T? packValue))
-                    {
-                        valuesToCache.Add(packValue);
-                    }
-                }
-            }
-
-            return valuesToCache.LastOrDefault() ?? throw new NotImplementedException();
-        }
-
-        private void HandleResourceAdded(object? sender, IResource resource)
+        public void Refresh()
         {
             if (_initialized == false)
             {
                 return;
             }
 
-            resource.Refresh();
+            foreach (IResource resource in _packs.Value.GetDefinedResources())
+            {
+                this.CacheGetOrAddValues(resource).Refresh(_packs.Value);
+            }
+
+        }
+
+        public ResourceValue<T> GetValue<T>(Resource<T> resource)
+            where T : notnull
+        {
+            return (ResourceValue<T>)this.CacheGetOrAddValues(resource);
+        }
+
+        public IEnumerable<ResourceValue<T>> GetValues<T>() where T : notnull
+        {
+            return Resource<T>.GetAll().Select(x => this.GetValue(x));
+        }
+
+        private IResourceValue CacheGetOrAddValues(IResource resource)
+        {
+
+            ref IResourceValue? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, resource.Id, out bool exists);
+            if (exists == true)
+            {
+                return cache!;
+            }
+
+            cache = resource.CreateValue();
+
+            if (_initialized == false)
+            {
+                return cache;
+            }
+
+            cache.Refresh(_packs.Value);
+            return cache;
         }
 
         public IEnumerable<Resource<T>> GetAll<T>()

@@ -1,4 +1,6 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using Serilog.Events;
@@ -7,30 +9,49 @@ namespace Guppy.Game
 {
     public class TerminalTheme : ITerminalTheme
     {
+        private readonly ResourceValue<Color> _verbose;
+        private readonly ResourceValue<Color> _debug;
+        private readonly ResourceValue<Color> _information;
+        private readonly ResourceValue<Color> _warning;
+        private readonly ResourceValue<Color> _error;
+        private readonly ResourceValue<Color> _fatal;
+        private readonly ResourceValue<Color> _default;
+
+        public TerminalTheme(IResourceService resourceService)
+        {
+            _verbose = resourceService.GetValue(Resources.Colors.TerminalVerbose);
+            _debug = resourceService.GetValue(Resources.Colors.TerminalDebug);
+            _information = resourceService.GetValue(Resources.Colors.TerminalInformation);
+            _warning = resourceService.GetValue(Resources.Colors.TerminalWarning);
+            _error = resourceService.GetValue(Resources.Colors.TerminalError);
+            _fatal = resourceService.GetValue(Resources.Colors.TerminalFatal);
+            _default = resourceService.GetValue(Resources.Colors.TerminalDefault);
+        }
+
         public IRef<Color> Get(LogEventLevel level)
         {
             switch (level)
             {
                 case LogEventLevel.Verbose:
-                    return Resources.Colors.TerminalVerbose;
+                    return _verbose;
 
                 case LogEventLevel.Debug:
-                    return Resources.Colors.TerminalDebug;
+                    return _debug;
 
                 case LogEventLevel.Information:
-                    return Resources.Colors.TerminalInformation;
+                    return _information;
 
                 case LogEventLevel.Warning:
-                    return Resources.Colors.TerminalWarning;
+                    return _warning;
 
                 case LogEventLevel.Error:
-                    return Resources.Colors.TerminalError;
+                    return _error;
 
                 case LogEventLevel.Fatal:
-                    return Resources.Colors.TerminalFatal;
+                    return _fatal;
 
                 default:
-                    return Resources.Colors.TerminalDefault;
+                    return _default;
             }
         }
     }

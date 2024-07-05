@@ -7,9 +7,12 @@
         IEnumerable<Resource<T>> GetAll<T>()
             where T : notnull;
 
-        T GetLatestValue<T>(Resource<T> resource)
+        ResourceValue<T> GetValue<T>(Resource<T> resource)
             where T : notnull;
 
-        void RefreshAll();
+        IEnumerable<ResourceValue<T>> GetValues<T>()
+            where T : notnull;
+
+        void Refresh();
     }
 }

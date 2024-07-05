@@ -5,6 +5,7 @@ using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Attributes;
 using Microsoft.Xna.Framework;
 
@@ -28,8 +29,9 @@ namespace Guppy.Game.MonoGame.Components.Scene
         private IScene _scene;
 
         private SettingValue<bool> _isTerminalWindowEnabled;
+        private ResourceValue<ImStyle> _debugWindowStyle;
 
-        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settings)
+        public TerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService)
         {
             _commands = commands;
             _imgui = imgui;
@@ -39,7 +41,8 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _inputContainerHeight = 0;
             _scrolledToBottom = true;
             _scene = scene;
-            _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
+            _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
+            _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
         }
 
         public void DrawImGui(GameTime gameTime)
@@ -49,7 +52,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
                 return;
             }
 
-            using (_imgui.Apply(Common.Resources.ImGuiStyles.DebugWindow))
+            using (_imgui.Apply(_debugWindowStyle))
             {
                 _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                 _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);

@@ -19,7 +19,7 @@ namespace Guppy.Game.ImGui.MonoGame
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
         private bool _dirtyFonts;
-        private readonly Dictionary<(Resource<TrueTypeFont>, int), Ref<ImFontPtr>> _fonts;
+        private readonly Dictionary<(ResourceValue<TrueTypeFont>, int), Ref<ImFontPtr>> _fonts;
 
         private readonly IResourceService _resources;
         private DateTime _begin;
@@ -63,7 +63,7 @@ namespace Guppy.Game.ImGui.MonoGame
 
             this.IO.ConfigFlags |= ImGuiNET.ImGuiConfigFlags.DockingEnable;
 
-            _fonts = new Dictionary<(Resource<TrueTypeFont>, int), Ref<ImFontPtr>>();
+            _fonts = new Dictionary<(ResourceValue<TrueTypeFont>, int), Ref<ImFontPtr>>();
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
             _inputs = new Queue<char>();
@@ -250,7 +250,7 @@ namespace Guppy.Game.ImGui.MonoGame
             _mouseButtonEvents.Enqueue(message);
         }
 
-        public Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size)
+        public Ref<ImFontPtr> GetFont(ResourceValue<TrueTypeFont> ttf, int size)
         {
             ref Ref<ImFontPtr>? font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
 

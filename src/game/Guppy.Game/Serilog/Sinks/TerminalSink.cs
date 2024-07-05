@@ -1,4 +1,6 @@
-﻿using Guppy.Game.Common;
+﻿using Guppy.Core.Common;
+using Guppy.Game.Common;
+using Microsoft.Xna.Framework;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
@@ -19,8 +21,8 @@ namespace Guppy.Game.Serilog.Sinks
 
         public void Emit(LogEvent logEvent)
         {
-            var color = _terminal.Color;
-            _terminal.Color = _terminal.Theme.Get(logEvent.Level).Value;
+            IRef<Color> color = _terminal.Color;
+            _terminal.Color = _terminal.Theme.Get(logEvent.Level);
             _formatter.Format(logEvent, _terminal.Out);
             _terminal.Color = color;
         }

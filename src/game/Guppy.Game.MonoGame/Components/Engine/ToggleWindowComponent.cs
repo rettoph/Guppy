@@ -17,7 +17,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         public ToggleWindowComponent(ISettingService settings)
         {
             _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
-            _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
+            _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
         }
 
         public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)

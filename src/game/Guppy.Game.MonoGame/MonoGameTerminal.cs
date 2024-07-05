@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Collections;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using Serilog.Events;
@@ -13,7 +14,7 @@ namespace Guppy.Game.MonoGame
         public const int BufferSize = 1 << 11;
 
         public readonly Buffer<MonoGameTerminalLine> Lines = new Buffer<MonoGameTerminalLine>(BufferSize);
-        public MonoGameTerminalLineBuilder _currentLine = new MonoGameTerminalLineBuilder();
+        public MonoGameTerminalLineBuilder _currentLine;
         public int FirstLineNumber { get; private set; } = 1;
 
         public IStandardStreamWriter Out => _out;
@@ -24,7 +25,7 @@ namespace Guppy.Game.MonoGame
 
         TextWriter ITerminal.Out => _out;
 
-        public Color Color
+        public IRef<Color> Color
         {
             get => _currentLine.Color;
             set => _currentLine.SetColor(value);
@@ -35,6 +36,7 @@ namespace Guppy.Game.MonoGame
         public MonoGameTerminal(ITerminalTheme theme)
         {
             _out = new MonoGameTerminalTextWriter(this);
+            _currentLine = new MonoGameTerminalLineBuilder(theme.Get(default!));
             this.Error = new MonoGameTerminalErrorTextWriter(this, theme.Get(LogEventLevel.Error));
             this.Theme = theme;
 
@@ -42,7 +44,7 @@ namespace Guppy.Game.MonoGame
             this.IsErrorRedirected = true;
             this.IsInputRedirected = true;
 
-            this.Color = theme.Get(default!).Value;
+            this.Color = theme.Get(default!);
         }
 
         public void WriteLine(string value)
@@ -51,7 +53,7 @@ namespace Guppy.Game.MonoGame
             this.AddLine(_currentLine.NewLine());
         }
 
-        public void WriteLine(string value, Color color)
+        public void WriteLine(string value, IRef<Color> color)
         {
             var oldColor = this.Color;
             _currentLine.SetColor(color);
@@ -65,7 +67,7 @@ namespace Guppy.Game.MonoGame
             _currentLine.Text.Append(value);
         }
 
-        public void Write(string value, Color color)
+        public void Write(string value, IRef<Color> color)
         {
             var oldColor = this.Color;
             _currentLine.SetColor(color);

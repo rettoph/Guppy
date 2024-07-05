@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Guppy.Core.Common;
+using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
@@ -7,19 +8,21 @@ namespace Guppy.Game.MonoGame
     internal class MonoGameTerminalLineBuilder
     {
         private int _lineNumber = 1;
+        private bool _appendLineNumber;
 
         private MonoGameTerminalLine _line;
 
-        public Color Color;
+        public IRef<Color> Color;
 
         public StringBuilder Text;
 
-        public MonoGameTerminalLineBuilder()
+        public MonoGameTerminalLineBuilder(IRef<Color> color)
         {
             _line = MonoGameTerminalLine.Factory.BuildInstance();
-            this.Text = new StringBuilder();
+            _appendLineNumber = true;
 
-            this.AppendLineNumber();
+            this.Text = new StringBuilder();
+            this.Color = color;
         }
 
         public bool TryAppend(char value, [MaybeNullWhen(true)] out MonoGameTerminalLine previousLine)
@@ -36,7 +39,7 @@ namespace Guppy.Game.MonoGame
             return true;
         }
 
-        public void SetColor(Color color)
+        public void SetColor(IRef<Color> color)
         {
             this.AddSegment();
             this.Color = color;
@@ -47,6 +50,12 @@ namespace Guppy.Game.MonoGame
             if (this.Text.Length == 0)
             {
                 return;
+            }
+
+            if (_appendLineNumber)
+            {
+                this.AppendLineNumber();
+                _appendLineNumber = false;
             }
 
             MonoGameTerminalSegment segment = new MonoGameTerminalSegment(this.Color, this.Text.ToString());
@@ -65,14 +74,14 @@ namespace Guppy.Game.MonoGame
             _line = MonoGameTerminalLine.Factory.BuildInstance();
             _line.Segments.Clear();
 
-            this.AppendLineNumber();
+            _appendLineNumber = true;
 
             return result;
         }
 
         private void AppendLineNumber()
         {
-            MonoGameTerminalSegment segment = new MonoGameTerminalSegment(Color.White, $"{_lineNumber++}: ");
+            MonoGameTerminalSegment segment = new MonoGameTerminalSegment(this.Color, $"{_lineNumber++}: ");
             _line.Segments.Add(segment);
         }
     }

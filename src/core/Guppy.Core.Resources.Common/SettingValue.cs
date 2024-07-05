@@ -62,6 +62,16 @@ namespace Guppy.Core.Resources.Common
             _value.Dispose();
         }
 
+        public T GetValueOrFallback(T fallback)
+        {
+            if (this.Value is not null)
+            {
+                return this.Value;
+            }
+
+            return fallback;
+        }
+
         public override bool Equals(object? obj)
         {
             return this.Equals((Setting<T>)obj!);

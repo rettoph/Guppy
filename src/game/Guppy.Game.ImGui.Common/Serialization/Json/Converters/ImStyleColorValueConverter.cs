@@ -1,5 +1,6 @@
-﻿using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
-using Guppy.Core.Resources.Common;
+﻿using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
+using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
 using Microsoft.Xna.Framework;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,6 +9,13 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 {
     internal class ImStyleColorValueConverter : JsonConverter<ImStyleColorValue>
     {
+        private readonly Lazy<IResourceService> _resourceService;
+
+        public ImStyleColorValueConverter(Lazy<IResourceService> resourceService)
+        {
+            _resourceService = resourceService;
+        }
+
         public override ImStyleColorValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string? key = null;
@@ -37,7 +45,7 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ImStyleColorValue(key, col, resource);
+            return new ImStyleColorValue(key, col, _resourceService.Value.GetValue(resource));
         }
 
         public override void Write(Utf8JsonWriter writer, ImStyleColorValue value, JsonSerializerOptions options)

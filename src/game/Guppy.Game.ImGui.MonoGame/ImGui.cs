@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Helpers;
 using Guppy.Game.ImGui.Common.Styling;
@@ -10,17 +11,24 @@ namespace Guppy.Game.ImGui.MonoGame
     {
         private readonly IImguiBatch _batch;
         private readonly Stack<ImStyle> _styleStack;
+        private readonly IResourceService _resourceService;
 
         private IDisposable _idPopper;
 
-        public ImGui(IImguiBatch batch)
+        public ImGui(IImguiBatch batch, IResourceService resourceService)
         {
             _batch = batch;
+            _resourceService = resourceService;
             _styleStack = new Stack<ImStyle>();
             _idPopper = new ImGuiPoppers.IdPopper(this);
         }
 
         public IDisposable Apply(Resource<ImStyle> style)
+        {
+            return this.Apply(_resourceService.GetValue(style));
+        }
+
+        public IDisposable Apply(ResourceValue<ImStyle> style)
         {
             return this.Apply(style.Value);
         }
@@ -69,7 +77,7 @@ namespace Guppy.Game.ImGui.MonoGame
                 throw new InvalidOperationException();
             }
 
-            return _batch.GetFont(ttf, size);
+            return _batch.GetFont(_resourceService.GetValue(ttf), size);
         }
     }
 }

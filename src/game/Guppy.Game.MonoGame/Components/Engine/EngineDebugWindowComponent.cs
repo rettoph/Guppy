@@ -16,19 +16,19 @@ namespace Guppy.Game.MonoGame.Components.Engine
     internal class EngineDebugWindowComponent : EngineComponent, IImGuiComponent
     {
         private readonly IGameEngine _engine;
-        private readonly Resource<ImStyle> _debugWindowStyle;
+        private readonly ResourceValue<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
         private IDebugComponent[] _components;
 
         private SettingValue<bool> _isDebugWindowEnabled;
 
-        public EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settings)
+        public EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService)
         {
             _components = Array.Empty<IDebugComponent>();
             _imgui = imgui;
             _engine = engine;
-            _debugWindowStyle = Common.Resources.ImGuiStyles.DebugWindow;
-            _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
+            _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+            _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
         }
 
         protected override void Initialize()
