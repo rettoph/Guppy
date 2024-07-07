@@ -25,18 +25,18 @@ namespace Guppy.Game.Components.Guppy
 
         public void Process(in Guid messageId, LogLevelCommand message)
         {
-            if (message.Value is null)
-            {
-                _terminal.Write($"Current Log Level: ");
-                _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
+            // if (message.Value is null)
+            // {
+            //     _terminal.Write($"Current Log Level: ");
+            //     _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
+            // 
+            //     return;
+            // }
 
-                return;
-            }
-
-            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value.Value;
+            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value;
 
             _terminal.Write($"Set Log Level: ");
-            _terminal.WriteLine(message.Value.Value.ToString(), _terminal.Theme.Get(message.Value.Value));
+            _terminal.WriteLine(message.Value.ToString(), _terminal.Theme.Get(message.Value));
         }
     }
 }

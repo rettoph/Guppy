@@ -6,9 +6,9 @@ using System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Extensions
 {
-    internal static class SystemCommandLineExtensions
+    public static class SystemCommandLineExtensions
     {
-        internal static SCL.Command GetSystemCommand(this Command command, IBroker<ICommand> broker, ITokenPropertySetter[] tokenSetters)
+        public static SCL.Command GetSystemCommand(this Command command, IBroker<ICommand> broker, ITokenPropertySetter[] tokenSetters)
         {
             SCL.Command scl = new SCL.Command(command.Name, command.Description);
 
@@ -78,7 +78,7 @@ namespace Guppy.Core.Commands.Common.Extensions
         private static void SetHandlerMethod<T>(Command command, IBroker<ICommand> broker, SCL.Command scl, ITokenPropertySetter[] tokenSetters)
             where T : ICommand, new()
         {
-            var binder = new Binder<T>(
+            Binder<T> binder = new Binder<T>(
                 command,
                 tokenSetters);
 

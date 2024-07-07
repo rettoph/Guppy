@@ -12,6 +12,6 @@ namespace Guppy.Game
         public static LoggingLevelSwitch LoggingLevelSwitch = new LoggingLevelSwitch(LogEventLevel.Verbose);
 
         [Argument]
-        public LogEventLevel? Value { get; set; }
+        public LogEventLevel Value { get; set; }
     }
 }

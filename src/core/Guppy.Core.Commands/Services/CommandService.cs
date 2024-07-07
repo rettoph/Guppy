@@ -7,7 +7,7 @@ using System.CommandLine;
 
 namespace Guppy.Core.Commands.Services
 {
-    internal sealed class CommandService : Broker<ICommand>, ICommandService
+    public sealed class CommandService : Broker<ICommand>, ICommandService
     {
         private readonly RootCommand _root;
         private Dictionary<Common.Command, SCL.Command> _commands;

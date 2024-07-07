@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Commands.Common.Extensions;
 using Guppy.Core.Common.Attributes;
 
 namespace Guppy.Core.Commands.Common.Attributes
@@ -19,15 +18,7 @@ namespace Guppy.Core.Commands.Common.Attributes
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            Command command = new Command(
-                type: classType,
-                parent: this.Parent,
-                name: this.Name ?? classType.Name.LowerCaseFirstLetter().TrimEnd(nameof(Command)),
-                description: this.Description,
-                options: FactoryAttribute<Option>.GetAll(classType),
-                arguments: FactoryAttribute<Argument>.GetAll(classType));
-
-            builder.RegisterInstance<Command>(command).SingleInstance();
+            builder.RegisterInstance<Command>(Command.Create(classType)).SingleInstance();
         }
     }
 
