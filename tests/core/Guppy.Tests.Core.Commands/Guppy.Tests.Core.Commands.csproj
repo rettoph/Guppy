@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\core\Guppy.Core.Commands\Guppy.Core.Commands.csproj" />
     <ProjectReference Include="..\..\Guppy.Tests.Common\Guppy.Tests.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Tests.Core.Commands.Common\Guppy.Tests.Core.Commands.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -57,6 +57,51 @@ namespace Guppy.Tests.Common
             return this;
         }
 
+        public MockBuilder<T> Verify(Expression<Action<T>> expression)
+        {
+            _instance.Verify(expression);
+
+            return this;
+        }
+
+        public MockBuilder<T> Verify(Expression<Action<T>> expression, string failMessage)
+        {
+            _instance.Verify(expression, failMessage);
+
+            return this;
+        }
+
+
+        public MockBuilder<T> Verify(Expression<Action<T>> expression, Times times, string failMessage)
+        {
+            _instance.Verify(expression, times, failMessage);
+
+            return this;
+        }
+
+
+        public MockBuilder<T> Verify<TResult>(Expression<Func<T, TResult>> expression)
+        {
+            _instance.Verify(expression);
+
+            return this;
+        }
+
+        public MockBuilder<T> Verify<TResult>(Expression<Func<T, TResult>> expression, string failMessage)
+        {
+            _instance.Verify(expression, failMessage);
+
+            return this;
+        }
+
+
+        public MockBuilder<T> Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string failMessage)
+        {
+            _instance.Verify(expression, times, failMessage);
+
+            return this;
+        }
+
         public Mock<T> Build()
         {
             return this._instance;

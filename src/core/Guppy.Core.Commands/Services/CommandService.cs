@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Commands.Common;
-using Guppy.Core.Commands.Common.Extensions;
+using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Common.Services;
-using Guppy.Core.Commands.Common.TokenPropertySetters;
+using Guppy.Core.Commands.Managers;
 using Guppy.Core.Messaging.Common.Implementations;
 using System.CommandLine;
 
@@ -10,32 +10,38 @@ namespace Guppy.Core.Commands.Services
     public sealed class CommandService : Broker<ICommand>, ICommandService
     {
         private readonly RootCommand _root;
-        private Dictionary<Common.Command, SCL.Command> _commands;
+        private Dictionary<Type, CommandManager> _managers;
         private IConsole _console;
+        private readonly ICommandTokenService _tokenService;
 
         public CommandService(
-            IEnumerable<Common.Command> commands,
-            IEnumerable<ITokenPropertySetter> tokenSetters,
+            IEnumerable<ICommandContext> commandContexts,
+            ICommandTokenService tokenService,
             IConsole console)
         {
             _console = console;
-            _commands = new Dictionary<Common.Command, SCL.Command>();
+            _tokenService = tokenService;
+            _managers = commandContexts.Select(x => CommandManager.Create(x, tokenService)).ToDictionary(x => x.Context.Type, x => x);
             _root = new RootCommand()
             {
                 Name = ">",
             };
 
-            var tokenSettersArray = tokenSetters.ToArray();
-            foreach (Common.Command command in commands)
+            foreach (CommandManager manager in _managers.Values)
             {
-                _commands.Add(command, command.GetSystemCommand(this, tokenSettersArray));
+                manager.Initialize(this);
             }
+        }
 
-            // Nest all commands as needed
-            foreach (KeyValuePair<Common.Command, SCL.Command> keyValuePair in _commands)
+        public void AddCommand(Type? parent, Command command)
+        {
+            if (parent is null)
             {
-                SCL.Command parent = keyValuePair.Key.Parent is null ? _root : _commands.First(x => x.Key.Type == keyValuePair.Key.Parent).Value;
-                parent.AddCommand(keyValuePair.Value);
+                _root.AddCommand(command);
+            }
+            else
+            {
+                _managers[parent].Command.AddCommand(command);
             }
         }
 

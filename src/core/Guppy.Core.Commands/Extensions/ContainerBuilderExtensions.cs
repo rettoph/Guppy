@@ -15,6 +15,7 @@ namespace Guppy.Core.Commands.Extensions
 
 
             builder.RegisterType<CommandService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<CommandTokenService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
             return builder.AddTag(nameof(RegisterCoreCommandServices));
         }

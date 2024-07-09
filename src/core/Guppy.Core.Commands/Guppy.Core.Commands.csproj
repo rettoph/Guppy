@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj" />
     <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
