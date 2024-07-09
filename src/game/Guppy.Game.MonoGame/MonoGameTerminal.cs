@@ -3,11 +3,12 @@ using Guppy.Core.Common.Collections;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 using Serilog.Events;
+using System.CommandLine;
 using System.CommandLine.IO;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminal : ITerminal
+    internal class MonoGameTerminal : ITerminal, IConsole
     {
         private readonly MonoGameTerminalTextWriter _out;
 

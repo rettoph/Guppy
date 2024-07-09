@@ -2,11 +2,12 @@
 using Guppy.Game.Common;
 using Guppy.Game.Console.Helpers;
 using Microsoft.Xna.Framework;
+using System.CommandLine;
 using System.CommandLine.IO;
 
 namespace Guppy.Game.Console
 {
-    internal class ConsoleTerminal : SystemConsole, ITerminal
+    internal class ConsoleTerminal : SystemConsole, ITerminal, IConsole
     {
         TextWriter ITerminal.Out => System.Console.Out;
 
@@ -16,6 +17,8 @@ namespace Guppy.Game.Console
         public ConsoleTerminal(ITerminalTheme theme)
         {
             this.Theme = theme;
+
+            this.Color = theme.Get(default!);
         }
 
         public ITerminalTheme Theme { get; }

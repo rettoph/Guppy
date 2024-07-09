@@ -9,7 +9,7 @@ using System.CommandLine;
 
 namespace Guppy.Tests.Core.Commands
 {
-    public class CommandTests
+    public class CommandBindingTests
     {
         public enum ValueEnum
         {

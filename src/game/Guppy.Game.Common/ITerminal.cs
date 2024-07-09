@@ -1,14 +1,13 @@
 ﻿using Guppy.Core.Common;
 using Microsoft.Xna.Framework;
-using System.CommandLine;
 
 namespace Guppy.Game.Common
 {
-    public interface ITerminal : IConsole
+    public interface ITerminal
     {
         ITerminalTheme Theme { get; }
 
-        new TextWriter Out { get; }
+        TextWriter Out { get; }
 
         IRef<Color> Color { get; set; }
 
