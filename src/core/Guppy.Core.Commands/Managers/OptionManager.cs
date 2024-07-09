@@ -60,7 +60,7 @@ namespace Guppy.Core.Commands.Managers
             _tokenService = tokenService;
             _option = new Option<TValue>(context.Names, context.Description)
             {
-                IsRequired = true
+                IsRequired = context.Required
             };
 
             this.Context = context;

@@ -1,5 +1,6 @@
 using Guppy.Core.Commands.Common;
 using Guppy.Core.Commands.Common.Attributes;
+using Guppy.Core.Commands.Common.Extensions;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Tests.Core.Commands.Common;
@@ -18,35 +19,47 @@ namespace Guppy.Tests.Core.Commands
             TestValueD = 3,
         }
 
-        public class EnumTestCommand : Message<EnumTestCommand>, ICommand
+        public class EnumArgumentTestCommand : Message<EnumArgumentTestCommand>, ICommand
         {
             [Argument]
             public ValueEnum Value { get; set; }
         }
 
-        public class NullableEnumTestCommand : Message<NullableEnumTestCommand>, ICommand
+        public class NullableEnumArgumentTestCommand : Message<NullableEnumArgumentTestCommand>, ICommand
         {
             [Argument]
+            public ValueEnum? Value { get; set; }
+        }
+
+        public class EnumOptionTestCommand : Message<EnumOptionTestCommand>, ICommand
+        {
+            [Option]
+            public ValueEnum Value { get; set; }
+        }
+
+        public class NullableEnumOptionTestCommand : Message<NullableEnumOptionTestCommand>, ICommand
+        {
+            [Option(required: false)]
             public ValueEnum? Value { get; set; }
         }
 
         [Fact]
         public void InvokeCommand_EnumArgument()
         {
-            ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumTestCommand)]);
+            ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumArgumentTestCommand)]);
 
-            Mock<ICommandSubscriber<EnumTestCommand>> subscriber = new Mock<ICommandSubscriber<EnumTestCommand>>();
+            Mock<ICommandSubscriber<EnumArgumentTestCommand>> subscriber = new Mock<ICommandSubscriber<EnumArgumentTestCommand>>();
             commandService.Subscribe(subscriber.Object);
 
             // Attempt to invoke test command
-            commandService.Invoke("enumTestCommand TestValueC");
+            commandService.Invoke($"{nameof(EnumArgumentTestCommand).ToCommandName()} TestValueC");
 
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
                     in It.Ref<Guid>.IsAny,
-                    It.Is<EnumTestCommand>(
-                        (instance, type) => ((EnumTestCommand)instance).Value == ValueEnum.TestValueC
+                    It.Is<EnumArgumentTestCommand>(
+                        (instance, type) => ((EnumArgumentTestCommand)instance).Value == ValueEnum.TestValueC
                     )
                 )
             );
@@ -55,33 +68,90 @@ namespace Guppy.Tests.Core.Commands
         [Fact]
         public void InvokeCommand_NullableEnumArgument()
         {
-            ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumTestCommand)]);
+            ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumArgumentTestCommand)]);
 
-            Mock<ICommandSubscriber<NullableEnumTestCommand>> subscriber = new Mock<ICommandSubscriber<NullableEnumTestCommand>>();
+            Mock<ICommandSubscriber<NullableEnumArgumentTestCommand>> subscriber = new Mock<ICommandSubscriber<NullableEnumArgumentTestCommand>>();
             commandService.Subscribe(subscriber.Object);
 
             // Attempt to invoke test command with a value
-            commandService.Invoke("nullableEnumTestCommand TestValueC");
+            commandService.Invoke($"{nameof(NullableEnumArgumentTestCommand).ToCommandName()} TestValueC");
 
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
                     in It.Ref<Guid>.IsAny,
-                    It.Is<NullableEnumTestCommand>(
-                        (instance, type) => ((NullableEnumTestCommand)instance).Value == ValueEnum.TestValueC
+                    It.Is<NullableEnumArgumentTestCommand>(
+                        (instance, type) => ((NullableEnumArgumentTestCommand)instance).Value == ValueEnum.TestValueC
                     )
                 )
             );
 
             // Attempt to invoke test command with a null value
-            commandService.Invoke("nullableEnumTestCommand");
+            commandService.Invoke($"{nameof(NullableEnumArgumentTestCommand).ToCommandName()}");
 
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
                     in It.Ref<Guid>.IsAny,
-                    It.Is<NullableEnumTestCommand>(
-                        (instance, type) => ((NullableEnumTestCommand)instance).Value == null
+                    It.Is<NullableEnumArgumentTestCommand>(
+                        (instance, type) => ((NullableEnumArgumentTestCommand)instance).Value == null
+                    )
+                )
+            );
+        }
+
+        [Fact]
+        public void InvokeCommand_EnumOption()
+        {
+            ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumOptionTestCommand)]);
+
+            Mock<ICommandSubscriber<EnumOptionTestCommand>> subscriber = new Mock<ICommandSubscriber<EnumOptionTestCommand>>();
+            commandService.Subscribe(subscriber.Object);
+
+            // Attempt to invoke test command
+            commandService.Invoke($"{nameof(EnumOptionTestCommand).ToCommandName()} {nameof(EnumOptionTestCommand.Value).ToOptionName()} TestValueC");
+
+            // Ensure subscriber ran as expected
+            subscriber.Verify(
+                x => x.Process(
+                    in It.Ref<Guid>.IsAny,
+                    It.Is<EnumOptionTestCommand>(
+                        (instance, type) => ((EnumOptionTestCommand)instance).Value == ValueEnum.TestValueC
+                    )
+                )
+            );
+        }
+
+        [Fact]
+        public void InvokeCommand_NullableEnumOption()
+        {
+            ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumOptionTestCommand)]);
+
+            Mock<ICommandSubscriber<NullableEnumOptionTestCommand>> subscriber = new Mock<ICommandSubscriber<NullableEnumOptionTestCommand>>();
+            commandService.Subscribe(subscriber.Object);
+
+            // Attempt to invoke test command with a value
+            commandService.Invoke($"{nameof(NullableEnumOptionTestCommand).ToCommandName()} {nameof(EnumOptionTestCommand.Value).ToOptionName()} TestValueC");
+
+            // Ensure subscriber ran as expected
+            subscriber.Verify(
+                x => x.Process(
+                    in It.Ref<Guid>.IsAny,
+                    It.Is<NullableEnumOptionTestCommand>(
+                        (instance, type) => ((NullableEnumOptionTestCommand)instance).Value == ValueEnum.TestValueC
+                    )
+                )
+            );
+
+            // Attempt to invoke test command with a null value
+            commandService.Invoke($"{nameof(NullableEnumOptionTestCommand).ToCommandName()}");
+
+            // Ensure subscriber ran as expected
+            subscriber.Verify(
+                x => x.Process(
+                    in It.Ref<Guid>.IsAny,
+                    It.Is<NullableEnumOptionTestCommand>(
+                        (instance, type) => ((NullableEnumOptionTestCommand)instance).Value == null
                     )
                 )
             );

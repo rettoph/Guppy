@@ -2,6 +2,7 @@
 using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Managers;
+using Guppy.Core.Common;
 using Guppy.Core.Messaging.Common.Implementations;
 using System.CommandLine;
 
@@ -12,15 +13,13 @@ namespace Guppy.Core.Commands.Services
         private readonly RootCommand _root;
         private Dictionary<Type, CommandManager> _managers;
         private IConsole _console;
-        private readonly ICommandTokenService _tokenService;
 
         public CommandService(
-            IEnumerable<ICommandContext> commandContexts,
+            IFiltered<ICommandContext> commandContexts,
             ICommandTokenService tokenService,
             IConsole console)
         {
             _console = console;
-            _tokenService = tokenService;
             _managers = commandContexts.Select(x => CommandManager.Create(x, tokenService)).ToDictionary(x => x.Context.Type, x => x);
             _root = new RootCommand()
             {

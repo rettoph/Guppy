@@ -12,7 +12,7 @@ namespace Guppy.Core.Commands.Common.Contexts
 
         private ArgumentContext(string? name, string? description, PropertyInfo propertyInfo)
         {
-            this.Name = name ?? propertyInfo.Name.ToLowerCaseFirstLetter();
+            this.Name = name ?? propertyInfo.Name.ToArgumentName();
             this.Description = description;
             this.PropertyInfo = propertyInfo;
         }

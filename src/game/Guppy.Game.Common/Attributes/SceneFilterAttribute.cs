@@ -9,11 +9,14 @@ namespace Guppy.Game.Common.Attributes
 {
     public class SceneFilterAttribute : GuppyConfigurationAttribute
     {
-        public readonly Type SceneType;
+        public readonly Type? SceneType;
 
-        public SceneFilterAttribute(Type sceneType)
+        public SceneFilterAttribute(Type? sceneType)
         {
-            ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
+            if (sceneType is not null)
+            {
+                ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
+            }
 
             this.SceneType = sceneType;
         }

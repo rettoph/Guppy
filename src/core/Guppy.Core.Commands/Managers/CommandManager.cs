@@ -44,16 +44,16 @@ namespace Guppy.Core.Commands.Managers
             this.Options = OptionManager<T>.CreateAll(context, tokenService);
             this.Arguments = ArgumentManager<T>.CreateAll(context, tokenService);
 
-            this.Command = new SCL.Command(context.Name, context.Description);
+            this.Command = new Command(context.Name, context.Description);
 
             foreach (OptionManager<T> optionManager in this.Options)
             {
-                this.Command.AddOption(optionManager.Option);
+                this.Command.Add(optionManager.Option);
             }
 
             foreach (ArgumentManager<T> argumentManager in this.Arguments)
             {
-                this.Command.AddArgument(argumentManager.Argument);
+                this.Command.Add(argumentManager.Argument);
             }
         }
 

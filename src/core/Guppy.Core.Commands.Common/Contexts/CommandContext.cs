@@ -25,7 +25,7 @@ namespace Guppy.Core.Commands.Common.Contexts
 
             CommandAttribute? attribute = type.GetCustomAttribute<CommandAttribute>();
             parent ??= attribute?.Parent;
-            name ??= attribute?.Name ?? type.Name.ToLowerCaseFirstLetter().TrimEnd("Command");
+            name ??= attribute?.Name ?? type.Name.ToCommandName();
             description ??= attribute?.Description;
 
             Type contextType = typeof(CommandContext<>).MakeGenericType(type);

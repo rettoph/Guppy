@@ -23,7 +23,7 @@ namespace Guppy.Tests.Core.Commands.Common
             IFiltered<ICommandTokenConverter> converters = new MockFiltered<ICommandTokenConverter>(converts);
             ICommandTokenService tokenService = new CommandTokenService(converters);
 
-            IEnumerable<ICommandContext> commands = commandTypes.Select(x => CommandContext.Create(x));
+            IFiltered<ICommandContext> commands = new MockFiltered<ICommandContext>(commandTypes.Select(x => CommandContext.Create(x)));
             IMock<IConsole> console = MockBuilder<IConsole>.Create().Build();
 
             ICommandService commandService = new CommandService(commands, tokenService, console.Object);

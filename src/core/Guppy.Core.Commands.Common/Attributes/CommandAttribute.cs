@@ -19,7 +19,22 @@ namespace Guppy.Core.Commands.Common.Attributes
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            builder.RegisterInstance(CommandContext.Create(classType)).SingleInstance();
+            ICommandContext context = CommandContext.Create(classType);
+            Type contextType = context.GetType();
+
+            foreach (GuppyConfigurationAttribute attribute in classType.GetCustomAttributesIncludingInterfaces<GuppyConfigurationAttribute>(true))
+            {
+                if (attribute is CommandAttribute)
+                { // Ignore the existing command attribute
+                    continue;
+                }
+
+                // Pass existing attributes on the command data
+                // type to the created context type
+                attribute.TryConfigure(boot, builder, contextType);
+            }
+
+            builder.RegisterInstance(context).As<ICommandContext>().SingleInstance();
         }
     }
 

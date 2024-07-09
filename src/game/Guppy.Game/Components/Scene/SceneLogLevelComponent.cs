@@ -2,20 +2,20 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common.Components;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
 using Serilog.Events;
 
 namespace Guppy.Game.Components.Guppy
 {
     [AutoLoad]
-    internal class SceneLogLevelComponent : SceneComponent, ICommandSubscriber<LogLevelCommand>
+    internal class EngineLogLevelComponent : EngineComponent, ICommandSubscriber<LogLevelCommand>
     {
         private readonly ITerminal _terminal;
 
         private SettingValue<LogEventLevel> _logLevel;
 
-        public SceneLogLevelComponent(ITerminal terminal, ISettingService settings)
+        public EngineLogLevelComponent(ITerminal terminal, ISettingService settings)
         {
             _terminal = terminal;
             _logLevel = settings.GetValue(Settings.LogLevel);
@@ -25,18 +25,18 @@ namespace Guppy.Game.Components.Guppy
 
         public void Process(in Guid messageId, LogLevelCommand message)
         {
-            // if (message.Value is null)
-            // {
-            //     _terminal.Write($"Current Log Level: ");
-            //     _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
-            // 
-            //     return;
-            // }
+            if (message.Value is null)
+            {
+                _terminal.Write($"Current Log Level: ");
+                _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
 
-            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value;
+                return;
+            }
+
+            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value.Value;
 
             _terminal.Write($"Set Log Level: ");
-            _terminal.WriteLine(message.Value.ToString(), _terminal.Theme.Get(message.Value));
+            _terminal.WriteLine(message.Value.ToString(), _terminal.Theme.Get(message.Value.Value));
         }
     }
 }

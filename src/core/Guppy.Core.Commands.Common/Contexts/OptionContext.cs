@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Commands.Common.Attributes;
+using Guppy.Core.Commands.Common.Extensions;
 using System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Contexts
@@ -27,8 +28,9 @@ namespace Guppy.Core.Commands.Common.Contexts
             {
                 OptionAttribute optionAttribute = propertyInfo.GetCustomAttribute<OptionAttribute>(true) ?? throw new NotImplementedException();
 
+                string[] names = optionAttribute.Names ?? [$"{propertyInfo.Name.ToOptionName()}"];
 
-                IOptionContext context = new OptionContext(optionAttribute.Names, optionAttribute.Description, optionAttribute.Required, propertyInfo);
+                IOptionContext context = new OptionContext(names, optionAttribute.Description, optionAttribute.Required, propertyInfo);
                 contexts.Add(context);
             }
 
