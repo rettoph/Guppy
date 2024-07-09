@@ -1,6 +1,4 @@
-﻿using Guppy.Engine;
-using Guppy.Example.Client;
-using Guppy.Game;
+﻿using Guppy.Example.Client;
 
-using (var game = new GuppyMonoGame<MainGuppy>(new GuppyContext("rettoph", "example")))
+using (var game = new Game1())
     game.Run();

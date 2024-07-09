@@ -1,6 +1,6 @@
+using Guppy.Core.Messaging.Common;
 using Guppy.Example.Client.Enums;
 using Guppy.Game.Input.Common;
-using Guppy.Messaging;
 
 namespace Guppy.Example.Client.Messages
 {

@@ -1,24 +1,26 @@
-﻿using Guppy.Engine;
-using Guppy.Engine.Attributes;
+﻿using Guppy.Core.Common.Attributes;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Attributes;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Constants;
 using Guppy.Game.Input.Common.Services;
+using Guppy.Game.MonoGame.Common.Primitives;
+using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Guppy.Game.Primitives;
-using Guppy.Game.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Example.Client.Entities
 {
     [AutoLoad]
-    [GuppyFilter<MainGuppy>]
-    public class World : IGuppyComponent, IGuppyDrawable, IGuppyUpdateable, IDebugComponent,
+    [SceneFilter<MainScene>]
+    public class World : ISceneComponent, IGuppyDrawable, IGuppyUpdateable, IDebugComponent,
         IInputSubscriber<PlaceSandInput>,
         IInputSubscriber<SelectCellTypeInput>
     {
@@ -115,7 +117,7 @@ namespace Guppy.Example.Client.Entities
             _renderTarget = new RenderTarget2D(_graphics, width, height);
         }
 
-        public void Initialize(IGuppy guppy)
+        public void Initialize()
         {
             this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
             //this.Initialize(1, 10);
