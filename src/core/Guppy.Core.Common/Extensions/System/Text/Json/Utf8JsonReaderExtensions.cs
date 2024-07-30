@@ -83,6 +83,24 @@ namespace System.Text.Json
             return false;
         }
 
+        public static ushort ReadUInt16(ref this Utf8JsonReader reader)
+        {
+            reader.CheckToken(JsonTokenType.Number, true);
+            ushort value = reader.GetUInt16();
+            reader.Read();
+
+            return value;
+        }
+
+        public static short ReadInt16(ref this Utf8JsonReader reader)
+        {
+            reader.CheckToken(JsonTokenType.Number, true);
+            short value = reader.GetInt16();
+            reader.Read();
+
+            return value;
+        }
+
         public static uint ReadUInt32(ref this Utf8JsonReader reader)
         {
             reader.CheckToken(JsonTokenType.Number, true);

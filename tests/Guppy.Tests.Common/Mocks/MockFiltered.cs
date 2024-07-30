@@ -12,5 +12,10 @@ namespace Guppy.Tests.Common.Mocks
         public MockFiltered(IEnumerable<T> collection) : base(collection)
         {
         }
+
+        public Lazy<IFiltered<T>> ToLazy()
+        {
+            return new Lazy<IFiltered<T>>(() => this);
+        }
     }
 }
