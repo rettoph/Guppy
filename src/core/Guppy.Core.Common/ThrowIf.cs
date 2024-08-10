@@ -4,6 +4,14 @@
     {
         public static class Type
         {
+            public static void IsNotUnmanagedStruct(System.Type type)
+            {
+                if (type.IsUnmanaged() == false)
+                {
+                    throw new ArgumentException($"'{type.FullName}' is not an unmanaged type.");
+                }
+            }
+
             public static void IsNotAssignableFrom(System.Type to, System.Type from)
             {
                 if (!to.IsAssignableFrom(from))

@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using Autofac;
+using Guppy.Core.Common.Collections;
 using Guppy.Core.Resources.Serialization.Json;
 using Guppy.Core.Serialization.Common.Services;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace Guppy.Core.Serialization.Services
 
         public PolymorphicJsonSerializerService(IEnumerable<PolymorphicJsonType> types)
         {
-            var typeTuples = types.Where(x => x.BaseType == typeof(TBase)).Select(x => (x.Key, x.InstanceType));
+            var typeTuples = types.Where(x => x.BaseType.IsAssignableTo<TBase>()).Select(x => (x.Key, x.InstanceType));
             _types = new Map<string, Type>(typeTuples);
         }
 
@@ -35,7 +36,8 @@ namespace Guppy.Core.Serialization.Services
         {
             return _types[type];
         }
-        public Type GetImplementationType(string key)
+
+        public Type GetType(string key)
         {
             return _types[key];
         }

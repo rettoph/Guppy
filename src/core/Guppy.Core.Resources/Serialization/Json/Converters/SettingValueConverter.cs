@@ -49,7 +49,7 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            Type settingValueType = _serializer.GetImplementationType(type);
+            Type settingValueType = _serializer.GetType(type);
             object settingValueValue = _serializer.Deserialize(type, ref value, options, out _);
             ISetting setting = Setting.Get(name, description, settingValueType, settingValueValue);
 
