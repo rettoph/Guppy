@@ -3,7 +3,7 @@
     /// <summary>
     /// Offers an unmanaged struct that can be used as a reference to a managed object
     /// This is done with static magic and technically not safe, as the managed object
-    /// can be disposed or removed at any time. Use with care.
+    /// can be disposed or removed at any time. Use with care...
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     public struct UnmanagedReference<TValue> : IRef<TValue>, IDisposable
@@ -75,6 +75,17 @@
         {
             _values[index] = default!;
             _indices.Push(index);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is UnmanagedReference<TValue> reference &&
+                   _index == reference._index;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_index);
         }
     }
 
@@ -156,6 +167,17 @@
         {
             _values[index] = default!;
             _indices.Push(index);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is UnmanagedReference<TNamespace, TValue> reference &&
+                   _index == reference._index;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_index);
         }
     }
 }
