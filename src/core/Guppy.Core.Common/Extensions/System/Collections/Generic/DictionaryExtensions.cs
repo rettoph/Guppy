@@ -15,7 +15,7 @@
             return clone;
         }
 
-        public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> source, Dictionary<TKey, TValue>? value)
+        public static Dictionary<TKey, TValue> Merge<TKey, TValue>(this Dictionary<TKey, TValue> source, Dictionary<TKey, TValue>? value, Func<TValue, TValue, bool>? overwrite = null)
             where TKey : notnull
         {
             if (value is null)
@@ -25,7 +25,23 @@
 
             foreach (KeyValuePair<TKey, TValue> kvp in value)
             {
-                source[kvp.Key] = kvp.Value;
+                if (overwrite is null)
+                {
+                    source[kvp.Key] = kvp.Value;
+                    continue;
+                }
+
+                if (source.TryGetValue(kvp.Key, out TValue? sourceValue) == false)
+                {
+                    source[kvp.Key] = kvp.Value;
+                    continue;
+                }
+
+                if (overwrite(sourceValue, kvp.Value))
+                {
+                    source[kvp.Key] = kvp.Value;
+                    continue;
+                }
             }
 
             return source;
