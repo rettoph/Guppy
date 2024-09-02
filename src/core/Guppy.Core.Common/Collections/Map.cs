@@ -13,8 +13,25 @@ namespace Guppy.Core.Common.Collections
         public ICollection<T1> Values1 => _forward.Keys;
         public ICollection<T2> Values2 => _reverse.Keys;
 
-        public T2 this[T1 key] => _forward[key];
-        public T1 this[T2 key] => _reverse[key];
+        public T2 this[T1 key]
+        {
+            get => _forward[key];
+            set
+            {
+                _forward[key] = value;
+                _reverse[value] = key;
+            }
+        }
+
+        public T1 this[T2 key]
+        {
+            get => _reverse[key];
+            set
+            {
+                _reverse[key] = value;
+                _forward[value] = key;
+            }
+        }
 
         public int Count => _forward.Count;
 
