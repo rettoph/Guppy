@@ -23,7 +23,7 @@ namespace Guppy.Core.Common.Exceptions
         {
             if (member is MethodInfo methodInfo)
             {
-                return $"{methodInfo.DeclaringType?.GetFormattedName(true)}::{methodInfo.Name}";
+                return $"{methodInfo.DeclaringType?.GetFormattedName()}::{methodInfo.Name}";
             }
 
             return member.ToString() ?? member.Name;

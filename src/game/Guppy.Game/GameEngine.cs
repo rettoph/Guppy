@@ -10,41 +10,32 @@ namespace Guppy.Game
 {
     public class GameEngine : GuppyEngine, IGameEngine
     {
-        private IGuppyDrawable[] _drawableComponents;
-        private IGuppyUpdateable[] _updateableComonents;
+        private Action<GameTime>? _drawComponentsDelegate;
+        private Action<GameTime>? _updateComponentsDelegate;
 
         public ISceneService Scenes { get; private set; }
 
         public GameEngine(GuppyContext context, Action<ContainerBuilder>? builder = null) : base(context, builder)
         {
             this.Scenes = this.Resolve<ISceneService>();
-
-            _drawableComponents = Array.Empty<IGuppyDrawable>();
-            _updateableComonents = Array.Empty<IGuppyUpdateable>();
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            _drawableComponents = this.Components.Sequence<IGuppyDrawable, DrawSequence>().ToArray();
-            _updateableComonents = this.Components.Sequence<IGuppyUpdateable, UpdateSequence>().ToArray();
+            _drawComponentsDelegate = this.Components.SequenceDelegates<DrawComponentSequence, Action<GameTime>>();
+            _updateComponentsDelegate = this.Components.SequenceDelegates<UpdateComponentSequence, Action<GameTime>>();
         }
 
         public void Draw(GameTime gameTime)
         {
-            foreach (IGuppyDrawable component in _drawableComponents)
-            {
-                component.Draw(gameTime);
-            }
+            _drawComponentsDelegate?.Invoke(gameTime);
         }
 
         public void Update(GameTime gameTime)
         {
-            foreach (IGuppyUpdateable component in _updateableComonents)
-            {
-                component.Update(gameTime);
-            }
+            _updateComponentsDelegate?.Invoke(gameTime);
         }
 
         public new GameEngine Start()

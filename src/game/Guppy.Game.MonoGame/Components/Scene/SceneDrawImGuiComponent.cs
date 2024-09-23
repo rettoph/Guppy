@@ -12,7 +12,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
     [AutoLoad]
     [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     [Sequence<DrawSequence>(DrawSequence.PostDraw)]
-    internal class SceneDrawImGuiComponent : SceneComponent, IGuppyDrawable
+    internal class SceneDrawImGuiComponent : SceneComponent, IDrawableComponent
     {
         private readonly IScene _scene;
         private IImGuiComponent[] _components;
@@ -30,6 +30,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _components = _scene.Components.Sequence<IImGuiComponent, DrawSequence>().ToArray();
         }
 
+        [Sequence<DrawComponentSequence>(DrawComponentSequence.PostDraw)]
         public void Draw(GameTime gameTime)
         {
             foreach (IImGuiComponent component in _components)

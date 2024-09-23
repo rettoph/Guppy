@@ -3,6 +3,7 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Services;
 using Guppy.Game.ImGui.Common;
@@ -12,8 +13,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
     [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
-    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
-    internal class BeginImGuiComponent : EngineComponent, IGuppyDrawable, IDisposable
+    internal class BeginImGuiComponent : EngineComponent, IDrawableComponent, IDisposable
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
@@ -42,6 +42,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
             _engine.Scenes.OnSceneDestroyed -= this.HandleSceneDestroyed;
         }
 
+        [Sequence<DrawComponentSequence>(DrawComponentSequence.PreDraw)]
         public void Draw(GameTime gameTime)
         {
             _batch.Begin(gameTime);

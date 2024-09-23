@@ -11,9 +11,7 @@ namespace Guppy.Game.Components.Engine
 {
     [AutoLoad]
     [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
-    [Sequence<UpdateSequence>(UpdateSequence.Update)]
-    internal class SceneFrameComponent : EngineComponent, IUpdatableComponent, IDrawableComponent, IGuppyDrawable, IGuppyUpdateable
+    internal class SceneFrameComponent : EngineComponent, IUpdatableComponent, IDrawableComponent
     {
         private readonly ISceneService _scenes;
 

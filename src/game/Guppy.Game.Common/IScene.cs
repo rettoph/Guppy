@@ -1,9 +1,10 @@
 ﻿using Autofac;
 using Guppy.Game.Common.Components;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common
 {
-    public interface IScene : IGuppyUpdateable, IGuppyDrawable
+    public interface IScene
     {
         ulong Id { get; }
         string Name { get; }
@@ -28,5 +29,9 @@ namespace Guppy.Game.Common
         void Initialize(ILifetimeScope scope);
 
         T Resolve<T>() where T : notnull;
+
+        void Draw(GameTime gameTime);
+
+        void Update(GameTime gameTime);
     }
 }
