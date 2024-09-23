@@ -58,7 +58,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            foreach (IEngineComponent component in _components.Sequence(InitializeSequence.Initialize))
+            foreach (IEngineComponent component in _components.Sequence<IEngineComponent, InitializeSequence>(true))
             {
                 component.Initialize();
             }

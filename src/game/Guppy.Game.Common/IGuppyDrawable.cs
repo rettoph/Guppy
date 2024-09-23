@@ -1,10 +1,8 @@
-﻿using Guppy.Core.Common;
-using Guppy.Game.Common.Enums;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common
 {
-    public interface IGuppyDrawable : ISequenceable<DrawSequence>
+    public interface IGuppyDrawable
     {
         void Draw(GameTime gameTime);
     }

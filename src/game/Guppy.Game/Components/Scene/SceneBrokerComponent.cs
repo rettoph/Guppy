@@ -1,10 +1,12 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common.Services;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
 
 namespace Guppy.Engine.Components.Guppy
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     internal class SceneBrokerComponent : SceneComponent
     {
         private readonly IBrokerService _brokers;

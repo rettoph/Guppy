@@ -27,8 +27,8 @@ namespace Guppy.Game
         {
             base.Initialize();
 
-            _drawableComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
-            _updateableComonents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
+            _drawableComponents = this.Components.Sequence<IGuppyDrawable, DrawSequence>(true).ToArray();
+            _updateableComonents = this.Components.Sequence<IGuppyUpdateable, UpdateSequence>(true).ToArray();
         }
 
         public void Draw(GameTime gameTime)

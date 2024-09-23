@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Input.Common;
@@ -12,6 +13,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     [Sequence<UpdateSequence>(UpdateSequence.PreUpdate)]
     internal sealed class MouseCursorPublishComponent : EngineComponent, IGuppyUpdateable
     {

@@ -1,10 +1,8 @@
-﻿using Guppy.Core.Common;
-using Guppy.Game.ImGui.Common.Enums;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ImGui.Common
 {
-    public interface IImGuiComponent : ISequenceable<GuiSequence>
+    public interface IImGuiComponent
     {
         void DrawImGui(GameTime gameTime);
     }

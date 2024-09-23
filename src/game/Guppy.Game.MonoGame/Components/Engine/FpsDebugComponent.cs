@@ -1,6 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
@@ -8,6 +10,8 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class FpsDebugComponent : EngineComponent, IDebugComponent
     {
 

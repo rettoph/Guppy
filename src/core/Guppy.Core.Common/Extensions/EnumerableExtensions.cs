@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Exceptions;
 using System.Reflection;
 
 namespace Guppy.Core.Common.Extensions
@@ -10,38 +11,41 @@ namespace Guppy.Core.Common.Extensions
             return items.Select((x, i) => (x, i));
         }
 
-        public static T[] Sequence<T, TSequence>(this IEnumerable<T> items, TSequence defaultSequence, bool reverse = false)
+        public static T[] Sequence<T, TSequence>(this IEnumerable<object> items, bool strict)
+            where T : notnull
             where TSequence : unmanaged, Enum
         {
-            IEnumerable<T> sequenced = items.Select(x => (item: x, sequence: EnumerableExtensions.GetSequence<T, TSequence>(x, defaultSequence)))
+            IEnumerable<T> sequenced = items
+                .OfType<T>()
+                .Select(x => (item: x, sequence: EnumerableExtensions.GetSequence<T, TSequence>(x, strict)))
+                .Where(x => x.sequence is not null)
                 .OrderBy(x => x.sequence)
                 .Select(x => x.item);
-
-            if (reverse)
-            {
-                sequenced = sequenced.Reverse();
-            }
 
             return sequenced.ToArray();
         }
 
-        private static TSequence GetSequence<T, TSequence>(T item, TSequence defaultSequence)
+        private static TSequence? GetSequence<T, TSequence>(T item, bool strict)
             where TSequence : unmanaged, Enum
         {
             if (item is null)
             {
-                return defaultSequence;
+                if (strict == false)
+                {
+                    return null;
+                }
 
-            }
-
-            if (item is ISequenceable<TSequence> sequenceable && sequenceable.Sequence is not null)
-            {
-                return sequenceable.Sequence.Value;
+                throw new SequenceException(typeof(TSequence));
             }
 
             if (!item.GetType().HasCustomAttribute<SequenceAttribute<TSequence>>(true))
             {
-                return defaultSequence;
+                if (strict == false)
+                {
+                    return null;
+                }
+
+                throw new SequenceException(typeof(TSequence), item);
             }
 
             return item.GetType().GetCustomAttribute<SequenceAttribute<TSequence>>()!.Value;

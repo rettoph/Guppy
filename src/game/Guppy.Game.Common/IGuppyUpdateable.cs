@@ -1,10 +1,8 @@
-﻿using Guppy.Core.Common;
-using Guppy.Game.Common.Enums;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common
 {
-    public interface IGuppyUpdateable : ISequenceable<UpdateSequence>
+    public interface IGuppyUpdateable
     {
         void Update(GameTime gameTime);
     }

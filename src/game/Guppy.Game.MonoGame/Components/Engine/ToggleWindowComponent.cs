@@ -2,6 +2,7 @@
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Input.Common;
 using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.Messages;
@@ -9,6 +10,7 @@ using Guppy.Game.MonoGame.Messages;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     internal sealed class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowComponent>>
     {
         private SettingValue<bool> _isDebugWindowEnabled;

@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
@@ -15,6 +16,8 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasDebugWindowFilter]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal sealed class SceneDebugWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly IImGui _imgui;
@@ -37,7 +40,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         {
             base.Initialize();
 
-            _components = _scene.Components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _components = _scene.Components.Sequence<IDebugComponent, DrawSequence>(true).ToArray();
         }
 
         public void DrawImGui(GameTime gameTime)

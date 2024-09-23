@@ -2,8 +2,10 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Attributes;
@@ -13,6 +15,8 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasTerminalWindowFilter]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class SceneTerminalWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;

@@ -3,6 +3,7 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Components;
@@ -13,6 +14,8 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class EngineDebugWindowComponent : EngineComponent, IImGuiComponent
     {
         private readonly IGameEngine _engine;
@@ -35,7 +38,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         {
             base.Initialize();
 
-            _components = _engine.Components.OfType<IDebugComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _components = _engine.Components.Sequence<IDebugComponent, DrawSequence>(true).ToArray();
         }
 
         public void DrawImGui(GameTime gameTime)

@@ -3,7 +3,9 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
@@ -11,6 +13,8 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [Sequence<DrawSequence>(DrawSequence.Draw)]
     internal class EngineTerminalWindowComponent : EngineComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;

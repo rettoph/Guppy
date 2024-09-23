@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Services;
@@ -10,6 +11,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     [Sequence<DrawSequence>(DrawSequence.PreDraw)]
     internal class BeginImGuiComponent : EngineComponent, IGuppyDrawable, IDisposable
     {
@@ -31,7 +33,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
         protected override void Initialize()
         {
-            _components = _engine.Components.OfType<IImGuiComponent>().Sequence(DrawSequence.Draw).ToArray();
+            _components = _engine.Components.Sequence<IImGuiComponent, DrawSequence>(true).ToArray();
         }
 
         public void Dispose()

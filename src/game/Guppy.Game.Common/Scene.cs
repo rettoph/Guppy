@@ -70,15 +70,15 @@ namespace Guppy.Game.Common
         {
             _scope = scope;
 
-            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence(InitializeSequence.Initialize).ToArray();
+            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence<ISceneComponent, InitializeSequence>(true).ToArray();
 
             foreach (ISceneComponent component in this.Components)
             {
                 component.Initialize();
             }
 
-            _drawComponents = this.Components.OfType<IGuppyDrawable>().Sequence(DrawSequence.Draw).ToArray();
-            _updateComponents = this.Components.OfType<IGuppyUpdateable>().Sequence(UpdateSequence.Update).ToArray();
+            _drawComponents = this.Components.Sequence<IGuppyDrawable, DrawSequence>(true).ToArray();
+            _updateComponents = this.Components.Sequence<IGuppyUpdateable, UpdateSequence>(true).ToArray();
         }
 
         public virtual void Draw(GameTime gameTime)

@@ -3,12 +3,14 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
+using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Serilog.Events;
 
 namespace Guppy.Game.Components.Guppy
 {
     [AutoLoad]
+    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     internal class EngineLogLevelComponent : EngineComponent, ICommandSubscriber<LogLevelCommand>
     {
         private readonly ITerminal _terminal;
