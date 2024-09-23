@@ -1,7 +1,6 @@
-﻿using Guppy.Core.Common;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace System
+namespace Guppy.Core.Common.Extensions.System
 {
     public static class TypeExtensions
     {
@@ -74,58 +73,6 @@ namespace System
             return types.WithAttribute(typeof(TAttribute), inherit);
         }
 
-        /// <summary>
-        /// https://stackoverflow.com/questions/540749/can-a-c-sharp-class-inherit-attributes-from-its-interface
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetCustomAttributesIncludingInterfaces<T>(this Type type, bool inherit)
-            where T : Attribute
-        {
-            if (inherit == false)
-            {
-                return type.GetCustomAttributes<T>();
-            }
-
-            var attributeType = typeof(T);
-            return type.GetCustomAttributes(attributeType, true)
-              .Union(type.GetInterfaces().SelectMany(interfaceType =>
-                  interfaceType.GetCustomAttributes(attributeType, true)))
-              .Cast<T>();
-        }
-
-        /// <summary>
-        /// https://stackoverflow.com/questions/540749/can-a-c-sharp-class-inherit-attributes-from-its-interface
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool HasCustomAttributesIncludingInterfaces<T>(this Type type, bool inherit)
-            where T : Attribute
-        {
-            if (inherit == false)
-            {
-                return type.HasCustomAttribute<T>();
-            }
-
-            if (type.HasCustomAttribute<T>())
-            {
-                return true;
-
-            }
-
-            foreach (Type interfaceType in type.GetInterfaces())
-            {
-                if (interfaceType.HasCustomAttribute<T>())
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public static IEnumerable<Type> GetConstructedGenericTypes(this Type type, Type genericTypeDefinition)
         {
             var interfaceTypes = type.GetInterfaces();
@@ -184,17 +131,19 @@ namespace System
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>System.String.</returns>
-        public static string GetFormattedName(this Type type)
+        public static string GetFormattedName(this Type type, bool includeAssembly = false)
         {
+            string name = (includeAssembly ? type.AssemblyQualifiedName : type.Name) ?? type.Name;
             if (type.IsGenericType)
             {
                 string genericArguments = type.GetGenericArguments()
                                     .Select(x => x.Name)
                                     .Aggregate((x1, x2) => $"{x1}, {x2}");
-                return $"{type.Name.Substring(0, type.Name.IndexOf("`"))}"
+                return $"{name.Substring(0, name.IndexOf("`"))}"
                      + $"<{genericArguments}>";
             }
-            return type.Name;
+
+            return name;
         }
 
         public static bool IsUnmanaged(this Type type)

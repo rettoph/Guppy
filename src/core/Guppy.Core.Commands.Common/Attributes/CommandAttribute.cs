@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Attributes
 {
@@ -22,7 +23,7 @@ namespace Guppy.Core.Commands.Common.Attributes
             ICommandContext context = CommandContext.Create(classType);
             Type contextType = context.GetType();
 
-            foreach (GuppyConfigurationAttribute attribute in classType.GetCustomAttributesIncludingInterfaces<GuppyConfigurationAttribute>(true))
+            foreach (GuppyConfigurationAttribute attribute in classType.GetAllCustomAttributes<GuppyConfigurationAttribute>(true))
             {
                 if (attribute is CommandAttribute)
                 { // Ignore the existing command attribute

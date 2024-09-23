@@ -33,7 +33,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
         protected override void Initialize()
         {
-            _components = _engine.Components.Sequence<IImGuiComponent, DrawSequence>(true).ToArray();
+            _components = _engine.Components.Sequence<IImGuiComponent, DrawSequence>().ToArray();
         }
 
         public void Dispose()

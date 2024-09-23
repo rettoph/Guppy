@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Services;
+﻿using Guppy.Core.Common.Extensions.System.Reflection;
+using Guppy.Core.Common.Services;
 using System.Collections;
 
 namespace Guppy.Core.Services
@@ -20,7 +21,7 @@ namespace Guppy.Core.Services
 
             foreach (Type type in Types)
             {
-                _attributes.Add(type, type.GetCustomAttributesIncludingInterfaces<TAttribute>(inherit).ToArray());
+                _attributes.Add(type, type.GetAllCustomAttributes<TAttribute>(inherit));
             }
         }
 

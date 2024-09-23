@@ -1,29 +1,32 @@
-﻿using System.Reflection;
+﻿using Guppy.Core.Common.Extensions.System;
+using System.Reflection;
 
 namespace Guppy.Core.Common.Exceptions
 {
     public class SequenceException : Exception
     {
-        public readonly MethodInfo? MethodInfo;
-        public readonly object? Instance;
         public readonly Type Sequence;
+        public readonly MemberInfo? Member;
 
         public SequenceException(Type sequence) : base($"Attepted sequence on null")
         {
             this.Sequence = sequence;
         }
 
-        public SequenceException(Type sequence, object instance, MethodInfo methodInfo) : base($"Missing sequence '{sequence.Name}' on type {instance.GetType().GetFormattedName()}::{methodInfo.Name}")
+        public SequenceException(Type sequence, MemberInfo member) : base($"Missing sequence '{sequence.ToString()}' on member {GetMemberString(member)}")
         {
             this.Sequence = sequence;
-            this.Instance = instance;
-            this.MethodInfo = methodInfo;
+            this.Member = member;
         }
 
-        public SequenceException(Type sequence, object instance) : base($"Missing sequence '{sequence.Name}' on type {instance.GetType().GetFormattedName()}")
+        private static string GetMemberString(MemberInfo member)
         {
-            this.Sequence = sequence;
-            this.Instance = instance;
+            if (member is MethodInfo methodInfo)
+            {
+                return $"{methodInfo.DeclaringType?.GetFormattedName(true)}::{methodInfo.Name}";
+            }
+
+            return member.ToString() ?? member.Name;
         }
     }
 }

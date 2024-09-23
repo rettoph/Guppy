@@ -1,4 +1,6 @@
-﻿namespace Guppy.Core.Common
+﻿using Guppy.Core.Common.Extensions.System;
+
+namespace Guppy.Core.Common
 {
     public static class ThrowIf
     {

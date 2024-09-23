@@ -38,7 +38,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         {
             base.Initialize();
 
-            _components = _engine.Components.Sequence<IDebugComponent, DrawSequence>(true).ToArray();
+            _components = _engine.Components.Sequence<IDebugComponent, DrawSequence>().ToArray();
         }
 
         public void DrawImGui(GameTime gameTime)

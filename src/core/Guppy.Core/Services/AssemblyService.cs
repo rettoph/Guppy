@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Contexts;
+using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Services;
 using System.Collections;
 using System.Reflection;
@@ -90,14 +91,14 @@ namespace Guppy.Core.Services
         public IAttributeService<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
             where TAttribute : Attribute
         {
-            var types = GetTypes<TType>(x => x.HasCustomAttributesIncludingInterfaces<TAttribute>(inherit));
+            var types = this.GetTypes<TType>(x => x.TryGetAllCustomAttributes<TAttribute>(inherit, out _));
             return new AttributeService<TType, TAttribute>(types, inherit);
         }
 
         public IAttributeService<TType, TAttribute> GetAttributes<TType, TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute
         {
-            var types = GetTypes<TType>(x => x.HasCustomAttributesIncludingInterfaces<TAttribute>(inherit) && predicate(x));
+            var types = this.GetTypes<TType>(x => x.TryGetAllCustomAttributes<TAttribute>(inherit, out _) && predicate(x));
             return new AttributeService<TType, TAttribute>(types, inherit);
         }
 

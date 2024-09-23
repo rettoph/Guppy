@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Core.Common.Extensions.System.Reflection;
 using System.Reflection;
 
 namespace Guppy.Core.Common.Attributes
@@ -30,9 +31,9 @@ namespace Guppy.Core.Common.Attributes
 
         public static void TryConfigureAllInAssembly(Assembly assembly, IContainer boot, ContainerBuilder builder)
         {
-            foreach (Type type in assembly.GetTypes().Where(x => x.HasCustomAttributesIncludingInterfaces<GuppyConfigurationAttribute>(true)))
+            foreach (Type type in assembly.GetTypes())
             {
-                foreach (GuppyConfigurationAttribute attribute in type.GetCustomAttributesIncludingInterfaces<GuppyConfigurationAttribute>(true))
+                foreach (GuppyConfigurationAttribute attribute in type.GetAllCustomAttributes<GuppyConfigurationAttribute>(true))
                 {
                     attribute.TryConfigure(boot, builder, type);
                 }

@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Enums;
-using System.Reflection;
+using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Common.Attributes
 {

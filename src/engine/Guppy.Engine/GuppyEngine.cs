@@ -4,6 +4,7 @@ using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Utilities;
 using Guppy.Core.Extensions;
@@ -58,7 +59,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            foreach (IEngineComponent component in _components.Sequence<IEngineComponent, InitializeSequence>(true))
+            foreach (IEngineComponent component in _components.Sequence<IEngineComponent, InitializeSequence>())
             {
                 component.Initialize();
             }

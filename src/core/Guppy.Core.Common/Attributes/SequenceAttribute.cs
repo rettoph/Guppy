@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Common.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true)]
     public class SequenceAttribute<TSequence> : Attribute
         where TSequence : Enum
     {

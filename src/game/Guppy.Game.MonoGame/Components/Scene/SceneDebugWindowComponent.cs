@@ -40,7 +40,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         {
             base.Initialize();
 
-            _components = _scene.Components.Sequence<IDebugComponent, DrawSequence>(true).ToArray();
+            _components = _scene.Components.Sequence<IDebugComponent, DrawSequence>().ToArray();
         }
 
         public void DrawImGui(GameTime gameTime)

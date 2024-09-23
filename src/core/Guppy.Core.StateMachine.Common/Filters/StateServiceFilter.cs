@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.StateMachine.Common.Services;
 
 namespace Guppy.Core.StateMachine.Common.Filters

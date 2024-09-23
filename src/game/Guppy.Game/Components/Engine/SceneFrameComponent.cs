@@ -2,6 +2,7 @@
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Services;
 using Microsoft.Xna.Framework;
@@ -12,7 +13,7 @@ namespace Guppy.Game.Components.Engine
     [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
     [Sequence<DrawSequence>(DrawSequence.Draw)]
     [Sequence<UpdateSequence>(UpdateSequence.Update)]
-    internal class SceneFrameComponent : EngineComponent, IGuppyUpdateable, IGuppyDrawable
+    internal class SceneFrameComponent : EngineComponent, IUpdatableComponent, IDrawableComponent, IGuppyDrawable, IGuppyUpdateable
     {
         private readonly ISceneService _scenes;
 
@@ -21,6 +22,7 @@ namespace Guppy.Game.Components.Engine
             _scenes = scenes;
         }
 
+        [Sequence<DrawComponentSequence>(DrawComponentSequence.Draw)]
         public void Draw(GameTime gameTime)
         {
             foreach (IScene scene in _scenes.GetAll())
@@ -34,6 +36,7 @@ namespace Guppy.Game.Components.Engine
             }
         }
 
+        [Sequence<UpdateComponentSequence>(UpdateComponentSequence.Update)]
         public void Update(GameTime gameTime)
         {
             foreach (IScene scene in _scenes.GetAll())

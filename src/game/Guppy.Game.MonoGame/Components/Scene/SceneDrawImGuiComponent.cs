@@ -27,7 +27,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         {
             base.Initialize();
 
-            _components = _scene.Components.Sequence<IImGuiComponent, DrawSequence>(true).ToArray();
+            _components = _scene.Components.Sequence<IImGuiComponent, DrawSequence>().ToArray();
         }
 
         public void Draw(GameTime gameTime)

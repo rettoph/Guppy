@@ -1,4 +1,6 @@
-﻿namespace Guppy.Core.Commands.Common.Extensions
+﻿using Guppy.Core.Common.Extensions.System;
+
+namespace Guppy.Core.Commands.Common.Extensions
 {
     public static class StringExtensions
     {

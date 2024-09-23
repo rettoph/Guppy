@@ -1,54 +1,70 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Exceptions;
+using Guppy.Core.Common.Extensions.System.Reflection;
 using System.Reflection;
 
 namespace Guppy.Core.Common.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static IEnumerable<(T, int)> Indices<T>(this IEnumerable<T> items)
+        public static TDelegate? SequenceDelegates<TSequence, TDelegate>(this IEnumerable<object> items)
+            where TSequence : unmanaged, Enum
+            where TDelegate : Delegate
         {
-            return items.Select((x, i) => (x, i));
+            IEnumerable<TDelegate> delegates = items.SelectMany(x => EnumerableExtensions.GetDelegateSequences<TSequence, TDelegate>(x))
+                .OrderBy(x => x.sequence)
+                .Select(x => x.del);
+
+            if (delegates.Any() == false)
+            {
+                return default;
+            }
+
+            return delegates.Aggregate((d1, d2) => (TDelegate)Delegate.Combine(d1, d2));
         }
 
-        public static T[] Sequence<T, TSequence>(this IEnumerable<object> items, bool strict)
+        public static T[] Sequence<T, TSequence>(this IEnumerable<object> items)
             where T : notnull
             where TSequence : unmanaged, Enum
         {
             IEnumerable<T> sequenced = items
                 .OfType<T>()
-                .Select(x => (item: x, sequence: EnumerableExtensions.GetSequence<T, TSequence>(x, strict)))
-                .Where(x => x.sequence is not null)
+                .Select(x => (item: x, sequences: EnumerableExtensions.GetSequences<TSequence>(x.GetType())))
+                .SelectMany(itemSequences => itemSequences.sequences.Select(sequence => (itemSequences.item, sequence)))
                 .OrderBy(x => x.sequence)
                 .Select(x => x.item);
 
             return sequenced.ToArray();
         }
 
-        private static TSequence? GetSequence<T, TSequence>(T item, bool strict)
+        private static IEnumerable<TSequence> GetSequences<TSequence>(MemberInfo member)
             where TSequence : unmanaged, Enum
         {
-            if (item is null)
+            if (member.TryGetAllCustomAttributes<SequenceAttribute<TSequence>>(true, out var sequenceAttributes))
             {
-                if (strict == false)
-                {
-                    return null;
-                }
-
-                throw new SequenceException(typeof(TSequence));
+                return member.GetCustomAttributes<SequenceAttribute<TSequence>>().Select(x => x.Value);
             }
 
-            if (!item.GetType().HasCustomAttribute<SequenceAttribute<TSequence>>(true))
+            if (member.TryGetAllCustomAttributes<RequireSequenceAttribute<TSequence>>(true, out var requiredSequenceAttributes))
             {
-                if (strict == false)
-                {
-                    return null;
-                }
-
-                throw new SequenceException(typeof(TSequence), item);
+                throw new SequenceException(typeof(TSequence), member);
             }
 
-            return item.GetType().GetCustomAttribute<SequenceAttribute<TSequence>>()!.Value;
+            return Enumerable.Empty<TSequence>();
+        }
+
+        private static IEnumerable<(TDelegate del, TSequence sequence)> GetDelegateSequences<TSequence, TDelegate>(object instance, params Type[] requiredParameterTypes)
+            where TSequence : unmanaged, Enum
+            where TDelegate : Delegate
+        {
+            return instance.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(mi => mi.IsCompatibleWithDelegate<TDelegate>())
+                .SelectMany(mi =>
+                {
+                    TDelegate del = mi.CreateDelegate<TDelegate>(instance);
+
+                    return EnumerableExtensions.GetSequences<TSequence>(mi).Select(sequence => (del, sequence));
+                });
         }
     }
 }

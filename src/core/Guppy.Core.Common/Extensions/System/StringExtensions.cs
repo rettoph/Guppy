@@ -1,4 +1,4 @@
-﻿namespace System
+﻿namespace Guppy.Core.Common.Extensions.System
 {
     public static class StringExtensions
     {
