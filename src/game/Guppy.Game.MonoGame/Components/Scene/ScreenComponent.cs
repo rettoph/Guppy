@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
-    [Sequence<DrawSequence>(DrawSequence.PreDraw)]
+    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class ScreenComponent : SceneComponent, IDrawableComponent
     {
         private readonly IScreen _screen;
@@ -16,7 +16,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _screen = screen;
         }
 
-        [Sequence<DrawComponentSequence>(DrawComponentSequence.PostDraw)]
+        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]
         public void Draw(GameTime gameTime)
         {
             _screen.Camera.Update(gameTime);

@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.Components.Engine
 {
     [AutoLoad]
-    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
     internal class SceneFrameComponent : EngineComponent, IUpdatableComponent, IDrawableComponent
     {
         private readonly ISceneService _scenes;
@@ -20,7 +20,7 @@ namespace Guppy.Game.Components.Engine
             _scenes = scenes;
         }
 
-        [Sequence<DrawComponentSequence>(DrawComponentSequence.Draw)]
+        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
         public void Draw(GameTime gameTime)
         {
             foreach (IScene scene in _scenes.GetAll())
@@ -34,7 +34,7 @@ namespace Guppy.Game.Components.Engine
             }
         }
 
-        [Sequence<UpdateComponentSequence>(UpdateComponentSequence.Update)]
+        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
         public void Update(GameTime gameTime)
         {
             foreach (IScene scene in _scenes.GetAll())

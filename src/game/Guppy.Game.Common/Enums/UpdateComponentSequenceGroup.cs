@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Game.Common.Enums
 {
-    public enum UpdateComponentSequence
+    public enum UpdateComponentSequenceGroup
     {
         PreUpdate,
         Update,

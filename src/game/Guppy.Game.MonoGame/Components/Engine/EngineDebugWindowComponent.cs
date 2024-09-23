@@ -1,33 +1,33 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Extensions;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
-using Guppy.Game.Components;
 using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
     internal class EngineDebugWindowComponent : EngineComponent, IImGuiComponent
     {
         private readonly IGameEngine _engine;
         private readonly ResourceValue<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
-        private IDebugComponent[] _components;
+        private readonly ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime> _renderDebugInfoActions;
 
         private SettingValue<bool> _isDebugWindowEnabled;
 
         public EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService)
         {
-            _components = Array.Empty<IDebugComponent>();
+            _renderDebugInfoActions = new ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime>();
             _imgui = imgui;
             _engine = engine;
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
@@ -38,9 +38,10 @@ namespace Guppy.Game.MonoGame.Components.Engine
         {
             base.Initialize();
 
-            _components = _engine.Components.Sequence<IDebugComponent, DrawSequence>().ToArray();
+            _renderDebugInfoActions.Add(_engine.Components);
         }
 
+        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_isDebugWindowEnabled == false)
@@ -58,10 +59,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
                 if (_imgui.Begin($"Engine Debug Window"))
                 {
-                    foreach (IDebugComponent component in _components)
-                    {
-                        component.RenderDebugInfo(gameTime);
-                    }
+                    _renderDebugInfoActions.Invoke(gameTime);
                 }
 
                 _imgui.End();

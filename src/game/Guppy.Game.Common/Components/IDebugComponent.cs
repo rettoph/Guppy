@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common.Components
 {
-    public interface IUpdatableComponent
+    public interface IDebugComponent
     {
-        [RequireSequenceGroup<UpdateComponentSequenceGroup>()]
-        void Update(GameTime gameTime);
+        [RequireSequenceGroup<DrawDebugComponentSequenceGroup>]
+        void RenderDebugInfo(GameTime gameTime);
     }
 }

@@ -18,5 +18,9 @@
     <ProjectReference Include="..\Guppy.Game.Common\Guppy.Game.Common.csproj" />
     <ProjectReference Include="..\..\engine\Guppy.Engine\Guppy.Engine.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
 
 </Project>

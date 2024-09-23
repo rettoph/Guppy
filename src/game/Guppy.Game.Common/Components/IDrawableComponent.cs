@@ -6,7 +6,7 @@ namespace Guppy.Game.Common.Components
 {
     public interface IDrawableComponent
     {
-        [RequireSequence<DrawComponentSequence>()]
+        [RequireSequenceGroup<DrawComponentSequenceGroup>()]
         void Draw(GameTime gameTime);
     }
 }

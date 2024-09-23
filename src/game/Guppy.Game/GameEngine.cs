@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions;
+using Guppy.Core.Common;
 using Guppy.Engine;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -10,13 +10,16 @@ namespace Guppy.Game
 {
     public class GameEngine : GuppyEngine, IGameEngine
     {
-        private Action<GameTime>? _drawComponentsDelegate;
-        private Action<GameTime>? _updateComponentsDelegate;
+        private ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
+        private ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
 
         public ISceneService Scenes { get; private set; }
 
         public GameEngine(GuppyContext context, Action<ContainerBuilder>? builder = null) : base(context, builder)
         {
+            _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>();
+            _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>();
+
             this.Scenes = this.Resolve<ISceneService>();
         }
 
@@ -24,18 +27,18 @@ namespace Guppy.Game
         {
             base.Initialize();
 
-            _drawComponentsDelegate = this.Components.SequenceDelegates<DrawComponentSequence, Action<GameTime>>();
-            _updateComponentsDelegate = this.Components.SequenceDelegates<UpdateComponentSequence, Action<GameTime>>();
+            _drawComponentsActions.Add(this.Components);
+            _updateComponentsActions.Add(this.Components);
         }
 
         public void Draw(GameTime gameTime)
         {
-            _drawComponentsDelegate?.Invoke(gameTime);
+            _drawComponentsActions?.Invoke(gameTime);
         }
 
         public void Update(GameTime gameTime)
         {
-            _updateComponentsDelegate?.Invoke(gameTime);
+            _updateComponentsActions.Invoke(gameTime);
         }
 
         public new GameEngine Start()

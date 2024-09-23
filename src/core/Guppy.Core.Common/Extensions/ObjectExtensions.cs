@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Guppy.Core.Common.Extensions.System.Reflection;
+using System.Reflection;
 
 namespace System
 {
@@ -62,6 +63,14 @@ namespace System
         public static IEnumerable<T> Yield<T>(this T instance)
         {
             yield return instance;
+        }
+
+        public static IEnumerable<TDelegate> GetMatchingDelegates<TDelegate>(this object instance, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public)
+            where TDelegate : Delegate
+        {
+            return instance.GetType().GetMethods(bindingFlags)
+                .Where(mi => mi.IsCompatibleWithDelegate<TDelegate>())
+                .Select(mi => mi.CreateDelegate<TDelegate>(instance));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Exceptions;
+using System.Reflection;
 
 namespace Guppy.Core.Common.Extensions.System.Reflection
 {
@@ -71,6 +73,30 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         {
             attributes = memberInfo.GetAllCustomAttributes<TAttribute>(inherit);
             return attributes.Length > 0;
+        }
+
+        public static IEnumerable<TSequenceGroup> GetSequenceGroups<TSequenceGroup>(
+            this MemberInfo member,
+            bool strict,
+            TSequenceGroup? defaultSequenceGroup = null)
+            where TSequenceGroup : unmanaged, Enum
+        {
+            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<TSequenceGroup>>(true, out var sequenceAttributes))
+            {
+                return member.GetCustomAttributes<SequenceGroupAttribute<TSequenceGroup>>().Select(x => x.Value);
+            }
+
+            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<TSequenceGroup>>(true, out var requiredSequenceAttributes))
+            {
+                throw new SequenceException(typeof(TSequenceGroup), member);
+            }
+
+            if (defaultSequenceGroup is not null)
+            {
+                return defaultSequenceGroup.Value.Yield();
+            }
+
+            return Enumerable.Empty<TSequenceGroup>();
         }
     }
 }

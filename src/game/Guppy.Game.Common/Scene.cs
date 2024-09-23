@@ -24,8 +24,8 @@ namespace Guppy.Game.Common
         private bool _enabled;
         private bool _visible;
         private ILifetimeScope _scope;
-        private Action<GameTime>? _drawComponentsDelegate;
-        private Action<GameTime>? _updateComponentsDelegate;
+        private ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
+        private ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
 
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
@@ -49,6 +49,8 @@ namespace Guppy.Game.Common
         public Scene()
         {
             _scope = null!;
+            _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>();
+            _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>();
 
             this.Components = Array.Empty<ISceneComponent>();
 
@@ -75,18 +77,18 @@ namespace Guppy.Game.Common
                 component.Initialize();
             }
 
-            _drawComponentsDelegate = this.Components.SequenceDelegates<DrawComponentSequence, Action<GameTime>>();
-            _updateComponentsDelegate = this.Components.SequenceDelegates<UpdateComponentSequence, Action<GameTime>>();
+            _drawComponentsActions.Add(this.Components);
+            _updateComponentsActions.Add(this.Components);
         }
 
         public virtual void Draw(GameTime gameTime)
         {
-            _drawComponentsDelegate?.Invoke(gameTime);
+            _drawComponentsActions?.Invoke(gameTime);
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            _updateComponentsDelegate?.Invoke(gameTime);
+            _updateComponentsActions.Invoke(gameTime);
         }
 
         public T Resolve<T>()

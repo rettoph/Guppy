@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
-    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
     internal sealed class MouseCursorPublishComponent : EngineComponent, IUpdatableComponent
     {
         private readonly IInputService _inputs;
@@ -29,7 +29,7 @@ namespace Guppy.Game.Input.Components
         {
         }
 
-        [Sequence<UpdateComponentSequence>(UpdateComponentSequence.PreUpdate)]
+        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PreUpdate)]
         public void Update(GameTime gameTime)
         {
             MouseState state = Mouse.GetState();

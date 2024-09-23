@@ -5,8 +5,8 @@ using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
-using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
+using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Styling;
 using Guppy.Game.MonoGame.Common.Attributes;
 using Microsoft.Xna.Framework;
@@ -15,8 +15,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasTerminalWindowFilter]
-    [Sequence<InitializeSequence>(InitializeSequence.Initialize)]
-    [Sequence<DrawSequence>(DrawSequence.Draw)]
+    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
     internal class SceneTerminalWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
@@ -49,6 +48,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
         }
 
+        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_isTerminalWindowEnabled == false)

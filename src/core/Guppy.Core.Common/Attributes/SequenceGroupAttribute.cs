@@ -1,12 +1,12 @@
 ﻿namespace Guppy.Core.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method, AllowMultiple = true)]
-    public class SequenceAttribute<TSequence> : Attribute
-        where TSequence : Enum
+    public class SequenceGroupAttribute<TSequenceGroup> : Attribute
+        where TSequenceGroup : Enum
     {
-        public readonly TSequence Value;
+        public readonly TSequenceGroup Value;
 
-        public SequenceAttribute(TSequence value)
+        public SequenceGroupAttribute(TSequenceGroup value)
         {
             this.Value = value;
         }
