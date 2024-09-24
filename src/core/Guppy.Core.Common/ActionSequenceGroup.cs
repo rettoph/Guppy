@@ -19,6 +19,7 @@ namespace Guppy.Core.Common
         where TSequenceGroup : unmanaged, Enum
         where TAction : Delegate
     {
+        private readonly List<TAction> _orphans;
         private readonly HashSet<TAction> _all;
         private readonly List<TAction> _sequenced;
         private readonly Dictionary<SequenceGroup<TSequenceGroup>, List<TAction>> _grouped;
@@ -26,6 +27,7 @@ namespace Guppy.Core.Common
 
         public readonly ReadOnlyCollection<TAction> Sequenced;
         public readonly ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>> Grouped;
+        public readonly ReadOnlyCollection<TAction> Orphans;
 
         public ActionSequenceGroupBase()
         {
@@ -33,9 +35,11 @@ namespace Guppy.Core.Common
             _readonlyGrouped = new Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>>();
             _all = new HashSet<TAction>();
             _sequenced = new List<TAction>();
+            _orphans = new List<TAction>();
 
             this.Sequenced = new ReadOnlyCollection<TAction>(_sequenced);
             this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>>(_readonlyGrouped);
+            this.Orphans = new ReadOnlyCollection<TAction>(_orphans);
         }
 
         public void Add(IEnumerable<TAction> actions)
@@ -49,11 +53,19 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
+                SequenceGroup<TSequenceGroup>[] sequenceGroups = action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false).ToArray();
+                if (sequenceGroups.Length == 0)
+                {
+                    _orphans.Add(action);
+                    continue;
+                }
+
+                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in sequenceGroups)
                 {
                     this.GetSequenceGroup(sequenceGroup).Add(action);
-                    modified = true;
                 }
+
+                modified = true;
             }
 
             if (modified == false)
@@ -76,11 +88,17 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
+                if (_orphans.Remove(action) == true)
+                {
+                    continue;
+                }
+
                 foreach (SequenceGroup<TSequenceGroup> sequenceGroup in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
                 {
                     this.GetSequenceGroup(sequenceGroup).Remove(action);
-                    modified = true;
                 }
+
+                modified = true;
             }
 
             if (modified == false)
