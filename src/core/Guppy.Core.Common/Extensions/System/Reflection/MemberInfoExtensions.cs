@@ -75,28 +75,28 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
             return attributes.Length > 0;
         }
 
-        public static IEnumerable<TSequenceGroup> GetSequenceGroups<TSequenceGroup>(
+        public static IEnumerable<SequenceGroup<T>> GetSequenceGroups<T>(
             this MemberInfo member,
             bool strict,
-            TSequenceGroup? defaultSequenceGroup = null)
-            where TSequenceGroup : unmanaged, Enum
+            T? defaultSequenceGroup = null)
+            where T : unmanaged, Enum
         {
-            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<TSequenceGroup>>(true, out var sequenceAttributes))
+            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
             {
-                return member.GetCustomAttributes<SequenceGroupAttribute<TSequenceGroup>>().Select(x => x.Value);
+                return member.GetCustomAttributes<SequenceGroupAttribute<T>>().Select(x => x.Value);
             }
 
-            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<TSequenceGroup>>(true, out var requiredSequenceAttributes))
+            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
             {
-                throw new SequenceException(typeof(TSequenceGroup), member);
+                throw new SequenceGroupException(typeof(T), member);
             }
 
             if (defaultSequenceGroup is not null)
             {
-                return defaultSequenceGroup.Value.Yield();
+                return defaultSequenceGroup.Value.GetCustomAttributes<SequenceGroupAttribute<T>>().Single().Value.Yield();
             }
 
-            return Enumerable.Empty<TSequenceGroup>();
+            return Enumerable.Empty<SequenceGroup<T>>();
         }
     }
 }

@@ -3,17 +3,17 @@ using System.Reflection;
 
 namespace Guppy.Core.Common.Exceptions
 {
-    public class SequenceException : Exception
+    public class SequenceGroupException : Exception
     {
         public readonly Type Sequence;
         public readonly MemberInfo? Member;
 
-        public SequenceException(Type sequence) : base($"Attepted sequence on null")
+        public SequenceGroupException(Type sequence) : base($"Attepted SequenceGroup on null")
         {
             this.Sequence = sequence;
         }
 
-        public SequenceException(Type sequence, MemberInfo member) : base($"Missing sequence '{sequence.ToString()}' on member {GetMemberString(member)}")
+        public SequenceGroupException(Type sequence, MemberInfo member) : base($"Missing SequenceGroup '{sequence.ToString()}' on member {GetMemberString(member)}")
         {
             this.Sequence = sequence;
             this.Member = member;

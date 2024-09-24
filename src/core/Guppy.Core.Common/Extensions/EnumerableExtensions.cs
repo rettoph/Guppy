@@ -13,7 +13,7 @@ namespace Guppy.Core.Common.Extensions
         {
             IEnumerable<T> sequenced = items
                 .OfType<T>()
-                .Select(x => (item: x, sequences: x.GetType().GetSequenceGroups<TSequenceGroup>(strict, defaultSequenceGroup)))
+                .Select(x => (item: x, sequences: x.GetType().GetSequenceGroups(strict, defaultSequenceGroup)))
                 .SelectMany(itemSequences => itemSequences.sequences.Select(sequence => (itemSequences.item, sequence)))
                 .OrderBy(x => x.sequence)
                 .Select(x => x.item);

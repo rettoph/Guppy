@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Extensions.System.Reflection;
-using Guppy.Core.Common.Helpers;
 using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Common
 {
@@ -21,19 +21,21 @@ namespace Guppy.Core.Common
     {
         private readonly HashSet<TAction> _all;
         private readonly List<TAction> _sequenced;
-        private readonly Dictionary<TSequenceGroup, List<TAction>> _grouped;
+        private readonly Dictionary<SequenceGroup<TSequenceGroup>, List<TAction>> _grouped;
+        private readonly Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>> _readonlyGrouped;
 
         public readonly ReadOnlyCollection<TAction> Sequenced;
-        public readonly Dictionary<TSequenceGroup, ReadOnlyCollection<TAction>> Grouped;
+        public readonly ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>> Grouped;
 
         public ActionSequenceGroupBase()
         {
-            _grouped = EnumHelper.ToDictionary<TSequenceGroup, List<TAction>>(sg => new List<TAction>());
+            _grouped = new Dictionary<SequenceGroup<TSequenceGroup>, List<TAction>>();
+            _readonlyGrouped = new Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>>();
             _all = new HashSet<TAction>();
             _sequenced = new List<TAction>();
 
             this.Sequenced = new ReadOnlyCollection<TAction>(_sequenced);
-            this.Grouped = _grouped.ToDictionary(x => x.Key, x => new ReadOnlyCollection<TAction>(x.Value));
+            this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>>(_readonlyGrouped);
         }
 
         public void Add(IEnumerable<TAction> actions)
@@ -47,9 +49,9 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                foreach (TSequenceGroup sequence in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
+                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
                 {
-                    _grouped[sequence].Add(action);
+                    this.GetSequenceGroup(sequenceGroup).Add(action);
                     modified = true;
                 }
             }
@@ -74,9 +76,9 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                foreach (TSequenceGroup sequence in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
+                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
                 {
-                    _grouped[sequence].Remove(action);
+                    this.GetSequenceGroup(sequenceGroup).Remove(action);
                     modified = true;
                 }
             }
@@ -100,6 +102,18 @@ namespace Guppy.Core.Common
         {
             IEnumerable<TAction> actions = instances.SelectMany(x => x.GetMatchingDelegates<TAction>());
             this.Remove(actions);
+        }
+
+        private List<TAction> GetSequenceGroup(SequenceGroup<TSequenceGroup> sequenceGroup)
+        {
+            ref List<TAction>? actions = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
+            if (exists == false)
+            {
+                actions = new List<TAction>();
+                _readonlyGrouped.Add(sequenceGroup, new ReadOnlyCollection<TAction>(actions));
+            }
+
+            return actions!;
         }
     }
 
@@ -126,7 +140,7 @@ namespace Guppy.Core.Common
             }
         }
 
-        public void Invoke(TSequenceGroup sequenceGroup, TParam param)
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam param)
         {
             foreach (Action<TParam> action in this.Grouped[sequenceGroup])
             {
