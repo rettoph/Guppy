@@ -10,8 +10,8 @@ using Guppy.Game.MonoGame.Messages;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
-    internal sealed class ToggleWindowComponent : EngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowComponent>>
+    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+    internal sealed class ToggleWindowComponent : IEngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowComponent>>
     {
         private SettingValue<bool> _isDebugWindowEnabled;
         private SettingValue<bool> _isTerminalWindowEnabled;

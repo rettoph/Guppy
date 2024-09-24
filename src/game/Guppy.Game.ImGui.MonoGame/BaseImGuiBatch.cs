@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.ImGui.Common;
@@ -13,11 +14,11 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Game.ImGui.MonoGame
 {
-    [SequenceGroup<InitializeSequence>(InitializeSequence.PostInitialize)]
-    internal abstract class BaseImGuiBatch : EngineComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch
+    internal abstract class BaseImGuiBatch : IEngineComponent, IInitializableComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
+        private bool _initialized;
         private bool _dirtyFonts;
         private readonly Dictionary<(ResourceValue<TrueTypeFont>, int), Ref<ImFontPtr>> _fonts;
 
@@ -69,12 +70,12 @@ namespace Guppy.Game.ImGui.MonoGame
             _inputs = new Queue<char>();
             _begin = DateTime.MinValue;
             _resources = resources;
+            _initialized = false;
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
+        public void Initialize(IGuppyEngine engine)
         {
-            base.Initialize();
-
             _resources.Initialize();
 
             if (_fonts.Count > 0)
@@ -86,6 +87,8 @@ namespace Guppy.Game.ImGui.MonoGame
 
                 _dirtyFonts = true;
             }
+
+            _initialized = true;
         }
 
         #region ImGuiRenderer
@@ -263,7 +266,7 @@ namespace Guppy.Game.ImGui.MonoGame
 
             font.Value = new ImFontPtr(ttf, size);
 
-            if (this.Ready)
+            if (_initialized)
             {
                 font.Value.SetImFontPtr(this.IO.Fonts);
             }

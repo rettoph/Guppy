@@ -15,7 +15,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasTerminalWindowFilter]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
+    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
     internal class SceneTerminalWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;

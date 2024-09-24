@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
@@ -13,8 +14,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
-    internal class DrawImGuiComponent : EngineComponent, IDrawableComponent, IDisposable
+    internal class DrawImGuiComponent : IEngineComponent, IInitializableComponent, IDrawableComponent, IDisposable
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
@@ -29,7 +29,8 @@ namespace Guppy.Game.MonoGame.Components.Engine
             _engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
         {
             _drawImGuiActions.Add(_engine.Components);
         }
@@ -57,7 +58,6 @@ namespace Guppy.Game.MonoGame.Components.Engine
         {
             _batch.End();
         }
-
 
         private void HandleSceneCreated(ISceneService sender, IScene scene)
         {

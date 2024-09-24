@@ -10,8 +10,8 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
-    internal sealed class ButtonPublishComponent : EngineComponent, IUpdatableComponent
+    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+    internal sealed class ButtonPublishComponent : IEngineComponent, IUpdatableComponent
     {
         private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;

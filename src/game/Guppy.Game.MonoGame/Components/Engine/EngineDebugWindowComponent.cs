@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
@@ -15,8 +16,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
-    internal class EngineDebugWindowComponent : EngineComponent, IImGuiComponent
+    internal class EngineDebugWindowComponent : IEngineComponent, IInitializableComponent, IImGuiComponent
     {
         private readonly IGameEngine _engine;
         private readonly ResourceValue<ImStyle> _debugWindowStyle;
@@ -34,10 +34,9 @@ namespace Guppy.Game.MonoGame.Components.Engine
             _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
         {
-            base.Initialize();
-
             _renderDebugInfoActions.Add(_engine.Components);
         }
 

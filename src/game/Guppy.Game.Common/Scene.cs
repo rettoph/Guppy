@@ -70,7 +70,7 @@ namespace Guppy.Game.Common
         {
             _scope = scope;
 
-            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence<ISceneComponent, InitializeSequence>().ToArray();
+            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence<ISceneComponent, InitializeComponentSequenceGroup>().ToArray();
 
             foreach (ISceneComponent component in this.Components)
             {

@@ -16,7 +16,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasDebugWindowFilter]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
+    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
     internal sealed class SceneDebugWindowComponent : SceneComponent, IImGuiComponent
     {
         private readonly IImGui _imgui;

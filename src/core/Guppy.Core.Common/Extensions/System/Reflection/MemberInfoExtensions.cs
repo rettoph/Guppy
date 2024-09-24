@@ -98,5 +98,29 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
 
             return Enumerable.Empty<SequenceGroup<T>>();
         }
+
+        public static SequenceGroup<T> GetSequenceGroup<T>(
+            this MemberInfo member,
+            bool strict,
+            T? defaultSequenceGroup = null)
+            where T : unmanaged, Enum
+        {
+            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
+            {
+                return member.GetCustomAttributes<SequenceGroupAttribute<T>>().Single().Value;
+            }
+
+            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
+            {
+                throw new SequenceGroupException(typeof(T), member);
+            }
+
+            if (defaultSequenceGroup is not null)
+            {
+                return defaultSequenceGroup.Value.GetCustomAttributes<SequenceGroupAttribute<T>>().Single().Value;
+            }
+
+            throw new SequenceGroupException(typeof(T), member);
+        }
     }
 }

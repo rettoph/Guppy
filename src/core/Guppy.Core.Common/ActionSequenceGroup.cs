@@ -165,5 +165,19 @@ namespace Guppy.Core.Common
                 action(param);
             }
         }
+
+        public static void Invoke(IEnumerable<Action<TParam>> actions, TParam param)
+        {
+            foreach (Action<TParam> action in actions.OrderBy(x => x.GetMethodInfo().GetSequenceGroup<TSequenceGroup>(false)))
+            {
+                action(param);
+            }
+        }
+
+        public static void Invoke(IEnumerable<object> instances, TParam param)
+        {
+            IEnumerable<Action<TParam>> actions = instances.SelectMany(x => x.GetMatchingDelegates<Action<TParam>>());
+            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(actions, param);
+        }
     }
 }

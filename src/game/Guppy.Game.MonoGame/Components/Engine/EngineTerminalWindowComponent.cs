@@ -13,8 +13,8 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [SequenceGroup<InitializeSequence>(InitializeSequence.Initialize)]
-    internal class EngineTerminalWindowComponent : EngineComponent, IImGuiComponent
+    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+    internal class EngineTerminalWindowComponent : IEngineComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
         private readonly IImGui _imgui;
