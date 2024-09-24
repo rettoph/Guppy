@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal class EngineDebugWindowComponent : IEngineComponent, IInitializableComponent, IImGuiComponent
+    internal class EngineDebugWindowComponent : IEngineComponent, IImGuiComponent
     {
         private readonly IGameEngine _engine;
         private readonly ResourceValue<ImStyle> _debugWindowStyle;

@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
@@ -18,6 +19,12 @@ namespace Guppy.Game.Components.Engine
         public SceneFrameComponent(ISceneService scenes)
         {
             _scenes = scenes;
+        }
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
+        {
+            //
         }
 
         [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]

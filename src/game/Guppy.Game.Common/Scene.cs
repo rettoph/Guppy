@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
@@ -70,12 +69,9 @@ namespace Guppy.Game.Common
         {
             _scope = scope;
 
-            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().Sequence<ISceneComponent, InitializeComponentSequenceGroup>().ToArray();
+            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().ToArray();
 
-            foreach (ISceneComponent component in this.Components)
-            {
-                component.Initialize();
-            }
+            ActionSequenceGroup<InitializeComponentSequenceGroup, IScene>.Invoke(this.Components, this);
 
             _drawComponentsActions.Add(this.Components);
             _updateComponentsActions.Add(this.Components);

@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
@@ -23,6 +24,12 @@ namespace Guppy.Game.Components.Guppy
             _logLevel = settings.GetValue(Settings.LogLevel);
 
             LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel;
+        }
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
+        {
+            //
         }
 
         public void Process(in Guid messageId, LogLevelCommand message)

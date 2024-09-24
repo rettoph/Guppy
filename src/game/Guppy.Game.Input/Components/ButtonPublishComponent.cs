@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
@@ -30,6 +31,12 @@ namespace Guppy.Game.Input.Components
             {
                 provider.Clean(_buttons.Values);
             }
+        }
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
+        {
+            //
         }
 
         [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PreUpdate)]

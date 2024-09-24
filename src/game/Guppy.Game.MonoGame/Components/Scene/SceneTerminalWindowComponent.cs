@@ -15,8 +15,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasTerminalWindowFilter]
-    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
-    internal class SceneTerminalWindowComponent : SceneComponent, IImGuiComponent
+    internal class SceneTerminalWindowComponent : ISceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands;
         private readonly IImGui _imgui;
@@ -46,6 +45,12 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _scene = scene;
             _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+        }
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IScene scene)
+        {
+            //
         }
 
         [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]

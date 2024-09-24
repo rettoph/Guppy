@@ -16,8 +16,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasDebugWindowFilter]
-    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
-    internal sealed class SceneDebugWindowComponent : SceneComponent, IImGuiComponent
+    internal sealed class SceneDebugWindowComponent : ISceneComponent, IImGuiComponent
     {
         private readonly IImGui _imgui;
         private readonly ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime> _renderDebugInfoActions;
@@ -35,10 +34,9 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IScene scene)
         {
-            base.Initialize();
-
             _renderDebugInfoActions.Add(_scene.Components);
         }
 

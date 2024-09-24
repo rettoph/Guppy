@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Input.Common;
@@ -20,6 +21,12 @@ namespace Guppy.Game.MonoGame.Components.Engine
         {
             _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
             _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
+        }
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
+        {
+            //
         }
 
         public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)

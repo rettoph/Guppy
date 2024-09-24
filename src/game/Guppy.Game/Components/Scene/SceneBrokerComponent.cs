@@ -1,13 +1,13 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Engine.Common.Enums;
+using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 
 namespace Guppy.Engine.Components.Guppy
 {
     [AutoLoad]
-    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
-    internal class SceneBrokerComponent : SceneComponent
+    internal class SceneBrokerComponent : ISceneComponent
     {
         private readonly IBrokerService _brokers;
 
@@ -16,10 +16,9 @@ namespace Guppy.Engine.Components.Guppy
             _brokers = brokers;
         }
 
-        protected override void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IScene scene)
         {
-            base.Initialize();
-
             _brokers.AddSubscribers<ISceneComponent>();
         }
 

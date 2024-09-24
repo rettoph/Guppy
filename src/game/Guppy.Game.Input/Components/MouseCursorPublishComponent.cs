@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
@@ -25,8 +26,10 @@ namespace Guppy.Game.Input.Components
             _cursor = cursors.Get(Cursors.Mouse);
         }
 
-        public void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
         {
+            //
         }
 
         [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PreUpdate)]

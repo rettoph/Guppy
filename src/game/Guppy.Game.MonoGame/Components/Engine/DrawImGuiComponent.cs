@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal class DrawImGuiComponent : IEngineComponent, IInitializableComponent, IDrawableComponent, IDisposable
+    internal class DrawImGuiComponent : IEngineComponent, IDrawableComponent, IDisposable
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;

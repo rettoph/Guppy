@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
+using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
@@ -21,6 +22,12 @@ namespace Guppy.Game.MonoGame.Components.Engine
         public FpsDebugComponent(IImGui imgui)
         {
             _imgui = imgui;
+        }
+
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IGuppyEngine engine)
+        {
+            //
         }
 
         [SequenceGroup<DrawDebugComponentSequenceGroup>(DrawDebugComponentSequenceGroup.Draw)]
