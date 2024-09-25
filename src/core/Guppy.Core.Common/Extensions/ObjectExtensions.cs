@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common.Helpers;
+﻿using Guppy.Core.Common.Utilities;
 using System.Reflection;
 
 namespace System
@@ -65,23 +65,28 @@ namespace System
             yield return instance;
         }
 
-        public static IEnumerable<TDelegate> GetMatchingDelegates<TDelegate>(this object instance)
+        public static IEnumerable<Delegator<TDelegate>> GetMatchingDelegators<TDelegate>(this object instance, Type? delegateType = null)
             where TDelegate : Delegate
         {
             Type type = instance.GetType();
 
             List<MethodInfo> matchingMethodInfos = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                .Where(DelegateHelper.IsCompatible<TDelegate>)
+                .Where(mi => Delegator<TDelegate>.IsCompatible(delegateType, mi, out _))
                 .ToList();
 
             foreach (Type interfaceType in type.GetInterfaces())
             {
                 InterfaceMapping interfaceMapping = type.GetInterfaceMap(interfaceType);
-                IEnumerable<MethodInfo> interfaceMatchingMethodInfos = interfaceMapping.TargetMethods.Where(DelegateHelper.IsCompatible<TDelegate>);
+                IEnumerable<MethodInfo> interfaceMatchingMethodInfos = interfaceMapping.TargetMethods.Where(mi => Delegator<TDelegate>.IsCompatible(delegateType ?? typeof(TDelegate), mi, out _));
                 matchingMethodInfos.AddRange(interfaceMatchingMethodInfos);
             }
 
-            return matchingMethodInfos.Distinct().Select(x => DelegateHelper.CreateDelegate<TDelegate>(x, instance));
+            if (delegateType is null)
+            {
+                return matchingMethodInfos.Distinct().Select(x => Delegator<TDelegate>.CreateDelegate(x, instance));
+            }
+
+            return matchingMethodInfos.Distinct().Select(x => Delegator<TDelegate>.CreateDelegate(delegateType, x, instance));
         }
     }
 }

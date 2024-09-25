@@ -1,23 +1,46 @@
-﻿using System.Reflection;
+﻿using Guppy.Core.Common.Enums;
+using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Guppy.Core.Common.Helpers
+namespace Guppy.Core.Common.Utilities
 {
-    public static class DelegateHelper
+    public struct Delegator<TDelegate>
+        where TDelegate : Delegate
     {
-        public enum IsCompatibleResultEnum
+        public readonly TDelegate Delegate;
+        public readonly MethodInfo Method;
+        public readonly object? Target;
+
+        public Delegator(TDelegate @delegate, MethodInfo method, object? target)
         {
-            Incompatible,
-            Compatible,
-            CompatibleWithCasting
+            this.Delegate = @delegate;
+            this.Method = method;
+            this.Target = target;
         }
 
-        public static bool IsCompatible(Type delegateType, MethodInfo method, out IsCompatibleResultEnum result)
+        public Delegator(TDelegate @delegate) : this(@delegate, @delegate.GetMethodInfo(), @delegate.Target)
         {
-            MethodInfo delegateInvokeMethod = DelegateHelper.GetInvokeMethod(delegateType);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Delegator<TDelegate> delegator &&
+                   EqualityComparer<MethodInfo>.Default.Equals(Method, delegator.Method) &&
+                   EqualityComparer<object?>.Default.Equals(Target, delegator.Target);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Method, Target);
+        }
+
+        public static bool IsCompatible(Type? delegateType, MethodInfo method, out DelegatorIsCompatibleResultEnum result)
+        {
+            delegateType ??= typeof(TDelegate);
+
+            MethodInfo delegateInvokeMethod = Delegator<TDelegate>.GetInvokeMethod(delegateType);
 
             bool requiresCasting = false;
-
             if (method.ReturnType == delegateInvokeMethod.ReturnType)
             {
                 requiresCasting = false;
@@ -28,7 +51,7 @@ namespace Guppy.Core.Common.Helpers
             }
             else
             {
-                result = IsCompatibleResultEnum.Incompatible;
+                result = DelegatorIsCompatibleResultEnum.Incompatible;
                 return false;
             }
 
@@ -36,7 +59,7 @@ namespace Guppy.Core.Common.Helpers
             ParameterInfo[] methodParameters = method.GetParameters();
             if (delegateInvokeParameters.Length != methodParameters.Length)
             {
-                result = IsCompatibleResultEnum.Incompatible;
+                result = DelegatorIsCompatibleResultEnum.Incompatible;
                 return false;
             }
 
@@ -56,35 +79,42 @@ namespace Guppy.Core.Common.Helpers
                     continue;
                 }
 
-                result = IsCompatibleResultEnum.Incompatible;
+                result = DelegatorIsCompatibleResultEnum.Incompatible;
                 return false;
             }
 
-            result = requiresCasting ? IsCompatibleResultEnum.CompatibleWithCasting : IsCompatibleResultEnum.Compatible;
+            result = requiresCasting ? DelegatorIsCompatibleResultEnum.CompatibleWithCasting : DelegatorIsCompatibleResultEnum.Compatible;
             return true;
         }
 
-        public static bool IsCompatible<TDelegate>(MethodInfo method, out IsCompatibleResultEnum result)
-            where TDelegate : Delegate
-                => DelegateHelper.IsCompatible(typeof(TDelegate), method, out result);
+        public static bool IsCompatible(Type? delegateType, MethodInfo method)
+            => Delegator<TDelegate>.IsCompatible(delegateType, method, out _);
 
-        public static bool IsCompatible<TDelegate>(MethodInfo method)
-            where TDelegate : Delegate
-                => DelegateHelper.IsCompatible<TDelegate>(method, out _);
+        public static bool IsCompatible(MethodInfo method, out DelegatorIsCompatibleResultEnum result)
+                => Delegator<TDelegate>.IsCompatible(typeof(TDelegate), method, out result);
 
-        public static Delegate CreateDelegate(Type delegateType, MethodInfo method, object? target)
+        public static bool IsCompatible(MethodInfo method)
+                => Delegator<TDelegate>.IsCompatible(method, out _);
+
+        public static Delegator<TDelegate> CreateDelegate(Type? delegateType, MethodInfo method, object? target)
         {
-            if (DelegateHelper.IsCompatible(delegateType, method, out IsCompatibleResultEnum result) == false)
+            delegateType ??= typeof(TDelegate);
+
+            if (Delegator<TDelegate>.IsCompatible(delegateType, method, out DelegatorIsCompatibleResultEnum result) == false)
             {
                 throw new InvalidOperationException();
             }
 
-            if (result == IsCompatibleResultEnum.Compatible)
+            if (result == DelegatorIsCompatibleResultEnum.Compatible)
             {
-                return method.CreateDelegate(delegateType, method.IsStatic ? null : target);
+                return new Delegator<TDelegate>(
+                    @delegate: (TDelegate)method.CreateDelegate(delegateType, method.IsStatic ? null : target),
+                    method: method,
+                    target: target
+                );
             }
 
-            MethodInfo delegateInvokeMethod = DelegateHelper.GetInvokeMethod(delegateType);
+            MethodInfo delegateInvokeMethod = GetInvokeMethod(delegateType);
             ParameterInfo[] delegateInvokeParameters = delegateInvokeMethod.GetParameters();
             ParameterInfo[] methodParameters = method.GetParameters();
 
@@ -98,7 +128,7 @@ namespace Guppy.Core.Common.Helpers
                 $"DelegateConverter_Dynamic_{method.Name}",
                 delegateInvokeMethod.ReturnType,
                 dynamicMethodParameterTypes.ToArray(),
-                typeof(DelegateHelper).Module);
+                typeof(Delegator<TDelegate>).Module);
 
 
             // Get an ILGenerator to emit the IL code for the method body
@@ -120,7 +150,7 @@ namespace Guppy.Core.Common.Helpers
                 dynamicMethod.DefineParameter(Ldarg_index, ParameterAttributes.In, methodParameter.Name);
 
                 ilGenerator.Emit(OpCodes.Ldarg, Ldarg_index);
-                if (DelegateHelper.WillBoxingOccurOnCast(delegateInvokeParameter.ParameterType, methodParameter.ParameterType))
+                if (WillBoxingOccurOnCast(delegateInvokeParameter.ParameterType, methodParameter.ParameterType))
                 {
                     ilGenerator.Emit(OpCodes.Box, delegateInvokeParameter.ParameterType);
                 }
@@ -131,13 +161,15 @@ namespace Guppy.Core.Common.Helpers
             ilGenerator.Emit(OpCodes.Call, method);
             ilGenerator.Emit(OpCodes.Ret);
 
-            Delegate del = dynamicMethod.CreateDelegate(delegateType, method.IsStatic ? null : target);
-            return del;
+            return new Delegator<TDelegate>(
+                @delegate: (TDelegate)dynamicMethod.CreateDelegate(delegateType, method.IsStatic ? null : target),
+                method: method,
+                target: target
+            );
         }
 
-        public static TDelegate CreateDelegate<TDelegate>(MethodInfo method, object? target)
-            where TDelegate : Delegate
-                => (TDelegate)DelegateHelper.CreateDelegate(typeof(TDelegate), method, target);
+        public static Delegator<TDelegate> CreateDelegate(MethodInfo method, object? target)
+                => Delegator<TDelegate>.CreateDelegate(typeof(TDelegate), method, target);
 
         private static MethodInfo GetInvokeMethod(Type delegateType)
         {
@@ -146,10 +178,6 @@ namespace Guppy.Core.Common.Helpers
             MethodInfo invokeMethod = delegateType.GetMethod("Invoke") ?? throw new NotImplementedException();
             return invokeMethod;
         }
-
-        private static MethodInfo GetInvokeMethod<TDelegate>()
-            where TDelegate : Delegate
-                => DelegateHelper.GetInvokeMethod(typeof(TDelegate));
 
         private static bool WillBoxingOccurOnCast(Type sourceType, Type targetType)
         {

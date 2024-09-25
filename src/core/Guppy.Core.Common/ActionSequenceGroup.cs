@@ -1,7 +1,5 @@
 ﻿using Guppy.Core.Common.Extensions.System.Reflection;
-using System.Collections.ObjectModel;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using Guppy.Core.Common.Utilities;
 
 namespace Guppy.Core.Common
 {
@@ -14,128 +12,8 @@ namespace Guppy.Core.Common
     /// the required attribute will be added,
     /// </summary>
     /// <typeparam name="TSequenceGroup"></typeparam>
-    /// <typeparam name="TAction"></typeparam>
-    public class ActionSequenceGroupBase<TSequenceGroup, TAction>
-        where TSequenceGroup : unmanaged, Enum
-        where TAction : Delegate
-    {
-        private readonly List<TAction> _orphans;
-        private readonly HashSet<TAction> _all;
-        private readonly List<TAction> _sequenced;
-        private readonly Dictionary<SequenceGroup<TSequenceGroup>, List<TAction>> _grouped;
-        private readonly Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>> _readonlyGrouped;
-
-        public readonly ReadOnlyCollection<TAction> Sequenced;
-        public readonly ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>> Grouped;
-        public readonly ReadOnlyCollection<TAction> Orphans;
-
-        public ActionSequenceGroupBase()
-        {
-            _grouped = new Dictionary<SequenceGroup<TSequenceGroup>, List<TAction>>();
-            _readonlyGrouped = new Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>>();
-            _all = new HashSet<TAction>();
-            _sequenced = new List<TAction>();
-            _orphans = new List<TAction>();
-
-            this.Sequenced = new ReadOnlyCollection<TAction>(_sequenced);
-            this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<TAction>>(_readonlyGrouped);
-            this.Orphans = new ReadOnlyCollection<TAction>(_orphans);
-        }
-
-        public void Add(IEnumerable<TAction> actions)
-        {
-            bool modified = false;
-
-            foreach (TAction action in actions)
-            {
-                if (_all.Add(action) == false)
-                {
-                    continue;
-                }
-
-                SequenceGroup<TSequenceGroup>[] sequenceGroups = action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false).ToArray();
-                if (sequenceGroups.Length == 0)
-                {
-                    _orphans.Add(action);
-                    continue;
-                }
-
-                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in sequenceGroups)
-                {
-                    this.GetSequenceGroup(sequenceGroup).Add(action);
-                }
-
-                modified = true;
-            }
-
-            if (modified == false)
-            {
-                return;
-            }
-
-            _sequenced.Clear();
-            _sequenced.AddRange(_grouped.OrderBy(x => x.Key).SelectMany(x => x.Value));
-        }
-
-        public void Remove(IEnumerable<TAction> actions)
-        {
-            bool modified = false;
-
-            foreach (TAction action in actions)
-            {
-                if (_all.Remove(action) == false)
-                {
-                    continue;
-                }
-
-                if (_orphans.Remove(action) == true)
-                {
-                    continue;
-                }
-
-                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in action.GetMethodInfo().GetSequenceGroups<TSequenceGroup>(false))
-                {
-                    this.GetSequenceGroup(sequenceGroup).Remove(action);
-                }
-
-                modified = true;
-            }
-
-            if (modified == false)
-            {
-                return;
-            }
-
-            _sequenced.Clear();
-            _sequenced.AddRange(_grouped.OrderBy(x => x.Key).SelectMany(x => x.Value));
-        }
-
-        public void Add(IEnumerable<object> instances)
-        {
-            IEnumerable<TAction> actions = instances.SelectMany(x => x.GetMatchingDelegates<TAction>());
-            this.Add(actions);
-        }
-
-        public void Remove(IEnumerable<object> instances)
-        {
-            IEnumerable<TAction> actions = instances.SelectMany(x => x.GetMatchingDelegates<TAction>());
-            this.Remove(actions);
-        }
-
-        private List<TAction> GetSequenceGroup(SequenceGroup<TSequenceGroup> sequenceGroup)
-        {
-            ref List<TAction>? actions = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
-            if (exists == false)
-            {
-                actions = new List<TAction>();
-                _readonlyGrouped.Add(sequenceGroup, new ReadOnlyCollection<TAction>(actions));
-            }
-
-            return actions!;
-        }
-    }
-
-    public sealed class ActionSequenceGroup<TSequenceGroup, TParam> : ActionSequenceGroupBase<TSequenceGroup, Action<TParam>>
+    /// <typeparam name="TParam"></typeparam>
+    public sealed class ActionSequenceGroup<TSequenceGroup, TParam> : DelegateSequenceGroup<TSequenceGroup, Action<TParam>>
         where TSequenceGroup : unmanaged, Enum
     {
         public ActionSequenceGroup() : base()
@@ -152,32 +30,38 @@ namespace Guppy.Core.Common
 
         public void Invoke(TParam param)
         {
-            foreach (Action<TParam> action in this.Sequenced)
+            foreach (Delegator<Action<TParam>> action in this.Sequenced)
             {
-                action(param);
+                action.Delegate(param);
             }
         }
 
         public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam param)
         {
-            foreach (Action<TParam> action in this.Grouped[sequenceGroup])
+            foreach (Delegator<Action<TParam>> action in this.Grouped[sequenceGroup])
             {
-                action(param);
+                action.Delegate(param);
+            }
+        }
+
+        public static void Invoke(IEnumerable<Delegator<Action<TParam>>> delegators, TParam param)
+        {
+            foreach (Delegator<Action<TParam>> delegator in delegators.OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
+            {
+                delegator.Delegate(param);
             }
         }
 
         public static void Invoke(IEnumerable<Action<TParam>> actions, TParam param)
         {
-            foreach (Action<TParam> action in actions.OrderBy(x => x.GetMethodInfo().GetSequenceGroup<TSequenceGroup>(false)))
-            {
-                action(param);
-            }
+            IEnumerable<Delegator<Action<TParam>>> delegators = actions.Select(x => new Delegator<Action<TParam>>(x));
+            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(delegators, param);
         }
 
         public static void Invoke(IEnumerable<object> instances, TParam param)
         {
-            IEnumerable<Action<TParam>> actions = instances.SelectMany(x => x.GetMatchingDelegates<Action<TParam>>());
-            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(actions, param);
+            IEnumerable<Delegator<Action<TParam>>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<Action<TParam>>());
+            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(delegators, param);
         }
     }
 }
