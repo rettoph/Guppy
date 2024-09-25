@@ -28,23 +28,30 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         /// <param name="inherit"></param>
         /// <param name="attributes"></param>
         /// <returns></returns>
-        public static TAttribute[] GetAllCustomAttributes<TAttribute>(this MemberInfo memberInfo, bool inherit)
+        public static IEnumerable<TAttribute> GetAllCustomAttributes<TAttribute>(this MemberInfo memberInfo, bool inherit)
             where TAttribute : Attribute
         {
             List<TAttribute> result = new List<TAttribute>();
 
-            IEnumerable<TAttribute> memberAttributes = memberInfo.GetCustomAttributes(inherit).OfType<TAttribute>();
-            result.AddRange(memberAttributes);
+            foreach (TAttribute attribute in memberInfo.GetCustomAttributes(inherit).OfType<TAttribute>())
+            {
+                yield return attribute;
+            }
 
             if (inherit == false)
             { // No interface checking needed
-                return result.ToArray();
+                yield break;
             }
 
             if (memberInfo is Type type)
             {
-                IEnumerable<TAttribute> typeInterfaceAttributes = type.GetInterfaces().SelectMany(x => x.GetCustomAttributes(true).OfType<TAttribute>());
-                result.AddRange(typeInterfaceAttributes);
+                foreach (Type implementedInterfaceType in type.GetInterfaces())
+                {
+                    foreach (TAttribute attribute in implementedInterfaceType.GetCustomAttributes(inherit).OfType<TAttribute>())
+                    {
+                        yield return attribute;
+                    }
+                }
             }
 
             if (memberInfo is MethodInfo methodInfo)
@@ -61,17 +68,18 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
                     }
 
                     MethodInfo mappedInterfaceMethodInfo = implementedInterfaceMapping.InterfaceMethods[methodInfoMapIndex];
-                    result.AddRange(mappedInterfaceMethodInfo.GetCustomAttributes(inherit).OfType<TAttribute>());
+                    foreach (TAttribute attribute in mappedInterfaceMethodInfo.GetCustomAttributes(inherit).OfType<TAttribute>())
+                    {
+                        yield return attribute;
+                    }
                 }
             }
-
-            return result.ToArray();
         }
 
         public static bool TryGetAllCustomAttributes<TAttribute>(this MemberInfo memberInfo, bool inherit, out TAttribute[] attributes)
             where TAttribute : Attribute
         {
-            attributes = memberInfo.GetAllCustomAttributes<TAttribute>(inherit);
+            attributes = memberInfo.GetAllCustomAttributes<TAttribute>(inherit).ToArray();
             return attributes.Length > 0;
         }
 
@@ -83,7 +91,7 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         {
             if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
             {
-                return member.GetCustomAttributes<SequenceGroupAttribute<T>>().Select(x => x.Value);
+                return sequenceAttributes.Select(x => x.Value);
             }
 
             if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
@@ -103,11 +111,11 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
             this MemberInfo member,
             bool strict,
             T? defaultSequenceGroup = null)
-            where T : unmanaged, Enum
+                where T : unmanaged, Enum
         {
             if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
             {
-                return member.GetCustomAttributes<SequenceGroupAttribute<T>>().Single().Value;
+                return sequenceAttributes.Single().Value;
             }
 
             if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
@@ -117,10 +125,16 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
 
             if (defaultSequenceGroup is not null)
             {
-                return defaultSequenceGroup.Value.GetCustomAttributes<SequenceGroupAttribute<T>>().Single().Value;
+                return SequenceGroup<T>.GetByValue(defaultSequenceGroup.Value);
             }
 
             throw new SequenceGroupException(typeof(T), member);
+        }
+
+        public static bool HasSequenceGroup<T>(this MemberInfo member)
+            where T : unmanaged, Enum
+        {
+            return member.GetAllCustomAttributes<SequenceGroupAttribute<T>>(true).Any();
         }
     }
 }

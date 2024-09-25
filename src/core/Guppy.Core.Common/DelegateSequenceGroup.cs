@@ -140,7 +140,7 @@ namespace Guppy.Core.Common
 
         public static void Invoke(IEnumerable<Delegator<TDelegate>> delegators, object[] args)
         {
-            foreach (Delegator<TDelegate> del in delegators.OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
+            foreach (Delegator<TDelegate> del in delegators.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>()).OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
             {
                 del.Delegate.DynamicInvoke(args);
             }

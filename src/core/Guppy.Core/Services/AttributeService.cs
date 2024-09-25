@@ -21,7 +21,7 @@ namespace Guppy.Core.Services
 
             foreach (Type type in Types)
             {
-                _attributes.Add(type, type.GetAllCustomAttributes<TAttribute>(inherit));
+                _attributes.Add(type, type.GetAllCustomAttributes<TAttribute>(inherit).ToArray());
             }
         }
 

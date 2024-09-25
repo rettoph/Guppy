@@ -46,7 +46,7 @@ namespace Guppy.Core.Common
 
         public static void Invoke(IEnumerable<Delegator<Action<TParam>>> delegators, TParam param)
         {
-            foreach (Delegator<Action<TParam>> delegator in delegators.OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
+            foreach (Delegator<Action<TParam>> delegator in delegators.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>()).OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
             {
                 delegator.Delegate(param);
             }
