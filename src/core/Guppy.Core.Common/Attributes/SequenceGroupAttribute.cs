@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Common.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method | AttributeTargets.Field, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Field, AllowMultiple = false)]
     public class SequenceGroupAttribute<T> : Attribute
         where T : unmanaged, Enum
     {

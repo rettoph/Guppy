@@ -11,7 +11,6 @@ using Serilog.Events;
 namespace Guppy.Game.Components.Guppy
 {
     [AutoLoad]
-    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
     internal class EngineLogLevelComponent : IEngineComponent, ICommandSubscriber<LogLevelCommand>
     {
         private readonly ITerminal _terminal;

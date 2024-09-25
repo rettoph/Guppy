@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework.Input;
 namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
-    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
     internal sealed class MouseCursorPublishComponent : IEngineComponent, IUpdatableComponent
     {
         private readonly IInputService _inputs;

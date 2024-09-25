@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
-    [SequenceGroup<DrawSequence>(DrawSequence.PreDraw)]
     internal sealed class ScreenComponent : ISceneComponent, IDrawableComponent
     {
         private readonly IScreen _screen;

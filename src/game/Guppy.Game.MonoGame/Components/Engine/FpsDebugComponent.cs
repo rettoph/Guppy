@@ -11,7 +11,6 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
     internal class FpsDebugComponent : IEngineComponent, IDebugComponent
     {
 
