@@ -12,10 +12,9 @@ namespace Guppy.Core.Common.Helpers
             CompatibleWithCasting
         }
 
-        public static bool IsCompatible<TDelegate>(MethodInfo method, out IsCompatibleResultEnum result)
-            where TDelegate : Delegate
+        public static bool IsCompatible(Type delegateType, MethodInfo method, out IsCompatibleResultEnum result)
         {
-            MethodInfo delegateInvokeMethod = DelegateHelper.GetInvokeMethod<TDelegate>();
+            MethodInfo delegateInvokeMethod = DelegateHelper.GetInvokeMethod(delegateType);
 
             bool requiresCasting = false;
 
@@ -65,26 +64,27 @@ namespace Guppy.Core.Common.Helpers
             return true;
         }
 
+        public static bool IsCompatible<TDelegate>(MethodInfo method, out IsCompatibleResultEnum result)
+            where TDelegate : Delegate
+                => DelegateHelper.IsCompatible(typeof(TDelegate), method, out result);
+
         public static bool IsCompatible<TDelegate>(MethodInfo method)
             where TDelegate : Delegate
-        {
-            return DelegateHelper.IsCompatible<TDelegate>(method, out _);
-        }
+                => DelegateHelper.IsCompatible<TDelegate>(method, out _);
 
-        public static TDelegate CreateDelegate<TDelegate>(MethodInfo method, object? target)
-            where TDelegate : Delegate
+        public static Delegate CreateDelegate(Type delegateType, MethodInfo method, object? target)
         {
-            if (DelegateHelper.IsCompatible<TDelegate>(method, out IsCompatibleResultEnum result) == false)
+            if (DelegateHelper.IsCompatible(delegateType, method, out IsCompatibleResultEnum result) == false)
             {
                 throw new InvalidOperationException();
             }
 
             if (result == IsCompatibleResultEnum.Compatible)
             {
-                return method.CreateDelegate<TDelegate>(method.IsStatic ? null : target);
+                return method.CreateDelegate(delegateType, method.IsStatic ? null : target);
             }
 
-            MethodInfo delegateInvokeMethod = DelegateHelper.GetInvokeMethod<TDelegate>();
+            MethodInfo delegateInvokeMethod = DelegateHelper.GetInvokeMethod(delegateType);
             ParameterInfo[] delegateInvokeParameters = delegateInvokeMethod.GetParameters();
             ParameterInfo[] methodParameters = method.GetParameters();
 
@@ -131,16 +131,25 @@ namespace Guppy.Core.Common.Helpers
             ilGenerator.Emit(OpCodes.Call, method);
             ilGenerator.Emit(OpCodes.Ret);
 
-            TDelegate del = dynamicMethod.CreateDelegate<TDelegate>(method.IsStatic ? null : target);
+            Delegate del = dynamicMethod.CreateDelegate(delegateType, method.IsStatic ? null : target);
             return del;
+        }
+
+        public static TDelegate CreateDelegate<TDelegate>(MethodInfo method, object? target)
+            where TDelegate : Delegate
+                => (TDelegate)DelegateHelper.CreateDelegate(typeof(TDelegate), method, target);
+
+        private static MethodInfo GetInvokeMethod(Type delegateType)
+        {
+            ThrowIf.Type.IsNotAssignableFrom<Delegate>(delegateType);
+
+            MethodInfo invokeMethod = delegateType.GetMethod("Invoke") ?? throw new NotImplementedException();
+            return invokeMethod;
         }
 
         private static MethodInfo GetInvokeMethod<TDelegate>()
             where TDelegate : Delegate
-        {
-            MethodInfo invokeMethod = typeof(TDelegate).GetMethod("Invoke") ?? throw new NotImplementedException();
-            return invokeMethod;
-        }
+                => DelegateHelper.GetInvokeMethod(typeof(TDelegate));
 
         private static bool WillBoxingOccurOnCast(Type sourceType, Type targetType)
         {
