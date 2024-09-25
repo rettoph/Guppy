@@ -9,7 +9,13 @@ namespace Guppy.Game.Common.Components
     [Service(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute | ServiceRegistrationFlags.AsImplementedInterfaces)]
     public interface ISceneComponent
     {
+
+    }
+
+    public interface ISceneComponent<TScene> : ISceneComponent
+        where TScene : IScene
+    {
         [RequireSequenceGroup<InitializeComponentSequenceGroup>]
-        void Initialize(IScene scene);
+        void Initialize(TScene scene);
     }
 }

@@ -6,7 +6,7 @@ namespace Guppy.Game.Common.Components
 {
     public interface IDebugComponent
     {
-        [RequireSequenceGroup<DrawDebugComponentSequenceGroup>]
-        void RenderDebugInfo(GameTime gameTime);
+        [RequireSequenceGroup<DebugSequenceGroup>]
+        void DrawDebug(GameTime gameTime);
     }
 }

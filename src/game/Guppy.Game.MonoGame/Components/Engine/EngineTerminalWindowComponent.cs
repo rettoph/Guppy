@@ -50,7 +50,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
             //
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_isTerminalWindowEnabled == false)

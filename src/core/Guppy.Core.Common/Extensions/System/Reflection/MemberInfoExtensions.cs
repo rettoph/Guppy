@@ -134,7 +134,17 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         public static bool HasSequenceGroup<T>(this MemberInfo member)
             where T : unmanaged, Enum
         {
-            return member.GetAllCustomAttributes<SequenceGroupAttribute<T>>(true).Any();
+            if (member.GetAllCustomAttributes<SequenceGroupAttribute<T>>(true).Any())
+            {
+                return true;
+            }
+
+            if (member.GetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true).Any())
+            {
+                throw new SequenceGroupException(typeof(T), member);
+            }
+
+            return false;
         }
     }
 }

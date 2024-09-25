@@ -71,7 +71,8 @@ namespace Guppy.Game.Common
 
             this.Components = scope.Resolve<IFiltered<ISceneComponent>>().ToArray();
 
-            ActionSequenceGroup<InitializeComponentSequenceGroup, IScene>.Invoke(this.Components, this);
+            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
+            DelegateSequenceGroup<InitializeComponentSequenceGroup>.Invoke(this.Components, initializeDelegate, [this]);
 
             _drawComponentsActions.Add(this.Components);
             _updateComponentsActions.Add(this.Components);

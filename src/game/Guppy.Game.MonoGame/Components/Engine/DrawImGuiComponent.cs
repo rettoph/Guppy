@@ -18,13 +18,13 @@ namespace Guppy.Game.MonoGame.Components.Engine
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
-        private ActionSequenceGroup<DrawImGuiSequenceGroup, GameTime> _drawImGuiActions;
+        private ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imguiActions;
 
         public DrawImGuiComponent(IImguiBatch batch, IGameEngine engine)
         {
             _batch = batch;
             _engine = engine;
-            _drawImGuiActions = new ActionSequenceGroup<DrawImGuiSequenceGroup, GameTime>();
+            _imguiActions = new ActionSequenceGroup<ImGuiSequenceGroup, GameTime>();
             _engine.Scenes.OnSceneCreated += this.HandleSceneCreated;
             _engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
         }
@@ -32,7 +32,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
-            _drawImGuiActions.Add(_engine.Components);
+            _imguiActions.Add(_engine.Components);
         }
 
         public void Dispose()
@@ -44,16 +44,16 @@ namespace Guppy.Game.MonoGame.Components.Engine
         [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
         public void Draw(GameTime gameTime)
         {
-            _drawImGuiActions.Invoke(gameTime);
+            _imguiActions.Invoke(gameTime);
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.BeginDraw)]
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Begin)]
         public void BeginImgui(GameTime gameTime)
         {
             _batch.Begin(gameTime);
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.EndDraw)]
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.EndDraw)]
         public void EndImGui(GameTime gameTime)
         {
             _batch.End();
@@ -61,34 +61,16 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
         private void HandleSceneCreated(ISceneService sender, IScene scene)
         {
-            scene.OnVisibleChanged += this.HandleSceneVisibleChanged;
-
-            if (scene.Visible == true)
-            {
-                this.HandleSceneVisibleChanged(scene, true);
-            }
+            _imguiActions.Add(scene.Components);
         }
 
         private void HandleSceneDestroyed(ISceneService sender, IScene scene)
         {
-            scene.OnVisibleChanged -= this.HandleSceneVisibleChanged;
+            _imguiActions.Remove(scene.Components);
 
-            this.HandleSceneVisibleChanged(scene, false);
-        }
-
-        private void HandleSceneVisibleChanged(IScene scene, bool visible)
-        {
-            if (visible == true)
-            {
-                _drawImGuiActions.Add(scene.Components);
-                return;
-            }
-
-            if (visible == false)
-            {
-                _drawImGuiActions.Remove(scene.Components);
-                return;
-            }
+            // I dont think ActionSequenceGroup.Remove works as expected. 
+            // TODO: Test
+            throw new NotImplementedException();
         }
     }
 }

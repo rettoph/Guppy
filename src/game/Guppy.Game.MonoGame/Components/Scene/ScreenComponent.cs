@@ -1,6 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.MonoGame.Common;
@@ -16,12 +14,6 @@ namespace Guppy.Game.MonoGame.Components.Scene
         public ScreenComponent(IScreen screen)
         {
             _screen = screen;
-        }
-
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
-        public void Initialize(IScene scene)
-        {
-            //
         }
 
         [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]

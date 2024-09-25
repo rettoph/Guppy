@@ -21,13 +21,13 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private readonly IGameEngine _engine;
         private readonly ResourceValue<ImStyle> _debugWindowStyle;
         private readonly IImGui _imgui;
-        private readonly ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime> _renderDebugInfoActions;
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions;
 
         private SettingValue<bool> _isDebugWindowEnabled;
 
         public EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService)
         {
-            _renderDebugInfoActions = new ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime>();
+            _renderDebugInfoActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
             _imgui = imgui;
             _engine = engine;
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
@@ -40,7 +40,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
             _renderDebugInfoActions.Add(_engine.Components);
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_isDebugWindowEnabled == false)

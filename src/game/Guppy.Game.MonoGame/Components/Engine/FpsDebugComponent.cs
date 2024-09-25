@@ -30,8 +30,8 @@ namespace Guppy.Game.MonoGame.Components.Engine
             //
         }
 
-        [SequenceGroup<DrawDebugComponentSequenceGroup>(DrawDebugComponentSequenceGroup.Draw)]
-        public void RenderDebugInfo(GameTime gameTime)
+        [SequenceGroup<DebugSequenceGroup>(DebugSequenceGroup.Debug)]
+        public void DrawDebug(GameTime gameTime)
         {
             _sampleSum += gameTime.ElapsedGameTime.TotalSeconds;
             _sampleBuffer.Add(gameTime.ElapsedGameTime.TotalSeconds, out double removed);

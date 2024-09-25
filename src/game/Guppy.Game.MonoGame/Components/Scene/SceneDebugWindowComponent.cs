@@ -16,10 +16,10 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasDebugWindowFilter]
-    internal sealed class SceneDebugWindowComponent : ISceneComponent, IImGuiComponent
+    internal sealed class SceneDebugWindowComponent : ISceneComponent<IScene>, IImGuiComponent
     {
         private readonly IImGui _imgui;
-        private readonly ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime> _renderDebugInfoActions;
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions;
         private IScene _scene;
         private ImGuiWindowClassPtr _class;
         private ResourceValue<ImStyle> _debugWindowStyle;
@@ -28,7 +28,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         public SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService)
         {
             _scene = scene;
-            _renderDebugInfoActions = new ActionSequenceGroup<DrawDebugComponentSequenceGroup, GameTime>();
+            _debugActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
             _imgui = imgui;
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
             _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
@@ -37,10 +37,10 @@ namespace Guppy.Game.MonoGame.Components.Scene
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IScene scene)
         {
-            _renderDebugInfoActions.Add(_scene.Components);
+            _debugActions.Add(_scene.Components);
         }
 
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_isDebugWindowEnabled == false)
@@ -58,7 +58,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
                 if (_imgui.Begin($"{_scene.Name} - {_scene.Id}"))
                 {
-                    _renderDebugInfoActions.Invoke(gameTime);
+                    _debugActions.Invoke(gameTime);
                 }
 
                 _imgui.End();

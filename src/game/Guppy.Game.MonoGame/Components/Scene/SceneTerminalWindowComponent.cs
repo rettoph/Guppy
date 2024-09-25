@@ -2,7 +2,6 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
@@ -47,13 +46,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
             _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
-        public void Initialize(IScene scene)
-        {
-            //
-        }
-
-        [SequenceGroup<DrawImGuiSequenceGroup>(DrawImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
             if (_isTerminalWindowEnabled == false)
