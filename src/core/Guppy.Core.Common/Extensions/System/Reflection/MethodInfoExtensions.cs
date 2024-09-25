@@ -4,22 +4,6 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
 {
     public static class MethodInfoExtensions
     {
-        public static bool IsCompatibleWithDelegate<T>(this MethodInfo method)
-            where T : Delegate
-        {
-            Type delegateType = typeof(T);
-            MethodInfo delegateSignature = delegateType.GetMethod("Invoke") ?? throw new NotImplementedException();
-
-            bool parametersEqual = delegateSignature
-                .GetParameters()
-                .Select(x => x.ParameterType)
-                .SequenceEqual(method.GetParameters()
-                    .Select(x => x.ParameterType));
-
-            return delegateSignature.ReturnType == method.ReturnType &&
-                   parametersEqual;
-        }
-
         /// <summary>
         /// https://stackoverflow.com/questions/47741099/check-methodinfo-instance-is-implementation-of-interface-generic-method
         /// </summary>

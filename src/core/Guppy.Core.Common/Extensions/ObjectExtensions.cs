@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common.Extensions.System.Reflection;
+﻿using Guppy.Core.Common.Helpers;
 using System.Reflection;
 
 namespace System
@@ -65,12 +65,23 @@ namespace System
             yield return instance;
         }
 
-        public static IEnumerable<TDelegate> GetMatchingDelegates<TDelegate>(this object instance, BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Public)
+        public static IEnumerable<TDelegate> GetMatchingDelegates<TDelegate>(this object instance)
             where TDelegate : Delegate
         {
-            return instance.GetType().GetMethods(bindingFlags)
-                .Where(mi => mi.IsCompatibleWithDelegate<TDelegate>())
-                .Select(mi => mi.CreateDelegate<TDelegate>(instance));
+            Type type = instance.GetType();
+
+            List<MethodInfo> matchingMethodInfos = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(DelegateHelper.IsCompatible<TDelegate>)
+                .ToList();
+
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                InterfaceMapping interfaceMapping = type.GetInterfaceMap(interfaceType);
+                IEnumerable<MethodInfo> interfaceMatchingMethodInfos = interfaceMapping.TargetMethods.Where(DelegateHelper.IsCompatible<TDelegate>);
+                matchingMethodInfos.AddRange(interfaceMatchingMethodInfos);
+            }
+
+            return matchingMethodInfos.Distinct().Select(x => DelegateHelper.CreateDelegate<TDelegate>(x, instance));
         }
     }
 }

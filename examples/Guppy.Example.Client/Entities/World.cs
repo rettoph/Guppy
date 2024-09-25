@@ -1,11 +1,12 @@
 ﻿using Guppy.Core.Common.Attributes;
+using Guppy.Engine.Common.Enums;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
-using Guppy.Game.Components;
+using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Constants;
@@ -20,7 +21,7 @@ namespace Guppy.Example.Client.Entities
 {
     [AutoLoad]
     [SceneFilter<MainScene>]
-    public class World : ISceneComponent, IGuppyDrawable, IGuppyUpdateable, IDebugComponent,
+    public class World : ISceneComponent, IUpdatableComponent, IDrawableComponent, IDebugComponent,
         IInputSubscriber<PlaceSandInput>,
         IInputSubscriber<SelectCellTypeInput>
     {
@@ -117,12 +118,13 @@ namespace Guppy.Example.Client.Entities
             _renderTarget = new RenderTarget2D(_graphics, width, height);
         }
 
-        public void Initialize()
+        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        public void Initialize(IScene scene)
         {
             this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
-            //this.Initialize(1, 10);
         }
 
+        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
         public unsafe void Draw(GameTime gameTime)
         {
             _graphics.SetRenderTarget(_renderTarget);
@@ -143,6 +145,7 @@ namespace Guppy.Example.Client.Entities
             _spriteBatch.End();
         }
 
+        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
         public unsafe void Update(GameTime gameTime)
         {
             if (_lastScrollValue != _mouse.Scroll)
