@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common.Extensions.System.Reflection;
+using Guppy.Core.Common.Extensions.Utilities;
 using Guppy.Core.Common.Utilities;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
@@ -12,25 +13,21 @@ namespace Guppy.Core.Common
         private readonly Type? _delegateType;
         private readonly List<Delegator<TDelegate>> _orphans;
         private readonly HashSet<Delegator<TDelegate>> _all;
-        private readonly List<Delegator<TDelegate>> _sequenced;
-        private readonly Dictionary<SequenceGroup<TSequenceGroup>, List<Delegator<TDelegate>>> _grouped;
-        private readonly Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<Delegator<TDelegate>>> _readonlyGrouped;
+        private TDelegate? _sequenced;
+        private readonly Dictionary<SequenceGroup<TSequenceGroup>, TDelegate?> _grouped;
 
-        public readonly ReadOnlyCollection<Delegator<TDelegate>> Sequenced;
-        public readonly ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<Delegator<TDelegate>>> Grouped;
+        public TDelegate? Sequenced => _sequenced;
+        public readonly ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, TDelegate?> Grouped;
         public readonly ReadOnlyCollection<Delegator<TDelegate>> Orphans;
 
         public DelegateSequenceGroup(Type? delegateType = null)
         {
             _delegateType = delegateType;
-            _grouped = new Dictionary<SequenceGroup<TSequenceGroup>, List<Delegator<TDelegate>>>();
-            _readonlyGrouped = new Dictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<Delegator<TDelegate>>>();
+            _grouped = new Dictionary<SequenceGroup<TSequenceGroup>, TDelegate?>();
             _all = new HashSet<Delegator<TDelegate>>();
-            _sequenced = new List<Delegator<TDelegate>>();
             _orphans = new List<Delegator<TDelegate>>();
 
-            this.Sequenced = new ReadOnlyCollection<Delegator<TDelegate>>(_sequenced);
-            this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, ReadOnlyCollection<Delegator<TDelegate>>>(_readonlyGrouped);
+            this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, TDelegate?>(_grouped);
             this.Orphans = new ReadOnlyCollection<Delegator<TDelegate>>(_orphans);
         }
 
@@ -45,17 +42,14 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                SequenceGroup<TSequenceGroup>[] sequenceGroups = delegator.Method.GetSequenceGroups<TSequenceGroup>(false).ToArray();
-                if (sequenceGroups.Length == 0)
+                if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(false, out var sequenceGroup) == false)
                 {
                     _orphans.Add(delegator);
                     continue;
                 }
 
-                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in sequenceGroups)
-                {
-                    this.GetSequenceGroup(sequenceGroup).Add(delegator);
-                }
+                ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
+                group = (TDelegate)Delegate.Combine(group, delegator.Delegate);
 
                 modified = true;
             }
@@ -65,8 +59,7 @@ namespace Guppy.Core.Common
                 return;
             }
 
-            _sequenced.Clear();
-            _sequenced.AddRange(_grouped.OrderBy(x => x.Key).SelectMany(x => x.Value));
+            _sequenced = _all.Sequence<TDelegate, TSequenceGroup>().Combine();
         }
 
         public void Remove(IEnumerable<Delegator<TDelegate>> delegators)
@@ -85,9 +78,10 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                foreach (SequenceGroup<TSequenceGroup> sequenceGroup in delegator.Method.GetSequenceGroups<TSequenceGroup>(false))
+                if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(false, out var sequenceGroup) == true)
                 {
-                    this.GetSequenceGroup(sequenceGroup).Remove(delegator);
+                    ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
+                    group = (TDelegate?)Delegate.Remove(group, delegator.Delegate);
                 }
 
                 modified = true;
@@ -98,8 +92,7 @@ namespace Guppy.Core.Common
                 return;
             }
 
-            _sequenced.Clear();
-            _sequenced.AddRange(_grouped.OrderBy(x => x.Key).SelectMany(x => x.Value));
+            _sequenced = _all.Sequence<TDelegate, TSequenceGroup>().Combine();
         }
 
         public void Add(IEnumerable<TDelegate> delegates)
@@ -126,21 +119,9 @@ namespace Guppy.Core.Common
             this.Remove(delegators);
         }
 
-        private List<Delegator<TDelegate>> GetSequenceGroup(SequenceGroup<TSequenceGroup> sequenceGroup)
-        {
-            ref List<Delegator<TDelegate>>? delegators = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
-            if (exists == false)
-            {
-                delegators = new List<Delegator<TDelegate>>();
-                _readonlyGrouped.Add(sequenceGroup, new ReadOnlyCollection<Delegator<TDelegate>>(delegators));
-            }
-
-            return delegators!;
-        }
-
         public static void Invoke(IEnumerable<Delegator<TDelegate>> delegators, object[] args)
         {
-            foreach (Delegator<TDelegate> del in delegators.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>()).OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
+            foreach (Delegator<TDelegate> del in delegators.Sequence<TDelegate, TSequenceGroup>())
             {
                 del.Delegate.DynamicInvoke(args);
             }

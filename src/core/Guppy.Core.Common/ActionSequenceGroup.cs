@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common.Extensions.System.Reflection;
+﻿using Guppy.Core.Common.Extensions.Utilities;
 using Guppy.Core.Common.Utilities;
 
 namespace Guppy.Core.Common
@@ -30,23 +30,17 @@ namespace Guppy.Core.Common
 
         public void Invoke(TParam param)
         {
-            foreach (Delegator<Action<TParam>> action in this.Sequenced)
-            {
-                action.Delegate(param);
-            }
+            this.Sequenced?.Invoke(param);
         }
 
         public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam param)
         {
-            foreach (Delegator<Action<TParam>> action in this.Grouped[sequenceGroup])
-            {
-                action.Delegate(param);
-            }
+            this.Grouped[sequenceGroup]?.Invoke(param);
         }
 
         public static void Invoke(IEnumerable<Delegator<Action<TParam>>> delegators, TParam param)
         {
-            foreach (Delegator<Action<TParam>> delegator in delegators.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>()).OrderBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(false)))
+            foreach (Delegator<Action<TParam>> delegator in delegators.Sequence<Action<TParam>, TSequenceGroup>())
             {
                 delegator.Delegate(param);
             }

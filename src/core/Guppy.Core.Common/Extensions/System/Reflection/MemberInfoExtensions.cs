@@ -83,39 +83,16 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
             return attributes.Length > 0;
         }
 
-        public static IEnumerable<SequenceGroup<T>> GetSequenceGroups<T>(
+        public static bool TryGetSequenceGroup<T>(
             this MemberInfo member,
             bool strict,
-            T? defaultSequenceGroup = null)
-            where T : unmanaged, Enum
-        {
-            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
-            {
-                return sequenceAttributes.Select(x => x.Value);
-            }
-
-            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
-            {
-                throw new SequenceGroupException(typeof(T), member);
-            }
-
-            if (defaultSequenceGroup is not null)
-            {
-                return defaultSequenceGroup.Value.GetCustomAttributes<SequenceGroupAttribute<T>>().Single().Value.Yield();
-            }
-
-            return Enumerable.Empty<SequenceGroup<T>>();
-        }
-
-        public static SequenceGroup<T> GetSequenceGroup<T>(
-            this MemberInfo member,
-            bool strict,
-            T? defaultSequenceGroup = null)
+            out SequenceGroup<T> sequenceGroup)
                 where T : unmanaged, Enum
         {
             if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
             {
-                return sequenceAttributes.Single().Value;
+                sequenceGroup = sequenceAttributes.Single().Value;
+                return true;
             }
 
             if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
@@ -123,28 +100,14 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
                 throw new SequenceGroupException(typeof(T), member);
             }
 
-            if (defaultSequenceGroup is not null)
-            {
-                return SequenceGroup<T>.GetByValue(defaultSequenceGroup.Value);
-            }
-
-            throw new SequenceGroupException(typeof(T), member);
+            sequenceGroup = default;
+            return false;
         }
 
         public static bool HasSequenceGroup<T>(this MemberInfo member)
             where T : unmanaged, Enum
         {
-            if (member.GetAllCustomAttributes<SequenceGroupAttribute<T>>(true).Any())
-            {
-                return true;
-            }
-
-            if (member.GetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true).Any())
-            {
-                throw new SequenceGroupException(typeof(T), member);
-            }
-
-            return false;
+            return member.TryGetSequenceGroup<T>(false, out _);
         }
     }
 }
