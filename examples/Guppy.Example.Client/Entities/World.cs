@@ -21,7 +21,7 @@ namespace Guppy.Example.Client.Entities
 {
     [AutoLoad]
     [SceneFilter<MainScene>]
-    public class World : ISceneComponent, IUpdatableComponent, IDrawableComponent, IDebugComponent,
+    public class World : ISceneComponent, IUpdatableComponent, IDrawableComponent,
         IInputSubscriber<PlaceSandInput>,
         IInputSubscriber<SelectCellTypeInput>
     {
