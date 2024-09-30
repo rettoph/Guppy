@@ -1,4 +1,6 @@
-﻿using VerifyCS = Guppy.Tests.Analyzer.Core.Common.CSharpCodeFixVerifier<
+﻿using Guppy.Core.Common.Attributes;
+using Microsoft.CodeAnalysis;
+using VerifyCS = Guppy.Tests.Analyzer.Core.Common.CSharpCodeFixVerifier<
     Guppy.Analyzer.Core.Common.GuppyAnalyzerCoreCommonAnalyzer,
     Guppy.Analyzer.Core.Common.GuppyAnalyzerCoreCommonCodeFixProvider>;
 
@@ -6,15 +8,6 @@ namespace Guppy.Tests.Analyzer.Core.Common
 {
     public class GuppyAnalyzerCoreCommonUnitTest
     {
-        //No diagnostics expected to show up
-        [Fact]
-        public async Task TestMethod1()
-        {
-            var test = @"";
-
-            await VerifyCS.VerifyAnalyzerAsync(test);
-        }
-
         //Diagnostic and CodeFix both triggered and checked for
         [Fact]
         public async Task TestMethod2()
@@ -26,10 +19,22 @@ namespace Guppy.Tests.Analyzer.Core.Common
     using System.Text;
     using System.Threading.Tasks;
     using System.Diagnostics;
+    using Guppy.Core.Common.Attributes;
 
     namespace ConsoleApplication1
     {
-        class {|#0:TypeName|}
+        enum TestSequenceGroup
+        {
+            Default
+        }
+
+        interface ITestInterface
+        {
+            [RequireSequenceGroup<TestSequenceGroup>]
+            void SomeFunction();
+        }
+
+        class TestClass : ITestInterface
         {   
             public void SomeFunction()
             {
@@ -53,8 +58,18 @@ namespace Guppy.Tests.Analyzer.Core.Common
         }
     }";
 
-            var expected = VerifyCS.Diagnostic("GuppyAnalyzerCoreCommon").WithLocation(0).WithArguments("TypeName");
-            await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+            var runtimeDirectory = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+
+            var expected = VerifyCS.Diagnostic("GuppyAnalyzerCoreCommon");
+            await VerifyCS.VerifyCodeFixAsync(
+                source: test,
+                expected: [
+                    expected
+                ],
+                fixedSource: fixtest,
+                additionalReferences: [
+                    MetadataReference.CreateFromFile(typeof(RequireSequenceGroupAttribute<>).Assembly.Location),
+                ]);
         }
     }
 }

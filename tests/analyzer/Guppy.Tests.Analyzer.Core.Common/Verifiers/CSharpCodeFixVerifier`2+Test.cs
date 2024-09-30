@@ -1,7 +1,8 @@
-﻿using Microsoft.CodeAnalysis.CodeFixes;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
 
 namespace Guppy.Tests.Analyzer.Core.Common
 {
@@ -9,15 +10,19 @@ namespace Guppy.Tests.Analyzer.Core.Common
         where TAnalyzer : DiagnosticAnalyzer, new()
         where TCodeFix : CodeFixProvider, new()
     {
-        public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, MSTestVerifier>
+        public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
         {
             public Test()
             {
-                SolutionTransforms.Add((solution, projectId) =>
+                this.ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+
+                this.SolutionTransforms.Add((solution, projectId) =>
                 {
-                    var compilationOptions = solution.GetProject(projectId).CompilationOptions;
+                    CompilationOptions compilationOptions = solution.GetProject(projectId)?.CompilationOptions ?? throw new NotImplementedException();
+
                     compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
                         compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
+
                     solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
 
                     return solution;

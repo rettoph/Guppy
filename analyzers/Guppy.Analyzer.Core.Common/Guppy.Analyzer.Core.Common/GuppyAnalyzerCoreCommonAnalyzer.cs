@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace Guppy.Analyzer.Core.Common
 {
@@ -33,16 +33,33 @@ namespace Guppy.Analyzer.Core.Common
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
-            // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-            var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
+            IMethodSymbol methodSymbol = (IMethodSymbol)context.Symbol;
 
-            // Find just those named type symbols with names containing lowercase letters.
-            if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
+            List<AttributeData> attributeData = new List<AttributeData>();
+            attributeData.AddRange(methodSymbol.GetAttributes());
+
+            ITypeSymbol containingTypeSymbol = methodSymbol.ContainingType;
+
+            ImmutableArray<INamedTypeSymbol> interfaceSymbols = containingTypeSymbol.AllInterfaces;
+
+            foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
-                // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
+                foreach (ISymbol interfaceMemberSymbol in interfaceSymbol.GetMembers())
+                {
+                    ISymbol implementationSymbol = containingTypeSymbol.FindImplementationForInterfaceMember(interfaceMemberSymbol);
 
-                context.ReportDiagnostic(diagnostic);
+                    if (implementationSymbol == null)
+                    {
+                        continue;
+                    }
+
+                    if (SymbolEqualityComparer.Default.Equals(implementationSymbol, methodSymbol) == false)
+                    {
+                        continue;
+                    }
+
+                    attributeData.AddRange(interfaceMemberSymbol.GetAttributes());
+                }
             }
         }
     }
