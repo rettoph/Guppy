@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\analyzers\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common.CodeFixes\Guppy.Analyzer.Core.Common.CodeFixes.csproj" />
     <ProjectReference Include="..\..\..\analyzers\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common.csproj" />
     <ProjectReference Include="..\..\..\src\core\Guppy.Core.Common\Guppy.Core.Common.csproj" />
   </ItemGroup>

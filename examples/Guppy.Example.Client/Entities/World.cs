@@ -3,6 +3,7 @@ using Guppy.Engine.Common.Enums;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
+using Guppy.Example.Client.Utilities;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
@@ -13,7 +14,6 @@ using Guppy.Game.Input.Common.Constants;
 using Guppy.Game.Input.Common.Services;
 using Guppy.Game.MonoGame.Common.Primitives;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
-using Guppy.Game.Primitives;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,7 +21,7 @@ namespace Guppy.Example.Client.Entities
 {
     [AutoLoad]
     [SceneFilter<MainScene>]
-    public class World : ISceneComponent, IUpdatableComponent, IDrawableComponent,
+    public class World : ISceneComponent<IScene>, IUpdatableComponent, IDrawableComponent,
         IInputSubscriber<PlaceSandInput>,
         IInputSubscriber<SelectCellTypeInput>
     {
@@ -36,14 +36,13 @@ namespace Guppy.Example.Client.Entities
         private double _elapsedTime;
         private int _awake;
         private int _inputTypeIndex;
-        private CellTypeEnum[] _inputTypes = new[]
-        {
+        private readonly CellTypeEnum[] _inputTypes = [
             CellTypeEnum.Sand,
             CellTypeEnum.Water,
             CellTypeEnum.Concrete,
             CellTypeEnum.Plant,
             CellTypeEnum.Air
-        };
+        ];
 
         private readonly StaticPrimitiveBatch<VertexPositionColor> _inputBatch;
         private readonly PointPrimitiveBatch<VertexPositionColor> _gridBatch;
@@ -131,7 +130,7 @@ namespace Guppy.Example.Client.Entities
             _camera.Update(gameTime);
             for (int i = 0; i < _grid.Length; i++)
             {
-                _gridBatch.Vertices[i].Color = this.GetColor(_grid.Cells[i].Type);
+                _gridBatch.Vertices[i].Color = World.GetColor(_grid.Cells[i].Type);
             }
 
             _gridBatch.Draw(_camera);
@@ -193,11 +192,11 @@ namespace Guppy.Example.Client.Entities
                     y: MathF.Sin(radians) * radius,
                     z: 0);
 
-                _inputBatch.Vertices[i].Color = this.GetColor(_inputCellType);
+                _inputBatch.Vertices[i].Color = World.GetColor(_inputCellType);
             }
         }
 
-        private Color GetColor(CellTypeEnum cellType)
+        private static Color GetColor(CellTypeEnum cellType)
         {
             return cellType switch
             {
@@ -220,17 +219,12 @@ namespace Guppy.Example.Client.Entities
 
         public void Process(in Guid messageId, SelectCellTypeInput message)
         {
-            this.SetInput(message.Type, _inputRadius);
+            this.SetInput(message.CellType, _inputRadius);
         }
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
         {
             this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
-        }
-
-        public void RenderDebugInfo(GameTime gameTime)
-        {
-            _imgui.Text($"Awake: {_awake}");
         }
     }
 }

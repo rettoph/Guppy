@@ -6,11 +6,11 @@ namespace Guppy.Example.Client.Messages
 {
     public class SelectCellTypeInput : Message<SelectCellTypeInput>, IInput
     {
-        public readonly CellTypeEnum Type;
+        public readonly CellTypeEnum CellType;
 
         public SelectCellTypeInput(CellTypeEnum type)
         {
-            Type = type;
+            CellType = type;
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Guppy.Analyzer.Core.Common
 {
@@ -17,7 +18,7 @@ namespace Guppy.Analyzer.Core.Common
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
         private const string Category = "Naming";
 
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
@@ -35,8 +36,12 @@ namespace Guppy.Analyzer.Core.Common
         {
             IMethodSymbol methodSymbol = (IMethodSymbol)context.Symbol;
 
-            List<AttributeData> attributeData = new List<AttributeData>();
-            attributeData.AddRange(methodSymbol.GetAttributes());
+            List<string> namedSequenceGroups = new List<string>();
+            List<string> requiredSequenceGroups = new List<string>();
+
+            ImmutableArray<AttributeData> methodAttributes = methodSymbol.GetAttributes();
+            namedSequenceGroups.AddRange(methodAttributes.Where(x => x.AttributeClass.Name == "SequenceGroupAttribute" && x.AttributeClass.IsGenericType == true).Select(x => x.AttributeClass.TypeArguments[0].MetadataName));
+            requiredSequenceGroups.AddRange(methodAttributes.Where(x => x.AttributeClass.Name == "RequireSequenceGroupAttribute" && x.AttributeClass.IsGenericType == true).Select(x => x.AttributeClass.TypeArguments[0].MetadataName));
 
             ITypeSymbol containingTypeSymbol = methodSymbol.ContainingType;
 
@@ -58,9 +63,24 @@ namespace Guppy.Analyzer.Core.Common
                         continue;
                     }
 
-                    attributeData.AddRange(interfaceMemberSymbol.GetAttributes());
+                    ImmutableArray<AttributeData> implementationAttributes = implementationSymbol.GetAttributes();
+                    namedSequenceGroups.AddRange(methodAttributes.Where(x => x.AttributeClass.Name == "SequenceGroupAttribute" && x.AttributeClass.IsGenericType == true).Select(x => x.AttributeClass.TypeArguments[0].Name));
+                    requiredSequenceGroups.AddRange(methodAttributes.Where(x => x.AttributeClass.Name == "RequireSequenceGroupAttribute" && x.AttributeClass.IsGenericType == true).Select(x => x.AttributeClass.TypeArguments[0].Name));
                 }
             }
+
+            foreach (string missingSequenceGroup in requiredSequenceGroups.Except(namedSequenceGroups))
+            {
+                // For all such symbols, produce a diagnostic.
+                var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name);
+
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
+        private static void VerifyRequiredSequenceGroups(ImmutableArray<AttributeData> attributes, List<string> sequenceGroups)
+        {
+
         }
     }
 }

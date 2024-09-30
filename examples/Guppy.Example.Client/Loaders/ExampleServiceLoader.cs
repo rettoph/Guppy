@@ -3,9 +3,9 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Loaders;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
+using Guppy.Example.Client.Utilities;
 using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
-using Guppy.Game.Primitives;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Example.Client.Loaders

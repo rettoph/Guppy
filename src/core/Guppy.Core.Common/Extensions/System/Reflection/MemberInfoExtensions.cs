@@ -31,8 +31,6 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         public static IEnumerable<TAttribute> GetAllCustomAttributes<TAttribute>(this MemberInfo memberInfo, bool inherit)
             where TAttribute : Attribute
         {
-            List<TAttribute> result = new List<TAttribute>();
-
             foreach (TAttribute attribute in memberInfo.GetCustomAttributes(inherit).OfType<TAttribute>())
             {
                 yield return attribute;
@@ -95,7 +93,7 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
                 return true;
             }
 
-            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out var requiredSequenceAttributes))
+            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out _))
             {
                 throw new SequenceGroupException(typeof(T), member);
             }

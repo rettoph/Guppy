@@ -15,5 +15,12 @@
     <ProjectReference Include="..\..\src\game\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj" />
     <ProjectReference Include="..\..\src\game\Guppy.Game\Guppy.Game.csproj" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\..\analyzers\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common.csproj">
+	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+	  <OutputItemType>Analyzer</OutputItemType>
+	</ProjectReference>
+  </ItemGroup>
 
 </Project>

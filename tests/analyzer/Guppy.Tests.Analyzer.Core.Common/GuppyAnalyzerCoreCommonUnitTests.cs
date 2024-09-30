@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using VerifyCS = Guppy.Tests.Analyzer.Core.Common.CSharpCodeFixVerifier<
     Guppy.Analyzer.Core.Common.GuppyAnalyzerCoreCommonAnalyzer,
-    Guppy.Analyzer.Core.Common.GuppyAnalyzerCoreCommonCodeFixProvider>;
+    Microsoft.CodeAnalysis.Testing.EmptyCodeFixProvider>;
 
 namespace Guppy.Tests.Analyzer.Core.Common
 {
@@ -43,30 +43,15 @@ namespace Guppy.Tests.Analyzer.Core.Common
         }
     }";
 
-            var fixtest = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        class TYPENAME
-        {   
-        }
-    }";
-
             var runtimeDirectory = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
 
-            var expected = VerifyCS.Diagnostic("GuppyAnalyzerCoreCommon");
+            var expected = VerifyCS.Diagnostic("GuppyAnalyzerCoreCommon").WithArguments("SomeFunction");
             await VerifyCS.VerifyCodeFixAsync(
                 source: test,
                 expected: [
                     expected
                 ],
-                fixedSource: fixtest,
+                fixedSource: string.Empty,
                 additionalReferences: [
                     MetadataReference.CreateFromFile(typeof(RequireSequenceGroupAttribute<>).Assembly.Location),
                 ]);

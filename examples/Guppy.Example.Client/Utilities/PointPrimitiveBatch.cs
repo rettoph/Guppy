@@ -2,14 +2,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Game.Primitives
+namespace Guppy.Example.Client.Utilities
 {
     public class PointPrimitiveBatch<TVertex, TEffect>
         where TVertex : unmanaged, IVertexType
         where TEffect : Effect, IEffectMatrices
     {
         private DynamicVertexBuffer _vertexBuffer;
-        private PrimitiveType _type;
 
         public TEffect Effect;
         public RasterizerState RasterizerState;
@@ -22,11 +21,11 @@ namespace Guppy.Game.Primitives
         {
             _vertexBuffer = null!;
 
-            this.Vertices = Array.Empty<TVertex>();
-            this.GraphicsDevice = graphicsDevice;
-            this.Effect = effect;
-            this.BlendState = BlendState.AlphaBlend;
-            this.RasterizerState = new RasterizerState()
+            Vertices = Array.Empty<TVertex>();
+            GraphicsDevice = graphicsDevice;
+            Effect = effect;
+            BlendState = BlendState.AlphaBlend;
+            RasterizerState = new RasterizerState()
             {
                 MultiSampleAntiAlias = true,
                 SlopeScaleDepthBias = 0.5f
@@ -36,31 +35,31 @@ namespace Guppy.Game.Primitives
         public void Initialize(int vertexCount)
         {
             _vertexBuffer?.Dispose();
-            _vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(TVertex), vertexCount, BufferUsage.WriteOnly);
+            _vertexBuffer = new DynamicVertexBuffer(GraphicsDevice, typeof(TVertex), vertexCount, BufferUsage.WriteOnly);
 
-            this.Vertices = new TVertex[vertexCount];
+            Vertices = new TVertex[vertexCount];
         }
 
         public void Draw(Camera camera)
         {
-            this.Draw(camera.View, camera.Projection);
+            Draw(camera.View, camera.Projection);
         }
 
         public void Draw(Matrix view, Matrix projection)
         {
-            this.Effect.View = view;
-            this.Effect.Projection = projection;
+            Effect.View = view;
+            Effect.Projection = projection;
 
-            this.GraphicsDevice.BlendState = this.BlendState;
-            this.GraphicsDevice.RasterizerState = this.RasterizerState;
-            this.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+            GraphicsDevice.BlendState = BlendState;
+            GraphicsDevice.RasterizerState = RasterizerState;
+            GraphicsDevice.SetVertexBuffer(_vertexBuffer);
 
-            _vertexBuffer.SetData(this.Vertices, 0, this.Vertices.Length);
+            _vertexBuffer.SetData(Vertices, 0, Vertices.Length);
 
             foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                this.GraphicsDevice.DrawPrimitives(PrimitiveType.PointList, 0, this.Vertices.Length);
+                GraphicsDevice.DrawPrimitives(PrimitiveType.PointList, 0, Vertices.Length);
             }
         }
     }
