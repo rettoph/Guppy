@@ -51,21 +51,28 @@ namespace Guppy.Analyzer.Core.Common
 
             List<string> namedSequenceGroups = new List<string>();
             List<string> requiredSequenceGroups = new List<string>();
-            AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, methodSymbol.GetAttributes(), SequenceGroupAttribute);
+
+            IMethodSymbol methodImplementationSymbol = methodSymbol;
+            while (methodImplementationSymbol != null)
+            {
+                AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, methodImplementationSymbol.GetAttributes(), SequenceGroupAttribute);
+                methodImplementationSymbol = methodImplementationSymbol.OverriddenMethod;
+            }
+
 
             ImmutableArray<INamedTypeSymbol> interfaceSymbols = containingTypeSymbol.AllInterfaces;
             foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
                 foreach (ISymbol interfaceMemberSymbol in interfaceSymbol.GetMembers())
                 {
-                    ISymbol implementationSymbol = containingTypeSymbol.FindImplementationForInterfaceMember(interfaceMemberSymbol);
+                    IMethodSymbol implementationSymbol = (IMethodSymbol)containingTypeSymbol.FindImplementationForInterfaceMember(interfaceMemberSymbol);
 
                     if (implementationSymbol == null)
                     {
                         continue;
                     }
 
-                    if (SymbolEqualityComparer.Default.Equals(implementationSymbol, methodSymbol) == false)
+                    if (IsEqualOrOverride(methodSymbol, implementationSymbol) == false)
                     {
                         continue;
                     }
@@ -107,9 +114,25 @@ namespace Guppy.Analyzer.Core.Common
             }
         }
 
-        private static void VerifyRequiredSequenceGroups(ImmutableArray<AttributeData> attributes, List<string> sequenceGroups)
+        private static bool IsEqualOrOverride(IMethodSymbol overrideMethodSymbol, IMethodSymbol baseMethodSymbol)
         {
+            while (overrideMethodSymbol != null)
+            {
+                if (SymbolEqualityComparer.Default.Equals(overrideMethodSymbol, baseMethodSymbol) == true)
+                {
+                    return true;
+                }
 
+                if (overrideMethodSymbol.IsOverride == false)
+                {
+                    return false;
+                }
+
+                overrideMethodSymbol = overrideMethodSymbol.OverriddenMethod;
+            }
+
+
+            return false;
         }
     }
 }

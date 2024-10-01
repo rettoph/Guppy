@@ -9,9 +9,8 @@ namespace Guppy.Tests.Analyzer.Core.Common
 {
     public class GuppyAnalyzerCoreCommonUnitTest
     {
-        //Diagnostic and CodeFix both triggered and checked for
         [Fact]
-        public async Task RequireSequenceGroup_Missing()
+        public async Task RequireSequenceGroup_AttributeMissingOnInterfaceImplementation()
         {
             var test = @"
 using System;
@@ -45,6 +44,57 @@ namespace ConsoleApplication1
 }";
 
             var expected = VerifyCS.Diagnostic(RequireSequenceGroupAnalyzer.DiagnosticId).WithSpan(25, 21, 25, 33).WithArguments("SomeFunction", "TestClass", "ConsoleApplication1.TestSequenceGroup");
+            await VerifyCS.VerifyCodeFixAsync(
+                source: test,
+                expected: [
+                    expected
+                ],
+                fixedSource: null,
+                additionalReferences: [
+                    MetadataReference.CreateFromFile(typeof(RequireSequenceGroupAttribute<>).Assembly.Location),
+                ]);
+        }
+
+        [Fact]
+        public async Task RequireSequenceGroup_AttributeMissingOnAbstractImplementation()
+        {
+            var test = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using Guppy.Core.Common.Attributes;
+
+namespace ConsoleApplication1
+{
+    enum TestSequenceGroup
+    {
+        Default
+    }
+
+    interface ITestInterface
+    {
+        [RequireSequenceGroup<TestSequenceGroup>]
+        void SomeFunction();
+    }
+
+    abstract class BaseTestClass : ITestInterface
+    {
+        public abstract void SomeFunction();
+    }
+
+    class TestClass : BaseTestClass
+    {   
+        public override void SomeFunction()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}";
+
+            var expected = VerifyCS.Diagnostic(RequireSequenceGroupAnalyzer.DiagnosticId).WithSpan(30, 30, 30, 42).WithArguments("SomeFunction", "TestClass", "ConsoleApplication1.TestSequenceGroup");
             await VerifyCS.VerifyCodeFixAsync(
                 source: test,
                 expected: [
