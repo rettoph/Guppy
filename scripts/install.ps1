@@ -72,7 +72,7 @@ dotnet tool install --version $MonoGameBuildVersion --add-source "$($MonoGameDir
 # ---------------------
 
 @'
-<!-- Generated via scripts/install.ps1 -->
+<!-- Generated via Guppy/scripts/install.ps1 -->
 <Project>
 
   <PropertyGroup>
@@ -80,6 +80,7 @@ dotnet tool install --version $MonoGameBuildVersion --add-source "$($MonoGameDir
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Guppy packages are added to a local nuget feed via the 'Guppy/nuget.config' file -->
     <PackageReference Include="Guppy.Analyzer.Core.Common" Version="{0}" />
   </ItemGroup>
 
@@ -87,7 +88,7 @@ dotnet tool install --version $MonoGameBuildVersion --add-source "$($MonoGameDir
 '@ -f $AnalyzerVersion | Out-File -FilePath "$($SolutionDirectory)/Guppy.Core.Common.g.targets"
 
 @'
-<!-- Generated via scripts/install.ps1 -->
+<!-- Generated via Guppy/scripts/install.ps1 -->
 <configuration>
   <packageSources>
     <add key="GuppyPackages" value="{0}" />
