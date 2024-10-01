@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Guppy.Core.Network.Common.Serialization.Json
+namespace Guppy.Core.Network.Serialization.Json
 {
     internal sealed class ClaimTypeJsonConverter : JsonConverter<ClaimType>
     {

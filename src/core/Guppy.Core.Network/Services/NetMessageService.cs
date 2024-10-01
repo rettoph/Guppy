@@ -1,15 +1,16 @@
-﻿using Guppy.Core.Network.Common.Definitions;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
-namespace Guppy.Core.Network.Common.Services
+namespace Guppy.Core.Network.Services
 {
     internal sealed class NetMessageService : INetMessageService
     {
         private readonly IPeer _peer;
 
-        private INetGroup _scope;
         private IDictionary<byte, NetMessageType> _messageIds;
         private IDictionary<Type, NetMessageType> _messageTypes;
 
@@ -19,7 +20,6 @@ namespace Guppy.Core.Network.Common.Services
 
             _messageIds = default!;
             _messageTypes = default!;
-            _scope = default!;
 
             byte id = 0;
             IList<NetMessageType> messages = definitions.Select(definition =>

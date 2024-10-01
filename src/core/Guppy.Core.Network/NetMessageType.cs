@@ -1,9 +1,11 @@
 ﻿using Guppy.Core.Common.Collections;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Peers;
 using LiteNetLib;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     internal abstract class NetMessageType : INetMessageType
     {

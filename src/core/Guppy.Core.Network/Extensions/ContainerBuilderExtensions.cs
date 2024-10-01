@@ -2,10 +2,12 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Constants;
-using Guppy.Core.Network.Common.Messages;
 using Guppy.Core.Network.Common.Peers;
-using Guppy.Core.Network.Common.Serialization.Json;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Messages;
+using Guppy.Core.Network.Peers;
+using Guppy.Core.Network.Serialization.Json;
+using Guppy.Core.Network.Services;
 using Guppy.Core.Serialization.Json.Converters;
 using LiteNetLib;
 using System.Text.Json.Serialization;

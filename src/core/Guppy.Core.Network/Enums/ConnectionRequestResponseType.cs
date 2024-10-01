@@ -1,4 +1,4 @@
-﻿namespace Guppy.Core.Network.Common.Enums
+﻿namespace Guppy.Core.Network.Enums
 {
     internal enum ConnectionRequestResponseType
     {

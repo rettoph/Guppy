@@ -1,9 +1,10 @@
 ﻿using Autofac;
 using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Contexts;
-using Guppy.Core.Network.Common.Groups;
+using Guppy.Core.Network.Groups;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     internal sealed class NetScope<T> : INetScope<T>,
         IDisposable,

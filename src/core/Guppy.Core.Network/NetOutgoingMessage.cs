@@ -1,12 +1,13 @@
 ﻿using Guppy.Core.Messaging.Common;
-using Guppy.Core.Network.Common.Peers;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Peers;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using System.Collections.ObjectModel;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     internal sealed class NetOutgoingMessage<T> : INetOutgoingMessage<T>
         where T : notnull

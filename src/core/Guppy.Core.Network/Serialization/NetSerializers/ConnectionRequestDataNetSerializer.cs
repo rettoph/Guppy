@@ -1,9 +1,10 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Network.Common.Claims;
-using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Serialization;
+using Guppy.Core.Network.Messages;
 using LiteNetLib.Utils;
 
-namespace Guppy.Core.Network.Common.Serialization.NetSerializers
+namespace Guppy.Core.Network.Serialization.NetSerializers
 {
     [AutoLoad]
     internal sealed class ConnectionRequestDataNetSerializer : NetSerializer<ConnectionRequestData>

@@ -1,13 +1,16 @@
 ﻿using Autofac;
 using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Core.Network.Common.Groups;
-using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Enums;
+using Guppy.Core.Network.Groups;
+using Guppy.Core.Network.Messages;
 
-namespace Guppy.Core.Network.Common.Peers
+namespace Guppy.Core.Network.Peers
 {
     internal class ClientPeer : Peer, IClientPeer,
         ISubscriber<INetIncomingMessage<UserAction>>,
@@ -30,7 +33,7 @@ namespace Guppy.Core.Network.Common.Peers
 
         public void Connect(string address, int port, params Claim[] claims)
         {
-            if (this.State == Enums.PeerState.NotStarted)
+            if (this.State == PeerState.NotStarted)
             {
                 this.Start();
             }

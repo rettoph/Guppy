@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Network.Common.Claims;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Dtos;
 using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Services;
@@ -7,7 +8,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Guppy.Core.Network.Common.Identity.Services
+namespace Guppy.Core.Network.Identity.Services
 {
     public class UserService : IUserService
     {

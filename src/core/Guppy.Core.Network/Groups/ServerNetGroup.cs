@@ -1,10 +1,11 @@
-﻿using Guppy.Core.Network.Common.Enums;
-using Guppy.Core.Network.Common.Extensions.Identity;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Extensions.Identity;
 
-namespace Guppy.Core.Network.Common.Groups
+namespace Guppy.Core.Network.Groups
 {
     internal sealed class ServerNetGroup : BaseNetGroup
     {

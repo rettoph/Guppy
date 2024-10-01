@@ -3,7 +3,7 @@ using Guppy.Core.Network.Common.Identity.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Guppy.Core.Network.Common.Serialization.Json
+namespace Guppy.Core.Network.Serialization.Json
 {
     internal sealed class ClaimJsonConverter : JsonConverter<Claim>
     {

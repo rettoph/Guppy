@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Network.Common.Dtos;
 using Guppy.Core.Network.Common.Enums;
 
-namespace Guppy.Core.Network.Common.Messages
+namespace Guppy.Core.Network.Messages
 {
     internal sealed class UserAction
     {

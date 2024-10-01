@@ -1,10 +1,11 @@
-﻿using Guppy.Core.Network.Common.Claims;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Identity.Enums;
 using LiteNetLib;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     public class User : IUser, IDisposable
     {

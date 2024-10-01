@@ -1,15 +1,18 @@
 ﻿using Autofac;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Extensions;
-using Guppy.Core.Network.Common.Groups;
 using Guppy.Core.Network.Common.Identity.Enums;
-using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Enums;
+using Guppy.Core.Network.Groups;
+using Guppy.Core.Network.Messages;
 using LiteNetLib;
 
-namespace Guppy.Core.Network.Common.Peers
+namespace Guppy.Core.Network.Peers
 {
     internal class ServerPeer : Peer, IServerPeer
     {

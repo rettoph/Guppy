@@ -1,7 +1,8 @@
-﻿using Guppy.Core.Network.Common.Services;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     internal sealed class Sender : ISender
     {

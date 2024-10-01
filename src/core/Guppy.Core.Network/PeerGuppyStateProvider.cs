@@ -1,11 +1,12 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     [AutoLoad]
     internal class PeerGuppyStateProvider : BaseStateProvider
@@ -14,12 +15,15 @@ namespace Guppy.Core.Network.Common
 
         public PeerGuppyStateProvider(ILifetimeScope scope)
         {
+            IEnumerable<INetScope>? scopes = null;
+
             if (scope.IsRoot() == false)
             {
-                scope.TryResolve(out _scopes);
+
+                scope.TryResolve(out scopes);
             }
 
-            _scopes ??= Enumerable.Empty<INetScope>();
+            _scopes = scopes ?? Enumerable.Empty<INetScope>();
         }
 
         public override bool TryGet(IStateKey key, out object? state)

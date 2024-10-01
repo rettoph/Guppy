@@ -15,8 +15,8 @@ namespace Guppy.Core.Network.Common.Contexts
             GroupId = groupId;
         }
 
-        public T GetGroup<T>(ILifetimeScope scope)
-            where T : class, INetGroup
+        public TGroup GetGroup<TGroup>(ILifetimeScope scope)
+            where TGroup : class, INetGroup
         {
             IPeer peer = this.PeerType switch
             {
@@ -27,7 +27,7 @@ namespace Guppy.Core.Network.Common.Contexts
 
             INetGroup group = peer.Groups.GetById(this.GroupId);
 
-            if (group is not T casted)
+            if (group is not TGroup casted)
             {
                 throw new Exception();
             }

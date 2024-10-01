@@ -1,7 +1,8 @@
-﻿using System.Text.Json;
+﻿using Guppy.Core.Network.Common;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Guppy.Core.Network.Common.Serialization.Json
+namespace Guppy.Core.Network.Serialization.Json
 {
     internal sealed class UShortNetIdJsonConverter : JsonConverter<NetId.UShort>
     {

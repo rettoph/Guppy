@@ -1,11 +1,12 @@
 ﻿using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
-namespace Guppy.Core.Network.Common
+namespace Guppy.Core.Network
 {
     internal sealed class NetIncomingMessage<T> : INetIncomingMessage<T>
         where T : notnull

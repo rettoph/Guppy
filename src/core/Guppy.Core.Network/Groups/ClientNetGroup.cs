@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Network.Common.Peers;
 
-namespace Guppy.Core.Network.Common.Groups
+namespace Guppy.Core.Network.Groups
 {
     internal sealed class ClientNetGroup : BaseNetGroup
     {

@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Services;
+using System.Runtime.InteropServices;
 
-namespace Guppy.Core.Network.Common.Services
+namespace Guppy.Core.Network.Services
 {
     internal sealed class NetGroupService : INetGroupService
     {

@@ -1,13 +1,16 @@
 ﻿using Autofac;
 using Guppy.Core.Messaging.Common;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Constants;
 using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Enums;
-using Guppy.Core.Network.Common.Identity.Services;
+using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Identity.Services;
+using Guppy.Core.Network.Services;
 using LiteNetLib;
 
-namespace Guppy.Core.Network.Common.Peers
+namespace Guppy.Core.Network.Peers
 {
     internal abstract class Peer : IDisposable, IPeer, IBaseSubscriber<IMessage>
     {

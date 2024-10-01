@@ -1,10 +1,11 @@
 ﻿using Guppy.Core.Messaging.Common;
-using Guppy.Core.Network.Common.Identity.Services;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
+using Guppy.Core.Network.Identity.Services;
 using System.Collections.ObjectModel;
 
-namespace Guppy.Core.Network.Common.Groups
+namespace Guppy.Core.Network.Groups
 {
     internal abstract class BaseNetGroup :
         INetGroup,

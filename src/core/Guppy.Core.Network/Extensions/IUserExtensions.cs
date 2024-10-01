@@ -1,8 +1,10 @@
-﻿using Guppy.Core.Network.Common.Enums;
+﻿using Guppy.Core.Network.Common;
+using Guppy.Core.Network.Common.Enums;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Common.Identity.Enums;
-using Guppy.Core.Network.Common.Messages;
+using Guppy.Core.Network.Messages;
 
-namespace Guppy.Core.Network.Common.Extensions.Identity
+namespace Guppy.Core.Network.Extensions.Identity
 {
     public static class UserExtensions
     {
