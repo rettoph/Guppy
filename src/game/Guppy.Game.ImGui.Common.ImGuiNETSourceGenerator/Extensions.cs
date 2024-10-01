@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Guppy.GUI.ImGuiNETSourceGenerator
+namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     internal static class Extensions
     {

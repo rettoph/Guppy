@@ -48,6 +48,10 @@ namespace Guppy.Analyzer.Core.Common
             {
                 return;
             }
+            if (methodSymbol.IsVirtual == true && containingTypeSymbol.IsAbstract == true)
+            {
+                return;
+            }
 
             List<string> namedSequenceGroups = new List<string>();
             List<string> requiredSequenceGroups = new List<string>();

@@ -1,8 +1,7 @@
-﻿using Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers;
-using ImGuiNET;
+﻿using Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers;
 using Microsoft.CodeAnalysis;
 
-namespace Guppy.GUI.ImGuiNETSourceGenerator
+namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     [Generator]
     internal class IImGuiSourceGenerator : ISourceGenerator
@@ -15,17 +14,16 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
             {
                 using (source.Section("public partial interface IImGui"))
                 {
-                    TypeDecoratorHelper.AddStaticMethodDecorations(typeof(ImGui), source);
+                    TypeDecoratorHelper.AddStaticMethodDecorations(typeof(ImGuiNET.ImGui), source);
                 }
             }
 
-            //TypeManager.GetTypeManager(typeof(ImGuiWindowClass));
             TypeManager.GenerateAllSourceFiles(source);
         }
 
         public void Initialize(GeneratorInitializationContext context)
         {
-            //Debugger.Launch();
+            // System.Diagnostics.Debugger.Launch();
         }
     }
 }

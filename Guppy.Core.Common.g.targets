@@ -1,4 +1,4 @@
-<!-- Generated via scripts/install.ps1 -->
+<!-- Generated via Guppy/scripts/install.ps1 -->
 <Project>
 
   <PropertyGroup>
@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Guppy.Analyzer.Core.Common" Version="1.0.8" />
+    <!-- Guppy packages are added to a local nuget feed via the 'Guppy/nuget.config' file -->
+    <PackageReference Include="Guppy.Analyzer.Core.Common" Version="1.0.9" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers
+namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
 {
     internal class DecoratingTypeManager : TypeManager
     {

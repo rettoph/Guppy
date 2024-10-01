@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Files.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
-using Guppy.Core.Common.Attributes;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,7 +11,6 @@ namespace Guppy.Game.MonoGame.ResourceTypes
     [AutoLoad]
     internal class SpriteFontResourceType : SimpleResourceType<SpriteFont>
     {
-        public Type Type => typeof(SpriteFont);
 
         private readonly ContentManager _content;
 

@@ -79,7 +79,7 @@ namespace Guppy.Core.Resources.Common
         }
     }
 
-    public struct Setting<T> : ISetting
+    public readonly struct Setting<T> : ISetting
         where T : notnull
     {
         private readonly UnmanagedReference<Setting<T>, string> _name;
@@ -88,25 +88,27 @@ namespace Guppy.Core.Resources.Common
 
         public readonly Guid Id;
         public string Name => _name.Value;
-        public string Description
+        public readonly string Description
         {
             get => _description.Value;
         }
-        public Type Type => typeof(T);
-        public T DefaultValue
+        public readonly Type Type => typeof(T);
+        public readonly T DefaultValue
         {
             get => _default.Value;
             set => _default.SetValue(value);
         }
 
-        Guid ISetting.Id => this.Id;
+        readonly Guid ISetting.Id => this.Id;
         string ISetting.Name => this.Name;
-        string ISetting.Description
+
+        readonly string ISetting.Description
         {
             get => this.Description;
         }
         Type ISetting.Type => this.Type;
-        object ISetting.DefaultValue
+
+        readonly object ISetting.DefaultValue
         {
             get => this.DefaultValue;
         }
@@ -131,23 +133,23 @@ namespace Guppy.Core.Resources.Common
             _default.Dispose();
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return this.Equals((Setting<T>)obj!);
         }
 
-        public bool Equals(Setting<T> other)
+        public readonly bool Equals(Setting<T> other)
         {
             return this.Id.Equals(other.Id);
         }
 
-        public bool Equals(ISetting? other)
+        public readonly bool Equals(ISetting? other)
         {
             return other is Setting<T> casted
                 && this.Equals(casted);
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(this.Id);
         }
@@ -175,7 +177,7 @@ namespace Guppy.Core.Resources.Common
 
             if (cached is not Setting<T> casted)
             {
-                throw new InvalidOperationException($"Preexisting setting '{cached.Name}' type mismatch. Expected {typeof(T).Name} but got {cached!.Type.Name}");
+                throw new InvalidOperationException($"Preexisting setting '{cached!.Name}' type mismatch. Expected {typeof(T).Name} but got {cached!.Type.Name}");
             }
 
             return casted;

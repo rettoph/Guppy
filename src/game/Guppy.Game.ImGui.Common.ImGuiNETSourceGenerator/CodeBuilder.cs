@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace Guppy.GUI.ImGuiNETSourceGenerator
+namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     public class CodeBuilder : IDisposable
     {

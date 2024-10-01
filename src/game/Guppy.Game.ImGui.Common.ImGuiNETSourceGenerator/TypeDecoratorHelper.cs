@@ -1,9 +1,9 @@
-﻿using Guppy.GUI.ImGuiNETSourceGenerator.TypeManagers;
+﻿using Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers;
 using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Guppy.GUI.ImGuiNETSourceGenerator
+namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     public static class TypeDecoratorHelper
     {
@@ -20,7 +20,9 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
                 string guppyMethodParameters = string.Join(", ", parameterManagers.Select(x => $"{x.parameter.GetPrefix()}{x.manager.GuppyParameterType} {x.parameter.Name.Sanitize()}"));
                 string imguiMethodParameters = string.Join(", ", parameterManagers.Select(x => $"{x.parameter.GetPrefix()}{x.manager.GetGuppyToImGuiConverter(x.parameter.Name.Sanitize())}"));
 
-                using (source.Section($"public unsafe {returnType.ReturnTypeName} {method.Name}({guppyMethodParameters})"))
+                string methodModifiers = GetMethodModifiers(method, typeof(object));
+
+                using (source.Section($"{methodModifiers} {returnType.ReturnTypeName} {method.Name}({guppyMethodParameters})"))
                 {
                     if (method.ReturnType.IsVoid())
                     {
@@ -88,6 +90,28 @@ namespace Guppy.GUI.ImGuiNETSourceGenerator
                     }
                 }
             }
+        }
+
+        private static string GetMethodModifiers(MethodInfo method, Type baseType)
+        {
+            string modifiers = string.Empty;
+
+            if (method.IsPublic == true)
+            {
+                modifiers += "public unsafe";
+            }
+            else
+            {
+                modifiers += "protected unsafe";
+            }
+
+            MethodInfo baseMethod = baseType.GetMethod(method.Name, method.GetParameters().Select(x => x.ParameterType).ToArray());
+            if (baseMethod is null == false)
+            {
+                modifiers += baseMethod.IsVirtual ? " override " : " new";
+            }
+
+            return modifiers;
         }
     }
 }
