@@ -52,6 +52,8 @@ else {
     dotnet pack -o "$($MonoGameDirectory)/Artifacts/NuGet" /p:Version=$MonoGameBuildVersion "$($MonoGameDirectory)/Tools/MonoGame.Content.Builder.Editor.Launcher/MonoGame.Content.Builder.Editor.Launcher.Windows.csproj"
 }
 
+git reset --hard HEAD
+
 Set-Location $WorkingDirectory;
 
 # Uninstall old tools (if any)
