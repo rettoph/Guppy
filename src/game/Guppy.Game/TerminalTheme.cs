@@ -7,26 +7,15 @@ using Serilog.Events;
 
 namespace Guppy.Game
 {
-    public class TerminalTheme : ITerminalTheme
+    public class TerminalTheme(IResourceService resourceService) : ITerminalTheme
     {
-        private readonly ResourceValue<Color> _verbose;
-        private readonly ResourceValue<Color> _debug;
-        private readonly ResourceValue<Color> _information;
-        private readonly ResourceValue<Color> _warning;
-        private readonly ResourceValue<Color> _error;
-        private readonly ResourceValue<Color> _fatal;
-        private readonly ResourceValue<Color> _default;
-
-        public TerminalTheme(IResourceService resourceService)
-        {
-            _verbose = resourceService.GetValue(Resources.Colors.TerminalVerbose);
-            _debug = resourceService.GetValue(Resources.Colors.TerminalDebug);
-            _information = resourceService.GetValue(Resources.Colors.TerminalInformation);
-            _warning = resourceService.GetValue(Resources.Colors.TerminalWarning);
-            _error = resourceService.GetValue(Resources.Colors.TerminalError);
-            _fatal = resourceService.GetValue(Resources.Colors.TerminalFatal);
-            _default = resourceService.GetValue(Resources.Colors.TerminalDefault);
-        }
+        private readonly ResourceValue<Color> _verbose = resourceService.GetValue(Resources.Colors.TerminalVerbose);
+        private readonly ResourceValue<Color> _debug = resourceService.GetValue(Resources.Colors.TerminalDebug);
+        private readonly ResourceValue<Color> _information = resourceService.GetValue(Resources.Colors.TerminalInformation);
+        private readonly ResourceValue<Color> _warning = resourceService.GetValue(Resources.Colors.TerminalWarning);
+        private readonly ResourceValue<Color> _error = resourceService.GetValue(Resources.Colors.TerminalError);
+        private readonly ResourceValue<Color> _fatal = resourceService.GetValue(Resources.Colors.TerminalFatal);
+        private readonly ResourceValue<Color> _default = resourceService.GetValue(Resources.Colors.TerminalDefault);
 
         public IRef<Color> Get(LogEventLevel level)
         {

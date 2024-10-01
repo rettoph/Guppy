@@ -22,7 +22,7 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
 
         public override UserAction Deserialize(NetDataReader reader)
         {
-            UserAction instance = new UserAction()
+            UserAction instance = new()
             {
                 GroupId = reader.GetByte(),
                 Type = reader.GetEnum<UserActionTypes>(),

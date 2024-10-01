@@ -11,14 +11,9 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.Components.Engine
 {
     [AutoLoad]
-    internal class SceneFrameComponent : IEngineComponent, IUpdatableComponent, IDrawableComponent
+    internal class SceneFrameComponent(ISceneService scenes) : IEngineComponent, IUpdatableComponent, IDrawableComponent
     {
-        private readonly ISceneService _scenes;
-
-        public SceneFrameComponent(ISceneService scenes)
-        {
-            _scenes = scenes;
-        }
+        private readonly ISceneService _scenes = scenes;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

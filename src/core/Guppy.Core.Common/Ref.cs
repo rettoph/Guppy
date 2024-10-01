@@ -13,14 +13,9 @@
 
         protected abstract object? GetValue();
     }
-    public class Ref<T> : Ref, IRef<T>
+    public class Ref<T>(T value) : Ref, IRef<T>
     {
-        public new T Value;
-
-        public Ref(T value)
-        {
-            Value = value;
-        }
+        public new T Value = value;
 
         public override Type Type => typeof(T);
 

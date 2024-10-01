@@ -5,14 +5,9 @@ using Guppy.Core.StateMachine.Common.Services;
 
 namespace Guppy.StateMachine.Services
 {
-    internal class StateService : IStateService
+    internal class StateService(IEnumerable<IStateProvider> providers) : IStateService
     {
-        private readonly IStateProvider[] _providers;
-
-        public StateService(IEnumerable<IStateProvider> providers)
-        {
-            _providers = providers.ToArray();
-        }
+        private readonly IStateProvider[] _providers = providers.ToArray();
 
         public T? GetByKey<T>(IStateKey<T> key)
         {

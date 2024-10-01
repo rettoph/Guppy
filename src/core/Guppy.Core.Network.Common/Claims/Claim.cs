@@ -93,17 +93,11 @@ namespace Guppy.Core.Network.Common.Claims
         }
     }
 
-    public class Claim<T> : Claim
+    public class Claim<T>(string key, T value, ClaimAccessibility accessibility, DateTime? createdAt = null) : Claim(key, accessibility, createdAt)
     {
-        public T Value { get; }
+        public T Value { get; } = value;
 
-        public override ClaimType<T> Type { get; }
-
-        public Claim(string key, T value, ClaimAccessibility accessibility, DateTime? createdAt = null) : base(key, accessibility, createdAt)
-        {
-            Value = value;
-            Type = ClaimType.Get<T>();
-        }
+        public override ClaimType<T> Type { get; } = ClaimType.Get<T>();
 
         public override object? GetValue()
         {

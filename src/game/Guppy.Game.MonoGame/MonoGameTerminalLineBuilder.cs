@@ -5,25 +5,16 @@ using System.Text;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalLineBuilder
+    internal class MonoGameTerminalLineBuilder(IRef<Color> color)
     {
         private int _lineNumber = 1;
-        private bool _appendLineNumber;
+        private bool _appendLineNumber = true;
 
-        private MonoGameTerminalLine _line;
+        private MonoGameTerminalLine _line = MonoGameTerminalLine.Factory.BuildInstance();
 
-        public IRef<Color> Color;
+        public IRef<Color> Color = color;
 
-        public StringBuilder Text;
-
-        public MonoGameTerminalLineBuilder(IRef<Color> color)
-        {
-            _line = MonoGameTerminalLine.Factory.BuildInstance();
-            _appendLineNumber = true;
-
-            this.Text = new StringBuilder();
-            this.Color = color;
-        }
+        public StringBuilder Text = new StringBuilder();
 
         public bool TryAppend(char value, [MaybeNullWhen(true)] out MonoGameTerminalLine previousLine)
         {

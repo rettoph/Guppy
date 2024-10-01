@@ -6,10 +6,7 @@ using Guppy.Core.Serialization.Common.Services;
 namespace Guppy.Game.ResourceTypes
 {
     [AutoLoad]
-    internal class ColorResourceType : DefaultResourceType<Color>
+    internal class ColorResourceType(IJsonSerializationService json) : DefaultResourceType<Color>(json)
     {
-        public ColorResourceType(IJsonSerializationService json) : base(json)
-        {
-        }
     }
 }

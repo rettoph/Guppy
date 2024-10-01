@@ -14,16 +14,10 @@ using Microsoft.Xna.Framework.Input;
 namespace Guppy.Game.Input.Components
 {
     [AutoLoad]
-    internal sealed class MouseCursorPublishComponent : IEngineComponent, IUpdatableComponent
+    internal sealed class MouseCursorPublishComponent(ICursorService cursors, IInputService inputs) : IEngineComponent, IUpdatableComponent
     {
-        private readonly IInputService _inputs;
-        private readonly ICursor _cursor;
-
-        public MouseCursorPublishComponent(ICursorService cursors, IInputService inputs)
-        {
-            _inputs = inputs;
-            _cursor = cursors.Get(Cursors.Mouse);
-        }
+        private readonly IInputService _inputs = inputs;
+        private readonly ICursor _cursor = cursors.Get(Cursors.Mouse);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

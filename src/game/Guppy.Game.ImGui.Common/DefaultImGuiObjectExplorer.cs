@@ -9,25 +9,17 @@ using System.Text;
 
 namespace Guppy.Game.ImGui.Common
 {
-    internal sealed class DefaultImGuiObjectExplorer : ImGuiObjectExplorer
+    internal sealed class DefaultImGuiObjectExplorer(IObjectTextFilterService filter, IImGui imgui) : ImGuiObjectExplorer
     {
-        private readonly IObjectTextFilterService _filter;
-        private readonly IImGui _imgui;
-        private Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo;
+        private readonly IObjectTextFilterService _filter = filter;
+        private readonly IImGui _imgui = imgui;
+        private Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo = new Dictionary<Type, (FieldInfo[], PropertyInfo[])>();
 
-        private Dictionary<uint, TextFilterResult> _filterResults;
+        private Dictionary<uint, TextFilterResult> _filterResults = new Dictionary<uint, TextFilterResult>();
         private Vector4 _redForeground = Color.Red.ToVector4();
         private Vector4 _greenForeground = Color.LightGreen.ToVector4();
         private Vector4 _redBackground = Color.DarkRed.ToVector4();
         private Vector4 _greenBackground = Color.DarkGreen.ToVector4();
-
-        public DefaultImGuiObjectExplorer(IObjectTextFilterService filter, IImGui imgui)
-        {
-            _filter = filter;
-            _imgui = imgui;
-            _typeInfo = new Dictionary<Type, (FieldInfo[], PropertyInfo[])>();
-            _filterResults = new Dictionary<uint, TextFilterResult>();
-        }
 
         public override bool AppliesTo(Type type)
         {

@@ -14,34 +14,21 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal class EngineTerminalWindowComponent : IEngineComponent, IImGuiComponent
+    internal class EngineTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService) : IEngineComponent, IImGuiComponent
     {
-        private readonly ICommandService _commands;
-        private readonly IImGui _imgui;
-        private readonly MonoGameTerminal _terminal;
+        private readonly ICommandService _commands = commands;
+        private readonly IImGui _imgui = imgui;
+        private readonly MonoGameTerminal _terminal = terminal;
 
-        private string _filter;
-        private string _input;
-        private float _inputContainerHeight;
+        private string _filter = string.Empty;
+        private string _input = string.Empty;
+        private float _inputContainerHeight = 0;
 
         private int _lines;
-        private bool _scrolledToBottom;
+        private bool _scrolledToBottom = true;
 
-        private SettingValue<bool> _isTerminalWindowEnabled;
-        private ResourceValue<ImStyle> _debugWindowStyle;
-
-        public EngineTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService)
-        {
-            _commands = commands;
-            _imgui = imgui;
-            _terminal = terminal;
-            _filter = string.Empty;
-            _input = string.Empty;
-            _inputContainerHeight = 0;
-            _scrolledToBottom = true;
-            _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
-            _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
-        }
+        private SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
+        private ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

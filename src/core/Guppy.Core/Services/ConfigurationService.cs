@@ -4,16 +4,10 @@ using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class ConfigurationService : IConfigurationService
+    internal sealed class ConfigurationService(ILifetimeScope scope, IEnumerable<ConfigurationBuilder> builders) : IConfigurationService
     {
-        private readonly ILifetimeScope _scope;
-        private readonly ConfigurationBuilder[] _builders;
-
-        public ConfigurationService(ILifetimeScope scope, IEnumerable<ConfigurationBuilder> builders)
-        {
-            _scope = scope;
-            _builders = builders.ToArray();
-        }
+        private readonly ILifetimeScope _scope = scope;
+        private readonly ConfigurationBuilder[] _builders = builders.ToArray();
 
         public void Configure<T>(T instance)
         {

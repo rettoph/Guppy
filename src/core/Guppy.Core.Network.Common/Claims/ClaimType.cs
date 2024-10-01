@@ -61,16 +61,10 @@ namespace Guppy.Core.Network.Common.Claims
         public abstract Claim Create(string key, object value, ClaimAccessibility accessibility, DateTime? createdAt = null);
     }
 
-    public sealed class ClaimType<T> : ClaimType
+    public sealed class ClaimType<T>(string name, Action<NetDataWriter, T> serializer, Func<NetDataReader, T> deserializer) : ClaimType(name, typeof(T))
     {
-        private readonly Action<NetDataWriter, T> _netSerializer;
-        private readonly Func<NetDataReader, T> _netDeserializer;
-
-        public ClaimType(string name, Action<NetDataWriter, T> serializer, Func<NetDataReader, T> deserializer) : base(name, typeof(T))
-        {
-            _netSerializer = serializer;
-            _netDeserializer = deserializer;
-        }
+        private readonly Action<NetDataWriter, T> _netSerializer = serializer;
+        private readonly Func<NetDataReader, T> _netDeserializer = deserializer;
 
         public override void SerializeValue(NetDataWriter writer, object? value)
         {

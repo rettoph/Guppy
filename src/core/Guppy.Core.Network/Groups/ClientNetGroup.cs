@@ -2,10 +2,7 @@
 
 namespace Guppy.Core.Network.Groups
 {
-    internal sealed class ClientNetGroup : BaseNetGroup
+    internal sealed class ClientNetGroup(byte id, IPeer peer) : BaseNetGroup(id, peer)
     {
-        public ClientNetGroup(byte id, IPeer peer) : base(id, peer)
-        {
-        }
     }
 }

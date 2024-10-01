@@ -4,14 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Game.MonoGame.Common.Primitives
 {
-    public class ProjectedShape : PrimitiveShape
+    public class ProjectedShape(Camera camera, IEnumerable<Vector2> vertices) : PrimitiveShape(vertices)
     {
-        private readonly Camera _camera;
-
-        public ProjectedShape(Camera camera, IEnumerable<Vector2> vertices) : base(vertices)
-        {
-            _camera = camera;
-        }
+        private readonly Camera _camera = camera;
 
         public override void Transform(int index, in Color color, ref Matrix transformation, out VertexPositionColor output)
         {

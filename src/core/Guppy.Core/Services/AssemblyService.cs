@@ -7,20 +7,13 @@ using System.Reflection;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class AssemblyService : IAssemblyService
+    internal sealed class AssemblyService(IEnumerable<Assembly> libraries) : IAssemblyService
     {
-        private readonly HashSet<Assembly> _assemblies;
+        private readonly HashSet<Assembly> _assemblies = new HashSet<Assembly>();
 
-        public AssemblyName[] Libraries { get; private set; }
+        public AssemblyName[] Libraries { get; private set; } = libraries.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
 
         public event OnEventDelegate<IAssemblyService, Assembly>? OnAssemblyLoaded;
-
-        public AssemblyService(IEnumerable<Assembly> libraries)
-        {
-            _assemblies = new HashSet<Assembly>();
-
-            this.Libraries = libraries.Select(x => x.GetName()).Distinct().ToArray() ?? Array.Empty<AssemblyName>();
-        }
 
         public void Load(Assembly assembly, bool forced = false)
         {

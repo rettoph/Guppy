@@ -133,13 +133,9 @@ namespace Guppy.Game.MonoGame
         }
     }
 
-    public class GuppyMonoGame<TGuppy> : GuppyMonoGame
+    public class GuppyMonoGame<TGuppy>(GuppyContext context) : GuppyMonoGame(context)
         where TGuppy : class, IScene
     {
-        public GuppyMonoGame(GuppyContext context) : base(context)
-        {
-        }
-
         protected override void Initialize(IGameEngine engine)
         {
             base.Initialize(engine);

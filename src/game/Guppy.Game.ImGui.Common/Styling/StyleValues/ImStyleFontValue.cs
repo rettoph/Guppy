@@ -4,14 +4,9 @@ using Guppy.Core.Serialization.Common.Attributes;
 namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
 {
     [PolymorphicJsonType<ImStyleValue>(nameof(TrueTypeFont))]
-    internal class ImStyleFontValue : ImStyleValue
+    internal class ImStyleFontValue(string? key, Ref<ImFontPtr> font) : ImStyleValue(key)
     {
-        public readonly Ref<ImFontPtr> Font;
-
-        public ImStyleFontValue(string? key, Ref<ImFontPtr> font) : base(key)
-        {
-            this.Font = font;
-        }
+        public readonly Ref<ImFontPtr> Font = font;
 
         public override void Pop()
         {

@@ -7,14 +7,9 @@ using Guppy.Game.MonoGame.Common.Constants;
 
 namespace Guppy.Game.Common.Attributes
 {
-    public class SceneHasDebugWindowFilterAttribute : GuppyConfigurationAttribute
+    public class SceneHasDebugWindowFilterAttribute(bool whenHasDebugWindow = true) : GuppyConfigurationAttribute
     {
-        public readonly bool WhenHasDebugWindow;
-
-        public SceneHasDebugWindowFilterAttribute(bool whenHasDebugWindow = true)
-        {
-            this.WhenHasDebugWindow = whenHasDebugWindow;
-        }
+        public readonly bool WhenHasDebugWindow = whenHasDebugWindow;
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {

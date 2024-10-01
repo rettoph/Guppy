@@ -1,14 +1,9 @@
 ﻿namespace Guppy.Core.Common.Collections
 {
-    public class Factory<T> : Pool<T>
+    public class Factory<T>(Func<T> method, ushort maxPoolSize = 50) : Pool<T>(maxPoolSize)
         where T : class
     {
-        private Func<T> _method;
-
-        public Factory(Func<T> method, ushort maxPoolSize = 50) : base(maxPoolSize)
-        {
-            _method = method;
-        }
+        private Func<T> _method = method;
 
         public virtual T BuildInstance()
         {

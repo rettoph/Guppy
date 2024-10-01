@@ -20,12 +20,8 @@ namespace Guppy.Engine
         public abstract TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 
-    public abstract class ObjectTextFilter<T> : ObjectTextFilter
+    public abstract class ObjectTextFilter<T>(int priority = 0) : ObjectTextFilter(priority)
     {
-        public ObjectTextFilter(int priority = 0) : base(priority)
-        {
-        }
-
         public override bool AppliesTo(object instance)
         {
             return instance is T;

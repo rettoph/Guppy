@@ -4,23 +4,16 @@ using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Common.Attributes
 {
-    public class ServiceAttribute : GuppyConfigurationAttribute
+    public class ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, ServiceRegistrationFlags registrationFlags, object? tag = null) : GuppyConfigurationAttribute
     {
-        public readonly IEnumerable<Type> ServiceTypes;
-        public readonly ServiceLifetime Lifetime;
-        public readonly ServiceRegistrationFlags RegistrationFlags;
-        public readonly object? Tag;
+        public readonly IEnumerable<Type> ServiceTypes = serviceType ?? Array.Empty<Type>();
+        public readonly ServiceLifetime Lifetime = lifetime;
+        public readonly ServiceRegistrationFlags RegistrationFlags = registrationFlags;
+        public readonly object? Tag = tag;
 
         public ServiceAttribute(ServiceLifetime lifetime, ServiceRegistrationFlags registrationFlags, object? tag = null) : this(lifetime, null, registrationFlags, tag)
         {
 
-        }
-        public ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, ServiceRegistrationFlags registrationFlags, object? tag = null)
-        {
-            this.Lifetime = lifetime;
-            this.ServiceTypes = serviceType ?? Array.Empty<Type>();
-            this.RegistrationFlags = registrationFlags;
-            this.Tag = tag;
         }
 
         protected override bool ShouldConfigure(IContainer boot, ContainerBuilder builder, Type classType)
@@ -80,10 +73,7 @@ namespace Guppy.Core.Common.Attributes
         }
     }
 
-    public class ServiceAttribute<TService> : ServiceAttribute
+    public class ServiceAttribute<TService>(ServiceLifetime lifetime, ServiceRegistrationFlags registrationFlags, object? tag = null) : ServiceAttribute(lifetime, [typeof(TService)], registrationFlags, tag)
     {
-        public ServiceAttribute(ServiceLifetime lifetime, ServiceRegistrationFlags registrationFlags, object? tag = null) : base(lifetime, [typeof(TService)], registrationFlags, tag)
-        {
-        }
     }
 }

@@ -11,8 +11,8 @@ namespace Guppy.Core.Network.Groups
         INetGroup,
         IDisposable
     {
-        private List<INetScope> _scopes;
-        private List<IBus> _relays;
+        private readonly List<INetScope> _scopes;
+        private readonly List<IBus> _relays;
 
         public byte Id { get; private set; }
         public IPeer Peer { get; private set; }
@@ -25,8 +25,8 @@ namespace Guppy.Core.Network.Groups
 
         public BaseNetGroup(byte id, IPeer peer)
         {
-            _scopes = new List<INetScope>();
-            _relays = new List<IBus>();
+            _scopes = [];
+            _relays = [];
 
             this.Id = id;
             this.Peer = peer;

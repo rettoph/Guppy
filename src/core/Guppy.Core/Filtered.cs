@@ -5,24 +5,17 @@ using System.Collections;
 
 namespace Guppy.Core
 {
-    internal sealed class Filtered<T> : IFiltered<T>
+    internal sealed class Filtered<T>(
+        ILifetimeScope scope,
+        IServiceFilterService filters,
+        Lazy<IEnumerable<T>> unfiltered) : IFiltered<T>
         where T : class
     {
-        private readonly ILifetimeScope _scope;
-        private readonly IServiceFilterService _filters;
-        private readonly Lazy<IEnumerable<T>> _unfiltered;
+        private readonly ILifetimeScope _scope = scope;
+        private readonly IServiceFilterService _filters = filters;
+        private readonly Lazy<IEnumerable<T>> _unfiltered = unfiltered;
 
         private IEnumerable<T>? _instances;
-
-        public Filtered(
-            ILifetimeScope scope,
-            IServiceFilterService filters,
-            Lazy<IEnumerable<T>> unfiltered)
-        {
-            _scope = scope;
-            _filters = filters;
-            _unfiltered = unfiltered;
-        }
 
         private IEnumerable<T> GetInstances()
         {

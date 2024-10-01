@@ -1,13 +1,8 @@
 ﻿namespace Guppy.Game.MonoGame.Common.Graphics.Effects
 {
-    public class EffectCode
+    public class EffectCode(byte[] bytes)
     {
-        private byte[] _bytes;
-
-        public EffectCode(byte[] bytes)
-        {
-            _bytes = bytes;
-        }
+        private byte[] _bytes = bytes;
 
         public static implicit operator byte[](EffectCode data)
         {

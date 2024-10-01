@@ -5,18 +5,13 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Guppy.Core.Serialization.Json.Converters
 {
-    public sealed class PolymorphicConverter<T> : JsonConverter<T>
+    public sealed class PolymorphicConverter<T>(IPolymorphicJsonSerializerService<T> serializer) : JsonConverter<T>
         where T : notnull
     {
         public const string TypePropertyKey = "Type";
         public const string ValuePropertyKey = "Value";
 
-        private IPolymorphicJsonSerializerService<T> _serializer;
-
-        public PolymorphicConverter(IPolymorphicJsonSerializerService<T> serializer)
-        {
-            _serializer = serializer;
-        }
+        private IPolymorphicJsonSerializerService<T> _serializer = serializer;
 
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

@@ -7,14 +7,9 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.Components.Guppy
 {
     [AutoLoad]
-    internal class SceneBusComponent : ISceneComponent, IUpdatableComponent
+    internal class SceneBusComponent(IBus bus) : ISceneComponent, IUpdatableComponent
     {
-        private readonly IBus _bus;
-
-        public SceneBusComponent(IBus bus)
-        {
-            _bus = bus;
-        }
+        private readonly IBus _bus = bus;
 
         [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PostUpdate)]
         public void Update(GameTime gameTime)

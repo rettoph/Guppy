@@ -6,10 +6,7 @@ using Guppy.Core.Serialization.Common.Services;
 namespace Guppy.Game.ImGui.Common.ResourceTypes
 {
     [AutoLoad]
-    internal class ImStyleResourceType : DefaultResourceType<ImStyle>
+    internal class ImStyleResourceType(IJsonSerializationService json) : DefaultResourceType<ImStyle>(json)
     {
-        public ImStyleResourceType(IJsonSerializationService json) : base(json)
-        {
-        }
     }
 }

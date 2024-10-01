@@ -5,16 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Serialization.Services
 {
-    internal sealed class DefaultInstanceService : IDefaultInstanceService
+    internal sealed class DefaultInstanceService(IFiltered<IDefaultInstanceFactory> factories) : IDefaultInstanceService
     {
-        private IFiltered<IDefaultInstanceFactory> _factories;
-        private Dictionary<Type, IDefaultInstanceFactory> _typeFactories;
-
-        public DefaultInstanceService(IFiltered<IDefaultInstanceFactory> factories)
-        {
-            _factories = factories;
-            _typeFactories = new Dictionary<Type, IDefaultInstanceFactory>();
-        }
+        private IFiltered<IDefaultInstanceFactory> _factories = factories;
+        private Dictionary<Type, IDefaultInstanceFactory> _typeFactories = new Dictionary<Type, IDefaultInstanceFactory>();
 
         public T Get<T>()
         {

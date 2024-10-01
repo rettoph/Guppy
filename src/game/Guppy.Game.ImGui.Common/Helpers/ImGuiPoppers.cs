@@ -2,14 +2,9 @@
 {
     internal static class ImGuiPoppers
     {
-        public class IdPopper : IDisposable
+        public class IdPopper(IImGui imgui) : IDisposable
         {
-            private readonly IImGui _imgui;
-
-            public IdPopper(IImGui imgui)
-            {
-                _imgui = imgui;
-            }
+            private readonly IImGui _imgui = imgui;
 
             public void Dispose()
             {

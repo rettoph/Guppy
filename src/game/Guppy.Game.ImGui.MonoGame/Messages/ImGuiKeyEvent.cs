@@ -4,15 +4,9 @@ using Guppy.Game.Input.Common;
 
 namespace Guppy.Game.ImGui.MonoGame.Common.Messages
 {
-    internal sealed class ImGuiKeyEvent : Message<ImGuiKeyEvent>, IInput
+    internal sealed class ImGuiKeyEvent(ImGuiKey key, bool down) : Message<ImGuiKeyEvent>, IInput
     {
-        public readonly ImGuiNET.ImGuiKey Key;
-        public readonly bool Down;
-
-        public ImGuiKeyEvent(ImGuiKey key, bool down)
-        {
-            Key = ImGuiKeyConverter.ConvertToImGui(key);
-            Down = down;
-        }
+        public readonly ImGuiNET.ImGuiKey Key = ImGuiKeyConverter.ConvertToImGui(key);
+        public readonly bool Down = down;
     }
 }

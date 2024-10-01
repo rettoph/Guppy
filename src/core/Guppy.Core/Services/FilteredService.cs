@@ -4,18 +4,11 @@ using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class FilteredService : IFilteredService
+    internal sealed class FilteredService(IComponentContext context, IServiceFilterService filters, ILifetimeScope scope) : IFilteredService
     {
-        private readonly ILifetimeScope _scope;
-        private readonly IComponentContext _context;
-        private readonly IServiceFilterService _filters;
-
-        public FilteredService(IComponentContext context, IServiceFilterService filters, ILifetimeScope scope)
-        {
-            _scope = scope;
-            _context = context;
-            _filters = filters;
-        }
+        private readonly ILifetimeScope _scope = scope;
+        private readonly IComponentContext _context = context;
+        private readonly IServiceFilterService _filters = filters;
 
         public IFiltered<T> Get<T>()
             where T : class

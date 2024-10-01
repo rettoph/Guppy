@@ -4,14 +4,9 @@ using System.Text;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalTextWriter : TextWriter, IStandardStreamWriter
+    internal class MonoGameTerminalTextWriter(MonoGameTerminal terminal) : TextWriter, IStandardStreamWriter
     {
-        private readonly MonoGameTerminal _terminal;
-
-        public MonoGameTerminalTextWriter(MonoGameTerminal terminal)
-        {
-            _terminal = terminal;
-        }
+        private readonly MonoGameTerminal _terminal = terminal;
 
         public override Encoding Encoding => Encoding.UTF8;
 

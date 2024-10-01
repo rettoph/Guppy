@@ -29,12 +29,12 @@ namespace Guppy.Core.Resources.Common
         }
     }
 
-    public struct SettingValue<T> : ISettingValue, IRef<T>, IEquatable<SettingValue<T>>, IDisposable
+    public struct SettingValue<T>(Setting<T> setting, T value) : ISettingValue, IRef<T>, IEquatable<SettingValue<T>>, IDisposable
         where T : notnull
     {
-        private readonly UnmanagedReference<SettingValue<T>, T> _value;
+        private readonly UnmanagedReference<SettingValue<T>, T> _value = new UnmanagedReference<SettingValue<T>, T>(value);
 
-        public readonly Setting<T> Setting;
+        public readonly Setting<T> Setting = setting;
 
         public T Value
         {
@@ -50,11 +50,6 @@ namespace Guppy.Core.Resources.Common
         public SettingValue(Setting<T> setting) : this(setting, setting.DefaultValue)
         {
 
-        }
-        public SettingValue(Setting<T> setting, T value)
-        {
-            _value = new UnmanagedReference<SettingValue<T>, T>(value);
-            this.Setting = setting;
         }
 
         public void Dispose()

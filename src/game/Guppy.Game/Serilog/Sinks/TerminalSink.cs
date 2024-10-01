@@ -8,16 +8,10 @@ using Serilog.Formatting.Display;
 
 namespace Guppy.Game.Serilog.Sinks
 {
-    public class TerminalSink : ILogEventSink
+    public class TerminalSink(ITerminal terminal, string outputTemplate) : ILogEventSink
     {
-        private readonly ITextFormatter _formatter;
-        private readonly ITerminal _terminal;
-
-        public TerminalSink(ITerminal terminal, string outputTemplate)
-        {
-            _terminal = terminal;
-            _formatter = new MessageTemplateTextFormatter(outputTemplate, null);
-        }
+        private readonly ITextFormatter _formatter = new MessageTemplateTextFormatter(outputTemplate, null);
+        private readonly ITerminal _terminal = terminal;
 
         public void Emit(LogEvent logEvent)
         {

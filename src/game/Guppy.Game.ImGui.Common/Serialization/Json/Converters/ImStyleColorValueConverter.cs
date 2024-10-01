@@ -7,14 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 {
-    internal class ImStyleColorValueConverter : JsonConverter<ImStyleColorValue>
+    internal class ImStyleColorValueConverter(Lazy<IResourceService> resourceService) : JsonConverter<ImStyleColorValue>
     {
-        private readonly Lazy<IResourceService> _resourceService;
-
-        public ImStyleColorValueConverter(Lazy<IResourceService> resourceService)
-        {
-            _resourceService = resourceService;
-        }
+        private readonly Lazy<IResourceService> _resourceService = resourceService;
 
         public override ImStyleColorValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

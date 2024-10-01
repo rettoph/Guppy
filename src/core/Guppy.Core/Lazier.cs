@@ -2,12 +2,8 @@
 
 namespace Guppy.Core
 {
-    internal sealed class Lazier<T> : Lazy<T>
+    internal sealed class Lazier<T>(IComponentContext p) : Lazy<T>(() => p.Resolve<T>())
         where T : class
     {
-        public Lazier(IComponentContext p) : base(() => p.Resolve<T>())
-        {
-
-        }
     }
 }

@@ -11,17 +11,13 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal class FpsDebugComponent : IEngineComponent, IDebugComponent
+    internal class FpsDebugComponent(IImGui imgui) : IEngineComponent, IDebugComponent
     {
 
         private Buffer<double> _sampleBuffer = new Buffer<double>(20);
         private double _sampleSum = 0;
 
-        private readonly IImGui _imgui;
-        public FpsDebugComponent(IImGui imgui)
-        {
-            _imgui = imgui;
-        }
+        private readonly IImGui _imgui = imgui;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

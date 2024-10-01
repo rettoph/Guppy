@@ -12,17 +12,13 @@ using Guppy.Core.Network.Messages;
 
 namespace Guppy.Core.Network.Peers
 {
-    internal class ClientPeer : Peer, IClientPeer,
+    internal class ClientPeer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages) : Peer(scope, serializers, messages), IClientPeer,
         ISubscriber<INetIncomingMessage<UserAction>>,
         ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
     {
         public override PeerType Type => PeerType.Client;
 
         public IUser? ServerUser { get; private set; }
-
-        public ClientPeer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages) : base(scope, serializers, messages)
-        {
-        }
 
         public new void Start()
         {

@@ -16,22 +16,13 @@ namespace Guppy.Game.MonoGame.Components.Scene
 {
     [AutoLoad]
     [SceneHasDebugWindowFilter]
-    internal sealed class SceneDebugWindowComponent : ISceneComponent<IScene>, IImGuiComponent
+    internal sealed class SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent<IScene>, IImGuiComponent
     {
-        private readonly IImGui _imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions;
-        private IScene _scene;
-        private ResourceValue<ImStyle> _debugWindowStyle;
-        private SettingValue<bool> _isDebugWindowEnabled;
-
-        public SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService)
-        {
-            _scene = scene;
-            _debugActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
-            _imgui = imgui;
-            _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
-            _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
-        }
+        private readonly IImGui _imgui = imgui;
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
+        private IScene _scene = scene;
+        private ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+        private SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IScene scene)

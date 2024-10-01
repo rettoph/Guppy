@@ -7,14 +7,9 @@ using Guppy.Core.StateMachine.Common.Filters;
 
 namespace Guppy.Core.Network.Common.Attributes
 {
-    public class PeerFilterAttribute : GuppyConfigurationAttribute
+    public class PeerFilterAttribute(PeerType requiredPeerType) : GuppyConfigurationAttribute
     {
-        public readonly PeerType RequiredPeerType;
-
-        public PeerFilterAttribute(PeerType requiredPeerType)
-        {
-            this.RequiredPeerType = requiredPeerType;
-        }
+        public readonly PeerType RequiredPeerType = requiredPeerType;
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {

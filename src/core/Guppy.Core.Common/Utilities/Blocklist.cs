@@ -1,18 +1,12 @@
 ﻿namespace Guppy.Core.Common.Utilities
 {
-    public class BlockList
+    public class BlockList(IEnumerable<string>? whitelist, IEnumerable<string>? blacklist)
     {
         public static readonly BlockList AllowAll = new BlockList(null, Enumerable.Empty<string>());
         public static readonly BlockList BlockAll = new BlockList(Enumerable.Empty<string>(), null);
 
-        public readonly IEnumerable<string>? Whitelist;
-        public readonly IEnumerable<string>? Blacklist;
-
-        public BlockList(IEnumerable<string>? whitelist, IEnumerable<string>? blacklist)
-        {
-            this.Whitelist = whitelist;
-            this.Blacklist = blacklist;
-        }
+        public readonly IEnumerable<string>? Whitelist = whitelist;
+        public readonly IEnumerable<string>? Blacklist = blacklist;
 
         public bool Allows(IEnumerable<string> values)
         {

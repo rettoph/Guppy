@@ -9,15 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Guppy.Game.MonoGame.ResourceTypes
 {
     [AutoLoad]
-    internal class SpriteFontResourceType : SimpleResourceType<SpriteFont>
+    internal class SpriteFontResourceType(ContentManager content) : SimpleResourceType<SpriteFont>
     {
 
-        private readonly ContentManager _content;
-
-        public SpriteFontResourceType(ContentManager content)
-        {
-            _content = content;
-        }
+        private readonly ContentManager _content = content;
 
         protected override bool TryResolve(Resource<SpriteFont> resource, DirectoryLocation root, string input, out SpriteFont value)
         {

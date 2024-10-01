@@ -6,19 +6,13 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
 {
     [PolymorphicJsonType<ImStyleValue>(nameof(Microsoft.Xna.Framework.Color))]
-    internal sealed class ImStyleColorValue : ImStyleValue
+    internal sealed class ImStyleColorValue(string? key, ImGuiCol col, IRef<Color> color) : ImStyleValue(key)
     {
         private Color _colorValue;
         private Num.Vector4 _value;
 
-        public readonly ImGuiNET.ImGuiCol Property;
-        public readonly IRef<Color> Color;
-
-        public ImStyleColorValue(string? key, ImGuiCol col, IRef<Color> color) : base(key)
-        {
-            this.Property = ImGuiColConverter.ConvertToImGui(col);
-            this.Color = color;
-        }
+        public readonly ImGuiNET.ImGuiCol Property = ImGuiColConverter.ConvertToImGui(col);
+        public readonly IRef<Color> Color = color;
 
         public override void Pop()
         {

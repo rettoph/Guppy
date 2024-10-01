@@ -6,21 +6,12 @@ using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Core.Messaging.Services
 {
-    internal sealed class BrokerService : IBrokerService, IDisposable
+    internal sealed class BrokerService(ILifetimeScope scope, IFiltered<IBaseBroker> brokers) : IBrokerService, IDisposable
     {
-        private readonly ILifetimeScope _scope;
-        private readonly HashSet<IBaseBroker> _brokers;
-        private readonly HashSet<IBaseSubscriber> _subscribers;
-        private readonly Dictionary<Type, IBaseSubscriber[]> _scopeSubscriptions;
-
-        public BrokerService(ILifetimeScope scope, IFiltered<IBaseBroker> brokers)
-        {
-            _scope = scope;
-
-            _brokers = new HashSet<IBaseBroker>(brokers);
-            _subscribers = new HashSet<IBaseSubscriber>();
-            _scopeSubscriptions = new Dictionary<Type, IBaseSubscriber[]>();
-        }
+        private readonly ILifetimeScope _scope = scope;
+        private readonly HashSet<IBaseBroker> _brokers = new HashSet<IBaseBroker>(brokers);
+        private readonly HashSet<IBaseSubscriber> _subscribers = new HashSet<IBaseSubscriber>();
+        private readonly Dictionary<Type, IBaseSubscriber[]> _scopeSubscriptions = new Dictionary<Type, IBaseSubscriber[]>();
 
         public void Dispose()
         {

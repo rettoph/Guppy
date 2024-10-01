@@ -4,15 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Files.Common.Serialization.Json
 {
-    public class IFileJsonConverter<T> : JsonConverter<IFile<T>>
+    public class IFileJsonConverter<T>(Lazy<IFileService> files) : JsonConverter<IFile<T>>
         where T : new()
     {
-        private Lazy<IFileService> _files;
-
-        public IFileJsonConverter(Lazy<IFileService> files)
-        {
-            _files = files;
-        }
+        private Lazy<IFileService> _files = files;
 
         public override IFile<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

@@ -6,18 +6,11 @@ using STJ = System.Text.Json;
 
 namespace Guppy.Core.Serialization.Services
 {
-    internal sealed class JsonSerializationService : IJsonSerializationService
+    internal sealed class JsonSerializationService(ILogger logger, IDefaultInstanceService defaultInstances, IConfiguration<JsonSerializerOptions> options) : IJsonSerializationService
     {
-        private readonly JsonSerializerOptions _options;
-        private readonly ILogger _logger;
-        private readonly IDefaultInstanceService _defaultInstances;
-
-        public JsonSerializationService(ILogger logger, IDefaultInstanceService defaultInstances, IConfiguration<JsonSerializerOptions> options)
-        {
-            _logger = logger;
-            _defaultInstances = defaultInstances;
-            _options = options.Value;
-        }
+        private readonly JsonSerializerOptions _options = options.Value;
+        private readonly ILogger _logger = logger;
+        private readonly IDefaultInstanceService _defaultInstances = defaultInstances;
 
         public T Deserialize<T>(string json, out bool success)
         {

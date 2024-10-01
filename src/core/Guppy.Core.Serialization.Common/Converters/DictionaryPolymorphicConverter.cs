@@ -5,15 +5,10 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Serialization.Json.Converters
 {
-    public sealed class DictionaryPolymorphicConverter<T> : JsonConverter<Dictionary<Type, T>>
+    public sealed class DictionaryPolymorphicConverter<T>(IAssemblyService assembly, IPolymorphicJsonSerializerService<T> serializer) : JsonConverter<Dictionary<Type, T>>
         where T : notnull
     {
-        private IPolymorphicJsonSerializerService<T> _serializer;
-
-        public DictionaryPolymorphicConverter(IAssemblyService assembly, IPolymorphicJsonSerializerService<T> serializer)
-        {
-            _serializer = serializer;
-        }
+        private IPolymorphicJsonSerializerService<T> _serializer = serializer;
 
         public override Dictionary<Type, T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

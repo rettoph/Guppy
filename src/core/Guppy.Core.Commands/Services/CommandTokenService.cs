@@ -5,16 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Commands.Services
 {
-    public sealed class CommandTokenService : ICommandTokenService
+    public sealed class CommandTokenService(IFiltered<ICommandTokenConverter> converters) : ICommandTokenService
     {
-        private ICommandTokenConverter[] _converters;
-        private Dictionary<Type, ICommandTokenConverter> _cache;
-
-        public CommandTokenService(IFiltered<ICommandTokenConverter> converters)
-        {
-            _converters = converters.ToArray();
-            _cache = new Dictionary<Type, ICommandTokenConverter>();
-        }
+        private ICommandTokenConverter[] _converters = converters.ToArray();
+        private Dictionary<Type, ICommandTokenConverter> _cache = new Dictionary<Type, ICommandTokenConverter>();
 
         public object? Deserialize(Type type, string token)
         {

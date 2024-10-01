@@ -1,16 +1,10 @@
 ﻿namespace Guppy.Core.Files.Common
 {
-    public struct FileLocation
+    public struct FileLocation(DirectoryLocation directory, string name)
     {
-        public readonly DirectoryLocation Directory;
-        public readonly string Name;
+        public readonly DirectoryLocation Directory = directory;
+        public readonly string Name = name;
         public string Path => System.IO.Path.Combine(this.Directory.Path, this.Name);
-
-        public FileLocation(DirectoryLocation directory, string name)
-        {
-            this.Directory = directory;
-            this.Name = name;
-        }
 
         public static FileLocation AppData(string path, string name)
         {

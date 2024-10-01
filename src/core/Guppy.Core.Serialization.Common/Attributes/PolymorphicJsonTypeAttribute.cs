@@ -5,18 +5,11 @@ using Guppy.Core.Resources.Serialization.Json;
 namespace Guppy.Core.Serialization.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]
-    public class PolymorphicJsonTypeAttribute : GuppyConfigurationAttribute
+    public class PolymorphicJsonTypeAttribute(string key, Type? instanceType, Type baseType) : GuppyConfigurationAttribute
     {
-        public readonly string Key;
-        public readonly Type BaseType;
-        public readonly Type? InstanceType;
-
-        public PolymorphicJsonTypeAttribute(string key, Type? instanceType, Type baseType)
-        {
-            this.Key = key;
-            this.BaseType = baseType;
-            this.InstanceType = instanceType;
-        }
+        public readonly string Key = key;
+        public readonly Type BaseType = baseType;
+        public readonly Type? InstanceType = instanceType;
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
@@ -31,10 +24,7 @@ namespace Guppy.Core.Serialization.Common.Attributes
         }
     }
 
-    public sealed class PolymorphicJsonTypeAttribute<T> : PolymorphicJsonTypeAttribute
+    public sealed class PolymorphicJsonTypeAttribute<T>(string key, Type? instanceType = null) : PolymorphicJsonTypeAttribute(key, instanceType, typeof(T))
     {
-        public PolymorphicJsonTypeAttribute(string key, Type? instanceType = null) : base(key, instanceType, typeof(T))
-        {
-        }
     }
 }

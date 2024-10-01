@@ -55,9 +55,9 @@ namespace Guppy.Core.Network.Peers
 
                     if (this.ConnectionApproval is not null)
                     {
-                        foreach (ConnectionApprovalDelegate del in this.ConnectionApproval.GetInvocationList())
+                        foreach (Delegate del in this.ConnectionApproval.GetInvocationList())
                         {
-                            accepted &= del(request, casted);
+                            accepted &= ((ConnectionApprovalDelegate)del)(request, casted);
                         }
                     }
 

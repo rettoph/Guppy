@@ -2,16 +2,10 @@
 
 namespace Guppy.Core.Files.Common
 {
-    public struct DirectoryLocation
+    public struct DirectoryLocation(DirectoryType type, string path)
     {
-        public readonly DirectoryType Type;
-        public readonly string Path;
-
-        public DirectoryLocation(DirectoryType type, string path)
-        {
-            this.Type = type;
-            this.Path = path;
-        }
+        public readonly DirectoryType Type = type;
+        public readonly string Path = path;
 
         public static DirectoryLocation AppData(string? path = null)
         {

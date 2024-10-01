@@ -17,19 +17,12 @@ namespace Guppy.Core.StateMachine.Common.Filters
         public abstract bool Invoke(IStateService state);
     }
 
-    public class StateServiceFilter<TState> : StateServiceFilter
+    public class StateServiceFilter<TState>(Type serviceType, IStateKey<TState> key, TState value) : StateServiceFilter
     {
-        public readonly Type ServiceType;
+        public readonly Type ServiceType = serviceType;
 
-        public readonly IStateKey<TState> Key;
-        public readonly TState Value;
-
-        public StateServiceFilter(Type serviceType, IStateKey<TState> key, TState value)
-        {
-            this.ServiceType = serviceType;
-            this.Key = key;
-            this.Value = value;
-        }
+        public readonly IStateKey<TState> Key = key;
+        public readonly TState Value = value;
 
         public override bool AppliesTo(Type type)
         {

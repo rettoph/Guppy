@@ -5,16 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class ServiceFilterService : IServiceFilterService
+    internal sealed class ServiceFilterService(IEnumerable<IServiceFilter> filters) : IServiceFilterService
     {
-        private IServiceFilter[] _filters;
-        private Dictionary<Type, IServiceFilter[]> _typeFilters;
-
-        public ServiceFilterService(IEnumerable<IServiceFilter> filters)
-        {
-            _filters = filters.ToArray();
-            _typeFilters = new Dictionary<Type, IServiceFilter[]>();
-        }
+        private IServiceFilter[] _filters = filters.ToArray();
+        private Dictionary<Type, IServiceFilter[]> _typeFilters = new Dictionary<Type, IServiceFilter[]>();
 
         public bool Filter(ILifetimeScope scope, object service)
         {

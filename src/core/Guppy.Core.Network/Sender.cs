@@ -4,16 +4,11 @@ using LiteNetLib;
 
 namespace Guppy.Core.Network
 {
-    internal sealed class Sender : ISender
+    internal sealed class Sender(IUserService users) : ISender
     {
-        private readonly IUserService _users;
+        private readonly IUserService _users = users;
         private IUser? _user;
         private NetPeer? _peer;
-
-        public Sender(IUserService users)
-        {
-            _users = users;
-        }
 
         public NetPeer Peer
         {

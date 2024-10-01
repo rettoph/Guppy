@@ -9,14 +9,9 @@ using Serilog;
 namespace Guppy.Game.MonoGame.ResourceTypes
 {
     [AutoLoad]
-    internal class EffectCodeResourceType : SimpleResourceType<EffectCode>
+    internal class EffectCodeResourceType(ILogger logger) : SimpleResourceType<EffectCode>
     {
-        private readonly ILogger _logger;
-
-        public EffectCodeResourceType(ILogger logger)
-        {
-            _logger = logger;
-        }
+        private readonly ILogger _logger = logger;
 
         protected override bool TryResolve(Resource<EffectCode> resource, DirectoryLocation root, string input, out EffectCode value)
         {

@@ -1,15 +1,10 @@
 ﻿namespace Guppy.Game.ImGui.Common
 {
-    public class TrueTypeFont
+    public class TrueTypeFont(byte[] data)
     {
-        private byte[] _data;
+        private byte[] _data = data;
 
         public byte[] Data => _data;
-
-        public TrueTypeFont(byte[] data)
-        {
-            _data = data;
-        }
 
         internal unsafe IntPtr GetDataPtr()
         {

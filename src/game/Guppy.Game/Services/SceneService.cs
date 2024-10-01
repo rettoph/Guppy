@@ -7,25 +7,17 @@ using Guppy.Game.Common.Services;
 
 namespace Guppy.Game.Services
 {
-    internal sealed class SceneService : ISceneService
+    internal sealed class SceneService(ILifetimeScope scope, IConfigurationService configurations) : ISceneService
     {
-        private readonly ILifetimeScope _scope;
-        private readonly List<IScene> _scenes;
-        private readonly Dictionary<IScene, ILifetimeScope> _scopes;
-        private readonly IConfigurationService _configurations;
+        private readonly ILifetimeScope _scope = scope;
+        private readonly List<IScene> _scenes = new List<IScene>();
+        private readonly Dictionary<IScene, ILifetimeScope> _scopes = new Dictionary<IScene, ILifetimeScope>();
+        private readonly IConfigurationService _configurations = configurations;
 
         public ILifetimeScope Scope => _scope;
 
         public event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         public event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
-
-        public SceneService(ILifetimeScope scope, IConfigurationService configurations)
-        {
-            _scenes = new List<IScene>();
-            _scope = scope;
-            _scopes = new Dictionary<IScene, ILifetimeScope>();
-            _configurations = configurations;
-        }
 
         public T Create<T>(Action<ISceneConfiguration>? configurator, Func<ILifetimeScope, T>? factory)
             where T : class, IScene

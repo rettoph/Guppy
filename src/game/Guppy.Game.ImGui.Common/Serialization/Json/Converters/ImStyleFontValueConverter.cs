@@ -5,14 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 {
-    internal class ImStyleFontValueConverter : JsonConverter<ImStyleFontValue>
+    internal class ImStyleFontValueConverter(Lazy<IImGui> gui) : JsonConverter<ImStyleFontValue>
     {
-        private readonly Lazy<IImGui> _imgui;
-
-        public ImStyleFontValueConverter(Lazy<IImGui> gui)
-        {
-            _imgui = gui;
-        }
+        private readonly Lazy<IImGui> _imgui = gui;
 
         public override ImStyleFontValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

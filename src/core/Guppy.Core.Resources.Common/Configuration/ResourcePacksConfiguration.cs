@@ -2,18 +2,14 @@
 
 namespace Guppy.Core.Resources.Common.Configuration
 {
-    internal sealed class ResourcePacksConfiguration
+    internal sealed class ResourcePacksConfiguration(List<ResourcePackConfiguration> packs)
     {
-        private readonly Dictionary<DirectoryLocation, ResourcePackConfiguration> _packs;
+        private readonly Dictionary<DirectoryLocation, ResourcePackConfiguration> _packs = packs.ToDictionary(x => x.EntryDirectory, x => x);
 
         internal IEnumerable<ResourcePackConfiguration> Packs => _packs.Values;
 
         public ResourcePacksConfiguration() : this(new List<ResourcePackConfiguration>())
         {
-        }
-        public ResourcePacksConfiguration(List<ResourcePackConfiguration> packs)
-        {
-            _packs = packs.ToDictionary(x => x.EntryDirectory, x => x);
         }
 
         public ResourcePacksConfiguration Add(ResourcePackConfiguration pack)

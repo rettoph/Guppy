@@ -21,14 +21,9 @@ namespace Guppy.Core.Common
         public abstract void Build(ILifetimeScope scope, object instance);
     }
 
-    internal class ConfigurationBuilder<T> : ConfigurationBuilder
+    internal class ConfigurationBuilder<T>(Action<ILifetimeScope, T> builder) : ConfigurationBuilder
     {
-        private Action<ILifetimeScope, T> _builder;
-
-        public ConfigurationBuilder(Action<ILifetimeScope, T> builder)
-        {
-            _builder = builder;
-        }
+        private Action<ILifetimeScope, T> _builder = builder;
 
         public override bool CanBuild(Type type)
         {

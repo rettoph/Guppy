@@ -1,10 +1,6 @@
 ﻿namespace Guppy.Core.Common.Exceptions
 {
-    public class GuppyException : Exception
+    public class GuppyException(string message, Exception inner) : Exception(message, inner)
     {
-        public GuppyException(string message, Exception inner) : base(message, inner)
-        {
-
-        }
     }
 }

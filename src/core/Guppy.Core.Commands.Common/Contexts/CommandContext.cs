@@ -35,31 +35,22 @@ namespace Guppy.Core.Commands.Common.Contexts
         }
     }
 
-    public class CommandContext<T> : CommandContext, ICommandContext<T>
+    public class CommandContext<T>(
+        Type? parent,
+        string name,
+        string? description) : CommandContext, ICommandContext<T>
         where T : ICommand, new()
     {
         public override Type Type => typeof(T);
 
-        public override string Name { get; }
+        public override string Name { get; } = name;
 
-        public override string? Description { get; }
+        public override string? Description { get; } = description;
 
-        public override Type? Parent { get; }
+        public override Type? Parent { get; } = parent;
 
-        public override IOptionContext[] Options { get; }
+        public override IOptionContext[] Options { get; } = OptionContext.CreateAll<T>();
 
-        public override IArgumentContext[] Arguments { get; }
-
-        public CommandContext(
-            Type? parent,
-            string name,
-            string? description)
-        {
-            this.Parent = parent;
-            this.Name = name;
-            this.Description = description;
-            this.Options = OptionContext.CreateAll<T>();
-            this.Arguments = ArgumentContext.CreateAll<T>();
-        }
+        public override IArgumentContext[] Arguments { get; } = ArgumentContext.CreateAll<T>();
     }
 }

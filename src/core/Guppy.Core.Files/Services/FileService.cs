@@ -6,18 +6,11 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Files.Services
 {
-    internal class FileService : IFileService
+    internal class FileService(IJsonSerializationService json, IPathService paths) : IFileService
     {
-        private readonly IJsonSerializationService _json;
-        private readonly IPathService _paths;
-        private Dictionary<string, IFile> _cache;
-
-        public FileService(IJsonSerializationService json, IPathService paths)
-        {
-            _json = json;
-            _paths = paths;
-            _cache = new Dictionary<string, IFile>();
-        }
+        private readonly IJsonSerializationService _json = json;
+        private readonly IPathService _paths = paths;
+        private Dictionary<string, IFile> _cache = new Dictionary<string, IFile>();
 
         public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
         {

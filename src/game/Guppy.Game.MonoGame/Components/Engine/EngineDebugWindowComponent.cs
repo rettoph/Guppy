@@ -16,23 +16,14 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.MonoGame.Components.Engine
 {
     [AutoLoad]
-    internal class EngineDebugWindowComponent : IEngineComponent, IImGuiComponent
+    internal class EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService) : IEngineComponent, IImGuiComponent
     {
-        private readonly IGameEngine _engine;
-        private readonly ResourceValue<ImStyle> _debugWindowStyle;
-        private readonly IImGui _imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions;
+        private readonly IGameEngine _engine = engine;
+        private readonly ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly IImGui _imgui = imgui;
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
 
-        private SettingValue<bool> _isDebugWindowEnabled;
-
-        public EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService)
-        {
-            _renderDebugInfoActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
-            _imgui = imgui;
-            _engine = engine;
-            _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
-            _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
-        }
+        private SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

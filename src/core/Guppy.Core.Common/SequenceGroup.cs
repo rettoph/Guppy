@@ -4,18 +4,11 @@ using Guppy.Core.Common.Helpers;
 
 namespace Guppy.Core.Common
 {
-    public struct SequenceGroup<T> : IComparable<SequenceGroup<T>>
+    public struct SequenceGroup<T>(string name, int sequence) : IComparable<SequenceGroup<T>>
         where T : unmanaged, Enum
     {
-        public readonly string Name;
-        public readonly int Sequence;
-
-        public SequenceGroup(string name, int sequence)
-        {
-            this.Name = name;
-            this.Sequence = sequence;
-        }
-
+        public readonly string Name = name;
+        public readonly int Sequence = sequence;
         private static Dictionary<T, SequenceGroup<T>> _enumMap;
 
         static SequenceGroup()

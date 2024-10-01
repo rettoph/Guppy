@@ -5,18 +5,11 @@ using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Attributes
 {
-    public class CommandAttribute : GuppyConfigurationAttribute
+    public class CommandAttribute(Type? parent = null, string? name = null, string? description = null) : GuppyConfigurationAttribute
     {
-        public readonly string? Name;
-        public readonly string? Description;
-        public readonly Type? Parent;
-
-        public CommandAttribute(Type? parent = null, string? name = null, string? description = null)
-        {
-            this.Parent = parent;
-            this.Name = name;
-            this.Description = description;
-        }
+        public readonly string? Name = name;
+        public readonly string? Description = description;
+        public readonly Type? Parent = parent;
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
@@ -39,10 +32,7 @@ namespace Guppy.Core.Commands.Common.Attributes
         }
     }
 
-    public class CommandAttribute<TParent> : CommandAttribute
+    public class CommandAttribute<TParent>(string? name = null, string? description = null) : CommandAttribute(typeof(TParent), name, description)
     {
-        public CommandAttribute(string? name = null, string? description = null) : base(typeof(TParent), name, description)
-        {
-        }
     }
 }

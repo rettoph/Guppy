@@ -4,16 +4,10 @@ using Guppy.Core.Network.Common.Peers;
 
 namespace Guppy.Core.Network.Common.Contexts
 {
-    public class NetScopeContext<T>
+    public class NetScopeContext<T>(PeerType peerType, byte groupId)
     {
-        public readonly PeerType PeerType;
-        public readonly byte GroupId;
-
-        public NetScopeContext(PeerType peerType, byte groupId)
-        {
-            PeerType = peerType;
-            GroupId = groupId;
-        }
+        public readonly PeerType PeerType = peerType;
+        public readonly byte GroupId = groupId;
 
         public TGroup GetGroup<TGroup>(ILifetimeScope scope)
             where TGroup : class, INetGroup

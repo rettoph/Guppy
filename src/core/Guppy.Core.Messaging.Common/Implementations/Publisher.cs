@@ -1,14 +1,9 @@
 ﻿namespace Guppy.Core.Messaging.Common.Implementations
 {
-    internal abstract class Publisher<TBase>
+    internal abstract class Publisher<TBase>(Type type)
         where TBase : class, IMessage
     {
-        public readonly Type Type;
-
-        protected Publisher(Type type)
-        {
-            this.Type = type;
-        }
+        public readonly Type Type = type;
 
         public abstract void Publish(in TBase message);
 

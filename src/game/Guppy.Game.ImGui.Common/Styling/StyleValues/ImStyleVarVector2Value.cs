@@ -5,16 +5,10 @@ using Microsoft.Xna.Framework;
 namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
 {
     [PolymorphicJsonType<ImStyleValue>(nameof(Vector2))]
-    internal sealed class ImStyleVarVector2Value : ImStyleValue
+    internal sealed class ImStyleVarVector2Value(string? key, ImGuiStyleVar var, Vector2 value) : ImStyleValue(key)
     {
-        public readonly ImGuiNET.ImGuiStyleVar Property;
-        public readonly Num.Vector2 Value;
-
-        public ImStyleVarVector2Value(string? key, ImGuiStyleVar var, Vector2 value) : base(key)
-        {
-            Property = ImGuiStyleVarConverter.ConvertToImGui(var);
-            Value = NumericsHelper.Convert(value);
-        }
+        public readonly ImGuiNET.ImGuiStyleVar Property = ImGuiStyleVarConverter.ConvertToImGui(var);
+        public readonly Num.Vector2 Value = NumericsHelper.Convert(value);
 
         public override void Pop()
         {

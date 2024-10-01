@@ -2,17 +2,10 @@
 
 namespace Guppy.Game.Input.Common.Messages
 {
-    public sealed class CursorScroll : Message<CursorScroll>, IInput
+    public sealed class CursorScroll(ICursor cursor, int delta) : Message<CursorScroll>, IInput
     {
-        public readonly ICursor Cursor;
-        public readonly int Delta;
-        public readonly float Ratio;
-
-        public CursorScroll(ICursor cursor, int delta)
-        {
-            this.Cursor = cursor;
-            this.Delta = delta;
-            this.Ratio = delta / 120f;
-        }
+        public readonly ICursor Cursor = cursor;
+        public readonly int Delta = delta;
+        public readonly float Ratio = delta / 120f;
     }
 }

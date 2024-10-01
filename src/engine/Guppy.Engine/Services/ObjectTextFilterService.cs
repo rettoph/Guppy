@@ -5,16 +5,10 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Engine.Services
 {
-    internal class ObjectTextFilterService : IObjectTextFilterService
+    internal class ObjectTextFilterService(IEnumerable<ObjectTextFilter> filters) : IObjectTextFilterService
     {
-        private ObjectTextFilter[] _filters;
-        private Dictionary<Type, ObjectTextFilter> _typeFilters;
-
-        public ObjectTextFilterService(IEnumerable<ObjectTextFilter> filters)
-        {
-            _filters = filters.OrderBy(x => x.Priority).ToArray();
-            _typeFilters = new Dictionary<Type, ObjectTextFilter>();
-        }
+        private ObjectTextFilter[] _filters = filters.OrderBy(x => x.Priority).ToArray();
+        private Dictionary<Type, ObjectTextFilter> _typeFilters = new Dictionary<Type, ObjectTextFilter>();
 
         public TextFilterResult Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0, HashSet<object>? tree = null)
         {

@@ -2,10 +2,10 @@
 
 namespace Guppy.Core.Common.Collections
 {
-    public class Buffer<T> : IEnumerable<T>
+    public class Buffer<T>(int length) : IEnumerable<T>
     {
-        private T[] _buffer;
-        private int _position;
+        private T[] _buffer = new T[length];
+        private int _position = 0;
 
         public int Length => _buffer.Length;
         public int Position
@@ -19,12 +19,6 @@ namespace Guppy.Core.Common.Collections
         public T this[int index] => _buffer[index];
 
         public T[] Items => _buffer;
-
-        public Buffer(int length)
-        {
-            _buffer = new T[length];
-            _position = 0;
-        }
 
         public void Add(T value)
         {

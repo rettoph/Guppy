@@ -3,14 +3,9 @@ using System.Collections;
 
 namespace Guppy.Core.Services
 {
-    internal class TypeService<T> : ITypeService<T>
+    internal class TypeService<T>(IEnumerable<Type> types) : ITypeService<T>
     {
-        public readonly List<Type> _types;
-
-        public TypeService(IEnumerable<Type> types)
-        {
-            _types = new List<Type>(types);
-        }
+        public readonly List<Type> _types = new List<Type>(types);
 
         public IEnumerable<T> CreateInstances()
         {

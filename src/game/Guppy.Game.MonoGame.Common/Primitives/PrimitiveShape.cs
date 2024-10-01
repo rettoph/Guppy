@@ -3,29 +3,20 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Game.MonoGame.Common.Primitives
 {
-    public abstract class PrimitiveShape<TVertexType> : IPrimitiveShape<TVertexType>
+    public abstract class PrimitiveShape<TVertexType>(int length) : IPrimitiveShape<TVertexType>
         where TVertexType : struct, IVertexType
     {
-        public int Length { get; }
-
-        protected PrimitiveShape(int length)
-        {
-            this.Length = length;
-        }
+        public int Length { get; } = length;
 
         public abstract void Transform(int index, in Color color, ref Matrix transformation, out TVertexType output);
     }
 
-    public class PrimitiveShape : PrimitiveShape<VertexPositionColor>
+    public class PrimitiveShape(IEnumerable<Vector3> vertices) : PrimitiveShape<VertexPositionColor>(vertices.Count())
     {
-        public readonly Vector3[] Vertices;
+        public readonly Vector3[] Vertices = vertices.ToArray();
 
         public PrimitiveShape(IEnumerable<Vector2> vertices) : this(vertices.Select(x => x.ToVector3()))
         {
-        }
-        public PrimitiveShape(IEnumerable<Vector3> vertices) : base(vertices.Count())
-        {
-            Vertices = vertices.ToArray();
         }
 
         public override void Transform(int index, in Color color, ref Matrix transformation, out VertexPositionColor output)

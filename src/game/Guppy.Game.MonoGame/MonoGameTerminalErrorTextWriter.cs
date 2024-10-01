@@ -4,14 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalErrorTextWriter : MonoGameTerminalTextWriter
+    internal class MonoGameTerminalErrorTextWriter(MonoGameTerminal terminal, IRef<Color> errColor) : MonoGameTerminalTextWriter(terminal)
     {
-        private readonly IRef<Color> _errColor;
-
-        public MonoGameTerminalErrorTextWriter(MonoGameTerminal terminal, IRef<Color> errColor) : base(terminal)
-        {
-            _errColor = errColor;
-        }
+        private readonly IRef<Color> _errColor = errColor;
 
         protected override void WriteToTerminal(MonoGameTerminal terminal, char value)
         {

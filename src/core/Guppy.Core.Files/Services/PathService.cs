@@ -6,14 +6,9 @@ using Guppy.Core.Files.Common.Services;
 
 namespace Guppy.Core.Files.Services
 {
-    internal class PathService : IPathService
+    internal class PathService(IGuppyContext context) : IPathService
     {
-        private readonly IGuppyContext _context;
-
-        public PathService(IGuppyContext context)
-        {
-            _context = context;
-        }
+        private readonly IGuppyContext _context = context;
 
         public DirectoryLocation GetSourceLocation(DirectoryLocation directory)
         {

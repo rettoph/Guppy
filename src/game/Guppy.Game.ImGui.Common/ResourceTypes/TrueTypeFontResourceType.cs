@@ -7,14 +7,9 @@ using Serilog;
 namespace Guppy.Game.ImGui.Common.ResourceTypes
 {
     [AutoLoad]
-    internal class TrueTypeFontResourceType : SimpleResourceType<TrueTypeFont>
+    internal class TrueTypeFontResourceType(ILogger logger) : SimpleResourceType<TrueTypeFont>
     {
-        private readonly ILogger _logger;
-
-        public TrueTypeFontResourceType(ILogger logger)
-        {
-            _logger = logger;
-        }
+        private readonly ILogger _logger = logger;
 
         protected override bool TryResolve(Resource<TrueTypeFont> resource, DirectoryLocation root, string input, out TrueTypeFont value)
         {

@@ -177,16 +177,13 @@ namespace Guppy.Game.MonoGame.Common.Primitives
         }
     }
 
-    public class PrimitiveBatch<TVertex> : PrimitiveBatch<TVertex, BasicEffect>
-        where TVertex : unmanaged, IVertexType
-    {
-        public PrimitiveBatch(GraphicsDevice graphicsDevice) : base(
-            graphicsDevice,
-            new BasicEffect(graphicsDevice)
+    public class PrimitiveBatch<TVertex>(GraphicsDevice graphicsDevice) : PrimitiveBatch<TVertex, BasicEffect>(
+        graphicsDevice,
+        new BasicEffect(graphicsDevice)
             {
                 VertexColorEnabled = true
             })
-        {
-        }
+        where TVertex : unmanaged, IVertexType
+    {
     }
 }

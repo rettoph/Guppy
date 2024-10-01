@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Services;
-using Guppy.Core.Network.Common;
+﻿using Guppy.Core.Network.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -10,15 +9,15 @@ namespace Guppy.Core.Network.Serialization.Json
         private const string TypePropertyKey = "Type";
         private const string ValuePropertyKey = "Value";
 
-        private Dictionary<string, Type> _implementationTypes;
+        // private readonly Dictionary<string, Type> _implementationTypes;
 
-        public NetIdJsonConverter(IAssemblyService assembly)
-        {
-            _implementationTypes = assembly.GetTypes<INetId>()
-                .ToDictionary(
-                    keySelector: x => this.GetTypeKey(x),
-                    elementSelector: x => x);
-        }
+        //public NetIdJsonConverter(IAssemblyService assembly)
+        //{
+        //    _implementationTypes = assembly.GetTypes<INetId>()
+        //        .ToDictionary(
+        //            keySelector: x => this.GetTypeKey(x),
+        //            elementSelector: x => x);
+        //}
 
         public override INetId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -29,7 +28,7 @@ namespace Guppy.Core.Network.Serialization.Json
         {
             writer.WriteStartObject();
 
-            writer.WriteString(TypePropertyKey, this.GetTypeKey(value.GetType()));
+            writer.WriteString(TypePropertyKey, NetIdJsonConverter.GetTypeKey(value.GetType()));
 
             writer.WritePropertyName(ValuePropertyKey);
             JsonSerializer.Serialize(writer, value, value.GetType(), options);
@@ -37,7 +36,7 @@ namespace Guppy.Core.Network.Serialization.Json
             writer.WriteEndObject();
         }
 
-        private string GetTypeKey(Type type)
+        private static string GetTypeKey(Type type)
         {
             return type.Name ?? throw new MissingMemberException();
         }

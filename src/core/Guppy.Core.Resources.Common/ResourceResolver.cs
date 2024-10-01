@@ -8,11 +8,11 @@
         }
     }
 
-    public sealed class ResourceResolver<T> : ResourceResolver
+    public sealed class ResourceResolver<T>(Func<T> resolver) : ResourceResolver
     {
-        private readonly Func<T> _getter;
-        private T _value;
-        private bool _resolved;
+        private readonly Func<T> _getter = resolver;
+        private T _value = default!;
+        private bool _resolved = false;
 
         public T Value
         {
@@ -31,13 +31,6 @@
                 }
 
             }
-        }
-
-        public ResourceResolver(Func<T> resolver)
-        {
-            _value = default!;
-            _getter = resolver;
-            _resolved = false;
         }
 
         public void Reset()

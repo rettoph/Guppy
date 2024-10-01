@@ -5,14 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Resources.Serialization.Json.Converters
 {
-    internal class SettingValueConverter : JsonConverter<ISettingValue>
+    internal class SettingValueConverter(IPolymorphicJsonSerializerService<object> serializer) : JsonConverter<ISettingValue>
     {
-        private IPolymorphicJsonSerializerService<object> _serializer;
-
-        public SettingValueConverter(IPolymorphicJsonSerializerService<object> serializer)
-        {
-            _serializer = serializer;
-        }
+        private IPolymorphicJsonSerializerService<object> _serializer = serializer;
 
         public override ISettingValue? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

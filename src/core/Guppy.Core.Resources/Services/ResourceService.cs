@@ -7,20 +7,13 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal class ResourceService : IHostedService, IResourceService, IDisposable
+    internal class ResourceService(Lazy<ISettingService> settings, Lazy<IResourcePackService> packs, Lazy<ILogger> logger) : IHostedService, IResourceService, IDisposable
     {
         private bool _initialized;
-        private readonly Lazy<IResourcePackService> _packs;
-        private readonly Lazy<ILogger> _logger;
+        private readonly Lazy<IResourcePackService> _packs = packs;
+        private readonly Lazy<ILogger> _logger = logger;
 
-        private Dictionary<Guid, IResourceValue> _values;
-
-        public ResourceService(Lazy<ISettingService> settings, Lazy<IResourcePackService> packs, Lazy<ILogger> logger)
-        {
-            _packs = packs;
-            _logger = logger;
-            _values = new Dictionary<Guid, IResourceValue>();
-        }
+        private Dictionary<Guid, IResourceValue> _values = new Dictionary<Guid, IResourceValue>();
 
         public void Dispose()
         {

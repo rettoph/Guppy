@@ -1,12 +1,7 @@
 ﻿namespace Guppy.Core.Common.Attributes
 {
-    public class OrderAttribute : Attribute
+    public class OrderAttribute(int order) : Attribute
     {
-        public readonly int Order;
-
-        public OrderAttribute(int order)
-        {
-            Order = order;
-        }
+        public readonly int Order = order;
     }
 }

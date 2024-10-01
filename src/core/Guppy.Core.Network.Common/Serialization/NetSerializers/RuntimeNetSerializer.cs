@@ -3,17 +3,11 @@ using LiteNetLib.Utils;
 
 namespace Guppy.Core.Network.Common.Serialization.NetSerializers
 {
-    internal sealed class RuntimeNetSerializer<T> : NetSerializer<T>
+    internal sealed class RuntimeNetSerializer<T>(NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize) : NetSerializer<T>
         where T : notnull
     {
-        private readonly NetSerializeDelegate<T> _serialize;
-        private readonly NetDeserializeDelegate<T> _deserialize;
-
-        public RuntimeNetSerializer(NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
-        {
-            _serialize = serialize;
-            _deserialize = deserialize;
-        }
+        private readonly NetSerializeDelegate<T> _serialize = serialize;
+        private readonly NetDeserializeDelegate<T> _deserialize = deserialize;
 
         public override T Deserialize(NetDataReader reader)
         {

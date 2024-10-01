@@ -12,19 +12,13 @@ namespace Guppy.Core.Network.Common.Definitions
         public abstract byte DefaultOutgoingChannel { get; }
     }
 
-    public class NetMessageTypeDefinition<TBody> : NetMessageTypeDefinition
+    public class NetMessageTypeDefinition<TBody>(DeliveryMethod deliveryMethod, byte outgoingChannel) : NetMessageTypeDefinition
         where TBody : notnull
     {
         public override Type Body => typeof(TBody);
 
-        public NetMessageTypeDefinition(DeliveryMethod deliveryMethod, byte outgoingChannel)
-        {
-            this.DefaultDeliveryMethod = deliveryMethod;
-            this.DefaultOutgoingChannel = outgoingChannel;
-        }
+        public override DeliveryMethod DefaultDeliveryMethod { get; } = deliveryMethod;
 
-        public override DeliveryMethod DefaultDeliveryMethod { get; }
-
-        public override byte DefaultOutgoingChannel { get; }
+        public override byte DefaultOutgoingChannel { get; } = outgoingChannel;
     }
 }

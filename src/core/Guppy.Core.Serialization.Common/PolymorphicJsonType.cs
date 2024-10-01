@@ -18,11 +18,8 @@ namespace Guppy.Core.Resources.Serialization.Json
         }
     }
 
-    public sealed class PolymorphicJsonType<TInstance, TBase> : PolymorphicJsonType
+    public sealed class PolymorphicJsonType<TInstance, TBase>(string key) : PolymorphicJsonType(key, typeof(TInstance), typeof(TBase))
         where TInstance : TBase
     {
-        public PolymorphicJsonType(string key) : base(key, typeof(TInstance), typeof(TBase))
-        {
-        }
     }
 }

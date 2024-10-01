@@ -4,19 +4,12 @@ using System.Reflection.Emit;
 
 namespace Guppy.Core.Common.Utilities
 {
-    public struct Delegator<TDelegate>
+    public struct Delegator<TDelegate>(TDelegate @delegate, MethodInfo method, object? target)
         where TDelegate : Delegate
     {
-        public readonly TDelegate Delegate;
-        public readonly MethodInfo Method;
-        public readonly object? Target;
-
-        public Delegator(TDelegate @delegate, MethodInfo method, object? target)
-        {
-            this.Delegate = @delegate;
-            this.Method = method;
-            this.Target = target;
-        }
+        public readonly TDelegate Delegate = @delegate;
+        public readonly MethodInfo Method = method;
+        public readonly object? Target = target;
 
         public Delegator(TDelegate @delegate) : this(@delegate, @delegate.GetMethodInfo(), @delegate.Target)
         {

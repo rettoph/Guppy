@@ -3,15 +3,9 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalSegment
+    internal class MonoGameTerminalSegment(IRef<Color> color, string text)
     {
-        public readonly Vector4 Color;
-        public readonly string Text;
-
-        public MonoGameTerminalSegment(IRef<Color> color, string text)
-        {
-            this.Color = color.Value.ToVector4();
-            this.Text = text;
-        }
+        public readonly Vector4 Color = color.Value.ToVector4();
+        public readonly string Text = text;
     }
 }

@@ -11,23 +11,15 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal sealed class SettingService : IHostedService, ISettingService, IDisposable
+    internal sealed class SettingService(IFileService files, ILogger logger) : IHostedService, ISettingService, IDisposable
     {
         private bool _initialized;
-        private readonly IFileService _files;
-        private IFile<IEnumerable<ISettingValue>> _file;
-        private Dictionary<Guid, ISettingValue> _values;
-        private ILogger _logger;
+        private readonly IFileService _files = files;
+        private IFile<IEnumerable<ISettingValue>> _file = null!;
+        private Dictionary<Guid, ISettingValue> _values = null!;
+        private ILogger _logger = logger;
 
         public ISettingValue this[ISetting setting] => _values[setting.Id];
-
-        public SettingService(IFileService files, ILogger logger)
-        {
-            _files = files;
-            _logger = logger;
-            _file = null!;
-            _values = null!;
-        }
 
         public Task StartAsync(CancellationToken cancellation)
         {

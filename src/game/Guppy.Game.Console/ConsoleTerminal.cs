@@ -7,21 +7,13 @@ using System.CommandLine.IO;
 
 namespace Guppy.Game.Console
 {
-    internal class ConsoleTerminal : SystemConsole, ITerminal, IConsole
+    internal class ConsoleTerminal(ITerminalTheme theme) : SystemConsole, ITerminal, IConsole
     {
         TextWriter ITerminal.Out => System.Console.Out;
 
-        public IRef<Color> Color { get; set; }
+        public IRef<Color> Color { get; set; } = theme.Get(default!);
 
-
-        public ConsoleTerminal(ITerminalTheme theme)
-        {
-            this.Theme = theme;
-
-            this.Color = theme.Get(default!);
-        }
-
-        public ITerminalTheme Theme { get; }
+        public ITerminalTheme Theme { get; } = theme;
 
         public void NewLine()
         {

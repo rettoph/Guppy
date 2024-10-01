@@ -7,20 +7,12 @@ using LiteNetLib;
 
 namespace Guppy.Core.Network
 {
-    internal abstract class NetMessageType : INetMessageType
+    internal abstract class NetMessageType(byte id, Type header, DeliveryMethod defaultDeliveryMethod, byte defaultOutgoingChannel) : INetMessageType
     {
-        public byte Id { get; }
-        public Type Body { get; }
-        public DeliveryMethod DefaultDeliveryMethod { get; }
-        public byte DefaultOutgoingChannel { get; }
-
-        protected NetMessageType(byte id, Type header, DeliveryMethod defaultDeliveryMethod, byte defaultOutgoingChannel)
-        {
-            this.Id = id;
-            this.Body = header;
-            this.DefaultDeliveryMethod = defaultDeliveryMethod;
-            this.DefaultOutgoingChannel = defaultOutgoingChannel;
-        }
+        public byte Id { get; } = id;
+        public Type Body { get; } = header;
+        public DeliveryMethod DefaultDeliveryMethod { get; } = defaultDeliveryMethod;
+        public byte DefaultOutgoingChannel { get; } = defaultOutgoingChannel;
 
         public abstract INetIncomingMessage CreateIncoming();
 

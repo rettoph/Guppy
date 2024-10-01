@@ -3,16 +3,10 @@
 namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
 {
     [PolymorphicJsonType<ImStyleValue>(nameof(Single))]
-    internal sealed class ImStyleVarFloatValue : ImStyleValue
+    internal sealed class ImStyleVarFloatValue(string? key, ImGuiStyleVar property, float value) : ImStyleValue(key)
     {
-        public readonly ImGuiNET.ImGuiStyleVar Property;
-        public readonly float Value;
-
-        public ImStyleVarFloatValue(string? key, ImGuiStyleVar property, float value) : base(key)
-        {
-            Property = ImGuiStyleVarConverter.ConvertToImGui(property);
-            Value = value;
-        }
+        public readonly ImGuiNET.ImGuiStyleVar Property = ImGuiStyleVarConverter.ConvertToImGui(property);
+        public readonly float Value = value;
 
         public override void Pop()
         {

@@ -7,14 +7,9 @@ using Guppy.Engine.Common.Enums;
 namespace Guppy.Engine.Components.Global
 {
     [AutoLoad]
-    internal class EngineBrokerComponent : IEngineComponent, IDisposable
+    internal class EngineBrokerComponent(IBrokerService brokers) : IEngineComponent, IDisposable
     {
-        private readonly IBrokerService _brokers;
-
-        public EngineBrokerComponent(IBrokerService brokers)
-        {
-            _brokers = brokers;
-        }
+        private readonly IBrokerService _brokers = brokers;
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

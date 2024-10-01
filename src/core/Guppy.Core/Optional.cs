@@ -3,14 +3,9 @@ using Guppy.Core.Common;
 
 namespace Guppy.Core
 {
-    internal class Optional<T> : IOptional<T>
+    internal class Optional<T>(ILifetimeScope scope) : IOptional<T>
         where T : class
     {
-        public T? Value { get; }
-
-        public Optional(ILifetimeScope scope)
-        {
-            this.Value = scope.ResolveOptional<T>();
-        }
+        public T? Value { get; } = scope.ResolveOptional<T>();
     }
 }
