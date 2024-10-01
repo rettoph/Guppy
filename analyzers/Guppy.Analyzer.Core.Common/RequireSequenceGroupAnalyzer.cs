@@ -33,8 +33,8 @@ namespace Guppy.Analyzer.Core.Common
         }
 
 
-        private static string SequenceGroupAttribute = "Guppy.Core.Common.Attributes.SequenceGroupAttribute";
-        private static string RequireSequenceGroupAttribute = "Guppy.Core.Common.Attributes.RequireSequenceGroupAttribute";
+        private const string SequenceGroupAttribute = "Guppy.Core.Common.Attributes.SequenceGroupAttribute";
+        private const string RequireSequenceGroupAttribute = "Guppy.Core.Common.Attributes.RequireSequenceGroupAttribute";
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
@@ -63,9 +63,14 @@ namespace Guppy.Analyzer.Core.Common
             ImmutableArray<INamedTypeSymbol> interfaceSymbols = containingTypeSymbol.AllInterfaces;
             foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
-                foreach (ISymbol interfaceMemberSymbol in interfaceSymbol.GetMembers())
+                foreach (ISymbol interfaceMemberSymbol in interfaceSymbol.GetMembers(methodSymbol.Name))
                 {
-                    IMethodSymbol implementationSymbol = (IMethodSymbol)containingTypeSymbol.FindImplementationForInterfaceMember(interfaceMemberSymbol);
+                    if (interfaceMemberSymbol is IMethodSymbol interfaceMethodSymbol == false)
+                    {
+                        continue;
+                    }
+
+                    IMethodSymbol implementationSymbol = (IMethodSymbol)containingTypeSymbol.FindImplementationForInterfaceMember(interfaceMethodSymbol);
 
                     if (implementationSymbol == null)
                     {

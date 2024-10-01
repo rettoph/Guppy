@@ -2,7 +2,7 @@
 # BEGIN VARIABLES
 # ---------------
 
-$AnalyzerVersion = "1.0.5"
+$AnalyzerVersion = "1.0.8"
 $MonoGameBuildVersion = "1.3.3.7-cpt";
 
 

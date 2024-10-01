@@ -1,7 +1,6 @@
 src.old/
 examples.old/
 nuget.config
-Guppy.*.g.targets
 .nuget
 
 ## Ignore Visual Studio temporary files, build results, and
