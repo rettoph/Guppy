@@ -21,7 +21,6 @@ namespace Guppy.Game.MonoGame.Components.Scene
         private readonly IImGui _imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions;
         private IScene _scene;
-        private ImGuiWindowClassPtr _class;
         private ResourceValue<ImStyle> _debugWindowStyle;
         private SettingValue<bool> _isDebugWindowEnabled;
 

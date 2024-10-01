@@ -6,7 +6,6 @@ namespace Guppy.Game.MonoGame.Common.Utilities.Cameras
 {
     public class Camera2D : Camera, IDisposable
     {
-        private float _deltaTimeSum;
         private readonly GameWindow _window;
         private Vector2 _position;
         private Vector2 _velocity;

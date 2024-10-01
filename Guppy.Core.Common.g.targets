@@ -1,0 +1,12 @@
+<!-- Generated via scripts/install.ps1 -->
+<Project>
+
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Guppy.Analyzer.Core.Common" Version="1.0.5" />
+  </ItemGroup>
+
+</Project>

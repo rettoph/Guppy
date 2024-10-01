@@ -11,7 +11,7 @@ namespace Guppy.Game.Input.Common
 
         public ButtonSource Source { get; set; }
 
-        public bool Pressed { get; protected set; }
+        public bool Pressed { get; private set; }
 
         public readonly IReadOnlyDictionary<bool, T> Data;
 

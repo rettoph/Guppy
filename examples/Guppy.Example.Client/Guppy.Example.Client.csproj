@@ -7,20 +7,13 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\game\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
     <ProjectReference Include="..\..\src\game\Guppy.Game.Input.Common\Guppy.Game.Input.Common.csproj" />
     <ProjectReference Include="..\..\src\game\Guppy.Game.MonoGame.Common\Guppy.Game.MonoGame.Common.csproj" />
     <ProjectReference Include="..\..\src\game\Guppy.Game.MonoGame\Guppy.Game.MonoGame.csproj" />
     <ProjectReference Include="..\..\src\game\Guppy.Game\Guppy.Game.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\..\analyzers\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common\Guppy.Analyzer.Core.Common.csproj">
-	  <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-	  <OutputItemType>Analyzer</OutputItemType>
-	</ProjectReference>
   </ItemGroup>
 
 </Project>

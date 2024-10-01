@@ -76,7 +76,6 @@ namespace Guppy.Engine
 
         #region Static
         private static readonly object _lock;
-        private static IGuppyEngine? _instance;
 
         static GuppyEngine()
         {
@@ -87,11 +86,6 @@ namespace Guppy.Engine
         {
             lock (_lock)
             {
-                if (_instance is not null)
-                {
-                    throw new Exception($"{nameof(GuppyEngine)}::{nameof(Build)} - An {nameof(IGuppyEngine)} instance has already been created.");
-                }
-
                 // Construct a service container to store factory related services
                 // Used for boot loggers, engine loaders, and related services
                 ContainerBuilder bootBuilder = new ContainerBuilder();

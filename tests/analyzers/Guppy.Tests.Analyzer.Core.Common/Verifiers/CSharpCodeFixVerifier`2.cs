@@ -23,12 +23,12 @@ namespace Guppy.Tests.Analyzer.Core.Common
             => CSharpCodeFixVerifier<TAnalyzer, TCodeFix, DefaultVerifier>.Diagnostic(descriptor);
 
         /// <inheritdoc cref="CodeFixVerifier{TAnalyzer, TCodeFix, TTest, TVerifier}.VerifyCodeFixAsync(string, DiagnosticResult[], string)"/>
-        public static async Task VerifyCodeFixAsync(string source, DiagnosticResult[] expected, string fixedSource, MetadataReference[]? additionalReferences = null)
+        public static async Task VerifyCodeFixAsync(string source, DiagnosticResult[] expected, string? fixedSource, MetadataReference[]? additionalReferences = null)
         {
             var test = new Test
             {
                 TestCode = source,
-                FixedCode = fixedSource,
+                FixedCode = fixedSource!,
             };
 
             if (additionalReferences is not null)
