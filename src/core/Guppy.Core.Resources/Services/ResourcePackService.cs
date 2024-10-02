@@ -15,11 +15,11 @@ namespace Guppy.Core.Resources.Services
     {
         private bool _initialized;
         private readonly IFileService _files;
-        private IDictionary<Guid, ResourcePack> _packs;
-        private IFile<ResourcePacksConfiguration> _configuration;
+        private readonly IDictionary<Guid, ResourcePack> _packs;
+        private readonly IFile<ResourcePacksConfiguration> _configuration;
         private readonly IResourceTypeService _resourceTypes;
         private readonly ILogger _logger;
-        private Lazy<ISettingService> _settings;
+        private readonly Lazy<ISettingService> _settings;
 
         private SettingValue<string> _localization;
 

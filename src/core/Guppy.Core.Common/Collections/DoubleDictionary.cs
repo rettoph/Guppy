@@ -8,8 +8,8 @@ namespace Guppy.Core.Common.Collections
         where TKey1 : notnull
         where TKey2 : notnull
     {
-        private Dictionary<TKey1, TValue> _dic1;
-        private Dictionary<TKey2, TValue> _dic2;
+        private readonly Dictionary<TKey1, TValue> _dic1;
+        private readonly Dictionary<TKey2, TValue> _dic2;
 
         public TValue this[TKey1 key] => _dic1[key];
         public TValue this[TKey2 key] => _dic2[key];

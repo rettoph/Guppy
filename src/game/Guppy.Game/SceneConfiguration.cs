@@ -10,7 +10,7 @@ namespace Guppy.Game
     {
         public abstract Type Type { get; }
 
-        private Dictionary<string, object> _values;
+        private readonly Dictionary<string, object> _values;
 
         internal SceneConfiguration()
         {

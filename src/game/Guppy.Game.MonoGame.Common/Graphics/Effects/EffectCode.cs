@@ -2,7 +2,7 @@
 {
     public class EffectCode(byte[] bytes)
     {
-        private byte[] _bytes = bytes;
+        private readonly byte[] _bytes = bytes;
 
         public static implicit operator byte[](EffectCode data)
         {

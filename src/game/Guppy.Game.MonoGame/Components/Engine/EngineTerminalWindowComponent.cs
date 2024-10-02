@@ -27,8 +27,8 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private int _lines;
         private bool _scrolledToBottom = true;
 
-        private SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
-        private ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
+        private readonly ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

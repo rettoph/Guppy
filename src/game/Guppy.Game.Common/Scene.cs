@@ -11,7 +11,7 @@ namespace Guppy.Game.Common
 {
     public abstract class Scene : IScene
     {
-        private static Dictionary<Type, ushort> _count = new Dictionary<Type, ushort>();
+        private static readonly Dictionary<Type, ushort> _count = new Dictionary<Type, ushort>();
         private static ulong CalculateId(Scene instance)
         {
             ref ushort count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
@@ -23,8 +23,8 @@ namespace Guppy.Game.Common
         private bool _enabled;
         private bool _visible;
         private ILifetimeScope _scope;
-        private ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
-        private ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
+        private readonly ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
+        private readonly ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
 
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;

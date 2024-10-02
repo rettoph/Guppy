@@ -10,14 +10,14 @@ namespace Guppy.Example.Client.Entities
     public unsafe class Grid : IDisposable
     {
         private bool _disposed;
-        private Grid _output;
-        private ICellTypeService _cellTypes;
+        private readonly Grid _output;
+        private readonly ICellTypeService _cellTypes;
 
         public int Width { get; }
         public int Height { get; }
         public int Length { get; }
         public Cell* Cells;
-        private int[] _cellUpdateOrder;
+        private readonly int[] _cellUpdateOrder;
 
         public Grid(int width, int height, ICellTypeService cellTypes) : this(width, height, cellTypes, null)
         {

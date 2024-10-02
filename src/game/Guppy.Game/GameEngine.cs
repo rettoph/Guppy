@@ -10,8 +10,8 @@ namespace Guppy.Game
 {
     public class GameEngine : GuppyEngine, IGameEngine
     {
-        private ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
-        private ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
+        private readonly ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
+        private readonly ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
 
         public ISceneService Scenes { get; private set; }
 

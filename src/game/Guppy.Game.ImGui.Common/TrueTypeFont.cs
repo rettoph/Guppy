@@ -2,7 +2,7 @@
 {
     public class TrueTypeFont(byte[] data)
     {
-        private byte[] _data = data;
+        private readonly byte[] _data = data;
 
         public byte[] Data => _data;
 

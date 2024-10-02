@@ -4,9 +4,9 @@ namespace Guppy.Core.Common.Collections
 {
     public class Pool<T>
     {
-        private Stack<T> _pool;
+        private readonly Stack<T> _pool;
         private ushort _poolSize;
-        private ushort _maxPoolSize;
+        private readonly ushort _maxPoolSize;
 
         public Pool(ushort maxPoolSize) : this(ref maxPoolSize)
         {

@@ -9,7 +9,7 @@ namespace Guppy.Core.Network.Identity.Services
 {
     internal sealed class NetScopeUserService : INetScopeUserService, IDisposable
     {
-        private Dictionary<int, IUser> _users;
+        private readonly Dictionary<int, IUser> _users;
 
         public IEnumerable<NetPeer> Peers
         {

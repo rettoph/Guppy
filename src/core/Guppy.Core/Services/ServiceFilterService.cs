@@ -7,8 +7,8 @@ namespace Guppy.Core.Services
 {
     internal sealed class ServiceFilterService(IEnumerable<IServiceFilter> filters) : IServiceFilterService
     {
-        private IServiceFilter[] _filters = filters.ToArray();
-        private Dictionary<Type, IServiceFilter[]> _typeFilters = new Dictionary<Type, IServiceFilter[]>();
+        private readonly IServiceFilter[] _filters = filters.ToArray();
+        private readonly Dictionary<Type, IServiceFilter[]> _typeFilters = new Dictionary<Type, IServiceFilter[]>();
 
         public bool Filter(ILifetimeScope scope, object service)
         {

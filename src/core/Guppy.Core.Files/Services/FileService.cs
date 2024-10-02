@@ -10,7 +10,7 @@ namespace Guppy.Core.Files.Services
     {
         private readonly IJsonSerializationService _json = json;
         private readonly IPathService _paths = paths;
-        private Dictionary<string, IFile> _cache = new Dictionary<string, IFile>();
+        private readonly Dictionary<string, IFile> _cache = new Dictionary<string, IFile>();
 
         public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
         {

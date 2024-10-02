@@ -12,7 +12,7 @@ namespace Guppy.Tests.Core.Commands.Common
 {
     public static class CommandServiceBuilder
     {
-        private static ICommandTokenConverter[] DefaultConverters = [
+        private static readonly ICommandTokenConverter[] DefaultConverters = [
             new NullableEnumTokenConverter()
         ];
 

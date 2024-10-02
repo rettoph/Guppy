@@ -6,10 +6,10 @@ namespace Guppy.Core.Messaging
 {
     internal class Bus : Broker<IMessage>, IBus
     {
-        private (Type type, int queue)[] _queueConfigurations;
-        private Dictionary<Type, Queue<IMessage>> _typeQueues;
-        private Dictionary<int, Queue<IMessage>> _queuesDict;
-        private Queue<IMessage>[] _queuesArray;
+        private readonly (Type type, int queue)[] _queueConfigurations;
+        private readonly Dictionary<Type, Queue<IMessage>> _typeQueues;
+        private readonly Dictionary<int, Queue<IMessage>> _queuesDict;
+        private readonly Queue<IMessage>[] _queuesArray;
 
         public Bus(IConfiguration<BusConfiguration> configuration)
         {

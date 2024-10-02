@@ -11,7 +11,7 @@ namespace Guppy.Engine
     [AutoLoad]
     internal class DefaultObjectTextFilter : ObjectTextFilter
     {
-        private Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo;
+        private readonly Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo;
 
         public DefaultObjectTextFilter() : base(int.MaxValue)
         {

@@ -6,10 +6,10 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     public class CodeBuilder : IDisposable
     {
-        private StringBuilder _string = new StringBuilder();
+        private readonly StringBuilder _string = new StringBuilder();
         private int _depth = 0;
-        private GeneratorExecutionContext _context;
-        private string _nameSpace;
+        private readonly GeneratorExecutionContext _context;
+        private readonly string _nameSpace;
         private string _fileName;
 
         public CodeBuilder(ref GeneratorExecutionContext context, string nameSpace)

@@ -27,10 +27,10 @@ namespace Guppy.Game.MonoGame.Components.Scene
         private int _lines;
         private bool _scrolledToBottom = true;
 
-        private IScene _scene = scene;
+        private readonly IScene _scene = scene;
 
-        private SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
-        private ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
+        private readonly ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
 
         [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
         public void DrawImGui(GameTime gameTime)

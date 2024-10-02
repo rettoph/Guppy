@@ -5,7 +5,7 @@ namespace Guppy.Game.Input.Services
 {
     internal sealed class CursorService : ICursorService
     {
-        private IList<ICursor> _cursors;
+        private readonly IList<ICursor> _cursors;
 
         public CursorService()
         {

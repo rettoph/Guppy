@@ -8,7 +8,7 @@ namespace Guppy.Core.StateMachine.Common
     {
         public const string DefaultValue = nameof(DefaultValue);
 
-        private static Dictionary<Type, MethodInfo> _createMethodInfos = new Dictionary<Type, MethodInfo>();
+        private static readonly Dictionary<Type, MethodInfo> _createMethodInfos = new Dictionary<Type, MethodInfo>();
         private static MethodInfo GetCreateMethodInfo(Type type)
         {
             ref MethodInfo? methodInfo = ref CollectionsMarshal.GetValueRefOrAddDefault(_createMethodInfos, type, out bool exists);

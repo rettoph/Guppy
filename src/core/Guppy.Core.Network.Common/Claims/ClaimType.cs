@@ -6,7 +6,7 @@ namespace Guppy.Core.Network.Common.Claims
 {
     public abstract class ClaimType
     {
-        private static DoubleDictionary<string, Type, ClaimType> _types;
+        private static readonly DoubleDictionary<string, Type, ClaimType> _types;
 
         public static IEnumerable<ClaimType> Items => _types.Values;
 

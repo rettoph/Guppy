@@ -23,7 +23,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
 
-        private SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
+        private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IGuppyEngine engine)

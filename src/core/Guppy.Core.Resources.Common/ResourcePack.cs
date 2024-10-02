@@ -14,7 +14,7 @@ namespace Guppy.Core.Resources.Common
         public string Name => _entry.Value.Name;
         public readonly DirectoryLocation RootDirectory;
 
-        private Dictionary<IResource, Dictionary<string, ResourceResolver>> _resolvers;
+        private readonly Dictionary<IResource, Dictionary<string, ResourceResolver>> _resolvers;
 
         internal ResourcePack(IFile<ResourcePackEntryConfiguration> entry, DirectoryLocation rootDirectory)
         {

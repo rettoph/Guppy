@@ -17,7 +17,7 @@ namespace Guppy.Core.Resources.Services
         private readonly IFileService _files = files;
         private IFile<IEnumerable<ISettingValue>> _file = null!;
         private Dictionary<Guid, ISettingValue> _values = null!;
-        private ILogger _logger = logger;
+        private readonly ILogger _logger = logger;
 
         public ISettingValue this[ISetting setting] => _values[setting.Id];
 

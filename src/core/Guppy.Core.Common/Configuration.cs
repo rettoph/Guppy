@@ -23,7 +23,7 @@ namespace Guppy.Core.Common
 
     internal class ConfigurationBuilder<T>(Action<ILifetimeScope, T> builder) : ConfigurationBuilder
     {
-        private Action<ILifetimeScope, T> _builder = builder;
+        private readonly Action<ILifetimeScope, T> _builder = builder;
 
         public override bool CanBuild(Type type)
         {

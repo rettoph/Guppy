@@ -14,7 +14,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
     internal class FpsDebugComponent(IImGui imgui) : IEngineComponent, IDebugComponent
     {
 
-        private Buffer<double> _sampleBuffer = new Buffer<double>(20);
+        private readonly Buffer<double> _sampleBuffer = new Buffer<double>(20);
         private double _sampleSum = 0;
 
         private readonly IImGui _imgui = imgui;

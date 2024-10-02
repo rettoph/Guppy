@@ -8,7 +8,7 @@ namespace Guppy.Core.Network.Services
 {
     internal sealed class NetSerializerService : INetSerializerService
     {
-        private DoubleDictionary<INetId, Type, INetSerializer> _serializers;
+        private readonly DoubleDictionary<INetId, Type, INetSerializer> _serializers;
 
         public NetSerializerService(IEnumerable<INetSerializer> serializers)
         {

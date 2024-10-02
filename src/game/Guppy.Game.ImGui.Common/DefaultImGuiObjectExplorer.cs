@@ -13,9 +13,9 @@ namespace Guppy.Game.ImGui.Common
     {
         private readonly IObjectTextFilterService _filter = filter;
         private readonly IImGui _imgui = imgui;
-        private Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo = new Dictionary<Type, (FieldInfo[], PropertyInfo[])>();
+        private readonly Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo = new Dictionary<Type, (FieldInfo[], PropertyInfo[])>();
 
-        private Dictionary<uint, TextFilterResult> _filterResults = new Dictionary<uint, TextFilterResult>();
+        private readonly Dictionary<uint, TextFilterResult> _filterResults = new Dictionary<uint, TextFilterResult>();
         private Vector4 _redForeground = Color.Red.ToVector4();
         private Vector4 _greenForeground = Color.LightGreen.ToVector4();
         private Vector4 _redBackground = Color.DarkRed.ToVector4();

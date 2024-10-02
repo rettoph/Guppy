@@ -8,7 +8,7 @@ namespace Guppy.Core
     {
         private Tags? _parent;
 
-        private ILifetimeScope _autofac;
+        private readonly ILifetimeScope _autofac;
 
         public bool IsRoot => _parent is null;
 

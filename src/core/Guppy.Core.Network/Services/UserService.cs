@@ -12,8 +12,8 @@ namespace Guppy.Core.Network.Identity.Services
 {
     public class UserService : IUserService
     {
-        private Dictionary<int, User> _idsUsers;
-        private Dictionary<NetPeer, User> _peersUsers;
+        private readonly Dictionary<int, User> _idsUsers;
+        private readonly Dictionary<NetPeer, User> _peersUsers;
 
         public IEnumerable<NetPeer> Peers
         {

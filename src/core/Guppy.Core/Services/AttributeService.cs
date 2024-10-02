@@ -7,7 +7,7 @@ namespace Guppy.Core.Services
     internal sealed class AttributeService<TType, TAttribute> : IAttributeService<TType, TAttribute>
         where TAttribute : Attribute
     {
-        private Dictionary<Type, TAttribute[]> _attributes;
+        private readonly Dictionary<Type, TAttribute[]> _attributes;
 
         public ITypeService<TType> Types { get; }
 

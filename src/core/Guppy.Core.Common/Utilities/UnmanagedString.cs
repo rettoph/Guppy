@@ -4,7 +4,7 @@ namespace Guppy.Core.Common.Utilities
 {
     public unsafe struct UnmanagedString : IDisposable
     {
-        private nint _ptr;
+        private readonly nint _ptr;
         private int _length;
 
         public string Value => Marshal.PtrToStringAnsi(_ptr, _length);

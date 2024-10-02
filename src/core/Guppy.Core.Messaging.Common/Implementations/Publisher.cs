@@ -31,7 +31,7 @@
         where TBase : class, IMessage
         where TMessage : TBase
     {
-        private List<IBaseSubscriber<TBase, TMessage>> _subscribers;
+        private readonly List<IBaseSubscriber<TBase, TMessage>> _subscribers;
 
         public Publisher(IEnumerable<IBaseSubscriber<TBase>> subscribers) : base(typeof(TMessage))
         {

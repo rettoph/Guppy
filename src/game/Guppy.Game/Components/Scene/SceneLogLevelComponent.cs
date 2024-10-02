@@ -15,7 +15,7 @@ namespace Guppy.Game.Components.Guppy
     {
         private readonly ITerminal _terminal;
 
-        private SettingValue<LogEventLevel> _logLevel;
+        private readonly SettingValue<LogEventLevel> _logLevel;
 
         public EngineLogLevelComponent(ITerminal terminal, ISettingService settings)
         {

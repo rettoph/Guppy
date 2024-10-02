@@ -11,7 +11,7 @@ namespace Guppy.Game.Input
 {
     internal sealed class MouseCursor : ICursor
     {
-        private Dictionary<CursorButtons, bool> _buttons;
+        private readonly Dictionary<CursorButtons, bool> _buttons;
 
         public Guid Id { get; } = Cursors.Mouse;
 

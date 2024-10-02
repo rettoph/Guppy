@@ -5,8 +5,8 @@ namespace Guppy.Core.Messaging.Common.Implementations
     public class Broker<TBase> : IBroker<TBase>
         where TBase : class, IMessage
     {
-        private List<IBaseSubscriber<TBase>> _subscribers;
-        private Dictionary<Type, Publisher<TBase>> _publishers;
+        private readonly List<IBaseSubscriber<TBase>> _subscribers;
+        private readonly Dictionary<Type, Publisher<TBase>> _publishers;
 
         public Broker()
         {

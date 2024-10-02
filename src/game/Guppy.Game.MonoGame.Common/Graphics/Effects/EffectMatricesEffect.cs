@@ -19,7 +19,7 @@ namespace Guppy.Game.MonoGame.Common.Graphics.Effects
         private Matrix _world;
         private bool _dirty;
 
-        private EffectParameter _worldViewProjectionParam;
+        private readonly EffectParameter _worldViewProjectionParam;
         #endregion
 
         #region Public Properties

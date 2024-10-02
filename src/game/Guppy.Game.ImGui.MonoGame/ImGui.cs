@@ -13,7 +13,7 @@ namespace Guppy.Game.ImGui.MonoGame
         private readonly Stack<ImStyle> _styleStack;
         private readonly IResourceService _resourceService;
 
-        private IDisposable _idPopper;
+        private readonly IDisposable _idPopper;
 
         public ImGui(IImguiBatch batch, IResourceService resourceService)
         {

@@ -18,7 +18,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
-        private ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imguiActions;
+        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imguiActions;
 
         public DrawImGuiComponent(IImguiBatch batch, IGameEngine engine)
         {

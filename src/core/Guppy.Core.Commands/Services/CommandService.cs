@@ -11,8 +11,8 @@ namespace Guppy.Core.Commands.Services
     public sealed class CommandService : Broker<ICommand>, ICommandService
     {
         private readonly RootCommand _root;
-        private Dictionary<Type, CommandManager> _managers;
-        private IConsole _console;
+        private readonly Dictionary<Type, CommandManager> _managers;
+        private readonly IConsole _console;
 
         public CommandService(
             IFiltered<ICommandContext> commandContexts,

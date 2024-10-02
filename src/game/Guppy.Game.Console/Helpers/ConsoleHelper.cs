@@ -6,7 +6,7 @@ namespace Guppy.Game.Console.Helpers
 {
     public static class ConsoleHelper
     {
-        private static Map<ConsoleColor, Color> _map = new Map<ConsoleColor, Color>([
+        private static readonly Map<ConsoleColor, Color> _map = new Map<ConsoleColor, Color>([
             (ConsoleColor.Black, Color.Black),
             (ConsoleColor.DarkBlue, Color.DarkBlue),
             (ConsoleColor.DarkGreen, Color.DarkGreen),
@@ -25,7 +25,7 @@ namespace Guppy.Game.Console.Helpers
             (ConsoleColor.White, Color.White)
         ]);
 
-        private static Dictionary<Color, ConsoleColor> _colorToConsoleColorCache = new Dictionary<Color, ConsoleColor>();
+        private static readonly Dictionary<Color, ConsoleColor> _colorToConsoleColorCache = new Dictionary<Color, ConsoleColor>();
         public static ConsoleColor GetConsolColorFromColor(Color color)
         {
             ref ConsoleColor console = ref CollectionsMarshal.GetValueRefOrAddDefault(_colorToConsoleColorCache, color, out bool exists);
@@ -73,7 +73,7 @@ namespace Guppy.Game.Console.Helpers
         {
             public static RestConsoleForeground Instance = new RestConsoleForeground();
 
-            private Stack<ConsoleColor> _stack;
+            private readonly Stack<ConsoleColor> _stack;
 
             private RestConsoleForeground()
             {

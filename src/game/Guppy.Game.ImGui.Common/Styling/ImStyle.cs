@@ -7,8 +7,8 @@ namespace Guppy.Game.ImGui.Common.Styling
 {
     public class ImStyle
     {
-        private Dictionary<string, ImStyleValue> _keyedValues = new Dictionary<string, ImStyleValue>();
-        private List<ImStyleValue> _globalValues = new List<ImStyleValue>();
+        private readonly Dictionary<string, ImStyleValue> _keyedValues = new Dictionary<string, ImStyleValue>();
+        private readonly List<ImStyleValue> _globalValues = new List<ImStyleValue>();
 
         public void Set(string key, ImGuiStyleVar var, float value)
         {

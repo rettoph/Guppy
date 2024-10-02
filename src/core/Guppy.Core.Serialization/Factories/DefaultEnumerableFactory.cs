@@ -7,7 +7,7 @@ namespace Guppy.Core.Serialization.Factories
     [AutoLoad]
     internal sealed class DefaultEnumerableFactory : IDefaultInstanceFactory
     {
-        private static MethodInfo _methodInfo = typeof(Enumerable).GetMethod(nameof(Enumerable.Empty), BindingFlags.Public | BindingFlags.Static) ?? throw new NotImplementedException();
+        private static readonly MethodInfo _methodInfo = typeof(Enumerable).GetMethod(nameof(Enumerable.Empty), BindingFlags.Public | BindingFlags.Static) ?? throw new NotImplementedException();
         public bool CanConstructType(Type type)
         {
             if (type.IsConstructedGenericType == false)

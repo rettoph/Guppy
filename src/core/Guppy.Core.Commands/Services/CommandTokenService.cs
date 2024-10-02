@@ -7,8 +7,8 @@ namespace Guppy.Core.Commands.Services
 {
     public sealed class CommandTokenService(IFiltered<ICommandTokenConverter> converters) : ICommandTokenService
     {
-        private ICommandTokenConverter[] _converters = converters.ToArray();
-        private Dictionary<Type, ICommandTokenConverter> _cache = new Dictionary<Type, ICommandTokenConverter>();
+        private readonly ICommandTokenConverter[] _converters = converters.ToArray();
+        private readonly Dictionary<Type, ICommandTokenConverter> _cache = new Dictionary<Type, ICommandTokenConverter>();
 
         public object? Deserialize(Type type, string token)
         {

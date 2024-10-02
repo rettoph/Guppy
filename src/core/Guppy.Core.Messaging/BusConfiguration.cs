@@ -6,7 +6,7 @@ namespace Guppy.Core.Messaging
     {
         private const int DefaultPriority = 0;
 
-        private List<(Type type, int queue, int priority)> _queues = new List<(Type type, int queue, int priority)>();
+        private readonly List<(Type type, int queue, int priority)> _queues = new List<(Type type, int queue, int priority)>();
 
         public void SetQueue<T>(int queue, int priority = DefaultPriority)
             where T : IMessage

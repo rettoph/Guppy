@@ -11,7 +11,7 @@ namespace Guppy.Core.Network
     {
         private UserState _state;
 
-        private Dictionary<string, Claim> _claims;
+        private readonly Dictionary<string, Claim> _claims;
 
         public int Id { get; private set; }
         public NetPeer? NetPeer { get; private set; }

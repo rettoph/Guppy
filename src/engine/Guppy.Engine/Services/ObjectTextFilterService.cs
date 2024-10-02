@@ -7,8 +7,8 @@ namespace Guppy.Engine.Services
 {
     internal class ObjectTextFilterService(IEnumerable<ObjectTextFilter> filters) : IObjectTextFilterService
     {
-        private ObjectTextFilter[] _filters = filters.OrderBy(x => x.Priority).ToArray();
-        private Dictionary<Type, ObjectTextFilter> _typeFilters = new Dictionary<Type, ObjectTextFilter>();
+        private readonly ObjectTextFilter[] _filters = filters.OrderBy(x => x.Priority).ToArray();
+        private readonly Dictionary<Type, ObjectTextFilter> _typeFilters = new Dictionary<Type, ObjectTextFilter>();
 
         public TextFilterResult Filter(object? instance, string input, int maxDepth = 5, int currentDepth = 0, HashSet<object>? tree = null)
         {

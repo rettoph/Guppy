@@ -11,7 +11,7 @@ namespace Guppy.Core.Serialization.Json.Converters
         public const string TypePropertyKey = "Type";
         public const string ValuePropertyKey = "Value";
 
-        private IPolymorphicJsonSerializerService<T> _serializer = serializer;
+        private readonly IPolymorphicJsonSerializerService<T> _serializer = serializer;
 
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

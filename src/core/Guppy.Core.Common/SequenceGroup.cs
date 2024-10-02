@@ -9,7 +9,7 @@ namespace Guppy.Core.Common
     {
         public readonly string Name = name;
         public readonly int Sequence = sequence;
-        private static Dictionary<T, SequenceGroup<T>> _enumMap;
+        private static readonly Dictionary<T, SequenceGroup<T>> _enumMap;
 
         static SequenceGroup()
         {
