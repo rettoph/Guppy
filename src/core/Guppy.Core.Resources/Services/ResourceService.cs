@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal class ResourceService(Lazy<ISettingService> settings, Lazy<IResourcePackService> packs, Lazy<ILogger> logger) : IHostedService, IResourceService, IDisposable
+    internal class ResourceService(Lazy<IResourcePackService> packs, Lazy<ILogger> logger) : IHostedService, IResourceService, IDisposable
     {
         private bool _initialized;
         private readonly Lazy<IResourcePackService> _packs = packs;
