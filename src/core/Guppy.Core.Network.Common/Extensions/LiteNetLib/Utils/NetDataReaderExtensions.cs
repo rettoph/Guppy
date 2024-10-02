@@ -26,7 +26,7 @@ namespace LiteNetLib.Utils
 
         public static unsafe UInt128 GetUInt128(this NetDataReader reader)
         {
-            UInt128 value = new UInt128();
+            UInt128 value = new();
             ulong* values = (ulong*)&value;
 
             values[0] = reader.GetULong();

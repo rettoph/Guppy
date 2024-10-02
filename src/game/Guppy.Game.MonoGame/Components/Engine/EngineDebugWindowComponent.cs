@@ -21,7 +21,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private readonly IGameEngine _engine = engine;
         private readonly ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly IImGui _imgui = imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions = new ActionSequenceGroup<DebugSequenceGroup, GameTime>();
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions = new();
 
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
@@ -41,7 +41,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
             using (_imgui.Apply(_debugWindowStyle))
             {
-                ImGuiWindowClassPtr windowClass = new ImGuiWindowClassPtr();
+                ImGuiWindowClassPtr windowClass = new();
                 windowClass.ClassId = _imgui.GetID(nameof(IDebugComponent));
                 windowClass.DockingAllowUnclassed = false;
 

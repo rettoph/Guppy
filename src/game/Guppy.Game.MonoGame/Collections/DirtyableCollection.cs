@@ -5,8 +5,8 @@ namespace Guppy.Game.MonoGame.Collections
     public abstract class DirtyableCollection<T> : ICollection<T>
         where T : notnull
     {
-        private readonly List<T> _cache = new List<T>();
-        protected readonly List<T> items = new List<T>();
+        private readonly List<T> _cache = [];
+        protected readonly List<T> items = [];
 
         protected bool dirty;
 

@@ -6,6 +6,6 @@ namespace Guppy.Core.Resources.Common
     {
         public string Type { get; set; } = string.Empty;
 
-        public Dictionary<string, JsonElement> Values { get; set; } = new Dictionary<string, JsonElement>();
+        public Dictionary<string, JsonElement> Values { get; set; } = [];
     }
 }

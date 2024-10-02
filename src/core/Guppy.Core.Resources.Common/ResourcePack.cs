@@ -21,7 +21,7 @@ namespace Guppy.Core.Resources.Common
             _entry = entry;
             this.RootDirectory = rootDirectory;
 
-            _resolvers = new Dictionary<IResource, Dictionary<string, ResourceResolver>>();
+            _resolvers = [];
         }
 
         public void Add<T>(Resource<T> resource, string localization, ResourceResolver<T> resolver)
@@ -29,7 +29,7 @@ namespace Guppy.Core.Resources.Common
         {
             if (!_resolvers.TryGetValue(resource, out var resolvers))
             {
-                _resolvers[resource] = resolvers = new();
+                _resolvers[resource] = resolvers = [];
             }
 
             ref ResourceResolver? localizedResolver = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvers, localization, out bool exists);

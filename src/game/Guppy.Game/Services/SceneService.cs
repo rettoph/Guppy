@@ -10,8 +10,8 @@ namespace Guppy.Game.Services
     internal sealed class SceneService(ILifetimeScope scope, IConfigurationService configurations) : ISceneService
     {
         private readonly ILifetimeScope _scope = scope;
-        private readonly List<IScene> _scenes = new List<IScene>();
-        private readonly Dictionary<IScene, ILifetimeScope> _scopes = new Dictionary<IScene, ILifetimeScope>();
+        private readonly List<IScene> _scenes = [];
+        private readonly Dictionary<IScene, ILifetimeScope> _scopes = [];
         private readonly IConfigurationService _configurations = configurations;
 
         public ILifetimeScope Scope => _scope;

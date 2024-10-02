@@ -19,8 +19,8 @@ namespace Guppy.Game.Helpers
             DateTime start = DateTime.Now;
             DateTime now = start;
             DateTime last = default;
-            GameTime gameTime = new GameTime();
-            PeriodicTimer _timer = new PeriodicTimer(interval);
+            GameTime gameTime = new();
+            PeriodicTimer _timer = new(interval);
 
             while (await _timer.WaitForNextTickAsync(token) && !token.IsCancellationRequested)
             {

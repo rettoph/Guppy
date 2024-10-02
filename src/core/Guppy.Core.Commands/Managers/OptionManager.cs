@@ -34,7 +34,7 @@ namespace Guppy.Core.Commands.Managers
 
         public static OptionManager<TCommand>[] CreateAll(ICommandContext<TCommand> commandContext, ICommandTokenService tokenService)
         {
-            List<OptionManager<TCommand>> binders = new List<OptionManager<TCommand>>();
+            List<OptionManager<TCommand>> binders = [];
 
             IEnumerable<PropertyInfo> propertyInfos = typeof(TCommand).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => x.HasCustomAttribute<OptionAttribute>(true));
             foreach (IOptionContext optionContext in commandContext.Options)

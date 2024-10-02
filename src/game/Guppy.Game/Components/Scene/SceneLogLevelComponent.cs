@@ -8,7 +8,7 @@ using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
 using Serilog.Events;
 
-namespace Guppy.Game.Components.Guppy
+namespace Guppy.Game.Components.Scene
 {
     [AutoLoad]
     internal class EngineLogLevelComponent : IEngineComponent, ICommandSubscriber<LogLevelCommand>
@@ -44,7 +44,7 @@ namespace Guppy.Game.Components.Guppy
             LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value.Value;
 
             _terminal.Write($"Set Log Level: ");
-            _terminal.WriteLine(message.Value.ToString(), _terminal.Theme.Get(message.Value.Value));
+            _terminal.WriteLine(message.Value.ToString() ?? string.Empty, _terminal.Theme.Get(message.Value.Value));
         }
     }
 }

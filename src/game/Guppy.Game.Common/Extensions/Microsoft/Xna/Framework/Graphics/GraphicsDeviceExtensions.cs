@@ -2,7 +2,7 @@
 {
     public static class GraphicsDeviceExtensions
     {
-        private static readonly Stack<Rectangle> _scissors = new Stack<Rectangle>();
+        private static readonly Stack<Rectangle> _scissors = new();
 
         public static void PushScissorRectangle(this GraphicsDevice graphics, Rectangle scissor)
         {
@@ -16,7 +16,7 @@
             return graphics.ScissorRectangle;
         }
 
-        private static readonly Dictionary<GraphicsDevice, Texture2D> _pixels = new Dictionary<GraphicsDevice, Texture2D>();
+        private static readonly Dictionary<GraphicsDevice, Texture2D> _pixels = [];
 
         public static Texture2D BuildPixel(this GraphicsDevice graphics, Color? color = null)
             => new Texture2D(graphics, 1, 1).Then(p =>

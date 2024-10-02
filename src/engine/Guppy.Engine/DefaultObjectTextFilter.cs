@@ -15,7 +15,7 @@ namespace Guppy.Engine
 
         public DefaultObjectTextFilter() : base(int.MaxValue)
         {
-            _typeInfo = new Dictionary<Type, (FieldInfo[], PropertyInfo[])>();
+            _typeInfo = [];
         }
 
         public override bool AppliesTo(object instance)

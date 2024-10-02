@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Guppy.Game.Input.Common
 {
     [StructLayout(LayoutKind.Explicit)]
-    public struct ButtonSource
+    public readonly struct ButtonSource
     {
         [FieldOffset(0)]
         public readonly ButtonType Type;
@@ -31,7 +31,7 @@ namespace Guppy.Game.Input.Common
             this.MouseButton = mouseButtons;
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             switch (this.Type)
             {
@@ -44,12 +44,12 @@ namespace Guppy.Game.Input.Common
             }
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(Type, KeyboardKey);
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is ButtonSource source &&
                    Type == source.Type &&

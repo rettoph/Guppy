@@ -6,18 +6,19 @@
     /// can be disposed or removed at any time. Use with care...
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
-    public struct UnmanagedReference<TValue> : IRef<TValue>, IDisposable
+    public readonly struct UnmanagedReference<TValue> : IRef<TValue>, IDisposable
     {
         private readonly int _index;
 
-        public TValue Value
+        public readonly TValue Value
         {
             get => _values[_index];
             set => _values[_index] = value;
         }
 
-        public Type Type => typeof(TValue);
-        object? IRef.Value => this.Value;
+        public readonly Type Type => typeof(TValue);
+
+        readonly object? IRef.Value => this.Value;
 
         public UnmanagedReference()
         {
@@ -30,7 +31,7 @@
             this.Value = value;
         }
 
-        public void Dispose(bool disposeValue)
+        public readonly void Dispose(bool disposeValue)
         {
             Push(_index);
 
@@ -40,7 +41,7 @@
             }
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
             this.Dispose(true);
         }
@@ -55,8 +56,8 @@
             return value.Value;
         }
 
-        private static readonly Stack<int> _indices = new Stack<int>();
-        private static readonly List<TValue> _values = new List<TValue>() { default! };
+        private static readonly Stack<int> _indices = new();
+        private static readonly List<TValue> _values = [default!];
 
         private static int Pop()
         {
@@ -77,15 +78,25 @@
             _indices.Push(index);
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is UnmanagedReference<TValue> reference &&
                    _index == reference._index;
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(_index);
+        }
+
+        public static bool operator ==(UnmanagedReference<TValue> left, UnmanagedReference<TValue> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(UnmanagedReference<TValue> left, UnmanagedReference<TValue> right)
+        {
+            return !(left == right);
         }
     }
 
@@ -98,18 +109,19 @@
     /// </summary>
     /// <typeparam name="TNamespace"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public struct UnmanagedReference<TNamespace, TValue> : IRef<TValue>, IDisposable
+    public readonly struct UnmanagedReference<TNamespace, TValue> : IRef<TValue>, IDisposable
     {
         private readonly int _index;
 
-        public TValue Value
+        public readonly TValue Value
         {
             get => _values[_index];
             set => _values[_index] = value;
         }
 
-        public Type Type => typeof(TValue);
-        object? IRef.Value => this.Value;
+        public readonly Type Type => typeof(TValue);
+
+        readonly object? IRef.Value => this.Value;
 
         public UnmanagedReference()
         {
@@ -122,7 +134,7 @@
             this.Value = value;
         }
 
-        public void Dispose(bool disposeValue)
+        public readonly void Dispose(bool disposeValue)
         {
             Push(_index);
 
@@ -132,7 +144,7 @@
             }
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
             this.Dispose(true);
         }
@@ -147,8 +159,8 @@
             return value.Value;
         }
 
-        private static readonly Stack<int> _indices = new Stack<int>();
-        private static readonly List<TValue> _values = new List<TValue>() { default! };
+        private static readonly Stack<int> _indices = new();
+        private static readonly List<TValue> _values = [default!];
 
         private static int Pop()
         {
@@ -169,15 +181,25 @@
             _indices.Push(index);
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is UnmanagedReference<TNamespace, TValue> reference &&
                    _index == reference._index;
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(_index);
+        }
+
+        public static bool operator ==(UnmanagedReference<TNamespace, TValue> left, UnmanagedReference<TNamespace, TValue> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(UnmanagedReference<TNamespace, TValue> left, UnmanagedReference<TNamespace, TValue> right)
+        {
+            return !(left == right);
         }
     }
 }

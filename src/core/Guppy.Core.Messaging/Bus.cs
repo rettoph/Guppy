@@ -13,7 +13,7 @@ namespace Guppy.Core.Messaging
 
         public Bus(IConfiguration<BusConfiguration> configuration)
         {
-            _typeQueues = new Dictionary<Type, Queue<IMessage>>();
+            _typeQueues = [];
             _queueConfigurations = configuration.Value.GetQueueConfigurations();
 
             _queuesDict = _queueConfigurations.Select(x => x.queue)

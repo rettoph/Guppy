@@ -5,7 +5,7 @@ namespace Guppy.Game.MonoGame.Messages
 {
     public class Toggle<T>(T? item) : Message<Toggle<T>>, IInput
     {
-        public static readonly Toggle<T> Instance = new Toggle<T>(default);
+        public static readonly Toggle<T> Instance = new(default);
 
         public readonly T? Item = item;
     }

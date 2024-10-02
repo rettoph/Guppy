@@ -31,7 +31,7 @@ namespace Guppy.Game.ImGui.MonoGame
         {
             _window = window;
             _graphics = graphics;
-            _loadedTextures = new Dictionary<IntPtr, Texture2D>();
+            _loadedTextures = [];
             _rasterizerState = new RasterizerState()
             {
                 CullMode = CullMode.None,
@@ -44,9 +44,9 @@ namespace Guppy.Game.ImGui.MonoGame
             };
 
             _effect = new BasicEffect(_graphics);
-            _vertexData = Array.Empty<byte>();
+            _vertexData = [];
             _vertexBuffer = new DynamicVertexBuffer(_graphics, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
-            _indexData = Array.Empty<byte>();
+            _indexData = [];
             _indexBuffer = new DynamicIndexBuffer(_graphics, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
 
             _window.TextInput += this.HandleTextInput;

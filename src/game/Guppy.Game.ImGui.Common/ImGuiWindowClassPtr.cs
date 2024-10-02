@@ -27,5 +27,15 @@ namespace Guppy.Game.ImGui.Common
         public ImGuiWindowClassPtr() : this(new ImGuiNET.ImGuiWindowClassPtr(ImGuiNative.ImGuiWindowClass_ImGuiWindowClass()))
         {
         }
+
+        public static bool operator ==(ImGuiWindowClassPtr left, ImGuiWindowClassPtr right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ImGuiWindowClassPtr left, ImGuiWindowClassPtr right)
+        {
+            return !(left == right);
+        }
     }
 }

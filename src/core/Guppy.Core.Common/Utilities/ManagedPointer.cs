@@ -2,12 +2,12 @@
 
 namespace Guppy.Core.Common.Utilities
 {
-    public struct ManagedPointer<TValue>
+    public readonly struct ManagedPointer<TValue>
         where TValue : notnull
     {
         private readonly IntPtr _ptr;
 
-        public TValue Value
+        public readonly TValue Value
         {
             get
             {
@@ -29,7 +29,7 @@ namespace Guppy.Core.Common.Utilities
             _ptr = GCHandle.ToIntPtr(handle);
         }
 
-        public void Free()
+        public readonly void Free()
         {
             GCHandle handle = GCHandle.FromIntPtr(_ptr);
             handle.Free();

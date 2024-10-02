@@ -21,7 +21,7 @@ namespace Guppy.Core.Serialization.Factories
 
         public object BuildInstance(Type type)
         {
-            var result = _methodInfo.MakeGenericMethod(type.GenericTypeArguments[0]).Invoke(null, Array.Empty<object>());
+            var result = _methodInfo.MakeGenericMethod(type.GenericTypeArguments[0]).Invoke(null, []);
 
             return result ?? throw new NotImplementedException();
         }

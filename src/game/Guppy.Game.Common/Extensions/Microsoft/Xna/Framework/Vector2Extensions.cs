@@ -9,7 +9,7 @@
             => MathHelper.WrapAngle(MathF.Atan2(p2.Y - vertex.Y, p2.X - vertex.X) - MathF.Atan2(p1.Y - vertex.Y, p1.X - vertex.X));
 
         public static Vector2 Round(this Vector2 vector)
-            => new Vector2(MathF.Round(vector.X), MathF.Round(vector.Y));
+            => new(MathF.Round(vector.X), MathF.Round(vector.Y));
 
         public static Vector2 Rotate(this Vector2 v, float delta)
             => v.RotateTo(MathF.Atan2(v.Y, v.X) + delta);
@@ -27,6 +27,6 @@
             => $"({v.X.ToString(format)}, {v.Y.ToString(format)})";
 
         public static Vector3 ToVector3(this Vector2 vector2, float z = 0)
-            => new Vector3(vector2.X, vector2.Y, z);
+            => new(vector2.X, vector2.Y, z);
     }
 }

@@ -17,7 +17,7 @@ namespace Guppy.Core.Serialization.Common.Converters
             ThrowIf.Type.IsNotGenericTypeDefinitionn(genericTypeDefinition);
             ThrowIf.Type.IsNotGenericTypeDefinitionn(genericTypeJsonConverterGenericDefinition);
 
-            _converters = new Dictionary<Type, GenericTypeJsonConverter>();
+            _converters = [];
 
             this.GenericTypeDefinition = genericTypeDefinition;
             this.GenericTypeJsonConverterGenericDefinition = genericTypeJsonConverterGenericDefinition;

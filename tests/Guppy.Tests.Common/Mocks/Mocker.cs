@@ -7,11 +7,11 @@ namespace Guppy.Tests.Common
         where T : class
     {
         private T? _override;
-        private readonly Mock<T> _instance = new Mock<T>();
+        private readonly Mock<T> _instance = new();
 
         public static Mocker<T> Create()
         {
-            Mocker<T> builder = new Mocker<T>();
+            Mocker<T> builder = new();
 
             return builder;
         }

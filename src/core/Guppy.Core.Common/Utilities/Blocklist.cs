@@ -2,8 +2,8 @@
 {
     public class BlockList(IEnumerable<string>? whitelist, IEnumerable<string>? blacklist)
     {
-        public static readonly BlockList AllowAll = new BlockList(null, Enumerable.Empty<string>());
-        public static readonly BlockList BlockAll = new BlockList(Enumerable.Empty<string>(), null);
+        public static readonly BlockList AllowAll = new(null, []);
+        public static readonly BlockList BlockAll = new([], null);
 
         public readonly IEnumerable<string>? Whitelist = whitelist;
         public readonly IEnumerable<string>? Blacklist = blacklist;

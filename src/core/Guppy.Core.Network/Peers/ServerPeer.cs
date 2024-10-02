@@ -47,39 +47,37 @@ namespace Guppy.Core.Network.Peers
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
-            using (INetIncomingMessage data = this.Messages.Read(null!, request.Data, 0, DeliveryMethod.ReliableOrdered))
+            using INetIncomingMessage data = this.Messages.Read(null!, request.Data, 0, DeliveryMethod.ReliableOrdered);
+            if (data is INetIncomingMessage<ConnectionRequestData> casted)
             {
-                if (data is INetIncomingMessage<ConnectionRequestData> casted)
+                bool accepted = true;
+
+                if (this.ConnectionApproval is not null)
                 {
-                    bool accepted = true;
-
-                    if (this.ConnectionApproval is not null)
+                    foreach (Delegate del in this.ConnectionApproval.GetInvocationList())
                     {
-                        foreach (Delegate del in this.ConnectionApproval.GetInvocationList())
-                        {
-                            accepted &= ((ConnectionApprovalDelegate)del)(request, casted);
-                        }
-                    }
-
-                    if (accepted)
-                    {
-                        NetPeer peer = request.Accept();
-
-                        IUser user = this.Users.Create(casted.Body.Claims, Claim.Public(UserType.User)).Initialize(_nextUserId++, peer);
-
-                        this.Group.CreateMessage(new ConnectionRequestResponse()
-                        {
-                            Type = ConnectionRequestResponseType.Accepted,
-                            SystemUser = this.Users.Current!.ToDto(ClaimAccessibility.Public),
-                            CurrentUser = user.ToDto(ClaimAccessibility.Protected)
-                        }).AddRecipient(peer).Send().Recycle();
-
-                        return;
+                        accepted &= ((ConnectionApprovalDelegate)del)(request, casted);
                     }
                 }
 
-                request.Reject();
+                if (accepted)
+                {
+                    NetPeer peer = request.Accept();
+
+                    IUser user = this.Users.Create(casted.Body.Claims, Claim.Public(UserType.User)).Initialize(_nextUserId++, peer);
+
+                    this.Group.CreateMessage(new ConnectionRequestResponse()
+                    {
+                        Type = ConnectionRequestResponseType.Accepted,
+                        SystemUser = this.Users.Current!.ToDto(ClaimAccessibility.Public),
+                        CurrentUser = user.ToDto(ClaimAccessibility.Protected)
+                    }).AddRecipient(peer).Send().Recycle();
+
+                    return;
+                }
             }
+
+            request.Reject();
         }
 
         private void HandlePeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)

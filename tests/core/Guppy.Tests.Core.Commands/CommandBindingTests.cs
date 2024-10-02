@@ -48,7 +48,7 @@ namespace Guppy.Tests.Core.Commands
         {
             ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumArgumentTestCommand)]);
 
-            Mock<ICommandSubscriber<EnumArgumentTestCommand>> subscriber = new Mock<ICommandSubscriber<EnumArgumentTestCommand>>();
+            Mock<ICommandSubscriber<EnumArgumentTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
 
             // Attempt to invoke test command
@@ -70,7 +70,7 @@ namespace Guppy.Tests.Core.Commands
         {
             ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumArgumentTestCommand)]);
 
-            Mock<ICommandSubscriber<NullableEnumArgumentTestCommand>> subscriber = new Mock<ICommandSubscriber<NullableEnumArgumentTestCommand>>();
+            Mock<ICommandSubscriber<NullableEnumArgumentTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
 
             // Attempt to invoke test command with a value
@@ -105,7 +105,7 @@ namespace Guppy.Tests.Core.Commands
         {
             ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumOptionTestCommand)]);
 
-            Mock<ICommandSubscriber<EnumOptionTestCommand>> subscriber = new Mock<ICommandSubscriber<EnumOptionTestCommand>>();
+            Mock<ICommandSubscriber<EnumOptionTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
 
             // Attempt to invoke test command
@@ -127,7 +127,7 @@ namespace Guppy.Tests.Core.Commands
         {
             ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumOptionTestCommand)]);
 
-            Mock<ICommandSubscriber<NullableEnumOptionTestCommand>> subscriber = new Mock<ICommandSubscriber<NullableEnumOptionTestCommand>>();
+            Mock<ICommandSubscriber<NullableEnumOptionTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
 
             // Attempt to invoke test command with a value

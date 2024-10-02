@@ -21,7 +21,7 @@ namespace Guppy.Engine
 
             if (libraries is null)
             {
-                libraries = Enumerable.Empty<Assembly>();
+                libraries = [];
             }
             else
             {

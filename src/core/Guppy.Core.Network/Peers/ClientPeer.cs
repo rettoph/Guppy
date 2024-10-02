@@ -34,15 +34,13 @@ namespace Guppy.Core.Network.Peers
                 this.Start();
             }
 
-            ConnectionRequestData requestData = new ConnectionRequestData()
+            ConnectionRequestData requestData = new()
             {
                 Claims = claims
             };
 
-            using (var request = this.Group.CreateMessage(in requestData))
-            {
-                this.Manager.Connect(address, port, request.Writer);
-            }
+            using var request = this.Group.CreateMessage(in requestData);
+            this.Manager.Connect(address, port, request.Writer);
         }
 
         public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)

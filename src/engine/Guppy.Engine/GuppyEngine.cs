@@ -33,7 +33,7 @@ namespace Guppy.Engine
 
             this.Context = context;
 
-            CancellationTokenSource startToken = new CancellationTokenSource(5000);
+            CancellationTokenSource startToken = new(5000);
             foreach (IHostedService hostedService in _hostedServices)
             {
                 hostedService.StartAsync(startToken.Token);
@@ -42,7 +42,7 @@ namespace Guppy.Engine
 
         public void Dispose()
         {
-            CancellationTokenSource stopToken = new CancellationTokenSource(5000);
+            CancellationTokenSource stopToken = new(5000);
             foreach (IHostedService hostedService in _hostedServices)
             {
                 hostedService.StopAsync(stopToken.Token);
@@ -88,7 +88,7 @@ namespace Guppy.Engine
             {
                 // Construct a service container to store factory related services
                 // Used for boot loggers, engine loaders, and related services
-                ContainerBuilder bootBuilder = new ContainerBuilder();
+                ContainerBuilder bootBuilder = new();
                 bootBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
                 bootBuilder.RegisterCoreServices(context);
 
@@ -103,7 +103,7 @@ namespace Guppy.Engine
                 // Begin boot phase 2 - call all boot attributes
 
                 // Construct the engine container
-                ContainerBuilder engineBuilder = new ContainerBuilder();
+                ContainerBuilder engineBuilder = new();
                 engineBuilder.RegisterCoreServices(context, assemblies);
                 engineBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
 

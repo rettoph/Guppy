@@ -4,7 +4,7 @@ using Guppy.Core.Common.Helpers;
 
 namespace Guppy.Core.Common
 {
-    public struct SequenceGroup<T>(string name, int sequence) : IComparable<SequenceGroup<T>>
+    public readonly struct SequenceGroup<T>(string name, int sequence) : IComparable<SequenceGroup<T>>
         where T : unmanaged, Enum
     {
         public readonly string Name = name;
@@ -30,19 +30,19 @@ namespace Guppy.Core.Common
             return _enumMap[value];
         }
 
-        public int CompareTo(SequenceGroup<T> other)
+        public readonly int CompareTo(SequenceGroup<T> other)
         {
             return this.Sequence.CompareTo(other.Sequence);
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is SequenceGroup<T> group &&
                    Name == group.Name &&
                    Sequence == group.Sequence;
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(Name, Sequence);
         }

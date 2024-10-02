@@ -35,7 +35,7 @@
 
         public Publisher(IEnumerable<IBaseSubscriber<TBase>> subscribers) : base(typeof(TMessage))
         {
-            _subscribers = new List<IBaseSubscriber<TBase, TMessage>>();
+            _subscribers = [];
 
             this.TrySubscribe(subscribers);
         }

@@ -34,7 +34,7 @@ namespace Guppy.Core.Commands.Managers
 
         public static ArgumentManager<TCommand>[] CreateAll(ICommandContext<TCommand> commandContext, ICommandTokenService tokenService)
         {
-            List<ArgumentManager<TCommand>> binders = new List<ArgumentManager<TCommand>>();
+            List<ArgumentManager<TCommand>> binders = [];
 
             IEnumerable<PropertyInfo> propertyInfos = typeof(TCommand).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => x.HasCustomAttribute<ArgumentAttribute>(true));
             foreach (IArgumentContext argumentContext in commandContext.Arguments)

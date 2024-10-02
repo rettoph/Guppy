@@ -21,11 +21,9 @@ namespace Guppy.Game.ImGui.Common.ResourceTypes
 
                 using (var stream = File.Open(path, FileMode.Open))
                 {
-                    using (var ms = new MemoryStream())
-                    {
-                        stream.CopyTo(ms);
-                        bytes = ms.ToArray();
-                    }
+                    using var ms = new MemoryStream();
+                    stream.CopyTo(ms);
+                    bytes = ms.ToArray();
                 }
 
                 value = new TrueTypeFont(bytes);

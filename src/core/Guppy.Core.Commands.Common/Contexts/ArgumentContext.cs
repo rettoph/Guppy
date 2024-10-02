@@ -21,7 +21,7 @@ namespace Guppy.Core.Commands.Common.Contexts
         public static IArgumentContext[] CreateAll<TCommand>()
             where TCommand : ICommand
         {
-            List<IArgumentContext> contexts = new List<IArgumentContext>();
+            List<IArgumentContext> contexts = [];
 
             IEnumerable<PropertyInfo> propertyInfos = typeof(TCommand).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => x.HasCustomAttribute<ArgumentAttribute>(true));
             foreach (PropertyInfo propertyInfo in propertyInfos)

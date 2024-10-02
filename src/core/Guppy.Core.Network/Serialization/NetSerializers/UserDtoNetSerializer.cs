@@ -11,7 +11,7 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
     {
         public override UserDto Deserialize(NetDataReader reader)
         {
-            UserDto instance = new UserDto()
+            UserDto instance = new()
             {
                 Id = reader.GetInt(),
                 Claims = new Claim[reader.GetInt()]

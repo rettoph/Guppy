@@ -2,7 +2,7 @@
 
 namespace Guppy.Core.Files.Common
 {
-    public struct DirectoryLocation(DirectoryType type, string path)
+    public readonly struct DirectoryLocation(DirectoryType type, string path)
     {
         public readonly DirectoryType Type = type;
         public readonly string Path = path;
@@ -22,7 +22,7 @@ namespace Guppy.Core.Files.Common
             return new DirectoryLocation(DirectoryType.Source, path ?? string.Empty);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return $"({this.Type}):{this.Path}";
         }

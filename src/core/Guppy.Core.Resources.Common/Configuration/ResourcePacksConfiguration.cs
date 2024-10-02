@@ -8,7 +8,7 @@ namespace Guppy.Core.Resources.Common.Configuration
 
         internal IEnumerable<ResourcePackConfiguration> Packs => _packs.Values;
 
-        public ResourcePacksConfiguration() : this(new List<ResourcePackConfiguration>())
+        public ResourcePacksConfiguration() : this([])
         {
         }
 

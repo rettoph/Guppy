@@ -2,7 +2,7 @@
 {
     public static class StaticCollection<T>
     {
-        private static readonly HashSet<T> _items = new HashSet<T>();
+        private static readonly HashSet<T> _items = [];
 
         public static event EventHandler<T>? OnAdded;
         public static event EventHandler<T>? OnRemoved;

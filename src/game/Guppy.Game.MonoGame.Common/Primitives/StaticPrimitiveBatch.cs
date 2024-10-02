@@ -27,9 +27,9 @@ namespace Guppy.Game.MonoGame.Common.Primitives
         {
             _vertexBuffer = null!;
             _indexBuffer = null!;
-            _indices = Array.Empty<short>();
+            _indices = [];
 
-            this.Vertices = Array.Empty<TVertex>();
+            this.Vertices = [];
             this.Indices = new ReadOnlyCollection<short>(_indices);
             this.GraphicsDevice = graphicsDevice;
             this.Effect = effect;

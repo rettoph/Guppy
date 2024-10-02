@@ -8,7 +8,7 @@ namespace Guppy.Core.Serialization.Services
     internal sealed class DefaultInstanceService(IFiltered<IDefaultInstanceFactory> factories) : IDefaultInstanceService
     {
         private readonly IFiltered<IDefaultInstanceFactory> _factories = factories;
-        private readonly Dictionary<Type, IDefaultInstanceFactory> _typeFactories = new Dictionary<Type, IDefaultInstanceFactory>();
+        private readonly Dictionary<Type, IDefaultInstanceFactory> _typeFactories = [];
 
         public T Get<T>()
         {
@@ -43,7 +43,7 @@ namespace Guppy.Core.Serialization.Services
 
         private class DefaultActivatorFactory : IDefaultInstanceFactory
         {
-            public static DefaultActivatorFactory Instance = new DefaultActivatorFactory();
+            public static DefaultActivatorFactory Instance = new();
 
             public bool CanConstructType(Type type)
             {

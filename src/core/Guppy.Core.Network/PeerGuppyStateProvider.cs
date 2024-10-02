@@ -23,7 +23,7 @@ namespace Guppy.Core.Network
                 scope.TryResolve(out scopes);
             }
 
-            _scopes = scopes ?? Enumerable.Empty<INetScope>();
+            _scopes = scopes ?? [];
         }
 
         public override bool TryGet(IStateKey key, out object? state)

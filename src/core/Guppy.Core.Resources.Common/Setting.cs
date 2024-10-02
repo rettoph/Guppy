@@ -17,7 +17,7 @@ namespace Guppy.Core.Resources.Common
 
     public static class Setting
     {
-        private static readonly Dictionary<string, ISetting> _cache = new Dictionary<string, ISetting>();
+        private static readonly Dictionary<string, ISetting> _cache = [];
 
         public static bool TryGet(string name, Type type, [MaybeNullWhen(false)] out ISetting setting)
         {
@@ -170,7 +170,7 @@ namespace Guppy.Core.Resources.Common
 
             if (exists == false)
             {
-                Setting<T> setting = new Setting<T>(name, description, defaultValue);
+                Setting<T> setting = new(name, description, defaultValue);
                 cached = setting;
                 return setting;
             }

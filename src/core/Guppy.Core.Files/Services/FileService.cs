@@ -10,7 +10,7 @@ namespace Guppy.Core.Files.Services
     {
         private readonly IJsonSerializationService _json = json;
         private readonly IPathService _paths = paths;
-        private readonly Dictionary<string, IFile> _cache = new Dictionary<string, IFile>();
+        private readonly Dictionary<string, IFile> _cache = [];
 
         public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
         {
@@ -21,18 +21,14 @@ namespace Guppy.Core.Files.Services
             {
                 DirectoryHelper.EnsureDirectoryExists(source.Path);
 
-                using (FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate))
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string content = reader.ReadToEnd();
+                using FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate);
+                using StreamReader reader = new(stream);
+                string content = reader.ReadToEnd();
 
-                        file = new StringFile(
-                            location: location,
-                            source: source,
-                            content: content);
-                    }
-                }
+                file = new StringFile(
+                    location: location,
+                    source: source,
+                    content: content);
             }
 
             return file ?? throw new Exception();
@@ -47,19 +43,15 @@ namespace Guppy.Core.Files.Services
             {
                 DirectoryHelper.EnsureDirectoryExists(source.Path);
 
-                using (FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate))
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string content = reader.ReadToEnd();
+                using FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate);
+                using StreamReader reader = new(stream);
+                string content = reader.ReadToEnd();
 
-                        file = new JsonFile<T>(
-                            location: location,
-                            source: source,
-                            content: content,
-                            json: _json);
-                    }
-                }
+                file = new JsonFile<T>(
+                    location: location,
+                    source: source,
+                    content: content,
+                    json: _json);
             }
             else if (file is StringFile stringFile)
             {

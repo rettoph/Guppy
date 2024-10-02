@@ -20,8 +20,8 @@ namespace Guppy.Core.Common.Collections
 
         public DoubleDictionary()
         {
-            _dic1 = new Dictionary<TKey1, TValue>();
-            _dic2 = new Dictionary<TKey2, TValue>();
+            _dic1 = [];
+            _dic2 = [];
         }
 
         public DoubleDictionary(int capacity)

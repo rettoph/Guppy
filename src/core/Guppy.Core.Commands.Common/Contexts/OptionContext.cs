@@ -22,7 +22,7 @@ namespace Guppy.Core.Commands.Common.Contexts
 
         public static IOptionContext[] CreateAll<TCommand>()
         {
-            List<IOptionContext> contexts = new List<IOptionContext>();
+            List<IOptionContext> contexts = [];
 
             IEnumerable<PropertyInfo> propertyInfos = typeof(TCommand).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => x.HasCustomAttribute<OptionAttribute>(true));
             foreach (PropertyInfo propertyInfo in propertyInfos)

@@ -8,8 +8,8 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
     {
         public override ResourcePacksConfiguration? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            List<ResourcePackConfiguration> packs = JsonSerializer.Deserialize<List<ResourcePackConfiguration>>(ref reader, options) ?? new List<ResourcePackConfiguration>();
-            ResourcePacksConfiguration configuration = new ResourcePacksConfiguration(packs);
+            List<ResourcePackConfiguration> packs = JsonSerializer.Deserialize<List<ResourcePackConfiguration>>(ref reader, options) ?? [];
+            ResourcePacksConfiguration configuration = new(packs);
 
             return configuration;
         }

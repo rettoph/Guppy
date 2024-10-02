@@ -12,7 +12,7 @@ namespace Guppy.Core.Serialization.Json.Converters
 
         public override Dictionary<Type, T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Dictionary<Type, T> result = new Dictionary<Type, T>();
+            Dictionary<Type, T> result = [];
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();

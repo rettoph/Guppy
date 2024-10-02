@@ -6,9 +6,9 @@ namespace Guppy.Game.MonoGame
     {
         private const int PoolSize = 100;
 
-        public static Factory<MonoGameTerminalLine> Factory = new Factory<MonoGameTerminalLine>(() => new MonoGameTerminalLine(), PoolSize);
+        public static Factory<MonoGameTerminalLine> Factory = new(() => new MonoGameTerminalLine(), PoolSize);
 
-        public List<MonoGameTerminalSegment> Segments = new List<MonoGameTerminalSegment>();
+        public List<MonoGameTerminalSegment> Segments = [];
 
         public string Text = string.Empty;
 

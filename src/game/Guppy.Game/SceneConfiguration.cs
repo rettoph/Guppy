@@ -14,7 +14,7 @@ namespace Guppy.Game
 
         internal SceneConfiguration()
         {
-            _values = new Dictionary<string, object>();
+            _values = [];
         }
 
         public ISceneConfiguration Set<T>(string key, T value)
@@ -31,7 +31,7 @@ namespace Guppy.Game
             ref object? valueObject = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, key, out exists);
             if (exists == false)
             {
-                Ref<T> value = new Ref<T>(default!);
+                Ref<T> value = new(default!);
                 valueObject = value;
                 return ref value.Value;
             }

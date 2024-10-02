@@ -3,14 +3,9 @@ using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.CellTypes
 {
-    internal abstract class BaseGravityCellType : BaseCellType
+    internal abstract class BaseGravityCellType(CellTypeEnum displaces, int maxInactivityCount = 10) : BaseCellType(maxInactivityCount)
     {
-        public CellTypeEnum Displaces { get; set; }
-
-        protected BaseGravityCellType(CellTypeEnum displaces, int maxInactivityCount = 10) : base(maxInactivityCount)
-        {
-            this.Displaces = displaces | CellTypeEnum.Air;
-        }
+        public CellTypeEnum Displaces { get; set; } = displaces | CellTypeEnum.Air;
 
         protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
         {

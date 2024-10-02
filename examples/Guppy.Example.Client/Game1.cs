@@ -10,8 +10,7 @@ namespace Guppy.Example.Client
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         private readonly GraphicsDeviceManager _graphics;
-        private IGameEngine? _engine;
-        private readonly bool _internalServer;
+        private GameEngine? _engine;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -19,9 +18,8 @@ namespace Guppy.Example.Client
         // public static extern void SDL_MaximizeWindow(IntPtr window);
 
 
-        public Game1(bool internalServer = false)
+        public Game1()
         {
-            _internalServer = internalServer;
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 

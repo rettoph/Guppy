@@ -9,7 +9,7 @@ namespace Guppy.Game.Input.Services
 
         public CursorService()
         {
-            _cursors = new List<ICursor>();
+            _cursors = [];
 
             this.Add(new MouseCursor());
         }

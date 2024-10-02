@@ -13,7 +13,7 @@ namespace Guppy.Core.Resources.Common
         internal IResourceValue CreateValue();
     }
 
-    public struct Resource<T> : IResource, IEquatable<Resource<T>>
+    public readonly struct Resource<T> : IResource, IEquatable<Resource<T>>
         where T : notnull
     {
         private readonly UnmanagedReference<IResource, string> _name;
@@ -21,11 +21,12 @@ namespace Guppy.Core.Resources.Common
 
         public readonly Guid Id;
         public readonly string Name => _name.Value;
-        public Type Type => typeof(T);
-        public T? DefaultValue => _default.Value;
+        public readonly Type Type => typeof(T);
+        public readonly T? DefaultValue => _default.Value;
 
-        Guid IResource.Id => this.Id;
-        string IResource.Name => this.Name;
+        readonly Guid IResource.Id => this.Id;
+
+        readonly string IResource.Name => this.Name;
 
         private unsafe Resource(string name, T? defaultValue)
         {
@@ -35,7 +36,7 @@ namespace Guppy.Core.Resources.Common
             this.Id = name.xxHash128();
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
             StaticCollection<IResource>.Remove(this, false);
 
@@ -44,24 +45,24 @@ namespace Guppy.Core.Resources.Common
             _name.Dispose();
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return Equals((Resource<T>)obj!);
         }
 
-        public bool Equals(Resource<T> other)
+        public readonly bool Equals(Resource<T> other)
         {
             return Id.Equals(other.Id);
 
         }
 
-        public bool Equals(IResource? other)
+        public readonly bool Equals(IResource? other)
         {
             return other is Resource<T> casted
                 && this.Equals(casted);
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(Id);
         }
@@ -76,7 +77,7 @@ namespace Guppy.Core.Resources.Common
             return !(left == right);
         }
 
-        private static readonly Dictionary<string, Resource<T>> _cache = new Dictionary<string, Resource<T>>();
+        private static readonly Dictionary<string, Resource<T>> _cache = [];
         public static Resource<T> Get(string name, T? defaultValue = default)
         {
             ref Resource<T> resource = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, name, out bool exists);
@@ -96,7 +97,7 @@ namespace Guppy.Core.Resources.Common
             return _cache.Values;
         }
 
-        IResourceValue IResource.CreateValue()
+        readonly IResourceValue IResource.CreateValue()
         {
             return new ResourceValue<T>(this);
         }

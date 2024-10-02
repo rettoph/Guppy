@@ -9,8 +9,8 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
     {
         public override ImStyle? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            ImStyle style = new ImStyle();
-            var values = JsonSerializer.Deserialize<List<ImStyleValue>>(ref reader, options) ?? new List<ImStyleValue>();
+            ImStyle style = new();
+            var values = JsonSerializer.Deserialize<List<ImStyleValue>>(ref reader, options) ?? [];
             style.SetValues(values);
 
             return style;

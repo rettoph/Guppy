@@ -30,7 +30,7 @@ namespace Guppy.Core.Network.Identity.Services
 
         public NetScopeUserService()
         {
-            _users = new Dictionary<int, IUser>();
+            _users = [];
         }
         public void Dispose()
         {

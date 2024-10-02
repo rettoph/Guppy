@@ -6,6 +6,6 @@ namespace Guppy.Core.Network.Common.Dtos
     {
         public int Id { get; init; }
 
-        public Claim[] Claims { get; init; } = Array.Empty<Claim>();
+        public Claim[] Claims { get; init; } = [];
     }
 }

@@ -21,7 +21,7 @@ namespace Guppy.Example.Client.Utilities
         {
             _vertexBuffer = null!;
 
-            Vertices = Array.Empty<TVertex>();
+            Vertices = [];
             GraphicsDevice = graphicsDevice;
             Effect = effect;
             BlendState = BlendState.AlphaBlend;
@@ -64,16 +64,13 @@ namespace Guppy.Example.Client.Utilities
         }
     }
 
-    public class PointPrimitiveBatch<TVertex> : PointPrimitiveBatch<TVertex, BasicEffect>
-        where TVertex : unmanaged, IVertexType
-    {
-        public PointPrimitiveBatch(GraphicsDevice graphicsDevice) : base(
-            graphicsDevice,
-            new BasicEffect(graphicsDevice)
+    public class PointPrimitiveBatch<TVertex>(GraphicsDevice graphicsDevice) : PointPrimitiveBatch<TVertex, BasicEffect>(
+        graphicsDevice,
+        new BasicEffect(graphicsDevice)
             {
                 VertexColorEnabled = true
             })
-        {
-        }
+        where TVertex : unmanaged, IVertexType
+    {
     }
 }

@@ -6,7 +6,7 @@ namespace Guppy.Core.Common.Attributes
 {
     public class ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, ServiceRegistrationFlags registrationFlags, object? tag = null) : GuppyConfigurationAttribute
     {
-        public readonly IEnumerable<Type> ServiceTypes = serviceType ?? Array.Empty<Type>();
+        public readonly IEnumerable<Type> ServiceTypes = serviceType ?? [];
         public readonly ServiceLifetime Lifetime = lifetime;
         public readonly ServiceRegistrationFlags RegistrationFlags = registrationFlags;
         public readonly object? Tag = tag;

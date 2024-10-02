@@ -6,8 +6,8 @@ namespace Guppy.Core.Common.Collections
     public sealed class DictionaryQueue<TKey, TValue>
         where TKey : notnull
     {
-        private readonly Dictionary<TKey, TValue> _dict = new Dictionary<TKey, TValue>();
-        private readonly Queue<TKey> _queue = new Queue<TKey>();
+        private readonly Dictionary<TKey, TValue> _dict = [];
+        private readonly Queue<TKey> _queue = new();
 
         public TValue this[TKey key] => _dict[key];
 

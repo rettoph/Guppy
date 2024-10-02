@@ -11,7 +11,7 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
     {
         public override ConnectionRequestData Deserialize(NetDataReader reader)
         {
-            ConnectionRequestData instance = new ConnectionRequestData()
+            ConnectionRequestData instance = new()
             {
                 Claims = new Claim[reader.GetInt()]
             };

@@ -127,7 +127,7 @@ namespace Guppy.Core.Resources.Services
 
         private void Load(ResourcePackConfiguration configuration)
         {
-            FileLocation entryLocation = new FileLocation(configuration.EntryDirectory, "pack.json");
+            FileLocation entryLocation = new(configuration.EntryDirectory, "pack.json");
             IFile<ResourcePackEntryConfiguration> entry = _files.Get<ResourcePackEntryConfiguration>(entryLocation);
             DirectoryLocation directory = entry.Source.Directory;
 
@@ -147,7 +147,7 @@ namespace Guppy.Core.Resources.Services
 
         private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
         {
-            FileLocation resourceFileLocation = new FileLocation(directory, resourceFileName);
+            FileLocation resourceFileLocation = new(directory, resourceFileName);
             _logger.Verbose("{ClassName}::{MethodName} - Loading resource file {ResourceFile}, {Localization}", nameof(ResourcePackService), nameof(ImportResourceFile), resourceFileLocation, localization);
 
             IFile<ResourceTypeValues[]> resourceTypeValuesFile = _files.Get<ResourceTypeValues[]>(resourceFileLocation);

@@ -14,7 +14,7 @@ namespace Guppy.Game.MonoGame
 
         public const int BufferSize = 1 << 11;
 
-        public readonly Buffer<MonoGameTerminalLine> Lines = new Buffer<MonoGameTerminalLine>(BufferSize);
+        public readonly Buffer<MonoGameTerminalLine> Lines = new(BufferSize);
         public MonoGameTerminalLineBuilder _currentLine;
         public int FirstLineNumber { get; private set; } = 1;
 

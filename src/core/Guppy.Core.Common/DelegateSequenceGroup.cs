@@ -23,9 +23,9 @@ namespace Guppy.Core.Common
         public DelegateSequenceGroup(Type? delegateType = null)
         {
             _delegateType = delegateType;
-            _grouped = new Dictionary<SequenceGroup<TSequenceGroup>, TDelegate?>();
-            _all = new HashSet<Delegator<TDelegate>>();
-            _orphans = new List<Delegator<TDelegate>>();
+            _grouped = [];
+            _all = [];
+            _orphans = [];
 
             this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, TDelegate?>(_grouped);
             this.Orphans = new ReadOnlyCollection<Delegator<TDelegate>>(_orphans);

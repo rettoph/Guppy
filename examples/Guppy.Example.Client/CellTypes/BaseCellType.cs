@@ -3,15 +3,10 @@ using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.CellTypes
 {
-    internal abstract class BaseCellType : ICellType
+    internal abstract class BaseCellType(int maxInactivityCount = 10) : ICellType
     {
-        protected BaseCellType(int maxInactivityCount = 10)
-        {
-            this.MaxInactivityCount = maxInactivityCount;
-        }
-
         public abstract CellTypeEnum Type { get; }
-        public int MaxInactivityCount { get; set; }
+        public int MaxInactivityCount { get; set; } = maxInactivityCount;
 
         public void Update(ref Cell cell, Grid old, Grid output)
         {

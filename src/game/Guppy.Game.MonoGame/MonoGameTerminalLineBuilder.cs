@@ -14,7 +14,7 @@ namespace Guppy.Game.MonoGame
 
         public IRef<Color> Color = color;
 
-        public StringBuilder Text = new StringBuilder();
+        public StringBuilder Text = new();
 
         public bool TryAppend(char value, [MaybeNullWhen(true)] out MonoGameTerminalLine previousLine)
         {
@@ -49,7 +49,7 @@ namespace Guppy.Game.MonoGame
                 _appendLineNumber = false;
             }
 
-            MonoGameTerminalSegment segment = new MonoGameTerminalSegment(this.Color, this.Text.ToString());
+            MonoGameTerminalSegment segment = new(this.Color, this.Text.ToString());
             _line.Segments.Add(segment);
 
             this.Text.Clear();
@@ -72,7 +72,7 @@ namespace Guppy.Game.MonoGame
 
         private void AppendLineNumber()
         {
-            MonoGameTerminalSegment segment = new MonoGameTerminalSegment(this.Color, $"{_lineNumber++}: ");
+            MonoGameTerminalSegment segment = new(this.Color, $"{_lineNumber++}: ");
             _line.Segments.Add(segment);
         }
     }

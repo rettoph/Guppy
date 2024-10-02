@@ -114,7 +114,7 @@ namespace Guppy.Tests.Core
             Assert.Equal(1, _invocations[methodName]);
         }
 
-        private static readonly Dictionary<string, int> _invocations = new Dictionary<string, int>();
+        private static readonly Dictionary<string, int> _invocations = [];
         private static int IncrementInvocationCount(string method)
         {
             if (_invocations.ContainsKey(method))

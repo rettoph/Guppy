@@ -13,7 +13,7 @@ namespace Guppy.Core.Resources.Services
         private readonly Lazy<IResourcePackService> _packs = packs;
         private readonly Lazy<ILogger> _logger = logger;
 
-        private readonly Dictionary<Guid, IResourceValue> _values = new Dictionary<Guid, IResourceValue>();
+        private readonly Dictionary<Guid, IResourceValue> _values = [];
 
         public void Dispose()
         {

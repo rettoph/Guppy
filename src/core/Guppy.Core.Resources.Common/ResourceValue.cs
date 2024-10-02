@@ -17,29 +17,32 @@ namespace Guppy.Core.Resources.Common
         internal void Refresh(IResourcePackService resourcePackService);
     }
 
-    public struct ResourceValue<T> : IResourceValue, IRef<T>
+    public readonly struct ResourceValue<T> : IResourceValue, IRef<T>
         where T : notnull
     {
         private readonly UnmanagedReference<ResourceValue<T>, List<T>> _value;
 
         public readonly Resource<T> Resource;
 
-        public bool HasValue => _value.Value is not null;
-        public T Value
+        public readonly bool HasValue => _value.Value is not null;
+        public readonly T Value
         {
             get => _value.Value.First();
             set => _value.Value.Insert(0, value);
         }
 
-        Type IRef.Type => this.Resource.Type;
-        IResource IResourceValue.Resource => this.Resource;
-        object IResourceValue.Value => this.Value;
-        object? IRef.Value => this.Value;
+        readonly Type IRef.Type => this.Resource.Type;
+
+        readonly IResource IResourceValue.Resource => this.Resource;
+
+        readonly object IResourceValue.Value => this.Value;
+
+        readonly object? IRef.Value => this.Value;
 
         public ResourceValue(Resource<T> resource) : this(resource, resource.DefaultValue)
         {
         }
-        public ResourceValue(Resource<T> resource, T? value) : this(resource, value is null ? Enumerable.Empty<T>() : value.Yield())
+        public ResourceValue(Resource<T> resource, T? value) : this(resource, value is null ? [] : value.Yield())
         {
         }
         public ResourceValue(Resource<T> resource, IEnumerable<T> values) : this()
@@ -49,22 +52,22 @@ namespace Guppy.Core.Resources.Common
             this.Resource = resource;
         }
 
-        public IEnumerable<T> All()
+        public readonly IEnumerable<T> All()
         {
             return _value.Value;
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
             _value.Dispose();
         }
 
-        IEnumerable<object> IResourceValue.All()
+        readonly IEnumerable<object> IResourceValue.All()
         {
             return this.All().OfType<object>();
         }
 
-        void IResourceValue.Clear()
+        readonly void IResourceValue.Clear()
         {
             _value.Value.Clear();
         }

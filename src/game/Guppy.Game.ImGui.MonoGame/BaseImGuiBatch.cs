@@ -30,7 +30,7 @@ namespace Guppy.Game.ImGui.MonoGame
 
         // Input
         private int _scrollWheelValue;
-        private readonly List<int> _keys = new();
+        private readonly List<int> _keys = [];
         private readonly Queue<char> _inputs;
         private readonly Queue<ImGuiKeyEvent> _keyEvents;
         private readonly Queue<ImGuiMouseButtonEvent> _mouseButtonEvents;
@@ -64,7 +64,7 @@ namespace Guppy.Game.ImGui.MonoGame
 
             this.IO.ConfigFlags |= ImGuiNET.ImGuiConfigFlags.DockingEnable;
 
-            _fonts = new Dictionary<(ResourceValue<TrueTypeFont>, int), Ref<ImFontPtr>>();
+            _fonts = [];
             _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
             _keyEvents = new Queue<ImGuiKeyEvent>();
             _inputs = new Queue<char>();

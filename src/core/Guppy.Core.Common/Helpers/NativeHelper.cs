@@ -26,7 +26,7 @@ namespace Guppy.Core.Common.Helpers
             }
 
             NativeHelper.OSPlatform = null;
-            NativeHelper.Extensions = Array.Empty<string>();
+            NativeHelper.Extensions = [];
         }
 
         public static void Load(string directory, params string[] fileNames)

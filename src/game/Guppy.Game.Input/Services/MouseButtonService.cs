@@ -7,7 +7,7 @@ namespace Guppy.Game.Input.Services
 {
     internal sealed class MouseButtonService : IButtonService
     {
-        private IButton[] _buttons = Array.Empty<IButton>();
+        private IButton[] _buttons = [];
 
         public void Clean(IEnumerable<IButton> buttons)
         {

@@ -37,10 +37,10 @@ namespace Guppy.Core.Network.Identity.Services
 
         public UserService()
         {
-            _idsUsers = new Dictionary<int, User>();
-            _peersUsers = new Dictionary<NetPeer, User>();
+            _idsUsers = [];
+            _peersUsers = [];
 
-            this.Current = this.Create(Array.Empty<Claim>());
+            this.Current = this.Create([]);
         }
 
         public User GetById(int id)
@@ -77,7 +77,7 @@ namespace Guppy.Core.Network.Identity.Services
 
         public User Create(Claim[] claims, params Claim[] additionalClaims)
         {
-            User user = new User(claims.Concat(additionalClaims));
+            User user = new(claims.Concat(additionalClaims));
             user.OnStateChanged += this.HandleUserStateChanged;
 
             return user;

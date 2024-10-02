@@ -7,7 +7,7 @@ namespace Guppy.Core.Common.Utilities
         private readonly nint _ptr;
         private int _length;
 
-        public string Value => Marshal.PtrToStringAnsi(_ptr, _length);
+        public readonly string Value => Marshal.PtrToStringAnsi(_ptr, _length);
 
         public UnmanagedString(string value)
         {

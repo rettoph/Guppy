@@ -37,8 +37,8 @@ namespace Guppy.Core.Common.Collections
 
         public Map()
         {
-            _forward = new Dictionary<T1, T2>();
-            _reverse = new Dictionary<T2, T1>();
+            _forward = [];
+            _reverse = [];
         }
 
         public Map(IEnumerable<T1> first, IEnumerable<T2> second) : this(first.Zip(second))

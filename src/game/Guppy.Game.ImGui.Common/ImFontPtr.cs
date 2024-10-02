@@ -20,5 +20,15 @@ namespace Guppy.Game.ImGui.Common
             IntPtr ptr = this.TTF.Value.GetDataPtr();
             this.Value = atlas.AddFontFromMemoryTTF(ptr, this.TTF.Value.GetDataSize(), this.Size);
         }
+
+        public static bool operator ==(ImFontPtr left, ImFontPtr right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ImFontPtr left, ImFontPtr right)
+        {
+            return !(left == right);
+        }
     }
 }

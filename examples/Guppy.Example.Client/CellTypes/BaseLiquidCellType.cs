@@ -3,12 +3,8 @@ using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.CellTypes
 {
-    internal abstract class BaseLiquidCellType : BaseGravityCellType
+    internal abstract class BaseLiquidCellType(CellTypeEnum displaces) : BaseGravityCellType(displaces)
     {
-        protected BaseLiquidCellType(CellTypeEnum displaces) : base(displaces)
-        {
-        }
-
         protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
         {
             if (base.Step(ref cell, input, output) == CellStepResult.Active)

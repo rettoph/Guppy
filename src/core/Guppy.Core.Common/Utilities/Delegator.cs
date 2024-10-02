@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 
 namespace Guppy.Core.Common.Utilities
 {
-    public struct Delegator<TDelegate>(TDelegate @delegate, MethodInfo method, object? target)
+    public readonly struct Delegator<TDelegate>(TDelegate @delegate, MethodInfo method, object? target)
         where TDelegate : Delegate
     {
         public readonly TDelegate Delegate = @delegate;
@@ -15,14 +15,14 @@ namespace Guppy.Core.Common.Utilities
         {
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return obj is Delegator<TDelegate> delegator &&
                    EqualityComparer<MethodInfo>.Default.Equals(Method, delegator.Method) &&
                    EqualityComparer<object?>.Default.Equals(Target, delegator.Target);
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(Method, Target);
         }
@@ -33,7 +33,7 @@ namespace Guppy.Core.Common.Utilities
 
             MethodInfo delegateInvokeMethod = Delegator<TDelegate>.GetInvokeMethod(delegateType);
 
-            bool requiresCasting = false;
+            bool requiresCasting;
             if (method.ReturnType == delegateInvokeMethod.ReturnType)
             {
                 requiresCasting = false;
@@ -117,7 +117,7 @@ namespace Guppy.Core.Common.Utilities
                 dynamicMethodParameterTypes.Insert(0, target.GetType());
             }
 
-            DynamicMethod dynamicMethod = new DynamicMethod(
+            DynamicMethod dynamicMethod = new(
                 $"DelegateConverter_Dynamic_{method.Name}",
                 delegateInvokeMethod.ReturnType,
                 dynamicMethodParameterTypes.ToArray(),
@@ -185,6 +185,16 @@ namespace Guppy.Core.Common.Utilities
             }
 
             return true;
+        }
+
+        public static bool operator ==(Delegator<TDelegate> left, Delegator<TDelegate> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Delegator<TDelegate> left, Delegator<TDelegate> right)
+        {
+            return !(left == right);
         }
     }
 }

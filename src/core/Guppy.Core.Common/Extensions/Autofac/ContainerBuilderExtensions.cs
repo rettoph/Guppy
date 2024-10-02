@@ -16,7 +16,7 @@ namespace Guppy.Core.Common.Extensions.Autofac
             services.RegisterInstance(new ConfigurationBuilder<T>(builder)).As<ConfigurationBuilder>();
         }
 
-        private static readonly ConditionalWeakTable<ContainerBuilder, HashSet<string>> _tags = new();
+        private static readonly ConditionalWeakTable<ContainerBuilder, HashSet<string>> _tags = [];
         private static HashSet<string> GetTags(ContainerBuilder builder)
         {
             if (_tags.TryGetValue(builder, out var tags))
@@ -24,7 +24,7 @@ namespace Guppy.Core.Common.Extensions.Autofac
                 return tags;
             }
 
-            tags = new HashSet<string>();
+            tags = [];
             _tags.Add(builder, tags);
 
             return tags;

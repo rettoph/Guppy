@@ -2,7 +2,7 @@
 {
     public class ResourcePackEntryConfiguration
     {
-        private static readonly Dictionary<string, string[]> _defaultImport = new Dictionary<string, string[]>();
+        private static readonly Dictionary<string, string[]> _defaultImport = [];
 
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;

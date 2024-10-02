@@ -29,51 +29,52 @@ namespace Guppy.Core.Resources.Common
         }
     }
 
-    public struct SettingValue<T>(Setting<T> setting, T value) : ISettingValue, IRef<T>, IEquatable<SettingValue<T>>, IDisposable
+    public readonly struct SettingValue<T>(Setting<T> setting, T value) : ISettingValue, IRef<T>, IEquatable<SettingValue<T>>, IDisposable
         where T : notnull
     {
-        private readonly UnmanagedReference<SettingValue<T>, T> _value = new UnmanagedReference<SettingValue<T>, T>(value);
+        private readonly UnmanagedReference<SettingValue<T>, T> _value = new(value);
 
         public readonly Setting<T> Setting = setting;
 
-        public T Value
+        public readonly T Value
         {
             get => _value.Value;
             set => _value.SetValue(value);
         }
 
-        Type IRef.Type => this.Setting.Type;
-        object? IRef.Value => this.Value;
+        readonly Type IRef.Type => this.Setting.Type;
 
-        ISetting ISettingValue.Setting => this.Setting;
+        readonly object? IRef.Value => this.Value;
+
+        readonly ISetting ISettingValue.Setting => this.Setting;
 
         public SettingValue(Setting<T> setting) : this(setting, setting.DefaultValue)
         {
 
         }
 
-        public void Dispose()
+        public readonly void Dispose()
         {
             _value.Dispose();
         }
 
-        public override bool Equals(object? obj)
+        public override readonly bool Equals(object? obj)
         {
             return this.Equals((Setting<T>)obj!);
         }
 
-        public bool Equals(SettingValue<T> other)
+        public readonly bool Equals(SettingValue<T> other)
         {
             return this.Value.Equals(other.Value) && this.Setting.Equals(other.Setting);
         }
 
-        public bool Equals(ISettingValue? other)
+        public readonly bool Equals(ISettingValue? other)
         {
             return other is SettingValue<T> casted
                 && this.Equals(casted);
         }
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.Combine(this.Value, this.Setting.GetHashCode());
         }
@@ -81,6 +82,16 @@ namespace Guppy.Core.Resources.Common
         public static implicit operator T(SettingValue<T> setting)
         {
             return setting.Value;
+        }
+
+        public static bool operator ==(SettingValue<T> left, SettingValue<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(SettingValue<T> left, SettingValue<T> right)
+        {
+            return !(left == right);
         }
     }
 }

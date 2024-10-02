@@ -6,7 +6,7 @@ namespace Guppy.Core.Network.Services
 {
     internal sealed class NetGroupService(Func<byte, INetGroup> groupFactory) : INetGroupService
     {
-        private readonly Dictionary<byte, INetGroup> _groups = new Dictionary<byte, INetGroup>();
+        private readonly Dictionary<byte, INetGroup> _groups = [];
         private readonly Func<byte, INetGroup> _groupFactory = groupFactory;
 
         public INetGroup GetById(byte id)

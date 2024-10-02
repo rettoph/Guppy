@@ -10,8 +10,8 @@ namespace Guppy.Core.Messaging.Common.Implementations
 
         public Broker()
         {
-            _subscribers = new List<IBaseSubscriber<TBase>>();
-            _publishers = new Dictionary<Type, Publisher<TBase>>();
+            _subscribers = [];
+            _publishers = [];
         }
 
         public void Publish(in TBase message)

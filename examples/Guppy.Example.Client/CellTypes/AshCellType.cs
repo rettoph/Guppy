@@ -4,12 +4,8 @@ using Guppy.Example.Client.Enums;
 namespace Guppy.Example.Client.CellTypes
 {
     [AutoLoad]
-    internal class AshCellType : BaseGravityCellType
+    internal class AshCellType(int maxInactivityCount = 10) : BaseGravityCellType(CellTypeEnum.Null, maxInactivityCount)
     {
         public override CellTypeEnum Type => CellTypeEnum.Ash;
-
-        public AshCellType(int maxInactivityCount = 10) : base(CellTypeEnum.Null, maxInactivityCount)
-        {
-        }
     }
 }

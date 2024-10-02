@@ -11,7 +11,7 @@ namespace Guppy.Game
     [SceneFilter(null)]
     internal class LogLevelCommand : Message<LogLevelCommand>, ICommand
     {
-        public static LoggingLevelSwitch LoggingLevelSwitch = new LoggingLevelSwitch(LogEventLevel.Verbose);
+        public static LoggingLevelSwitch LoggingLevelSwitch = new(LogEventLevel.Verbose);
 
         [Argument]
         public LogEventLevel? Value { get; set; }

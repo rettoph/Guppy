@@ -39,7 +39,7 @@ namespace Guppy.Core.Network
             _peer = peer;
             _serializers = serializers;
             _serializer = _serializers.Get<T>();
-            _recipients = new List<NetPeer>();
+            _recipients = [];
 
             this.Body = default!;
             this.Group = default!;

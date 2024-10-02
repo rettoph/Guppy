@@ -14,7 +14,7 @@ namespace Guppy.Game.ImGui.Common.Services
         {
             _imgui = imgui;
             _explorers = explorers.OrderBy(x => x.Priority).ToArray();
-            _typeExplorers = new Dictionary<Type, ImGuiObjectExplorer>();
+            _typeExplorers = [];
             _defaultExplorer = defaultExplorer;
 
             foreach (var explorer in _explorers)
@@ -25,7 +25,7 @@ namespace Guppy.Game.ImGui.Common.Services
 
         public TextFilterResult DrawObjectExplorer(object instance, string filter = "", int maxDepth = 5, HashSet<object>? tree = null)
         {
-            return this.DrawObjectExplorer(null, null, instance.GetType(), instance, filter, maxDepth, 0, tree ?? new HashSet<object>());
+            return this.DrawObjectExplorer(null, null, instance.GetType(), instance, filter, maxDepth, 0, tree ?? []);
         }
 
         public TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)

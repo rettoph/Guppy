@@ -49,7 +49,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
                 _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                 _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                ImGuiWindowClassPtr windowClass = new ImGuiWindowClassPtr();
+                ImGuiWindowClassPtr windowClass = new();
                 windowClass.ClassId = _imgui.GetID(nameof(ITerminal));
                 windowClass.DockingAllowUnclassed = false;
 

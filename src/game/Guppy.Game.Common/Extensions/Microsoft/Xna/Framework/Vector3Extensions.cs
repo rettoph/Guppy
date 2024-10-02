@@ -3,6 +3,6 @@
     public static class Vector3Extensions
     {
         public static Vector2 ToVector2(this Vector3 vector3)
-            => new Vector2(vector3.X, vector3.Y);
+            => new(vector3.X, vector3.Y);
     }
 }

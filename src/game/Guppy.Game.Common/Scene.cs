@@ -11,7 +11,7 @@ namespace Guppy.Game.Common
 {
     public abstract class Scene : IScene
     {
-        private static readonly Dictionary<Type, ushort> _count = new Dictionary<Type, ushort>();
+        private static readonly Dictionary<Type, ushort> _count = [];
         private static ulong CalculateId(Scene instance)
         {
             ref ushort count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
@@ -51,7 +51,7 @@ namespace Guppy.Game.Common
             _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>();
             _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>();
 
-            this.Components = Array.Empty<ISceneComponent>();
+            this.Components = [];
 
 
             this.Id = CalculateId(this);

@@ -40,7 +40,7 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
-            FileLocation location = new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
+            FileLocation location = new(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
             _logger.Debug("{ClassName}::{MethodName} - Preparing to import setting values from '{SettingFileLocation}'", nameof(SettingService), nameof(Initialize), location);
 
             _file = _files.Get<IEnumerable<ISettingValue>>(location, true);
@@ -76,7 +76,7 @@ namespace Guppy.Core.Resources.Services
                 return (SettingValue<T>)cache!;
             }
 
-            SettingValue<T> value = new SettingValue<T>(setting);
+            SettingValue<T> value = new(setting);
             cache = value;
 
             return value;
