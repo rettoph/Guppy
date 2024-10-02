@@ -8,7 +8,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Guppy.Core.Network.Identity.Services
+namespace Guppy.Core.Network.Services
 {
     public class UserService : IUserService
     {
@@ -132,7 +132,7 @@ namespace Guppy.Core.Network.Identity.Services
         {
             if (sender is not User user)
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"Sender is {sender.GetType().Name}, {nameof(User)} expected.");
             }
 
             if (value == UserState.Connected)
