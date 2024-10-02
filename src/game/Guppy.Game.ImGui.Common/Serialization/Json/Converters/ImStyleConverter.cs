@@ -1,5 +1,5 @@
 ﻿using Guppy.Game.ImGui.Common.Styling;
-using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
+using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

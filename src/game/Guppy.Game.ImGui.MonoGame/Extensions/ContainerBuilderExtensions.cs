@@ -7,7 +7,7 @@ using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Constants;
 using Guppy.Game.ImGui.Common.Serialization.Json.Converters;
 using Guppy.Game.ImGui.Common.Services;
-using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
+using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using Guppy.Game.ImGui.MonoGame.Common.Messages;
 using Guppy.Game.Input.Common.Enums;
 using Microsoft.Xna.Framework.Input;

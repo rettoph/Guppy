@@ -1,4 +1,4 @@
-﻿namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
+﻿namespace Guppy.Game.ImGui.Common.Styling.StyleValues
 {
     internal abstract class ImStyleValue(string? key) : IDisposable
     {

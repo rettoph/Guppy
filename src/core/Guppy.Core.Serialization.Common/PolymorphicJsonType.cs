@@ -22,4 +22,8 @@ namespace Guppy.Core.Resources.Serialization.Json
         where TInstance : TBase
     {
     }
+
+    public sealed class PolymorphicJsonType<T>(string key) : PolymorphicJsonType(key, typeof(T), typeof(T))
+    {
+    }
 }

@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
+using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using Microsoft.Xna.Framework;
 using System.Diagnostics.CodeAnalysis;
 

@@ -2,7 +2,7 @@
 using Guppy.Core.Serialization.Common.Attributes;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
+namespace Guppy.Game.ImGui.Common.Styling.StyleValues
 {
     [PolymorphicJsonType<ImStyleValue>(nameof(Vector2))]
     internal sealed class ImStyleVarVector2Value(string? key, ImGuiStyleVar var, Vector2 value) : ImStyleValue(key)

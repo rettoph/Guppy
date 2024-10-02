@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Game.ImGui.Common.Styling.StyleValueResources;
+using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using Microsoft.Xna.Framework;
 using System.Text.Json;
 using System.Text.Json.Serialization;

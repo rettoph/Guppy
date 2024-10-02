@@ -29,7 +29,14 @@ namespace Guppy.Core.Serialization.Services
             {
                 success = false;
                 _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}> => '{JSON}'", nameof(JsonSerializationService), nameof(Deserialize), typeof(T).Name, json);
+
+#if DEBUG
+                throw;
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
                 return _defaultInstances.Get<T>();
+#pragma warning restore CS0162 // Unreachable code detected
             }
         }
         public T Deserialize<T>(Stream utf8Json, out bool success)

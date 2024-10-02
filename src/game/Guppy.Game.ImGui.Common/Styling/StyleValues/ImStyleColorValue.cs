@@ -3,7 +3,7 @@ using Guppy.Core.Serialization.Common.Attributes;
 using Guppy.Game.ImGui.Common.Helpers;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.ImGui.Common.Styling.StyleValueResources
+namespace Guppy.Game.ImGui.Common.Styling.StyleValues
 {
     [PolymorphicJsonType<ImStyleValue>(nameof(Microsoft.Xna.Framework.Color))]
     internal sealed class ImStyleColorValue(string? key, ImGuiCol col, IRef<Color> color) : ImStyleValue(key)
