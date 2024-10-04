@@ -42,7 +42,7 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(false, out var sequenceGroup) == false)
+                if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(false, delegator.Target, out var sequenceGroup) == false)
                 {
                     _orphans.Add(delegator);
                     continue;
@@ -78,7 +78,7 @@ namespace Guppy.Core.Common
                     continue;
                 }
 
-                if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(false, out var sequenceGroup) == true)
+                if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(false, delegator.Target, out var sequenceGroup) == true)
                 {
                     ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
                     group = (TDelegate?)Delegate.Remove(group, delegator.Delegate);

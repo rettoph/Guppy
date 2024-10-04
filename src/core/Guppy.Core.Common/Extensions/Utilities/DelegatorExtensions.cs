@@ -10,9 +10,9 @@ namespace Guppy.Core.Common.Extensions.Utilities
             where TDelegate : Delegate
             where TSequenceGroup : unmanaged, Enum
         {
-            return delegators.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>()).OrderBy(x =>
+            return delegators.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>(x.Target)).OrderBy(x =>
             {
-                if (x.Method.TryGetSequenceGroup<TSequenceGroup>(false, out var sequenceGroup))
+                if (x.Method.TryGetSequenceGroup<TSequenceGroup>(false, x.Target, out var sequenceGroup))
                 {
                     return sequenceGroup;
                 }

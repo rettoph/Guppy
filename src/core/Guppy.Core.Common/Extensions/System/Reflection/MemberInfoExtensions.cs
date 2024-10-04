@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Exceptions;
+using Guppy.Core.Common.Interfaces;
 using System.Reflection;
 
 namespace Guppy.Core.Common.Extensions.System.Reflection
@@ -84,12 +85,19 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         public static bool TryGetSequenceGroup<T>(
             this MemberInfo member,
             bool strict,
+            object? instance,
             out SequenceGroup<T> sequenceGroup)
                 where T : unmanaged, Enum
         {
             if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
             {
                 sequenceGroup = sequenceAttributes.Single().Value;
+                return true;
+            }
+
+            if (instance is not null and IRuntimeSequenceGroup<T> runtimeSequenceGroup)
+            {
+                sequenceGroup = runtimeSequenceGroup.Value;
                 return true;
             }
 
@@ -102,10 +110,10 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
             return false;
         }
 
-        public static bool HasSequenceGroup<T>(this MemberInfo member)
+        public static bool HasSequenceGroup<T>(this MemberInfo member, object? instance)
             where T : unmanaged, Enum
         {
-            return member.TryGetSequenceGroup<T>(false, out _);
+            return member.TryGetSequenceGroup<T>(false, instance, out _);
         }
     }
 }
