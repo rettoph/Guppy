@@ -24,7 +24,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         {
             _batch = batch;
             _engine = engine;
-            _imguiActions = new ActionSequenceGroup<ImGuiSequenceGroup, GameTime>();
+            _imguiActions = new ActionSequenceGroup<ImGuiSequenceGroup, GameTime>(true);
             _engine.Scenes.OnSceneCreated += this.HandleSceneCreated;
             _engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
         }

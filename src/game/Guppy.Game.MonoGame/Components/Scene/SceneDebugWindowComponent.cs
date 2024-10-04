@@ -19,7 +19,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
     internal sealed class SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent<IScene>, IImGuiComponent
     {
         private readonly IImGui _imgui = imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new();
+        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new(true);
         private readonly IScene _scene = scene;
         private readonly ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
@@ -40,9 +40,11 @@ namespace Guppy.Game.MonoGame.Components.Scene
 
             using (_imgui.Apply(_debugWindowStyle))
             {
-                ImGuiWindowClassPtr windowClass = new();
-                windowClass.ClassId = _imgui.GetID(nameof(IDebugComponent));
-                windowClass.DockingAllowUnclassed = false;
+                ImGuiWindowClassPtr windowClass = new()
+                {
+                    ClassId = _imgui.GetID(nameof(IDebugComponent)),
+                    DockingAllowUnclassed = false
+                };
 
                 _imgui.SetNextWindowClass(windowClass);
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);

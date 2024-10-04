@@ -17,8 +17,8 @@ namespace Guppy.Game
 
         public GameEngine(GuppyContext context, Action<ContainerBuilder>? builder = null) : base(context, builder)
         {
-            _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>();
-            _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>();
+            _drawComponentsActions = new(true);
+            _updateComponentsActions = new(false);
 
             this.Scenes = this.Resolve<ISceneService>();
         }

@@ -58,7 +58,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            ActionSequenceGroup<InitializeComponentSequenceGroup, IGuppyEngine>.Invoke(_components, this);
+            ActionSequenceGroup<InitializeComponentSequenceGroup, IGuppyEngine>.Invoke(_components, false, this);
         }
 
         public GuppyEngine Start()

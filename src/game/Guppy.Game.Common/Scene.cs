@@ -17,7 +17,7 @@ namespace Guppy.Game.Common
             ref ushort count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
             uint hash = xxHash32.ComputeHash(instance.GetType().AssemblyQualifiedName);
 
-            return (ulong)hash << 32 | (ulong)count++;
+            return (ulong)hash << 32 | count++;
         }
 
         private bool _enabled;
@@ -48,8 +48,8 @@ namespace Guppy.Game.Common
         public Scene()
         {
             _scope = null!;
-            _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>();
-            _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>();
+            _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>(true);
+            _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>(false);
 
             this.Components = [];
 
@@ -72,7 +72,7 @@ namespace Guppy.Game.Common
             this.Components = scope.Resolve<IFiltered<ISceneComponent>>().ToArray();
 
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeComponentSequenceGroup>.Invoke(this.Components, initializeDelegate, [this]);
+            DelegateSequenceGroup<InitializeComponentSequenceGroup>.Invoke(this.Components, initializeDelegate, false, [this]);
 
             _drawComponentsActions.Add(this.Components);
             _updateComponentsActions.Add(this.Components);

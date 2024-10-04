@@ -16,14 +16,14 @@ namespace Guppy.Core.Common
     public sealed class ActionSequenceGroup<TSequenceGroup, TParam> : DelegateSequenceGroup<TSequenceGroup, Action<TParam>>
         where TSequenceGroup : unmanaged, Enum
     {
-        public ActionSequenceGroup() : base()
+        public ActionSequenceGroup(bool sequence) : base(typeof(Action<TParam>), sequence)
         {
         }
-        public ActionSequenceGroup(IEnumerable<Action<TParam>> actions) : base()
+        public ActionSequenceGroup(bool sequence, IEnumerable<Action<TParam>> actions) : base(typeof(Action<TParam>), sequence)
         {
             this.Add(actions);
         }
-        public ActionSequenceGroup(IEnumerable<object> instances) : base()
+        public ActionSequenceGroup(bool sequence, IEnumerable<object> instances) : base(typeof(Action<TParam>), sequence)
         {
             this.Add(instances);
         }
@@ -38,24 +38,42 @@ namespace Guppy.Core.Common
             this.Grouped[sequenceGroup]?.Invoke(param);
         }
 
-        public static void Invoke(IEnumerable<Delegator<Action<TParam>>> delegators, TParam param)
+        /// <summary>
+        /// Sequence then invoke all delegators.
+        /// </summary>
+        /// <param name="delegators">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<Delegator<Action<TParam>>> delegators, bool sequence, TParam param)
         {
-            foreach (Delegator<Action<TParam>> delegator in delegators.Sequence<Action<TParam>, TSequenceGroup>())
+            foreach (Delegator<Action<TParam>> delegator in delegators.OrderBySequenceGroup<Action<TParam>, TSequenceGroup>(sequence))
             {
                 delegator.Delegate(param);
             }
         }
 
-        public static void Invoke(IEnumerable<Action<TParam>> actions, TParam param)
+        /// <summary>
+        /// Sequence then invoke all actions.
+        /// </summary>
+        /// <param name="actions">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<Action<TParam>> actions, bool sequence, TParam param)
         {
             IEnumerable<Delegator<Action<TParam>>> delegators = actions.Select(x => new Delegator<Action<TParam>>(x));
-            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(delegators, param);
+            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(delegators, sequence, param);
         }
 
-        public static void Invoke(IEnumerable<object> instances, TParam param)
+        /// <summary>
+        /// Sequence then invoke all matching delegates within a collection of instances.
+        /// </summary>
+        /// <param name="instances">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<object> instances, bool sequence, TParam param)
         {
             IEnumerable<Delegator<Action<TParam>>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<Action<TParam>>());
-            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(delegators, param);
+            ActionSequenceGroup<TSequenceGroup, TParam>.Invoke(delegators, sequence, param);
         }
     }
 }

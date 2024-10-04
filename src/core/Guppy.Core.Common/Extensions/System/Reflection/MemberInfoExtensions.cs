@@ -84,14 +84,14 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
 
         public static bool TryGetSequenceGroup<T>(
             this MemberInfo member,
-            bool strict,
             object? instance,
+            bool strict,
             out SequenceGroup<T> sequenceGroup)
                 where T : unmanaged, Enum
         {
-            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceAttributes))
+            if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceGroupAttributes))
             {
-                sequenceGroup = sequenceAttributes.Single().Value;
+                sequenceGroup = sequenceGroupAttributes.Single().Value;
                 return true;
             }
 
@@ -101,7 +101,7 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
                 return true;
             }
 
-            if (strict == true || member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out _))
+            if (strict && member.TryGetAllCustomAttributes<RequireSequenceGroupAttribute<T>>(true, out _))
             {
                 throw new SequenceGroupException(typeof(T), member);
             }
@@ -110,10 +110,63 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
             return false;
         }
 
+        public static SequenceGroup<T> GetSequenceGroup<T>(
+            this MemberInfo member,
+            object? instance)
+                where T : unmanaged, Enum
+        {
+            if (member.TryGetSequenceGroup<T>(instance, true, out var sequenceGroup) == true)
+            {
+                return sequenceGroup;
+            }
+
+            throw new KeyNotFoundException();
+        }
+
         public static bool HasSequenceGroup<T>(this MemberInfo member, object? instance)
             where T : unmanaged, Enum
         {
-            return member.TryGetSequenceGroup<T>(false, instance, out _);
+            return member.TryGetSequenceGroup<T>(instance, false, out _);
+        }
+
+        public static int GetSequence<T>(
+            this MemberInfo member,
+            object? instance)
+                where T : unmanaged, Enum
+        {
+            if (member.TryGetAllCustomAttributes<SequenceAttribute<T>>(true, out var sequenceGroupOrderAttributes))
+            {
+                return sequenceGroupOrderAttributes.Single().Value;
+            }
+
+            if (instance is not null and IRuntimeSequence<T> runtimeSequenceGroupOrder)
+            {
+                return runtimeSequenceGroupOrder.Value;
+            }
+
+            // Default order
+            return 0;
+        }
+
+        public static bool HasSequence<T>(this MemberInfo member, object? instance)
+            where T : unmanaged, Enum
+        {
+            if (member.HasSequenceGroup<T>(instance) == false)
+            {
+                return false;
+            }
+
+            if (member.TryGetAllCustomAttributes<SequenceAttribute<T>>(true, out var sequenceGroupOrderAttributes))
+            {
+                return true;
+            }
+
+            if (instance is not null and IRuntimeSequence<T> runtimeSequenceGroupOrder)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
