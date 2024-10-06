@@ -105,5 +105,57 @@ namespace ConsoleApplication1
                     MetadataReference.CreateFromFile(typeof(RequireSequenceGroupAttribute<>).Assembly.Location),
                 ]);
         }
+
+        [Fact]
+        public async Task RequireSequenceGroup_IRuntimeSequenceGroupImplementation()
+        {
+            var test = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Interfaces;
+using Guppy.Core.Common;
+
+namespace ConsoleApplication1
+{
+    enum TestSequenceGroup
+    {
+        Default
+    }
+
+    interface ITestInterface
+    {
+        [RequireSequenceGroup<TestSequenceGroup>]
+        void SomeFunction();
+    }
+
+    abstract class BaseTestClass : ITestInterface, IRuntimeSequenceGroup<TestSequenceGroup>
+    {
+        public SequenceGroup<TestSequenceGroup> Value { get; } = default!;
+
+        public abstract void SomeFunction();
+    }
+
+    class TestClass : BaseTestClass
+    {   
+        public override void SomeFunction()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}";
+
+            await VerifyCS.VerifyCodeFixAsync(
+                source: test,
+                expected: [],
+                fixedSource: null,
+                additionalReferences: [
+                    MetadataReference.CreateFromFile(typeof(RequireSequenceGroupAttribute<>).Assembly.Location),
+                ]);
+        }
     }
 }

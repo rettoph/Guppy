@@ -54,6 +54,10 @@ namespace Guppy.Analyzer.Core.Common
             {
                 return;
             }
+            if (methodSymbol.IsOverride == true && containingTypeSymbol.IsAbstract == true)
+            {
+                return;
+            }
 
             List<string> namedSequenceGroups = new List<string>();
             List<string> requiredSequenceGroups = new List<string>();
@@ -69,6 +73,13 @@ namespace Guppy.Analyzer.Core.Common
             ImmutableArray<INamedTypeSymbol> interfaceSymbols = containingTypeSymbol.AllInterfaces;
             foreach (INamedTypeSymbol interfaceSymbol in interfaceSymbols)
             {
+                if (interfaceSymbol.Name == "IRuntimeSequenceGroup" && interfaceSymbol.ContainingNamespace.ToString() == "Guppy.Core.Common.Interfaces")
+                {
+                    ITypeSymbol runtimeTypeSymbol = interfaceSymbol.TypeArguments[0];
+                    string runtimeSequenceGroup = $"{runtimeTypeSymbol.ContainingNamespace}.{runtimeTypeSymbol.Name}";
+                    namedSequenceGroups.Add(runtimeSequenceGroup);
+                }
+
                 foreach (ISymbol interfaceMemberSymbol in interfaceSymbol.GetMembers(methodSymbol.Name))
                 {
                     if (interfaceMemberSymbol is IMethodSymbol interfaceMethodSymbol == false)
