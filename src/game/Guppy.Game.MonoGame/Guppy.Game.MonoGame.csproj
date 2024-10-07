@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
     <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
+    <ProjectReference Include="..\Guppy.Game.Graphics.MonoGame\Guppy.Game.Graphics.MonoGame.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui.MonoGame\Guppy.Game.ImGui.MonoGame.csproj" />
     <ProjectReference Include="..\Guppy.Game.Input\Guppy.Game.Input.csproj" />
     <ProjectReference Include="..\Guppy.Game.MonoGame.Common\Guppy.Game.MonoGame.Common.csproj" />

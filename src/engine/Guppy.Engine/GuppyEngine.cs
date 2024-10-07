@@ -104,6 +104,10 @@ namespace Guppy.Engine
 
                 // Construct the engine container
                 ContainerBuilder engineBuilder = new();
+
+                // Run any custom builder actions
+                builder?.Invoke(engineBuilder);
+
                 engineBuilder.RegisterCoreServices(context, assemblies);
                 engineBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
 
@@ -116,9 +120,6 @@ namespace Guppy.Engine
                         attribute.TryConfigure(boot, engineBuilder, type);
                     }
                 }
-
-                // Run any custom builder actions
-                builder?.Invoke(engineBuilder);
 
                 IContainer container = engineBuilder.Build();
                 StaticInstance<IContainer>.Initialize(container, true);

@@ -21,8 +21,8 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameMonoGameImGuiServices), builder =>
             {
-                string nativesDirectory = DirectoryHelper.Combine(DirectoryHelper.GetEntryDirectory(), NativeConstants.Directory);
-                NativeHelper.Load(nativesDirectory, NativeConstants.cImGui, NativeConstants.cImPlot);
+                string nativesDirectory = DirectoryHelper.Combine(DirectoryHelper.GetEntryDirectory(), ImGuiNatives.Directory);
+                NativeHelper.Load(nativesDirectory, ImGuiNatives.cImGui, ImGuiNatives.cImPlot);
 
                 builder.RegisterType<MonoGameImGuiBatch>().AsImplementedInterfaces().SingleInstance();
                 builder.RegisterType<ImGui>().As<IImGui>().SingleInstance();
@@ -36,38 +36,38 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
                 builder.RegisterType<ImStyleColorValueConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ImStyleFontValueConverter>().As<JsonConverter>().SingleInstance();
 
-                AddImGuiKeyEvent(builder, InputConstants.UI_Tab, Keys.Tab, ImGuiKey.Tab);
-                AddImGuiKeyEvent(builder, InputConstants.UI_LeftArrow, Keys.Left, ImGuiKey.LeftArrow);
-                AddImGuiKeyEvent(builder, InputConstants.UI_RightArrow, Keys.Right, ImGuiKey.RightArrow);
-                AddImGuiKeyEvent(builder, InputConstants.UI_UpArrow, Keys.Up, ImGuiKey.UpArrow);
-                AddImGuiKeyEvent(builder, InputConstants.UI_DownArrow, Keys.Down, ImGuiKey.DownArrow);
-                AddImGuiKeyEvent(builder, InputConstants.UI_PageUp, Keys.PageUp, ImGuiKey.PageUp);
-                AddImGuiKeyEvent(builder, InputConstants.UI_PageDown, Keys.PageDown, ImGuiKey.PageDown);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Home, Keys.Home, ImGuiKey.Home);
-                AddImGuiKeyEvent(builder, InputConstants.UI_End, Keys.End, ImGuiKey.End);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Delete, Keys.Delete, ImGuiKey.Delete);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Backspace, Keys.Back, ImGuiKey.Backspace);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Enter, Keys.Enter, ImGuiKey.Enter);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Escape, Keys.Escape, ImGuiKey.Escape);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Space, Keys.Space, ImGuiKey.Space);
-                AddImGuiKeyEvent(builder, InputConstants.UI_A, Keys.A, ImGuiKey.A);
-                AddImGuiKeyEvent(builder, InputConstants.UI_C, Keys.C, ImGuiKey.C);
-                AddImGuiKeyEvent(builder, InputConstants.UI_V, Keys.V, ImGuiKey.V);
-                AddImGuiKeyEvent(builder, InputConstants.UI_X, Keys.X, ImGuiKey.X);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Y, Keys.Y, ImGuiKey.Y);
-                AddImGuiKeyEvent(builder, InputConstants.UI_Z, Keys.Z, ImGuiKey.Z);
-                AddImGuiKeyEvent(builder, InputConstants.UI_LeftShift, Keys.LeftShift, ImGuiKey.LeftShift);
-                AddImGuiKeyEvent(builder, InputConstants.UI_RightShift, Keys.RightShift, ImGuiKey.RightShift);
-                AddImGuiKeyEvent(builder, InputConstants.UI_LeftCtrl, Keys.LeftControl, ImGuiKey.LeftCtrl);
-                AddImGuiKeyEvent(builder, InputConstants.UI_RightCtrl, Keys.RightControl, ImGuiKey.RightCtrl);
-                AddImGuiKeyEvent(builder, InputConstants.UI_LeftAlt, Keys.LeftAlt, ImGuiKey.LeftAlt);
-                AddImGuiKeyEvent(builder, InputConstants.UI_RightAlt, Keys.RightAlt, ImGuiKey.RightAlt);
-                AddImGuiKeyEvent(builder, InputConstants.UI_LeftSuper, Keys.LeftWindows, ImGuiKey.LeftSuper);
-                AddImGuiKeyEvent(builder, InputConstants.UI_RightSuper, Keys.RightWindows, ImGuiKey.RightSuper);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Tab, Keys.Tab, ImGuiKey.Tab);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_LeftArrow, Keys.Left, ImGuiKey.LeftArrow);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_RightArrow, Keys.Right, ImGuiKey.RightArrow);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_UpArrow, Keys.Up, ImGuiKey.UpArrow);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_DownArrow, Keys.Down, ImGuiKey.DownArrow);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_PageUp, Keys.PageUp, ImGuiKey.PageUp);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_PageDown, Keys.PageDown, ImGuiKey.PageDown);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Home, Keys.Home, ImGuiKey.Home);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_End, Keys.End, ImGuiKey.End);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Delete, Keys.Delete, ImGuiKey.Delete);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Backspace, Keys.Back, ImGuiKey.Backspace);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Enter, Keys.Enter, ImGuiKey.Enter);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Escape, Keys.Escape, ImGuiKey.Escape);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Space, Keys.Space, ImGuiKey.Space);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_A, Keys.A, ImGuiKey.A);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_C, Keys.C, ImGuiKey.C);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_V, Keys.V, ImGuiKey.V);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_X, Keys.X, ImGuiKey.X);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Y, Keys.Y, ImGuiKey.Y);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_Z, Keys.Z, ImGuiKey.Z);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_LeftShift, Keys.LeftShift, ImGuiKey.LeftShift);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_RightShift, Keys.RightShift, ImGuiKey.RightShift);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_LeftCtrl, Keys.LeftControl, ImGuiKey.LeftCtrl);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_RightCtrl, Keys.RightControl, ImGuiKey.RightCtrl);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_LeftAlt, Keys.LeftAlt, ImGuiKey.LeftAlt);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_RightAlt, Keys.RightAlt, ImGuiKey.RightAlt);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_LeftSuper, Keys.LeftWindows, ImGuiKey.LeftSuper);
+                AddImGuiKeyEvent(builder, ImGuiInputs.UI_RightSuper, Keys.RightWindows, ImGuiKey.RightSuper);
 
-                AddImGuiMouseButtonEvent(builder, InputConstants.UI_MouseButton01, CursorButtons.Left, 0);
-                AddImGuiMouseButtonEvent(builder, InputConstants.UI_MouseButton02, CursorButtons.Middle, 1);
-                AddImGuiMouseButtonEvent(builder, InputConstants.UI_MouseButton03, CursorButtons.Right, 2);
+                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton01, CursorButtons.Left, 0);
+                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton02, CursorButtons.Middle, 1);
+                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton03, CursorButtons.Right, 2);
             });
         }
 

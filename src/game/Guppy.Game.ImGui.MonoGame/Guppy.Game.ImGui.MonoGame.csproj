@@ -9,6 +9,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
+    <ProjectReference Include="..\Guppy.Game.Graphics.Common\Guppy.Game.Graphics.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game.ImGui.Common\Guppy.Game.ImGui.Common.csproj" />
   </ItemGroup>
 

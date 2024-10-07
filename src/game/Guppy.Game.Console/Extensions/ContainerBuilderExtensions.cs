@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Game.Extensions;
+using Guppy.Game.Graphics.NotImplemented.Extensions;
 
 namespace Guppy.Game.Console.Extensions
 {
@@ -10,7 +11,7 @@ namespace Guppy.Game.Console.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterConsoleGameServices), builder =>
             {
-                builder.RegisterCommonGameServices();
+                builder.RegisterCommonGameServices().RegisterNotImplementedGraphicsServices();
                 builder.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
             });
         }

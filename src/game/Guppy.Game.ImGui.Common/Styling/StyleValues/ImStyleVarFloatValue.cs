@@ -10,12 +10,12 @@ namespace Guppy.Game.ImGui.Common.Styling.StyleValues
 
         public override void Pop()
         {
-            ImGuiNET.ImGui.PopStyleVar();
+            ImGuiNet.PopStyleVar();
         }
 
         public override void Push()
         {
-            ImGuiNET.ImGui.PushStyleVar(Property, Value);
+            ImGuiNet.PushStyleVar(Property, Value);
         }
     }
 }

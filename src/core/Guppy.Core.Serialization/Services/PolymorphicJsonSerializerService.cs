@@ -19,9 +19,10 @@ namespace Guppy.Core.Serialization.Services
         public TBase Deserialize(string key, ref JsonElement element, JsonSerializerOptions options, out Type type)
         {
             type = _types[key];
-            TBase instance = (TBase)JsonSerializer.Deserialize(element, type, options)!;
+            object? instance = JsonSerializer.Deserialize(element, type, options);
+            TBase casted = (TBase?)instance ?? throw new NotImplementedException();
 
-            return instance;
+            return casted;
         }
 
         public TBase Deserialize(string key, ref Utf8JsonReader reader, JsonSerializerOptions options, out Type type)

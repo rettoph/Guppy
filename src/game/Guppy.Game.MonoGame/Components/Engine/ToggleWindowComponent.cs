@@ -5,8 +5,8 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Input.Common;
+using Guppy.Game.Input.Common.Messages;
 using Guppy.Game.MonoGame.Components.Scene;
-using Guppy.Game.MonoGame.Messages;
 
 namespace Guppy.Game.MonoGame.Components.Engine
 {
