@@ -7,7 +7,7 @@ using Guppy.Game.Graphics.Common.Constants;
 
 namespace Guppy.Game.Graphics.Common.Attributes
 {
-    public class SceneHasDebugEnabledFilterAttribute(bool value = true) : GuppyConfigurationAttribute
+    public class GraphicsEnabledAttribute(bool value = true) : GuppyConfigurationAttribute
     {
         public readonly bool Value = value;
 
@@ -15,7 +15,7 @@ namespace Guppy.Game.Graphics.Common.Attributes
         {
             builder.RegisterFilter(new StateServiceFilter<bool>(
                 serviceType: classType,
-                key: StateKey<bool>.Create(SceneConfigurationKeys.SceneHasDebugEnabled),
+                key: StateKey<bool>.Create(GraphicsStateKeys.GraphicsEnabled),
                 value: this.Value));
         }
     }

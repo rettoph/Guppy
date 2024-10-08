@@ -1,9 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Guppy.Game.Graphics.Common.Interfaces;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Game.Graphics.Common
 {
-    public interface IGraphicsDevice
+    public interface IGraphicsDevice : IGraphicsObject<GraphicsDevice>
     {
-        GraphicsDevice Value { get; }
     }
 }

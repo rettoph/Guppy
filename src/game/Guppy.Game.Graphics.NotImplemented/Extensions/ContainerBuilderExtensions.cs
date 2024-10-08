@@ -17,11 +17,11 @@ namespace Guppy.Game.Graphics.NotImplemented.Extensions
                 builder.RegisterType<NotImplementedEffectCodeResourceType>().As<IResourceType>().SingleInstance();
                 builder.RegisterType<NotImplementedSpriteFontResourceType>().As<IResourceType>().SingleInstance();
 
-                builder.RegisterType<NotImplementedCamera>().As<IResourceType>().SingleInstance();
-                builder.RegisterType<NotImplementedContentManager>().As<IResourceType>().SingleInstance();
-                builder.RegisterType<NotImplementedGameWindow>().As<IResourceType>().SingleInstance();
-                builder.RegisterType<NotImplementedGraphicsDevice>().As<IResourceType>().SingleInstance();
-                builder.RegisterType<NotImplementedScreen>().As<IResourceType>().SingleInstance();
+                builder.RegisterType<NotImplementedCamera>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedContentManager>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedGameWindow>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedGraphicsDevice>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedScreen>().AsImplementedInterfaces().SingleInstance();
             });
         }
     }

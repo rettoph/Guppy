@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Attributes;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
@@ -15,6 +17,14 @@ namespace Guppy.Game
         internal SceneConfiguration()
         {
             _values = [];
+
+            if (this.Type.TryGetAllCustomAttributes<SetSceneConfigurationAttribute>(true, out var attributes))
+            {
+                foreach (var attribute in attributes)
+                {
+                    attribute.SetValue(this);
+                }
+            }
         }
 
         public ISceneConfiguration Set<T>(string key, T value)
