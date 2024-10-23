@@ -5,6 +5,7 @@ using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Constants;
+using Guppy.Core.Resources.Common.Interfaces;
 using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Core.Resources.Common.Services;
 using Serilog;
@@ -27,6 +28,7 @@ namespace Guppy.Core.Resources.Services
         public ResourcePackService(
             IFileService files,
             IFiltered<ResourcePackConfiguration> packs,
+            IFiltered<IRuntimeResourceValue> runtimeResourceValues,
             IResourceTypeService resourceTypes,
             Lazy<ISettingService> settings,
             ILogger logger)
@@ -37,10 +39,15 @@ namespace Guppy.Core.Resources.Services
             _logger = logger;
             _packs = new Dictionary<Guid, ResourcePack>();
             _settings = settings;
-            _runtimeResourcePack = new ResourcePack(null, default);
+            _runtimeResourcePack = new ResourcePack(Guid.Empty, "Runtime Resources", DirectoryLocation.CurrentDirectory());
 
             _configuration.Value = _configuration.Value.AddRange(packs);
             _files.Save(_configuration);
+
+            foreach (IRuntimeResourceValue runtimeResourceValue in runtimeResourceValues)
+            {
+                runtimeResourceValue.AddToPack(_runtimeResourcePack);
+            }
         }
 
         public Task StartAsync(CancellationToken cancellation)
@@ -72,6 +79,8 @@ namespace Guppy.Core.Resources.Services
                 this.Load(packConfiguration);
             }
 
+            // Add the runtime resource pack last
+            _packs.Add(_runtimeResourcePack.Id, _runtimeResourcePack);
             _initialized = true;
 
             _logger.Debug("{ClassName}::{MethodName} - Done. Imported ({Count}) resource packs", nameof(ResourcePackService), nameof(Initialize), _packs.Count);
@@ -120,7 +129,8 @@ namespace Guppy.Core.Resources.Services
             if (!_packs.TryGetValue(entry.Value.Id, out var pack))
             {
                 _packs[entry.Value.Id] = pack = new ResourcePack(
-                    entry: entry,
+                    id: entry.Value.Id,
+                    name: entry.Value.Name,
                     rootDirectory: entry.Source.Directory);
             }
 

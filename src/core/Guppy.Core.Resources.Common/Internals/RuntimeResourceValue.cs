@@ -8,5 +8,10 @@ namespace Guppy.Core.Resources.Common.Internals
         public Resource<T> Resource { get; } = resource;
 
         public T Value { get; } = value;
+
+        public void AddToPack(IResourcePack resourcePack)
+        {
+            resourcePack.Add(this.Resource, this.Value);
+        }
     }
 }
