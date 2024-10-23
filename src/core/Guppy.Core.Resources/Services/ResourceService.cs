@@ -10,7 +10,7 @@ namespace Guppy.Core.Resources.Services
     internal class ResourceService(Lazy<IResourcePackService> packs, Lazy<ILogger> logger) : IHostedService, IResourceService, IDisposable
     {
         private bool _initialized;
-        private readonly Lazy<IResourcePackService> _packs = packs;
+        private readonly Lazy<IResourcePackService> _resourcePackService = packs;
         private readonly Lazy<ILogger> _logger = logger;
 
         private readonly Dictionary<Guid, IResourceValue> _values = [];
@@ -44,13 +44,13 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
-            _packs.Value.Initialize();
+            _resourcePackService.Value.Initialize();
 
             _logger.Value.Debug("{ClassName}::{MethodName} - Preparing to build resource value dictionary", nameof(ResourceService), nameof(Initialize));
 
-            foreach (IResource resource in _packs.Value.GetDefinedResources())
+            foreach (IResource resource in _resourcePackService.Value.GetDefinedResources())
             {
-                this.CacheGetOrAddValues(resource).Refresh(_packs.Value);
+                this.CacheGetOrAddValues(resource).Refresh(_resourcePackService.Value);
             }
 
             _logger.Value.Debug("{ClassName}::{MethodName} - Done. Found ({Count}) resources", nameof(ResourceService), nameof(Initialize), _values.Count);
@@ -89,7 +89,7 @@ namespace Guppy.Core.Resources.Services
                 return cache;
             }
 
-            cache.Refresh(_packs.Value);
+            cache.Refresh(_resourcePackService.Value);
             return cache;
         }
 

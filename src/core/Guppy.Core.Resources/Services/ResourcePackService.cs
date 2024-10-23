@@ -20,6 +20,7 @@ namespace Guppy.Core.Resources.Services
         private readonly IResourceTypeService _resourceTypes;
         private readonly ILogger _logger;
         private readonly Lazy<ISettingService> _settings;
+        private readonly ResourcePack _runtimeResourcePack;
 
         private SettingValue<string> _localization;
 
@@ -36,6 +37,7 @@ namespace Guppy.Core.Resources.Services
             _logger = logger;
             _packs = new Dictionary<Guid, ResourcePack>();
             _settings = settings;
+            _runtimeResourcePack = new ResourcePack(null, default);
 
             _configuration.Value = _configuration.Value.AddRange(packs);
             _files.Save(_configuration);
@@ -75,12 +77,12 @@ namespace Guppy.Core.Resources.Services
             _logger.Debug("{ClassName}::{MethodName} - Done. Imported ({Count}) resource packs", nameof(ResourcePackService), nameof(Initialize), _packs.Count);
         }
 
-        public IEnumerable<ResourcePack> GetAll()
+        public IEnumerable<IResourcePack> GetAll()
         {
             return _packs.Values;
         }
 
-        public ResourcePack GetById(Guid id)
+        public IResourcePack GetById(Guid id)
         {
             return _packs[id];
         }

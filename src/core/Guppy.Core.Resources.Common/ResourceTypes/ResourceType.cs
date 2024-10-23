@@ -12,7 +12,7 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
 
         public virtual string Name => this.Type.Name;
 
-        public bool TryResolve(ResourcePack pack, string resourceName, string localization, JsonElement json)
+        public bool TryResolve(IResourcePack pack, string resourceName, string localization, JsonElement json)
         {
             Resource<T> resource = Resource<T>.Get(resourceName);
 

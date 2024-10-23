@@ -10,6 +10,6 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
         Type Type { get; }
         string Name { get; }
 
-        bool TryResolve(ResourcePack pack, string resource, string localization, JsonElement json);
+        bool TryResolve(IResourcePack pack, string resource, string localization, JsonElement json);
     }
 }

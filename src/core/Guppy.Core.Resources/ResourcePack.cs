@@ -1,18 +1,19 @@
 ﻿using Guppy.Core.Files.Common;
+using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Constants;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Core.Resources.Common
+namespace Guppy.Core.Resources
 {
-    public sealed class ResourcePack
+    public sealed class ResourcePack : IResourcePack
     {
         private readonly IFile<ResourcePackEntryConfiguration> _entry;
 
         public Guid Id => _entry.Value.Id;
         public string Name => _entry.Value.Name;
-        public readonly DirectoryLocation RootDirectory;
+        public DirectoryLocation RootDirectory { get; }
 
         private readonly Dictionary<IResource, Dictionary<string, object>> _values;
 
