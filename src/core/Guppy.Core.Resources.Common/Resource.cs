@@ -1,105 +1,90 @@
-﻿using Guppy.Core.Common.Utilities;
-using Guppy.Core.Resources.Common.Extensions.System;
-using System.Runtime.InteropServices;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Utilities;
+using Guppy.Core.Resources.Common.Services;
 
 namespace Guppy.Core.Resources.Common
 {
-    public interface IResource : IEquatable<IResource>, IDisposable
+    public interface IResource : IRef, IDisposable
     {
-        Guid Id { get; }
-        string Name { get; }
-        Type Type { get; }
+        IResourceKey Key { get; }
 
-        internal IResourceValue CreateValue();
+        new object Value { get; }
+
+        IEnumerable<object> All();
+
+        void Clear();
+
+        internal void Refresh(IResourcePackService resourcePackService);
     }
 
-    public readonly struct Resource<T> : IResource, IEquatable<Resource<T>>
+    public readonly struct Resource<T> : IResource, IRef<T>
         where T : notnull
     {
-        private readonly UnmanagedReference<IResource, string> _name;
-        private readonly UnmanagedReference<Setting<T>, T?> _default;
+        private readonly UnmanagedReference<Resource<T>, List<T>> _value;
 
-        public readonly Guid Id;
-        public readonly string Name => _name.Value;
-        public readonly Type Type => typeof(T);
-        public readonly T? DefaultValue => _default.Value;
+        public readonly ResourceKey<T> Key;
 
-        readonly Guid IResource.Id => this.Id;
-
-        readonly string IResource.Name => this.Name;
-
-        private unsafe Resource(string name, T? defaultValue)
+        public readonly bool HasValue => _value.Value is not null && _value.Value.Count > 0;
+        public readonly T Value
         {
-            _name = new UnmanagedReference<IResource, string>(name);
-            _default = new UnmanagedReference<Setting<T>, T?>(defaultValue);
+            get => _value.Value.First();
+            set => _value.Value.Insert(0, value);
+        }
 
-            this.Id = name.xxHash128();
+        readonly Type IRef.Type => this.Key.Type;
+
+        readonly IResourceKey IResource.Key => this.Key;
+
+        readonly object IResource.Value => this.Value;
+
+        readonly object? IRef.Value => this.Value;
+
+        public Resource(ResourceKey<T> key) : this(key, key.DefaultValue)
+        {
+        }
+        public Resource(ResourceKey<T> key, T? value) : this(key, value is null ? [] : value.Yield())
+        {
+        }
+        public Resource(ResourceKey<T> key, IEnumerable<T> values) : this()
+        {
+            _value = new UnmanagedReference<Resource<T>, List<T>>(values.ToList());
+
+            this.Key = key;
+        }
+
+        public readonly IEnumerable<T> All()
+        {
+            return _value.Value;
         }
 
         public readonly void Dispose()
         {
-            StaticCollection<IResource>.Remove(this, false);
-
-            _cache.Remove(this.Name);
-
-            _name.Dispose();
+            _value.Dispose();
         }
 
-        public override readonly bool Equals(object? obj)
+        readonly IEnumerable<object> IResource.All()
         {
-            return Equals((Resource<T>)obj!);
+            return this.All().OfType<object>();
         }
 
-        public readonly bool Equals(Resource<T> other)
+        readonly void IResource.Clear()
         {
-            return Id.Equals(other.Id);
-
+            _value.Value.Clear();
         }
 
-        public readonly bool Equals(IResource? other)
+        void IResource.Refresh(IResourcePackService resourcePackService)
         {
-            return other is Resource<T> casted
-                && this.Equals(casted);
-        }
+            _value.Value.Clear();
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(Id);
-        }
-
-        public static bool operator ==(Resource<T> left, Resource<T> right)
-        {
-            return EqualityComparer<Resource<T>>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(Resource<T> left, Resource<T> right)
-        {
-            return !(left == right);
-        }
-
-        private static readonly Dictionary<string, Resource<T>> _cache = [];
-        public static Resource<T> Get(string name, T? defaultValue = default)
-        {
-            ref Resource<T> resource = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, name, out bool exists);
-            if (exists)
+            foreach (T value in resourcePackService.GetDefinedValues(this.Key))
             {
-                return resource;
+                this.Value = value;
             }
-
-            resource = new Resource<T>(name, defaultValue);
-            StaticCollection<IResource>.Add(resource);
-
-            return resource;
         }
 
-        public static IEnumerable<Resource<T>> GetAll()
+        public static implicit operator T(Resource<T> resource)
         {
-            return _cache.Values;
-        }
-
-        readonly IResourceValue IResource.CreateValue()
-        {
-            return new ResourceValue<T>(this);
+            return resource.Value;
         }
     }
 }

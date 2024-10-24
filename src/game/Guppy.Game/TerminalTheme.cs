@@ -9,13 +9,13 @@ namespace Guppy.Game
 {
     public class TerminalTheme(IResourceService resourceService) : ITerminalTheme
     {
-        private readonly ResourceValue<Color> _verbose = resourceService.GetValue(GuppyResources.Colors.TerminalVerbose);
-        private readonly ResourceValue<Color> _debug = resourceService.GetValue(GuppyResources.Colors.TerminalDebug);
-        private readonly ResourceValue<Color> _information = resourceService.GetValue(GuppyResources.Colors.TerminalInformation);
-        private readonly ResourceValue<Color> _warning = resourceService.GetValue(GuppyResources.Colors.TerminalWarning);
-        private readonly ResourceValue<Color> _error = resourceService.GetValue(GuppyResources.Colors.TerminalError);
-        private readonly ResourceValue<Color> _fatal = resourceService.GetValue(GuppyResources.Colors.TerminalFatal);
-        private readonly ResourceValue<Color> _default = resourceService.GetValue(GuppyResources.Colors.TerminalDefault);
+        private readonly Resource<Color> _verbose = resourceService.Get(GuppyResources.Colors.TerminalVerbose);
+        private readonly Resource<Color> _debug = resourceService.Get(GuppyResources.Colors.TerminalDebug);
+        private readonly Resource<Color> _information = resourceService.Get(GuppyResources.Colors.TerminalInformation);
+        private readonly Resource<Color> _warning = resourceService.Get(GuppyResources.Colors.TerminalWarning);
+        private readonly Resource<Color> _error = resourceService.Get(GuppyResources.Colors.TerminalError);
+        private readonly Resource<Color> _fatal = resourceService.Get(GuppyResources.Colors.TerminalFatal);
+        private readonly Resource<Color> _default = resourceService.Get(GuppyResources.Colors.TerminalDefault);
 
         public IRef<Color> Get(LogEventLevel level)
         {

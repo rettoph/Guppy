@@ -19,7 +19,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
     internal class EngineDebugWindowComponent(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService) : IEngineComponent, IImGuiComponent
     {
         private readonly IGameEngine _engine = engine;
-        private readonly ResourceValue<ImStyle> _debugWindowStyle = resourceService.GetValue(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions = new(true);
 

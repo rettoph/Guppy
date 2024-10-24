@@ -6,10 +6,10 @@ namespace Guppy.Game.ImGui.Common
     [StructLayout(LayoutKind.Auto)]
     public partial struct ImFontPtr
     {
-        public readonly ResourceValue<TrueTypeFont> TTF;
+        public readonly Resource<TrueTypeFont> TTF;
         public readonly int Size;
 
-        internal ImFontPtr(ResourceValue<TrueTypeFont> ttf, int size) : this(default!)
+        internal ImFontPtr(Resource<TrueTypeFont> ttf, int size) : this(default!)
         {
             TTF = ttf;
             Size = size;

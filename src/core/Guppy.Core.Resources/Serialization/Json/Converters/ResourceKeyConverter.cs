@@ -5,20 +5,20 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Resources.Serialization.Json.Converters
 {
-    internal class ResourceValueConverter(IResourceService resourceService) : JsonConverter<object>
+    internal class ResourceKeyConverter(IResourceService resourceService) : JsonConverter<object>
     {
         private readonly IResourceService _resourceService = resourceService;
 
-        private interface IResourceValueGetter
+        private interface IResourceGetter
         {
-            object GetResourceValue(string key, IResourceService resourceService);
+            object GetResource(string key, IResourceService resourceService);
         }
-        private class ResourceValueGetter<T> : IResourceValueGetter
+        private class ResourceValueGetter<T> : IResourceGetter
             where T : notnull
         {
-            public object GetResourceValue(string key, IResourceService resourceService)
+            public object GetResource(string key, IResourceService resourceService)
             {
-                return resourceService.GetValue<T>(Resource<T>.Get(key));
+                return ResourceKey<T>.Get(key);
             }
         }
 
@@ -29,7 +29,7 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
                 return false;
             }
 
-            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(ResourceValue<>);
+            bool result = typeToConvert.GetGenericTypeDefinition() == typeof(ResourceKey<>);
             return result;
         }
 
@@ -39,8 +39,8 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
             string key = reader.ReadString();
 
             Type getterType = typeof(ResourceValueGetter<>).MakeGenericType(typeToConvert.GenericTypeArguments[0]);
-            IResourceValueGetter? getter = (IResourceValueGetter)(Activator.CreateInstance(getterType) ?? throw new NotImplementedException());
-            object instance = getter.GetResourceValue(key, _resourceService);
+            IResourceGetter? getter = (IResourceGetter)(Activator.CreateInstance(getterType) ?? throw new NotImplementedException());
+            object instance = getter.GetResource(key, _resourceService);
 
             return instance;
         }

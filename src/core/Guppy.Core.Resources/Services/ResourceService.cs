@@ -13,11 +13,11 @@ namespace Guppy.Core.Resources.Services
         private readonly Lazy<IResourcePackService> _resourcePackService = packs;
         private readonly Lazy<ILogger> _logger = logger;
 
-        private readonly Dictionary<Guid, IResourceValue> _values = [];
+        private readonly Dictionary<Guid, IResource> _values = [];
 
         public void Dispose()
         {
-            foreach (IResourceValue resourceValue in _values.Values)
+            foreach (IResource resourceValue in _values.Values)
             {
                 resourceValue.Dispose();
             }
@@ -48,35 +48,35 @@ namespace Guppy.Core.Resources.Services
 
             _logger.Value.Debug("{ClassName}::{MethodName} - Preparing to build resource value dictionary", nameof(ResourceService), nameof(Initialize));
 
-            foreach (IResource resource in _resourcePackService.Value.GetDefinedResources())
+            foreach (IResourceKey resourceKey in _resourcePackService.Value.GetDefinedResources())
             {
-                this.CacheGetOrAddValues(resource).Refresh(_resourcePackService.Value);
+                this.CacheGetOrAddValues(resourceKey).Refresh(_resourcePackService.Value);
             }
 
             _logger.Value.Debug("{ClassName}::{MethodName} - Done. Found ({Count}) resources", nameof(ResourceService), nameof(Initialize), _values.Count);
-            foreach (IResourceValue value in _values.Values)
+            foreach (IResource value in _values.Values)
             {
-                _logger.Value.Verbose("{ClassName}::{MethodName} - Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", nameof(ResourceService), nameof(Initialize), value.Resource.Name, value.Resource.Type.GetFormattedName(), value.Value, value.All().Count());
+                _logger.Value.Verbose("{ClassName}::{MethodName} - Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", nameof(ResourceService), nameof(Initialize), value.Key.Name, value.Key.Type.GetFormattedName(), value.Value, value.All().Count());
             }
 
             _initialized = true;
         }
 
-        public ResourceValue<T> GetValue<T>(Resource<T> resource)
+        public Resource<T> Get<T>(ResourceKey<T> resource)
             where T : notnull
         {
-            return (ResourceValue<T>)this.CacheGetOrAddValues(resource);
+            return (Resource<T>)this.CacheGetOrAddValues(resource);
         }
 
-        public IEnumerable<ResourceValue<T>> GetValues<T>() where T : notnull
+        public IEnumerable<Resource<T>> GetAll<T>() where T : notnull
         {
-            return Resource<T>.GetAll().Select(x => this.GetValue(x));
+            return ResourceKey<T>.GetAll().Select(x => this.Get(x));
         }
 
-        private IResourceValue CacheGetOrAddValues(IResource resource)
+        private IResource CacheGetOrAddValues(IResourceKey resource)
         {
 
-            ref IResourceValue? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, resource.Id, out bool exists);
+            ref IResource? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, resource.Id, out bool exists);
             if (exists == true)
             {
                 return cache!;
@@ -93,10 +93,10 @@ namespace Guppy.Core.Resources.Services
             return cache;
         }
 
-        public IEnumerable<Resource<T>> GetAll<T>()
+        public IEnumerable<ResourceKey<T>> GetKeys<T>()
             where T : notnull
         {
-            return Resource<T>.GetAll();
+            return ResourceKey<T>.GetAll();
         }
     }
 }

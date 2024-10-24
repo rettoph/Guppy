@@ -9,18 +9,18 @@ namespace Guppy.Core.Resources.Common
         string Name { get; }
         DirectoryLocation RootDirectory { get; }
 
-        public void Add<T>(Resource<T> resource, string localization, T value)
+        public void Add<T>(ResourceKey<T> key, string localization, T value)
             where T : notnull;
 
-        public void Add<T>(Resource<T> resource, T value)
+        public void Add<T>(ResourceKey<T> key, T value)
             where T : notnull;
 
-        public bool TryGetDefinedValue<T>(Resource<T> resource, string localization, [MaybeNullWhen(false)] out T value)
+        public bool TryGetDefinedValue<T>(ResourceKey<T> key, string localization, [MaybeNullWhen(false)] out T value)
             where T : notnull;
 
-        public IEnumerable<Resource<T>> GetAllDefinedResources<T>()
+        public IEnumerable<ResourceKey<T>> GetAllDefinedResources<T>()
             where T : notnull;
 
-        public IEnumerable<IResource> GetAllDefinedResources();
+        public IEnumerable<IResourceKey> GetAllDefinedResources();
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Resources.Common.Interfaces
 {
-    public interface IRuntimeResourceValue
+    public interface IRuntimeResource
     {
         void AddToPack(IResourcePack resourcePack);
     }

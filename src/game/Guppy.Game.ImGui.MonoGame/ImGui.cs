@@ -23,12 +23,12 @@ namespace Guppy.Game.ImGui.MonoGame
             _idPopper = new ImGuiPoppers.IdPopper(this);
         }
 
-        public IDisposable Apply(Resource<ImStyle> style)
+        public IDisposable Apply(ResourceKey<ImStyle> style)
         {
-            return this.Apply(_resourceService.GetValue(style));
+            return this.Apply(_resourceService.Get(style));
         }
 
-        public IDisposable Apply(ResourceValue<ImStyle> style)
+        public IDisposable Apply(Resource<ImStyle> style)
         {
             return this.Apply(style.Value);
         }
@@ -70,14 +70,14 @@ namespace Guppy.Game.ImGui.MonoGame
             }
         }
 
-        public Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size)
+        public Ref<ImFontPtr> GetFont(ResourceKey<TrueTypeFont> ttf, int size)
         {
             if (_batch.Running)
             {
                 throw new InvalidOperationException();
             }
 
-            return _batch.GetFont(_resourceService.GetValue(ttf), size);
+            return _batch.GetFont(_resourceService.Get(ttf), size);
         }
     }
 }

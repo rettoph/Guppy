@@ -12,7 +12,7 @@ namespace Guppy.Game.MonoGame.ResourceTypes
 
         private readonly IContentManager _content = content;
 
-        protected override bool TryResolve(Resource<SpriteFont> resource, DirectoryLocation root, string input, out SpriteFont value)
+        protected override bool TryResolve(ResourceKey<SpriteFont> resource, DirectoryLocation root, string input, out SpriteFont value)
         {
             _content.Value.RootDirectory = root.Path;
 

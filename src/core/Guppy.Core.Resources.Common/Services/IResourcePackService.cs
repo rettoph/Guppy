@@ -6,7 +6,7 @@
         IEnumerable<IResourcePack> GetAll();
         IResourcePack GetById(Guid id);
 
-        IEnumerable<IResource> GetDefinedResources();
-        IEnumerable<T> GetDefinedValues<T>(Resource<T> resource) where T : notnull;
+        IEnumerable<IResourceKey> GetDefinedResources();
+        IEnumerable<T> GetDefinedValues<T>(ResourceKey<T> resource) where T : notnull;
     }
 }

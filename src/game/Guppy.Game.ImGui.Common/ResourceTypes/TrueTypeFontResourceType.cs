@@ -11,7 +11,7 @@ namespace Guppy.Game.ImGui.Common.ResourceTypes
     {
         private readonly ILogger _logger = logger;
 
-        protected override bool TryResolve(Resource<TrueTypeFont> resource, DirectoryLocation root, string input, out TrueTypeFont value)
+        protected override bool TryResolve(ResourceKey<TrueTypeFont> resource, DirectoryLocation root, string input, out TrueTypeFont value)
         {
             string path = Path.Combine(root.Path, input);
 

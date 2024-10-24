@@ -4,13 +4,13 @@
     {
         void Initialize();
 
+        IEnumerable<ResourceKey<T>> GetKeys<T>()
+            where T : notnull;
+
+        Resource<T> Get<T>(ResourceKey<T> resource)
+            where T : notnull;
+
         IEnumerable<Resource<T>> GetAll<T>()
-            where T : notnull;
-
-        ResourceValue<T> GetValue<T>(Resource<T> resource)
-            where T : notnull;
-
-        IEnumerable<ResourceValue<T>> GetValues<T>()
             where T : notnull;
     }
 }

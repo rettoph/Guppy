@@ -13,7 +13,7 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
         {
             string? key = null;
             int size = default;
-            Resource<TrueTypeFont> ttf = default!;
+            ResourceKey<TrueTypeFont> ttf = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -31,7 +31,7 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
                         break;
 
                     case nameof(ImFontPtr.TTF):
-                        ttf = Resource<TrueTypeFont>.Get(reader.ReadString());
+                        ttf = ResourceKey<TrueTypeFont>.Get(reader.ReadString());
                         break;
                 }
             }

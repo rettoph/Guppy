@@ -28,7 +28,7 @@ namespace Guppy.Core.Resources.Services
         public ResourcePackService(
             IFileService files,
             IFiltered<ResourcePackConfiguration> packs,
-            IFiltered<IRuntimeResourceValue> runtimeResourceValues,
+            IFiltered<IRuntimeResource> runtimeResourceValues,
             IResourceTypeService resourceTypes,
             Lazy<ISettingService> settings,
             ILogger logger)
@@ -44,7 +44,7 @@ namespace Guppy.Core.Resources.Services
             _configuration.Value = _configuration.Value.AddRange(packs);
             _files.Save(_configuration);
 
-            foreach (IRuntimeResourceValue runtimeResourceValue in runtimeResourceValues)
+            foreach (IRuntimeResource runtimeResourceValue in runtimeResourceValues)
             {
                 runtimeResourceValue.AddToPack(_runtimeResourcePack);
             }
@@ -96,17 +96,17 @@ namespace Guppy.Core.Resources.Services
             return _packs[id];
         }
 
-        public IEnumerable<IResource> GetDefinedResources()
+        public IEnumerable<IResourceKey> GetDefinedResources()
         {
             return this.GetAll().SelectMany(x => x.GetAllDefinedResources()).Distinct();
         }
 
-        public IEnumerable<T> GetDefinedValues<T>(Resource<T> resource)
+        public IEnumerable<T> GetDefinedValues<T>(ResourceKey<T> key)
             where T : notnull
         {
             foreach (ResourcePack pack in this.GetAll())
             {
-                if (pack.TryGetDefinedValue(resource, Settings.Localization.DefaultValue, out T? packValue))
+                if (pack.TryGetDefinedValue(key, Settings.Localization.DefaultValue, out T? packValue))
                 {
                     yield return packValue;
                 }
@@ -116,7 +116,7 @@ namespace Guppy.Core.Resources.Services
             {
                 foreach (ResourcePack pack in this.GetAll())
                 {
-                    if (pack.TryGetDefinedValue(resource, _localization, out T? packValue))
+                    if (pack.TryGetDefinedValue(key, _localization, out T? packValue))
                     {
                         yield return packValue;
                     }

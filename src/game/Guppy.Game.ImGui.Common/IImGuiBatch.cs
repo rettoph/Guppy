@@ -18,6 +18,6 @@ namespace Guppy.Game.ImGui.Common
         /// </summary>
         void End();
 
-        Ref<ImFontPtr> GetFont(ResourceValue<TrueTypeFont> ttf, int size);
+        Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
     }
 }

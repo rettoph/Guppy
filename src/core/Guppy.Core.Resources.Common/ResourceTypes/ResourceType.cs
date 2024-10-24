@@ -14,7 +14,7 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
 
         public bool TryResolve(IResourcePack pack, string resourceName, string localization, JsonElement json)
         {
-            Resource<T> resource = Resource<T>.Get(resourceName);
+            ResourceKey<T> resource = ResourceKey<T>.Get(resourceName);
 
             if (this.TryResolve(resource, pack.RootDirectory, ref json, out T? value))
             {
@@ -25,19 +25,19 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
             return false;
         }
 
-        protected abstract bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T resolver);
+        protected abstract bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T resolver);
     }
 
     public abstract class SimpleResourceType<T> : ResourceType<T>
         where T : notnull
     {
-        protected override bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        protected override bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
         {
             string input = json.GetString() ?? string.Empty;
             return this.TryResolve(resource, root, input, out value);
         }
 
-        protected abstract bool TryResolve(Resource<T> resource, DirectoryLocation root, string input, out T value);
+        protected abstract bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, string input, out T value);
     }
 
     public class DefaultResourceType<T> : ResourceType<T>
@@ -50,7 +50,7 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
             _json = json;
         }
 
-        protected override bool TryResolve(Resource<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        protected override bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
         {
             value = _json.Deserialize<T>(ref json, out bool success);
 

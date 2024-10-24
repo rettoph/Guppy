@@ -15,7 +15,7 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
         {
             string? key = null;
             ImGuiCol col = default;
-            Resource<Color> resource = default!;
+            ResourceKey<Color> resource = default!;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
             reader.Read();
@@ -33,14 +33,14 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
                         break;
 
                     case nameof(ImStyleColorValue.Color):
-                        resource = Resource<Color>.Get(reader.ReadString());
+                        resource = ResourceKey<Color>.Get(reader.ReadString());
                         break;
                 }
             }
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ImStyleColorValue(key, col, _resourceService.Value.GetValue(resource));
+            return new ImStyleColorValue(key, col, _resourceService.Value.Get(resource));
         }
 
         public override void Write(Utf8JsonWriter writer, ImStyleColorValue value, JsonSerializerOptions options)

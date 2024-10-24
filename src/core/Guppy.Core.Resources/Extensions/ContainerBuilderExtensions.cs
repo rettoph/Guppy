@@ -26,7 +26,8 @@ namespace Guppy.Core.Resources.Extensions
             builder.RegisterType<ResourcePacksConfigurationConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<IFileJsonConverter<ResourcePackConfiguration>>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<SettingValueConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<ResourceValueConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<ResourceConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterType<ResourceKeyConverter>().As<JsonConverter>().SingleInstance();
 
             return builder.AddTag(nameof(RegisterCoreResourcesServices));
         }

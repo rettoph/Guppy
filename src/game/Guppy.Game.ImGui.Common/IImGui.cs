@@ -11,10 +11,10 @@ namespace Guppy.Game.ImGui.Common
 
     public partial interface IImGui
     {
-        Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
+        Ref<ImFontPtr> GetFont(ResourceKey<TrueTypeFont> ttf, int size);
 
+        IDisposable Apply(ResourceKey<ImStyle> style);
         IDisposable Apply(Resource<ImStyle> style);
-        IDisposable Apply(ResourceValue<ImStyle> style);
         IDisposable Apply(ImStyle style);
         IDisposable Apply(string key);
 

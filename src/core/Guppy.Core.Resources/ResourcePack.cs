@@ -12,7 +12,7 @@ namespace Guppy.Core.Resources
         public string Name { get; }
         public DirectoryLocation RootDirectory { get; }
 
-        private readonly Dictionary<IResource, Dictionary<string, object>> _values;
+        private readonly Dictionary<IResourceKey, Dictionary<string, object>> _values;
 
         internal ResourcePack(Guid id, string name, DirectoryLocation rootDirectory)
         {
@@ -23,34 +23,34 @@ namespace Guppy.Core.Resources
             _values = [];
         }
 
-        public void Add<T>(Resource<T> resource, string localization, T value)
+        public void Add<T>(ResourceKey<T> key, string localization, T value)
             where T : notnull
         {
-            if (!_values.TryGetValue(resource, out var resolvers))
+            if (!_values.TryGetValue(key, out var resolvers))
             {
-                _values[resource] = resolvers = [];
+                _values[key] = resolvers = [];
             }
 
             ref object? localizedValue = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvers, localization, out bool exists);
             localizedValue ??= value;
         }
 
-        public void Add<T>(Resource<T> resource, T value)
+        public void Add<T>(ResourceKey<T> key, T value)
             where T : notnull
         {
-            this.Add(resource, Localization.es_US, value);
+            this.Add(key, Localization.en_US, value);
         }
 
-        public bool TryGetDefinedValue<T>(Resource<T> resource, string localization, [MaybeNullWhen(false)] out T value)
+        public bool TryGetDefinedValue<T>(ResourceKey<T> key, string localization, [MaybeNullWhen(false)] out T value)
             where T : notnull
         {
-            if (!_values.TryGetValue(resource, out var resolvers))
+            if (_values.TryGetValue(key, out var values) == false)
             {
                 value = default;
                 return false;
             }
 
-            if (resolvers.TryGetValue(localization, out object? uncastedValue))
+            if (values.TryGetValue(localization, out object? uncastedValue))
             {
                 value = (T)uncastedValue;
                 return true;
@@ -60,13 +60,13 @@ namespace Guppy.Core.Resources
             return false;
         }
 
-        public IEnumerable<Resource<T>> GetAllDefinedResources<T>()
+        public IEnumerable<ResourceKey<T>> GetAllDefinedResources<T>()
             where T : notnull
         {
-            return _values.Keys.OfType<Resource<T>>();
+            return _values.Keys.OfType<ResourceKey<T>>();
         }
 
-        public IEnumerable<IResource> GetAllDefinedResources()
+        public IEnumerable<IResourceKey> GetAllDefinedResources()
         {
             return _values.Keys;
         }
