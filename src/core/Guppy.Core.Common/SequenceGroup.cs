@@ -4,11 +4,11 @@ using Guppy.Core.Common.Helpers;
 
 namespace Guppy.Core.Common
 {
-    public readonly struct SequenceGroup<T>(string name, int sequence) : IComparable<SequenceGroup<T>>
+    public readonly struct SequenceGroup<T>(string name, int order) : IComparable<SequenceGroup<T>>
         where T : unmanaged, Enum
     {
         public readonly string Name = name;
-        public readonly int Sequence = sequence;
+        public readonly int Order = order;
         private static readonly Dictionary<T, SequenceGroup<T>> _enumMap;
 
         static SequenceGroup()
@@ -32,19 +32,19 @@ namespace Guppy.Core.Common
 
         public readonly int CompareTo(SequenceGroup<T> other)
         {
-            return this.Sequence.CompareTo(other.Sequence);
+            return this.Order.CompareTo(other.Order);
         }
 
         public override readonly bool Equals(object? obj)
         {
             return obj is SequenceGroup<T> group &&
                    Name == group.Name &&
-                   Sequence == group.Sequence;
+                   Order == group.Order;
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(Name, Sequence);
+            return HashCode.Combine(Name, Order);
         }
 
         public static bool operator <(SequenceGroup<T> left, SequenceGroup<T> right)

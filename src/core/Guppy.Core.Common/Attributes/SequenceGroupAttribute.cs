@@ -6,9 +6,9 @@
     {
         public readonly SequenceGroup<T> Value;
 
-        public SequenceGroupAttribute(string name, int sequence = 0)
+        public SequenceGroupAttribute(string name, int order = 0)
         {
-            this.Value = new SequenceGroup<T>(name, sequence);
+            this.Value = new SequenceGroup<T>(name, order);
         }
 
         public SequenceGroupAttribute(T value)

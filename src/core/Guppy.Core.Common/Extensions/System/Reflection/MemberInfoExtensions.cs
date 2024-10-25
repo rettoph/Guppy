@@ -89,6 +89,25 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
             out SequenceGroup<T> sequenceGroup)
                 where T : unmanaged, Enum
         {
+            if (instance is not null && member.DeclaringType is not null && member.DeclaringType.IsInterface == true)
+            {
+                Type instanceType = instance.GetType();
+                InterfaceMapping interfaceMapping = instanceType.GetInterfaceMap(member.DeclaringType);
+                int index = Array.IndexOf(interfaceMapping.InterfaceMethods, member);
+                if (index == -1)
+                {
+                    throw new SequenceGroupException(typeof(T), member);
+                }
+
+                MemberInfo targetMember = interfaceMapping.TargetMethods[index];
+                if (targetMember == member)
+                { // This should never happen.. but just in case...
+                    throw new SequenceGroupException(typeof(T), member);
+                }
+
+                return targetMember.TryGetSequenceGroup<T>(instance, strict, out sequenceGroup);
+            }
+
             if (member.TryGetAllCustomAttributes<SequenceGroupAttribute<T>>(true, out var sequenceGroupAttributes))
             {
                 sequenceGroup = sequenceGroupAttributes.Single().Value;

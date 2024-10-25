@@ -166,6 +166,7 @@ namespace Guppy.Core.Common
     /// <typeparam name="TSequenceGroup"></typeparam>
     /// <typeparam name="TParam1"></typeparam>
     /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam3"></typeparam>
     public sealed class ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3> : DelegateSequenceGroup<TSequenceGroup, Action<TParam1, TParam2, TParam3>>
         where TSequenceGroup : unmanaged, Enum
     {
@@ -233,6 +234,183 @@ namespace Guppy.Core.Common
         {
             IEnumerable<Delegator<Action<TParam1, TParam2, TParam3>>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<Action<TParam1, TParam2, TParam3>>());
             ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3>.Invoke(delegators, sequence, param1, param2, param3);
+        }
+    }
+
+    /// <summary>
+    /// Manages a collection of sequenced and grouped actions.
+    /// 
+    /// These are methods with an attached <see cref="Attributes.SequenceGroupAttribute{TSequenceGroup}"/> attributes.
+    /// 
+    /// When adding an <see cref="object"/> instance, ALL public methods matching the action signature and having
+    /// the required attribute will be added,
+    /// </summary>
+    /// <typeparam name="TSequenceGroup"></typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam3"></typeparam>
+    /// <typeparam name="TParam4"></typeparam>
+    /// <typeparam name="TParam4"></typeparam>
+    public sealed class ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3, TParam4> : DelegateSequenceGroup<TSequenceGroup, Action<TParam1, TParam2, TParam3, TParam4>>
+        where TSequenceGroup : unmanaged, Enum
+    {
+        public ActionSequenceGroup(bool sequence) : base(typeof(Action<TParam1, TParam2, TParam3, TParam4>), sequence)
+        {
+        }
+        public ActionSequenceGroup(bool sequence, IEnumerable<Action<TParam1, TParam2, TParam3, TParam4>> actions) : base(typeof(Action<TParam1, TParam2, TParam3, TParam4>), sequence)
+        {
+            this.Add(actions);
+        }
+        public ActionSequenceGroup(bool sequence, IEnumerable<object> instances) : base(typeof(Action<TParam1, TParam2, TParam3, TParam4>), sequence)
+        {
+            this.Add(instances);
+        }
+
+        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        {
+            this.Sequenced?.Invoke(param1, param2, param3, param4);
+        }
+
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        {
+            this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3, param4);
+        }
+
+        /// <summary>
+        /// Sequence then invoke all delegators.
+        /// </summary>
+        /// <param name="delegators">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param1">Parameter to pass when invoking items</param>
+        /// <param name="param2">Parameter to pass when invoking items</param>
+        /// <param name="param3">Parameter to pass when invoking items</param>
+        /// <param name="param4">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<Delegator<Action<TParam1, TParam2, TParam3, TParam4>>> delegators, bool sequence, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        {
+            foreach (Delegator<Action<TParam1, TParam2, TParam3, TParam4>> delegator in delegators.OrderBySequenceGroup<Action<TParam1, TParam2, TParam3, TParam4>, TSequenceGroup>(sequence))
+            {
+                delegator.Delegate(param1, param2, param3, param4);
+            }
+        }
+
+        /// <summary>
+        /// Sequence then invoke all actions.
+        /// </summary>
+        /// <param name="actions">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param1">Parameter to pass when invoking items</param>
+        /// <param name="param2">Parameter to pass when invoking items</param>
+        /// <param name="param3">Parameter to pass when invoking items</param>
+        /// <param name="param4">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<Action<TParam1, TParam2, TParam3, TParam4>> actions, bool sequence, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        {
+            IEnumerable<Delegator<Action<TParam1, TParam2, TParam3, TParam4>>> delegators = actions.Select(x => new Delegator<Action<TParam1, TParam2, TParam3, TParam4>>(x));
+            ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3, TParam4>.Invoke(delegators, sequence, param1, param2, param3, param4);
+        }
+
+        /// <summary>
+        /// Sequence then invoke all matching delegates within a collection of instances.
+        /// </summary>
+        /// <param name="instances">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param1">Parameter to pass when invoking items</param>
+        /// <param name="param2">Parameter to pass when invoking items</param>
+        /// <param name="param3">Parameter to pass when invoking items</param>
+        /// <param name="param4">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<object> instances, bool sequence, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
+        {
+            IEnumerable<Delegator<Action<TParam1, TParam2, TParam3, TParam4>>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<Action<TParam1, TParam2, TParam3, TParam4>>());
+            ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3, TParam4>.Invoke(delegators, sequence, param1, param2, param3, param4);
+        }
+    }
+
+    /// <summary>
+    /// Manages a collection of sequenced and grouped actions.
+    /// 
+    /// These are methods with an attached <see cref="Attributes.SequenceGroupAttribute{TSequenceGroup}"/> attributes.
+    /// 
+    /// When adding an <see cref="object"/> instance, ALL public methods matching the action signature and having
+    /// the required attribute will be added,
+    /// </summary>
+    /// <typeparam name="TSequenceGroup"></typeparam>
+    /// <typeparam name="TParam1"></typeparam>
+    /// <typeparam name="TParam2"></typeparam>
+    /// <typeparam name="TParam3"></typeparam>
+    /// <typeparam name="TParam4"></typeparam>
+    /// <typeparam name="TParam5"></typeparam>
+    public sealed class ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3, TParam4, TParam5> : DelegateSequenceGroup<TSequenceGroup, Action<TParam1, TParam2, TParam3, TParam4, TParam5>>
+        where TSequenceGroup : unmanaged, Enum
+    {
+        public ActionSequenceGroup(bool sequence) : base(typeof(Action<TParam1, TParam2, TParam3, TParam4, TParam5>), sequence)
+        {
+        }
+        public ActionSequenceGroup(bool sequence, IEnumerable<Action<TParam1, TParam2, TParam3, TParam4, TParam5>> actions) : base(typeof(Action<TParam1, TParam2, TParam3, TParam4, TParam5>), sequence)
+        {
+            this.Add(actions);
+        }
+        public ActionSequenceGroup(bool sequence, IEnumerable<object> instances) : base(typeof(Action<TParam1, TParam2, TParam3, TParam4, TParam5>), sequence)
+        {
+            this.Add(instances);
+        }
+
+        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        {
+            this.Sequenced?.Invoke(param1, param2, param3, param4, param5);
+        }
+
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        {
+            this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3, param4, param5);
+        }
+
+        /// <summary>
+        /// Sequence then invoke all delegators.
+        /// </summary>
+        /// <param name="delegators">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param1">Parameter to pass when invoking items</param>
+        /// <param name="param2">Parameter to pass when invoking items</param>
+        /// <param name="param3">Parameter to pass when invoking items</param>
+        /// <param name="param4">Parameter to pass when invoking items</param>
+        /// <param name="param5">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<Delegator<Action<TParam1, TParam2, TParam3, TParam4, TParam5>>> delegators, bool sequence, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        {
+            foreach (Delegator<Action<TParam1, TParam2, TParam3, TParam4, TParam5>> delegator in delegators.OrderBySequenceGroup<Action<TParam1, TParam2, TParam3, TParam4, TParam5>, TSequenceGroup>(sequence))
+            {
+                delegator.Delegate(param1, param2, param3, param4, param5);
+            }
+        }
+
+        /// <summary>
+        /// Sequence then invoke all actions.
+        /// </summary>
+        /// <param name="actions">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param1">Parameter to pass when invoking items</param>
+        /// <param name="param2">Parameter to pass when invoking items</param>
+        /// <param name="param3">Parameter to pass when invoking items</param>
+        /// <param name="param4">Parameter to pass when invoking items</param>
+        /// <param name="param5">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<Action<TParam1, TParam2, TParam3, TParam4, TParam5>> actions, bool sequence, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        {
+            IEnumerable<Delegator<Action<TParam1, TParam2, TParam3, TParam4, TParam5>>> delegators = actions.Select(x => new Delegator<Action<TParam1, TParam2, TParam3, TParam4, TParam5>>(x));
+            ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3, TParam4, TParam5>.Invoke(delegators, sequence, param1, param2, param3, param4, param5);
+        }
+
+        /// <summary>
+        /// Sequence then invoke all matching delegates within a collection of instances.
+        /// </summary>
+        /// <param name="instances">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        /// <param name="param1">Parameter to pass when invoking items</param>
+        /// <param name="param2">Parameter to pass when invoking items</param>
+        /// <param name="param3">Parameter to pass when invoking items</param>
+        /// <param name="param4">Parameter to pass when invoking items</param>
+        /// <param name="param5">Parameter to pass when invoking items</param>
+        public static void Invoke(IEnumerable<object> instances, bool sequence, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
+        {
+            IEnumerable<Delegator<Action<TParam1, TParam2, TParam3, TParam4, TParam5>>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<Action<TParam1, TParam2, TParam3, TParam4, TParam5>>());
+            ActionSequenceGroup<TSequenceGroup, TParam1, TParam2, TParam3, TParam4, TParam5>.Invoke(delegators, sequence, param1, param2, param3, param4, param5);
         }
     }
 }
