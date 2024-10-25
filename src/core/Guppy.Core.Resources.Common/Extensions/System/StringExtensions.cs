@@ -6,9 +6,15 @@ namespace Guppy.Core.Resources.Common.Extensions.System
     {
         public static unsafe Guid xxHash128(this string value)
         {
-            uint128 nameHash = Standart.Hash.xxHash.xxHash128.ComputeHash(value);
-            Guid* pNameHash = (Guid*)&nameHash;
-            return pNameHash[0];
+            uint128 hash = Standart.Hash.xxHash.xxHash128.ComputeHash(value);
+            Guid* pHash = (Guid*)&hash;
+            return pHash[0];
+        }
+
+        public static unsafe uint xxHash32(this string value)
+        {
+            uint hash = Standart.Hash.xxHash.xxHash32.ComputeHash(value);
+            return hash;
         }
     }
 }
