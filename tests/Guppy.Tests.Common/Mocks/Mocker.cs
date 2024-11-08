@@ -3,7 +3,12 @@ using System.Linq.Expressions;
 
 namespace Guppy.Tests.Common
 {
-    public class Mocker<T>
+    public abstract class Mocker
+    {
+        public abstract object GetInstance();
+    }
+
+    public class Mocker<T> : Mocker
         where T : class
     {
         private T? _override;
@@ -113,7 +118,7 @@ namespace Guppy.Tests.Common
             return this._instance;
         }
 
-        public T GetInstance()
+        public override T GetInstance()
         {
             return _override ?? _instance.Object;
         }
