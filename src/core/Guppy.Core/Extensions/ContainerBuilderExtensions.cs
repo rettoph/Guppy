@@ -9,6 +9,7 @@ using Guppy.Core.Resources.Extensions;
 using Guppy.Core.Serialization.Extensions;
 using Guppy.Core.Services;
 using Guppy.Core.StateMachine.Extensions;
+using Serilog;
 
 namespace Guppy.Core.Extensions
 {
@@ -50,6 +51,14 @@ namespace Guppy.Core.Extensions
                 .RegisterCoreStateMachineServices()
                 .RegisterCoreMessagingServices()
                 .RegisterCoreResourcesServices();
+
+            builder.Register<ILogger>(p =>
+            {
+                LoggerConfiguration configuration = p.Resolve<IConfiguration<LoggerConfiguration>>().Value;
+                ILogger logger = configuration.CreateLogger();
+
+                return logger;
+            }).InstancePerLifetimeScope();
 
             return builder.AddTag(nameof(RegisterCoreServices));
         }

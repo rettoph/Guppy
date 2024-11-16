@@ -11,6 +11,7 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Loaders;
+using Guppy.Engine.Extensions.Autofac;
 using System.Reflection;
 
 namespace Guppy.Engine
@@ -87,10 +88,10 @@ namespace Guppy.Engine
             lock (_lock)
             {
                 // Construct a service container to store factory related services
-                // Used for boot loggers, engine loaders, and related services
+                // Used for boot loaders, engine loaders, and related services
                 ContainerBuilder bootBuilder = new();
                 bootBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-                bootBuilder.RegisterCoreServices(context);
+                bootBuilder.RegisterCoreServices(context).RegisterBootServices();
 
                 // Construct the factory service and prepare for assembly loading.
                 IContainer boot = bootBuilder.Build();

@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Providers\**" />
-    <EmbeddedResource Remove="Providers\**" />
-    <None Remove="Providers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\core\Guppy.Core.Common\Guppy.Core.Common.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
   </ItemGroup>

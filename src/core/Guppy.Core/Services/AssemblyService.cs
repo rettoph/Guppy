@@ -2,13 +2,15 @@
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Services;
+using Serilog;
 using System.Collections;
 using System.Reflection;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class AssemblyService(IEnumerable<Assembly> libraries) : IAssemblyService
+    internal sealed class AssemblyService(IEnumerable<Assembly> libraries, ILogger logger) : IAssemblyService
     {
+        private readonly ILogger _logger = logger;
         private readonly HashSet<Assembly> _assemblies = [];
 
         public AssemblyName[] Libraries { get; private set; } = libraries.Select(x => x.GetName()).Distinct().ToArray() ?? [];
@@ -28,7 +30,7 @@ namespace Guppy.Core.Services
             }
 
             _assemblies.Add(assembly);
-            Console.WriteLine($"{new string('\t', depth)}Loading: {assembly.FullName}...");
+            _logger.Information($"{new string('\t', depth)}Loading: {assembly.FullName}...");
 
             // Recersively attempt to load all references assemblies as well...
             foreach (AssemblyName referenceName in assembly.GetReferencedAssemblies())
@@ -120,7 +122,7 @@ namespace Guppy.Core.Services
         internal static AssemblyService Factory(IComponentContext context)
         {
             IGuppyContext guppy = context.Resolve<IGuppyContext>();
-            return new AssemblyService(guppy.Libraries);
+            return new AssemblyService(guppy.Libraries, context.Resolve<ILogger>());
         }
     }
 }

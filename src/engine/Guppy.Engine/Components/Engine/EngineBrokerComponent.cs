@@ -4,7 +4,7 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 
-namespace Guppy.Engine.Components.Global
+namespace Guppy.Engine.Components.Engine
 {
     [AutoLoad]
     internal class EngineBrokerComponent(IBrokerService brokers) : IEngineComponent, IDisposable

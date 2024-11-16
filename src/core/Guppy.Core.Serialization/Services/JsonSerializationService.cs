@@ -1,42 +1,37 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Serialization.Common.Services;
-using Serilog;
 using System.Text.Json;
 using STJ = System.Text.Json;
 
 namespace Guppy.Core.Serialization.Services
 {
-    internal sealed class JsonSerializationService(ILogger logger, IDefaultInstanceService defaultInstances, IConfiguration<JsonSerializerOptions> options) : IJsonSerializationService
+    internal sealed class JsonSerializationService(IDefaultInstanceService defaultInstances, IConfiguration<JsonSerializerOptions> options) : IJsonSerializationService
     {
         private readonly JsonSerializerOptions _options = options.Value;
-        private readonly ILogger _logger = logger;
-        private readonly IDefaultInstanceService _defaultInstances = defaultInstances;
+        private readonly IDefaultInstanceService _defaultInstanceService = defaultInstances;
 
         public T Deserialize<T>(string json, out bool success)
         {
             if (json == string.Empty)
             {
                 success = false;
-                return _defaultInstances.Get<T>();
+                return _defaultInstanceService.Get<T>();
             }
 
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(json, _options) ?? _defaultInstances.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(json, _options) ?? _defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
                 success = false;
-                _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}> => '{JSON}'", nameof(JsonSerializationService), nameof(Deserialize), typeof(T).Name, json);
 
 #if DEBUG
                 throw;
+#else
+                return _defaultInstanceService.Get<T>();
 #endif
-
-#pragma warning disable CS0162 // Unreachable code detected
-                return _defaultInstances.Get<T>();
-#pragma warning restore CS0162 // Unreachable code detected
             }
         }
         public T Deserialize<T>(Stream utf8Json, out bool success)
@@ -44,13 +39,16 @@ namespace Guppy.Core.Serialization.Services
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(utf8Json, _options) ?? _defaultInstances.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(utf8Json, _options) ?? _defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
                 success = false;
-                _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}>", nameof(JsonSerializationService), nameof(Deserialize), typeof(T).Name);
-                return _defaultInstances.Get<T>();
+#if DEBUG
+                throw;
+#else
+                return _defaultInstanceService.Get<T>();
+#endif
             }
         }
         public T Deserialize<T>(ref Utf8JsonReader reader, out bool success)
@@ -58,13 +56,16 @@ namespace Guppy.Core.Serialization.Services
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(ref reader, _options) ?? _defaultInstances.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(ref reader, _options) ?? _defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
                 success = false;
-                _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}>", nameof(JsonSerializationService), nameof(Deserialize), typeof(T).Name);
-                return _defaultInstances.Get<T>();
+#if DEBUG
+                throw;
+#else
+                return _defaultInstanceService.Get<T>();
+#endif
             }
         }
 
@@ -73,13 +74,16 @@ namespace Guppy.Core.Serialization.Services
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(json, _options) ?? _defaultInstances.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(json, _options) ?? _defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
                 success = false;
-                _logger.Error(e, "{ClassName}::{MethodName} - Exception deserializaing Json<{Type}> => '{JSON}'", nameof(JsonSerializationService), nameof(Deserialize), typeof(T).Name, json);
-                return _defaultInstances.Get<T>();
+#if DEBUG
+                throw;
+#else
+                return _defaultInstanceService.Get<T>();
+#endif
             }
         }
 

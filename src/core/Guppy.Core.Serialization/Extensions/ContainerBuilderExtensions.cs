@@ -4,6 +4,8 @@ using Guppy.Core.Resources.Serialization.Json;
 using Guppy.Core.Serialization.Common.Services;
 using Guppy.Core.Serialization.Services;
 using Serilog.Events;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Serialization.Extensions
 {
@@ -24,6 +26,18 @@ namespace Guppy.Core.Serialization.Extensions
             builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<int, object>(nameof(Int32))).SingleInstance();
             builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<string, object>(nameof(String))).SingleInstance();
             builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<LogEventLevel, object>(nameof(LogEventLevel))).SingleInstance();
+
+            builder.Configure<JsonSerializerOptions>((p, options) =>
+            {
+                options.PropertyNameCaseInsensitive = true;
+                options.WriteIndented = true;
+                options.Converters.Add(new JsonStringEnumConverter());
+
+                foreach (JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
+                {
+                    options.Converters.Add(converter);
+                }
+            });
 
             return builder.AddTag(nameof(RegisterCoreSerializationServices));
         }
