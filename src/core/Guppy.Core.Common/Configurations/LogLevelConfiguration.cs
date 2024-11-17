@@ -1,6 +1,6 @@
 ﻿using Serilog.Events;
 
-namespace Guppy.Engine.Common.Configurations
+namespace Guppy.Core.Common.Configurations
 {
     public class LogLevelConfiguration
     {

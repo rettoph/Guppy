@@ -1,13 +1,11 @@
-﻿using Guppy.Core.Files.Common;
+﻿using Guppy.Core.Common.Configurations;
+using Guppy.Core.Common.Providers;
+using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
-using Guppy.Engine.Common.Configurations;
-using Guppy.Engine.Common.Providers;
-using Serilog;
-using Serilog.Core;
 using Serilog.Events;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Engine.Providers
+namespace Guppy.Core.Providers
 {
     internal sealed class LogLevelProvider : ILogLevelProvider
     {
@@ -22,17 +20,7 @@ namespace Guppy.Engine.Providers
             _configuration = fileService.Get<LogLevelConfiguration>(LogLevelConfigurationFileLocation);
         }
 
-        public void Configure(LoggerConfiguration configuration)
-        {
-            configuration.MinimumLevel.ControlledBy(new LoggingLevelSwitch(_configuration.Value.Default));
-
-            foreach ((string context, LogEventLevel? level) in _configuration.Value.Contexts)
-            {
-                configuration.MinimumLevel.Override(context, level ?? _configuration.Value.Default);
-            }
-        }
-
-        public LogEventLevel Get(string? context = null, LogEventLevel? defaultLevel = null)
+        public LogEventLevel? Get(string? context)
         {
             if (context is null)
             {
@@ -42,11 +30,10 @@ namespace Guppy.Engine.Providers
             ref LogEventLevel? level = ref CollectionsMarshal.GetValueRefOrAddDefault(_configuration.Value.Contexts, context, out bool exists);
             if (exists == false)
             {
-                level = defaultLevel;
                 _fileService.Save(_configuration);
             }
 
-            return level ?? _configuration.Value.Default;
+            return level;
         }
     }
 }

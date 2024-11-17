@@ -1,4 +1,4 @@
-﻿namespace Guppy.Engine.Common.Attributes
+﻿namespace Guppy.Core.Common.Attributes
 {
     public class LoggerContextAttribute : Attribute
     {

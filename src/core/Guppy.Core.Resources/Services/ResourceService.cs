@@ -46,17 +46,17 @@ namespace Guppy.Core.Resources.Services
 
             _resourcePackService.Value.Initialize();
 
-            _logger.Value.Debug("{ClassName}::{MethodName} - Preparing to build resource value dictionary", nameof(ResourceService), nameof(Initialize));
+            _logger.Value.Debug("Preparing to build resource value dictionary");
 
             foreach (IResourceKey resourceKey in _resourcePackService.Value.GetDefinedResources())
             {
                 this.CacheGetOrAddValues(resourceKey).Refresh(_resourcePackService.Value);
             }
 
-            _logger.Value.Debug("{ClassName}::{MethodName} - Done. Found ({Count}) resources", nameof(ResourceService), nameof(Initialize), _values.Count);
+            _logger.Value.Debug("Done. Found ({Count}) resources", _values.Count);
             foreach (IResource value in _values.Values)
             {
-                _logger.Value.Verbose("{ClassName}::{MethodName} - Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", nameof(ResourceService), nameof(Initialize), value.Key.Name, value.Key.Type.GetFormattedName(), value.Value, value.All().Count());
+                _logger.Value.Verbose("Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", value.Key.Name, value.Key.Type.GetFormattedName(), value.Value, value.All().Count());
             }
 
             _initialized = true;

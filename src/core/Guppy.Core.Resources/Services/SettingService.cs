@@ -41,17 +41,17 @@ namespace Guppy.Core.Resources.Services
             }
 
             FileLocation location = new(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
-            _logger.Debug("{ClassName}::{MethodName} - Preparing to import setting values from '{SettingFileLocation}'", nameof(SettingService), nameof(Initialize), location);
+            _logger.Debug("Preparing to import setting values from '{SettingFileLocation}'", location);
 
             _file = _files.Get<IEnumerable<ISettingValue>>(location, true);
             _values = _file.Value.ToDictionary(x => x.Setting.Id, x => x);
 
             _initialized = true;
 
-            _logger.Debug("{ClassName}::{MethodName} - Done. Imported ({Count}) values", nameof(SettingService), nameof(Initialize), _values.Count);
+            _logger.Debug("Done. Imported ({Count}) values", _values.Count);
             foreach (ISettingValue value in _values.Values)
             {
-                _logger.Verbose("{ClassName}::{MethodName} - Setting = {Setting}, Type = {Type}, Value = {Value}", nameof(SettingService), nameof(Initialize), value.Setting.Name, value.Type.GetFormattedName(), value.Value);
+                _logger.Verbose("Setting = {Setting}, Type = {Type}, Value = {Value}", value.Setting.Name, value.Type.GetFormattedName(), value.Value);
             }
         }
 

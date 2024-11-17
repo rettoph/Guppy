@@ -5,11 +5,11 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Extensions;
 using Guppy.Core.Messaging.Extensions;
+using Guppy.Core.Modules;
 using Guppy.Core.Resources.Extensions;
 using Guppy.Core.Serialization.Extensions;
 using Guppy.Core.Services;
 using Guppy.Core.StateMachine.Extensions;
-using Serilog;
 
 namespace Guppy.Core.Extensions
 {
@@ -46,19 +46,13 @@ namespace Guppy.Core.Extensions
             builder.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
             builder.RegisterType<ConfigurationService>().As<IConfigurationService>().InstancePerLifetimeScope();
 
+            builder.RegisterModule<LoggerModule>();
+
             builder.RegisterCoreSerializationServices()
                 .RegisterCoreFileServices()
                 .RegisterCoreStateMachineServices()
                 .RegisterCoreMessagingServices()
                 .RegisterCoreResourcesServices();
-
-            builder.Register<ILogger>(p =>
-            {
-                LoggerConfiguration configuration = p.Resolve<IConfiguration<LoggerConfiguration>>().Value;
-                ILogger logger = configuration.CreateLogger();
-
-                return logger;
-            }).InstancePerLifetimeScope();
 
             return builder.AddTag(nameof(RegisterCoreServices));
         }

@@ -2,15 +2,13 @@
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Modules;
-using Guppy.Engine.Common.Providers;
-using Guppy.Engine.Middleware;
-using Guppy.Engine.Providers;
+using Guppy.Core.Common.Providers;
+using Guppy.Core.Middleware;
+using Guppy.Core.Providers;
 using Serilog;
 using System.Reflection;
 
-namespace Guppy.Engine.Modules
+namespace Guppy.Core.Modules
 {
     /// <summary>
     /// Automatically inject ILogger instances with context
@@ -18,19 +16,16 @@ namespace Guppy.Engine.Modules
     /// 
     /// Inspired by https://github.com/nblumhardt/autofac-serilog-integration/blob/dev/src/AutofacSerilogIntegration/SerilogMiddleware.cs
     /// </summary>
-    internal sealed class ContextualLoggerModule() : EngineModule
+    internal sealed class LoggerModule : Autofac.Module
     {
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
 
-            builder.RegisterType<ContextualLoggerProvider>().InstancePerLifetimeScope();
+            builder.RegisterType<LoggerProvider>().As<ILoggerProvider>().InstancePerLifetimeScope();
+            builder.RegisterType<LogLevelProvider>().As<ILogLevelProvider>().SingleInstance();
 
-            builder.Configure<LoggerConfiguration>((scope, conf) =>
-            {
-                ILogLevelProvider logLevelProvider = scope.Resolve<ILogLevelProvider>();
-                logLevelProvider.Configure(conf);
-            });
+            builder.Register<ILogger>(context => context.Resolve<ILoggerProvider>().Get()).InstancePerLifetimeScope();
         }
 
         protected override void AttachToComponentRegistration(
@@ -47,14 +42,14 @@ namespace Guppy.Engine.Modules
                 return;
             }
 
-            if (ContextualLoggerModule.UsesLogger(ra) == false)
+            if (LoggerModule.UsesLogger(ra) == false)
             {
                 return;
             }
 
             registration.PipelineBuilding += (_, pipline) =>
             {
-                pipline.Use(new ContextualLoggerMiddleware(registration.Activator.LimitType));
+                pipline.Use(new LoggerMiddleware(registration.Activator.LimitType));
             };
         }
 

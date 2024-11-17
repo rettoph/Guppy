@@ -1,11 +1,11 @@
 ﻿using Autofac;
 using Autofac.Core.Resolving.Pipeline;
-using Guppy.Engine.Providers;
+using Guppy.Core.Common.Providers;
 using Serilog;
 
-namespace Guppy.Engine.Middleware
+namespace Guppy.Core.Middleware
 {
-    internal class ContextualLoggerMiddleware(Type context) : IResolveMiddleware
+    internal class LoggerMiddleware(Type context) : IResolveMiddleware
     {
         private readonly Type _context = context;
 
@@ -13,7 +13,7 @@ namespace Guppy.Engine.Middleware
 
         public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
-            ILogger logger = context.Resolve<ContextualLoggerProvider>().Get(_context);
+            ILogger logger = context.Resolve<ILoggerProvider>().Get(_context);
             context.ChangeParameters(TypedParameter.From(logger).Yield().Concat(context.Parameters));
 
             next(context);

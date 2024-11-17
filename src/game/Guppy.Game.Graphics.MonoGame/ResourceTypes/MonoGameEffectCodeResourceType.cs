@@ -34,7 +34,7 @@ namespace Guppy.Game.MonoGame.ResourceTypes
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "{ClassName}::{MethodName} - Exception loading {Resource} at {Path}", nameof(MonoGameEffectCodeResourceType), nameof(TryResolve), resource.Name, path);
+                _logger.Error(ex, "Exception loading {Resource} at {Path}", resource.Name, path);
                 value = null!;
                 return false;
             }

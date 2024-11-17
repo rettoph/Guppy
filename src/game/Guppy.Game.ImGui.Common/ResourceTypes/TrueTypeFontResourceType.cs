@@ -31,7 +31,7 @@ namespace Guppy.Game.ImGui.Common.ResourceTypes
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "{ClassName}::{MethodName} - Exception loading {Resource} at {Path}", nameof(TrueTypeFontResourceType), nameof(TryResolve), resource.Name, path);
+                _logger.Error(ex, "Exception loading {Resource} at {Path}", resource.Name, path);
                 value = null!;
                 return false;
             }
