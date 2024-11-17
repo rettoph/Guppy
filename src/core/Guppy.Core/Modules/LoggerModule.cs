@@ -23,7 +23,7 @@ namespace Guppy.Core.Modules
             base.Load(builder);
 
             builder.RegisterType<LoggerProvider>().As<ILoggerProvider>().InstancePerLifetimeScope();
-            builder.RegisterType<LogLevelProvider>().As<ILogLevelProvider>().SingleInstance();
+            builder.RegisterType<LoggerConfigurationProvider>().As<ILoggerConfigurationProvider>().SingleInstance();
 
             builder.Register<ILogger>(context => context.Resolve<ILoggerProvider>().Get()).InstancePerLifetimeScope();
         }

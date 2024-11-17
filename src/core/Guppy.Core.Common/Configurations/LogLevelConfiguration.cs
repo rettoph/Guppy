@@ -10,6 +10,6 @@ namespace Guppy.Core.Common.Configurations
         public LogEventLevel Default { get; set; } = LogEventLevel.Information;
 #endif
 
-        public Dictionary<string, LogEventLevel?> Contexts { get; set; } = [];
+        public Dictionary<string, LogEventLevel?> Overrides { get; set; } = [];
     }
 }
