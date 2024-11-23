@@ -5,7 +5,6 @@ using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Example.Client.Utilities;
 using Guppy.Game.Input.Common.Enums;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Example.Client.Loaders
@@ -15,8 +14,10 @@ namespace Guppy.Example.Client.Loaders
     {
         public void ConfigureServices(ContainerBuilder services)
         {
-            services.RegisterType<Camera2D>().As<Camera>().AsSelf().SingleInstance();
             services.RegisterType<CellTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+            services.RegisterGeneric(typeof(StaticPrimitiveBatch<,>));
+            services.RegisterGeneric(typeof(StaticPrimitiveBatch<>));
 
             services.RegisterGeneric(typeof(PointPrimitiveBatch<,>));
             services.RegisterGeneric(typeof(PointPrimitiveBatch<>));

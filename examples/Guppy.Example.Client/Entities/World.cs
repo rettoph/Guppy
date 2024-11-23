@@ -8,12 +8,11 @@ using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Graphics.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Constants;
 using Guppy.Game.Input.Common.Services;
-using Guppy.Game.MonoGame.Common.Primitives;
-using Guppy.Game.MonoGame.Common.Utilities.Cameras;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -46,7 +45,7 @@ namespace Guppy.Example.Client.Entities
 
         private readonly StaticPrimitiveBatch<VertexPositionColor> _inputBatch;
         private readonly PointPrimitiveBatch<VertexPositionColor> _gridBatch;
-        private readonly Camera2D _camera;
+        private readonly ICamera2D _camera;
         private readonly ICellTypeService _cellTypes;
         private readonly GameWindow _window;
         private readonly ICursor _mouse;
@@ -61,7 +60,7 @@ namespace Guppy.Example.Client.Entities
             ICursorService cursors,
             PointPrimitiveBatch<VertexPositionColor> gridBatch,
             StaticPrimitiveBatch<VertexPositionColor> primitiveBatch,
-            Camera2D camera,
+            ICamera2D camera,
             ICellTypeService cellTypes,
             GameWindow window)
         {
@@ -120,7 +119,7 @@ namespace Guppy.Example.Client.Entities
         [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
         public void Initialize(IScene scene)
         {
-            this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
+            this.Initialize(_window.ClientBounds.Width, _window.ClientBounds.Height);
         }
 
         [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
@@ -135,7 +134,7 @@ namespace Guppy.Example.Client.Entities
 
             _gridBatch.Draw(_camera);
 
-            _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X / 2, _mouse.Position.Y / 2, 0) * _camera.Projection);
+            _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X, _mouse.Position.Y, 0) * _camera.Projection);
 
             _graphics.SetRenderTarget(null);
 
@@ -165,12 +164,12 @@ namespace Guppy.Example.Client.Entities
 
             if (_inputActive)
             {
-                foreach (int index in _grid.GetCellIndices(_mouse.Position / 2, _inputRadius + 1))
+                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius + 1))
                 {
                     _grid.Cells[index].Awake = true;
                 }
 
-                foreach (int index in _grid.GetCellIndices(_mouse.Position / 2, _inputRadius))
+                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius))
                 {
                     _grid.Cells[index].Type = _inputCellType;
                     _grid.Cells[index].InactivityCount = 0;

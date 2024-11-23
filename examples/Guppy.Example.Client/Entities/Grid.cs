@@ -250,7 +250,7 @@ namespace Guppy.Example.Client.Entities
                 throw new Exception();
             }
 
-            if(_cellUpdateOrder.Distinct().Count() != _cellUpdateOrder.Length)
+            if (_cellUpdateOrder.Distinct().Count() != _cellUpdateOrder.Length)
             {
                 var test = _cellUpdateOrder.GroupBy(x => x).OrderByDescending(x => x.Count()).ToArray();
             }

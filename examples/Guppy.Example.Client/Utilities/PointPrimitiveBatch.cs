@@ -1,4 +1,4 @@
-﻿using Guppy.Game.MonoGame.Common.Utilities.Cameras;
+﻿using Guppy.Game.Graphics.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -40,7 +40,7 @@ namespace Guppy.Example.Client.Utilities
             Vertices = new TVertex[vertexCount];
         }
 
-        public void Draw(Camera camera)
+        public void Draw(ICamera camera)
         {
             Draw(camera.View, camera.Projection);
         }
@@ -67,9 +67,9 @@ namespace Guppy.Example.Client.Utilities
     public class PointPrimitiveBatch<TVertex>(GraphicsDevice graphicsDevice) : PointPrimitiveBatch<TVertex, BasicEffect>(
         graphicsDevice,
         new BasicEffect(graphicsDevice)
-            {
-                VertexColorEnabled = true
-            })
+        {
+            VertexColorEnabled = true
+        })
         where TVertex : unmanaged, IVertexType
     {
     }
