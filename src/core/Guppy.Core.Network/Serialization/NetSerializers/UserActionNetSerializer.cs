@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Dtos;
+﻿using Guppy.Core.Network.Common.Dtos;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
@@ -8,7 +7,6 @@ using LiteNetLib.Utils;
 
 namespace Guppy.Core.Network.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal sealed class UserActionNetSerializer : NetSerializer<UserAction>
     {
         private INetSerializer<UserDto> _userDtoSerializer = null!;

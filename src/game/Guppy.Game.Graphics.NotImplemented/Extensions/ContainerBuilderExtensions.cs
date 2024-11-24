@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.ResourceTypes;
+using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Game.Extensions;
 using Guppy.Game.MonoGame.ResourceTypes;
 
@@ -14,8 +14,8 @@ namespace Guppy.Game.Graphics.NotImplemented.Extensions
             {
                 builder.RegisterCommonGameServices();
 
-                builder.RegisterType<NotImplementedEffectCodeResourceType>().As<IResourceType>().SingleInstance();
-                builder.RegisterType<NotImplementedSpriteFontResourceType>().As<IResourceType>().SingleInstance();
+                builder.RegisterResourceType<NotImplementedEffectCodeResourceType>();
+                builder.RegisterResourceType<NotImplementedSpriteFontResourceType>();
 
                 builder.RegisterType<NotImplementedCamera>().AsImplementedInterfaces().SingleInstance();
                 builder.RegisterType<NotImplementedContentManager>().AsImplementedInterfaces().SingleInstance();

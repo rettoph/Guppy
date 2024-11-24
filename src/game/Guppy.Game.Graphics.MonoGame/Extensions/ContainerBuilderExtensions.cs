@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.ResourceTypes;
+using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.ImGui.MonoGame.Extensions;
@@ -41,8 +42,10 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
                 builder.RegisterType<MonoGameScreen>().As<IScreen>().InstancePerLifetimeScope();
                 builder.RegisterType<SpriteBatch>().SingleInstance();
 
-                builder.RegisterType<MonoGameEffectCodeResourceType>().As<IResourceType>().SingleInstance();
-                builder.RegisterType<MonoGameSpriteFontResourceType>().As<IResourceType>().SingleInstance();
+                builder.RegisterResourceType<MonoGameEffectCodeResourceType>();
+                builder.RegisterResourceType<MonoGameSpriteFontResourceType>();
+
+                builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
             });
         }
     }

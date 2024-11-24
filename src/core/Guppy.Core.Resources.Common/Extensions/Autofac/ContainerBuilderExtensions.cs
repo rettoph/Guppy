@@ -3,6 +3,7 @@ using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Interfaces;
 using Guppy.Core.Resources.Common.Internals;
+using Guppy.Core.Resources.Common.ResourceTypes;
 
 namespace Guppy.Core.Resources.Common.Extensions.Autofac
 {
@@ -11,6 +12,14 @@ namespace Guppy.Core.Resources.Common.Extensions.Autofac
         public static void RegisterResourcePack(this ContainerBuilder builder, ResourcePackConfiguration configuration)
         {
             builder.RegisterInstance<ResourcePackConfiguration>(configuration);
+        }
+
+        public static ContainerBuilder RegisterResourceType<T>(this ContainerBuilder builder)
+            where T : IResourceType
+        {
+            builder.RegisterType<T>().As<IResourceType>().SingleInstance();
+
+            return builder;
         }
 
         /// <summary>

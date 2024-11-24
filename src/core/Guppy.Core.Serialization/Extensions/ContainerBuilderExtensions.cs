@@ -1,7 +1,9 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Serialization.Common.Factories;
 using Guppy.Core.Serialization.Common.Services;
+using Guppy.Core.Serialization.Factories;
 using Guppy.Core.Serialization.Services;
 using Serilog.Events;
 using System.Text.Json;
@@ -19,6 +21,8 @@ namespace Guppy.Core.Serialization.Extensions
             }
 
             builder.RegisterType<DefaultInstanceService>().As<IDefaultInstanceService>().InstancePerDependency();
+            builder.RegisterType<DefaultEnumerableFactory>().As<IDefaultInstanceFactory>().SingleInstance();
+
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerDependency();
             builder.RegisterGeneric(typeof(PolymorphicJsonSerializerService<>)).As(typeof(IPolymorphicJsonSerializerService<>)).InstancePerDependency();
 

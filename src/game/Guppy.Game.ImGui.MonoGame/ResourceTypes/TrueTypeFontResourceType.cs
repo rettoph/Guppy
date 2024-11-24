@@ -1,12 +1,11 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Files.Common;
+﻿using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
+using Guppy.Game.ImGui.Common;
 using Serilog;
 
-namespace Guppy.Game.ImGui.Common.ResourceTypes
+namespace Guppy.Game.ImGui.MonoGame.ResourceTypes
 {
-    [AutoLoad]
     internal class TrueTypeFontResourceType(ILogger logger) : SimpleResourceType<TrueTypeFont>
     {
         private readonly ILogger _logger = logger;

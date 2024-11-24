@@ -4,8 +4,11 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.StateMachine.Common.Providers;
+using Guppy.Engine.Providers;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Services;
+using Guppy.Game.ResourceTypes;
 using Guppy.Game.Serialization.Json.Converters;
 using Guppy.Game.Services;
 using Serilog;
@@ -21,6 +24,8 @@ namespace Guppy.Game.Extensions
             {
                 builder.RegisterCoreCommandServices();
 
+                builder.RegisterType<SceneStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+
                 builder.RegisterType<ColorConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<Vector2Converter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<Vector3Converter>().As<JsonConverter>().SingleInstance();
@@ -29,6 +34,7 @@ namespace Guppy.Game.Extensions
 
                 builder.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();
 
+                builder.RegisterResourceType<ColorResourceType>();
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)

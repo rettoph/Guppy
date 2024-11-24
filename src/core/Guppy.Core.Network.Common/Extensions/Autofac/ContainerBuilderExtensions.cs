@@ -12,47 +12,47 @@ namespace Autofac
 {
     public static class ContainerBuilderExtensions
     {
-        public static void AddNetSerializer(this ContainerBuilder services, Type netSerializerType)
+        public static void RegisterNetSerializer(this ContainerBuilder builder, Type netSerializerType)
         {
             ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), netSerializerType);
 
-            services.RegisterType(netSerializerType).As<INetSerializer>().SingleInstance();
+            builder.RegisterType(netSerializerType).As<INetSerializer>().SingleInstance();
         }
 
-        public static void AddNetSerializer<T>(this ContainerBuilder services)
+        public static void RegisterNetSerializer<T>(this ContainerBuilder builder)
             where T : class, INetSerializer
         {
             ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), typeof(T));
 
-            services.RegisterType<T>().As<INetSerializer>().SingleInstance();
+            builder.RegisterType<T>().As<INetSerializer>().SingleInstance();
         }
 
-        public static void AddNetSerializer<T>(this ContainerBuilder services, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
+        public static void RegisterNetSerializer<T>(this ContainerBuilder builder, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
             where T : notnull
         {
-            services.RegisterInstance(new RuntimeNetSerializer<T>(serialize, deserialize)).As<INetSerializer>().SingleInstance();
+            builder.RegisterInstance(new RuntimeNetSerializer<T>(serialize, deserialize)).As<INetSerializer>().SingleInstance();
         }
 
-        public static void AddNetMessageType(this ContainerBuilder services, Type netMessengerDefinitionType)
+        public static void RegisterNetMessageType(this ContainerBuilder builder, Type netMessengerDefinitionType)
         {
-            services.RegisterType(netMessengerDefinitionType).As<NetMessageTypeDefinition>().SingleInstance();
+            builder.RegisterType(netMessengerDefinitionType).As<NetMessageTypeDefinition>().SingleInstance();
         }
 
-        public static void AddNetMessageType<TDefinition>(this ContainerBuilder services)
+        public static void RegisterNetMessageType<TDefinition>(this ContainerBuilder builder)
             where TDefinition : NetMessageTypeDefinition
         {
-            services.RegisterType<TDefinition>().As<NetMessageTypeDefinition>().SingleInstance();
+            builder.RegisterType<TDefinition>().As<NetMessageTypeDefinition>().SingleInstance();
         }
 
-        public static void AddNetMessageType(this ContainerBuilder services, NetMessageTypeDefinition definition)
+        public static void RegisterNetMessageType(this ContainerBuilder builder, NetMessageTypeDefinition definition)
         {
-            services.RegisterInstance(definition).As<NetMessageTypeDefinition>().SingleInstance();
+            builder.RegisterInstance(definition).As<NetMessageTypeDefinition>().SingleInstance();
         }
 
-        public static void AddNetMessageType<T>(this ContainerBuilder services, DeliveryMethod deliveryMethod, byte outgoingChannel)
+        public static void RegisterNetMessageType<T>(this ContainerBuilder builder, DeliveryMethod deliveryMethod, byte outgoingChannel)
             where T : notnull
         {
-            services.AddNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
+            builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
         }
 
         /// <summary>
@@ -60,13 +60,13 @@ namespace Autofac
         /// Traditionally this is done on scope creation with a custom builder action.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="services"></param>
+        /// <param name="builder"></param>
         /// <param name="peerType"></param>
         /// <param name="groupId"></param>
-        public static void RegisterNetScope<T>(this ContainerBuilder services, PeerType peerType, byte groupId)
+        public static void RegisterNetScope<T>(this ContainerBuilder builder, PeerType peerType, byte groupId)
         {
-            services.RegisterInstance<NetScopeContext<T>>(new NetScopeContext<T>(peerType, groupId)).SingleInstance();
-            services.Register<INetScope>(ctc => ctc.Resolve<INetScope<T>>()).InstancePerLifetimeScope();
+            builder.RegisterInstance<NetScopeContext<T>>(new NetScopeContext<T>(peerType, groupId)).SingleInstance();
+            builder.Register<INetScope>(ctc => ctc.Resolve<INetScope<T>>()).InstancePerLifetimeScope();
         }
     }
 }

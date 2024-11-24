@@ -2,7 +2,9 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common.Serialization.Json;
 using Guppy.Core.Resources.Common.Configuration;
+using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Resources.ResourceTypes;
 using Guppy.Core.Resources.Serialization.Json.Converters;
 using Guppy.Core.Resources.Services;
 using System.Text.Json.Serialization;
@@ -28,6 +30,8 @@ namespace Guppy.Core.Resources.Extensions
             builder.RegisterType<SettingValueConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ResourceConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ResourceKeyConverter>().As<JsonConverter>().SingleInstance();
+
+            builder.RegisterResourceType<StringResourceType>();
 
             return builder.AddTag(nameof(RegisterCoreResourcesServices));
         }

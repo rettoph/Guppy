@@ -1,12 +1,10 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Network.Common.Claims;
+﻿using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Dtos;
 using Guppy.Core.Network.Common.Serialization;
 using LiteNetLib.Utils;
 
 namespace Guppy.Core.Network.Serialization.NetSerializers
 {
-    [AutoLoad]
     internal sealed class UserDtoNetSerializer : NetSerializer<UserDto>
     {
         public override UserDto Deserialize(NetDataReader reader)

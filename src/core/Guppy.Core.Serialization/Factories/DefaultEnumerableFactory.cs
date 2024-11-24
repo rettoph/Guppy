@@ -1,10 +1,8 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Serialization.Common.Factories;
+﻿using Guppy.Core.Serialization.Common.Factories;
 using System.Reflection;
 
 namespace Guppy.Core.Serialization.Factories
 {
-    [AutoLoad]
     internal sealed class DefaultEnumerableFactory : IDefaultInstanceFactory
     {
         private static readonly MethodInfo _methodInfo = typeof(Enumerable).GetMethod(nameof(Enumerable.Empty), BindingFlags.Public | BindingFlags.Static) ?? throw new NotImplementedException();

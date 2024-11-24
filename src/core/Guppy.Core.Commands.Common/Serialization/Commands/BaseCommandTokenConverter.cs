@@ -1,9 +1,5 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-
-namespace Guppy.Core.Commands.Common.Serialization.Commands
+﻿namespace Guppy.Core.Commands.Common.Serialization.Commands
 {
-    [Service<ICommandTokenConverter>(ServiceLifetime.Scoped, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class BaseCommandTokenConverter<T> : ICommandTokenConverter
     {
         bool ICommandTokenConverter.AppliesTo(Type type)

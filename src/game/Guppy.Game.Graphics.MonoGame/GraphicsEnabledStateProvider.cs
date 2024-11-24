@@ -1,13 +1,12 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.StateMachine.Common;
+﻿using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
+using Guppy.Game.Graphics.Common;
 using Guppy.Game.Graphics.Common.Constants;
 using Guppy.Game.Graphics.Common.Enums;
 using Guppy.Game.MonoGame.Common.Extensions;
 
-namespace Guppy.Game.Graphics.Common
+namespace Guppy.Game.Graphics.MonoGame
 {
-    [AutoLoad]
     internal class GraphicsEnabledStateProvider(IGraphicsDevice graphics, ISceneConfiguration? sceneConfiguration = null) : BaseStateProvider
     {
         private readonly IGraphicsDevice _graphics = graphics;

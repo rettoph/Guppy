@@ -7,8 +7,10 @@ using Guppy.Core.Network.Common.Services;
 using Guppy.Core.Network.Messages;
 using Guppy.Core.Network.Peers;
 using Guppy.Core.Network.Serialization.Json;
+using Guppy.Core.Network.Serialization.NetSerializers;
 using Guppy.Core.Network.Services;
 using Guppy.Core.Serialization.Json.Converters;
+using Guppy.Core.StateMachine.Common.Providers;
 using LiteNetLib;
 using System.Text.Json.Serialization;
 
@@ -35,9 +37,16 @@ namespace Guppy.Core.Network.Extensions
             builder.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
             builder.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            builder.AddNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
-            builder.AddNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
-            builder.AddNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+            builder.RegisterNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+            builder.RegisterNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+            builder.RegisterNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+
+            builder.RegisterNetSerializer<ConnectionRequestDataNetSerializer>();
+            builder.RegisterNetSerializer<ConnectionRequestResponseNetSerializer>();
+            builder.RegisterNetSerializer<UserActionNetSerializer>();
+            builder.RegisterNetSerializer<UserDtoNetSerializer>();
+
+            builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
             return builder.AddTag(nameof(RegisterCoreNetworkServices));
         }

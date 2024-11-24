@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
@@ -8,7 +7,6 @@ using Guppy.Game.Common;
 
 namespace Guppy.Engine.Providers
 {
-    [AutoLoad]
     internal sealed class SceneStateProvider : BaseStateProvider
     {
         private readonly IScene? _scene;

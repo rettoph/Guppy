@@ -1,10 +1,7 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using LiteNetLib;
+﻿using LiteNetLib;
 
 namespace Guppy.Core.Network.Common.Definitions
 {
-    [Service<NetMessageTypeDefinition>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class NetMessageTypeDefinition
     {
         public abstract Type Body { get; }
