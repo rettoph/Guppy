@@ -4,6 +4,7 @@ using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Common.Attributes
 {
+    [Obsolete]
     public class ServiceAttribute(ServiceLifetime lifetime, Type[]? serviceType, ServiceRegistrationFlags registrationFlags, object? tag = null) : GuppyConfigurationAttribute
     {
         public readonly IEnumerable<Type> ServiceTypes = serviceType ?? [];
@@ -73,6 +74,7 @@ namespace Guppy.Core.Common.Attributes
         }
     }
 
+    [Obsolete]
     public class ServiceAttribute<TService>(ServiceLifetime lifetime, ServiceRegistrationFlags registrationFlags, object? tag = null) : ServiceAttribute(lifetime, [typeof(TService)], registrationFlags, tag)
     {
     }

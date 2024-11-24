@@ -35,14 +35,10 @@ namespace Guppy.Core.Extensions
             builder.RegisterInstance(context).As<IGuppyContext>().SingleInstance();
 
             builder.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-            builder.RegisterGeneric(typeof(Lazier<>)).As(typeof(Lazier<>)).InstancePerDependency();
-            builder.RegisterGeneric(typeof(Scoped<>)).As(typeof(IScoped<>)).InstancePerDependency();
             builder.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
             builder.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();
             builder.RegisterGeneric(typeof(Optional<>)).As(typeof(IOptional<>)).InstancePerDependency();
 
-            builder.RegisterType<FilteredService>().As<IFilteredService>().InstancePerLifetimeScope();
             builder.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
             builder.RegisterType<ConfigurationService>().As<IConfigurationService>().InstancePerLifetimeScope();
 

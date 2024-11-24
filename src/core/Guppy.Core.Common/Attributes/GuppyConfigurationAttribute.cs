@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace Guppy.Core.Common.Attributes
 {
+    /// <summary>
+    /// Custom attribute definind a configuration method. All defined attributes
+    /// implementing this type will automatically be configured on engine boot
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, AllowMultiple = true, Inherited = true)]
     public abstract class GuppyConfigurationAttribute : Attribute
     {

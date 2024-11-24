@@ -3,6 +3,9 @@ using Guppy.Core.Common.Extensions.Autofac;
 
 namespace Guppy.Core.Common.Attributes
 {
+    /// <summary>
+    /// Determin a custom logger context for the service.
+    /// </summary>
     public class ServiceLoggerContextAttribute : GuppyConfigurationAttribute
     {
         public readonly string LoggerContext;
