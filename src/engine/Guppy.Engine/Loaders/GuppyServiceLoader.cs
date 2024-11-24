@@ -13,6 +13,7 @@ namespace Guppy.Engine.Loaders
         public void ConfigureServices(ContainerBuilder services)
         {
             services.RegisterType<ObjectTextFilterService>().As<IObjectTextFilterService>().SingleInstance();
+            services.RegisterType<DefaultObjectTextFilter>().As<ObjectTextFilter>().SingleInstance();
 
             services.RegisterInstance(new JsonStringEnumConverter()).As<JsonConverter>().SingleInstance();
         }

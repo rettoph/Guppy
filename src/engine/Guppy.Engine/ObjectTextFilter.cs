@@ -1,11 +1,8 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Guppy.Engine.Common.Enums;
+﻿using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Services;
 
 namespace Guppy.Engine
 {
-    [Service<ObjectTextFilter>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class ObjectTextFilter
     {
         public readonly int Priority;

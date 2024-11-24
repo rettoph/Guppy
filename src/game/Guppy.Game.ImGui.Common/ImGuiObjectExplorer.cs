@@ -1,6 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
-using Guppy.Engine.Common.Enums;
+﻿using Guppy.Engine.Common.Enums;
 using Guppy.Game.ImGui.Common.Services;
 
 namespace Guppy.Game.ImGui.Common
@@ -19,7 +17,6 @@ namespace Guppy.Game.ImGui.Common
         public abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 
-    [Service<ImGuiObjectExplorer>(ServiceLifetime.Singleton, ServiceRegistrationFlags.RequireAutoLoadAttribute)]
     public abstract class ImGuiObjectExplorer<T> : ImGuiObjectExplorer
     {
         public override bool AppliesTo(Type type)

@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Enums;
+﻿using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Services;
 using System.Collections;
 using System.Reflection;
@@ -8,7 +7,6 @@ using System.Runtime.InteropServices;
 namespace Guppy.Engine
 {
 
-    [AutoLoad]
     internal class DefaultObjectTextFilter : ObjectTextFilter
     {
         private readonly Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo;
