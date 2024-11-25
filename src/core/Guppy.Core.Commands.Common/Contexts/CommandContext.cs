@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Commands.Common.Attributes;
 using Guppy.Core.Commands.Common.Extensions;
-using Guppy.Core.Common;
 using System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Contexts
@@ -19,38 +18,40 @@ namespace Guppy.Core.Commands.Common.Contexts
 
         }
 
-        public static ICommandContext Create(Type type, Type? parent = null, string? name = null, string? description = null)
+        public static ICommandContext Create(ICommand defaultInstance)
         {
-            ThrowIf.Type.IsNotAssignableFrom<ICommand>(type);
-
-            CommandAttribute? attribute = type.GetCustomAttribute<CommandAttribute>();
-            parent ??= attribute?.Parent;
-            name ??= attribute?.Name ?? type.Name.ToCommandName();
-            description ??= attribute?.Description;
-
-            Type contextType = typeof(CommandContext<>).MakeGenericType(type);
-            ICommandContext context = (ICommandContext)(Activator.CreateInstance(contextType, parent, name, description) ?? throw new NotImplementedException());
+            Type contextType = typeof(CommandContext<>).MakeGenericType(defaultInstance.GetType());
+            ICommandContext context = (ICommandContext)(Activator.CreateInstance(contextType, defaultInstance) ?? throw new NotImplementedException());
 
             return context;
         }
     }
 
-    public class CommandContext<T>(
-        Type? parent,
-        string name,
-        string? description) : CommandContext, ICommandContext<T>
+    public class CommandContext<T> : CommandContext, ICommandContext<T>
         where T : ICommand, new()
     {
+        private readonly T _defaultInstance;
+
         public override Type Type => typeof(T);
 
-        public override string Name { get; } = name;
+        public override string Name { get; }
 
-        public override string? Description { get; } = description;
+        public override string? Description { get; }
 
-        public override Type? Parent { get; } = parent;
+        public override Type? Parent { get; }
 
         public override IOptionContext[] Options { get; } = OptionContext.CreateAll<T>();
 
         public override IArgumentContext[] Arguments { get; } = ArgumentContext.CreateAll<T>();
+
+        public CommandContext(T defaultInstance)
+        {
+            _defaultInstance = defaultInstance;
+
+            CommandAttribute? attribute = typeof(T).GetCustomAttribute<CommandAttribute>();
+            this.Parent ??= attribute?.Parent;
+            this.Name ??= attribute?.Name ?? typeof(T).Name.ToCommandName();
+            this.Description ??= attribute?.Description;
+        }
     }
 }

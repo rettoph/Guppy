@@ -15,12 +15,14 @@ namespace Guppy.Core.Commands.Services
         private readonly IConsole _console;
 
         public CommandService(
-            IFiltered<ICommandContext> commandContexts,
+            IFiltered<ICommand> commands,
             ICommandTokenService tokenService,
             IConsole console)
         {
             _console = console;
-            _managers = commandContexts.Select(x => CommandManager.Create(x, tokenService)).ToDictionary(x => x.Context.Type, x => x);
+            _managers = commands
+                .Select(CommandContext.Create)
+                .Select(x => CommandManager.Create(x, tokenService)).ToDictionary(x => x.Context.Type, x => x);
             _root = new RootCommand()
             {
                 Name = ">",
