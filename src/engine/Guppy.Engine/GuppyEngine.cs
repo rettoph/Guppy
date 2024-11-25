@@ -4,7 +4,6 @@ using Autofac.Features.ResolveAnything;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
-using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Utilities;
 using Guppy.Core.Extensions;
@@ -12,9 +11,7 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Engine.Common.Extensions.Autofac;
-using Guppy.Engine.Common.Loaders;
 using Guppy.Engine.Extensions.Autofac;
-using System.Reflection;
 
 namespace Guppy.Engine
 {
@@ -97,11 +94,10 @@ namespace Guppy.Engine
 
                 // Construct the factory service and prepare for assembly loading.
                 IContainer boot = bootBuilder.Build();
-                IAssemblyService assemblies = boot.Resolve<IAssemblyService>();
 
-                assemblies.OnAssemblyLoaded += HandleAssemblyLoaded;
+                // Load assemblies
+                IAssemblyService assemblies = boot.Resolve<IAssemblyService>();
                 assemblies.Load(boot.Resolve<IGuppyContext>().Entry);
-                assemblies.OnAssemblyLoaded -= HandleAssemblyLoaded;
 
                 // Begin boot phase 2 - call all boot attributes
 
@@ -136,20 +132,6 @@ namespace Guppy.Engine
                 StaticInstance<IContainer>.Initialize(container, true);
 
                 return container;
-            }
-        }
-
-        private static void HandleAssemblyLoaded(IAssemblyService sender, Assembly assembly)
-        {
-            // First initialize all assembly loaders
-            IEnumerable<IAssemblyLoader> loaders = assembly.GetTypes()
-                .AssignableFrom<IAssemblyLoader>()
-                .WithAttribute<AutoLoadAttribute>(true)
-                .Select(t => Activator.CreateInstance(t) as IAssemblyLoader ?? throw new Exception());
-
-            foreach (IAssemblyLoader loader in loaders)
-            {
-                loader.ConfigureAssemblies(sender);
             }
         }
         #endregion
