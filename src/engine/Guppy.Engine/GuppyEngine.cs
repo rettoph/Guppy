@@ -11,6 +11,7 @@ using Guppy.Core.Extensions;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
+using Guppy.Engine.Common.Extensions.Autofac;
 using Guppy.Engine.Common.Loaders;
 using Guppy.Engine.Extensions.Autofac;
 using System.Reflection;
@@ -125,11 +126,10 @@ namespace Guppy.Engine
                     }
                 }
 
-                // Automatically load all modules for every defined assembly
+                // Automatically load all modules found within every defined assembly
                 foreach (Type moduleType in assemblies.GetTypes<IModule>())
                 {
-                    IModule module = (boot.Resolve(moduleType) as IModule) ?? throw new NotImplementedException();
-                    engineBuilder.RegisterModule(module);
+                    engineBuilder.RegisterModule(moduleType, boot);
                 }
 
                 IContainer container = engineBuilder.Build();
