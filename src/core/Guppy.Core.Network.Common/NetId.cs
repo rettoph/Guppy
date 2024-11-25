@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Serialization.Common.Attributes;
-using LiteNetLib.Utils;
+﻿using LiteNetLib.Utils;
 
 namespace Guppy.Core.Network.Common
 {
@@ -26,7 +25,6 @@ namespace Guppy.Core.Network.Common
             throw new ArgumentException();
         }
 
-        [PolymorphicJsonType<INetId>(nameof(Byte))]
         public readonly struct Byte : INetId<byte>
         {
             public static INetId Zero { get; } = Create(0);
@@ -79,7 +77,6 @@ namespace Guppy.Core.Network.Common
             }
         }
 
-        [PolymorphicJsonType<INetId>(nameof(UShort))]
         public readonly struct UShort : INetId<ushort>
         {
             public static INetId Zero { get; } = Create(0);

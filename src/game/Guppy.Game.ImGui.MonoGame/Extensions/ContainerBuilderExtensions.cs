@@ -3,6 +3,7 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Common.Helpers;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Constants;
@@ -12,6 +13,7 @@ using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using Guppy.Game.ImGui.MonoGame.Common.Messages;
 using Guppy.Game.ImGui.MonoGame.ResourceTypes;
 using Guppy.Game.Input.Common.Enums;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Text.Json.Serialization;
 
@@ -37,6 +39,11 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
                 builder.RegisterType<ImStyleVarVector2ValueConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ImStyleColorValueConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ImStyleFontValueConverter>().As<JsonConverter>().SingleInstance();
+
+                builder.RegisterPolymorphicJsonType<ImStyleColorValue, ImStyleValue>(nameof(Color));
+                builder.RegisterPolymorphicJsonType<ImStyleFontValue, ImStyleValue>(nameof(TrueTypeFont));
+                builder.RegisterPolymorphicJsonType<ImStyleVarFloatValue, ImStyleValue>(nameof(Single));
+                builder.RegisterPolymorphicJsonType<ImStyleVarVector2Value, ImStyleValue>(nameof(Vector2));
 
                 builder.RegisterResourceType<ImStyleResourceType>();
                 builder.RegisterResourceType<TrueTypeFontResourceType>();

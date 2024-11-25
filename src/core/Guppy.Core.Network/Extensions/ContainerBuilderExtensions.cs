@@ -9,6 +9,7 @@ using Guppy.Core.Network.Peers;
 using Guppy.Core.Network.Serialization.Json;
 using Guppy.Core.Network.Serialization.NetSerializers;
 using Guppy.Core.Network.Services;
+using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Core.StateMachine.Common.Providers;
 using LiteNetLib;
@@ -33,6 +34,9 @@ namespace Guppy.Core.Network.Extensions
                 builder.RegisterType<UShortNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
                 builder.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
+
+                builder.RegisterPolymorphicJsonType<NetId.Byte, INetId>(nameof(NetId.Byte));
+                builder.RegisterPolymorphicJsonType<NetId.UShort, INetId>(nameof(NetId.UShort));
 
                 builder.RegisterNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
                 builder.RegisterNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);

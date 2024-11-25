@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Common.Factories;
 using Guppy.Core.Serialization.Common.Services;
 using Guppy.Core.Serialization.Factories;
@@ -26,10 +26,10 @@ namespace Guppy.Core.Serialization.Extensions
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>().InstancePerDependency();
             builder.RegisterGeneric(typeof(PolymorphicJsonSerializerService<>)).As(typeof(IPolymorphicJsonSerializerService<>)).InstancePerDependency();
 
-            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<bool, object>(nameof(Boolean))).SingleInstance();
-            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<int, object>(nameof(Int32))).SingleInstance();
-            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<string, object>(nameof(String))).SingleInstance();
-            builder.RegisterInstance<PolymorphicJsonType>(new PolymorphicJsonType<LogEventLevel, object>(nameof(LogEventLevel))).SingleInstance();
+            builder.RegisterPolymorphicJsonType<bool, object>(nameof(Boolean));
+            builder.RegisterPolymorphicJsonType<int, object>(nameof(Int32));
+            builder.RegisterPolymorphicJsonType<string, object>(nameof(String));
+            builder.RegisterPolymorphicJsonType<LogEventLevel, object>(nameof(LogEventLevel));
 
             builder.Configure<JsonSerializerOptions>((p, options) =>
             {
