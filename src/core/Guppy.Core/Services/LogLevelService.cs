@@ -5,16 +5,16 @@ using Guppy.Core.Files.Common.Services;
 using Serilog.Events;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Core.Providers
+namespace Guppy.Core.Services
 {
-    internal sealed class LoggerConfigurationProvider : ILoggerConfigurationProvider
+    internal sealed class LogLevelService : ILogLevelService
     {
         private static readonly FileLocation LogLevelConfigurationFileLocation = FileLocation.AppData("logger.config.json");
 
         private readonly IFileService _fileService;
         private readonly IFile<LogLevelConfiguration> _configuration;
 
-        public LoggerConfigurationProvider(IFileService fileService)
+        public LogLevelService(IFileService fileService)
         {
             _fileService = fileService;
             _configuration = fileService.Get<LogLevelConfiguration>(LogLevelConfigurationFileLocation);

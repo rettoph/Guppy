@@ -4,7 +4,7 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Guppy.Core.Common.Providers;
 using Guppy.Core.Middleware;
-using Guppy.Core.Providers;
+using Guppy.Core.Services;
 using Serilog;
 using System.Reflection;
 
@@ -22,10 +22,10 @@ namespace Guppy.Core.Modules
         {
             base.Load(builder);
 
-            builder.RegisterType<LoggerProvider>().As<ILoggerProvider>().InstancePerLifetimeScope();
-            builder.RegisterType<LoggerConfigurationProvider>().As<ILoggerConfigurationProvider>().SingleInstance();
+            builder.RegisterType<LoggerService>().As<ILoggerService>().InstancePerLifetimeScope();
+            builder.RegisterType<LogLevelService>().As<ILogLevelService>().SingleInstance();
 
-            builder.Register<ILogger>(context => context.Resolve<ILoggerProvider>().Get()).InstancePerLifetimeScope();
+            builder.Register<ILogger>(context => context.Resolve<ILoggerService>().GetOrCreate()).InstancePerLifetimeScope();
         }
 
         protected override void AttachToComponentRegistration(

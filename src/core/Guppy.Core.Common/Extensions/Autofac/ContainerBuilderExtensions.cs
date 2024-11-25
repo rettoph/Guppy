@@ -17,21 +17,21 @@ namespace Guppy.Core.Common.Extensions.Autofac
             services.RegisterInstance(new ConfigurationBuilder<T>(builder)).As<ConfigurationBuilder>();
         }
 
-        public static void RegisterServiceLoggerContext(this ContainerBuilder services, Type serviceType, string loggerContext)
+        public static void RegisterLoggerContext(this ContainerBuilder services, Type serviceType, string loggerContext)
         {
-            services.RegisterInstance(new ServiceLoggerContext()
+            services.RegisterInstance(new LoggerContext()
             {
                 ServiceType = serviceType,
-                LoggerContext = loggerContext
+                Context = loggerContext
             });
         }
 
-        public static void RegisterServiceLoggerContext<TService>(this ContainerBuilder services, string loggerContext)
+        public static void RegisterLoggerContext<TService>(this ContainerBuilder services, string loggerContext)
         {
-            services.RegisterInstance(new ServiceLoggerContext()
+            services.RegisterInstance(new LoggerContext()
             {
                 ServiceType = typeof(TService),
-                LoggerContext = loggerContext
+                Context = loggerContext
             });
         }
 

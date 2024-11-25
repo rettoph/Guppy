@@ -6,13 +6,13 @@ using Serilog;
 using Serilog.Events;
 using System.Runtime.InteropServices;
 
-namespace Guppy.Core.Providers
+namespace Guppy.Core.Services
 {
-    public class LoggerProvider : ILoggerProvider
+    public class LoggerService : ILoggerService
     {
         private const string SourceContextPropertyName = "SourceContext";
 
-        private readonly ILoggerConfigurationProvider _logLevelService;
+        private readonly ILogLevelService _logLevelService;
         private readonly ILogger _base;
         private readonly ILogger _default;
         private readonly Dictionary<string, ILogger> _loggers;
@@ -21,10 +21,10 @@ namespace Guppy.Core.Providers
         public ILogger Base => _base;
         public ILogger Default => _default;
 
-        public LoggerProvider(
-            ILoggerConfigurationProvider logLevelService,
+        public LoggerService(
+            ILogLevelService logLevelService,
             IConfiguration<LoggerConfiguration> configuration,
-            IEnumerable<ServiceLoggerContext> serviceLoggerContexts)
+            IEnumerable<LoggerContext> loggerContexts)
         {
             _loggers = [];
             _logLevelService = logLevelService;
@@ -36,11 +36,11 @@ namespace Guppy.Core.Providers
                 .MinimumLevel.Is(_logLevelService.TryGetLogLevel(null) ?? throw new NotImplementedException())
                 .WriteTo.Logger(_base)
                 .CreateLogger();
-            _contexts = serviceLoggerContexts.ToDictionary(x => x.ServiceType, x => x.LoggerContext);
+            _contexts = loggerContexts.ToDictionary(x => x.ServiceType, x => x.Context);
         }
 
 
-        public ILogger Get(Type? contextType)
+        public ILogger GetOrCreate(Type? contextType)
         {
             if (contextType is null)
             {

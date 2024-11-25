@@ -1,8 +1,8 @@
 ﻿namespace Guppy.Core.Common.Contexts
 {
-    public class ServiceLoggerContext
+    public class LoggerContext
     {
         public Type ServiceType { get; init; } = typeof(object);
-        public string LoggerContext { get; init; } = string.Empty;
+        public string Context { get; init; } = string.Empty;
     }
 }

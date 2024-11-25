@@ -13,7 +13,7 @@ namespace Guppy.Core.Middleware
 
         public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
-            ILogger logger = context.Resolve<ILoggerProvider>().Get(_context);
+            ILogger logger = context.Resolve<ILoggerService>().GetOrCreate(_context);
             context.ChangeParameters(TypedParameter.From(logger).Yield().Concat(context.Parameters));
 
             next(context);
