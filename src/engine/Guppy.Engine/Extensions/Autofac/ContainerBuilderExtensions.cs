@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Engine.Components.Engine;
+using Guppy.Engine.Modules;
 using Serilog;
 
 namespace Guppy.Engine.Extensions.Autofac
@@ -19,6 +20,8 @@ namespace Guppy.Engine.Extensions.Autofac
 
         public static ContainerBuilder RegisterEngineServices(this ContainerBuilder builder)
         {
+            builder.RegisterModule<EngineModule>();
+
             builder.RegisterType<EngineBrokerComponent>().AsImplementedInterfaces().SingleInstance();
 
             return builder;

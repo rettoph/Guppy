@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
@@ -122,6 +123,13 @@ namespace Guppy.Engine
                     {
                         attribute.TryConfigure(boot, engineBuilder, type);
                     }
+                }
+
+                // Automatically load all modules for every defined assembly
+                foreach (Type moduleType in assemblies.GetTypes<IModule>())
+                {
+                    IModule module = (boot.Resolve(moduleType) as IModule) ?? throw new NotImplementedException();
+                    engineBuilder.RegisterModule(module);
                 }
 
                 IContainer container = engineBuilder.Build();
