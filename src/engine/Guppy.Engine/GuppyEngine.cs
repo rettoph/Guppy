@@ -2,7 +2,6 @@
 using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Utilities;
@@ -111,16 +110,6 @@ namespace Guppy.Engine
                     .RegisterCoreServices(context, assemblies);
 
                 engineBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
-
-                // Automatically invoke all loaded GuppyConfigurationAttribute instances
-                IAttributeService<object, GuppyConfigurationAttribute> typeAttributes = assemblies.GetAttributes<GuppyConfigurationAttribute>(true);
-                foreach ((Type type, GuppyConfigurationAttribute[] attributes) in typeAttributes)
-                {
-                    foreach (GuppyConfigurationAttribute attribute in attributes)
-                    {
-                        attribute.TryConfigure(boot, engineBuilder, type);
-                    }
-                }
 
                 // Automatically load all modules found within every defined assembly
                 foreach (Type moduleType in assemblies.GetTypes<IModule>())

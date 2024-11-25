@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Contexts;
+﻿using Guppy.Core.Common.Contexts;
 using Guppy.Engine.Common;
 using System.Reflection;
 
@@ -26,7 +25,6 @@ namespace Guppy.Engine
             else
             {
                 libraries = libraries.Concat([
-                    typeof(GuppyConfigurationAttribute).Assembly,
                     typeof(GuppyEngine).Assembly,
                     typeof(IGuppyEngine).Assembly
                 ]).ToArray();
