@@ -7,12 +7,10 @@ using Guppy.Game.Common.Components;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Styling;
-using Guppy.Game.MonoGame.Common.Attributes;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
-    [SceneHasTerminalWindowFilter]
     internal class SceneTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent, IImGuiComponent
     {
         private readonly ICommandService _commands = commands;

@@ -3,6 +3,8 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.StateMachine.Common;
+using Guppy.Core.StateMachine.Common.Extensions;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.MonoGame.Extensions;
 using Guppy.Game.ImGui.MonoGame.Extensions;
@@ -43,6 +45,9 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+                builder.RegisterStateFilter<SceneDebugWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasDebugWindow), true);
+                builder.RegisterStateFilter<SceneTerminalWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasTerminalWindow), true);
 
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
