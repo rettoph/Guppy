@@ -7,9 +7,11 @@ namespace Guppy.Core.Common.Extensions.Autofac
 {
     public static class ContainerBuilderExtensions
     {
-        public static void RegisterFilter(this ContainerBuilder builder, IServiceFilter filter)
+        public static ContainerBuilder RegisterFilter(this ContainerBuilder builder, IServiceFilter filter)
         {
             builder.RegisterInstance(filter).As<IServiceFilter>().SingleInstance();
+
+            return builder;
         }
 
         public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)

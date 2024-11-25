@@ -20,35 +20,31 @@ namespace Guppy.Core.Network.Extensions
     {
         public static ContainerBuilder RegisterCoreNetworkServices(this ContainerBuilder builder)
         {
-            if (builder.HasTag(nameof(RegisterCoreNetworkServices)))
+            return builder.EnsureRegisteredOnce(nameof(RegisterCoreNetworkServices), builder =>
             {
-                return builder;
-            }
+                builder.RegisterType<NetSerializerService>().As<INetSerializerService>().InstancePerLifetimeScope();
+                builder.RegisterGeneric(typeof(NetScope<>)).As(typeof(INetScope<>)).InstancePerLifetimeScope();
+                builder.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();
+                builder.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
+                builder.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();
 
-            builder.RegisterType<NetSerializerService>().As<INetSerializerService>().InstancePerLifetimeScope();
-            builder.RegisterGeneric(typeof(NetScope<>)).As(typeof(INetScope<>)).InstancePerLifetimeScope();
-            builder.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();
-            builder.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
-            builder.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();
+                builder.RegisterType<PolymorphicConverter<INetId>>().As<JsonConverter>().SingleInstance();
+                builder.RegisterType<ByteNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterType<UShortNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
 
-            builder.RegisterType<PolymorphicConverter<INetId>>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<ByteNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<UShortNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+                builder.RegisterNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+                builder.RegisterNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
 
-            builder.RegisterNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
-            builder.RegisterNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
-            builder.RegisterNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+                builder.RegisterNetSerializer<ConnectionRequestDataNetSerializer>();
+                builder.RegisterNetSerializer<ConnectionRequestResponseNetSerializer>();
+                builder.RegisterNetSerializer<UserActionNetSerializer>();
+                builder.RegisterNetSerializer<UserDtoNetSerializer>();
 
-            builder.RegisterNetSerializer<ConnectionRequestDataNetSerializer>();
-            builder.RegisterNetSerializer<ConnectionRequestResponseNetSerializer>();
-            builder.RegisterNetSerializer<UserActionNetSerializer>();
-            builder.RegisterNetSerializer<UserDtoNetSerializer>();
-
-            builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
-
-            return builder.AddTag(nameof(RegisterCoreNetworkServices));
+                builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+            });
         }
     }
 }
