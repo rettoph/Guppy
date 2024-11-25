@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
-    [AutoLoad]
     [SceneHasDebugWindowFilter]
     internal sealed class SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent<IScene>, IImGuiComponent
     {

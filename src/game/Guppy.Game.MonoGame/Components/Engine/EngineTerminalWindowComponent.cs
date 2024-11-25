@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Engine
 {
-    [AutoLoad]
     internal class EngineTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService) : IEngineComponent, IImGuiComponent
     {
         private readonly ICommandService _commands = commands;

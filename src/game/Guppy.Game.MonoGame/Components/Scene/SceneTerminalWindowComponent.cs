@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
-    [AutoLoad]
     [SceneHasTerminalWindowFilter]
     internal class SceneTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent, IImGuiComponent
     {
@@ -45,9 +44,11 @@ namespace Guppy.Game.MonoGame.Components.Scene
                 _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
                 _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                ImGuiWindowClassPtr windowClass = new();
-                windowClass.ClassId = _imgui.GetID(nameof(ITerminal));
-                windowClass.DockingAllowUnclassed = false;
+                ImGuiWindowClassPtr windowClass = new()
+                {
+                    ClassId = _imgui.GetID(nameof(ITerminal)),
+                    DockingAllowUnclassed = false
+                };
 
                 _imgui.SetNextWindowClass(windowClass);
                 _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);

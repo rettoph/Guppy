@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Graphics.MonoGame.Components
 {
-    [AutoLoad]
     public class MonoGameWorldViewProjectionEffectComponent(ICamera2D camera, IEnumerable<IWorldViewProjectionEffect> effects) : IEngineComponent, IDrawableComponent
     {
         private readonly ICamera2D _camera = camera;

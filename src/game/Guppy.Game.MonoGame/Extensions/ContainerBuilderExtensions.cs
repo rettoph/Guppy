@@ -35,6 +35,15 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
+                builder.RegisterType<DrawImGuiComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<EngineDebugWindowComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<EngineTerminalWindowComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<FpsDebugComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<ToggleWindowComponent>().AsImplementedInterfaces().SingleInstance();
+
+                builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyMonoGamePack.Directory)

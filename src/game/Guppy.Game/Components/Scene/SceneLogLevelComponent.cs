@@ -10,7 +10,6 @@ using Serilog.Events;
 
 namespace Guppy.Game.Components.Scene
 {
-    [AutoLoad]
     internal class EngineLogLevelComponent : IEngineComponent, ICommandSubscriber<LogLevelCommand>
     {
         private readonly ITerminal _terminal;

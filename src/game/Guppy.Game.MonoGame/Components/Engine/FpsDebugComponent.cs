@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Engine
 {
-    [AutoLoad]
     internal class FpsDebugComponent(IImGui imgui) : IEngineComponent, IDebugComponent
     {
 

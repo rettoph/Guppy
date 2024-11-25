@@ -4,9 +4,11 @@ using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.Common;
+using Guppy.Game.Graphics.MonoGame.Components;
 using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
+using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.ResourceTypes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -46,6 +48,9 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
                 builder.RegisterResourceType<MonoGameSpriteFontResourceType>();
 
                 builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+
+                builder.RegisterType<MonoGameWorldViewProjectionEffectComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
             });
         }
     }

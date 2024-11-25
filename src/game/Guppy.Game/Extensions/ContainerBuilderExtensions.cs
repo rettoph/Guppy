@@ -5,9 +5,13 @@ using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.StateMachine.Common.Providers;
+using Guppy.Engine.Components.Guppy;
 using Guppy.Engine.Providers;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Services;
+using Guppy.Game.Components.Engine;
+using Guppy.Game.Components.Guppy;
+using Guppy.Game.Components.Scene;
 using Guppy.Game.ResourceTypes;
 using Guppy.Game.Serialization.Json.Converters;
 using Guppy.Game.Services;
@@ -33,6 +37,12 @@ namespace Guppy.Game.Extensions
                 builder.RegisterType<SceneService>().As<ISceneService>().SingleInstance();
 
                 builder.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();
+
+                builder.RegisterType<SceneFrameComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<EngineLogLevelComponent>().AsImplementedInterfaces().SingleInstance();
+
+                builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
                 builder.RegisterResourceType<ColorResourceType>();
                 builder.RegisterResourcePack(new ResourcePackConfiguration()

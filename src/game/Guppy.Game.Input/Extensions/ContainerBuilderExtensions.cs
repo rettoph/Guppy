@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Game.Input.Components;
 using Guppy.Game.Input.Services;
 
 namespace Guppy.Game.Input.Extensions
@@ -15,6 +16,9 @@ namespace Guppy.Game.Input.Extensions
                 builder.RegisterType<CursorService>().AsImplementedInterfaces().SingleInstance();
 
                 builder.RegisterType<InputService>().AsImplementedInterfaces().SingleInstance();
+
+                builder.RegisterType<ButtonPublishComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<MouseCursorPublishComponent>().AsImplementedInterfaces().SingleInstance();
             });
         }
     }

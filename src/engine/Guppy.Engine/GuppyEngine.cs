@@ -109,7 +109,9 @@ namespace Guppy.Engine
                 // Run any custom builder actions
                 builder?.Invoke(engineBuilder);
 
-                engineBuilder.RegisterCoreServices(context, assemblies);
+                engineBuilder.RegisterEngineServices()
+                    .RegisterCoreServices(context, assemblies);
+
                 engineBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
 
                 // Automatically invoke all loaded GuppyConfigurationAttribute instances

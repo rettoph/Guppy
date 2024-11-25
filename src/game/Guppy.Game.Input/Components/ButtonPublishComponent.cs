@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Input.Components
 {
-    [AutoLoad]
     internal sealed class ButtonPublishComponent : IEngineComponent, IUpdatableComponent
     {
         private readonly IInputService _inputs;

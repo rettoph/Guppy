@@ -10,7 +10,6 @@ using Guppy.Game.MonoGame.Components.Scene;
 
 namespace Guppy.Game.MonoGame.Components.Engine
 {
-    [AutoLoad]
     internal sealed class ToggleWindowComponent(ISettingService settings) : IEngineComponent, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowComponent>>
     {
         private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);

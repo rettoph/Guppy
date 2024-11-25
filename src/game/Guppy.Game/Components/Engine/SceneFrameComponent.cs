@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Components.Engine
 {
-    [AutoLoad]
     internal class SceneFrameComponent(ISceneService scenes) : IEngineComponent, IUpdatableComponent, IDrawableComponent
     {
         private readonly ISceneService _scenes = scenes;
