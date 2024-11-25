@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Extensions;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
@@ -8,6 +9,7 @@ using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Engine.Components.Guppy;
 using Guppy.Engine.Providers;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Guppy.Game.Components.Engine;
 using Guppy.Game.Components.Guppy;
@@ -43,6 +45,8 @@ namespace Guppy.Game.Extensions
 
                 builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+                builder.RegisterSceneFilter<ICommandContext<LogLevelCommand>>(null);
 
                 builder.RegisterResourceType<ColorResourceType>();
                 builder.RegisterResourcePack(new ResourcePackConfiguration()

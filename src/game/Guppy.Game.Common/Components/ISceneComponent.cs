@@ -1,10 +1,8 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common.Attributes;
 
 namespace Guppy.Game.Common.Components
 {
-    [SceneFilter<IScene>]
     public interface ISceneComponent
     {
 

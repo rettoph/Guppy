@@ -1,12 +1,11 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.StateMachine.Common;
-using Guppy.Core.StateMachine.Common.Filters;
+using Guppy.Game.Common.Extensions;
 
 namespace Guppy.Game.Common.Attributes
 {
+    [Obsolete]
     public class SceneFilterAttribute : GuppyConfigurationAttribute
     {
         public readonly Type? SceneType;
@@ -23,10 +22,11 @@ namespace Guppy.Game.Common.Attributes
 
         protected override void Configure(IContainer boot, ContainerBuilder builder, Type classType)
         {
-            builder.RegisterFilter(new StateServiceFilter<Type?>(classType, StateKey<Type?>.Create<IScene>(), this.SceneType));
+            builder.RegisterSceneFilter(classType, this.SceneType);
         }
     }
 
+    [Obsolete]
     public class SceneFilterAttribute<TScene> : SceneFilterAttribute
         where TScene : IScene
     {
