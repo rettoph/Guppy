@@ -4,8 +4,6 @@ using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Guppy.Game")]
-
 namespace Guppy.Game.ImGui.Common
 {
 

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 
-namespace Guppy.Core.Resources.Common
+namespace Guppy.Core.Resources
 {
-    internal class ResourceTypeValues
+    public class ResourceTypeValues
     {
         public string Type { get; set; } = string.Empty;
 

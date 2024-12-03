@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Resources.Serialization.Json;
+using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Serialization.Common.Extensions
 {
@@ -19,6 +20,13 @@ namespace Guppy.Core.Serialization.Common.Extensions
             where TInstance : TBase
         {
             return builer.RegisterPolymorphicJsonType(key, typeof(TInstance), typeof(TBase));
+        }
+        public static ContainerBuilder RegisterJsonConverter<TConverter>(this ContainerBuilder builder)
+            where TConverter : JsonConverter
+        {
+            builder.RegisterType<TConverter>().As<JsonConverter>().SingleInstance();
+
+            return builder;
         }
     }
 }

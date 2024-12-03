@@ -10,7 +10,7 @@ namespace Guppy.Core.Resources.Common
         string Name { get; }
         Type Type { get; }
 
-        internal IResource CreateValue();
+        IResource CreateResource();
     }
 
     public readonly struct ResourceKey<T> : IResourceKey, IEquatable<ResourceKey<T>>
@@ -97,7 +97,7 @@ namespace Guppy.Core.Resources.Common
             return _cache.Values;
         }
 
-        readonly IResource IResourceKey.CreateValue()
+        readonly IResource IResourceKey.CreateResource()
         {
             return new Resource<T>(this);
         }

@@ -4,8 +4,8 @@ using Guppy.Core.Common.Utilities;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Resources.Constants;
 using Serilog;
 using System.Runtime.InteropServices;
 

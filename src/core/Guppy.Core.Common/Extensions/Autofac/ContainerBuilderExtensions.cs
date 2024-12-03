@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Builder;
+using Guppy.Core.Common.Configurations;
 using Guppy.Core.Common.Contexts;
 using System.Runtime.CompilerServices;
 
@@ -16,7 +17,7 @@ namespace Guppy.Core.Common.Extensions.Autofac
 
         public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)
         {
-            services.RegisterInstance(new ConfigurationBuilder<T>(builder)).As<ConfigurationBuilder>();
+            services.RegisterInstance(new ServiceConfiguration<T>(builder)).As<ServiceConfiguration>();
         }
 
         public static void RegisterLoggerContext(this ContainerBuilder services, Type serviceType, string loggerContext)

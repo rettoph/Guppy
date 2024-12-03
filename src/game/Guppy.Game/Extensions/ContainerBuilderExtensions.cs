@@ -5,6 +5,7 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Engine.Components.Guppy;
 using Guppy.Engine.Providers;
@@ -18,7 +19,6 @@ using Guppy.Game.ResourceTypes;
 using Guppy.Game.Serialization.Json.Converters;
 using Guppy.Game.Services;
 using Serilog;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Game.Extensions
 {
@@ -32,9 +32,9 @@ namespace Guppy.Game.Extensions
 
                 builder.RegisterType<SceneStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
-                builder.RegisterType<ColorConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<Vector2Converter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<Vector3Converter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<ColorConverter>();
+                builder.RegisterJsonConverter<Vector2Converter>();
+                builder.RegisterJsonConverter<Vector3Converter>();
 
                 builder.RegisterType<SceneService>().As<ISceneService>().SingleInstance();
 

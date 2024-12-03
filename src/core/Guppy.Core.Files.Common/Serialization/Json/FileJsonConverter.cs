@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Files.Common.Serialization.Json
 {
-    public class IFileJsonConverter<T>(Lazy<IFileService> files) : JsonConverter<IFile<T>>
+    public class FileJsonConverter<T>(Lazy<IFileService> files) : JsonConverter<IFile<T>>
         where T : new()
     {
         private readonly Lazy<IFileService> _files = files;

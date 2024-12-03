@@ -2,8 +2,8 @@
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Serialization.Json;
 using Guppy.Core.Files.Services;
+using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Extensions;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Files.Extensions
 {
@@ -18,8 +18,8 @@ namespace Guppy.Core.Files.Extensions
 
             builder.RegisterCoreSerializationServices();
 
-            builder.RegisterType<DirectoryLocationJsonConverter>().As<JsonConverter>().SingleInstance();
-            builder.RegisterType<FileLocationJsonConverter>().As<JsonConverter>().SingleInstance();
+            builder.RegisterJsonConverter<DirectoryLocationJsonConverter>();
+            builder.RegisterJsonConverter<FileLocationJsonConverter>();
             builder.RegisterType<PathService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<FileService>().AsImplementedInterfaces().SingleInstance();
 

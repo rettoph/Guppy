@@ -29,11 +29,11 @@ namespace Guppy.Core.Network.Extensions
                 builder.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
                 builder.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();
 
-                builder.RegisterType<PolymorphicConverter<INetId>>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ByteNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<UShortNetIdJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ClaimJsonConverter>().As<JsonConverter>().SingleInstance();
-                builder.RegisterType<ClaimTypeJsonConverter>().As<JsonConverter>().SingleInstance();
+                builder.RegisterJsonConverter<PolymorphicConverter<INetId>>();
+                builder.RegisterJsonConverter<ByteNetIdJsonConverter>();
+                builder.RegisterJsonConverter<UShortNetIdJsonConverter>();
+                builder.RegisterJsonConverter<ClaimJsonConverter>();
+                builder.RegisterJsonConverter<ClaimTypeJsonConverter>();
 
                 builder.RegisterPolymorphicJsonType<NetId.Byte, INetId>(nameof(NetId.Byte));
                 builder.RegisterPolymorphicJsonType<NetId.UShort, INetId>(nameof(NetId.UShort));

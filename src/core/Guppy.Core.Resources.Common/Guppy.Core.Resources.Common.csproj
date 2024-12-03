@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Guppy.Core.Resources</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Standart.Hash.xxHash" Version="4.0.5" PrivateAssets="compile" />
   </ItemGroup>
 

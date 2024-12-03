@@ -1,4 +1,4 @@
-﻿namespace Guppy.Core.Resources.Common.Constants
+﻿namespace Guppy.Core.Resources.Constants
 {
     internal static class FilePaths
     {

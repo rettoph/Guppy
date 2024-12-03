@@ -8,13 +8,7 @@
   </PropertyGroup>
 	
   <Import Project="..\..\..\Guppy.Core.Common.g.targets" />
-
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>Guppy.Core</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.1.0" />
     <PackageReference Include="Serilog" Version="4.0.2" />

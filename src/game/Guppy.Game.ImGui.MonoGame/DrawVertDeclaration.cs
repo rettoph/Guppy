@@ -1,7 +1,7 @@
 ﻿using ImGuiNET;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Guppy.Game.ImGui.Common
+namespace Guppy.Game.ImGui.MonoGame
 {
     internal class DrawVertDeclaration
     {

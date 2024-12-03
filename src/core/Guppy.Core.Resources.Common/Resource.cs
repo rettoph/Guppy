@@ -14,7 +14,7 @@ namespace Guppy.Core.Resources.Common
 
         void Clear();
 
-        internal void Refresh(IResourcePackService resourcePackService);
+        void Refresh(IResourcePackService resourcePackService);
     }
 
     public readonly struct Resource<T> : IResource, IRef<T>

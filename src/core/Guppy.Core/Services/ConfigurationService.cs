@@ -1,13 +1,13 @@
 ﻿using Autofac;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Configurations;
 using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class ConfigurationService(ILifetimeScope scope, IEnumerable<ConfigurationBuilder> builders) : IConfigurationService
+    internal sealed class ConfigurationService(ILifetimeScope scope, IEnumerable<ServiceConfiguration> builders) : IConfigurationService
     {
         private readonly ILifetimeScope _scope = scope;
-        private readonly ConfigurationBuilder[] _builders = builders.ToArray();
+        private readonly ServiceConfiguration[] _configurators = builders.ToArray();
 
         public void Configure<T>(T instance)
         {
@@ -16,11 +16,11 @@ namespace Guppy.Core.Services
                 return;
             }
 
-            foreach (ConfigurationBuilder builder in _builders)
+            foreach (ServiceConfiguration configurator in _configurators)
             {
-                if (builder.CanBuild(instance.GetType()))
+                if (configurator.CanBuild(instance.GetType()))
                 {
-                    builder.Build(_scope, instance);
+                    configurator.Configure(_scope, instance);
                 }
             }
         }

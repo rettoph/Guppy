@@ -73,16 +73,16 @@ namespace Guppy.Core.Resources.Services
             return ResourceKey<T>.GetAll().Select(x => this.Get(x));
         }
 
-        private IResource CacheGetOrAddValues(IResourceKey resource)
+        private IResource CacheGetOrAddValues(IResourceKey key)
         {
 
-            ref IResource? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, resource.Id, out bool exists);
+            ref IResource? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, key.Id, out bool exists);
             if (exists == true)
             {
                 return cache!;
             }
 
-            cache = resource.CreateValue();
+            cache = key.CreateResource();
 
             if (_initialized == false)
             {

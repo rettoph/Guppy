@@ -6,7 +6,7 @@ using Serilog;
 
 namespace Guppy.Game.ImGui.MonoGame.ResourceTypes
 {
-    internal class TrueTypeFontResourceType(ILogger logger) : SimpleResourceType<TrueTypeFont>
+    public class TrueTypeFontResourceType(ILogger logger) : SimpleResourceType<TrueTypeFont>
     {
         private readonly ILogger _logger = logger;
 

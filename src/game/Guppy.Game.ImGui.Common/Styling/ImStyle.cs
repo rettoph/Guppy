@@ -50,7 +50,7 @@ namespace Guppy.Game.ImGui.Common.Styling
             _globalValues.Add(new ImStyleFontValue(null, new Ref<ImFontPtr>(font)));
         }
 
-        internal bool TryGetValue(string key, [MaybeNullWhen(false)] out ImStyleValue value)
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out ImStyleValue value)
         {
             return _keyedValues.TryGetValue(key, out value);
         }

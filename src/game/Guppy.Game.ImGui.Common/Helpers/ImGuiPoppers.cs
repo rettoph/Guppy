@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Game.ImGui.Common.Helpers
 {
-    internal static class ImGuiPoppers
+    public static class ImGuiPoppers
     {
         public class IdPopper(IImGui imgui) : IDisposable
         {

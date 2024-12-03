@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Guppy.Game.ImGui.Common
 {
-    internal sealed class DefaultImGuiObjectExplorer(IObjectTextFilterService filter, IImGui imgui) : ImGuiObjectExplorer
+    public sealed class DefaultImGuiObjectExplorer(IObjectTextFilterService filter, IImGui imgui) : ImGuiObjectExplorer
     {
         private readonly IObjectTextFilterService _filter = filter;
         private readonly IImGui _imgui = imgui;

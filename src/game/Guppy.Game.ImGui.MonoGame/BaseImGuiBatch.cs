@@ -6,7 +6,7 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.ImGui.Common;
-using Guppy.Game.ImGui.MonoGame.Common.Messages;
+using Guppy.Game.ImGui.Common.Messages;
 using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -262,9 +262,10 @@ namespace Guppy.Game.ImGui.MonoGame
                 return font!;
             }
 
-            font = new Ref<ImFontPtr>(default!);
-
-            font.Value = new ImFontPtr(ttf, size);
+            font = new Ref<ImFontPtr>(default!)
+            {
+                Value = new ImFontPtr(ttf, size)
+            };
 
             if (_initialized)
             {

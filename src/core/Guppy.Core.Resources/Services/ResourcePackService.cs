@@ -8,6 +8,7 @@ using Guppy.Core.Resources.Common.Constants;
 using Guppy.Core.Resources.Common.Interfaces;
 using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Resources.Constants;
 using Serilog;
 
 namespace Guppy.Core.Resources.Services
@@ -17,7 +18,7 @@ namespace Guppy.Core.Resources.Services
         private bool _initialized;
         private readonly IFileService _files;
         private readonly IDictionary<Guid, ResourcePack> _packs;
-        private readonly IFile<ResourcePacksConfiguration> _configuration;
+        private readonly IFile<ResourcePackCollectionConfiguration> _configuration;
         private readonly IResourceTypeService _resourceTypes;
         private readonly ILogger _logger;
         private readonly Lazy<ISettingService> _settings;
@@ -34,7 +35,7 @@ namespace Guppy.Core.Resources.Services
             ILogger logger)
         {
             _files = files;
-            _configuration = _files.Get<ResourcePacksConfiguration>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration));
+            _configuration = _files.Get<ResourcePackCollectionConfiguration>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration));
             _resourceTypes = resourceTypes;
             _logger = logger;
             _packs = new Dictionary<Guid, ResourcePack>();
