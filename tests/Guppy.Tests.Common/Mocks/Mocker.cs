@@ -8,11 +8,11 @@ namespace Guppy.Tests.Common
         public abstract object GetInstance();
     }
 
-    public class Mocker<T> : Mocker
+    public class Mocker<T>(Mock<T>? instance = null) : Mocker
         where T : class
     {
         private T? _override;
-        private readonly Mock<T> _instance = new();
+        private readonly Mock<T> _instance = instance ?? new();
 
         public static Mocker<T> Create()
         {
