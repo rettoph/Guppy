@@ -14,17 +14,19 @@ namespace Guppy.Core.Common
                 }
             }
 
-            public static void IsNotAssignableFrom(System.Type to, System.Type from)
+            public static bool IsNotAssignableFrom(System.Type to, System.Type from)
             {
                 if (!to.IsAssignableFrom(from))
                 {
                     throw new ArgumentException($"'{to.FullName}' is not assignable from '{from.FullName}'.");
                 }
+
+                return false;
             }
 
-            public static void IsNotAssignableFrom<TTo>(System.Type from)
+            public static bool IsNotAssignableFrom<TTo>(System.Type from)
             {
-                ThrowIf.Type.IsNotAssignableFrom(typeof(TTo), from);
+                return ThrowIf.Type.IsNotAssignableFrom(typeof(TTo), from);
             }
 
             public static void IsNotGenericTypeImplementation(System.Type genericTypeDefinition, System.Type implementation)
