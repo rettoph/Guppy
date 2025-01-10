@@ -40,7 +40,10 @@ namespace System.Text.Json
         }
 
         public static bool CheckProperty<T>(ref this Utf8JsonReader reader, T property, bool required)
-            where T : Enum => reader.CheckPropertyName(property.ToString(), required);
+            where T : Enum
+        {
+            return reader.CheckPropertyName(property.ToString(), required);
+        }
 
         public static bool ReadPropertyName(ref this Utf8JsonReader reader, [MaybeNullWhen(false)] out string propertyName)
         {

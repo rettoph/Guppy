@@ -114,7 +114,10 @@ namespace Guppy.Example.Client.Entities
         }
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
-        public void Initialize(IScene scene) => this.Initialize(this._window.ClientBounds.Width, this._window.ClientBounds.Height);
+        public void Initialize(IScene scene)
+        {
+            this.Initialize(this._window.ClientBounds.Width, this._window.ClientBounds.Height);
+        }
 
         [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
         public unsafe void Draw(GameTime gameTime)
@@ -189,23 +192,35 @@ namespace Guppy.Example.Client.Entities
             }
         }
 
-        private static Color GetColor(CellTypeEnum cellType) => cellType switch
+        private static Color GetColor(CellTypeEnum cellType)
         {
-            CellTypeEnum.Air => Color.DarkGray,
-            CellTypeEnum.Sand => Color.SandyBrown,
-            CellTypeEnum.Water => Color.Blue,
-            CellTypeEnum.Concrete => Color.Gray,
-            CellTypeEnum.Plant => Color.Green,
-            CellTypeEnum.Fire => Random.Shared.Next(0, 6) == 0 ? Color.Orange : Color.Red,
-            CellTypeEnum.Smolder => Random.Shared.Next(0, 15) == 0 ? Color.Orange : Color.Black,
-            CellTypeEnum.Ash => Color.LightGray,
-            _ => Color.Pink
-        };
+            return cellType switch
+            {
+                CellTypeEnum.Air => Color.DarkGray,
+                CellTypeEnum.Sand => Color.SandyBrown,
+                CellTypeEnum.Water => Color.Blue,
+                CellTypeEnum.Concrete => Color.Gray,
+                CellTypeEnum.Plant => Color.Green,
+                CellTypeEnum.Fire => Random.Shared.Next(0, 6) == 0 ? Color.Orange : Color.Red,
+                CellTypeEnum.Smolder => Random.Shared.Next(0, 15) == 0 ? Color.Orange : Color.Black,
+                CellTypeEnum.Ash => Color.LightGray,
+                _ => Color.Pink
+            };
+        }
 
-        public void Process(in Guid messageId, PlaceSandInput message) => this._inputActive = message.Active;
+        public void Process(in Guid messageId, PlaceSandInput message)
+        {
+            this._inputActive = message.Active;
+        }
 
-        public void Process(in Guid messageId, SelectCellTypeInput message) => this.SetInput(message.CellType, this._inputRadius);
+        public void Process(in Guid messageId, SelectCellTypeInput message)
+        {
+            this.SetInput(message.CellType, this._inputRadius);
+        }
 
-        private void HandleClientSizeChanged(object? sender, EventArgs e) => this.Initialize(this._window.ClientBounds.Width / 2, this._window.ClientBounds.Height / 2);
+        private void HandleClientSizeChanged(object? sender, EventArgs e)
+        {
+            this.Initialize(this._window.ClientBounds.Width / 2, this._window.ClientBounds.Height / 2);
+        }
     }
 }

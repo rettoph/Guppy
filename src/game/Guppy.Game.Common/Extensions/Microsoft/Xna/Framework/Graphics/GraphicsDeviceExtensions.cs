@@ -17,9 +17,11 @@
         }
 
         public static Texture2D BuildPixel(this GraphicsDevice graphics, Color? color = null)
-            => new Texture2D(graphics, 1, 1).Then(p =>
-            {
-                p.SetData<Color>([color ?? Color.White]);
-            });
+        {
+            return new Texture2D(graphics, 1, 1).Then(p =>
+                    {
+                        p.SetData<Color>([color ?? Color.White]);
+                    });
+        }
     }
 }

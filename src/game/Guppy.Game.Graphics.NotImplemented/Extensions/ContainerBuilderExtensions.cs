@@ -8,7 +8,9 @@ namespace Guppy.Game.Graphics.NotImplemented.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterNotImplementedGraphicsServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterNotImplementedGraphicsServices), builder =>
+        public static ContainerBuilder RegisterNotImplementedGraphicsServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterNotImplementedGraphicsServices), builder =>
                                                                                                                          {
                                                                                                                              builder.RegisterCommonGameServices();
 
@@ -21,5 +23,6 @@ namespace Guppy.Game.Graphics.NotImplemented.Extensions
                                                                                                                              builder.RegisterType<NotImplementedGraphicsDevice>().AsImplementedInterfaces().SingleInstance();
                                                                                                                              builder.RegisterType<NotImplementedScreen>().AsImplementedInterfaces().SingleInstance();
                                                                                                                          });
+        }
     }
 }

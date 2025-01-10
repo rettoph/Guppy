@@ -12,7 +12,10 @@ namespace Guppy.Core.Common.Configurations
     {
         private readonly Action<ILifetimeScope, T> _builder = builder;
 
-        public override bool CanBuild(Type type) => type.IsAssignableTo<T>();
+        public override bool CanBuild(Type type)
+        {
+            return type.IsAssignableTo<T>();
+        }
 
         public override void Configure(ILifetimeScope scope, object instance)
         {

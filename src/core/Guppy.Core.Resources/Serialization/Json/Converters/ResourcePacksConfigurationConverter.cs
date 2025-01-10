@@ -14,6 +14,9 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
             return configuration;
         }
 
-        public override void Write(Utf8JsonWriter writer, ResourcePackCollectionConfiguration value, JsonSerializerOptions options) => JsonSerializer.Serialize(writer, value.Packs, options);
+        public override void Write(Utf8JsonWriter writer, ResourcePackCollectionConfiguration value, JsonSerializerOptions options)
+        {
+            JsonSerializer.Serialize(writer, value.Packs, options);
+        }
     }
 }

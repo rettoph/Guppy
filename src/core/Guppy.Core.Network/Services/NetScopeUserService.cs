@@ -66,9 +66,15 @@ namespace Guppy.Core.Network.Identity.Services
         }
 
 
-        public IUser Get(int id) => this._users[id];
+        public IUser Get(int id)
+        {
+            return this._users[id];
+        }
 
-        public bool TryGet(int id, [MaybeNullWhen(false)] out IUser user) => this._users.TryGetValue(id, out user);
+        public bool TryGet(int id, [MaybeNullWhen(false)] out IUser user)
+        {
+            return this._users.TryGetValue(id, out user);
+        }
 
         private void HandleUserStateChanged(IUser sender, UserStateEnum old, UserStateEnum value)
         {
@@ -80,8 +86,14 @@ namespace Guppy.Core.Network.Identity.Services
             this.Remove(sender);
         }
 
-        public IEnumerator<IUser> GetEnumerator() => this._users.Values.GetEnumerator();
+        public IEnumerator<IUser> GetEnumerator()
+        {
+            return this._users.Values.GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
     }
 }

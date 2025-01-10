@@ -25,15 +25,27 @@ namespace Guppy.Core.Common
             });
         }
 
-        public static SequenceGroup<T> GetByValue(T value) => _enumMap[value];
+        public static SequenceGroup<T> GetByValue(T value)
+        {
+            return _enumMap[value];
+        }
 
-        public readonly int CompareTo(SequenceGroup<T> other) => this.Order.CompareTo(other.Order);
+        public readonly int CompareTo(SequenceGroup<T> other)
+        {
+            return this.Order.CompareTo(other.Order);
+        }
 
-        public override readonly bool Equals(object? obj) => obj is SequenceGroup<T> group &&
+        public override readonly bool Equals(object? obj)
+        {
+            return obj is SequenceGroup<T> group &&
                    this.Name == group.Name &&
                    this.Order == group.Order;
+        }
 
-        public override readonly int GetHashCode() => HashCode.Combine(this.Name, this.Order);
+        public override readonly int GetHashCode()
+        {
+            return HashCode.Combine(this.Name, this.Order);
+        }
 
         public static bool operator <(SequenceGroup<T> left, SequenceGroup<T> right)
         {

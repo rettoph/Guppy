@@ -23,7 +23,9 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
             Microsoft.Xna.Framework.Game game,
             GraphicsDeviceManager graphics,
             ContentManager content,
-            GameWindow window) => builder.EnsureRegisteredOnce(nameof(RegisterMonoGameGraphicsService), builder =>
+            GameWindow window)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterMonoGameGraphicsService), builder =>
                                            {
                                                builder.RegisterCommonGameServices().RegisterGameMonoGameImGuiServices().RegisterGameInputServices();
 
@@ -50,5 +52,6 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
                                                builder.RegisterType<MonoGameWorldViewProjectionEffectComponent>().AsImplementedInterfaces().SingleInstance();
                                                builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
                                            });
+        }
     }
 }

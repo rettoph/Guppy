@@ -31,9 +31,15 @@ namespace Guppy.Game
             this._updateComponentsActions.Add(this.Components);
         }
 
-        public void Draw(GameTime gameTime) => this._drawComponentsActions?.Invoke(gameTime);
+        public void Draw(GameTime gameTime)
+        {
+            this._drawComponentsActions?.Invoke(gameTime);
+        }
 
-        public void Update(GameTime gameTime) => this._updateComponentsActions.Invoke(gameTime);
+        public void Update(GameTime gameTime)
+        {
+            this._updateComponentsActions.Invoke(gameTime);
+        }
 
         public new GameEngine Start()
         {
@@ -42,6 +48,9 @@ namespace Guppy.Game
             return this;
         }
 
-        IGameEngine IGameEngine.Start() => this.Start();
+        IGameEngine IGameEngine.Start()
+        {
+            return this.Start();
+        }
     }
 }

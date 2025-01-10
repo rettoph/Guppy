@@ -24,7 +24,10 @@ namespace Guppy.Core.Common
                 return false;
             }
 
-            public static bool IsNotAssignableFrom<TTo>(System.Type from) => ThrowIf.Type.IsNotAssignableFrom(typeof(TTo), from);
+            public static bool IsNotAssignableFrom<TTo>(System.Type from)
+            {
+                return ThrowIf.Type.IsNotAssignableFrom(typeof(TTo), from);
+            }
 
             public static void IsNotGenericTypeImplementation(System.Type genericTypeDefinition, System.Type implementation)
             {

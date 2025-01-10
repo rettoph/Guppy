@@ -13,6 +13,9 @@ namespace Guppy.Tests.Common.Mocks
         {
         }
 
-        public Lazy<IFiltered<T>> ToLazy() => new(() => this);
+        public Lazy<IFiltered<T>> ToLazy()
+        {
+            return new(() => this);
+        }
     }
 }

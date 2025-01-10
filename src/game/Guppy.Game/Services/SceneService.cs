@@ -106,7 +106,10 @@ namespace Guppy.Game.Services
             }
         }
 
-        public IEnumerable<IScene> GetAll() => this._scenes;
+        public IEnumerable<IScene> GetAll()
+        {
+            return this._scenes;
+        }
 
         private SceneConfiguration GetConfiguration(Type sceneType)
         {

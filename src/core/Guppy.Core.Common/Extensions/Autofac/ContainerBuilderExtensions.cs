@@ -15,19 +15,28 @@ namespace Guppy.Core.Common.Extensions.Autofac
             return builder;
         }
 
-        public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder) => services.RegisterInstance(new ServiceConfiguration<T>(builder)).As<ServiceConfiguration>();
-
-        public static void RegisterLoggerContext(this ContainerBuilder services, Type serviceType, string loggerContext) => services.RegisterInstance(new LoggerContext()
+        public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)
         {
-            ServiceType = serviceType,
-            Context = loggerContext
-        });
+            services.RegisterInstance(new ServiceConfiguration<T>(builder)).As<ServiceConfiguration>();
+        }
 
-        public static void RegisterLoggerContext<TService>(this ContainerBuilder services, string loggerContext) => services.RegisterInstance(new LoggerContext()
+        public static void RegisterLoggerContext(this ContainerBuilder services, Type serviceType, string loggerContext)
         {
-            ServiceType = typeof(TService),
-            Context = loggerContext
-        });
+            services.RegisterInstance(new LoggerContext()
+            {
+                ServiceType = serviceType,
+                Context = loggerContext
+            });
+        }
+
+        public static void RegisterLoggerContext<TService>(this ContainerBuilder services, string loggerContext)
+        {
+            services.RegisterInstance(new LoggerContext()
+            {
+                ServiceType = typeof(TService),
+                Context = loggerContext
+            });
+        }
 
         private static readonly ConditionalWeakTable<ContainerBuilder, HashSet<string>> _tags = [];
         private static HashSet<string> GetTags(ContainerBuilder builder)
@@ -50,7 +59,10 @@ namespace Guppy.Core.Common.Extensions.Autofac
             return builder;
         }
 
-        public static bool HasTag(this ContainerBuilder builder, string tag) => GetTags(builder).Contains(tag);
+        public static bool HasTag(this ContainerBuilder builder, string tag)
+        {
+            return GetTags(builder).Contains(tag);
+        }
 
         public static ContainerBuilder EnsureRegisteredOnce(this ContainerBuilder builder, string tag, Action<ContainerBuilder> build)
         {
@@ -67,6 +79,9 @@ namespace Guppy.Core.Common.Extensions.Autofac
         }
 
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterInstanceFrom<T>(this ContainerBuilder builder, ILifetimeScope scope)
-            where T : class => builder.RegisterInstance<T>(scope.Resolve<T>());
+            where T : class
+        {
+            return builder.RegisterInstance<T>(scope.Resolve<T>());
+        }
     }
 }

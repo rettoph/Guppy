@@ -21,8 +21,14 @@ namespace Guppy.Game.MonoGame.Components.Engine
             //
         }
 
-        public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message) => this._isDebugWindowEnabled.Value = !this._isDebugWindowEnabled.Value;
+        public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)
+        {
+            this._isDebugWindowEnabled.Value = !this._isDebugWindowEnabled.Value;
+        }
 
-        public void Process(in Guid messageId, Toggle<EngineTerminalWindowComponent> message) => this._isTerminalWindowEnabled.Value = !this._isTerminalWindowEnabled.Value;
+        public void Process(in Guid messageId, Toggle<EngineTerminalWindowComponent> message)
+        {
+            this._isTerminalWindowEnabled.Value = !this._isTerminalWindowEnabled.Value;
+        }
     }
 }

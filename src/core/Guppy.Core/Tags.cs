@@ -18,7 +18,10 @@ namespace Guppy.Core
             this._autofac.ChildLifetimeScopeBeginning += this.HandleChildLifetimeScopeBeginning;
         }
 
-        private void HandleChildLifetimeScopeBeginning(object? sender, LifetimeScopeBeginningEventArgs e) => e.LifetimeScope.Resolve<Tags>()._parent = this;
+        private void HandleChildLifetimeScopeBeginning(object? sender, LifetimeScopeBeginningEventArgs e)
+        {
+            e.LifetimeScope.Resolve<Tags>()._parent = this;
+        }
 
         public bool Has(object tag)
         {

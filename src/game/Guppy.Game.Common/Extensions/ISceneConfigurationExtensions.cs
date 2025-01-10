@@ -6,8 +6,14 @@ namespace Guppy.Game.Common.Extensions
     {
         private const string _containerBuilder = nameof(_containerBuilder);
 
-        public static ISceneConfiguration WithContainerBuilder(this ISceneConfiguration configuration, Action<ContainerBuilder> builder) => configuration.Set(_containerBuilder, builder);
+        public static ISceneConfiguration WithContainerBuilder(this ISceneConfiguration configuration, Action<ContainerBuilder> builder)
+        {
+            return configuration.Set(_containerBuilder, builder);
+        }
 
-        public static Action<ContainerBuilder>? GetContainerBuilder(this ISceneConfiguration configuration) => configuration.Get<Action<ContainerBuilder>>(_containerBuilder);
+        public static Action<ContainerBuilder>? GetContainerBuilder(this ISceneConfiguration configuration)
+        {
+            return configuration.Get<Action<ContainerBuilder>>(_containerBuilder);
+        }
     }
 }

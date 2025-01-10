@@ -17,15 +17,18 @@ namespace Guppy.Game
         private readonly Resource<Color> _fatal = resourceService.Get(GuppyResources.Colors.TerminalFatal);
         private readonly Resource<Color> _default = resourceService.Get(GuppyResources.Colors.TerminalDefault);
 
-        public IRef<Color> Get(LogEventLevel level) => level switch
+        public IRef<Color> Get(LogEventLevel level)
         {
-            LogEventLevel.Verbose => this._verbose,
-            LogEventLevel.Debug => this._debug,
-            LogEventLevel.Information => this._information,
-            LogEventLevel.Warning => this._warning,
-            LogEventLevel.Error => this._error,
-            LogEventLevel.Fatal => this._fatal,
-            _ => (IRef<Color>)this._default,
-        };
+            return level switch
+            {
+                LogEventLevel.Verbose => this._verbose,
+                LogEventLevel.Debug => this._debug,
+                LogEventLevel.Information => this._information,
+                LogEventLevel.Warning => this._warning,
+                LogEventLevel.Error => this._error,
+                LogEventLevel.Fatal => this._fatal,
+                _ => (IRef<Color>)this._default,
+            };
+        }
     }
 }

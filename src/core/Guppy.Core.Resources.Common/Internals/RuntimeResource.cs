@@ -11,6 +11,9 @@ namespace Guppy.Core.Resources.Common.Internals
 
         public string Localization { get; } = localization;
 
-        public void AddToPack(IResourcePack resourcePack) => resourcePack.Add(this.Key, this.Localization, this.Value);
+        public void AddToPack(IResourcePack resourcePack)
+        {
+            resourcePack.Add(this.Key, this.Localization, this.Value);
+        }
     }
 }

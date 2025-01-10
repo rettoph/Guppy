@@ -15,7 +15,10 @@ namespace Guppy.Game.Serialization.Json.Converters
             A
         }
 
-        public override bool CanConvert(Type typeToConvert) => typeToConvert == typeof(Color);
+        public override bool CanConvert(Type typeToConvert)
+        {
+            return typeToConvert == typeof(Color);
+        }
 
         public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
         {
@@ -29,14 +32,17 @@ namespace Guppy.Game.Serialization.Json.Converters
             writer.WriteEndObject();
         }
 
-        public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => reader.TokenType switch
+        public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            JsonTokenType.StartObject => ReadColorObject(ref reader, typeToConvert, options),
-            JsonTokenType.StartArray => ReadColorArray(ref reader, typeToConvert, options),
-            JsonTokenType.String => ReadColorString(ref reader, typeToConvert, options),
-            JsonTokenType.Number => ReadColorNumber(ref reader, typeToConvert, options),
-            _ => throw new JsonException(),
-        };
+            return reader.TokenType switch
+            {
+                JsonTokenType.StartObject => ReadColorObject(ref reader, typeToConvert, options),
+                JsonTokenType.StartArray => ReadColorArray(ref reader, typeToConvert, options),
+                JsonTokenType.String => ReadColorString(ref reader, typeToConvert, options),
+                JsonTokenType.Number => ReadColorNumber(ref reader, typeToConvert, options),
+                _ => throw new JsonException(),
+            };
+        }
 
 #pragma warning disable IDE0060 // Remove unused parameter
         private static Color ReadColorNumber(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

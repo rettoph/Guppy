@@ -57,11 +57,20 @@ namespace Guppy.Core.Resources.Common
             return setting;
         }
 
-        public static IEnumerable<ISetting> GetAll() => _cache.Values;
+        public static IEnumerable<ISetting> GetAll()
+        {
+            return _cache.Values;
+        }
 
-        public static IEnumerable<ISetting> GetAll(Type type) => _cache.Values.Where(x => x.Type == type);
+        public static IEnumerable<ISetting> GetAll(Type type)
+        {
+            return _cache.Values.Where(x => x.Type == type);
+        }
 
-        internal static void CacheRemove(string name) => _cache.Remove(name);
+        internal static void CacheRemove(string name)
+        {
+            _cache.Remove(name);
+        }
 
         internal static ref ISetting? CacheGetOrAdd(string name, out bool exists)
         {
@@ -124,14 +133,26 @@ namespace Guppy.Core.Resources.Common
             this._default.Dispose();
         }
 
-        public override readonly bool Equals(object? obj) => this.Equals((Setting<T>)obj!);
+        public override readonly bool Equals(object? obj)
+        {
+            return this.Equals((Setting<T>)obj!);
+        }
 
-        public readonly bool Equals(Setting<T> other) => this.Id.Equals(other.Id);
+        public readonly bool Equals(Setting<T> other)
+        {
+            return this.Id.Equals(other.Id);
+        }
 
-        public readonly bool Equals(ISetting? other) => other is Setting<T> casted
+        public readonly bool Equals(ISetting? other)
+        {
+            return other is Setting<T> casted
                 && this.Equals(casted);
+        }
 
-        public override readonly int GetHashCode() => HashCode.Combine(this.Id);
+        public override readonly int GetHashCode()
+        {
+            return HashCode.Combine(this.Id);
+        }
 
         public static bool operator ==(Setting<T> left, Setting<T> right)
         {
@@ -162,6 +183,9 @@ namespace Guppy.Core.Resources.Common
             return casted;
         }
 
-        public static IEnumerable<Setting<T>> GetAll() => Setting.GetAll().OfType<Setting<T>>();
+        public static IEnumerable<Setting<T>> GetAll()
+        {
+            return Setting.GetAll().OfType<Setting<T>>();
+        }
     }
 }

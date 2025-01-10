@@ -3,6 +3,8 @@
     public static class SingleExtensions
     {
         public static Vector2 ToVector2(this float x, float y = 0)
-            => new(x, y);
+        {
+            return new(x, y);
+        }
     }
 }

@@ -26,7 +26,10 @@ namespace Guppy.Core.Messaging
                 .ToArray();
         }
 
-        public void Enqueue(in IMessage message) => this.GetTypeQueue(message.Type).Enqueue(message);
+        public void Enqueue(in IMessage message)
+        {
+            this.GetTypeQueue(message.Type).Enqueue(message);
+        }
 
         public void Flush()
         {

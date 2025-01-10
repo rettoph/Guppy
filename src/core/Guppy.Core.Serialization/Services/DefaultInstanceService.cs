@@ -10,9 +10,15 @@ namespace Guppy.Core.Serialization.Services
         private readonly IFiltered<IDefaultInstanceFactory> _factories = factories;
         private readonly Dictionary<Type, IDefaultInstanceFactory> _typeFactories = [];
 
-        public T Get<T>() => (T)this.Get(typeof(T))!;
+        public T Get<T>()
+        {
+            return (T)this.Get(typeof(T))!;
+        }
 
-        public object Get(Type type) => this.GetFactory(type).BuildInstance(type);
+        public object Get(Type type)
+        {
+            return this.GetFactory(type).BuildInstance(type);
+        }
 
         private IDefaultInstanceFactory GetFactory(Type type)
         {
@@ -39,7 +45,10 @@ namespace Guppy.Core.Serialization.Services
         {
             public static DefaultActivatorFactory Instance = new();
 
-            public bool CanConstructType(Type type) => true;
+            public bool CanConstructType(Type type)
+            {
+                return true;
+            }
 
             public object BuildInstance(Type type)
             {

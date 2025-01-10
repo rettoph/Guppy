@@ -27,7 +27,9 @@ namespace System
         /// <returns></returns>
         public static TOut As<TOut>(this object instance)
             where TOut : class
-                => (instance as TOut)!;
+        {
+            return (instance as TOut)!;
+        }
 
         /// <summary>
         /// Dynamically preform the cast via reflection
@@ -52,7 +54,9 @@ namespace System
         /// <param name="converter"></param>
         /// <returns></returns>
         public static TOut As<TIn, TOut>(this TIn instance, Func<TIn, TOut> converter)
-            => converter(instance);
+        {
+            return converter(instance);
+        }
 
         /// <summary>
         /// Convert a single object into an enumerable

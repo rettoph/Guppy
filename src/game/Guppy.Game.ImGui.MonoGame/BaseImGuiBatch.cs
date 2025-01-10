@@ -218,7 +218,10 @@ namespace Guppy.Game.ImGui.MonoGame
 
         protected abstract Num.Vector2 GetDisplaySize();
 
-        protected void Input(char value) => this._inputs.Enqueue(value);
+        protected void Input(char value)
+        {
+            this._inputs.Enqueue(value);
+        }
         #endregion Setup & Update
 
         #region Internals

@@ -11,6 +11,9 @@ namespace Guppy.Game.Components.Guppy
         private readonly IBus _bus = bus;
 
         [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
-        public void Update(GameTime gameTime) => this._bus.Flush();
+        public void Update(GameTime gameTime)
+        {
+            this._bus.Flush();
+        }
     }
 }

@@ -6,9 +6,20 @@ namespace Guppy.Core.Serialization.Common.Extensions
 {
     public static class IJsonSerializationServiceExtensions
     {
-        public static T? Deserialize<T>(this IJsonSerializationService serializer, string json) => serializer.Deserialize<T>(json, out _);
-        public static T? Deserialize<T>(this IJsonSerializationService serializer, Stream utf8Json) => serializer.Deserialize<T>(utf8Json, out _);
-        public static T? Deserialize<T>(this IJsonSerializationService serializer, ref Utf8JsonReader reader) => serializer.Deserialize<T>(ref reader, out _);
+        public static T? Deserialize<T>(this IJsonSerializationService serializer, string json)
+        {
+            return serializer.Deserialize<T>(json, out _);
+        }
+
+        public static T? Deserialize<T>(this IJsonSerializationService serializer, Stream utf8Json)
+        {
+            return serializer.Deserialize<T>(utf8Json, out _);
+        }
+
+        public static T? Deserialize<T>(this IJsonSerializationService serializer, ref Utf8JsonReader reader)
+        {
+            return serializer.Deserialize<T>(ref reader, out _);
+        }
 
         public static bool TryDeserialize<T>(this IJsonSerializationService serializer, string json, [MaybeNullWhen(false)] out T value)
         {

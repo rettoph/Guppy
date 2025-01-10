@@ -52,7 +52,10 @@ namespace Guppy.Game.ImGui.MonoGame
             this._window.Value.TextInput += this.HandleTextInput;
         }
 
-        public void Dispose() => this._window.Value.TextInput -= this.HandleTextInput;
+        public void Dispose()
+        {
+            this._window.Value.TextInput -= this.HandleTextInput;
+        }
 
         public override nint BindTexture(byte[] pixels, int width, int height)
         {
@@ -67,7 +70,10 @@ namespace Guppy.Game.ImGui.MonoGame
             return id;
         }
 
-        public override void UnbindTexture(nint textureId) => this._loadedTextures.Remove(textureId);
+        public override void UnbindTexture(nint textureId)
+        {
+            this._loadedTextures.Remove(textureId);
+        }
 
         protected override void RenderDrawData(ImGuiNET.ImDrawDataPtr drawData)
         {
@@ -217,7 +223,10 @@ namespace Guppy.Game.ImGui.MonoGame
             return this._effect;
         }
 
-        protected override System.Numerics.Vector2 GetDisplaySize() => new(this._graphics.Value.PresentationParameters.BackBufferWidth, this._graphics.Value.PresentationParameters.BackBufferHeight);
+        protected override System.Numerics.Vector2 GetDisplaySize()
+        {
+            return new(this._graphics.Value.PresentationParameters.BackBufferWidth, this._graphics.Value.PresentationParameters.BackBufferHeight);
+        }
 
         private void HandleTextInput(object? sender, TextInputEventArgs e)
         {

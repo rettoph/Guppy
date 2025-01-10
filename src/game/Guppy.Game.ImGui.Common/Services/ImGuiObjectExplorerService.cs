@@ -21,7 +21,10 @@ namespace Guppy.Game.ImGui.Common.Services
             }
         }
 
-        public TextFilterResultEnum DrawObjectExplorer(object instance, string filter = "", int maxDepth = 5, HashSet<object>? tree = null) => this.DrawObjectExplorer(null, null, instance.GetType(), instance, filter, maxDepth, 0, tree ?? []);
+        public TextFilterResultEnum DrawObjectExplorer(object instance, string filter = "", int maxDepth = 5, HashSet<object>? tree = null)
+        {
+            return this.DrawObjectExplorer(null, null, instance.GetType(), instance, filter, maxDepth, 0, tree ?? []);
+        }
 
         public TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {

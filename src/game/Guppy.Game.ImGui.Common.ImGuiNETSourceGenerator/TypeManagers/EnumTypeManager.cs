@@ -38,8 +38,14 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
             }
         }
 
-        public override string GetGuppyToImGuiConverter(string parameter) => $"{this.GuppyType}Converter.ConvertToImGui({parameter})";
+        public override string GetGuppyToImGuiConverter(string parameter)
+        {
+            return $"{this.GuppyType}Converter.ConvertToImGui({parameter})";
+        }
 
-        public override string GetImGuiToGuppyConverter(string parameter) => $"{this.GuppyType}Converter.ConvertToGuppy({parameter})";
+        public override string GetImGuiToGuppyConverter(string parameter)
+        {
+            return $"{this.GuppyType}Converter.ConvertToGuppy({parameter})";
+        }
     }
 }

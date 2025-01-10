@@ -9,7 +9,10 @@ namespace Guppy.Core.Resources.Common.Extensions.Autofac
 {
     public static class ContainerBuilderExtensions
     {
-        public static void RegisterResourcePack(this ContainerBuilder builder, ResourcePackConfiguration configuration) => builder.RegisterInstance<ResourcePackConfiguration>(configuration);
+        public static void RegisterResourcePack(this ContainerBuilder builder, ResourcePackConfiguration configuration)
+        {
+            builder.RegisterInstance<ResourcePackConfiguration>(configuration);
+        }
 
         public static ContainerBuilder RegisterResourceType<T>(this ContainerBuilder builder)
             where T : IResourceType

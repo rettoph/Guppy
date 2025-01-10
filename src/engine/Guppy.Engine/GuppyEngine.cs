@@ -39,9 +39,15 @@ namespace Guppy.Engine
             }
         }
 
-        IGuppyEngine IGuppyEngine.Start() => this.Start();
+        IGuppyEngine IGuppyEngine.Start()
+        {
+            return this.Start();
+        }
 
-        protected virtual void Initialize() => ActionSequenceGroup<InitializeComponentSequenceGroupEnum, IGuppyEngine>.Invoke(this._components, false, this);
+        protected virtual void Initialize()
+        {
+            ActionSequenceGroup<InitializeComponentSequenceGroupEnum, IGuppyEngine>.Invoke(this._components, false, this);
+        }
 
         public GuppyEngine Start()
         {
@@ -51,7 +57,10 @@ namespace Guppy.Engine
         }
 
         public T Resolve<T>()
-            where T : notnull => this._container.Resolve<T>();
+            where T : notnull
+        {
+            return this._container.Resolve<T>();
+        }
 
         #region Static
         private static readonly object _lock;

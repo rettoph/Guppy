@@ -108,16 +108,31 @@ namespace Guppy.Tests.Common
             return this;
         }
 
-        public void SetInstance(T instance) => this._override = instance;
+        public void SetInstance(T instance)
+        {
+            this._override = instance;
+        }
 
-        public Mock<T> AsMock() => this._instance;
+        public Mock<T> AsMock()
+        {
+            return this._instance;
+        }
 
-        public override T GetInstance() => this._override ?? this._instance.Object;
+        public override T GetInstance()
+        {
+            return this._override ?? this._instance.Object;
+        }
 
-        public Lazy<T> GetLazy() => new(this.GetInstance);
+        public Lazy<T> GetLazy()
+        {
+            return new(this.GetInstance);
+        }
 
         public Lazy<TOut> GetLazy<TOut>()
-            where TOut : class => new(() => this.GetInstance().As<TOut>());
+            where TOut : class
+        {
+            return new(() => this.GetInstance().As<TOut>());
+        }
 
         public static implicit operator Mock<T>(Mocker<T> mocker)
         {

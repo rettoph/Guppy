@@ -58,7 +58,10 @@ namespace Guppy.Core.Network
             this.Sender.Peer = sender;
         }
 
-        public void Recycle() => this.Type.Recycle(this);
+        public void Recycle()
+        {
+            this.Type.Recycle(this);
+        }
 
         public INetIncomingMessage<T> Publish()
         {
@@ -67,8 +70,14 @@ namespace Guppy.Core.Network
             return this;
         }
 
-        INetIncomingMessage INetIncomingMessage.Publish() => this.Publish();
+        INetIncomingMessage INetIncomingMessage.Publish()
+        {
+            return this.Publish();
+        }
 
-        void IDisposable.Dispose() => this.Recycle();
+        void IDisposable.Dispose()
+        {
+            this.Recycle();
+        }
     }
 }

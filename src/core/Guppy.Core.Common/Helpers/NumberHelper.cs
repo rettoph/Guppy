@@ -27,7 +27,10 @@ namespace Guppy.Core.Common.Helpers
             return amount * amount * (Three - (Two * amount));
         }
 
-        public static T Lerp<TAmount>(T lower, T upper, T amount) => lower + ((upper - lower) * amount);
+        public static T Lerp<TAmount>(T lower, T upper, T amount)
+        {
+            return lower + ((upper - lower) * amount);
+        }
 
         public static T Lerp<TAmount>(T lower, T upper, TAmount amount)
             where TAmount : INumber<TAmount>

@@ -25,8 +25,14 @@
             return result;
         }
 
-        public static BlockList CreateWhitelist(params string[] values) => new(values, null);
+        public static BlockList CreateWhitelist(params string[] values)
+        {
+            return new(values, null);
+        }
 
-        public static BlockList CreateBlacklist(params string[] values) => new(null, values);
+        public static BlockList CreateBlacklist(params string[] values)
+        {
+            return new(null, values);
+        }
     }
 }

@@ -29,17 +29,32 @@ namespace Autofac
         }
 
         public static void RegisterNetSerializer<T>(this ContainerBuilder builder, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
-            where T : notnull => builder.RegisterInstance(new RuntimeNetSerializer<T>(serialize, deserialize)).As<INetSerializer>().SingleInstance();
+            where T : notnull
+        {
+            builder.RegisterInstance(new RuntimeNetSerializer<T>(serialize, deserialize)).As<INetSerializer>().SingleInstance();
+        }
 
-        public static void RegisterNetMessageType(this ContainerBuilder builder, Type netMessengerDefinitionType) => builder.RegisterType(netMessengerDefinitionType).As<NetMessageTypeDefinition>().SingleInstance();
+        public static void RegisterNetMessageType(this ContainerBuilder builder, Type netMessengerDefinitionType)
+        {
+            builder.RegisterType(netMessengerDefinitionType).As<NetMessageTypeDefinition>().SingleInstance();
+        }
 
         public static void RegisterNetMessageType<TDefinition>(this ContainerBuilder builder)
-            where TDefinition : NetMessageTypeDefinition => builder.RegisterType<TDefinition>().As<NetMessageTypeDefinition>().SingleInstance();
+            where TDefinition : NetMessageTypeDefinition
+        {
+            builder.RegisterType<TDefinition>().As<NetMessageTypeDefinition>().SingleInstance();
+        }
 
-        public static void RegisterNetMessageType(this ContainerBuilder builder, NetMessageTypeDefinition definition) => builder.RegisterInstance(definition).As<NetMessageTypeDefinition>().SingleInstance();
+        public static void RegisterNetMessageType(this ContainerBuilder builder, NetMessageTypeDefinition definition)
+        {
+            builder.RegisterInstance(definition).As<NetMessageTypeDefinition>().SingleInstance();
+        }
 
         public static void RegisterNetMessageType<T>(this ContainerBuilder builder, DeliveryMethod deliveryMethod, byte outgoingChannel)
-            where T : notnull => builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
+            where T : notnull
+        {
+            builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
+        }
 
         /// <summary>
         /// Configure scoped <see cref="Guppy.Core.Network.Common.INetScope{T}"/> instance.
@@ -63,7 +78,10 @@ namespace Autofac
         /// <param name="value">The PeerType required for the service to be valid</param>
         /// <returns></returns>
         public static ContainerBuilder RegisterPeerTypeFilter<TService>(this ContainerBuilder builder, PeerTypeEnum value)
-            where TService : class => builder.RegisterStateFilter<TService, PeerTypeEnum>(value);
+            where TService : class
+        {
+            return builder.RegisterStateFilter<TService, PeerTypeEnum>(value);
+        }
 
 
         /// <summary>
@@ -73,6 +91,9 @@ namespace Autofac
         /// <param name="serviceType">he service type to be filtered</param>
         /// <param name="value">The PeerType required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterPeerTypeFilter(this ContainerBuilder builder, Type serviceType, PeerTypeEnum value) => builder.RegisterStateFilter<PeerTypeEnum>(serviceType, value);
+        public static ContainerBuilder RegisterPeerTypeFilter(this ContainerBuilder builder, Type serviceType, PeerTypeEnum value)
+        {
+            return builder.RegisterStateFilter<PeerTypeEnum>(serviceType, value);
+        }
     }
 }

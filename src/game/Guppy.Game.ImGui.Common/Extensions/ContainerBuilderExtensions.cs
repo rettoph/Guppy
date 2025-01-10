@@ -18,7 +18,9 @@ namespace Guppy.Game.ImGui.Common.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterCommonImGuiServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterCommonImGuiServices), builder =>
+        public static ContainerBuilder RegisterCommonImGuiServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterCommonImGuiServices), builder =>
                                                                                                               {
                                                                                                                   string nativesDirectory = DirectoryHelper.Combine(DirectoryHelper.GetEntryDirectory(), ImGuiNatives.Directory);
                                                                                                                   NativeHelper.Load(nativesDirectory, ImGuiNatives.cImGui, ImGuiNatives.cImPlot);
@@ -71,21 +73,28 @@ namespace Guppy.Game.ImGui.Common.Extensions
                                                                                                                   AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton02, CursorButtonsEnum.Middle, 1);
                                                                                                                   AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton03, CursorButtonsEnum.Right, 2);
                                                                                                               });
+        }
 
-        private static void AddImGuiKeyEvent(ContainerBuilder services, string key, Keys defaultKey, ImGuiKey mapping) => services.RegisterInput(
+        private static void AddImGuiKeyEvent(ContainerBuilder services, string key, Keys defaultKey, ImGuiKey mapping)
+        {
+            services.RegisterInput(
                 key,
                 defaultKey,
                 [
                     (ButtonState.Pressed, new ImGuiKeyEvent(mapping, true)),
                     (ButtonState.Released, new ImGuiKeyEvent(mapping, false))
                 ]);
+        }
 
-        private static void AddImGuiMouseButtonEvent(ContainerBuilder services, string key, CursorButtonsEnum defaultButton, int mapping) => services.RegisterInput(
+        private static void AddImGuiMouseButtonEvent(ContainerBuilder services, string key, CursorButtonsEnum defaultButton, int mapping)
+        {
+            services.RegisterInput(
                 key,
                 defaultButton,
                 [
                     (ButtonState.Pressed, new ImGuiMouseButtonEvent(mapping, true)),
                     (ButtonState.Released, new ImGuiMouseButtonEvent(mapping, false))
                 ]);
+        }
     }
 }

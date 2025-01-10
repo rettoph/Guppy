@@ -15,7 +15,10 @@ namespace Guppy.Core.Common.Collections
 
         public T[] Items => this._buffer;
 
-        public void Add(T value) => this._buffer[this.Position++ % this.Length] = value;
+        public void Add(T value)
+        {
+            this._buffer[this.Position++ % this.Length] = value;
+        }
 
         public void Add(T value, out T old)
         {
@@ -33,7 +36,10 @@ namespace Guppy.Core.Common.Collections
             }
         }
 
-        public void Resize(int length) => Array.Resize(ref this._buffer, length);
+        public void Resize(int length)
+        {
+            Array.Resize(ref this._buffer, length);
+        }
 
         public void Reset(int length)
         {
@@ -46,7 +52,10 @@ namespace Guppy.Core.Common.Collections
 
             this.Resize(length);
         }
-        public void Reset() => this.Position = 0;
+        public void Reset()
+        {
+            this.Position = 0;
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -66,6 +75,9 @@ namespace Guppy.Core.Common.Collections
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
     }
 }

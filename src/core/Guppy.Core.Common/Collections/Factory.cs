@@ -15,6 +15,9 @@
             return instance;
         }
 
-        protected virtual T Build() => this._method();
+        protected virtual T Build()
+        {
+            return this._method();
+        }
     }
 }

@@ -32,7 +32,10 @@ namespace Guppy.Core.Resources.Services
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellation) => Task.CompletedTask;
+        public Task StopAsync(CancellationToken cancellation)
+        {
+            return Task.CompletedTask;
+        }
 
         public void Initialize()
         {
@@ -60,9 +63,15 @@ namespace Guppy.Core.Resources.Services
         }
 
         public Resource<T> Get<T>(ResourceKey<T> resource)
-            where T : notnull => (Resource<T>)this.CacheGetOrAddValues(resource);
+            where T : notnull
+        {
+            return (Resource<T>)this.CacheGetOrAddValues(resource);
+        }
 
-        public IEnumerable<Resource<T>> GetAll<T>() where T : notnull => ResourceKey<T>.GetAll().Select(x => this.Get(x));
+        public IEnumerable<Resource<T>> GetAll<T>() where T : notnull
+        {
+            return ResourceKey<T>.GetAll().Select(x => this.Get(x));
+        }
 
         private IResource CacheGetOrAddValues(IResourceKey key)
         {
@@ -85,6 +94,9 @@ namespace Guppy.Core.Resources.Services
         }
 
         public IEnumerable<ResourceKey<T>> GetKeys<T>()
-            where T : notnull => ResourceKey<T>.GetAll();
+            where T : notnull
+        {
+            return ResourceKey<T>.GetAll();
+        }
     }
 }

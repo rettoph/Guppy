@@ -14,10 +14,19 @@ namespace Guppy.Game.Input.Services
             this.Add(new MouseCursor());
         }
 
-        public void Add(ICursor cursor) => this._cursors.Add(cursor);
+        public void Add(ICursor cursor)
+        {
+            this._cursors.Add(cursor);
+        }
 
-        public IEnumerable<ICursor> All() => this._cursors;
+        public IEnumerable<ICursor> All()
+        {
+            return this._cursors;
+        }
 
-        public ICursor Get(Guid id) => this._cursors.First(c => c.Id == id);
+        public ICursor Get(Guid id)
+        {
+            return this._cursors.First(c => c.Id == id);
+        }
     }
 }

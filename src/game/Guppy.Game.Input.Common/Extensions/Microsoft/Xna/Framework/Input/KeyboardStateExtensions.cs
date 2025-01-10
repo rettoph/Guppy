@@ -2,11 +2,14 @@
 {
     public static class KeyboardStateExtensions
     {
-        public static bool IsState(this KeyboardState keyboard, Keys key, ButtonState state) => state switch
+        public static bool IsState(this KeyboardState keyboard, Keys key, ButtonState state)
         {
-            ButtonState.Pressed => keyboard.IsKeyDown(key),
-            ButtonState.Released => keyboard.IsKeyUp(key),
-            _ => throw new NotImplementedException(),
-        };
+            return state switch
+            {
+                ButtonState.Pressed => keyboard.IsKeyDown(key),
+                ButtonState.Released => keyboard.IsKeyUp(key),
+                _ => throw new NotImplementedException(),
+            };
+        }
     }
 }

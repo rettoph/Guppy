@@ -19,7 +19,9 @@ namespace Guppy.Core.Network.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterCoreNetworkServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterCoreNetworkServices), builder =>
+        public static ContainerBuilder RegisterCoreNetworkServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterCoreNetworkServices), builder =>
                                                                                                               {
                                                                                                                   builder.RegisterType<NetSerializerService>().As<INetSerializerService>().InstancePerLifetimeScope();
                                                                                                                   builder.RegisterGeneric(typeof(NetScope<>)).As(typeof(INetScope<>)).InstancePerLifetimeScope();
@@ -47,5 +49,6 @@ namespace Guppy.Core.Network.Extensions
 
                                                                                                                   builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
                                                                                                               });
+        }
     }
 }

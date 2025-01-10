@@ -14,7 +14,10 @@ namespace Guppy.Core.Messaging.Common.Implementations
             this._publishers = [];
         }
 
-        public void Publish(in TBase message) => this.GetPublisher(message.Type).Publish(message);
+        public void Publish(in TBase message)
+        {
+            this.GetPublisher(message.Type).Publish(message);
+        }
 
         public void Subscribe(IBaseSubscriber<TBase> subscriber)
         {

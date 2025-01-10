@@ -49,7 +49,10 @@ namespace Guppy.Example.Client.CellTypes
             return a == CellStepResultEnum.Active || b == CellStepResultEnum.Active ? CellStepResultEnum.Active : CellStepResultEnum.Inactive;
         }
 
-        protected bool CanDisplace(ref Cell cell) => (cell.Displaced == false || cell.Type == CellTypeEnum.Air) && this.Displaces.HasFlag(cell.Latest.Type);
+        protected bool CanDisplace(ref Cell cell)
+        {
+            return (cell.Displaced == false || cell.Type == CellTypeEnum.Air) && this.Displaces.HasFlag(cell.Latest.Type);
+        }
 
 #pragma warning disable IDE0060 // Remove unused parameter
         private CellStepResultEnum TryFallSide(ref Cell cell, Grid input, Grid output, int side)

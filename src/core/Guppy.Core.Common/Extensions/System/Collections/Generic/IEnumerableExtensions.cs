@@ -29,6 +29,9 @@ namespace System.Collections.Generic
             return new DoubleDictionary<TKey1, TKey2, TValue>(kkvps);
         }
 
-        public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T item) => collection.Concat([item]);
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> collection, T item)
+        {
+            return collection.Concat([item]);
+        }
     }
 }

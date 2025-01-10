@@ -19,9 +19,14 @@ namespace Guppy.Game.ImGui.Common
 
     public abstract class ImGuiObjectExplorer<T> : ImGuiObjectExplorer
     {
-        public override bool AppliesTo(Type type) => type.IsAssignableTo(typeof(T));
+        public override bool AppliesTo(Type type)
+        {
+            return type.IsAssignableTo(typeof(T));
+        }
 
-        public override TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree) => this.DrawObjectExplorer(
+        public override TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
+        {
+            return this.DrawObjectExplorer(
                 index: index,
                 name: name,
                 type: type,
@@ -30,6 +35,7 @@ namespace Guppy.Game.ImGui.Common
                 maxDepth: maxDepth,
                 currentDepth: currentDepth,
                 tree: tree);
+        }
 
         protected abstract TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, T? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }

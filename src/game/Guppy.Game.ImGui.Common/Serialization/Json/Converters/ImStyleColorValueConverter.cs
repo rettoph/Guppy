@@ -43,6 +43,9 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
             return new ImStyleColorValue(key, col, this._resourceService.Value.Get(resource));
         }
 
-        public override void Write(Utf8JsonWriter writer, ImStyleColorValue value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, ImStyleColorValue value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

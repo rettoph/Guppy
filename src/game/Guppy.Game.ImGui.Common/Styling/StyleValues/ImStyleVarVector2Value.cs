@@ -8,8 +8,14 @@ namespace Guppy.Game.ImGui.Common.Styling.StyleValues
         public readonly ImGuiNET.ImGuiStyleVar Property = ImGuiStyleVarConverter.ConvertToImGui(var);
         public readonly Num.Vector2 Value = NumericsHelper.Convert(value);
 
-        public override void Pop() => ImGuiNET.ImGui.PopStyleVar();
+        public override void Pop()
+        {
+            ImGuiNET.ImGui.PopStyleVar();
+        }
 
-        public override void Push() => ImGuiNET.ImGui.PushStyleVar(this.Property, this.Value);
+        public override void Push()
+        {
+            ImGuiNET.ImGui.PushStyleVar(this.Property, this.Value);
+        }
     }
 }

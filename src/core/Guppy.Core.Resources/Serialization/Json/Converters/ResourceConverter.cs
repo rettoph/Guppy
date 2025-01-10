@@ -16,7 +16,10 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
         private class ResourceValueGetter<T> : IResourceValueGetter
             where T : notnull
         {
-            public object GetResourceValue(string key, IResourceService resourceService) => resourceService.Get<T>(ResourceKey<T>.Get(key));
+            public object GetResourceValue(string key, IResourceService resourceService)
+            {
+                return resourceService.Get<T>(ResourceKey<T>.Get(key));
+            }
         }
 
         public override bool CanConvert(Type typeToConvert)
@@ -42,6 +45,9 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
             return instance;
         }
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -41,10 +41,19 @@ namespace Guppy.Core.Network
             return om;
         }
 
-        public void Enqueue(INetIncomingMessage message) => this._bus.Enqueue(message);
+        public void Enqueue(INetIncomingMessage message)
+        {
+            this._bus.Enqueue(message);
+        }
 
-        public void Enqueue(INetOutgoingMessage message) => this._bus.Enqueue(message);
+        public void Enqueue(INetOutgoingMessage message)
+        {
+            this._bus.Enqueue(message);
+        }
 
-        public void Process(in Guid messageId, INetOutgoingMessage message) => message.Send();
+        public void Process(in Guid messageId, INetOutgoingMessage message)
+        {
+            message.Send();
+        }
     }
 }

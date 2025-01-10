@@ -58,7 +58,10 @@ namespace Guppy.Core.Resources.Services
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellation) => Task.CompletedTask;
+        public Task StopAsync(CancellationToken cancellation)
+        {
+            return Task.CompletedTask;
+        }
 
         public void Initialize()
         {
@@ -84,11 +87,20 @@ namespace Guppy.Core.Resources.Services
             this._logger.Debug("Done. Imported ({Count}) resource packs", this._packs.Count);
         }
 
-        public IEnumerable<IResourcePack> GetAll() => this._packs.Values;
+        public IEnumerable<IResourcePack> GetAll()
+        {
+            return this._packs.Values;
+        }
 
-        public IResourcePack GetById(Guid id) => this._packs[id];
+        public IResourcePack GetById(Guid id)
+        {
+            return this._packs[id];
+        }
 
-        public IEnumerable<IResourceKey> GetDefinedResources() => this.GetAll().SelectMany(x => x.GetAllDefinedResources()).Distinct();
+        public IEnumerable<IResourceKey> GetDefinedResources()
+        {
+            return this.GetAll().SelectMany(x => x.GetAllDefinedResources()).Distinct();
+        }
 
         public IEnumerable<T> GetDefinedValues<T>(ResourceKey<T> key)
             where T : notnull

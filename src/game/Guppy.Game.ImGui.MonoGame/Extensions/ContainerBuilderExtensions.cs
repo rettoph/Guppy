@@ -9,7 +9,9 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameMonoGameImGuiServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterGameMonoGameImGuiServices), builder =>
+        public static ContainerBuilder RegisterGameMonoGameImGuiServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterGameMonoGameImGuiServices), builder =>
                                                                                                                     {
                                                                                                                         builder.RegisterCommonImGuiServices();
 
@@ -19,5 +21,6 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
                                                                                                                         builder.RegisterResourceType<ImStyleResourceType>();
                                                                                                                         builder.RegisterResourceType<TrueTypeFontResourceType>();
                                                                                                                     });
+        }
     }
 }

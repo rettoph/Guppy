@@ -10,7 +10,10 @@ namespace Guppy.Core.Commands.Services
         private readonly ICommandTokenConverter[] _converters = [.. converters];
         private readonly Dictionary<Type, ICommandTokenConverter> _cache = [];
 
-        public object? Deserialize(Type type, string token) => this.GetConverter(type).Deserialize(type, token);
+        public object? Deserialize(Type type, string token)
+        {
+            return this.GetConverter(type).Deserialize(type, token);
+        }
 
         private ICommandTokenConverter GetConverter(Type type)
         {

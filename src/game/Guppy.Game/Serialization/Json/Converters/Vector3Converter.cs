@@ -34,6 +34,9 @@ namespace Guppy.Game.Serialization.Json.Converters
             return result;
         }
 
-        public override void Write(Utf8JsonWriter writer, Vector3 value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, Vector3 value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

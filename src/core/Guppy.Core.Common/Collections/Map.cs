@@ -104,9 +104,15 @@ namespace Guppy.Core.Common.Collections
             return true;
         }
 
-        public bool TryGet(T1 key1, [MaybeNullWhen(false)] out T2 value2) => this._forward.TryGetValue(key1, out value2);
+        public bool TryGet(T1 key1, [MaybeNullWhen(false)] out T2 value2)
+        {
+            return this._forward.TryGetValue(key1, out value2);
+        }
 
-        public bool TryGet(T2 key2, [MaybeNullWhen(false)] out T1 value1) => this._reverse.TryGetValue(key2, out value1);
+        public bool TryGet(T2 key2, [MaybeNullWhen(false)] out T1 value1)
+        {
+            return this._reverse.TryGetValue(key2, out value1);
+        }
 
         public IEnumerator<(T1, T2)> GetEnumerator()
         {
@@ -116,6 +122,9 @@ namespace Guppy.Core.Common.Collections
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
     }
 }

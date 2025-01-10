@@ -32,7 +32,10 @@ namespace Guppy.Game.MonoGame.Common.Utilities
             this._gameTime.ElapsedGameTime += gameTime.ElapsedGameTime;
         }
 
-        public void Reset() => this._gameTime.ElapsedGameTime = TimeSpan.Zero;
+        public void Reset()
+        {
+            this._gameTime.ElapsedGameTime = TimeSpan.Zero;
+        }
 
         public bool Step([MaybeNullWhen(false)] out GameTime gameTime)
         {

@@ -40,6 +40,9 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
             return new ImStyleVarVector2Value(key, var, value);
         }
 
-        public override void Write(Utf8JsonWriter writer, ImStyleVarVector2Value value, JsonSerializerOptions options) => throw new NotImplementedException();
+        public override void Write(Utf8JsonWriter writer, ImStyleVarVector2Value value, JsonSerializerOptions options)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

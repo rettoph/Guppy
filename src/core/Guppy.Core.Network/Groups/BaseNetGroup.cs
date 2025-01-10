@@ -35,10 +35,16 @@ namespace Guppy.Core.Network.Groups
             this.Relays = new ReadOnlyCollection<IBus>(this._relays);
         }
 
-        public virtual void Dispose() => this.Users.Dispose();
+        public virtual void Dispose()
+        {
+            this.Users.Dispose();
+        }
 
         public INetOutgoingMessage<T> CreateMessage<T>(in T body)
-            where T : notnull => this.Peer.Messages.Create(this, body);
+            where T : notnull
+        {
+            return this.Peer.Messages.Create(this, body);
+        }
 
         public void Publish(INetIncomingMessage im)
         {
@@ -60,8 +66,14 @@ namespace Guppy.Core.Network.Groups
             this._relays.Remove(relay);
         }
 
-        public void Add(IBus relay) => this._relays.Add(relay);
+        public void Add(IBus relay)
+        {
+            this._relays.Add(relay);
+        }
 
-        public void Remove(IBus relay) => this._relays.Remove(relay);
+        public void Remove(IBus relay)
+        {
+            this._relays.Remove(relay);
+        }
     }
 }

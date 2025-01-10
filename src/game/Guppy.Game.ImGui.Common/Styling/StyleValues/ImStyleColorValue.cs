@@ -12,7 +12,10 @@ namespace Guppy.Game.ImGui.Common.Styling.StyleValues
         public readonly ImGuiNET.ImGuiCol Property = ImGuiColConverter.ConvertToImGui(col);
         public readonly IRef<Color> Color = color;
 
-        public override void Pop() => ImGuiNet.PopStyleColor();
+        public override void Pop()
+        {
+            ImGuiNet.PopStyleColor();
+        }
 
         public override void Push()
         {

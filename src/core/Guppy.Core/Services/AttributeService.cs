@@ -26,7 +26,10 @@ namespace Guppy.Core.Services
         }
 
         public TAttribute[] Get<T>()
-            where T : TType => this._attributes[typeof(T)];
+            where T : TType
+        {
+            return this._attributes[typeof(T)];
+        }
 
         public IEnumerator<(Type, TAttribute[])> GetEnumerator()
         {
@@ -36,6 +39,9 @@ namespace Guppy.Core.Services
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
     }
 }

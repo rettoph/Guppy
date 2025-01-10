@@ -110,16 +110,34 @@ namespace Guppy.Core.Network
             return this;
         }
 
-        public void Dispose() => this.Recycle();
+        public void Dispose()
+        {
+            this.Recycle();
+        }
 
-        INetOutgoingMessage INetOutgoingMessage.AddRecipient(NetPeer recipient) => this.AddRecipient(recipient);
+        INetOutgoingMessage INetOutgoingMessage.AddRecipient(NetPeer recipient)
+        {
+            return this.AddRecipient(recipient);
+        }
 
-        INetOutgoingMessage INetOutgoingMessage.AddRecipients(IEnumerable<NetPeer> recipients) => this.AddRecipients(recipients);
+        INetOutgoingMessage INetOutgoingMessage.AddRecipients(IEnumerable<NetPeer> recipients)
+        {
+            return this.AddRecipients(recipients);
+        }
 
-        INetOutgoingMessage INetOutgoingMessage.SetOutgoingChannel(byte outgoingChannel) => this.SetOutgoingChannel(outgoingChannel);
+        INetOutgoingMessage INetOutgoingMessage.SetOutgoingChannel(byte outgoingChannel)
+        {
+            return this.SetOutgoingChannel(outgoingChannel);
+        }
 
-        INetOutgoingMessage INetOutgoingMessage.SetDeliveryMethod(DeliveryMethod deliveryMethod) => this.SetDeliveryMethod(deliveryMethod);
+        INetOutgoingMessage INetOutgoingMessage.SetDeliveryMethod(DeliveryMethod deliveryMethod)
+        {
+            return this.SetDeliveryMethod(deliveryMethod);
+        }
 
-        INetOutgoingMessage INetOutgoingMessage.Send() => this.Send();
+        INetOutgoingMessage INetOutgoingMessage.Send()
+        {
+            return this.Send();
+        }
     }
 }

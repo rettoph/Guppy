@@ -22,10 +22,19 @@ namespace Guppy.Core.Files.Services
             return new DirectoryLocation(DirectoryTypeEnum.Source, path);
         }
 
-        public DirectoryLocation GetSourceLocation(DirectoryTypeEnum type, string path) => this.GetSourceLocation(new DirectoryLocation(type, path));
+        public DirectoryLocation GetSourceLocation(DirectoryTypeEnum type, string path)
+        {
+            return this.GetSourceLocation(new DirectoryLocation(type, path));
+        }
 
-        public FileLocation GetSourceLocation(FileLocation file) => new(this.GetSourceLocation(file.Directory), file.Name);
+        public FileLocation GetSourceLocation(FileLocation file)
+        {
+            return new(this.GetSourceLocation(file.Directory), file.Name);
+        }
 
-        public FileLocation GetSourceLocation(DirectoryTypeEnum type, string path, string name) => this.GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
+        public FileLocation GetSourceLocation(DirectoryTypeEnum type, string path, string name)
+        {
+            return this.GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
+        }
     }
 }

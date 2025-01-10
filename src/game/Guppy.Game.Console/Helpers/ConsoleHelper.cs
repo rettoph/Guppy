@@ -60,8 +60,15 @@ namespace Guppy.Game.Console.Helpers
             return console;
         }
 
-        public static IDisposable ApplyForegroundColor(ConsoleColor color) => RestConsoleForeground.Instance.Push(color);
-        public static IDisposable ApplyForegroundColor(Color color) => RestConsoleForeground.Instance.Push(ConsoleHelper.GetConsolColorFromColor(color));
+        public static IDisposable ApplyForegroundColor(ConsoleColor color)
+        {
+            return RestConsoleForeground.Instance.Push(color);
+        }
+
+        public static IDisposable ApplyForegroundColor(Color color)
+        {
+            return RestConsoleForeground.Instance.Push(ConsoleHelper.GetConsolColorFromColor(color));
+        }
 
         private class RestConsoleForeground : IDisposable
         {
@@ -82,7 +89,10 @@ namespace Guppy.Game.Console.Helpers
                 return this;
             }
 
-            public void Dispose() => System.Console.ForegroundColor = this._stack.Pop();
+            public void Dispose()
+            {
+                System.Console.ForegroundColor = this._stack.Pop();
+            }
         }
     }
 }

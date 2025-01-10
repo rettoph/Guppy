@@ -24,7 +24,9 @@ namespace Guppy.Game.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterCommonGameServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterCommonGameServices), builder =>
+        public static ContainerBuilder RegisterCommonGameServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterCommonGameServices), builder =>
                                                                                                              {
                                                                                                                  builder.RegisterCoreCommandServices();
 
@@ -59,5 +61,6 @@ namespace Guppy.Game.Extensions
                                                                                                                      config.MinimumLevel.ControlledBy(LogLevelCommand.LoggingLevelSwitch);
                                                                                                                  });
                                                                                                              });
+        }
     }
 }

@@ -63,7 +63,10 @@ namespace Guppy.Example.Client.Utilities
             this._indexBuffer.SetData(this._indices, 0, this._indices.Length);
         }
 
-        public void Draw(ICamera camera) => this.Draw(camera.View, camera.Projection);
+        public void Draw(ICamera camera)
+        {
+            this.Draw(camera.View, camera.Projection);
+        }
 
         public void Draw(Matrix view, Matrix projection)
         {

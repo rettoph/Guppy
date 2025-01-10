@@ -9,7 +9,10 @@ namespace Guppy.Core.StateMachine.Common.Filters
     {
         public abstract bool AppliesTo(Type type);
 
-        public bool Invoke(ILifetimeScope scope) => this.Invoke(scope.Resolve<IStateService>());
+        public bool Invoke(ILifetimeScope scope)
+        {
+            return this.Invoke(scope.Resolve<IStateService>());
+        }
 
         public abstract bool Invoke(IStateService state);
     }

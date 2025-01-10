@@ -15,11 +15,17 @@ namespace Guppy.Core.Common.Utilities
         {
         }
 
-        public override readonly bool Equals(object? obj) => obj is Delegator<TDelegate> delegator &&
+        public override readonly bool Equals(object? obj)
+        {
+            return obj is Delegator<TDelegate> delegator &&
                    EqualityComparer<MethodInfo>.Default.Equals(this.Method, delegator.Method) &&
                    EqualityComparer<object?>.Default.Equals(this.Target, delegator.Target);
+        }
 
-        public override readonly int GetHashCode() => HashCode.Combine(this.Method, this.Target);
+        public override readonly int GetHashCode()
+        {
+            return HashCode.Combine(this.Method, this.Target);
+        }
 
         public static bool IsCompatible(Type? delegateType, MethodInfo method, out DelegatorIsCompatibleResultEnum result)
         {
@@ -75,13 +81,19 @@ namespace Guppy.Core.Common.Utilities
         }
 
         public static bool IsCompatible(Type? delegateType, MethodInfo method)
-            => Delegator<TDelegate>.IsCompatible(delegateType, method, out _);
+        {
+            return Delegator<TDelegate>.IsCompatible(delegateType, method, out _);
+        }
 
         public static bool IsCompatible(MethodInfo method, out DelegatorIsCompatibleResultEnum result)
-                => Delegator<TDelegate>.IsCompatible(typeof(TDelegate), method, out result);
+        {
+            return Delegator<TDelegate>.IsCompatible(typeof(TDelegate), method, out result);
+        }
 
         public static bool IsCompatible(MethodInfo method)
-                => Delegator<TDelegate>.IsCompatible(method, out _);
+        {
+            return Delegator<TDelegate>.IsCompatible(method, out _);
+        }
 
         public static Delegator<TDelegate> CreateDelegate(Type? delegateType, MethodInfo method, object? target)
         {
@@ -156,7 +168,9 @@ namespace Guppy.Core.Common.Utilities
         }
 
         public static Delegator<TDelegate> CreateDelegate(MethodInfo method, object? target)
-                => Delegator<TDelegate>.CreateDelegate(typeof(TDelegate), method, target);
+        {
+            return Delegator<TDelegate>.CreateDelegate(typeof(TDelegate), method, target);
+        }
 
         private static MethodInfo GetInvokeMethod(Type delegateType)
         {

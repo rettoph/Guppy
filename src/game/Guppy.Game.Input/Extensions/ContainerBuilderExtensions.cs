@@ -7,7 +7,9 @@ namespace Guppy.Game.Input.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameInputServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterGameInputServices), builder =>
+        public static ContainerBuilder RegisterGameInputServices(this ContainerBuilder builder)
+        {
+            return builder.EnsureRegisteredOnce(nameof(RegisterGameInputServices), builder =>
                                                                                                             {
                                                                                                                 builder.RegisterType<KeyboardButtonService>().AsImplementedInterfaces().SingleInstance();
                                                                                                                 builder.RegisterType<MouseButtonService>().AsImplementedInterfaces().SingleInstance();
@@ -18,5 +20,6 @@ namespace Guppy.Game.Input.Extensions
                                                                                                                 builder.RegisterType<ButtonPublishComponent>().AsImplementedInterfaces().SingleInstance();
                                                                                                                 builder.RegisterType<MouseCursorPublishComponent>().AsImplementedInterfaces().SingleInstance();
                                                                                                             });
+        }
     }
 }

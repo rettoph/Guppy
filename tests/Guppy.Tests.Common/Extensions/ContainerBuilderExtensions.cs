@@ -30,6 +30,9 @@ namespace Guppy.Tests.Common.Extensions
         /// <param name="mocker">The mock.</param>
         /// <returns>The registration builder.</returns>
         public static IRegistrationBuilder<TMocked, SimpleActivatorData, SingleRegistrationStyle> RegisterMock<TMocked>(this ContainerBuilder builder)
-            where TMocked : class => builder.RegisterMock(new Mock<TMocked>());
+            where TMocked : class
+        {
+            return builder.RegisterMock(new Mock<TMocked>());
+        }
     }
 }

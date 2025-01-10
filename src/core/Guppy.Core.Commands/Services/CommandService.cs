@@ -46,6 +46,9 @@ namespace Guppy.Core.Commands.Services
             }
         }
 
-        public void Invoke(string input) => this._root.Invoke(input, this._console);
+        public void Invoke(string input)
+        {
+            this._root.Invoke(input, this._console);
+        }
     }
 }

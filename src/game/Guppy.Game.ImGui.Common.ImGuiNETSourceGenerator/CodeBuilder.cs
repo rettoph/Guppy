@@ -65,16 +65,22 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
             }
         }
 
-        public override string ToString() => this._string.ToString();
+        public override string ToString()
+        {
+            return this._string.ToString();
+        }
 
         private static void RegisterSourceOutput(
             IncrementalGeneratorInitializationContext context,
             string fileName,
-            string content) => context.RegisterSourceOutput(context.CompilationProvider, (productionContext, compilation) =>
+            string content)
+        {
+            context.RegisterSourceOutput(context.CompilationProvider, (productionContext, compilation) =>
                                         {
                                             content = content.Replace(_targetNamspaceTag, compilation.AssemblyName);
 
                                             productionContext.AddSource(fileName, content);
                                         });
+        }
     }
 }

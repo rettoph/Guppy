@@ -12,6 +12,9 @@
         public readonly string Key = key;
         public readonly T Value = value;
 
-        public override void SetValue(ISceneConfiguration configuration) => configuration.Set<T>(this.Key, this.Value);
+        public override void SetValue(ISceneConfiguration configuration)
+        {
+            configuration.Set<T>(this.Key, this.Value);
+        }
     }
 }
