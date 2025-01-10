@@ -4,11 +4,11 @@ using Microsoft.CodeAnalysis;
 namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     [Generator]
-    internal class IImGuiSourceGenerator : ISourceGenerator
+    public class IImGuiSourceGenerator : IIncrementalGenerator
     {
-        public void Execute(GeneratorExecutionContext context)
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            CodeBuilder source = new CodeBuilder(ref context, context.Compilation.AssemblyName);
+            CodeBuilder source = new CodeBuilder(ref context);
 
             using (source.File("IImGui.g.cs"))
             {

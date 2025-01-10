@@ -81,13 +81,18 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 
             using (source.Section($"public {typePrefix}{type.GuppyParameterType} {name}"))
             {
-                if (getter)
+                if (getter == true)
                 {
                     using (source.Section("get"))
                     {
 
                         source.AppendLine($"return {typePrefix}{type.GetImGuiToGuppyConverter($"{instance}.{name}")};");
                     }
+                }
+
+                if (setter == true)
+                {
+                    throw new NotImplementedException();
                 }
             }
         }

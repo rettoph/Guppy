@@ -57,6 +57,7 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
             { typeof(System.Numerics.Vector4), new UnsafeAsTypeManager(typeof(System.Numerics.Vector4), "Microsoft.Xna.Framework.Vector4") },
         };
 
+        private bool _generated = false;
         public readonly Type ImGuiType;
         public readonly string GuppyType;
 
@@ -73,6 +74,17 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
         public abstract string GetGuppyToImGuiConverter(string parameter);
         public abstract string GetImGuiToGuppyConverter(string parameter);
 
-        public abstract void GenerateSourceFiles(CodeBuilder source);
+        public void GenerateSourceFiles(CodeBuilder source)
+        {
+            if (this._generated == true)
+            {
+                return;
+            }
+
+            this.InternalGenerateSourceFiles(source);
+            this._generated = true;
+        }
+
+        protected abstract void InternalGenerateSourceFiles(CodeBuilder source);
     }
 }

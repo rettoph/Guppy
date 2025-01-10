@@ -8,7 +8,7 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
         {
         }
 
-        public override void GenerateSourceFiles(CodeBuilder source)
+        protected override void InternalGenerateSourceFiles(CodeBuilder source)
         {
             //throw new NotImplementedException();
         }
