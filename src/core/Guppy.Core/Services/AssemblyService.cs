@@ -1,10 +1,10 @@
-﻿using Autofac;
+﻿using System.Collections;
+using System.Reflection;
+using Autofac;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Services;
 using Serilog;
-using System.Collections;
-using System.Reflection;
 
 namespace Guppy.Core.Services
 {
@@ -29,15 +29,15 @@ namespace Guppy.Core.Services
                 return;
             }
 
-            _assemblies.Add(assembly);
-            _logger.Information($"{new string('\t', depth)}Loading: {assembly.FullName}...");
+            this._assemblies.Add(assembly);
+            this._logger.Information($"{new string('\t', depth)}Loading: {assembly.FullName}...");
 
             // Recersively attempt to load all references assemblies as well...
             foreach (AssemblyName referenceName in assembly.GetReferencedAssemblies())
             {
                 //Debug.WriteLine($"{new string('\t', depth + 1)}Checking: {referenceName.FullName}");
                 Assembly reference = Assembly.Load(referenceName);
-                Load(reference, false, depth + 1);
+                this.Load(reference, false, depth + 1);
             }
 
             this.OnAssemblyLoaded?.Invoke(this, assembly);
@@ -47,27 +47,27 @@ namespace Guppy.Core.Services
         {
             if (forced)
             {
-                return _assemblies.Add(assembly);
+                return this._assemblies.Add(assembly);
             }
 
-            if (_assemblies.Contains(assembly))
+            if (this._assemblies.Contains(assembly))
             {
                 return false;
             }
 
             if (this.Libraries.Length == 0)
             {
-                return _assemblies.Add(assembly);
+                return this._assemblies.Add(assembly);
             }
 
             if (this.Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(assembly.GetName(), r)))
             { // Check if the recieved assembly is an existing library...
-                return _assemblies.Add(assembly);
+                return this._assemblies.Add(assembly);
             }
 
             if (assembly.GetReferencedAssemblies().Any(nan => this.Libraries.Any(r => AssemblyName.ReferenceMatchesDefinition(nan, r))))
             { // Ensure the assembly references a required library...
-                return _assemblies.Add(assembly);
+                return this._assemblies.Add(assembly);
             }
 
             return false;
@@ -75,12 +75,12 @@ namespace Guppy.Core.Services
 
         public ITypeService<T> GetTypes<T>()
         {
-            return new TypeService<T>(_assemblies.SelectMany(x => x.GetTypes()).Where(x => typeof(T).IsAssignableFrom(x)));
+            return new TypeService<T>(this._assemblies.SelectMany(x => x.GetTypes()).Where(x => typeof(T).IsAssignableFrom(x)));
         }
 
         public ITypeService<T> GetTypes<T>(Func<Type, bool> predicate)
         {
-            return new TypeService<T>(_assemblies.SelectMany(x => x.GetTypes().Where(x => typeof(T).IsAssignableFrom(x)).Where(predicate)));
+            return new TypeService<T>(this._assemblies.SelectMany(x => x.GetTypes().Where(x => typeof(T).IsAssignableFrom(x)).Where(predicate)));
         }
 
         public IAttributeService<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
@@ -106,12 +106,12 @@ namespace Guppy.Core.Services
         public IAttributeService<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
             where TAttribute : Attribute
         {
-            return GetAttributes<object, TAttribute>(predicate, inherit);
+            return this.GetAttributes<object, TAttribute>(predicate, inherit);
         }
 
         public IEnumerator<Assembly> GetEnumerator()
         {
-            return _assemblies.GetEnumerator();
+            return this._assemblies.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

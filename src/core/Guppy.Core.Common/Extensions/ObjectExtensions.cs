@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Common.Utilities;
-using System.Reflection;
+﻿using System.Reflection;
+using Guppy.Core.Common.Utilities;
 
 namespace System
 {
@@ -40,7 +40,7 @@ namespace System
             var methodInfo = typeof(ObjectExtensions).GetMethod(nameof(As), BindingFlags.Static | BindingFlags.Public);
             var genericArguments = new[] { type };
             var genericMethodInfo = methodInfo?.MakeGenericMethod(genericArguments);
-            return genericMethodInfo?.Invoke(null, new[] { o })!;
+            return genericMethodInfo?.Invoke(null, [o])!;
         }
 
         /// <summary>

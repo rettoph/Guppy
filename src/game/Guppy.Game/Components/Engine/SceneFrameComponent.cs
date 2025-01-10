@@ -14,16 +14,16 @@ namespace Guppy.Game.Components.Engine
     {
         private readonly ISceneService _scenes = scenes;
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
+        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
         public void Draw(GameTime gameTime)
         {
-            foreach (IScene scene in _scenes.GetAll())
+            foreach (IScene scene in this._scenes.GetAll())
             {
                 if (scene.Visible == false)
                 {
@@ -34,10 +34,10 @@ namespace Guppy.Game.Components.Engine
             }
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
         public void Update(GameTime gameTime)
         {
-            foreach (IScene scene in _scenes.GetAll())
+            foreach (IScene scene in this._scenes.GetAll())
             {
                 if (scene.Enabled == false)
                 {

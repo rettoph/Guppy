@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Common;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common;
 using Guppy.Core.Serialization.Common.Factories;
 using Guppy.Core.Serialization.Common.Services;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Serialization.Services
 {
@@ -12,7 +12,7 @@ namespace Guppy.Core.Serialization.Services
 
         public T Get<T>()
         {
-            return (T)Get(typeof(T))!;
+            return (T)this.Get(typeof(T))!;
         }
 
         public object Get(Type type)
@@ -22,14 +22,14 @@ namespace Guppy.Core.Serialization.Services
 
         private IDefaultInstanceFactory GetFactory(Type type)
         {
-            ref IDefaultInstanceFactory? typeFactory = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeFactories, type, out bool exists);
+            ref IDefaultInstanceFactory? typeFactory = ref CollectionsMarshal.GetValueRefOrAddDefault(this._typeFactories, type, out bool exists);
             if (exists)
             {
                 return typeFactory!;
             }
 
             typeFactory = DefaultActivatorFactory.Instance;
-            foreach (var factory in _factories)
+            foreach (var factory in this._factories)
             {
                 if (factory.CanConstructType(type))
                 {

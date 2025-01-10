@@ -19,13 +19,13 @@ namespace Guppy.Example.Client.Utilities
 
         public PointPrimitiveBatch(GraphicsDevice graphicsDevice, TEffect effect)
         {
-            _vertexBuffer = null!;
+            this._vertexBuffer = null!;
 
-            Vertices = [];
-            GraphicsDevice = graphicsDevice;
-            Effect = effect;
-            BlendState = BlendState.AlphaBlend;
-            RasterizerState = new RasterizerState()
+            this.Vertices = [];
+            this.GraphicsDevice = graphicsDevice;
+            this.Effect = effect;
+            this.BlendState = BlendState.AlphaBlend;
+            this.RasterizerState = new RasterizerState()
             {
                 MultiSampleAntiAlias = true,
                 SlopeScaleDepthBias = 0.5f
@@ -34,32 +34,32 @@ namespace Guppy.Example.Client.Utilities
 
         public void Initialize(int vertexCount)
         {
-            _vertexBuffer?.Dispose();
-            _vertexBuffer = new DynamicVertexBuffer(GraphicsDevice, typeof(TVertex), vertexCount, BufferUsage.WriteOnly);
+            this._vertexBuffer?.Dispose();
+            this._vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(TVertex), vertexCount, BufferUsage.WriteOnly);
 
-            Vertices = new TVertex[vertexCount];
+            this.Vertices = new TVertex[vertexCount];
         }
 
         public void Draw(ICamera camera)
         {
-            Draw(camera.View, camera.Projection);
+            this.Draw(camera.View, camera.Projection);
         }
 
         public void Draw(Matrix view, Matrix projection)
         {
-            Effect.View = view;
-            Effect.Projection = projection;
+            this.Effect.View = view;
+            this.Effect.Projection = projection;
 
-            GraphicsDevice.BlendState = BlendState;
-            GraphicsDevice.RasterizerState = RasterizerState;
-            GraphicsDevice.SetVertexBuffer(_vertexBuffer);
+            this.GraphicsDevice.BlendState = this.BlendState;
+            this.GraphicsDevice.RasterizerState = this.RasterizerState;
+            this.GraphicsDevice.SetVertexBuffer(this._vertexBuffer);
 
-            _vertexBuffer.SetData(Vertices, 0, Vertices.Length);
+            this._vertexBuffer.SetData(this.Vertices, 0, this.Vertices.Length);
 
-            foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                GraphicsDevice.DrawPrimitives(PrimitiveType.PointList, 0, Vertices.Length);
+                this.GraphicsDevice.DrawPrimitives(PrimitiveType.PointList, 0, this.Vertices.Length);
             }
         }
     }

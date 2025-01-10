@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Reflection;
+using Autofac;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
@@ -6,7 +7,6 @@ using Guppy.Core.Common.Providers;
 using Guppy.Core.Middleware;
 using Guppy.Core.Services;
 using Serilog;
-using System.Reflection;
 
 namespace Guppy.Core.Modules
 {

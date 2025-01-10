@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Game.Input.Common.Enums
 {
-    public enum CursorButtons
+    public enum CursorButtonsEnum
     {
         Left,
         Middle,

@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Common;
-using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Guppy.Core.Common;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame
 {
@@ -43,14 +43,14 @@ namespace Guppy.Game.MonoGame
                 return;
             }
 
-            if (_appendLineNumber)
+            if (this._appendLineNumber)
             {
                 this.AppendLineNumber();
-                _appendLineNumber = false;
+                this._appendLineNumber = false;
             }
 
             MonoGameTerminalSegment segment = new(this.Color, this.Text.ToString());
-            _line.Segments.Add(segment);
+            this._line.Segments.Add(segment);
 
             this.Text.Clear();
         }
@@ -59,21 +59,21 @@ namespace Guppy.Game.MonoGame
         {
             this.AddSegment();
 
-            var result = _line;
-            _line.CleanText();
+            var result = this._line;
+            this._line.CleanText();
 
-            _line = MonoGameTerminalLine.Factory.BuildInstance();
-            _line.Segments.Clear();
+            this._line = MonoGameTerminalLine.Factory.BuildInstance();
+            this._line.Segments.Clear();
 
-            _appendLineNumber = true;
+            this._appendLineNumber = true;
 
             return result;
         }
 
         private void AppendLineNumber()
         {
-            MonoGameTerminalSegment segment = new(this.Color, $"{_lineNumber++}: ");
-            _line.Segments.Add(segment);
+            MonoGameTerminalSegment segment = new(this.Color, $"{this._lineNumber++}: ");
+            this._line.Segments.Add(segment);
         }
     }
 }

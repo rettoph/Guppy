@@ -1,17 +1,15 @@
-using Guppy.Core.Common.Attributes;
 using Guppy.Example.Client.Entities;
 using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.CellTypes
 {
-    [AutoLoad]
-    internal class PlantCelType : BaseCellType
+    internal class PlantCellType : BaseCellType
     {
         public override CellTypeEnum Type => CellTypeEnum.Plant;
 
-        protected unsafe override CellStepResult Step(ref Cell cell, Grid input, Grid output)
+        protected override unsafe CellStepResultEnum Step(ref Cell cell, Grid input, Grid output)
         {
-            CellStepResult result = CellStepResult.Inactive;
+            CellStepResultEnum result = CellStepResultEnum.Inactive;
 
             for (int i = 0; i < cell.Neighbors.Length; i++)
             {
@@ -22,12 +20,12 @@ namespace Guppy.Example.Client.CellTypes
                     if (Random.Shared.Next(0, 10) == 0)
                     {
                         this.Update(ref neighbor, this.Type, 0, output);
-                        result |= CellStepResult.Active;
+                        result |= CellStepResultEnum.Active;
                     }
                 }
             }
 
-            if (result == CellStepResult.Active)
+            if (result == CellStepResultEnum.Active)
             {
                 this.Update(ref cell, this.Type, 0, output);
             }

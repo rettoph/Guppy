@@ -15,7 +15,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
@@ -23,12 +23,12 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
         public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)
         {
-            _isDebugWindowEnabled.Value = !_isDebugWindowEnabled.Value;
+            this._isDebugWindowEnabled.Value = !this._isDebugWindowEnabled.Value;
         }
 
         public void Process(in Guid messageId, Toggle<EngineTerminalWindowComponent> message)
         {
-            _isTerminalWindowEnabled.Value = !_isTerminalWindowEnabled.Value;
+            this._isTerminalWindowEnabled.Value = !this._isTerminalWindowEnabled.Value;
         }
     }
 }

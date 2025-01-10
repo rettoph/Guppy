@@ -1,5 +1,5 @@
-﻿using ImGuiNET;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using ImGuiNET;
 
 namespace Guppy.Game.ImGui.Common
 {

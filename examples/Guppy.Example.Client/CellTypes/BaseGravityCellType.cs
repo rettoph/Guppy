@@ -7,7 +7,7 @@ namespace Guppy.Example.Client.CellTypes
     {
         public CellTypeEnum Displaces { get; set; } = displaces | CellTypeEnum.Air;
 
-        protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
+        protected override CellStepResultEnum Step(ref Cell cell, Grid input, Grid output)
         {
             ref Cell below = ref output.GetCell(cell.X + 0, cell.Y + 1);
 
@@ -23,9 +23,9 @@ namespace Guppy.Example.Client.CellTypes
             }
 
             int belowSide = Random.Shared.Next(0, 2) == 0 ? -1 : 1;
-            if (this.TryFallSide(ref cell, input, output, belowSide) == CellStepResult.Active)
+            if (this.TryFallSide(ref cell, input, output, belowSide) == CellStepResultEnum.Active)
             {
-                return CellStepResult.Active;
+                return CellStepResultEnum.Active;
             }
 
             // if (this.TryFallSide(ref cell, input, output, belowSide * -1) == CellStepResult.Active)
@@ -33,20 +33,20 @@ namespace Guppy.Example.Client.CellTypes
             //     return CellStepResult.Active;
             // }
 
-            return CellStepResult.Inactive;
+            return CellStepResultEnum.Inactive;
         }
 
-        protected virtual CellStepResult Displace(ref Cell first, ref Cell second, byte inactivityCount, Grid grid)
+        protected virtual CellStepResultEnum Displace(ref Cell first, ref Cell second, byte inactivityCount, Grid grid)
         {
             CellTypeEnum placeholder = first.Latest.Type;
 
-            CellStepResult a = this.Update(ref first, second.Latest.Type, inactivityCount, grid);
+            CellStepResultEnum a = this.Update(ref first, second.Latest.Type, inactivityCount, grid);
             first.Displaced = true;
 
-            CellStepResult b = this.Update(ref second, placeholder, inactivityCount, grid);
+            CellStepResultEnum b = this.Update(ref second, placeholder, inactivityCount, grid);
             second.Displaced = true;
 
-            return a == CellStepResult.Active || b == CellStepResult.Active ? CellStepResult.Active : CellStepResult.Inactive;
+            return a == CellStepResultEnum.Active || b == CellStepResultEnum.Active ? CellStepResultEnum.Active : CellStepResultEnum.Inactive;
         }
 
         protected bool CanDisplace(ref Cell cell)
@@ -54,7 +54,9 @@ namespace Guppy.Example.Client.CellTypes
             return (cell.Displaced == false || cell.Type == CellTypeEnum.Air) && this.Displaces.HasFlag(cell.Latest.Type);
         }
 
-        private CellStepResult TryFallSide(ref Cell cell, Grid input, Grid output, int side)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private CellStepResultEnum TryFallSide(ref Cell cell, Grid input, Grid output, int side)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             ref Cell belowSide = ref output.GetCell(cell.X + side, cell.Y + 1);
             if (this.CanDisplace(ref belowSide))
@@ -62,7 +64,7 @@ namespace Guppy.Example.Client.CellTypes
                 return this.Displace(ref cell, ref belowSide, 0, output);
             }
 
-            return CellStepResult.Inactive;
+            return CellStepResultEnum.Inactive;
         }
     }
 }

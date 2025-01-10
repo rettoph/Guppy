@@ -1,3 +1,4 @@
+using System.CommandLine;
 using Guppy.Core.Commands.Common;
 using Guppy.Core.Commands.Common.Attributes;
 using Guppy.Core.Commands.Common.Extensions;
@@ -5,7 +6,6 @@ using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Messaging.Common;
 using Guppy.Tests.Core.Commands.Common;
 using Moq;
-using System.CommandLine;
 
 namespace Guppy.Tests.Core.Commands
 {
@@ -46,7 +46,7 @@ namespace Guppy.Tests.Core.Commands
         [Fact]
         public void InvokeCommand_EnumArgument()
         {
-            ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumArgumentTestCommand)]);
+            ICommandService commandService = CommandServiceBuilder.Build([new EnumArgumentTestCommand()]);
 
             Mock<ICommandSubscriber<EnumArgumentTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
@@ -68,7 +68,7 @@ namespace Guppy.Tests.Core.Commands
         [Fact]
         public void InvokeCommand_NullableEnumArgument()
         {
-            ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumArgumentTestCommand)]);
+            ICommandService commandService = CommandServiceBuilder.Build([new NullableEnumArgumentTestCommand()]);
 
             Mock<ICommandSubscriber<NullableEnumArgumentTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
@@ -103,7 +103,7 @@ namespace Guppy.Tests.Core.Commands
         [Fact]
         public void InvokeCommand_EnumOption()
         {
-            ICommandService commandService = CommandServiceBuilder.Build([typeof(EnumOptionTestCommand)]);
+            ICommandService commandService = CommandServiceBuilder.Build([new EnumOptionTestCommand()]);
 
             Mock<ICommandSubscriber<EnumOptionTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);
@@ -125,7 +125,7 @@ namespace Guppy.Tests.Core.Commands
         [Fact]
         public void InvokeCommand_NullableEnumOption()
         {
-            ICommandService commandService = CommandServiceBuilder.Build([typeof(NullableEnumOptionTestCommand)]);
+            ICommandService commandService = CommandServiceBuilder.Build([new NullableEnumOptionTestCommand()]);
 
             Mock<ICommandSubscriber<NullableEnumOptionTestCommand>> subscriber = new();
             commandService.Subscribe(subscriber.Object);

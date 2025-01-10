@@ -18,22 +18,22 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
         private readonly IImGui _imgui = imgui;
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<DebugSequenceGroup>(DebugSequenceGroup.Debug)]
+        [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]
         public void DrawDebug(GameTime gameTime)
         {
-            _sampleSum += gameTime.ElapsedGameTime.TotalSeconds;
-            _sampleBuffer.Add(gameTime.ElapsedGameTime.TotalSeconds, out double removed);
-            _sampleSum -= removed;
+            this._sampleSum += gameTime.ElapsedGameTime.TotalSeconds;
+            this._sampleBuffer.Add(gameTime.ElapsedGameTime.TotalSeconds, out double removed);
+            this._sampleSum -= removed;
 
-            var fps = 20.0 / _sampleSum;
+            double fps = 20.0 / this._sampleSum;
 
-            _imgui.Text($"FPS: {fps.ToString("#,##0")}");
+            this._imgui.Text($"FPS: {fps:#,##0}");
         }
     }
 }

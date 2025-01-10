@@ -1,17 +1,19 @@
+using System.Reflection;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Utilities;
-using System.Reflection;
 
 namespace Guppy.Tests.Core
 {
     public class Delegator_Tests
     {
-        delegate object TestDelegate_Object_Int32(int param);
+        private delegate object TestDelegate_Object_Int32(int param);
+#pragma warning disable IDE0060 // Remove unused parameter
         private static object TestDelegate_Object_Int32__StaticFunction_Object_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__StaticFunction_Object_Int32));
         private object TestDelegate_Object_Int32__InstanceFunction_Object_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Object_Int32));
         private int TestDelegate_Object_Int32__InstanceFunction_Int32_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Int32_Int32));
         private object TestDelegate_Object_Int32__InstanceFunction_Object_Object(object param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Object_Object));
         private object TestDelegate_Object_Int32__InstanceFunction_Object_String(string param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Object_String));
+#pragma warning restore IDE0060 // Remove unused parameter
 
         [Theory]
         [InlineData(nameof(TestDelegate_Object_Int32__StaticFunction_Object_Int32), BindingFlags.Static | BindingFlags.NonPublic, DelegatorIsCompatibleResultEnum.Compatible)]
@@ -22,8 +24,7 @@ namespace Guppy.Tests.Core
         public void TestDelegate_Object_Int32__IsCompatible(string methodName, BindingFlags bindingFlags, DelegatorIsCompatibleResultEnum expected)
         {
             MethodInfo method = typeof(Delegator_Tests).GetMethod(methodName, bindingFlags)!;
-
-            bool isCompatible = Delegator<TestDelegate_Object_Int32>.IsCompatible(method, out var result);
+            _ = Delegator<TestDelegate_Object_Int32>.IsCompatible(method, out var result);
 
             Assert.Equal(expected, result);
         }
@@ -44,11 +45,13 @@ namespace Guppy.Tests.Core
             Assert.Equal(1, _invocations[methodName]);
         }
 
-        delegate object TestDelegate_Object_Int32_Int32(int param1, int param2);
+        private delegate object TestDelegate_Object_Int32_Int32(int param1, int param2);
+#pragma warning disable IDE0060 // Remove unused parameter
         private object TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Int32_Int32(int param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Int32_Int32));
         private int TestDelegate_Object_Int32_Int32__InstanceFunction_Int32_Int32_Int32(int param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Int32_Int32_Int32));
         private object TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Object_Int32(object param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Object_Int32));
         private object TestDelegate_Object_Int32_Int32__InstanceFunction_Object_String_Int32(string param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_String_Int32));
+#pragma warning restore IDE0060 // Remove unused parameter
 
         [Theory]
         [InlineData(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Int32_Int32), BindingFlags.Instance | BindingFlags.NonPublic, DelegatorIsCompatibleResultEnum.Compatible)]
@@ -58,8 +61,7 @@ namespace Guppy.Tests.Core
         public void TestDelegate_Object_Int32_Int32__IsCompatible(string methodName, BindingFlags bindingFlags, DelegatorIsCompatibleResultEnum expected)
         {
             MethodInfo method = typeof(Delegator_Tests).GetMethod(methodName, bindingFlags)!;
-
-            bool isCompatible = Delegator<TestDelegate_Object_Int32_Int32>.IsCompatible(method, out var result);
+            _ = Delegator<TestDelegate_Object_Int32_Int32>.IsCompatible(method, out var result);
 
             Assert.Equal(expected, result);
         }
@@ -79,11 +81,13 @@ namespace Guppy.Tests.Core
             Assert.Equal(1, _invocations[methodName]);
         }
 
-        delegate void TestDelegate_Void_Int32(int param);
+        private delegate void TestDelegate_Void_Int32(int param);
+#pragma warning disable IDE0060 // Remove unused parameter
         private static void TestDelegate_Void_Int32__StaticFunction_Void_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__StaticFunction_Void_Int32));
         private void TestDelegate_Void_Int32__InstanceFunction_Void_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__InstanceFunction_Void_Int32));
         private void TestDelegate_Void_Int32__InstanceFunction_Void_Object(object param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__InstanceFunction_Void_Object));
         private void TestDelegate_Void_Int32__InstanceFunction_Void_String(string param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__InstanceFunction_Void_String));
+#pragma warning restore IDE0060 // Remove unused parameter
 
         [Theory]
         [InlineData(nameof(TestDelegate_Void_Int32__StaticFunction_Void_Int32), BindingFlags.Static | BindingFlags.NonPublic, DelegatorIsCompatibleResultEnum.Compatible)]
@@ -93,8 +97,7 @@ namespace Guppy.Tests.Core
         public void TestDelegate_Void_Int32__IsCompatible(string methodName, BindingFlags bindingFlags, DelegatorIsCompatibleResultEnum expected)
         {
             MethodInfo method = typeof(Delegator_Tests).GetMethod(methodName, bindingFlags)!;
-
-            bool isCompatible = Delegator<TestDelegate_Void_Int32>.IsCompatible(method, out var result);
+            _ = Delegator<TestDelegate_Void_Int32>.IsCompatible(method, out var result);
 
             Assert.Equal(expected, result);
         }
@@ -126,9 +129,9 @@ namespace Guppy.Tests.Core
         }
         private static int GetInvocationCount(string method)
         {
-            if (_invocations.ContainsKey(method))
+            if (_invocations.TryGetValue(method, out int value))
             {
-                return _invocations[method];
+                return value;
             }
 
             return 0;

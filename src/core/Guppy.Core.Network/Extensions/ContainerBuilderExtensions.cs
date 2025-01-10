@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Text.Json.Serialization;
+using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Constants;
@@ -13,7 +14,6 @@ using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
 using Guppy.Core.StateMachine.Common.Providers;
 using LiteNetLib;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Network.Extensions
 {

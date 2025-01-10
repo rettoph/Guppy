@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Example.Client.Enums
 {
-    public enum CellStepResult
+    public enum CellStepResultEnum
     {
         Inactive = 0,
         Active = 1,

@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Commands.Common;
+﻿using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Commands.Common;
 using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Services;
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Commands.Managers
 {

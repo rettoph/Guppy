@@ -5,32 +5,27 @@ namespace Guppy.Core.Common.Collections
     public class Buffer<T>(int length) : IEnumerable<T>
     {
         private T[] _buffer = new T[length];
-        private int _position = 0;
 
-        public int Length => _buffer.Length;
-        public int Position
-        {
-            get => _position;
-            set => _position = value;
-        }
+        public int Length => this._buffer.Length;
+        public int Position { get; set; } = 0;
 
         public int Count => Math.Min(this.Position, this.Length);
 
-        public T this[int index] => _buffer[index];
+        public T this[int index] => this._buffer[index];
 
-        public T[] Items => _buffer;
+        public T[] Items => this._buffer;
 
         public void Add(T value)
         {
-            _buffer[_position++ % this.Length] = value;
+            this._buffer[this.Position++ % this.Length] = value;
         }
 
         public void Add(T value, out T old)
         {
-            int index = _position++ % this.Length;
+            int index = this.Position++ % this.Length;
 
-            old = _buffer[index];
-            _buffer[index] = value;
+            old = this._buffer[index];
+            this._buffer[index] = value;
         }
 
         public void AddRange(IEnumerable<T> items)
@@ -43,14 +38,14 @@ namespace Guppy.Core.Common.Collections
 
         public void Resize(int length)
         {
-            Array.Resize(ref _buffer, length);
+            Array.Resize(ref this._buffer, length);
         }
 
         public void Reset(int length)
         {
             this.Reset();
 
-            if (_buffer.Length == length)
+            if (this._buffer.Length == length)
             {
                 return;
             }
@@ -59,23 +54,23 @@ namespace Guppy.Core.Common.Collections
         }
         public void Reset()
         {
-            _position = 0;
+            this.Position = 0;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (_position < this.Length)
+            if (this.Position < this.Length)
             {
-                for (int i = 0; i < _position; i++)
+                for (int i = 0; i < this.Position; i++)
                 {
-                    yield return _buffer[i];
+                    yield return this._buffer[i];
                 }
             }
             else
             {
                 for (int i = 0; i < this.Length; i++)
                 {
-                    yield return _buffer[(_position + i) % this.Length];
+                    yield return this._buffer[(this.Position + i) % this.Length];
                 }
             }
         }

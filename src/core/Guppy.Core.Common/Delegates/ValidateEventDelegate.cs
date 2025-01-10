@@ -23,7 +23,7 @@
             }
             else
             {
-                foreach (ValidateEventDelegate<TSender, TArgs> v in validator.GetInvocationList())
+                foreach (ValidateEventDelegate<TSender, TArgs> v in validator.GetInvocationList().Cast<ValidateEventDelegate<TSender, TArgs>>())
                 {
                     if (!v(sender, args))
                     {

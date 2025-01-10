@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Enums;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
+using Guppy.Core.Common.Enums;
 
 namespace Guppy.Core.Common.Utilities
 {
@@ -18,13 +18,13 @@ namespace Guppy.Core.Common.Utilities
         public override readonly bool Equals(object? obj)
         {
             return obj is Delegator<TDelegate> delegator &&
-                   EqualityComparer<MethodInfo>.Default.Equals(Method, delegator.Method) &&
-                   EqualityComparer<object?>.Default.Equals(Target, delegator.Target);
+                   EqualityComparer<MethodInfo>.Default.Equals(this.Method, delegator.Method) &&
+                   EqualityComparer<object?>.Default.Equals(this.Target, delegator.Target);
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(Method, Target);
+            return HashCode.Combine(this.Method, this.Target);
         }
 
         public static bool IsCompatible(Type? delegateType, MethodInfo method, out DelegatorIsCompatibleResultEnum result)
@@ -120,7 +120,7 @@ namespace Guppy.Core.Common.Utilities
             DynamicMethod dynamicMethod = new(
                 $"DelegateConverter_Dynamic_{method.Name}",
                 delegateInvokeMethod.ReturnType,
-                dynamicMethodParameterTypes.ToArray(),
+                [.. dynamicMethodParameterTypes],
                 typeof(Delegator<TDelegate>).Module);
 
 

@@ -1,7 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
 {
@@ -60,14 +60,14 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
         public readonly Type ImGuiType;
         public readonly string GuppyType;
 
-        public virtual string ReturnTypeName => GuppyType;
+        public virtual string ReturnTypeName => this.GuppyType;
 
-        public virtual string GuppyParameterType => GuppyType.TrimEnd('&');
+        public virtual string GuppyParameterType => this.GuppyType.TrimEnd('&');
 
         protected TypeManager(Type imGuiType, string guppyType)
         {
-            ImGuiType = imGuiType;
-            GuppyType = guppyType.Replace("System.Void*", "void*");
+            this.ImGuiType = imGuiType;
+            this.GuppyType = guppyType.Replace("System.Void*", "void*");
         }
 
         public abstract string GetGuppyToImGuiConverter(string parameter);

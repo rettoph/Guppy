@@ -15,7 +15,7 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
         {
             base.Initialize(serializers);
 
-            _userDtoSerializer = serializers.Get<UserDto>();
+            this._userDtoSerializer = serializers.Get<UserDto>();
         }
 
         public override UserAction Deserialize(NetDataReader reader)
@@ -23,8 +23,8 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
             UserAction instance = new()
             {
                 GroupId = reader.GetByte(),
-                Type = reader.GetEnum<UserActionTypes>(),
-                UserDto = _userDtoSerializer.Deserialize(reader)
+                Type = reader.GetEnum<UserActionTypeEnum>(),
+                UserDto = this._userDtoSerializer.Deserialize(reader)
             };
 
             return instance;
@@ -34,7 +34,7 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
         {
             writer.Put(instance.GroupId);
             writer.Put(instance.Type);
-            _userDtoSerializer.Serialize(writer, instance.UserDto);
+            this._userDtoSerializer.Serialize(writer, instance.UserDto);
         }
     }
 }

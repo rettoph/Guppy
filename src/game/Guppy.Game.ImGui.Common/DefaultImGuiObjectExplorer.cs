@@ -1,11 +1,11 @@
-﻿using Guppy.Core.Common.Extensions.System;
-using Guppy.Engine.Common.Enums;
-using Guppy.Engine.Common.Services;
-using Microsoft.Xna.Framework;
-using System.Collections;
+﻿using System.Collections;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using Guppy.Core.Common.Extensions.System;
+using Guppy.Engine.Common.Enums;
+using Guppy.Engine.Common.Services;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ImGui.Common
 {
@@ -15,7 +15,7 @@ namespace Guppy.Game.ImGui.Common
         private readonly IImGui _imgui = imgui;
         private readonly Dictionary<Type, (FieldInfo[], PropertyInfo[])> _typeInfo = [];
 
-        private readonly Dictionary<uint, TextFilterResult> _filterResults = [];
+        private readonly Dictionary<uint, TextFilterResultEnum> _filterResults = [];
         private Vector4 _redForeground = Color.Red.ToVector4();
         private Vector4 _greenForeground = Color.LightGreen.ToVector4();
         private Vector4 _redBackground = Color.DarkRed.ToVector4();
@@ -26,7 +26,7 @@ namespace Guppy.Game.ImGui.Common
             return true;
         }
 
-        public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
+        public override TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             type = instance?.GetType() ?? type;
 
@@ -41,22 +41,22 @@ namespace Guppy.Game.ImGui.Common
                 return this.DrawText(index, name, type, instance, filter);
             }
 
-            using (_imgui.ApplyID($"{nameof(DefaultImGuiObjectExplorer)}_{name}_{index}"))
+            using (this._imgui.ApplyID($"{nameof(DefaultImGuiObjectExplorer)}_{name}_{index}"))
             {
-                uint id = _imgui.GetID(nameof(TextFilterResult));
-                ref TextFilterResult result = ref this.GetFilterResult(id);
-                string title = this.GetTitle(index, name, type, instance);
+                uint id = this._imgui.GetID(nameof(TextFilterResultEnum));
+                ref TextFilterResultEnum result = ref this.GetFilterResult(id);
+                string title = GetTitle(index, name, type, instance);
                 Vector4? color = result switch
                 {
-                    TextFilterResult.NotMatched => _redBackground,
-                    TextFilterResult.Matched => _greenBackground,
+                    TextFilterResultEnum.NotMatched => this._redBackground,
+                    TextFilterResultEnum.Matched => this._greenBackground,
                     _ => null
                 };
 
-                result = this.BasicFilter(filter, name, type, instance);
-                if (_imgui.CollapsingHeader($"{title}###header", color))
+                result = BasicFilter(filter, name, type, instance);
+                if (this._imgui.CollapsingHeader($"{title}###header", color))
                 {
-                    _imgui.Indent();
+                    this._imgui.Indent();
 
                     foreach (PropertyInfo property in properties)
                     {
@@ -75,17 +75,17 @@ namespace Guppy.Game.ImGui.Common
                     if (instance is IEnumerable enumerable)
                     {
                         int itemIndex = 0;
-                        foreach (var item in enumerable)
+                        foreach (object? item in enumerable)
                         {
                             result = result.Max(this.explorer.DrawObjectExplorer(itemIndex++, null, item?.GetType() ?? typeof(object), item, filter, maxDepth, currentDepth + 1, tree));
                         }
                     }
 
-                    _imgui.Unindent();
+                    this._imgui.Unindent();
                 }
                 else
                 {
-                    var filterResult = _filter.Filter(instance, filter, maxDepth - currentDepth, 0, tree);
+                    var filterResult = this._filter.Filter(instance, filter, maxDepth - currentDepth, 0, tree);
                     result = result.Max(filterResult);
                 }
 
@@ -93,53 +93,53 @@ namespace Guppy.Game.ImGui.Common
             }
         }
 
-        private TextFilterResult BasicFilter(string filter, string? name, Type type, object? instance)
+        private static TextFilterResultEnum BasicFilter(string filter, string? name, Type type, object? instance)
         {
             if (filter.IsNullOrEmpty())
             {
-                return TextFilterResult.None;
+                return TextFilterResultEnum.None;
             }
 
             if (name is string nameString && nameString.Contains(filter))
             {
-                return TextFilterResult.Matched;
+                return TextFilterResultEnum.Matched;
             }
 
             if (type.AssemblyQualifiedName is string assembly && assembly.Contains(filter))
             {
-                return TextFilterResult.Matched;
+                return TextFilterResultEnum.Matched;
             }
 
             if (instance?.ToString() is string instanceString && instanceString.Contains(filter))
             {
-                return TextFilterResult.Matched;
+                return TextFilterResultEnum.Matched;
             }
 
-            return TextFilterResult.NotMatched;
+            return TextFilterResultEnum.NotMatched;
         }
 
-        private TextFilterResult DrawText(int? index, string? name, Type type, object? instance, string filter)
+        private TextFilterResultEnum DrawText(int? index, string? name, Type type, object? instance, string filter)
         {
-            TextFilterResult result = this.BasicFilter(filter, name, type, instance);
-            string title = this.GetTitle(index, name, type, instance);
+            TextFilterResultEnum result = BasicFilter(filter, name, type, instance);
+            string title = GetTitle(index, name, type, instance);
 
             switch (result)
             {
-                case TextFilterResult.None:
-                    _imgui.Text(title);
+                case TextFilterResultEnum.None:
+                    this._imgui.Text(title);
                     break;
-                case TextFilterResult.Matched:
-                    _imgui.TextColored(_greenForeground, title);
+                case TextFilterResultEnum.Matched:
+                    this._imgui.TextColored(this._greenForeground, title);
                     break;
-                case TextFilterResult.NotMatched:
-                    _imgui.TextColored(_redForeground, title);
+                case TextFilterResultEnum.NotMatched:
+                    this._imgui.TextColored(this._redForeground, title);
                     break;
             }
 
             return result;
         }
 
-        private string GetTitle(int? index, string? name, Type type, object? instance)
+        private static string GetTitle(int? index, string? name, Type type, object? instance)
         {
             StringBuilder title = new();
 
@@ -169,16 +169,16 @@ namespace Guppy.Game.ImGui.Common
             return title.ToString();
         }
 
-        private ref TextFilterResult GetFilterResult(uint id)
+        private ref TextFilterResultEnum GetFilterResult(uint id)
         {
-            ref TextFilterResult result = ref CollectionsMarshal.GetValueRefOrAddDefault(_filterResults, id, out _);
+            ref TextFilterResultEnum result = ref CollectionsMarshal.GetValueRefOrAddDefault(this._filterResults, id, out _);
 
             return ref result;
         }
 
         private (FieldInfo[], PropertyInfo[]) GetTypeInfo(Type type)
         {
-            ref (FieldInfo[], PropertyInfo[]) info = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeInfo, type, out bool exists);
+            ref (FieldInfo[], PropertyInfo[]) info = ref CollectionsMarshal.GetValueRefOrAddDefault(this._typeInfo, type, out bool exists);
 
             if (exists)
             {

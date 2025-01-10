@@ -14,15 +14,15 @@ namespace Guppy.Core.Files.Services
         {
             string path = directory.Type switch
             {
-                DirectoryType.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _context.Company, _context.Name, directory.Path),
-                DirectoryType.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), directory.Path),
+                DirectoryTypeEnum.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this._context.Company, this._context.Name, directory.Path),
+                DirectoryTypeEnum.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), directory.Path),
                 _ => directory.Path
             };
 
-            return new DirectoryLocation(DirectoryType.Source, path);
+            return new DirectoryLocation(DirectoryTypeEnum.Source, path);
         }
 
-        public DirectoryLocation GetSourceLocation(DirectoryType type, string path)
+        public DirectoryLocation GetSourceLocation(DirectoryTypeEnum type, string path)
         {
             return this.GetSourceLocation(new DirectoryLocation(type, path));
         }
@@ -32,7 +32,7 @@ namespace Guppy.Core.Files.Services
             return new FileLocation(this.GetSourceLocation(file.Directory), file.Name);
         }
 
-        public FileLocation GetSourceLocation(DirectoryType type, string path, string name)
+        public FileLocation GetSourceLocation(DirectoryTypeEnum type, string path, string name)
         {
             return this.GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
         }

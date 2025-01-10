@@ -17,10 +17,10 @@ namespace Guppy.Game.Graphics.MonoGame
             switch (key)
             {
                 case IStateKey<bool> { Value: GraphicsStateKeys.GraphicsEnabled }:
-                    bool result = _graphics.Status == GraphicsObjectStatusEnum.Implemented;
-                    if (_sceneConfiguration is not null)
+                    bool result = this._graphics.Status == GraphicsObjectStatusEnum.Implemented;
+                    if (this._sceneConfiguration is not null)
                     {
-                        result &= _sceneConfiguration.GetSceneHasGraphicsEnabled();
+                        result &= this._sceneConfiguration.GetSceneHasGraphicsEnabled();
                     }
 
                     state = result;

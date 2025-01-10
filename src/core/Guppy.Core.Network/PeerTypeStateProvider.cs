@@ -20,15 +20,15 @@ namespace Guppy.Core.Network
                 scope.TryResolve(out scopes);
             }
 
-            _scopes = scopes ?? [];
+            this._scopes = scopes ?? [];
         }
 
         public override bool TryGet(IStateKey key, out object? state)
         {
             switch (key)
             {
-                case IStateKey<PeerType> { Value: StateKey.DefaultValue }:
-                    state = _scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
+                case IStateKey<PeerTypeEnum> { Value: StateKey.DefaultValue }:
+                    state = this._scopes.Select(x => x.Group.Peer.Type).Aggregate((x, y) => x | y);
                     return true;
                 default:
                     state = null;

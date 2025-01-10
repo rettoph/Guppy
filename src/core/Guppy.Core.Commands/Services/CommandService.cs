@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Commands.Common;
+﻿using System.CommandLine;
+using Guppy.Core.Commands.Common;
 using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Managers;
 using Guppy.Core.Common;
 using Guppy.Core.Messaging.Common.Implementations;
-using System.CommandLine;
 
 namespace Guppy.Core.Commands.Services
 {
@@ -19,16 +19,16 @@ namespace Guppy.Core.Commands.Services
             ICommandTokenService tokenService,
             IConsole console)
         {
-            _console = console;
-            _managers = commands
+            this._console = console;
+            this._managers = commands
                 .Select(CommandContext.Create)
                 .Select(x => CommandManager.Create(x, tokenService)).ToDictionary(x => x.Context.Type, x => x);
-            _root = new RootCommand()
+            this._root = new RootCommand()
             {
                 Name = ">",
             };
 
-            foreach (CommandManager manager in _managers.Values)
+            foreach (CommandManager manager in this._managers.Values)
             {
                 manager.Initialize(this);
             }
@@ -38,17 +38,17 @@ namespace Guppy.Core.Commands.Services
         {
             if (parent is null)
             {
-                _root.AddCommand(command);
+                this._root.AddCommand(command);
             }
             else
             {
-                _managers[parent].Command.AddCommand(command);
+                this._managers[parent].Command.AddCommand(command);
             }
         }
 
         public void Invoke(string input)
         {
-            _root.Invoke(input, _console);
+            this._root.Invoke(input, this._console);
         }
     }
 }

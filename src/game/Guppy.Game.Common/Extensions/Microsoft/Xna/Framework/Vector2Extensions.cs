@@ -16,7 +16,7 @@
 
         public static Vector2 RotateTo(this Vector2 v, float target)
         {
-            var l = v.Length();
+            float l = v.Length();
 
             return new Vector2(
                 x: MathF.Cos(target) * l,

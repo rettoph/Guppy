@@ -1,5 +1,5 @@
-﻿using Guppy.Game.Common;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Game.Common;
 
 namespace Guppy.Game
 {

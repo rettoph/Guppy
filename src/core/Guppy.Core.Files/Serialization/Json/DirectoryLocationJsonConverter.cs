@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Files.Common;
-using Guppy.Core.Files.Common.Enums;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Files.Common;
+using Guppy.Core.Files.Common.Enums;
 
 namespace Guppy.Core.Files.Serialization.Json
 {
@@ -13,7 +13,7 @@ namespace Guppy.Core.Files.Serialization.Json
 
         public override DirectoryLocation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            DirectoryType type = DirectoryType.AppData;
+            DirectoryTypeEnum type = DirectoryTypeEnum.AppData;
             string path = string.Empty;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -24,7 +24,7 @@ namespace Guppy.Core.Files.Serialization.Json
                 switch (propertyName)
                 {
                     case nameof(DirectoryLocation.Type):
-                        type = JsonSerializer.Deserialize<DirectoryType>(ref reader, options);
+                        type = JsonSerializer.Deserialize<DirectoryTypeEnum>(ref reader, options);
                         reader.Read();
                         break;
                     case nameof(DirectoryLocation.Path):

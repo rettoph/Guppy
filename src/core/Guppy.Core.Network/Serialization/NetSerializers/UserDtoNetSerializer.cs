@@ -15,7 +15,7 @@ namespace Guppy.Core.Network.Serialization.NetSerializers
                 Claims = new Claim[reader.GetInt()]
             };
 
-            for (var i = 0; i < instance.Claims.Length; i++)
+            for (int i = 0; i < instance.Claims.Length; i++)
             {
                 instance.Claims[i] = Claim.Deserialize(reader);
             }

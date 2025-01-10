@@ -18,8 +18,8 @@ namespace Guppy.Core.Network.Peers
 
         public readonly EventBasedNetListener Listener;
         public readonly NetManager Manager;
-        public abstract PeerType Type { get; }
-        public PeerState State { get; private set; }
+        public abstract PeerTypeEnum Type { get; }
+        public PeerStateEnum State { get; private set; }
         public UserService Users { get; }
 
         public INetMessageService Messages { get; }
@@ -31,7 +31,7 @@ namespace Guppy.Core.Network.Peers
         public Peer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
             ILifetimeScope innerScope = scope.BeginLifetimeScope();
-            _bus = innerScope.Resolve<IBus>();
+            this._bus = innerScope.Resolve<IBus>();
 
             this.Listener = new EventBasedNetListener();
             this.Manager = new NetManager(this.Listener);
@@ -39,7 +39,7 @@ namespace Guppy.Core.Network.Peers
             this.Messages = new NetMessageService(this, serializers, messages);
             this.Groups = new NetGroupService(this.GroupFactory);
             this.Group = null!;
-            this.State = PeerState.NotStarted;
+            this.State = PeerStateEnum.NotStarted;
 
             this.Listener.NetworkReceiveEvent += this.HandleNetworkReceiveEvent;
         }
@@ -53,19 +53,19 @@ namespace Guppy.Core.Network.Peers
 
         protected virtual void Start()
         {
-            _bus.Subscribe(this);
+            this._bus.Subscribe(this);
 
             this.Group = this.Groups.GetById(NetScopeConstants.PeerScopeId);
-            this.Group.Add(_bus);
+            this.Group.Add(this._bus);
 
-            this.State = PeerState.Started;
+            this.State = PeerStateEnum.Started;
         }
 
         public void Flush()
         {
             this.Manager.PollEvents();
 
-            _bus.Flush();
+            this._bus.Flush();
         }
 
         private void HandleNetworkReceiveEvent(NetPeer sender, NetPacketReader reader, byte channel, DeliveryMethod deliveryMethod)

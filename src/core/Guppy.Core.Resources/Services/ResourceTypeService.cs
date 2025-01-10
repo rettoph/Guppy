@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Resources.Common.ResourceTypes;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Core.Resources.Common.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Resources.Services
 {
@@ -10,7 +10,7 @@ namespace Guppy.Core.Resources.Services
 
         public bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType)
         {
-            return _types.TryGetValue(name, out resourceType);
+            return this._types.TryGetValue(name, out resourceType);
         }
     }
 }

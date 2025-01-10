@@ -1,10 +1,8 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Example.Client.Entities;
+﻿using Guppy.Example.Client.Entities;
 using Guppy.Example.Client.Enums;
 
 namespace Guppy.Example.Client.CellTypes
 {
-    [AutoLoad]
     internal class FireCellType : BaseCellType
     {
         public override CellTypeEnum Type => CellTypeEnum.Fire;
@@ -14,9 +12,9 @@ namespace Guppy.Example.Client.CellTypes
 
         }
 
-        protected unsafe override CellStepResult Step(ref Cell cell, Grid input, Grid output)
+        protected override unsafe CellStepResultEnum Step(ref Cell cell, Grid input, Grid output)
         {
-            CellStepResult result = CellStepResult.Inactive;
+            CellStepResultEnum result = CellStepResultEnum.Inactive;
 
             for (int i = 0; i < cell.Neighbors.Length; i++)
             {
@@ -27,22 +25,22 @@ namespace Guppy.Example.Client.CellTypes
                     if (Random.Shared.Next(0, 5) == 0)
                     {
                         this.Update(ref neighbor, this.Type, 0, output);
-                        result |= CellStepResult.Active;
+                        result |= CellStepResultEnum.Active;
                     }
                 }
             }
 
-            if (result == CellStepResult.Active)
+            if (result == CellStepResultEnum.Active)
             {
                 this.Update(ref cell, Random.Shared.Next(0, 103) == 0 ? CellTypeEnum.Smolder : CellTypeEnum.Air, 0, output);
-                return CellStepResult.Active;
+                return CellStepResultEnum.Active;
             }
 
             if (Random.Shared.Next(0, this.MaxInactivityCount - cell.Latest.InactivityCount) == 0)
             {
                 this.Update(ref cell, CellTypeEnum.Air, 0, output);
 
-                return CellStepResult.Active;
+                return CellStepResultEnum.Active;
             }
 
             if (Random.Shared.Next(0, 10) == 0)
@@ -57,11 +55,11 @@ namespace Guppy.Example.Client.CellTypes
                     this.Update(ref cell, CellTypeEnum.Air, 0, output);
                     this.Update(ref target, this.Type, 0, output);
 
-                    return CellStepResult.Active;
+                    return CellStepResultEnum.Active;
                 }
             }
 
-            return CellStepResult.Inactive;
+            return CellStepResultEnum.Inactive;
         }
     }
 }

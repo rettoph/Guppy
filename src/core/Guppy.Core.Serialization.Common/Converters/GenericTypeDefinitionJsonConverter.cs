@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Common;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Common;
 
 namespace Guppy.Core.Serialization.Common.Converters
 {
@@ -17,7 +17,7 @@ namespace Guppy.Core.Serialization.Common.Converters
             ThrowIf.Type.IsNotGenericTypeDefinitionn(genericTypeDefinition);
             ThrowIf.Type.IsNotGenericTypeDefinitionn(genericTypeJsonConverterGenericDefinition);
 
-            _converters = [];
+            this._converters = [];
 
             this.GenericTypeDefinition = genericTypeDefinition;
             this.GenericTypeJsonConverterGenericDefinition = genericTypeJsonConverterGenericDefinition;
@@ -45,7 +45,7 @@ namespace Guppy.Core.Serialization.Common.Converters
 
         private GenericTypeJsonConverter GetJsonConverter(Type type)
         {
-            ref GenericTypeJsonConverter? converter = ref CollectionsMarshal.GetValueRefOrAddDefault(_converters, type, out bool exists);
+            ref GenericTypeJsonConverter? converter = ref CollectionsMarshal.GetValueRefOrAddDefault(this._converters, type, out bool exists);
 
             if (exists == false)
             {

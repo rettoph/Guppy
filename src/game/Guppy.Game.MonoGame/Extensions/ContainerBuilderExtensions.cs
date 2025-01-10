@@ -54,15 +54,15 @@ namespace Guppy.Game.MonoGame.Extensions
                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyMonoGamePack.Directory)
                 });
 
-                builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1, new[]
-                {
+                builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1,
+                [
                     (ButtonState.Pressed, Toggle<SceneDebugWindowComponent>.Instance)
-                });
+                ]);
 
-                builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde, new[]
-                {
+                builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde,
+                [
                     (ButtonState.Pressed, Toggle<EngineTerminalWindowComponent>.Instance)
-                });
+                ]);
             });
         }
     }

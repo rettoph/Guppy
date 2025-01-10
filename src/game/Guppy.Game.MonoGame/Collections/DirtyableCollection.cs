@@ -10,20 +10,20 @@ namespace Guppy.Game.MonoGame.Collections
 
         protected bool dirty;
 
-        public int Count => ((ICollection<T>)items).Count;
+        public int Count => ((ICollection<T>)this.items).Count;
 
-        public bool IsReadOnly => ((ICollection<T>)items).IsReadOnly;
+        public bool IsReadOnly => ((ICollection<T>)this.items).IsReadOnly;
 
         public virtual void Add(T item)
         {
-            _cache.Add(item);
+            this._cache.Add(item);
 
             this.dirty = true;
         }
 
         public virtual void Clear()
         {
-            _cache.Clear();
+            this._cache.Clear();
             this.dirty = true;
         }
 
@@ -44,7 +44,7 @@ namespace Guppy.Game.MonoGame.Collections
                 return;
             }
 
-            var clean = this.Clean(_cache);
+            var clean = this.Clean(this._cache);
 
             this.items.Clear();
             this.items.AddRange(clean);
@@ -64,7 +64,7 @@ namespace Guppy.Game.MonoGame.Collections
 
         public virtual bool Remove(T item)
         {
-            if (_cache.Remove(item))
+            if (this._cache.Remove(item))
             {
                 this.dirty = true;
                 return true;

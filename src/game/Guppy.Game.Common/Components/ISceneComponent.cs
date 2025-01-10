@@ -11,7 +11,7 @@ namespace Guppy.Game.Common.Components
     public interface ISceneComponent<TScene> : ISceneComponent
         where TScene : IScene
     {
-        [RequireSequenceGroup<InitializeComponentSequenceGroup>]
+        [RequireSequenceGroup<InitializeComponentSequenceGroupEnum>]
         void Initialize(TScene scene);
     }
 }

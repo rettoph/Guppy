@@ -38,8 +38,8 @@ namespace Guppy.Core.Resources.Common
 
         public readonly T Value
         {
-            get => _value.Value;
-            set => _value.SetValue(value);
+            get => this._value.Value;
+            set => this._value.SetValue(value);
         }
 
         readonly Type IRef.Type => this.Setting.Type;
@@ -55,7 +55,7 @@ namespace Guppy.Core.Resources.Common
 
         public readonly void Dispose()
         {
-            _value.Dispose();
+            this._value.Dispose();
         }
 
         public override readonly bool Equals(object? obj)

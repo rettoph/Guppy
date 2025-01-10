@@ -11,12 +11,12 @@ namespace Guppy.Core.Network.Common.Serialization.NetSerializers
 
         public override T Deserialize(NetDataReader reader)
         {
-            return _deserialize(reader);
+            return this._deserialize(reader);
         }
 
         public override void Serialize(NetDataWriter writer, in T instance)
         {
-            _serialize(writer, in instance);
+            this._serialize(writer, in instance);
         }
     }
 }

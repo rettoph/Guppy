@@ -1,6 +1,6 @@
-﻿using Guppy.Game.Input.Common.Enums;
+﻿using System.Runtime.InteropServices;
+using Guppy.Game.Input.Common.Enums;
 using Microsoft.Xna.Framework.Input;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game.Input.Common
 {
@@ -8,55 +8,52 @@ namespace Guppy.Game.Input.Common
     public readonly struct ButtonSource
     {
         [FieldOffset(0)]
-        public readonly ButtonType Type;
+        public readonly ButtonTypeEnum Type;
 
         [FieldOffset(1)]
         public readonly Keys KeyboardKey;
 
         [FieldOffset(1)]
-        public readonly CursorButtons MouseButton;
+        public readonly CursorButtonsEnum MouseButton;
 
 
         public ButtonSource(Keys keyboardKey)
         {
-            this.Type = ButtonType.Keyboard;
-            this.MouseButton = default(CursorButtons);
+            this.Type = ButtonTypeEnum.Keyboard;
+            this.MouseButton = default;
             this.KeyboardKey = keyboardKey;
         }
 
-        public ButtonSource(CursorButtons mouseButtons)
+        public ButtonSource(CursorButtonsEnum mouseButtons)
         {
-            this.Type = ButtonType.Mouse;
-            this.KeyboardKey = default(Keys);
+            this.Type = ButtonTypeEnum.Mouse;
+            this.KeyboardKey = default;
             this.MouseButton = mouseButtons;
         }
 
         public override readonly string ToString()
         {
-            switch (this.Type)
+            return this.Type switch
             {
-                case ButtonType.Mouse:
-                    return this.MouseButton.ToString();
-                case ButtonType.Keyboard:
-                    return this.KeyboardKey.ToString();
-                default:
-                    throw new NotImplementedException();
-            }
+                ButtonTypeEnum.Mouse => this.MouseButton.ToString(),
+                ButtonTypeEnum.Keyboard => this.KeyboardKey.ToString(),
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(Type, KeyboardKey);
+            return HashCode.Combine(this.Type, this.KeyboardKey);
         }
 
         public override readonly bool Equals(object? obj)
         {
             return obj is ButtonSource source &&
-                   Type == source.Type &&
-                   KeyboardKey == source.KeyboardKey;
+                   this.Type == source.Type &&
+                   this.KeyboardKey == source.KeyboardKey;
         }
 
-        public static implicit operator ButtonSource(CursorButtons mouseButtons)
+        public static implicit operator ButtonSource(CursorButtonsEnum mouseButtons)
         {
             return new ButtonSource(mouseButtons);
         }

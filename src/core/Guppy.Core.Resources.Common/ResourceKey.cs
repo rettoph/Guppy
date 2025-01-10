@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Utilities;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Resources.Common.Extensions.System;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Common
 {
@@ -20,9 +20,9 @@ namespace Guppy.Core.Resources.Common
         private readonly UnmanagedReference<Setting<T>, T?> _default;
 
         public readonly Guid Id;
-        public readonly string Name => _name.Value;
+        public readonly string Name => this._name.Value;
         public readonly Type Type => typeof(T);
-        public readonly T? DefaultValue => _default.Value;
+        public readonly T? DefaultValue => this._default.Value;
 
         readonly Guid IResourceKey.Id => this.Id;
 
@@ -30,8 +30,8 @@ namespace Guppy.Core.Resources.Common
 
         private unsafe ResourceKey(string name, T? defaultValue)
         {
-            _name = new UnmanagedReference<IResourceKey, string>(name);
-            _default = new UnmanagedReference<Setting<T>, T?>(defaultValue);
+            this._name = new UnmanagedReference<IResourceKey, string>(name);
+            this._default = new UnmanagedReference<Setting<T>, T?>(defaultValue);
 
             this.Id = name.xxHash128();
         }
@@ -42,17 +42,17 @@ namespace Guppy.Core.Resources.Common
 
             _cache.Remove(this.Name);
 
-            _name.Dispose();
+            this._name.Dispose();
         }
 
         public override readonly bool Equals(object? obj)
         {
-            return Equals((ResourceKey<T>)obj!);
+            return this.Equals((ResourceKey<T>)obj!);
         }
 
         public readonly bool Equals(ResourceKey<T> other)
         {
-            return Id.Equals(other.Id);
+            return this.Id.Equals(other.Id);
 
         }
 
@@ -64,7 +64,7 @@ namespace Guppy.Core.Resources.Common
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(Id);
+            return HashCode.Combine(this.Id);
         }
 
         public static bool operator ==(ResourceKey<T> left, ResourceKey<T> right)

@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Common.Attributes;
+﻿using System.Reflection;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Exceptions;
 using Guppy.Core.Common.Interfaces;
-using System.Reflection;
 
 namespace Guppy.Core.Common.Extensions.System.Reflection
 {
@@ -175,12 +175,12 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
                 return false;
             }
 
-            if (member.TryGetAllCustomAttributes<SequenceAttribute<T>>(true, out var sequenceGroupOrderAttributes))
+            if (member.TryGetAllCustomAttributes<SequenceAttribute<T>>(true, out _))
             {
                 return true;
             }
 
-            if (instance is not null and IRuntimeSequence<T> runtimeSequenceGroupOrder)
+            if (instance is not null and IRuntimeSequence<T>)
             {
                 return true;
             }

@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Commands.Common.Attributes;
+﻿using System.Reflection;
+using Guppy.Core.Commands.Common.Attributes;
 using Guppy.Core.Commands.Common.Extensions;
-using System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Contexts
 {
@@ -21,7 +21,7 @@ namespace Guppy.Core.Commands.Common.Contexts
         public static ICommandContext Create(ICommand defaultInstance)
         {
             Type contextType = typeof(CommandContext<>).MakeGenericType(defaultInstance.GetType());
-            ICommandContext context = (ICommandContext)(Activator.CreateInstance(contextType, defaultInstance) ?? throw new NotImplementedException());
+            ICommandContext context = (ICommandContext)(Activator.CreateInstance(contextType) ?? throw new NotImplementedException());
 
             return context;
         }
@@ -30,8 +30,6 @@ namespace Guppy.Core.Commands.Common.Contexts
     public class CommandContext<T> : CommandContext, ICommandContext<T>
         where T : ICommand, new()
     {
-        private readonly T _defaultInstance;
-
         public override Type Type => typeof(T);
 
         public override string Name { get; }
@@ -44,10 +42,8 @@ namespace Guppy.Core.Commands.Common.Contexts
 
         public override IArgumentContext[] Arguments { get; } = ArgumentContext.CreateAll<T>();
 
-        public CommandContext(T defaultInstance)
+        public CommandContext()
         {
-            _defaultInstance = defaultInstance;
-
             CommandAttribute? attribute = typeof(T).GetCustomAttribute<CommandAttribute>();
             this.Parent ??= attribute?.Parent;
             this.Name ??= attribute?.Name ?? typeof(T).Name.ToCommandName();

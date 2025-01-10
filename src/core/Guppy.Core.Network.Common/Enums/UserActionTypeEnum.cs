@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Network.Common.Enums
 {
-    public enum UserActionTypes
+    public enum UserActionTypeEnum
     {
         UserJoined,
         UserLeft

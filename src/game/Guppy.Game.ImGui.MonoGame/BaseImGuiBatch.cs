@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
@@ -10,7 +11,6 @@ using Guppy.Game.ImGui.Common.Messages;
 using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game.ImGui.MonoGame
 {
@@ -30,7 +30,6 @@ namespace Guppy.Game.ImGui.MonoGame
 
         // Input
         private int _scrollWheelValue;
-        private readonly List<int> _keys = [];
         private readonly Queue<char> _inputs;
         private readonly Queue<ImGuiKeyEvent> _keyEvents;
         private readonly Queue<ImGuiMouseButtonEvent> _mouseButtonEvents;
@@ -42,16 +41,16 @@ namespace Guppy.Game.ImGui.MonoGame
 
         public bool Stale
         {
-            get => DateTime.Now - _begin > StaleTime;
+            get => DateTime.Now - this._begin > this.StaleTime;
             set
             {
                 if (value)
                 {
-                    _begin = DateTime.MinValue;
+                    this._begin = DateTime.MinValue;
                 }
                 else
                 {
-                    _begin = DateTime.Now;
+                    this._begin = DateTime.Now;
                 }
             }
         }
@@ -64,31 +63,31 @@ namespace Guppy.Game.ImGui.MonoGame
 
             this.IO.ConfigFlags |= ImGuiNET.ImGuiConfigFlags.DockingEnable;
 
-            _fonts = [];
-            _mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
-            _keyEvents = new Queue<ImGuiKeyEvent>();
-            _inputs = new Queue<char>();
-            _begin = DateTime.MinValue;
-            _resources = resources;
-            _initialized = false;
+            this._fonts = [];
+            this._mouseButtonEvents = new Queue<ImGuiMouseButtonEvent>();
+            this._keyEvents = new Queue<ImGuiKeyEvent>();
+            this._inputs = new Queue<char>();
+            this._begin = DateTime.MinValue;
+            this._resources = resources;
+            this._initialized = false;
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.PostInitialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.PostInitialize)]
         public void Initialize(IGuppyEngine engine)
         {
-            _resources.Initialize();
+            this._resources.Initialize();
 
-            if (_fonts.Count > 0)
+            if (this._fonts.Count > 0)
             {
-                foreach (Ref<ImFontPtr> font in _fonts.Values)
+                foreach (Ref<ImFontPtr> font in this._fonts.Values)
                 {
                     font.Value.SetImFontPtr(this.IO.Fonts);
                 }
 
-                _dirtyFonts = true;
+                this._dirtyFonts = true;
             }
 
-            _initialized = true;
+            this._initialized = true;
         }
 
         #region ImGuiRenderer
@@ -99,20 +98,20 @@ namespace Guppy.Game.ImGui.MonoGame
             this.IO.Fonts.GetTexDataAsRGBA32(out byte* pixelData, out int width, out int height, out int bytesPerPixel);
 
             // Copy the data to a managed array
-            var pixels = new byte[width * height * bytesPerPixel];
+            byte[] pixels = new byte[width * height * bytesPerPixel];
             unsafe { Marshal.Copy(new IntPtr(pixelData), pixels, 0, pixels.Length); }
 
             // Should a texture already have been build previously, unbind it first so it can be deallocated
-            if (_fontTextureId.HasValue)
+            if (this._fontTextureId.HasValue)
             {
-                this.UnbindTexture(_fontTextureId.Value);
+                this.UnbindTexture(this._fontTextureId.Value);
             }
 
             // Bind the new texture to an ImGui-friendly id
-            _fontTextureId = this.BindTexture(pixels, width, height);
+            this._fontTextureId = this.BindTexture(pixels, width, height);
 
             // Let ImGui know where to find the texture
-            this.IO.Fonts.SetTexID(_fontTextureId.Value);
+            this.IO.Fonts.SetTexID(this._fontTextureId.Value);
             this.IO.Fonts.ClearTexData(); // Clears CPU side texture data
         }
 
@@ -140,24 +139,24 @@ namespace Guppy.Game.ImGui.MonoGame
 
             if (this.Stale)
             {
-                _inputs.Clear();
-                _keyEvents.Clear();
-                _mouseButtonEvents.Clear();
+                this._inputs.Clear();
+                this._keyEvents.Clear();
+                this._mouseButtonEvents.Clear();
             }
 
-            if (_dirtyFonts)
+            if (this._dirtyFonts)
             {
                 this.RebuildFontAtlas();
-                _dirtyFonts = false;
+                this._dirtyFonts = false;
             }
 
-            _begin = DateTime.Now;
+            this._begin = DateTime.Now;
 
             ImGuiNet.SetCurrentContext(this.Context);
 
             this.IO.DeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            UpdateInput();
+            this.UpdateInput();
 
             ImGuiNet.NewFrame();
         }
@@ -176,7 +175,7 @@ namespace Guppy.Game.ImGui.MonoGame
                 // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
                 drawData.ScaleClipRects(this.IO.DisplayFramebufferScale);
 
-                RenderDrawData(drawData);
+                this.RenderDrawData(drawData);
             }
 
             this.Running = false;
@@ -190,17 +189,17 @@ namespace Guppy.Game.ImGui.MonoGame
         /// </summary>
         private void UpdateInput()
         {
-            while (_inputs.TryDequeue(out var input))
+            while (this._inputs.TryDequeue(out char input))
             {
                 this.IO.AddInputCharacter(input);
             }
 
-            while (_keyEvents.TryDequeue(out var keyEvent))
+            while (this._keyEvents.TryDequeue(out var keyEvent))
             {
                 this.IO.AddKeyEvent(keyEvent.Key, keyEvent.Down);
             }
 
-            while (_mouseButtonEvents.TryDequeue(out var mouseButtonEvent))
+            while (this._mouseButtonEvents.TryDequeue(out var mouseButtonEvent))
             {
                 this.IO.AddMouseButtonEvent(mouseButtonEvent.Button, mouseButtonEvent.Down);
             }
@@ -212,16 +211,16 @@ namespace Guppy.Game.ImGui.MonoGame
 
             this.IO.MousePos = new Num.Vector2(mouse.X, mouse.Y);
 
-            var scrollDelta = mouse.ScrollWheelValue - _scrollWheelValue;
+            int scrollDelta = mouse.ScrollWheelValue - this._scrollWheelValue;
             this.IO.MouseWheel = scrollDelta > 0 ? 1 : scrollDelta < 0 ? -1 : 0;
-            _scrollWheelValue = mouse.ScrollWheelValue;
+            this._scrollWheelValue = mouse.ScrollWheelValue;
         }
 
         protected abstract Num.Vector2 GetDisplaySize();
 
         protected void Input(char value)
         {
-            _inputs.Enqueue(value);
+            this._inputs.Enqueue(value);
         }
         #endregion Setup & Update
 
@@ -240,7 +239,7 @@ namespace Guppy.Game.ImGui.MonoGame
                 return;
             }
 
-            _keyEvents.Enqueue(message);
+            this._keyEvents.Enqueue(message);
         }
 
         public void Process(in Guid messageId, ImGuiMouseButtonEvent message)
@@ -250,12 +249,12 @@ namespace Guppy.Game.ImGui.MonoGame
                 return;
             }
 
-            _mouseButtonEvents.Enqueue(message);
+            this._mouseButtonEvents.Enqueue(message);
         }
 
         public Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size)
         {
-            ref Ref<ImFontPtr>? font = ref CollectionsMarshal.GetValueRefOrAddDefault(_fonts, (ttf, size), out bool exists);
+            ref Ref<ImFontPtr>? font = ref CollectionsMarshal.GetValueRefOrAddDefault(this._fonts, (ttf, size), out bool exists);
 
             if (exists)
             {
@@ -267,12 +266,12 @@ namespace Guppy.Game.ImGui.MonoGame
                 Value = new ImFontPtr(ttf, size)
             };
 
-            if (_initialized)
+            if (this._initialized)
             {
                 font.Value.SetImFontPtr(this.IO.Fonts);
             }
 
-            _dirtyFonts = true;
+            this._dirtyFonts = true;
 
             return font;
         }

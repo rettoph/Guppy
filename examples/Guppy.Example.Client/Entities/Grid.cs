@@ -1,9 +1,9 @@
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Services;
 using Guppy.Example.Client.Utilities;
 using Microsoft.Xna.Framework;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Example.Client.Entities
 {
@@ -12,6 +12,7 @@ namespace Guppy.Example.Client.Entities
         private bool _disposed;
         private readonly Grid _output;
         private readonly ICellTypeService _cellTypes;
+        private Cell _nullCell = Cell.Null;
 
         public int Width { get; }
         public int Height { get; }
@@ -26,21 +27,21 @@ namespace Guppy.Example.Client.Entities
 
         private Grid(int width, int height, ICellTypeService cellTypes, Grid? grid)
         {
-            _cellTypes = cellTypes;
+            this._cellTypes = cellTypes;
 
             this.Width = width + (width % 2);
             this.Height = height + (height % 2);
             this.Length = this.Width * this.Height;
 
             this.Cells = (Cell*)Marshal.AllocHGlobal(this.Length * sizeof(Cell));
-            _cellUpdateOrder = new int[this.Length];
+            this._cellUpdateOrder = new int[this.Length];
 
             for (int i = 0; i < this.Length; i++)
             {
                 this.Cells[i] = new Cell(i, (short)(i % this.Width), (short)(i / this.Width));
             }
 
-            _output = grid ?? new Grid(width, height, cellTypes, this);
+            this._output = grid ?? new Grid(width, height, cellTypes, this);
 
             for (int i = 0; i < this.Length; i++)
             {
@@ -50,38 +51,24 @@ namespace Guppy.Example.Client.Entities
             this.SetCellUpdateOrder();
         }
 
-        public void Dispose()
-        {
-            if (_disposed)
-            {
-                return;
-            }
-            _disposed = true;
 
-            _output.Dispose();
 
-            for (int i = 0; i < this.Length; i++)
-            {
-                this.Cells[i].Dispose();
-            }
-
-            Marshal.FreeHGlobal((nint)this.Cells);
-        }
-
+#pragma warning disable IDE0060 // Remove unused parameter
         public Grid Update(GameTime gameTime, out int awake)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             awake = 0;
-            for (int i = 0; i < _cellUpdateOrder.Length; i++)
+            for (int i = 0; i < this._cellUpdateOrder.Length; i++)
             {
-                awake += this.Update(_cellUpdateOrder[i]);
+                awake += this.Update(this._cellUpdateOrder[i]);
             }
 
-            return _output;
+            return this._output;
         }
 
         private unsafe int Update(int index)
         {
-            ref Cell cell = ref _output.Cells[index];
+            ref Cell cell = ref this._output.Cells[index];
 
             try
             {
@@ -101,7 +88,7 @@ namespace Guppy.Example.Client.Entities
                     return 0;
                 }
 
-                _cellTypes.Update(ref cell, this, _output);
+                this._cellTypes.Update(ref cell, this, this._output);
 
                 return 1;
             }
@@ -123,7 +110,7 @@ namespace Guppy.Example.Client.Entities
 
             if (index == -1)
             {
-                return ref Cell.Null;
+                return ref this._nullCell;
             }
 
             return ref this.Cells[index];
@@ -133,7 +120,7 @@ namespace Guppy.Example.Client.Entities
         {
             if (index == -1)
             {
-                return ref Cell.Null;
+                return ref this._nullCell;
             }
 
             return ref this.Cells[index];
@@ -172,7 +159,7 @@ namespace Guppy.Example.Client.Entities
                 return -1;
             }
 
-            return x + (y * (this.Width));
+            return x + (y * this.Width);
         }
 
         private unsafe void ConfigureCell(ref Cell cell)
@@ -193,7 +180,7 @@ namespace Guppy.Example.Client.Entities
             neighbors = neighbors.Where(x => x != -1).ToArray();
 
             cell.Neighbors = new NativeArray<int>(neighbors.Length);
-            cell.OldPtr = (Cell*)Unsafe.AsPointer(ref _output.Cells[cell.Index]);
+            cell.OldPtr = (Cell*)Unsafe.AsPointer(ref this._output.Cells[cell.Index]);
 
             for (int i = 0; i < neighbors.Length; i++)
             {
@@ -234,26 +221,64 @@ namespace Guppy.Example.Client.Entities
                 {
                     if (y % 2 == 0)
                     {
-                        _cellUpdateOrder[index++] = this.CalculateIndex(updateIds[x].First, y);
-                        _cellUpdateOrder[index++] = this.CalculateIndex(updateIds[x].Second, y);
+                        this._cellUpdateOrder[index++] = this.CalculateIndex(updateIds[x].First, y);
+                        this._cellUpdateOrder[index++] = this.CalculateIndex(updateIds[x].Second, y);
                     }
                     else
                     {
-                        _cellUpdateOrder[index++] = this.CalculateIndex(updateIdsReverse[x].First, y);
-                        _cellUpdateOrder[index++] = this.CalculateIndex(updateIdsReverse[x].Second, y);
+                        this._cellUpdateOrder[index++] = this.CalculateIndex(updateIdsReverse[x].First, y);
+                        this._cellUpdateOrder[index++] = this.CalculateIndex(updateIdsReverse[x].Second, y);
                     }
                 }
             }
 
-            if (_cellUpdateOrder.Any(x => x == -1))
+            if (this._cellUpdateOrder.Any(x => x == -1))
             {
                 throw new Exception();
             }
 
-            if (_cellUpdateOrder.Distinct().Count() != _cellUpdateOrder.Length)
+            if (this._cellUpdateOrder.Distinct().Count() != this._cellUpdateOrder.Length)
             {
-                var test = _cellUpdateOrder.GroupBy(x => x).OrderByDescending(x => x.Count()).ToArray();
+                var test = this._cellUpdateOrder.GroupBy(x => x).OrderByDescending(x => x.Count()).ToArray();
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    this._output.Dispose();
+
+                    for (int i = 0; i < this.Length; i++)
+                    {
+                        this.Cells[i].Dispose();
+                    }
+
+
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                Marshal.FreeHGlobal((nint)this.Cells);
+                this._disposed = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Grid()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

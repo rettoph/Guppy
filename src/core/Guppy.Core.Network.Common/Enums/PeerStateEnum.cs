@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Network.Common.Enums
 {
-    public enum PeerState
+    public enum PeerStateEnum
     {
         NotStarted,
         Started

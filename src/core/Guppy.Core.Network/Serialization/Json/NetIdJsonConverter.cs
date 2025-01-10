@@ -1,13 +1,13 @@
-﻿using Guppy.Core.Network.Common;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Network.Common;
 
 namespace Guppy.Core.Network.Serialization.Json
 {
     internal sealed class NetIdJsonConverter : JsonConverter<INetId>
     {
-        private const string TypePropertyKey = "Type";
-        private const string ValuePropertyKey = "Value";
+        private const string _typePropertyKey = "Type";
+        private const string _valuePropertyKey = "Value";
 
         // private readonly Dictionary<string, Type> _implementationTypes;
 
@@ -28,9 +28,9 @@ namespace Guppy.Core.Network.Serialization.Json
         {
             writer.WriteStartObject();
 
-            writer.WriteString(TypePropertyKey, NetIdJsonConverter.GetTypeKey(value.GetType()));
+            writer.WriteString(_typePropertyKey, NetIdJsonConverter.GetTypeKey(value.GetType()));
 
-            writer.WritePropertyName(ValuePropertyKey);
+            writer.WritePropertyName(_valuePropertyKey);
             JsonSerializer.Serialize(writer, value, value.GetType(), options);
 
             writer.WriteEndObject();

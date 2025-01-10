@@ -6,7 +6,7 @@ namespace Guppy.Core.Commands.Common.Extensions
     {
         public static string ToLowerCaseFirstLetter(this string input)
         {
-            return char.ToLower(input[0]) + input.Substring(1);
+            return char.ToLower(input[0]) + input[1..];
         }
 
         public static string ToCommandName(this string input)

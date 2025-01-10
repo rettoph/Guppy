@@ -17,55 +17,57 @@ namespace Guppy.Game.MonoGame.Components.Engine
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
-        private readonly ActionSequenceGroup<ImGuiSequenceGroup, GameTime> _imguiActions;
+        private readonly ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime> _imguiActions;
 
         public DrawImGuiComponent(IImguiBatch batch, IGameEngine engine)
         {
-            _batch = batch;
-            _engine = engine;
-            _imguiActions = new ActionSequenceGroup<ImGuiSequenceGroup, GameTime>(true);
-            _engine.Scenes.OnSceneCreated += this.HandleSceneCreated;
-            _engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
+            this._batch = batch;
+            this._engine = engine;
+            this._imguiActions = new ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime>(true);
+            this._engine.Scenes.OnSceneCreated += this.HandleSceneCreated;
+            this._engine.Scenes.OnSceneDestroyed += this.HandleSceneDestroyed;
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
-            _imguiActions.Add(_engine.Components);
+            this._imguiActions.Add(this._engine.Components);
         }
 
         public void Dispose()
         {
-            _engine.Scenes.OnSceneCreated -= this.HandleSceneCreated;
-            _engine.Scenes.OnSceneDestroyed -= this.HandleSceneDestroyed;
+            this._engine.Scenes.OnSceneCreated -= this.HandleSceneCreated;
+            this._engine.Scenes.OnSceneDestroyed -= this.HandleSceneDestroyed;
         }
 
-        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
+        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
         public void Draw(GameTime gameTime)
         {
-            _imguiActions.Invoke(gameTime);
+            this._imguiActions.Invoke(gameTime);
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Begin)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Begin)]
         public void BeginImgui(GameTime gameTime)
         {
-            _batch.Begin(gameTime);
+            this._batch.Begin(gameTime);
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.EndDraw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.EndDraw)]
+#pragma warning disable IDE0060 // Remove unused parameter
         public void EndImGui(GameTime gameTime)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
-            _batch.End();
+            this._batch.End();
         }
 
         private void HandleSceneCreated(ISceneService sender, IScene scene)
         {
-            _imguiActions.Add(scene.Components);
+            this._imguiActions.Add(scene.Components);
         }
 
         private void HandleSceneDestroyed(ISceneService sender, IScene scene)
         {
-            _imguiActions.Remove(scene.Components);
+            this._imguiActions.Remove(scene.Components);
 
             // I dont think ActionSequenceGroup.Remove works as expected. 
             // TODO: Test

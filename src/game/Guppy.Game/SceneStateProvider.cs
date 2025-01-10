@@ -16,8 +16,8 @@ namespace Guppy.Engine.Providers
         {
             if (scope.IsRoot() == false)
             {
-                scope.TryResolve(out _scene);
-                scope.TryResolve(out _configuration);
+                scope.TryResolve(out this._scene);
+                scope.TryResolve(out this._configuration);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Guppy.Engine.Providers
             switch (key)
             {
                 case IStateKey<Type> { Value: nameof(IScene) }:
-                    state = _scene?.GetType();
+                    state = this._scene?.GetType();
                     return true;
                 default:
                     return this.TryGetConfiguration(key, out state);
@@ -35,13 +35,13 @@ namespace Guppy.Engine.Providers
 
         private bool TryGetConfiguration(IStateKey key, out object? configuration)
         {
-            if (_configuration is null)
+            if (this._configuration is null)
             {
                 configuration = null;
                 return false;
             }
 
-            return _configuration.TryGet(key.Value, out configuration);
+            return this._configuration.TryGet(key.Value, out configuration);
         }
     }
 }

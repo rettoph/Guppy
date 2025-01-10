@@ -1,8 +1,8 @@
-﻿using Autofac;
+﻿using System.Runtime.CompilerServices;
+using Autofac;
 using Autofac.Builder;
 using Guppy.Core.Common.Configurations;
 using Guppy.Core.Common.Contexts;
-using System.Runtime.CompilerServices;
 
 namespace Guppy.Core.Common.Extensions.Autofac
 {

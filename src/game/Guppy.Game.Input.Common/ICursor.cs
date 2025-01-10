@@ -1,7 +1,7 @@
-﻿using Guppy.Game.Input.Common.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.Input.Common.Messages;
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Game.Input.Common
 {
@@ -10,7 +10,7 @@ namespace Guppy.Game.Input.Common
         Guid Id { get; }
         Vector2 Position { get; }
 
-        bool this[CursorButtons button] { get; }
+        bool this[CursorButtonsEnum button] { get; }
 
         int Scroll { get; }
 
@@ -18,6 +18,6 @@ namespace Guppy.Game.Input.Common
 
         bool ScrollTo(int scroll, [MaybeNullWhen(false)] out CursorScroll scrolling);
 
-        bool SetPress(CursorButtons button, bool value, [MaybeNullWhen(false)] out CursorPress press);
+        bool SetPress(CursorButtonsEnum button, bool value, [MaybeNullWhen(false)] out CursorPress press);
     }
 }

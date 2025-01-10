@@ -1,11 +1,11 @@
-﻿using Autofac;
+﻿using System.Runtime.InteropServices;
+using Autofac;
 using Guppy.Core.Common;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game.Common
 {
@@ -14,17 +14,17 @@ namespace Guppy.Game.Common
         private static readonly Dictionary<Type, ushort> _count = [];
         private static ulong CalculateId(Scene instance)
         {
-            ref ushort count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out bool exists);
+            ref ushort count = ref CollectionsMarshal.GetValueRefOrAddDefault(_count, instance.GetType(), out _);
             uint hash = xxHash32.ComputeHash(instance.GetType().AssemblyQualifiedName);
 
-            return (ulong)hash << 32 | count++;
+            return ((ulong)hash << 32) | count++;
         }
 
         private bool _enabled;
         private bool _visible;
         private ILifetimeScope _scope;
-        private readonly ActionSequenceGroup<DrawComponentSequenceGroup, GameTime> _drawComponentsActions;
-        private readonly ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime> _updateComponentsActions;
+        private readonly ActionSequenceGroup<DrawComponentSequenceGroupEnum, GameTime> _drawComponentsActions;
+        private readonly ActionSequenceGroup<UpdateComponentSequenceGroupEnum, GameTime> _updateComponentsActions;
 
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
@@ -36,20 +36,20 @@ namespace Guppy.Game.Common
         public ulong Id { get; }
         public bool Enabled
         {
-            get => _enabled;
-            set => this.OnEnabledChanged!.InvokeIf(_enabled != value, this, ref _enabled, value);
+            get => this._enabled;
+            set => this.OnEnabledChanged!.InvokeIf(this._enabled != value, this, ref this._enabled, value);
         }
         public bool Visible
         {
-            get => _visible;
-            set => this.OnVisibleChanged!.InvokeIf(_visible != value, this, ref _visible, value);
+            get => this._visible;
+            set => this.OnVisibleChanged!.InvokeIf(this._visible != value, this, ref this._visible, value);
         }
 
         public Scene()
         {
-            _scope = null!;
-            _drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroup, GameTime>(true);
-            _updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroup, GameTime>(false);
+            this._scope = null!;
+            this._drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroupEnum, GameTime>(true);
+            this._updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroupEnum, GameTime>(false);
 
             this.Components = [];
 
@@ -67,31 +67,31 @@ namespace Guppy.Game.Common
 
         protected virtual void Initialize(ILifetimeScope scope)
         {
-            _scope = scope;
+            this._scope = scope;
 
-            this.Components = scope.Resolve<IFiltered<ISceneComponent>>().ToArray();
+            this.Components = [.. scope.Resolve<IFiltered<ISceneComponent>>()];
 
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeComponentSequenceGroup>.Invoke(this.Components, initializeDelegate, false, [this]);
+            DelegateSequenceGroup<InitializeComponentSequenceGroupEnum>.Invoke(this.Components, initializeDelegate, false, [this]);
 
-            _drawComponentsActions.Add(this.Components);
-            _updateComponentsActions.Add(this.Components);
+            this._drawComponentsActions.Add(this.Components);
+            this._updateComponentsActions.Add(this.Components);
         }
 
         public virtual void Draw(GameTime gameTime)
         {
-            _drawComponentsActions?.Invoke(gameTime);
+            this._drawComponentsActions?.Invoke(gameTime);
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            _updateComponentsActions.Invoke(gameTime);
+            this._updateComponentsActions.Invoke(gameTime);
         }
 
         public T Resolve<T>()
             where T : notnull
         {
-            return _scope.Resolve<T>();
+            return this._scope.Resolve<T>();
         }
     }
 }

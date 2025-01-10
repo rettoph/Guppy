@@ -10,12 +10,12 @@ namespace Guppy.Core
 
         private readonly ILifetimeScope _autofac;
 
-        public bool IsRoot => _parent is null;
+        public bool IsRoot => this._parent is null;
 
         public Tags(ILifetimeScope autofac)
         {
-            _autofac = autofac;
-            _autofac.ChildLifetimeScopeBeginning += this.HandleChildLifetimeScopeBeginning;
+            this._autofac = autofac;
+            this._autofac.ChildLifetimeScopeBeginning += this.HandleChildLifetimeScopeBeginning;
         }
 
         private void HandleChildLifetimeScopeBeginning(object? sender, LifetimeScopeBeginningEventArgs e)

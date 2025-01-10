@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Serialization.Common.Factories;
-using System.Reflection;
+﻿using System.Reflection;
+using Guppy.Core.Serialization.Common.Factories;
 
 namespace Guppy.Core.Serialization.Factories
 {
@@ -19,7 +19,7 @@ namespace Guppy.Core.Serialization.Factories
 
         public object BuildInstance(Type type)
         {
-            var result = _methodInfo.MakeGenericMethod(type.GenericTypeArguments[0]).Invoke(null, []);
+            object? result = _methodInfo.MakeGenericMethod(type.GenericTypeArguments[0]).Invoke(null, []);
 
             return result ?? throw new NotImplementedException();
         }

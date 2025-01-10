@@ -11,7 +11,7 @@ namespace Guppy.StateMachine.Services
 
         public T? GetByKey<T>(IStateKey<T> key)
         {
-            foreach (IStateProvider provider in _providers)
+            foreach (IStateProvider provider in this._providers)
             {
                 if (provider.TryGet(key, out object? state) == false)
                 {
@@ -31,7 +31,7 @@ namespace Guppy.StateMachine.Services
 
         public bool Matches<T>(IStateKey<T> key, T value)
         {
-            foreach (IStateProvider provider in _providers)
+            foreach (IStateProvider provider in this._providers)
             {
                 TryMatchResultEnum result = provider.TryMatch(key, value);
                 switch (result)

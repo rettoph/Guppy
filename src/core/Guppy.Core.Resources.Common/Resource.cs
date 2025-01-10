@@ -24,11 +24,11 @@ namespace Guppy.Core.Resources.Common
 
         public readonly ResourceKey<T> Key;
 
-        public readonly bool HasValue => _value.Value is not null && _value.Value.Count > 0;
+        public readonly bool HasValue => this._value.Value is not null && this._value.Value.Count > 0;
         public readonly T Value
         {
-            get => _value.Value.First();
-            set => _value.Value.Insert(0, value);
+            get => this._value.Value.First();
+            set => this._value.Value.Insert(0, value);
         }
 
         readonly Type IRef.Type => this.Key.Type;
@@ -47,19 +47,19 @@ namespace Guppy.Core.Resources.Common
         }
         public Resource(ResourceKey<T> key, IEnumerable<T> values) : this()
         {
-            _value = new UnmanagedReference<Resource<T>, List<T>>(values.ToList());
+            this._value = new UnmanagedReference<Resource<T>, List<T>>(values.ToList());
 
             this.Key = key;
         }
 
         public readonly IEnumerable<T> All()
         {
-            return _value.Value;
+            return this._value.Value;
         }
 
         public readonly void Dispose()
         {
-            _value.Dispose();
+            this._value.Dispose();
         }
 
         readonly IEnumerable<object> IResource.All()
@@ -69,12 +69,12 @@ namespace Guppy.Core.Resources.Common
 
         readonly void IResource.Clear()
         {
-            _value.Value.Clear();
+            this._value.Value.Clear();
         }
 
         void IResource.Refresh(IResourcePackService resourcePackService)
         {
-            _value.Value.Clear();
+            this._value.Value.Clear();
 
             foreach (T value in resourcePackService.GetDefinedValues(this.Key))
             {

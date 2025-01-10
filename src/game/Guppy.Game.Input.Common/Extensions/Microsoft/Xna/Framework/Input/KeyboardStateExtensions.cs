@@ -4,15 +4,12 @@
     {
         public static bool IsState(this KeyboardState keyboard, Keys key, ButtonState state)
         {
-            switch (state)
+            return state switch
             {
-                case ButtonState.Pressed:
-                    return keyboard.IsKeyDown(key);
-                case ButtonState.Released:
-                    return keyboard.IsKeyUp(key);
-                default:
-                    throw new NotImplementedException();
-            }
+                ButtonState.Pressed => keyboard.IsKeyDown(key),
+                ButtonState.Released => keyboard.IsKeyUp(key),
+                _ => throw new NotImplementedException(),
+            };
         }
     }
 }

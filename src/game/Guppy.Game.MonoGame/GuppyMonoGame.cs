@@ -10,7 +10,7 @@ namespace Guppy.Game.MonoGame
     {
         private readonly GuppyContext _context;
         private readonly GraphicsDeviceManager _graphics;
-        private IGameEngine? _engine;
+        private GameEngine? _engine;
 
 
         // https://community.monogame.net/t/start-in-maximized-window/12264
@@ -19,24 +19,24 @@ namespace Guppy.Game.MonoGame
 
         public GuppyMonoGame(GuppyContext context)
         {
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            this._graphics = new GraphicsDeviceManager(this);
+            this.Content.RootDirectory = "Content";
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
-            _graphics.PreparingDeviceSettings += (s, e) =>
+            this._graphics.PreparingDeviceSettings += (s, e) =>
             {
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
                 e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
-            _graphics.SynchronizeWithVerticalRetrace = false;
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            _graphics.ApplyChanges();
+            this._graphics.SynchronizeWithVerticalRetrace = false;
+            this._graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            this._graphics.ApplyChanges();
 
 
-            _context = context;
+            this._context = context;
         }
 
         /// <summary>
@@ -52,14 +52,14 @@ namespace Guppy.Game.MonoGame
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                var engine = new GameEngine(_context, builder =>
+                var engine = new GameEngine(this._context, builder =>
                 {
-                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window);
+                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window);
                 });
 
                 this.Initialize(engine);
 
-                _engine = engine;
+                this._engine = engine;
             });
         }
 
@@ -85,21 +85,21 @@ namespace Guppy.Game.MonoGame
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _engine?.Dispose();
+            this._engine?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _engine?.Dispose();
+            this._engine?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _engine?.Dispose();
+            this._engine?.Dispose();
 
             Environment.Exit(0);
         }

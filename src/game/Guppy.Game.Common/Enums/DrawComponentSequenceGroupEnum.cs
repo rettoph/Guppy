@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Game.Common.Enums
 {
-    public enum DrawComponentSequenceGroup
+    public enum DrawComponentSequenceGroupEnum
     {
         PreDraw,
         Draw,

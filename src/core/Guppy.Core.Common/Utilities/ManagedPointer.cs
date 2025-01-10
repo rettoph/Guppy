@@ -11,7 +11,7 @@ namespace Guppy.Core.Common.Utilities
         {
             get
             {
-                GCHandle handle = GCHandle.FromIntPtr(_ptr);
+                GCHandle handle = GCHandle.FromIntPtr(this._ptr);
                 TValue value = (TValue?)handle.Target ?? throw new NotImplementedException();
 
                 return value;
@@ -26,12 +26,12 @@ namespace Guppy.Core.Common.Utilities
         public ManagedPointer(TValue value)
         {
             GCHandle handle = GCHandle.Alloc(value, GCHandleType.Pinned);
-            _ptr = GCHandle.ToIntPtr(handle);
+            this._ptr = GCHandle.ToIntPtr(handle);
         }
 
         public readonly void Free()
         {
-            GCHandle handle = GCHandle.FromIntPtr(_ptr);
+            GCHandle handle = GCHandle.FromIntPtr(this._ptr);
             handle.Free();
         }
 

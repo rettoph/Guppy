@@ -14,23 +14,23 @@ namespace Guppy.Core.Common.Collections
         }
         public Pool(ref ushort maxPoolSize)
         {
-            _maxPoolSize = maxPoolSize;
-            _poolSize = 0;
-            _pool = new Stack<T>();
+            this._maxPoolSize = maxPoolSize;
+            this._poolSize = 0;
+            this._pool = new Stack<T>();
         }
 
         /// <inheritdoc />
         public virtual bool Any()
         {
-            return _pool.Any();
+            return this._pool.Count != 0;
         }
 
         /// <inheritdoc />
         public virtual bool TryPull([MaybeNullWhen(false)] out T instance)
         {
-            if (_pool.TryPop(out instance))
+            if (this._pool.TryPop(out instance))
             {
-                _poolSize--;
+                this._poolSize--;
 
                 return true;
             }
@@ -41,10 +41,10 @@ namespace Guppy.Core.Common.Collections
         /// <inheritdoc />
         public virtual bool TryReturn(ref T instance)
         {
-            if (_poolSize < _maxPoolSize)
+            if (this._poolSize < this._maxPoolSize)
             {
-                _pool.Push(instance);
-                _poolSize++;
+                this._pool.Push(instance);
+                this._poolSize++;
                 return true;
             }
 
@@ -54,7 +54,7 @@ namespace Guppy.Core.Common.Collections
         /// <inheritdoc />
         public virtual int Count()
         {
-            return _poolSize;
+            return this._poolSize;
         }
     }
 }

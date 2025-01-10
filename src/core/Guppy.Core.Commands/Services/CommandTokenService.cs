@@ -1,13 +1,13 @@
-﻿using Guppy.Core.Commands.Common.Serialization.Commands;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Commands.Common.Serialization.Commands;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Common;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Commands.Services
 {
     public sealed class CommandTokenService(IFiltered<ICommandTokenConverter> converters) : ICommandTokenService
     {
-        private readonly ICommandTokenConverter[] _converters = converters.ToArray();
+        private readonly ICommandTokenConverter[] _converters = [.. converters];
         private readonly Dictionary<Type, ICommandTokenConverter> _cache = [];
 
         public object? Deserialize(Type type, string token)
@@ -17,13 +17,13 @@ namespace Guppy.Core.Commands.Services
 
         private ICommandTokenConverter GetConverter(Type type)
         {
-            ref ICommandTokenConverter? converter = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, type, out bool exists);
+            ref ICommandTokenConverter? converter = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, type, out bool exists);
             if (exists)
             {
                 return converter!;
             }
 
-            converter = _converters.First(x => x.AppliesTo(type));
+            converter = this._converters.First(x => x.AppliesTo(type));
             return converter;
         }
     }

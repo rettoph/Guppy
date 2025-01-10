@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Files.Common;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Files.Common;
 
 namespace Guppy.Core.Resources.Common
 {

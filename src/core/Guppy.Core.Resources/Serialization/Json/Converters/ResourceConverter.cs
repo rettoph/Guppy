@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
 
 namespace Guppy.Core.Resources.Serialization.Json.Converters
 {
@@ -40,7 +40,7 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
 
             Type getterType = typeof(ResourceValueGetter<>).MakeGenericType(typeToConvert.GenericTypeArguments[0]);
             IResourceValueGetter? getter = (IResourceValueGetter)(Activator.CreateInstance(getterType) ?? throw new NotImplementedException());
-            object instance = getter.GetResourceValue(key, _resourceService);
+            object instance = getter.GetResourceValue(key, this._resourceService);
 
             return instance;
         }

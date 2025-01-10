@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Common.Extensions.System;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Serilog;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
@@ -17,12 +17,12 @@ namespace Guppy.Core.Resources.Services
 
         public void Dispose()
         {
-            foreach (IResource resourceValue in _values.Values)
+            foreach (IResource resourceValue in this._values.Values)
             {
                 resourceValue.Dispose();
             }
 
-            _values.Clear();
+            this._values.Clear();
         }
 
         public Task StartAsync(CancellationToken cancellation)
@@ -39,27 +39,27 @@ namespace Guppy.Core.Resources.Services
 
         public void Initialize()
         {
-            if (_initialized)
+            if (this._initialized)
             {
                 return;
             }
 
-            _resourcePackService.Value.Initialize();
+            this._resourcePackService.Value.Initialize();
 
-            _logger.Value.Debug("Preparing to build resource value dictionary");
+            this._logger.Value.Debug("Preparing to build resource value dictionary");
 
-            foreach (IResourceKey resourceKey in _resourcePackService.Value.GetDefinedResources())
+            foreach (IResourceKey resourceKey in this._resourcePackService.Value.GetDefinedResources())
             {
-                this.CacheGetOrAddValues(resourceKey).Refresh(_resourcePackService.Value);
+                this.CacheGetOrAddValues(resourceKey).Refresh(this._resourcePackService.Value);
             }
 
-            _logger.Value.Debug("Done. Found ({Count}) resources", _values.Count);
-            foreach (IResource value in _values.Values)
+            this._logger.Value.Debug("Done. Found ({Count}) resources", this._values.Count);
+            foreach (IResource value in this._values.Values)
             {
-                _logger.Value.Verbose("Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", value.Key.Name, value.Key.Type.GetFormattedName(), value.Value, value.All().Count());
+                this._logger.Value.Verbose("Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", value.Key.Name, value.Key.Type.GetFormattedName(), value.Value, value.All().Count());
             }
 
-            _initialized = true;
+            this._initialized = true;
         }
 
         public Resource<T> Get<T>(ResourceKey<T> resource)
@@ -76,7 +76,7 @@ namespace Guppy.Core.Resources.Services
         private IResource CacheGetOrAddValues(IResourceKey key)
         {
 
-            ref IResource? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, key.Id, out bool exists);
+            ref IResource? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(this._values, key.Id, out bool exists);
             if (exists == true)
             {
                 return cache!;
@@ -84,12 +84,12 @@ namespace Guppy.Core.Resources.Services
 
             cache = key.CreateResource();
 
-            if (_initialized == false)
+            if (this._initialized == false)
             {
                 return cache;
             }
 
-            cache.Refresh(_resourcePackService.Value);
+            cache.Refresh(this._resourcePackService.Value);
             return cache;
         }
 

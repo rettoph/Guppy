@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Extensions.System.Reflection;
+﻿using System.Diagnostics;
+using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Utilities;
-using System.Diagnostics;
 
 namespace Guppy.Core.Common.Extensions.Utilities
 {

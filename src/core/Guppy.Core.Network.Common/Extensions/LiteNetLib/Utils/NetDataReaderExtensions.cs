@@ -12,7 +12,7 @@ namespace LiteNetLib.Utils
         public static TEnum GetEnum<TEnum>(this NetDataReader reader)
             where TEnum : struct, Enum
         {
-            var byteVal = reader.GetByte();
+            byte byteVal = reader.GetByte();
             return Unsafe.As<byte, TEnum>(ref byteVal);
         }
 

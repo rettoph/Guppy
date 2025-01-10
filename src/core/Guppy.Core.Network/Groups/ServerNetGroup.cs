@@ -13,22 +13,22 @@ namespace Guppy.Core.Network.Groups
         {
             this.Users.Add(peer.Users.Current!);
 
-            this.Users.OnUserJoined += HandleUserJoined;
-            this.Users.OnUserLeft += HandleUserLeft;
+            this.Users.OnUserJoined += this.HandleUserJoined;
+            this.Users.OnUserLeft += this.HandleUserLeft;
         }
 
         public override void Dispose()
         {
             base.Dispose();
 
-            this.Users.OnUserJoined -= HandleUserJoined;
-            this.Users.OnUserLeft -= HandleUserLeft;
+            this.Users.OnUserJoined -= this.HandleUserJoined;
+            this.Users.OnUserLeft -= this.HandleUserLeft;
         }
 
         private void HandleUserJoined(INetScopeUserService sender, IUser newUser)
         {
             // Alert all users of the new user.
-            this.Peer.Group.CreateMessage(newUser.CreateAction(this.Id, UserActionTypes.UserJoined, ClaimAccessibility.Public))
+            this.Peer.Group.CreateMessage(newUser.CreateAction(this.Id, UserActionTypeEnum.UserJoined, ClaimAccessibilityEnum.Public))
                 .AddRecipients(this.Users.Peers)
                 .Send();
 
@@ -45,7 +45,7 @@ namespace Guppy.Core.Network.Groups
                     continue;
                 }
 
-                this.Peer.Group.CreateMessage(oldUser.CreateAction(this.Id, UserActionTypes.UserJoined, ClaimAccessibility.Public))
+                this.Peer.Group.CreateMessage(oldUser.CreateAction(this.Id, UserActionTypeEnum.UserJoined, ClaimAccessibilityEnum.Public))
                     .AddRecipient(newUser.NetPeer)
                     .Send();
             }
@@ -53,7 +53,7 @@ namespace Guppy.Core.Network.Groups
 
         private void HandleUserLeft(INetScopeUserService sender, IUser user)
         {
-            this.Peer.Group.CreateMessage(user.CreateAction(this.Id, UserActionTypes.UserLeft, ClaimAccessibility.Public))
+            this.Peer.Group.CreateMessage(user.CreateAction(this.Id, UserActionTypeEnum.UserLeft, ClaimAccessibilityEnum.Public))
                 .AddRecipients(this.Users.Peers)
                 .Send();
         }

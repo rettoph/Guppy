@@ -64,7 +64,7 @@ namespace Autofac
         /// <param name="builder"></param>
         /// <param name="peerType"></param>
         /// <param name="groupId"></param>
-        public static void RegisterNetScope<T>(this ContainerBuilder builder, PeerType peerType, byte groupId)
+        public static void RegisterNetScope<T>(this ContainerBuilder builder, PeerTypeEnum peerType, byte groupId)
         {
             builder.RegisterInstance<NetScopeContext<T>>(new NetScopeContext<T>(peerType, groupId)).SingleInstance();
             builder.Register<INetScope>(ctc => ctc.Resolve<INetScope<T>>()).InstancePerLifetimeScope();
@@ -77,10 +77,10 @@ namespace Autofac
         /// <param name="builder"></param>
         /// <param name="value">The PeerType required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterPeerTypeFilter<TService>(this ContainerBuilder builder, PeerType value)
+        public static ContainerBuilder RegisterPeerTypeFilter<TService>(this ContainerBuilder builder, PeerTypeEnum value)
             where TService : class
         {
-            return builder.RegisterStateFilter<TService, PeerType>(value);
+            return builder.RegisterStateFilter<TService, PeerTypeEnum>(value);
         }
 
 
@@ -91,9 +91,9 @@ namespace Autofac
         /// <param name="serviceType">he service type to be filtered</param>
         /// <param name="value">The PeerType required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterPeerTypeFilter(this ContainerBuilder builder, Type serviceType, PeerType value)
+        public static ContainerBuilder RegisterPeerTypeFilter(this ContainerBuilder builder, Type serviceType, PeerTypeEnum value)
         {
-            return builder.RegisterStateFilter<PeerType>(serviceType, value);
+            return builder.RegisterStateFilter<PeerTypeEnum>(serviceType, value);
         }
     }
 }

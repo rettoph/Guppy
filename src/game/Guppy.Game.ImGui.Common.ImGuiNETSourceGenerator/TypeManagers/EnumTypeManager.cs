@@ -18,7 +18,7 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
                     foreach (string name in names)
                     {
                         Enum value = (Enum)Enum.Parse(this.ImGuiType, name);
-                        var numericalValue = Convert.ChangeType(value, value.GetTypeCode());
+                        object numericalValue = Convert.ChangeType(value, value.GetTypeCode());
                         source.AppendLine($"{name} = {numericalValue},");
                     }
                 }

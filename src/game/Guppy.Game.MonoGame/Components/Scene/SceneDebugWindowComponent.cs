@@ -16,41 +16,41 @@ namespace Guppy.Game.MonoGame.Components.Scene
     internal sealed class SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent<IScene>, IImGuiComponent
     {
         private readonly IImGui _imgui = imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _debugActions = new(true);
+        private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
         private readonly IScene _scene = scene;
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
-            _debugActions.Add(_scene.Components);
+            this._debugActions.Add(this._scene.Components);
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
-            if (_isDebugWindowEnabled == false)
+            if (this._isDebugWindowEnabled == false)
             {
                 return;
             }
 
-            using (_imgui.Apply(_debugWindowStyle))
+            using (this._imgui.Apply(this._debugWindowStyle))
             {
                 ImGuiWindowClassPtr windowClass = new()
                 {
-                    ClassId = _imgui.GetID(nameof(IDebugComponent)),
+                    ClassId = this._imgui.GetID(nameof(IDebugComponent)),
                     DockingAllowUnclassed = false
                 };
 
-                _imgui.SetNextWindowClass(windowClass);
-                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
-                if (_imgui.Begin($"{_scene.Name} - {_scene.Id}"))
+                this._imgui.SetNextWindowClass(windowClass);
+                this._imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
+                if (this._imgui.Begin($"{this._scene.Name} - {this._scene.Id}"))
                 {
-                    _debugActions.Invoke(gameTime);
+                    this._debugActions.Invoke(gameTime);
                 }
 
-                _imgui.End();
+                this._imgui.End();
             }
         }
     }

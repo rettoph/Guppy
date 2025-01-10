@@ -18,7 +18,7 @@ namespace Guppy.Core.Network.Peers
     {
         private int _nextUserId;
 
-        public override PeerType Type => PeerType.Server;
+        public override PeerTypeEnum Type => PeerTypeEnum.Server;
 
         public delegate bool ConnectionApprovalDelegate(ConnectionRequest request, INetIncomingMessage<ConnectionRequestData> data);
 
@@ -32,8 +32,8 @@ namespace Guppy.Core.Network.Peers
 
         public void Start(int port, params Claim[] claims)
         {
-            this.Users.Current.Set(claims.Concat(Claim.Public(UserType.Server)));
-            this.Users.Current.Initialize(_nextUserId++, null);
+            this.Users.Current.Set(claims.Concat(Claim.Public(UserTypeEnum.Server)));
+            this.Users.Current.Initialize(this._nextUserId++, null);
 
             base.Start();
 
@@ -64,13 +64,13 @@ namespace Guppy.Core.Network.Peers
                 {
                     NetPeer peer = request.Accept();
 
-                    IUser user = this.Users.Create(casted.Body.Claims, Claim.Public(UserType.User)).Initialize(_nextUserId++, peer);
+                    IUser user = this.Users.Create(casted.Body.Claims, Claim.Public(UserTypeEnum.User)).Initialize(this._nextUserId++, peer);
 
                     this.Group.CreateMessage(new ConnectionRequestResponse()
                     {
                         Type = ConnectionRequestResponseType.Accepted,
-                        SystemUser = this.Users.Current!.ToDto(ClaimAccessibility.Public),
-                        CurrentUser = user.ToDto(ClaimAccessibility.Protected)
+                        SystemUser = this.Users.Current!.ToDto(ClaimAccessibilityEnum.Public),
+                        CurrentUser = user.ToDto(ClaimAccessibilityEnum.Protected)
                     }).AddRecipient(peer).Send().Recycle();
 
                     return;

@@ -6,7 +6,7 @@ namespace Guppy.Game.ImGui.Common
 {
     public interface IImGuiComponent
     {
-        [RequireSequenceGroup<ImGuiSequenceGroup>]
+        [RequireSequenceGroup<ImGuiSequenceGroupEnum>]
         void DrawImGui(GameTime gameTime);
     }
 }

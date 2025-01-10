@@ -5,7 +5,7 @@ namespace Guppy.Core.Network.Common.Extensions
 {
     public static class IUserExtensions
     {
-        public static UserDto ToDto(this IUser user, ClaimAccessibility accessibility = ClaimAccessibility.Public)
+        public static UserDto ToDto(this IUser user, ClaimAccessibilityEnum accessibility = ClaimAccessibilityEnum.Public)
         {
             return new UserDto()
             {

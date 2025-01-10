@@ -50,40 +50,40 @@ namespace Guppy.Core.Network
                 throw new NotImplementedException();
             }
 
-            _peer = casted;
-            _serializers = serializers;
-            _incomingFactory = new Factory<INetIncomingMessage<T>>(this.IncomingFactoryMethod);
-            _outgoingFactory = new Factory<INetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
+            this._peer = casted;
+            this._serializers = serializers;
+            this._incomingFactory = new Factory<INetIncomingMessage<T>>(this.IncomingFactoryMethod);
+            this._outgoingFactory = new Factory<INetOutgoingMessage<T>>(this.OutgoingFactoryMethod);
         }
 
         private NetIncomingMessage<T> IncomingFactoryMethod()
         {
-            return new NetIncomingMessage<T>(_peer, _serializers, this);
+            return new NetIncomingMessage<T>(this._peer, this._serializers, this);
         }
 
         private NetOutgoingMessage<T> OutgoingFactoryMethod()
         {
-            return new NetOutgoingMessage<T>(_peer, _serializers, this);
+            return new NetOutgoingMessage<T>(this._peer, this._serializers, this);
         }
 
         public override INetIncomingMessage<T> CreateIncoming()
         {
-            return _incomingFactory.BuildInstance();
+            return this._incomingFactory.BuildInstance();
         }
 
         public INetOutgoingMessage<T> CreateOutgoing()
         {
-            return _outgoingFactory.BuildInstance();
+            return this._outgoingFactory.BuildInstance();
         }
 
         public void Recycle(INetIncomingMessage<T> message)
         {
-            _incomingFactory.TryReturn(ref message);
+            this._incomingFactory.TryReturn(ref message);
         }
 
         public void Recycle(INetOutgoingMessage<T> message)
         {
-            _outgoingFactory.TryReturn(ref message);
+            this._outgoingFactory.TryReturn(ref message);
         }
     }
 }

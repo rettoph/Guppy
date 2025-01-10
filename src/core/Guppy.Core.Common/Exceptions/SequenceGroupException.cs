@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Common.Extensions.System;
-using System.Reflection;
+﻿using System.Reflection;
+using Guppy.Core.Common.Extensions.System;
 
 namespace Guppy.Core.Common.Exceptions
 {
@@ -13,7 +13,7 @@ namespace Guppy.Core.Common.Exceptions
             this.Sequence = sequence;
         }
 
-        public SequenceGroupException(Type sequence, MemberInfo member) : base($"Missing SequenceGroup '{sequence.ToString()}' on member {GetMemberString(member)}")
+        public SequenceGroupException(Type sequence, MemberInfo member) : base($"Missing SequenceGroup '{sequence}' on member {GetMemberString(member)}")
         {
             this.Sequence = sequence;
             this.Member = member;

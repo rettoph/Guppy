@@ -14,7 +14,7 @@ namespace Guppy.Game.Modules
         {
             base.Load(builder);
 
-            foreach (Type sceneType in _assemblyService.GetTypes<IScene>())
+            foreach (Type sceneType in this._assemblyService.GetTypes<IScene>())
             {
                 Type sceneComponentType = typeof(ISceneComponent<>).MakeGenericType(sceneType);
 

@@ -13,15 +13,15 @@ namespace Guppy.Core.Messaging
 
         public Bus(IConfiguration<BusConfiguration> configuration)
         {
-            _typeQueues = [];
-            _queueConfigurations = configuration.Value.GetQueueConfigurations();
+            this._typeQueues = [];
+            this._queueConfigurations = configuration.Value.GetQueueConfigurations();
 
-            _queuesDict = _queueConfigurations.Select(x => x.queue)
+            this._queuesDict = this._queueConfigurations.Select(x => x.queue)
                 .Concat(0.Yield())
                 .Distinct()
                 .ToDictionary(x => x, x => new Queue<IMessage>());
 
-            _queuesArray = _queuesDict.OrderBy(x => x.Key)
+            this._queuesArray = this._queuesDict.OrderBy(x => x.Key)
                 .Select(x => x.Value)
                 .ToArray();
         }
@@ -33,7 +33,7 @@ namespace Guppy.Core.Messaging
 
         public void Flush()
         {
-            foreach (Queue<IMessage> queue in _queuesArray)
+            foreach (Queue<IMessage> queue in this._queuesArray)
             {
                 while (queue.TryDequeue(out IMessage? message))
                 {
@@ -44,14 +44,14 @@ namespace Guppy.Core.Messaging
 
         private Queue<IMessage> GetTypeQueue(Type type)
         {
-            if (_typeQueues.TryGetValue(type, out Queue<IMessage>? queue))
+            if (this._typeQueues.TryGetValue(type, out Queue<IMessage>? queue))
             {
                 return queue;
             }
 
-            int queueId = _queueConfigurations.FirstOrDefault(x => x.type.IsAssignableFrom(type)).queue;
-            queue = _queuesDict[queueId];
-            _typeQueues.Add(type, queue);
+            int queueId = this._queueConfigurations.FirstOrDefault(x => x.type.IsAssignableFrom(type)).queue;
+            queue = this._queuesDict[queueId];
+            this._typeQueues.Add(type, queue);
 
             return queue;
         }

@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Text.Json.Serialization;
+using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Common.Helpers;
 using Guppy.Core.Files.Common.Helpers;
@@ -12,7 +13,6 @@ using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using Guppy.Game.Input.Common.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Game.ImGui.Common.Extensions
 {
@@ -69,9 +69,9 @@ namespace Guppy.Game.ImGui.Common.Extensions
                 AddImGuiKeyEvent(builder, ImGuiInputs.UI_LeftSuper, Keys.LeftWindows, ImGuiKey.LeftSuper);
                 AddImGuiKeyEvent(builder, ImGuiInputs.UI_RightSuper, Keys.RightWindows, ImGuiKey.RightSuper);
 
-                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton01, CursorButtons.Left, 0);
-                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton02, CursorButtons.Middle, 1);
-                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton03, CursorButtons.Right, 2);
+                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton01, CursorButtonsEnum.Left, 0);
+                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton02, CursorButtonsEnum.Middle, 1);
+                AddImGuiMouseButtonEvent(builder, ImGuiInputs.UI_MouseButton03, CursorButtonsEnum.Right, 2);
             });
         }
 
@@ -80,23 +80,21 @@ namespace Guppy.Game.ImGui.Common.Extensions
             services.RegisterInput(
                 key,
                 defaultKey,
-                new[]
-                {
+                [
                     (ButtonState.Pressed, new ImGuiKeyEvent(mapping, true)),
                     (ButtonState.Released, new ImGuiKeyEvent(mapping, false))
-                });
+                ]);
         }
 
-        private static void AddImGuiMouseButtonEvent(ContainerBuilder services, string key, CursorButtons defaultButton, int mapping)
+        private static void AddImGuiMouseButtonEvent(ContainerBuilder services, string key, CursorButtonsEnum defaultButton, int mapping)
         {
             services.RegisterInput(
                 key,
                 defaultButton,
-                new[]
-                {
+                [
                     (ButtonState.Pressed, new ImGuiMouseButtonEvent(mapping, true)),
                     (ButtonState.Released, new ImGuiMouseButtonEvent(mapping, false))
-                });
+                ]);
         }
     }
 }

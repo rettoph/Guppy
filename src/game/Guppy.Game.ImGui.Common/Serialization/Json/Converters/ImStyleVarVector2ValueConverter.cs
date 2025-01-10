@@ -1,7 +1,7 @@
-﻿using Guppy.Game.ImGui.Common.Styling.StyleValues;
-using Microsoft.Xna.Framework;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Game.ImGui.Common.Styling.StyleValues;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 {

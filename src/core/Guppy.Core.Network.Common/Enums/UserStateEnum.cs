@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Network.Common.Identity.Enums
 {
-    public enum UserState
+    public enum UserStateEnum
     {
         Disconnected,
         Connected,

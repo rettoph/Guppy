@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Guppy.Analyzer.Core.Common
 {
@@ -13,16 +13,16 @@ namespace Guppy.Analyzer.Core.Common
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
         // See https://github.com/dotnet/roslyn/blob/main/docs/analyzers/Localizing%20Analyzers.md for more on localization
-        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
-        private const string Category = "Design";
+        private static readonly LocalizableString _title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
+        private static readonly LocalizableString _messageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
+        private static readonly LocalizableString _description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
+        private const string _category = "Design";
 
 #pragma warning disable RS1033 // Define diagnostic description correctly
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor _rule = new DiagnosticDescriptor(DiagnosticId, _title, _messageFormat, _category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: _description);
 #pragma warning restore RS1033 // Define diagnostic description correctly
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(_rule); } }
 
         public override void Initialize(AnalysisContext context)
         {
@@ -35,8 +35,8 @@ namespace Guppy.Analyzer.Core.Common
         }
 
 
-        private const string SequenceGroupAttribute = "Guppy.Core.Common.Attributes.SequenceGroupAttribute";
-        private const string RequireSequenceGroupAttribute = "Guppy.Core.Common.Attributes.RequireSequenceGroupAttribute";
+        private const string _sequenceGroupAttribute = "Guppy.Core.Common.Attributes.SequenceGroupAttribute";
+        private const string _requireSequenceGroupAttribute = "Guppy.Core.Common.Attributes.RequireSequenceGroupAttribute";
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
@@ -65,7 +65,7 @@ namespace Guppy.Analyzer.Core.Common
             IMethodSymbol methodImplementationSymbol = methodSymbol;
             while (methodImplementationSymbol != null)
             {
-                AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, methodImplementationSymbol.GetAttributes(), SequenceGroupAttribute);
+                AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, methodImplementationSymbol.GetAttributes(), _sequenceGroupAttribute);
                 methodImplementationSymbol = methodImplementationSymbol.OverriddenMethod;
             }
 
@@ -100,15 +100,15 @@ namespace Guppy.Analyzer.Core.Common
                     }
 
                     ImmutableArray<AttributeData> interfaceMemberAttributes = interfaceMemberSymbol.GetAttributes();
-                    AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, interfaceMemberAttributes, SequenceGroupAttribute);
-                    AddMatchingAttributeTypeArgumentNames(requiredSequenceGroups, interfaceMemberAttributes, RequireSequenceGroupAttribute);
+                    AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, interfaceMemberAttributes, _sequenceGroupAttribute);
+                    AddMatchingAttributeTypeArgumentNames(requiredSequenceGroups, interfaceMemberAttributes, _requireSequenceGroupAttribute);
                 }
             }
 
             foreach (string missingSequenceGroup in requiredSequenceGroups.Except(namedSequenceGroups))
             {
                 // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(Rule, methodSymbol.Locations[0], methodSymbol.Name, containingTypeSymbol.Name, missingSequenceGroup);
+                var diagnostic = Diagnostic.Create(_rule, methodSymbol.Locations[0], methodSymbol.Name, containingTypeSymbol.Name, missingSequenceGroup);
 
                 context.ReportDiagnostic(diagnostic);
             }

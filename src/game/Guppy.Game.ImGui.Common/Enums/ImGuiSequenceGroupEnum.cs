@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Game.ImGui.Common.Enums
 {
-    public enum ImGuiSequenceGroup
+    public enum ImGuiSequenceGroupEnum
     {
         Begin,
         PreDraw,

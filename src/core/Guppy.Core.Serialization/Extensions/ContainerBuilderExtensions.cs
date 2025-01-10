@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Autofac;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Common.Factories;
@@ -6,8 +8,6 @@ using Guppy.Core.Serialization.Common.Services;
 using Guppy.Core.Serialization.Factories;
 using Guppy.Core.Serialization.Services;
 using Serilog.Events;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Serialization.Extensions
 {

@@ -19,13 +19,13 @@ namespace Guppy.Game.ImGui.Common.Styling.StyleValues
 
         public override void Push()
         {
-            if (_colorValue != this.Color.Value)
+            if (this._colorValue != this.Color.Value)
             {
-                _value = NumericsHelper.Convert(this.Color.Value);
-                _colorValue = this.Color.Value;
+                this._value = NumericsHelper.Convert(this.Color.Value);
+                this._colorValue = this.Color.Value;
             }
 
-            ImGuiNet.PushStyleColor(this.Property, _value);
+            ImGuiNet.PushStyleColor(this.Property, this._value);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Guppy.Tests.Analyzer.Core.Common
         [Fact]
         public async Task RequireSequenceGroup_AttributeMissingOnInterfaceImplementation()
         {
-            var test = @"
+            string test = @"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +58,7 @@ namespace ConsoleApplication1
         [Fact]
         public async Task RequireSequenceGroup_AttributeMissingOnAbstractImplementation()
         {
-            var test = @"
+            string test = @"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,7 +109,7 @@ namespace ConsoleApplication1
         [Fact]
         public async Task RequireSequenceGroup_IRuntimeSequenceGroupImplementation()
         {
-            var test = @"
+            string test = @"
 using System;
 using System.Collections.Generic;
 using System.Linq;

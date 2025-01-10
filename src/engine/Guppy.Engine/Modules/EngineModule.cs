@@ -1,7 +1,7 @@
-﻿using Autofac;
+﻿using System.Text.Json.Serialization;
+using Autofac;
 using Guppy.Engine.Common.Services;
 using Guppy.Engine.Services;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Engine.Modules
 {

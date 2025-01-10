@@ -16,10 +16,10 @@ namespace Guppy.Core.Network.Services
 
         public NetMessageService(IPeer peer, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> definitions)
         {
-            _peer = peer;
+            this._peer = peer;
 
-            _messageIds = default!;
-            _messageTypes = default!;
+            this._messageIds = default!;
+            this._messageTypes = default!;
 
             byte id = 0;
             IList<NetMessageType> messages = definitions.Select(definition =>
@@ -27,13 +27,13 @@ namespace Guppy.Core.Network.Services
                 return NetMessageType.Create(definition.Body, id++, definition.DefaultDeliveryMethod, definition.DefaultOutgoingChannel, peer, serializers);
             }).ToList();
 
-            _messageIds = messages.ToDictionary(x => x.Id, x => x);
-            _messageTypes = messages.ToDictionary(x => x.Body, x => x);
+            this._messageIds = messages.ToDictionary(x => x.Id, x => x);
+            this._messageTypes = messages.ToDictionary(x => x.Body, x => x);
         }
 
         public INetMessageType GetById(byte id)
         {
-            return _messageIds[id];
+            return this._messageIds[id];
         }
 
         public INetMessageType<T> Get<T>()
@@ -41,7 +41,7 @@ namespace Guppy.Core.Network.Services
         {
             try
             {
-                return (NetMessageType<T>)_messageTypes[typeof(T)];
+                return (NetMessageType<T>)this._messageTypes[typeof(T)];
             }
             catch (KeyNotFoundException e)
             {
@@ -52,7 +52,7 @@ namespace Guppy.Core.Network.Services
         public INetIncomingMessage Read(NetPeer sender, NetDataReader reader, byte channel, DeliveryMethod deliveryMethod)
         {
             byte id = reader.GetByte();
-            var message = _messageIds[id].CreateIncoming();
+            var message = this._messageIds[id].CreateIncoming();
             message.Read(sender, reader, ref channel, ref deliveryMethod);
 
             return message;

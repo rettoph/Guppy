@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Resources.Common.Configuration;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Resources.Common.Configuration;
 
 namespace Guppy.Core.Resources.Serialization.Json.Converters
 {

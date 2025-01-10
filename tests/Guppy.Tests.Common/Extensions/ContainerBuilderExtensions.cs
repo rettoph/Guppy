@@ -17,10 +17,7 @@ namespace Guppy.Tests.Common.Extensions
         public static IRegistrationBuilder<TMocked, SimpleActivatorData, SingleRegistrationStyle> RegisterMocker<TMocked>(this ContainerBuilder builder, Mocker<TMocked> mocker)
             where TMocked : class
         {
-            if (mocker is null)
-            {
-                throw new System.ArgumentNullException(nameof(mocker));
-            }
+            ArgumentNullException.ThrowIfNull(mocker);
 
             return builder.RegisterInstance(mocker.AsMock().Object).As<TMocked>().ExternallyOwned();
         }

@@ -1,6 +1,5 @@
 ﻿using Guppy.Engine;
 using Guppy.Game;
-using Guppy.Game.Common;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,23 +19,23 @@ namespace Guppy.Example.Client
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            this._graphics = new GraphicsDeviceManager(this);
+            this.Content.RootDirectory = "Content";
 
             this.IsMouseVisible = true;
             this.Window.AllowUserResizing = true;
             this.IsFixedTimeStep = false;
 
-            _graphics.PreparingDeviceSettings += (s, e) =>
+            this._graphics.PreparingDeviceSettings += (s, e) =>
             {
-                _graphics.PreferMultiSampling = true;
+                this._graphics.PreferMultiSampling = true;
                 e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
                 e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = PresentInterval.Immediate;
                 e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
             };
-            _graphics.SynchronizeWithVerticalRetrace = false;
-            _graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            _graphics.ApplyChanges();
+            this._graphics.SynchronizeWithVerticalRetrace = false;
+            this._graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            this._graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -54,12 +53,12 @@ namespace Guppy.Example.Client
             {
                 GameEngine engine = new GameEngine(new GuppyContext("rettoph", "example"), builder =>
                 {
-                    builder.RegisterMonoGameServices(this, _graphics, this.Content, this.Window);
+                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window);
                 }).Start();
 
                 engine.Scenes.Create<MainScene>();
 
-                _engine = engine;
+                this._engine = engine;
             });
 
         }
@@ -80,21 +79,21 @@ namespace Guppy.Example.Client
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-            _engine?.Dispose();
+            this._engine?.Dispose();
         }
 
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
 
-            _engine?.Dispose();
+            this._engine?.Dispose();
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
 
-            _engine?.Dispose();
+            this._engine?.Dispose();
 
             Environment.Exit(0);
         }
@@ -109,7 +108,7 @@ namespace Guppy.Example.Client
             // TODO: Add your update logic here
             base.Update(gameTime);
 
-            _engine?.Update(gameTime);
+            this._engine?.Update(gameTime);
         }
 
         /// <summary>
@@ -120,14 +119,14 @@ namespace Guppy.Example.Client
         {
             base.Draw(gameTime);
 
-            if (_engine is null)
+            if (this._engine is null)
             {
                 return;
             }
 
-            GraphicsDevice.Clear(Color.Black);
+            this.GraphicsDevice.Clear(Color.Black);
 
-            _engine?.Draw(gameTime);
+            this._engine?.Draw(gameTime);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Game.Common.Enums
 {
-    public enum DebugSequenceGroup
+    public enum DebugSequenceGroupEnum
     {
         Debug
     }

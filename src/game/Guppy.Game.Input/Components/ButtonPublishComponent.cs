@@ -21,30 +21,30 @@ namespace Guppy.Game.Input.Components
             IEnumerable<IButton> buttons,
             IEnumerable<IButtonService> providers)
         {
-            _inputs = inputs;
-            _buttons = buttons.ToDictionary(x => x.Key, x => x);
-            _providers = providers.ToArray();
+            this._inputs = inputs;
+            this._buttons = buttons.ToDictionary(x => x.Key, x => x);
+            this._providers = providers.ToArray();
 
-            foreach (var provider in _providers)
+            foreach (var provider in this._providers)
             {
-                provider.Clean(_buttons.Values);
+                provider.Clean(this._buttons.Values);
             }
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PreUpdate)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PreUpdate)]
         public void Update(GameTime gameTime)
         {
-            foreach (var provider in _providers)
+            foreach (var provider in this._providers)
             {
                 foreach (IInput data in provider.Update())
                 {
-                    _inputs.Publish(data);
+                    this._inputs.Publish(data);
                 }
             }
         }

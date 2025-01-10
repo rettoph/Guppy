@@ -1,7 +1,7 @@
-﻿using Guppy.Game.ImGui.Common.Styling.StyleValues;
-using Guppy.Core.Resources.Common;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Resources.Common;
+using Guppy.Game.ImGui.Common.Styling.StyleValues;
 
 namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 {
@@ -38,7 +38,7 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ImStyleFontValue(key, _imgui.Value.GetFont(ttf, size));
+            return new ImStyleFontValue(key, this._imgui.Value.GetFont(ttf, size));
         }
 
         public override void Write(Utf8JsonWriter writer, ImStyleFontValue value, JsonSerializerOptions options)

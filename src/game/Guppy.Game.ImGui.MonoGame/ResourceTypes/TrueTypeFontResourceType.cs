@@ -30,7 +30,7 @@ namespace Guppy.Game.ImGui.MonoGame.ResourceTypes
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Exception loading {Resource} at {Path}", resource.Name, path);
+                this._logger.Error(ex, "Exception loading {Resource} at {Path}", resource.Name, path);
                 value = null!;
                 return false;
             }

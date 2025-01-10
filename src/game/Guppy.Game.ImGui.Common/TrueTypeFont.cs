@@ -2,13 +2,11 @@
 {
     public class TrueTypeFont(byte[] data)
     {
-        private readonly byte[] _data = data;
-
-        public byte[] Data => _data;
+        public byte[] Data { get; } = data;
 
         internal unsafe IntPtr GetDataPtr()
         {
-            fixed (byte* ptr = _data)
+            fixed (byte* ptr = this.Data)
             {
                 return (IntPtr)ptr;
             }

@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Files.Common;
-using Guppy.Core.Serialization.Common.Services;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using Guppy.Core.Files.Common;
+using Guppy.Core.Serialization.Common.Services;
 
 namespace Guppy.Core.Resources.Common.ResourceTypes
 {
@@ -47,12 +47,12 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
 
         protected DefaultResourceType(IJsonSerializationService json)
         {
-            _json = json;
+            this._json = json;
         }
 
         protected override bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
         {
-            value = _json.Deserialize<T>(ref json, out bool success);
+            value = this._json.Deserialize<T>(ref json, out bool success);
 
             return success;
         }

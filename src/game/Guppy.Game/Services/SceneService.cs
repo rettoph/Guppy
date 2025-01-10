@@ -9,12 +9,11 @@ namespace Guppy.Game.Services
 {
     internal sealed class SceneService(ILifetimeScope scope, IConfigurationService configurations) : ISceneService
     {
-        private readonly ILifetimeScope _scope = scope;
         private readonly List<IScene> _scenes = [];
         private readonly Dictionary<IScene, ILifetimeScope> _scopes = [];
         private readonly IConfigurationService _configurations = configurations;
 
-        public ILifetimeScope Scope => _scope;
+        public ILifetimeScope Scope { get; } = scope;
 
         public event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         public event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
@@ -25,7 +24,7 @@ namespace Guppy.Game.Services
             ISceneConfiguration configuration = this.GetConfiguration(typeof(T));
             configurator?.Invoke(configuration);
 
-            ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
+            ILifetimeScope scope = this.Scope.BeginLifetimeScope(builder =>
             {
                 builder.RegisterInstance(configuration);
 
@@ -55,7 +54,7 @@ namespace Guppy.Game.Services
             configurator?.Invoke(configuration);
 
 
-            ILifetimeScope scope = _scope.BeginLifetimeScope(builder =>
+            ILifetimeScope scope = this.Scope.BeginLifetimeScope(builder =>
             {
                 builder.RegisterInstance(configuration);
 
@@ -79,47 +78,47 @@ namespace Guppy.Game.Services
 
         public void Destroy(IScene guppy)
         {
-            if (_scopes.Remove(guppy, out var scope))
+            if (this._scopes.Remove(guppy, out var scope))
             {
                 scope.Dispose();
             }
 
-            _scenes.Remove(guppy);
+            this._scenes.Remove(guppy);
             this.OnSceneDestroyed?.Invoke(this, guppy);
         }
 
         private void Configure(IScene scenes, ILifetimeScope scope)
         {
             scenes.Initialize(scope);
-            _scopes.Add(scenes, scope);
-            _scenes.Add(scenes);
+            this._scopes.Add(scenes, scope);
+            this._scenes.Add(scenes);
 
             this.OnSceneCreated?.Invoke(this, scenes);
         }
 
         public void Dispose()
         {
-            _scope.Dispose();
+            this.Scope.Dispose();
 
-            while (_scenes.Any())
+            while (this._scenes.Count != 0)
             {
-                this.Destroy(_scenes.First());
+                this.Destroy(this._scenes.First());
             }
         }
 
         public IEnumerable<IScene> GetAll()
         {
-            return _scenes;
+            return this._scenes;
         }
 
-        private ISceneConfiguration GetConfiguration(Type sceneType)
+        private SceneConfiguration GetConfiguration(Type sceneType)
         {
             ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
             Type sceneConfigurationType = typeof(SceneConfiguration<>).MakeGenericType(sceneType);
             SceneConfiguration configuration = (SceneConfiguration)(Activator.CreateInstance(sceneConfigurationType) ?? throw new NotImplementedException());
 
-            _configurations.Configure(configuration);
+            this._configurations.Configure(configuration);
 
             return configuration;
         }

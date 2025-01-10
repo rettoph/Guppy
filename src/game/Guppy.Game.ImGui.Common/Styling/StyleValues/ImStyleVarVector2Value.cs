@@ -15,7 +15,7 @@ namespace Guppy.Game.ImGui.Common.Styling.StyleValues
 
         public override void Push()
         {
-            ImGuiNET.ImGui.PushStyleVar(Property, Value);
+            ImGuiNET.ImGui.PushStyleVar(this.Property, this.Value);
         }
     }
 }

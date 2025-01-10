@@ -1,14 +1,14 @@
-﻿using Guppy.Core.Commands.Common;
+﻿using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.CommandLine.IO;
+using System.CommandLine.Parsing;
+using System.Reflection;
+using Guppy.Core.Commands.Common;
 using Guppy.Core.Commands.Common.Attributes;
 using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.System.Reflection;
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.IO;
-using System.CommandLine.Parsing;
-using System.Reflection;
 
 namespace Guppy.Core.Commands.Managers
 {
@@ -43,7 +43,7 @@ namespace Guppy.Core.Commands.Managers
                 binders.Add(binder);
             }
 
-            return binders.ToArray();
+            return [.. binders];
         }
     }
 
@@ -54,14 +54,14 @@ namespace Guppy.Core.Commands.Managers
         private readonly ICommandTokenService _tokenService;
 
         public override IArgumentContext Context { get; }
-        public override Argument Argument => _argument;
+        public override Argument Argument => this._argument;
 
         public ArgumentManager(IArgumentContext context, ICommandTokenService tokenService)
         {
             ThrowIf.Type.IsNotAssignableFrom<TValue>(context.PropertyInfo.PropertyType);
 
-            _tokenService = tokenService;
-            _argument = new Argument<TValue>(context.Name, () => default!, context.Description);
+            this._tokenService = tokenService;
+            this._argument = new Argument<TValue>(context.Name, () => default!, context.Description);
 
             this.Context = context;
         }
@@ -70,7 +70,7 @@ namespace Guppy.Core.Commands.Managers
         {
             try
             {
-                object? value = invocation.ParseResult.GetValueForArgument(_argument);
+                object? value = invocation.ParseResult.GetValueForArgument(this._argument);
                 if (value is null)
                 {
                     return true;
@@ -78,7 +78,7 @@ namespace Guppy.Core.Commands.Managers
 
                 if (value is Token token)
                 {
-                    value = _tokenService.Deserialize(typeof(TValue), token.Value);
+                    value = this._tokenService.Deserialize(typeof(TValue), token.Value);
                 }
 
                 if (value is null)

@@ -13,11 +13,11 @@ namespace Guppy.Core.Common.Helpers
         {
             var platformExtensions = new Dictionary<OSPlatformStruct, string[]>()
             {
-                [OSPlatformStruct.Windows] = new[] { "dll" },
-                [OSPlatformStruct.Linux] = new[] { "so" }
+                [OSPlatformStruct.Windows] = ["dll"],
+                [OSPlatformStruct.Linux] = ["so"]
             };
 
-            if (NativeHelper.GetOSPlatformExtensions(platformExtensions, out var platform, out var extensions))
+            if (NativeHelper.GetOSPlatformExtensions(platformExtensions, out var platform, out string[]? extensions))
             {
                 NativeHelper.OSPlatform = platform;
                 NativeHelper.Extensions = extensions!;

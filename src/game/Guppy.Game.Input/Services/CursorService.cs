@@ -9,24 +9,24 @@ namespace Guppy.Game.Input.Services
 
         public CursorService()
         {
-            _cursors = [];
+            this._cursors = [];
 
             this.Add(new MouseCursor());
         }
 
         public void Add(ICursor cursor)
         {
-            _cursors.Add(cursor);
+            this._cursors.Add(cursor);
         }
 
         public IEnumerable<ICursor> All()
         {
-            return _cursors;
+            return this._cursors;
         }
 
         public ICursor Get(Guid id)
         {
-            return _cursors.First(c => c.Id == id);
+            return this._cursors.First(c => c.Id == id);
         }
     }
 }

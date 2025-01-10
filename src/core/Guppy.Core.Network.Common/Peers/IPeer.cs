@@ -5,8 +5,8 @@ namespace Guppy.Core.Network.Common.Peers
 {
     public interface IPeer
     {
-        PeerType Type { get; }
-        PeerState State { get; }
+        PeerTypeEnum Type { get; }
+        PeerStateEnum State { get; }
         IUserService Users { get; }
         INetMessageService Messages { get; }
         INetGroupService Groups { get; }

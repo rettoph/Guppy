@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Collections.Immutable;
 
 namespace Guppy.Tests.Analyzer.Core.Common
 {
@@ -13,11 +13,11 @@ namespace Guppy.Tests.Analyzer.Core.Common
         /// related to nullability mapped to <see cref="ReportDiagnostic.Error"/>, which is then used to enable all
         /// of these warnings for default validation during analyzer and code fix tests.
         /// </summary>
-        internal static ImmutableDictionary<string, ReportDiagnostic> NullableWarnings { get; } = GetNullableWarningsFromCompiler();
+        internal static ImmutableDictionary<string, ReportDiagnostic> nullableWarnings { get; } = GetNullableWarningsFromCompiler();
 
         private static ImmutableDictionary<string, ReportDiagnostic> GetNullableWarningsFromCompiler()
         {
-            string[] args = { "/warnaserror:nullable" };
+            string[] args = ["/warnaserror:nullable"];
             var commandLineArguments = CSharpCommandLineParser.Default.Parse(args, baseDirectory: Environment.CurrentDirectory, sdkDirectory: Environment.CurrentDirectory);
             var nullableWarnings = commandLineArguments.CompilationOptions.SpecificDiagnosticOptions;
 

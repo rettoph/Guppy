@@ -6,7 +6,7 @@ namespace Guppy.Core.Resources.Common.Configuration
     {
         private readonly Dictionary<DirectoryLocation, ResourcePackConfiguration> _packs = packs.ToDictionary(x => x.EntryDirectory, x => x);
 
-        public IEnumerable<ResourcePackConfiguration> Packs => _packs.Values;
+        public IEnumerable<ResourcePackConfiguration> Packs => this._packs.Values;
 
         public ResourcePackCollectionConfiguration() : this([])
         {
@@ -14,7 +14,7 @@ namespace Guppy.Core.Resources.Common.Configuration
 
         public ResourcePackCollectionConfiguration Add(ResourcePackConfiguration pack)
         {
-            _packs.Add(pack.EntryDirectory, pack);
+            this._packs.Add(pack.EntryDirectory, pack);
 
             return this;
         }
@@ -23,7 +23,7 @@ namespace Guppy.Core.Resources.Common.Configuration
         {
             foreach (ResourcePackConfiguration pack in packs)
             {
-                _packs.TryAdd(pack.EntryDirectory, pack);
+                this._packs.TryAdd(pack.EntryDirectory, pack);
             }
 
             return this;

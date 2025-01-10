@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Network.Common;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Services;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Network.Services
 {
@@ -11,13 +11,13 @@ namespace Guppy.Core.Network.Services
 
         public INetGroup GetById(byte id)
         {
-            ref INetGroup? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_groups, id, out bool exists);
+            ref INetGroup? group = ref CollectionsMarshal.GetValueRefOrAddDefault(this._groups, id, out bool exists);
             if (exists)
             {
                 return group!;
             }
 
-            group = _groupFactory(id);
+            group = this._groupFactory(id);
             return group;
         }
     }

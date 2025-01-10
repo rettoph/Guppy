@@ -2,8 +2,8 @@
 {
     public static class StaticInstance<T>
     {
-        public static bool _initialized;
-        public static bool _isReadonly;
+        private static bool _initialized;
+        private static bool _isReadonly;
         private static T _value = default!;
 
         public static T Value

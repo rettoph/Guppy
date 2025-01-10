@@ -22,32 +22,21 @@ namespace Guppy.Engine
         private readonly IFiltered<IEngineComponent> _components;
 
         public IGuppyContext Context { get; }
-        public IEnumerable<IEngineComponent> Components => _components;
+        public IEnumerable<IEngineComponent> Components => this._components;
 
         public GuppyEngine(GuppyContext context, Action<ContainerBuilder>? builder = null)
         {
-            _container = GuppyEngine.Build(this, context, builder);
-            _hostedServices = _container.Resolve<IFiltered<IHostedService>>();
-            _components = _container.Resolve<IFiltered<IEngineComponent>>();
+            this._container = GuppyEngine.Build(this, context, builder);
+            this._hostedServices = this._container.Resolve<IFiltered<IHostedService>>();
+            this._components = this._container.Resolve<IFiltered<IEngineComponent>>();
 
             this.Context = context;
 
             CancellationTokenSource startToken = new(5000);
-            foreach (IHostedService hostedService in _hostedServices)
+            foreach (IHostedService hostedService in this._hostedServices)
             {
                 hostedService.StartAsync(startToken.Token);
             }
-        }
-
-        public void Dispose()
-        {
-            CancellationTokenSource stopToken = new(5000);
-            foreach (IHostedService hostedService in _hostedServices)
-            {
-                hostedService.StopAsync(stopToken.Token);
-            }
-
-            _container.Dispose();
         }
 
         IGuppyEngine IGuppyEngine.Start()
@@ -57,7 +46,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            ActionSequenceGroup<InitializeComponentSequenceGroup, IGuppyEngine>.Invoke(_components, false, this);
+            ActionSequenceGroup<InitializeComponentSequenceGroupEnum, IGuppyEngine>.Invoke(this._components, false, this);
         }
 
         public GuppyEngine Start()
@@ -70,11 +59,12 @@ namespace Guppy.Engine
         public T Resolve<T>()
             where T : notnull
         {
-            return _container.Resolve<T>();
+            return this._container.Resolve<T>();
         }
 
         #region Static
         private static readonly object _lock;
+        private bool _disposed;
 
         static GuppyEngine()
         {
@@ -122,6 +112,42 @@ namespace Guppy.Engine
 
                 return container;
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    CancellationTokenSource stopToken = new(5000);
+                    foreach (IHostedService hostedService in this._hostedServices)
+                    {
+                        hostedService.StopAsync(stopToken.Token);
+                    }
+
+                    this._container.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                this._disposed = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~GuppyEngine()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
         #endregion
     }

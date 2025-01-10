@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Network.Common.Claims;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Network.Common.Claims;
 
 namespace Guppy.Core.Network.Serialization.Json
 {

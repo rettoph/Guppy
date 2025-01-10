@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Serialization.Common.Services;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
+using Guppy.Core.Serialization.Common.Services;
 
 namespace Guppy.Core.Serialization.Common.Extensions
 {

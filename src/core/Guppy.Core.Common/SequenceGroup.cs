@@ -38,13 +38,13 @@ namespace Guppy.Core.Common
         public override readonly bool Equals(object? obj)
         {
             return obj is SequenceGroup<T> group &&
-                   Name == group.Name &&
-                   Order == group.Order;
+                   this.Name == group.Name &&
+                   this.Order == group.Order;
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(Name, Order);
+            return HashCode.Combine(this.Name, this.Order);
         }
 
         public static bool operator <(SequenceGroup<T> left, SequenceGroup<T> right)

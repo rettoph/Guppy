@@ -22,7 +22,7 @@ namespace Guppy.Core.Network.Common
                 } as INetId<T> ?? throw new Exception();
             }
 
-            throw new ArgumentException();
+            throw new ArgumentException(nameof(value));
         }
 
         public readonly struct Byte : INetId<byte>

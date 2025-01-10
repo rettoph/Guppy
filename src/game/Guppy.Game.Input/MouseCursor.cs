@@ -1,17 +1,17 @@
-﻿using Guppy.Core.Common.Helpers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using Guppy.Core.Common.Helpers;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Constants;
 using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.Input.Common.Messages;
 using Microsoft.Xna.Framework;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game.Input
 {
     internal sealed class MouseCursor : ICursor
     {
-        private readonly Dictionary<CursorButtons, bool> _buttons;
+        private readonly Dictionary<CursorButtonsEnum, bool> _buttons;
 
         public Guid Id { get; } = Cursors.Mouse;
 
@@ -19,11 +19,11 @@ namespace Guppy.Game.Input
 
         public int Scroll { get; private set; }
 
-        public bool this[CursorButtons button] => _buttons[button];
+        public bool this[CursorButtonsEnum button] => this._buttons[button];
 
         public MouseCursor()
         {
-            _buttons = EnumHelper.ToDictionary<CursorButtons, bool>(b => false);
+            this._buttons = EnumHelper.ToDictionary<CursorButtonsEnum, bool>(b => false);
         }
 
         public bool MoveTo(Vector2 position, [MaybeNullWhen(false)] out CursorMove movement)
@@ -56,9 +56,9 @@ namespace Guppy.Game.Input
             return true;
         }
 
-        public bool SetPress(CursorButtons button, bool value, [MaybeNullWhen(false)] out CursorPress press)
+        public bool SetPress(CursorButtonsEnum button, bool value, [MaybeNullWhen(false)] out CursorPress press)
         {
-            ref bool valueRef = ref CollectionsMarshal.GetValueRefOrNullRef(_buttons, button);
+            ref bool valueRef = ref CollectionsMarshal.GetValueRefOrNullRef(this._buttons, button);
 
             if (value == valueRef)
             {

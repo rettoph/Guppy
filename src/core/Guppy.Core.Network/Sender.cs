@@ -12,19 +12,19 @@ namespace Guppy.Core.Network
 
         public NetPeer Peer
         {
-            get => _peer!;
+            get => this._peer!;
             set
             {
-                if (_peer?.Id == value?.Id)
+                if (this._peer?.Id == value?.Id)
                 {
                     return;
                 }
 
-                _peer = value;
-                _user = null;
+                this._peer = value;
+                this._user = null;
             }
         }
 
-        public IUser User => _user ??= _users.GetByNetPeer(_peer!);
+        public IUser User => this._user ??= this._users.GetByNetPeer(this._peer!);
     }
 }

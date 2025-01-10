@@ -4,9 +4,9 @@ namespace Guppy.Game.MonoGame
 {
     internal class MonoGameTerminalLine
     {
-        private const int PoolSize = 100;
+        private const int _poolSize = 100;
 
-        public static Factory<MonoGameTerminalLine> Factory = new(() => new MonoGameTerminalLine(), PoolSize);
+        public static Factory<MonoGameTerminalLine> Factory = new(() => new MonoGameTerminalLine(), _poolSize);
 
         public List<MonoGameTerminalSegment> Segments = [];
 

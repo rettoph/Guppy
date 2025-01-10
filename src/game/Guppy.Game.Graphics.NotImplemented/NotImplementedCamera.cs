@@ -1,6 +1,6 @@
-﻿using Guppy.Game.Graphics.Common;
+﻿using System.Drawing;
+using Guppy.Game.Graphics.Common;
 using Microsoft.Xna.Framework;
-using System.Drawing;
 
 namespace Guppy.Game.Graphics.NotImplemented
 {

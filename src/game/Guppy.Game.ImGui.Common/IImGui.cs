@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common;
+﻿using System.Runtime.CompilerServices;
+using Guppy.Core.Common;
 using Guppy.Core.Resources.Common;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
-using System.Runtime.CompilerServices;
 
 namespace Guppy.Game.ImGui.Common
 {

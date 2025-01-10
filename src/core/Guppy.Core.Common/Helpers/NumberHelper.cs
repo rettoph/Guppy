@@ -24,12 +24,12 @@ namespace Guppy.Core.Common.Helpers
             T divisor = (upper - lower);
             amount = dividend / divisor;
 
-            return amount * amount * (Three - Two * amount);
+            return amount * amount * (Three - (Two * amount));
         }
 
         public static T Lerp<TAmount>(T lower, T upper, T amount)
         {
-            return lower + (upper - lower) * amount;
+            return lower + ((upper - lower) * amount);
         }
 
         public static T Lerp<TAmount>(T lower, T upper, TAmount amount)

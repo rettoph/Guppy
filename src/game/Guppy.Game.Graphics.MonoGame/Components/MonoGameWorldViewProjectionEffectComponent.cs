@@ -15,18 +15,18 @@ namespace Guppy.Game.Graphics.MonoGame.Components
         private readonly ICamera2D _camera = camera;
         private readonly IWorldViewProjectionEffect[] _effects = [.. effects];
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             // throw new NotImplementedException();
         }
 
-        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PreDraw)]
+        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.PreDraw)]
         public void Draw(GameTime gameTime)
         {
-            foreach (var effect in _effects)
+            foreach (var effect in this._effects)
             {
-                effect.WorldViewProjection = _camera.WorldViewProjection;
+                effect.WorldViewProjection = this._camera.WorldViewProjection;
             }
         }
     }

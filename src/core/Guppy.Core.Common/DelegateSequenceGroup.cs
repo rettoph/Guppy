@@ -1,10 +1,10 @@
-﻿using Guppy.Core.Common.Extensions.System;
+﻿using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Extensions.System.Collections.Generic;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Extensions.Utilities;
 using Guppy.Core.Common.Utilities;
-using System.Collections.ObjectModel;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Common
 {
@@ -15,10 +15,9 @@ namespace Guppy.Core.Common
         private readonly Type? _delegateType;
         private readonly List<Delegator<TDelegate>> _orphans;
         private readonly HashSet<Delegator<TDelegate>> _all;
-        private TDelegate? _sequenced;
         private readonly Dictionary<SequenceGroup<TSequenceGroup>, TDelegate?> _grouped;
 
-        public TDelegate? Sequenced => _sequenced;
+        public TDelegate? Sequenced { get; private set; }
         public readonly ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, TDelegate?> Grouped;
         public readonly ReadOnlyCollection<Delegator<TDelegate>> Orphans;
 
@@ -26,13 +25,13 @@ namespace Guppy.Core.Common
 
         public DelegateSequenceGroup(Type? delegateType, bool sequence)
         {
-            _delegateType = delegateType;
-            _grouped = [];
-            _all = [];
-            _orphans = [];
+            this._delegateType = delegateType;
+            this._grouped = [];
+            this._all = [];
+            this._orphans = [];
 
-            this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, TDelegate?>(_grouped);
-            this.Orphans = new ReadOnlyCollection<Delegator<TDelegate>>(_orphans);
+            this.Grouped = new ReadOnlyDictionary<SequenceGroup<TSequenceGroup>, TDelegate?>(this._grouped);
+            this.Orphans = new ReadOnlyCollection<Delegator<TDelegate>>(this._orphans);
             this.Sequence = sequence;
         }
 
@@ -40,22 +39,22 @@ namespace Guppy.Core.Common
         {
             if (this.Sequence == true)
             { // When the sequence groups are ordered we need to rebuild and resort the entire dictionary when an item is added
-                if (_all.AddRange(delegators) == 0)
+                if (this._all.AddRange(delegators) == 0)
                 { // No new items added...
                     return;
                 }
 
                 // Sequence then sort all items
-                _sequenced = _all.OrderBySequenceGroup<TDelegate, TSequenceGroup>(this.Sequence).Combine();
+                this.Sequenced = this._all.OrderBySequenceGroup<TDelegate, TSequenceGroup>(this.Sequence).Combine();
 
-                _orphans.Clear();
-                _orphans.AddRange(_all.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>(x.Target) == false));
+                this._orphans.Clear();
+                this._orphans.AddRange(this._all.Where(x => x.Method.HasSequenceGroup<TSequenceGroup>(x.Target) == false));
 
-                _grouped.Clear();
-                var groups = _all.Except(_orphans).GroupBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(x.Target));
+                this._grouped.Clear();
+                var groups = this._all.Except(this._orphans).GroupBy(x => x.Method.GetSequenceGroup<TSequenceGroup>(x.Target));
                 foreach (var group in groups)
                 {
-                    _grouped.Add(group.Key, group.OrderBy(x => x.Method.GetSequence<TSequenceGroup>(x.Target)).Combine());
+                    this._grouped.Add(group.Key, group.OrderBy(x => x.Method.GetSequence<TSequenceGroup>(x.Target)).Combine());
                 }
 
                 return;
@@ -65,14 +64,14 @@ namespace Guppy.Core.Common
 
             foreach (Delegator<TDelegate> delegator in delegators)
             {
-                if (_all.Add(delegator) == false)
+                if (this._all.Add(delegator) == false)
                 {
                     continue;
                 }
 
                 if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(delegator.Target, false, out var sequenceGroup) == false)
                 {
-                    _orphans.Add(delegator);
+                    this._orphans.Add(delegator);
                     continue;
                 }
 
@@ -81,7 +80,7 @@ namespace Guppy.Core.Common
                     throw new ArgumentException($"{typeof(DelegateSequenceGroup<TSequenceGroup>).GetFormattedName()}::{nameof(Add)} - Method {delegator.Method.Name} should not be ordered.", nameof(delegator));
                 }
 
-                ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
+                ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(this._grouped, sequenceGroup, out bool exists);
                 group = (TDelegate)Delegate.Combine(group, delegator.Delegate);
 
                 modified = true;
@@ -92,26 +91,26 @@ namespace Guppy.Core.Common
                 return;
             }
 
-            _sequenced = _all.OrderBySequenceGroup<TDelegate, TSequenceGroup>(this.Sequence).Combine();
+            this.Sequenced = this._all.OrderBySequenceGroup<TDelegate, TSequenceGroup>(this.Sequence).Combine();
         }
 
         public void Remove(IEnumerable<Delegator<TDelegate>> delegators)
         {
             foreach (Delegator<TDelegate> delegator in delegators)
             {
-                if (_all.Remove(delegator) == false)
+                if (this._all.Remove(delegator) == false)
                 {
                     continue;
                 }
 
-                if (_orphans.Remove(delegator) == true)
+                if (this._orphans.Remove(delegator) == true)
                 {
                     continue;
                 }
 
                 if (delegator.Method.TryGetSequenceGroup<TSequenceGroup>(delegator.Target, false, out var sequenceGroup) == true)
                 {
-                    ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(_grouped, sequenceGroup, out bool exists);
+                    ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(this._grouped, sequenceGroup, out _);
                     group = (TDelegate?)Delegate.Remove(group, delegator.Delegate);
                 }
             }
@@ -131,13 +130,13 @@ namespace Guppy.Core.Common
 
         public void Add(IEnumerable<object> instances)
         {
-            IEnumerable<Delegator<TDelegate>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<TDelegate>(_delegateType));
+            IEnumerable<Delegator<TDelegate>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<TDelegate>(this._delegateType));
             this.Add(delegators);
         }
 
         public void Remove(IEnumerable<object> instances)
         {
-            IEnumerable<Delegator<TDelegate>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<TDelegate>(_delegateType));
+            IEnumerable<Delegator<TDelegate>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<TDelegate>(this._delegateType));
             this.Remove(delegators);
         }
 

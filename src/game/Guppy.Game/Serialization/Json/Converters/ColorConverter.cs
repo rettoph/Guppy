@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Xna.Framework;
 using DrawingColor = System.Drawing.Color;
 
 namespace Guppy.Game.Serialization.Json.Converters
@@ -34,30 +34,28 @@ namespace Guppy.Game.Serialization.Json.Converters
 
         public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            switch (reader.TokenType)
+            return reader.TokenType switch
             {
-                case JsonTokenType.StartObject:
-                    return ReadColorObject(ref reader, typeToConvert, options);
-                case JsonTokenType.StartArray:
-                    return ReadColorArray(ref reader, typeToConvert, options);
-                case JsonTokenType.String:
-                    return ReadColorString(ref reader, typeToConvert, options);
-                case JsonTokenType.Number:
-                    return ReadColorNumber(ref reader, typeToConvert, options);
-
-            }
-
-            throw new JsonException();
+                JsonTokenType.StartObject => ReadColorObject(ref reader, typeToConvert, options),
+                JsonTokenType.StartArray => ReadColorArray(ref reader, typeToConvert, options),
+                JsonTokenType.String => ReadColorString(ref reader, typeToConvert, options),
+                JsonTokenType.Number => ReadColorNumber(ref reader, typeToConvert, options),
+                _ => throw new JsonException(),
+            };
         }
 
-        private Color ReadColorNumber(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private static Color ReadColorNumber(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             reader.CheckToken(JsonTokenType.Number, true);
 
             return new Color(reader.GetUInt32());
         }
 
-        private Color ReadColorString(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private static Color ReadColorString(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             reader.CheckToken(JsonTokenType.String, true);
 
@@ -67,16 +65,18 @@ namespace Guppy.Game.Serialization.Json.Converters
             return System.Drawing.ColorExtensions.ToXnaColor(drawingColor);
         }
 
-        private Color ReadColorArray(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private static Color ReadColorArray(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
-            byte r = default, g = default, b = default, a = 255;
+            byte a = 255;
 
             reader.CheckToken(JsonTokenType.StartArray, true);
             reader.Read();
 
-            r = reader.ReadByte();
-            g = reader.ReadByte();
-            b = reader.ReadByte();
+            byte r = reader.ReadByte();
+            byte g = reader.ReadByte();
+            byte b = reader.ReadByte();
 
             if (reader.CheckToken(JsonTokenType.Number, false))
             {
@@ -88,7 +88,9 @@ namespace Guppy.Game.Serialization.Json.Converters
             return new Color(r, g, b, a);
         }
 
-        private Color ReadColorObject(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private static Color ReadColorObject(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             byte r = default, g = default, b = default, a = default;
 

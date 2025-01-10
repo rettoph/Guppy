@@ -38,11 +38,11 @@ namespace Guppy.Core.Network
             INetSerializerService serializers,
             INetMessageType<T> type)
         {
-            _peer = peer;
-            _serializers = serializers;
-            _serializer = _serializers.Get<T>();
+            this._peer = peer;
+            this._serializers = serializers;
+            this._serializer = this._serializers.Get<T>();
 
-            this.Sender = new Sender(_peer.Users);
+            this.Sender = new Sender(this._peer.Users);
             this.Body = default!;
             this.Group = default!;
             this.Type = type;
@@ -51,8 +51,8 @@ namespace Guppy.Core.Network
         public void Read(NetPeer sender, NetDataReader reader, ref byte channel, ref DeliveryMethod deliveryMethod)
         {
             byte groupId = reader.GetByte();
-            this.Group = _peer.Groups.GetById(groupId);
-            this.Body = _serializer.Deserialize(reader);
+            this.Group = this._peer.Groups.GetById(groupId);
+            this.Body = this._serializer.Deserialize(reader);
             this.Channel = channel;
             this.DeliveryMethod = deliveryMethod;
             this.Sender.Peer = sender;

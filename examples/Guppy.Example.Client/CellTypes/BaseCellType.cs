@@ -15,7 +15,7 @@ namespace Guppy.Example.Client.CellTypes
                 return;
             }
 
-            if (this.Step(ref cell, old, output) == CellStepResult.Inactive)
+            if (this.Step(ref cell, old, output) == CellStepResultEnum.Inactive)
             {
                 cell.Type = cell.Old.Type;
                 cell.InactivityCount = (byte)(cell.Old.InactivityCount + 1);
@@ -33,11 +33,11 @@ namespace Guppy.Example.Client.CellTypes
             }
         }
 
-        protected virtual CellStepResult Update(ref Cell cell, CellTypeEnum type, byte inactivityCount, Grid grid)
+        protected virtual CellStepResultEnum Update(ref Cell cell, CellTypeEnum type, byte inactivityCount, Grid grid)
         {
             if (cell.Type == CellTypeEnum.Null || type == CellTypeEnum.Null)
             {
-                return CellStepResult.Inactive;
+                return CellStepResultEnum.Inactive;
             }
 
             cell.Type = type;
@@ -50,7 +50,7 @@ namespace Guppy.Example.Client.CellTypes
                 this.WakeupNearbyCells(ref cell, grid);
             }
 
-            return CellStepResult.Active;
+            return CellStepResultEnum.Active;
         }
 
         protected unsafe virtual void WakeupNearbyCells(ref Cell cell, Grid grid)
@@ -58,16 +58,16 @@ namespace Guppy.Example.Client.CellTypes
             for (int i = 0; i < cell.Neighbors.Length; i++)
             {
                 int neighborIndex = cell.Neighbors[i];
-                this.Wakeup(ref grid.Cells[neighborIndex]);
+                Wakeup(ref grid.Cells[neighborIndex]);
             }
         }
 
-        private void Wakeup(ref Cell cell)
+        private static void Wakeup(ref Cell cell)
         {
             cell.Awake = true;
             cell.InactivityCount = 0;
         }
 
-        protected abstract CellStepResult Step(ref Cell cell, Grid input, Grid output);
+        protected abstract CellStepResultEnum Step(ref Cell cell, Grid input, Grid output);
     }
 }

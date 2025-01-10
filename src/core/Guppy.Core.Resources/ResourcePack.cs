@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Files.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Constants;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources
 {
@@ -20,18 +20,18 @@ namespace Guppy.Core.Resources
             this.Name = name;
             this.RootDirectory = rootDirectory;
 
-            _values = [];
+            this._values = [];
         }
 
         public void Add<T>(ResourceKey<T> key, string localization, T value)
             where T : notnull
         {
-            if (!_values.TryGetValue(key, out var resolvers))
+            if (!this._values.TryGetValue(key, out var resolvers))
             {
-                _values[key] = resolvers = [];
+                this._values[key] = resolvers = [];
             }
 
-            ref object? localizedValue = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvers, localization, out bool exists);
+            ref object? localizedValue = ref CollectionsMarshal.GetValueRefOrAddDefault(resolvers, localization, out _);
             localizedValue ??= value;
         }
 
@@ -44,7 +44,7 @@ namespace Guppy.Core.Resources
         public bool TryGetDefinedValue<T>(ResourceKey<T> key, string localization, [MaybeNullWhen(false)] out T value)
             where T : notnull
         {
-            if (_values.TryGetValue(key, out var values) == false)
+            if (this._values.TryGetValue(key, out var values) == false)
             {
                 value = default;
                 return false;
@@ -63,12 +63,12 @@ namespace Guppy.Core.Resources
         public IEnumerable<ResourceKey<T>> GetAllDefinedResources<T>()
             where T : notnull
         {
-            return _values.Keys.OfType<ResourceKey<T>>();
+            return this._values.Keys.OfType<ResourceKey<T>>();
         }
 
         public IEnumerable<IResourceKey> GetAllDefinedResources()
         {
-            return _values.Keys;
+            return this._values.Keys;
         }
     }
 }

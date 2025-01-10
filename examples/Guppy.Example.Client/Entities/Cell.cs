@@ -5,7 +5,7 @@ namespace Guppy.Example.Client.Entities
 {
     public unsafe struct Cell(int index, short x, short y) : IDisposable
     {
-        public static Cell Null = new(-1, -1, -1)
+        public static readonly Cell Null = new(-1, -1, -1)
         {
             Type = CellTypeEnum.Null,
             Updated = true,

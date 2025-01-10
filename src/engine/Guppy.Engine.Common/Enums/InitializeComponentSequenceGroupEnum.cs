@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Engine.Common.Enums
 {
-    public enum InitializeComponentSequenceGroup
+    public enum InitializeComponentSequenceGroupEnum
     {
         Setup,
         PreInitialize,

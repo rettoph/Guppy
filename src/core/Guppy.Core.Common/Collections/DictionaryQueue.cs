@@ -9,51 +9,51 @@ namespace Guppy.Core.Common.Collections
         private readonly Dictionary<TKey, TValue> _dict = [];
         private readonly Queue<TKey> _queue = new();
 
-        public TValue this[TKey key] => _dict[key];
+        public TValue this[TKey key] => this._dict[key];
 
         public bool TryEnqueue(TKey key, TValue value)
         {
-            if (!_dict.TryAdd(key, value))
+            if (!this._dict.TryAdd(key, value))
             {
                 return false;
             }
 
-            _queue.Enqueue(key);
+            this._queue.Enqueue(key);
             return true;
         }
 
         public bool TryDequeue([MaybeNullWhen(false)] out TValue value)
         {
-            if (!_queue.TryDequeue(out TKey? key))
+            if (!this._queue.TryDequeue(out TKey? key))
             {
                 value = default;
                 return false;
             }
 
-            return _dict.Remove(key, out value);
+            return this._dict.Remove(key, out value);
         }
 
         public bool TryDequeue([MaybeNullWhen(false)] out TKey key, [MaybeNullWhen(false)] out TValue value)
         {
-            if (!_queue.TryDequeue(out key))
+            if (!this._queue.TryDequeue(out key))
             {
                 value = default;
                 return false;
             }
 
-            return _dict.Remove(key, out value);
+            return this._dict.Remove(key, out value);
         }
 
         public bool TryGet(TKey key, [MaybeNullWhen(false)] out TValue value)
         {
-            return _dict.TryGetValue(key, out value);
+            return this._dict.TryGetValue(key, out value);
         }
 
         public bool TryPeek([MaybeNullWhen(false)] out TValue value)
         {
-            if (_queue.TryPeek(out TKey? key))
+            if (this._queue.TryPeek(out TKey? key))
             {
-                value = _dict[key];
+                value = this._dict[key];
                 return true;
             }
 
@@ -63,11 +63,11 @@ namespace Guppy.Core.Common.Collections
 
         public ref TValue? GetOrEnqueue(TKey key, out bool exists)
         {
-            ref TValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(_dict, key, out exists);
+            ref TValue? value = ref CollectionsMarshal.GetValueRefOrAddDefault(this._dict, key, out exists);
 
             if (exists == false)
             {
-                _queue.Enqueue(key);
+                this._queue.Enqueue(key);
             }
 
             return ref value;
@@ -75,8 +75,8 @@ namespace Guppy.Core.Common.Collections
 
         public void Clear()
         {
-            _queue.Clear();
-            _dict.Clear();
+            this._queue.Clear();
+            this._dict.Clear();
         }
     }
 }

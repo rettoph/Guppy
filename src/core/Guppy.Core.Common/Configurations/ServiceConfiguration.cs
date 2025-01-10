@@ -24,7 +24,7 @@ namespace Guppy.Core.Common.Configurations
                 return;
             }
 
-            _builder(scope, casted);
+            this._builder(scope, casted);
         }
     }
 }

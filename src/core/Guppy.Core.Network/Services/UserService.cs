@@ -1,12 +1,12 @@
-﻿using Guppy.Core.Network.Common;
+﻿using System.Collections;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Dtos;
 using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
-using System.Collections;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Network.Services
 {
@@ -19,7 +19,7 @@ namespace Guppy.Core.Network.Services
         {
             get
             {
-                foreach (User user in _idsUsers.Values)
+                foreach (User user in this._idsUsers.Values)
                 {
                     if (user.NetPeer is not null)
                     {
@@ -37,15 +37,15 @@ namespace Guppy.Core.Network.Services
 
         public UserService()
         {
-            _idsUsers = [];
-            _peersUsers = [];
+            this._idsUsers = [];
+            this._peersUsers = [];
 
             this.Current = this.Create([]);
         }
 
         public User GetById(int id)
         {
-            return _idsUsers[id];
+            return this._idsUsers[id];
         }
 
         IUser IUserService.GetById(int id)
@@ -55,7 +55,7 @@ namespace Guppy.Core.Network.Services
 
         public bool TryGet(int id, [MaybeNullWhen(false)] out User user)
         {
-            return _idsUsers.TryGetValue(id, out user);
+            return this._idsUsers.TryGetValue(id, out user);
         }
 
         bool IUserService.TryGet(int id, [MaybeNullWhen(false)] out IUser user)
@@ -72,7 +72,7 @@ namespace Guppy.Core.Network.Services
 
         public IUser GetByNetPeer(NetPeer peer)
         {
-            return _peersUsers[peer];
+            return this._peersUsers[peer];
         }
 
         public User Create(Claim[] claims, params Claim[] additionalClaims)
@@ -120,7 +120,7 @@ namespace Guppy.Core.Network.Services
 
         public IEnumerator<User> GetEnumerator()
         {
-            return _idsUsers.Values.GetEnumerator();
+            return this._idsUsers.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -128,19 +128,19 @@ namespace Guppy.Core.Network.Services
             return this.GetEnumerator();
         }
 
-        private void HandleUserStateChanged(IUser sender, UserState old, UserState value)
+        private void HandleUserStateChanged(IUser sender, UserStateEnum old, UserStateEnum value)
         {
             if (sender is not User user)
             {
                 throw new ArgumentException($"Sender is {sender.GetType().Name}, {nameof(User)} expected.");
             }
 
-            if (value == UserState.Connected)
+            if (value == UserStateEnum.Connected)
             {
-                _idsUsers.Add(user.Id, user);
+                this._idsUsers.Add(user.Id, user);
                 if (user.NetPeer is not null)
                 {
-                    _peersUsers.Add(user.NetPeer, user);
+                    this._peersUsers.Add(user.NetPeer, user);
                 }
 
                 this.OnUserConnected?.Invoke(this, user);
@@ -148,18 +148,18 @@ namespace Guppy.Core.Network.Services
                 return;
             }
 
-            if (value == UserState.Disconnected)
+            if (value == UserStateEnum.Disconnected)
             {
                 user.OnStateChanged -= this.HandleUserStateChanged;
 
-                if (_idsUsers.Remove(user.Id) == false)
+                if (this._idsUsers.Remove(user.Id) == false)
                 {
                     return;
                 }
 
                 if (sender.NetPeer is not null)
                 {
-                    _peersUsers.Remove(sender.NetPeer);
+                    this._peersUsers.Remove(sender.NetPeer);
                 }
 
                 this.OnUserDisconnected?.Invoke(this, user);

@@ -4,9 +4,9 @@ using Guppy.Core.Network.Common.Peers;
 
 namespace Guppy.Core.Network.Common.Contexts
 {
-    public class NetScopeContext<T>(PeerType peerType, byte groupId)
+    public class NetScopeContext<T>(PeerTypeEnum peerType, byte groupId)
     {
-        public readonly PeerType PeerType = peerType;
+        public readonly PeerTypeEnum PeerType = peerType;
         public readonly byte GroupId = groupId;
 
         public TGroup GetGroup<TGroup>(ILifetimeScope scope)
@@ -14,8 +14,8 @@ namespace Guppy.Core.Network.Common.Contexts
         {
             IPeer peer = this.PeerType switch
             {
-                PeerType.Client => scope.Resolve<IClientPeer>(),
-                PeerType.Server => scope.Resolve<IServerPeer>(),
+                PeerTypeEnum.Client => scope.Resolve<IClientPeer>(),
+                PeerTypeEnum.Server => scope.Resolve<IServerPeer>(),
                 _ => throw new NotImplementedException()
             };
 

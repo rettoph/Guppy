@@ -12,8 +12,8 @@
 
         public readonly TValue Value
         {
-            get => _values[_index];
-            set => _values[_index] = value;
+            get => _values[this._index];
+            set => _values[this._index] = value;
         }
 
         public readonly Type Type => typeof(TValue);
@@ -22,18 +22,18 @@
 
         public UnmanagedReference()
         {
-            _index = Pop();
+            this._index = Pop();
         }
 
         public UnmanagedReference(TValue value)
         {
-            _index = Pop();
+            this._index = Pop();
             this.Value = value;
         }
 
         public readonly void Dispose(bool disposeValue)
         {
-            Push(_index);
+            Push(this._index);
 
             if (disposeValue && this.Value is IDisposable disposable)
             {
@@ -81,12 +81,12 @@
         public override readonly bool Equals(object? obj)
         {
             return obj is UnmanagedReference<TValue> reference &&
-                   _index == reference._index;
+                   this._index == reference._index;
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(_index);
+            return HashCode.Combine(this._index);
         }
 
         public static bool operator ==(UnmanagedReference<TValue> left, UnmanagedReference<TValue> right)
@@ -115,8 +115,8 @@
 
         public readonly TValue Value
         {
-            get => _values[_index];
-            set => _values[_index] = value;
+            get => _values[this._index];
+            set => _values[this._index] = value;
         }
 
         public readonly Type Type => typeof(TValue);
@@ -125,18 +125,18 @@
 
         public UnmanagedReference()
         {
-            _index = Pop();
+            this._index = Pop();
         }
 
         public UnmanagedReference(TValue value)
         {
-            _index = Pop();
+            this._index = Pop();
             this.Value = value;
         }
 
         public readonly void Dispose(bool disposeValue)
         {
-            Push(_index);
+            Push(this._index);
 
             if (disposeValue && this.Value is IDisposable disposable)
             {
@@ -184,12 +184,12 @@
         public override readonly bool Equals(object? obj)
         {
             return obj is UnmanagedReference<TNamespace, TValue> reference &&
-                   _index == reference._index;
+                   this._index == reference._index;
         }
 
         public override readonly int GetHashCode()
         {
-            return HashCode.Combine(_index);
+            return HashCode.Combine(this._index);
         }
 
         public static bool operator ==(UnmanagedReference<TNamespace, TValue> left, UnmanagedReference<TNamespace, TValue> right)

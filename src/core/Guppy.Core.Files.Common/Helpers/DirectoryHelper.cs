@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Files.Common.Enums;
-using System.Reflection;
+﻿using System.Reflection;
+using Guppy.Core.Files.Common.Enums;
 
 namespace Guppy.Core.Files.Common.Helpers
 {
@@ -12,7 +12,7 @@ namespace Guppy.Core.Files.Common.Helpers
 
         public static void EnsureDirectoryExists(DirectoryLocation source)
         {
-            if (source.Type != DirectoryType.Source)
+            if (source.Type != DirectoryTypeEnum.Source)
             {
                 throw new ArgumentException();
             }

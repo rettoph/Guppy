@@ -1,19 +1,19 @@
-﻿using Guppy.Core.Common.Services;
-using System.Collections;
+﻿using System.Collections;
+using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
     internal class TypeService<T>(IEnumerable<Type> types) : ITypeService<T>
     {
-        public readonly List<Type> _types = new(types);
+        private readonly List<Type> _types = new(types);
 
         public IEnumerable<T> CreateInstances()
         {
-            foreach (Type type in _types)
+            foreach (Type type in this._types)
             {
                 object? instance = Activator.CreateInstance(type);
 
-                if (instance is not null && instance is T casted)
+                if (instance is not null and T casted)
                 {
                     yield return casted;
                 }
@@ -24,12 +24,12 @@ namespace Guppy.Core.Services
 
         public IEnumerator<Type> GetEnumerator()
         {
-            return _types.GetEnumerator();
+            return this._types.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ImGui.Common.Helpers
 {

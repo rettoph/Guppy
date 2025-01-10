@@ -16,11 +16,11 @@ namespace Guppy.Core.Services
                 return;
             }
 
-            foreach (ServiceConfiguration configurator in _configurators)
+            foreach (ServiceConfiguration configurator in this._configurators)
             {
                 if (configurator.CanBuild(instance.GetType()))
                 {
-                    configurator.Configure(_scope, instance);
+                    configurator.Configure(this._scope, instance);
                 }
             }
         }

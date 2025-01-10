@@ -18,40 +18,40 @@ namespace Guppy.Game.Input.Components
         private readonly IInputService _inputs = inputs;
         private readonly ICursor _cursor = cursors.Get(Cursors.Mouse);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PreUpdate)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PreUpdate)]
         public void Update(GameTime gameTime)
         {
             MouseState state = Mouse.GetState();
 
-            if (_cursor.MoveTo(state.Position.ToVector2(), out var movement))
+            if (this._cursor.MoveTo(state.Position.ToVector2(), out var movement))
             {
-                _inputs.Publish(movement);
+                this._inputs.Publish(movement);
             }
 
-            if (_cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
+            if (this._cursor.ScrollTo(state.ScrollWheelValue, out var scrolling))
             {
-                _inputs.Publish(scrolling);
+                this._inputs.Publish(scrolling);
             }
 
-            if (_cursor.SetPress(CursorButtons.Left, state.LeftButton == ButtonState.Pressed, out var press))
+            if (this._cursor.SetPress(CursorButtonsEnum.Left, state.LeftButton == ButtonState.Pressed, out var press))
             {
-                _inputs.Publish(press);
+                this._inputs.Publish(press);
             }
 
-            if (_cursor.SetPress(CursorButtons.Middle, state.MiddleButton == ButtonState.Pressed, out press))
+            if (this._cursor.SetPress(CursorButtonsEnum.Middle, state.MiddleButton == ButtonState.Pressed, out press))
             {
-                _inputs.Publish(press);
+                this._inputs.Publish(press);
             }
 
-            if (_cursor.SetPress(CursorButtons.Right, state.RightButton == ButtonState.Pressed, out press))
+            if (this._cursor.SetPress(CursorButtonsEnum.Right, state.RightButton == ButtonState.Pressed, out press))
             {
-                _inputs.Publish(press);
+                this._inputs.Publish(press);
             }
         }
     }

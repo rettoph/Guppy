@@ -13,28 +13,28 @@ namespace Guppy.Core.Files
 
         public string Content
         {
-            get => _json.Serialize(this.Value);
+            get => this._json.Serialize(this.Value);
             set
             {
-                T result = _json.Deserialize<T>(value, out bool success);
+                T result = this._json.Deserialize<T>(value, out bool success);
                 this.Success = success;
 
-                _value = result;
+                this._value = result;
             }
 
         }
         public T Value
         {
-            get => _value ??= Activator.CreateInstance<T>();
-            set => _value = value;
+            get => this._value ??= Activator.CreateInstance<T>();
+            set => this._value = value;
         }
 
         public bool Success { get; private set; }
 
         public JsonFile(FileLocation location, FileLocation source, string content, IJsonSerializationService json)
         {
-            _value = default!;
-            _json = json;
+            this._value = default!;
+            this._json = json;
 
             this.Location = location;
             this.Source = source;

@@ -16,7 +16,7 @@ namespace Guppy.Core.Common.Providers
         }
         Lazy<ILogger> GetOrCreateLazy<TContext>()
         {
-            return new Lazy<ILogger>(() => this.GetOrCreate<TContext>());
+            return new Lazy<ILogger>(this.GetOrCreate<TContext>);
         }
     }
 }

@@ -6,6 +6,7 @@
     /// </summary>
     /// <typeparam name="TSequenceGroup"></typeparam>
     /// <param name="value"></param>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class SequenceAttribute<TSequenceGroup>(int value) : Attribute
         where TSequenceGroup : unmanaged, Enum
     {

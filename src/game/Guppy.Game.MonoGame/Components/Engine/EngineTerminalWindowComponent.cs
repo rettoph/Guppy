@@ -29,98 +29,100 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
-            if (_isTerminalWindowEnabled == false)
+            if (this._isTerminalWindowEnabled == false)
             {
                 return;
             }
 
-            using (_imgui.Apply(_debugWindowStyle))
+            using (this._imgui.Apply(this._debugWindowStyle))
             {
-                _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
-                _imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
+                this._imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+                this._imgui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
-                ImGuiWindowClassPtr windowClass = new();
-                windowClass.ClassId = _imgui.GetID(nameof(ITerminal));
-                windowClass.DockingAllowUnclassed = false;
-
-                _imgui.SetNextWindowClass(windowClass);
-                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
-                _imgui.SetNextWindowSize(new Vector2(800, 600), ImGuiCond.FirstUseEver);
-                if (_imgui.Begin($"Engine Terminal", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
+                ImGuiWindowClassPtr windowClass = new()
                 {
-                    if (_imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
+                    ClassId = this._imgui.GetID(nameof(ITerminal)),
+                    DockingAllowUnclassed = false
+                };
+
+                this._imgui.SetNextWindowClass(windowClass);
+                this._imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
+                this._imgui.SetNextWindowSize(new Vector2(800, 600), ImGuiCond.FirstUseEver);
+                if (this._imgui.Begin($"Engine Terminal", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
+                {
+                    if (this._imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
                     {
-                        _imgui.PushItemWidth(-1);
-                        if (_imgui.InputText("#filter", ref _filter, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue))
+                        this._imgui.PushItemWidth(-1);
+                        if (this._imgui.InputText("#filter", ref this._filter, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue))
                         {
-                            _commands.Invoke(_filter);
-                            _input = string.Empty;
+                            this._commands.Invoke(this._filter);
+                            this._input = string.Empty;
                         }
-                        _imgui.PopItemWidth();
+                        this._imgui.PopItemWidth();
                     }
 
-                    _imgui.EndChild();
+                    this._imgui.EndChild();
 
-                    _imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
+                    this._imgui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(5, 5));
 
-                    if (_imgui.BeginChild("##output-container", new Vector2(-1, _imgui.GetContentRegionAvail().Y - _inputContainerHeight), ImGuiChildFlags.AlwaysUseWindowPadding, ImGuiWindowFlags.HorizontalScrollbar))
+                    if (this._imgui.BeginChild("##output-container", new Vector2(-1, this._imgui.GetContentRegionAvail().Y - this._inputContainerHeight), ImGuiChildFlags.AlwaysUseWindowPadding, ImGuiWindowFlags.HorizontalScrollbar))
                     {
-                        _scrolledToBottom = _imgui.GetScrollMaxY() == 0 || _imgui.GetScrollY() / _imgui.GetScrollMaxY() == 1;
+                        this._scrolledToBottom = this._imgui.GetScrollMaxY() == 0 || this._imgui.GetScrollY() / this._imgui.GetScrollMaxY() == 1;
 
-                        foreach (MonoGameTerminalLine line in _terminal.Lines)
+                        foreach (MonoGameTerminalLine line in this._terminal.Lines)
                         {
-                            if (_filter == string.Empty || line.Text.Contains(_filter, StringComparison.InvariantCultureIgnoreCase))
+                            if (this._filter == string.Empty || line.Text.Contains(this._filter, StringComparison.InvariantCultureIgnoreCase))
                             {
-                                _imgui.NewLine();
+                                this._imgui.NewLine();
 
                                 foreach (MonoGameTerminalSegment segment in line.Segments)
                                 {
-                                    _imgui.SameLine();
-                                    _imgui.TextColored(segment.Color, segment.Text);
+                                    this._imgui.SameLine();
+                                    this._imgui.TextColored(segment.Color, segment.Text);
                                 }
                             }
                         }
                     }
 
-                    if (_scrolledToBottom && _lines != (_lines = _terminal.Lines.Count))
+                    if (this._scrolledToBottom && this._lines != (this._lines = this._terminal.Lines.Count))
                     {
-                        _imgui.SetScrollHereY(1.0f);
+                        this._imgui.SetScrollHereY(1.0f);
                     }
 
-                    _imgui.EndChild();
+                    this._imgui.EndChild();
 
-                    _imgui.PopStyleVar();
+                    this._imgui.PopStyleVar();
 
-                    if (_imgui.BeginChild("#input-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
+                    if (this._imgui.BeginChild("#input-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
                     {
-                        _imgui.PushItemWidth(-1);
-                        if (_imgui.InputText("#input", ref _input, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue) && _input != string.Empty)
+                        this._imgui.PushItemWidth(-1);
+                        if (this._imgui.InputText("#input", ref this._input, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue) && this._input != string.Empty)
                         {
-                            _imgui.SetKeyboardFocusHere(-1);
-                            _commands.Invoke(_input);
-                            _input = string.Empty;
+                            this._imgui.SetKeyboardFocusHere(-1);
+                            this._commands.Invoke(this._input);
+                            this._input = string.Empty;
                         }
-                        _imgui.PopItemWidth();
+                        this._imgui.PopItemWidth();
 
-                        _inputContainerHeight = _imgui.GetWindowSize().Y;
+                        this._inputContainerHeight = this._imgui.GetWindowSize().Y;
                     }
 
-                    _imgui.EndChild();
+                    this._imgui.EndChild();
                 }
 
-                _imgui.End();
+                this._imgui.End();
 
-                _imgui.PopStyleVar();
-                _imgui.PopStyleVar();
+                this._imgui.PopStyleVar();
+                this._imgui.PopStyleVar();
             }
         }
     }

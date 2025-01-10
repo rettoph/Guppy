@@ -1,7 +1,7 @@
-﻿using Autofac;
+﻿using System.Text.Json.Serialization;
+using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Resources.Serialization.Json;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Core.Serialization.Common.Extensions
 {

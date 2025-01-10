@@ -12,7 +12,7 @@ namespace Guppy.Tests.Common
         private Action<AutoMock>? _mockers;
         private AutoMock? _automock;
 
-        protected AutoMock AutoMock => _automock ??= this.BuildAutoMock();
+        protected AutoMock autoMock => this._automock ??= this.BuildAutoMock();
 
         internal AutoMocker()
         {
@@ -22,28 +22,28 @@ namespace Guppy.Tests.Common
 
         protected internal void Register(Action<ContainerBuilder> builder)
         {
-            if (_automock is not null)
+            if (this._automock is not null)
             {
                 throw new InvalidOperationException();
             }
 
-            _builders += builder;
+            this._builders += builder;
         }
 
         protected internal void Mock(Action<AutoMock> mocker)
         {
-            if (_automock is not null)
+            if (this._automock is not null)
             {
                 throw new InvalidOperationException();
             }
 
-            _mockers += mocker;
+            this._mockers += mocker;
         }
 
         private AutoMock BuildAutoMock()
         {
-            AutoMock mock = AutoMock.GetLoose(builder => _builders?.Invoke(builder));
-            _mockers?.Invoke(mock);
+            AutoMock mock = AutoMock.GetLoose(builder => this._builders?.Invoke(builder));
+            this._mockers?.Invoke(mock);
 
             return mock;
         }
@@ -55,7 +55,7 @@ namespace Guppy.Tests.Common
     {
         public virtual TService Build()
         {
-            return this.AutoMock.Container.Resolve<TService>();
+            return this.autoMock.Container.Resolve<TService>();
         }
 
         public new TSelf Register(Action<ContainerBuilder> builder)

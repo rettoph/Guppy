@@ -6,7 +6,7 @@ namespace Guppy.Game.Common.Components
 {
     public interface IUpdatableComponent
     {
-        [RequireSequenceGroup<UpdateComponentSequenceGroup>()]
+        [RequireSequenceGroup<UpdateComponentSequenceGroupEnum>()]
         void Update(GameTime gameTime);
     }
 }

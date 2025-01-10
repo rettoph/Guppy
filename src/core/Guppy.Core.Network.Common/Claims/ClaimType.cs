@@ -24,7 +24,7 @@ namespace Guppy.Core.Network.Common.Claims
             Register((w, v) => w.Put(v), r => r.GetUInt());
             Register((w, v) => w.Put(v), r => r.GetLong());
             Register((w, v) => w.Put(v), r => r.GetULong());
-            Register((w, v) => w.Put(v), r => r.GetEnum<UserType>());
+            Register((w, v) => w.Put(v), r => r.GetEnum<UserTypeEnum>());
         }
 
         public static ClaimType<T> Register<T>(Action<NetDataWriter, T> netSerializer, Func<NetDataReader, T> netDeserializer)
@@ -50,15 +50,15 @@ namespace Guppy.Core.Network.Common.Claims
 
         protected internal ClaimType(string name, Type type)
         {
-            Name = name;
-            Type = type;
+            this.Name = name;
+            this.Type = type;
         }
 
         public abstract void SerializeValue(NetDataWriter writer, object? value);
 
         public abstract object DeserializeValue(NetDataReader reader);
 
-        public abstract Claim Create(string key, object value, ClaimAccessibility accessibility, DateTime? createdAt = null);
+        public abstract Claim Create(string key, object value, ClaimAccessibilityEnum accessibility, DateTime? createdAt = null);
     }
 
     public sealed class ClaimType<T>(string name, Action<NetDataWriter, T> serializer, Func<NetDataReader, T> deserializer) : ClaimType(name, typeof(T))
@@ -70,26 +70,26 @@ namespace Guppy.Core.Network.Common.Claims
         {
             if (value is T casted)
             {
-                _netSerializer(writer, casted);
+                this._netSerializer(writer, casted);
                 return;
             }
 
-            throw new ArgumentException(nameof(value));
+            throw new ArgumentException(null, nameof(value));
         }
 
         public override object DeserializeValue(NetDataReader reader)
         {
-            return _netDeserializer(reader) ?? throw new NullReferenceException();
+            return this._netDeserializer(reader) ?? throw new NullReferenceException();
         }
 
-        public override Claim Create(string key, object value, ClaimAccessibility accessibility, DateTime? createdAt = null)
+        public override Claim Create(string key, object value, ClaimAccessibilityEnum accessibility, DateTime? createdAt = null)
         {
             if (value is T casted)
             {
                 return new Claim<T>(key, casted, accessibility, createdAt);
             }
 
-            throw new ArgumentException(nameof(value));
+            throw new ArgumentException(null, nameof(value));
         }
     }
 }

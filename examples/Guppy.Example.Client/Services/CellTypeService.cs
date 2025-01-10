@@ -10,7 +10,7 @@ namespace Guppy.Example.Client.Services
 
         public void Update(ref Cell cell, Grid old, Grid output)
         {
-            _cellTypes[cell.Old.Type].Update(ref cell, old, output);
+            this._cellTypes[cell.Old.Type].Update(ref cell, old, output);
         }
     }
 }

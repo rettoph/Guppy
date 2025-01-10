@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Network.Common;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Network.Common;
 
 namespace Guppy.Core.Network.Serialization.Json
 {

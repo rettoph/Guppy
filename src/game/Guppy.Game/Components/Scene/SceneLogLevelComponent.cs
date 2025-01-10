@@ -18,13 +18,13 @@ namespace Guppy.Game.Components.Scene
 
         public EngineLogLevelComponent(ITerminal terminal, ISettingService settings)
         {
-            _terminal = terminal;
-            _logLevel = settings.GetValue(Settings.LogLevel);
+            this._terminal = terminal;
+            this._logLevel = settings.GetValue(Settings.LogLevel);
 
-            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel;
+            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = this._logLevel;
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
@@ -34,16 +34,16 @@ namespace Guppy.Game.Components.Scene
         {
             if (message.Value is null)
             {
-                _terminal.Write($"Current Log Level: ");
-                _terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), _terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
+                this._terminal.Write($"Current Log Level: ");
+                this._terminal.WriteLine(LogLevelCommand.LoggingLevelSwitch.MinimumLevel.ToString(), this._terminal.Theme.Get(LogLevelCommand.LoggingLevelSwitch.MinimumLevel));
 
                 return;
             }
 
-            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = _logLevel.Value = message.Value.Value;
+            LogLevelCommand.LoggingLevelSwitch.MinimumLevel = this._logLevel.Value = message.Value.Value;
 
-            _terminal.Write($"Set Log Level: ");
-            _terminal.WriteLine(message.Value.ToString() ?? string.Empty, _terminal.Theme.Get(message.Value.Value));
+            this._terminal.Write($"Set Log Level: ");
+            this._terminal.WriteLine(message.Value.ToString() ?? string.Empty, this._terminal.Theme.Get(message.Value.Value));
         }
     }
 }

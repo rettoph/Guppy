@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Resources.Common;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Resources.Common;
 
 namespace Guppy.Game.ImGui.Common
 {
@@ -11,8 +11,8 @@ namespace Guppy.Game.ImGui.Common
 
         public ImFontPtr(Resource<TrueTypeFont> ttf, int size) : this(default!)
         {
-            TTF = ttf;
-            Size = size;
+            this.TTF = ttf;
+            this.Size = size;
         }
 
         public void SetImFontPtr(ImGuiNET.ImFontAtlasPtr atlas)

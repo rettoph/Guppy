@@ -1,11 +1,11 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using System.Collections.ObjectModel;
+using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
 using Guppy.Core.Network.Peers;
 using LiteNetLib;
 using LiteNetLib.Utils;
-using System.Collections.ObjectModel;
 
 namespace Guppy.Core.Network
 {
@@ -36,10 +36,10 @@ namespace Guppy.Core.Network
             INetSerializerService serializers,
             NetMessageType<T> type)
         {
-            _peer = peer;
-            _serializers = serializers;
-            _serializer = _serializers.Get<T>();
-            _recipients = [];
+            this._peer = peer;
+            this._serializers = serializers;
+            this._serializer = this._serializers.Get<T>();
+            this._recipients = [];
 
             this.Body = default!;
             this.Group = default!;
@@ -49,7 +49,7 @@ namespace Guppy.Core.Network
             this.Writer = new NetDataWriter();
 
 
-            this.Recipients = new ReadOnlyCollection<NetPeer>(_recipients);
+            this.Recipients = new ReadOnlyCollection<NetPeer>(this._recipients);
 
             this.Writer.Put(this.Type.Id);
         }
@@ -60,14 +60,14 @@ namespace Guppy.Core.Network
             this.Writer.Put(group.Id);
 
             this.Body = body;
-            _serializer.Serialize(this.Writer, in body);
+            this._serializer.Serialize(this.Writer, in body);
         }
 
         public void Recycle()
         {
             this.Writer.SetPosition(sizeof(byte) * 1); // The message type byte
 
-            _recipients.Clear();
+            this._recipients.Clear();
 
             this.OutgoingChannel = this.Type.DefaultOutgoingChannel;
             this.DeliveryMethod = this.Type.DefaultDeliveryMethod;
@@ -77,14 +77,14 @@ namespace Guppy.Core.Network
 
         public INetOutgoingMessage<T> AddRecipient(NetPeer recipient)
         {
-            _recipients.Add(recipient);
+            this._recipients.Add(recipient);
 
             return this;
         }
 
         public INetOutgoingMessage<T> AddRecipients(IEnumerable<NetPeer> recipients)
         {
-            _recipients.AddRange(recipients);
+            this._recipients.AddRange(recipients);
 
             return this;
         }
@@ -105,7 +105,7 @@ namespace Guppy.Core.Network
 
         public INetOutgoingMessage<T> Send()
         {
-            _peer.Send(this);
+            this._peer.Send(this);
 
             return this;
         }

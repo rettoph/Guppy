@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Serialization.Common.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Serialization.Common.Services;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Guppy.Core.Serialization.Json.Converters
@@ -38,7 +38,7 @@ namespace Guppy.Core.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return _serializer.Deserialize(type, ref value, options, out _);
+            return this._serializer.Deserialize(type, ref value, options, out _);
         }
 
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
@@ -52,7 +52,7 @@ namespace Guppy.Core.Serialization.Json.Converters
 
             writer.WriteStartObject();
 
-            writer.WriteString(TypePropertyKey, _serializer.GetKey(implementationType));
+            writer.WriteString(TypePropertyKey, this._serializer.GetKey(implementationType));
 
             writer.WritePropertyName(ValuePropertyKey);
             JsonSerializer.Serialize(writer, value, implementationType, options);

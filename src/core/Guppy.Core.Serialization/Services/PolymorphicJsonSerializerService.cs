@@ -1,8 +1,8 @@
-﻿using Autofac;
+﻿using System.Text.Json;
+using Autofac;
 using Guppy.Core.Common.Collections;
 using Guppy.Core.Resources.Serialization.Json;
 using Guppy.Core.Serialization.Common.Services;
-using System.Text.Json;
 
 namespace Guppy.Core.Serialization.Services
 {
@@ -13,12 +13,12 @@ namespace Guppy.Core.Serialization.Services
         public PolymorphicJsonSerializerService(IEnumerable<PolymorphicJsonType> types)
         {
             var typeTuples = types.Where(x => x.BaseType.IsAssignableTo<TBase>()).Select(x => (x.Key, x.InstanceType));
-            _types = new Map<string, Type>(typeTuples);
+            this._types = new Map<string, Type>(typeTuples);
         }
 
         public TBase Deserialize(string key, ref JsonElement element, JsonSerializerOptions options, out Type type)
         {
-            type = _types[key];
+            type = this._types[key];
             object? instance = JsonSerializer.Deserialize(element, type, options);
             TBase casted = (TBase?)instance ?? throw new NotImplementedException();
 
@@ -27,7 +27,7 @@ namespace Guppy.Core.Serialization.Services
 
         public TBase Deserialize(string key, ref Utf8JsonReader reader, JsonSerializerOptions options, out Type type)
         {
-            type = _types[key];
+            type = this._types[key];
             TBase instance = (TBase)JsonSerializer.Deserialize(ref reader, type, options)!;
 
             return instance;
@@ -35,12 +35,12 @@ namespace Guppy.Core.Serialization.Services
 
         public string GetKey(Type type)
         {
-            return _types[type];
+            return this._types[type];
         }
 
         public Type GetType(string key)
         {
-            return _types[key];
+            return this._types[key];
         }
     }
 }

@@ -10,35 +10,35 @@ namespace Guppy.Core.Common.Collections
         private readonly Dictionary<T1, T2> _forward;
         private readonly Dictionary<T2, T1> _reverse;
 
-        public ICollection<T1> Values1 => _forward.Keys;
-        public ICollection<T2> Values2 => _reverse.Keys;
+        public ICollection<T1> Values1 => this._forward.Keys;
+        public ICollection<T2> Values2 => this._reverse.Keys;
 
         public T2 this[T1 key]
         {
-            get => _forward[key];
+            get => this._forward[key];
             set
             {
-                _forward[key] = value;
-                _reverse[value] = key;
+                this._forward[key] = value;
+                this._reverse[value] = key;
             }
         }
 
         public T1 this[T2 key]
         {
-            get => _reverse[key];
+            get => this._reverse[key];
             set
             {
-                _reverse[key] = value;
-                _forward[value] = key;
+                this._reverse[key] = value;
+                this._forward[value] = key;
             }
         }
 
-        public int Count => _forward.Count;
+        public int Count => this._forward.Count;
 
         public Map()
         {
-            _forward = [];
-            _reverse = [];
+            this._forward = [];
+            this._reverse = [];
         }
 
         public Map(IEnumerable<T1> first, IEnumerable<T2> second) : this(first.Zip(second))
@@ -47,25 +47,25 @@ namespace Guppy.Core.Common.Collections
 
         public Map(IEnumerable<(T1, T2)> values)
         {
-            _forward = values.ToDictionary(
+            this._forward = values.ToDictionary(
                 keySelector: v => v.Item1,
                 elementSelector: v => v.Item2);
 
-            _reverse = values.ToDictionary(
+            this._reverse = values.ToDictionary(
                 keySelector: v => v.Item2,
                 elementSelector: v => v.Item1);
         }
 
         public bool TryAdd(T1 t1, T2 t2)
         {
-            if (!_forward.TryAdd(t1, t2))
+            if (!this._forward.TryAdd(t1, t2))
             {
                 return false;
             }
 
-            if (!_reverse.TryAdd(t2, t1))
+            if (!this._reverse.TryAdd(t2, t1))
             {
-                _forward.Remove(t1);
+                this._forward.Remove(t1);
                 return false;
             }
 
@@ -74,14 +74,14 @@ namespace Guppy.Core.Common.Collections
 
         public bool TryRemove(T1 t1)
         {
-            if (!_forward.Remove(t1, out var t2))
+            if (!this._forward.Remove(t1, out var t2))
             {
                 return false;
             }
 
-            if (!_reverse.Remove(t2))
+            if (!this._reverse.Remove(t2))
             {
-                _forward.Add(t1, t2);
+                this._forward.Add(t1, t2);
                 return false;
             }
 
@@ -90,14 +90,14 @@ namespace Guppy.Core.Common.Collections
 
         public bool TryRemove(T2 t2)
         {
-            if (!_reverse.Remove(t2, out var t1))
+            if (!this._reverse.Remove(t2, out var t1))
             {
                 return false;
             }
 
-            if (!_forward.Remove(t1))
+            if (!this._forward.Remove(t1))
             {
-                _reverse.Add(t2, t1);
+                this._reverse.Add(t2, t1);
                 return false;
             }
 
@@ -106,17 +106,17 @@ namespace Guppy.Core.Common.Collections
 
         public bool TryGet(T1 key1, [MaybeNullWhen(false)] out T2 value2)
         {
-            return _forward.TryGetValue(key1, out value2);
+            return this._forward.TryGetValue(key1, out value2);
         }
 
         public bool TryGet(T2 key2, [MaybeNullWhen(false)] out T1 value1)
         {
-            return _reverse.TryGetValue(key2, out value1);
+            return this._reverse.TryGetValue(key2, out value1);
         }
 
         public IEnumerator<(T1, T2)> GetEnumerator()
         {
-            foreach (KeyValuePair<T1, T2> kvp in _forward)
+            foreach (KeyValuePair<T1, T2> kvp in this._forward)
             {
                 yield return (kvp.Key, kvp.Value);
             }

@@ -20,40 +20,40 @@ namespace Guppy.Game.MonoGame.Components.Engine
         private readonly IGameEngine _engine = engine;
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly IImGui _imgui = imgui;
-        private readonly ActionSequenceGroup<DebugSequenceGroup, GameTime> _renderDebugInfoActions = new(true);
+        private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _renderDebugInfoActions = new(true);
 
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
-            _renderDebugInfoActions.Add(_engine.Components);
+            this._renderDebugInfoActions.Add(this._engine.Components);
         }
 
-        [SequenceGroup<ImGuiSequenceGroup>(ImGuiSequenceGroup.Draw)]
+        [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)
         {
-            if (_isDebugWindowEnabled == false)
+            if (this._isDebugWindowEnabled == false)
             {
                 return;
             }
 
-            using (_imgui.Apply(_debugWindowStyle))
+            using (this._imgui.Apply(this._debugWindowStyle))
             {
                 ImGuiWindowClassPtr windowClass = new()
                 {
-                    ClassId = _imgui.GetID(nameof(IDebugComponent)),
+                    ClassId = this._imgui.GetID(nameof(IDebugComponent)),
                     DockingAllowUnclassed = false
                 };
 
-                _imgui.SetNextWindowClass(windowClass);
-                _imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
-                if (_imgui.Begin($"Engine Debug Window"))
+                this._imgui.SetNextWindowClass(windowClass);
+                this._imgui.SetNextWindowDockID(windowClass.ClassId, ImGuiCond.FirstUseEver);
+                if (this._imgui.Begin($"Engine Debug Window"))
                 {
-                    _renderDebugInfoActions.Invoke(gameTime);
+                    this._renderDebugInfoActions.Invoke(gameTime);
                 }
 
-                _imgui.End();
+                this._imgui.End();
             }
         }
     }

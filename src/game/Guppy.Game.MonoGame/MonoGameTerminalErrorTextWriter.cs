@@ -12,7 +12,7 @@ namespace Guppy.Game.MonoGame
         {
             var color = terminal.Color;
 
-            terminal.Color = _errColor;
+            terminal.Color = this._errColor;
             terminal.Write(value);
 
             terminal.Color = color;
@@ -20,12 +20,12 @@ namespace Guppy.Game.MonoGame
 
         protected override void WriteLineToTerminal(ITerminal terminal, string value)
         {
-            terminal.WriteLine(value, _errColor);
+            terminal.WriteLine(value, this._errColor);
         }
 
         protected override void WriteToTerminal(ITerminal terminal, string value)
         {
-            terminal.Write(value, _errColor);
+            terminal.Write(value, this._errColor);
         }
     }
 }

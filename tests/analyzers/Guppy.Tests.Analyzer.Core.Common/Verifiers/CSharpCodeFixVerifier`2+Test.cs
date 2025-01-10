@@ -21,7 +21,7 @@ namespace Guppy.Tests.Analyzer.Core.Common
                     CompilationOptions compilationOptions = solution.GetProject(projectId)?.CompilationOptions ?? throw new NotImplementedException();
 
                     compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
-                        compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
+                        compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.nullableWarnings));
 
                     solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
 

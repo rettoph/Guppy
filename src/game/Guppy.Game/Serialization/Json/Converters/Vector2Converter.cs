@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Serialization.Json.Converters
 {

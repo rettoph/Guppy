@@ -16,7 +16,7 @@ namespace Guppy.Core.Network.Peers
         ISubscriber<INetIncomingMessage<UserAction>>,
         ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
     {
-        public override PeerType Type => PeerType.Client;
+        public override PeerTypeEnum Type => PeerTypeEnum.Client;
 
         public IUser? ServerUser { get; private set; }
 
@@ -29,7 +29,7 @@ namespace Guppy.Core.Network.Peers
 
         public void Connect(string address, int port, params Claim[] claims)
         {
-            if (this.State == PeerState.NotStarted)
+            if (this.State == PeerStateEnum.NotStarted)
             {
                 this.Start();
             }
@@ -49,10 +49,10 @@ namespace Guppy.Core.Network.Peers
 
             switch (message.Body.Type)
             {
-                case UserActionTypes.UserJoined:
+                case UserActionTypeEnum.UserJoined:
                     this.Groups.GetById(message.Body.GroupId).Users.Add(user);
                     break;
-                case UserActionTypes.UserLeft:
+                case UserActionTypeEnum.UserLeft:
                     this.Groups.GetById(message.Body.GroupId).Users.Remove(user);
                     break;
             }

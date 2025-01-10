@@ -60,19 +60,19 @@ namespace Guppy.Core.StateMachine.Common
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as StateKey<T>);
+            return this.Equals(obj as StateKey<T>);
         }
 
         public bool Equals(StateKey<T>? other)
         {
             return other is not null &&
-                   EqualityComparer<Type>.Default.Equals(Type, other.Type) &&
-                   Value == other.Value;
+                   EqualityComparer<Type>.Default.Equals(this.Type, other.Type) &&
+                   this.Value == other.Value;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Type, Value);
+            return HashCode.Combine(this.Type, this.Value);
         }
 
         public bool Equals(Type type, string value)

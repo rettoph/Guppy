@@ -1,7 +1,7 @@
-﻿using Guppy.Game.Graphics.Common;
+﻿using System.Collections.ObjectModel;
+using Guppy.Game.Graphics.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.ObjectModel;
 
 namespace Guppy.Example.Client.Utilities
 {
@@ -25,12 +25,12 @@ namespace Guppy.Example.Client.Utilities
 
         public StaticPrimitiveBatch(GraphicsDevice graphicsDevice, TEffect effect)
         {
-            _vertexBuffer = null!;
-            _indexBuffer = null!;
-            _indices = Array.Empty<short>();
+            this._vertexBuffer = null!;
+            this._indexBuffer = null!;
+            this._indices = [];
 
-            this.Vertices = Array.Empty<TVertex>();
-            this.Indices = new ReadOnlyCollection<short>(_indices);
+            this.Vertices = [];
+            this.Indices = new ReadOnlyCollection<short>(this._indices);
             this.GraphicsDevice = graphicsDevice;
             this.Effect = effect;
             this.BlendState = BlendState.AlphaBlend;
@@ -43,24 +43,24 @@ namespace Guppy.Example.Client.Utilities
 
         public void Initialize(int vertexCount, PrimitiveType type, params short[] indices)
         {
-            _vertexBuffer?.Dispose();
-            _indexBuffer?.Dispose();
+            this._vertexBuffer?.Dispose();
+            this._indexBuffer?.Dispose();
 
-            _type = type;
-            _indices = indices;
-            _elementCount = _type switch
+            this._type = type;
+            this._indices = indices;
+            this._elementCount = this._type switch
             {
-                PrimitiveType.PointList => _indices.Length / 1,
-                PrimitiveType.LineList => _indices.Length / 2,
-                PrimitiveType.TriangleList => _indices.Length / 3,
+                PrimitiveType.PointList => this._indices.Length / 1,
+                PrimitiveType.LineList => this._indices.Length / 2,
+                PrimitiveType.TriangleList => this._indices.Length / 3,
                 _ => throw new NotImplementedException()
             };
-            _vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(TVertex), vertexCount, BufferUsage.WriteOnly);
-            _indexBuffer = new DynamicIndexBuffer(this.GraphicsDevice, typeof(short), vertexCount * 3, BufferUsage.WriteOnly);
+            this._vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(TVertex), vertexCount, BufferUsage.WriteOnly);
+            this._indexBuffer = new DynamicIndexBuffer(this.GraphicsDevice, typeof(short), vertexCount * 3, BufferUsage.WriteOnly);
 
             this.Vertices = new TVertex[vertexCount];
 
-            _indexBuffer.SetData(_indices, 0, _indices.Length);
+            this._indexBuffer.SetData(this._indices, 0, this._indices.Length);
         }
 
         public void Draw(ICamera camera)
@@ -75,15 +75,15 @@ namespace Guppy.Example.Client.Utilities
 
             this.GraphicsDevice.BlendState = this.BlendState;
             this.GraphicsDevice.RasterizerState = this.RasterizerState;
-            this.GraphicsDevice.SetVertexBuffer(_vertexBuffer);
-            this.GraphicsDevice.Indices = _indexBuffer;
+            this.GraphicsDevice.SetVertexBuffer(this._vertexBuffer);
+            this.GraphicsDevice.Indices = this._indexBuffer;
 
-            _vertexBuffer.SetData(this.Vertices, 0, this.Vertices.Length);
+            this._vertexBuffer.SetData(this.Vertices, 0, this.Vertices.Length);
 
-            foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in this.Effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                this.GraphicsDevice.DrawIndexedPrimitives(_type, 0, 0, _elementCount);
+                this.GraphicsDevice.DrawIndexedPrimitives(this._type, 0, 0, this._elementCount);
             }
         }
     }

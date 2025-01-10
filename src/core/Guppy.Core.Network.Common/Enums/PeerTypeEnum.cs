@@ -1,7 +1,7 @@
 ﻿namespace Guppy.Core.Network.Common.Enums
 {
     [Flags]
-    public enum PeerType
+    public enum PeerTypeEnum
     {
         None = 1,
         Client = 2,

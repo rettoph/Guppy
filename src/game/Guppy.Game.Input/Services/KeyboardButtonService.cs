@@ -11,14 +11,14 @@ namespace Guppy.Game.Input.Services
 
         public void Clean(IEnumerable<IButton> buttons)
         {
-            _keys = buttons.Where(x => x.Source.Type == ButtonType.Keyboard).ToArray();
+            this._keys = buttons.Where(x => x.Source.Type == ButtonTypeEnum.Keyboard).ToArray();
         }
 
         public IEnumerable<IInput> Update()
         {
             var state = Keyboard.GetState();
 
-            foreach (var key in _keys)
+            foreach (var key in this._keys)
             {
                 if (key.Pressed == state.IsKeyDown(key.Source.KeyboardKey))
                 {

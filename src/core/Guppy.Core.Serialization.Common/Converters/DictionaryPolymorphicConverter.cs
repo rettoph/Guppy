@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Serialization.Common.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Serialization.Common.Services;
 
 namespace Guppy.Core.Serialization.Common.Converters
 {
@@ -18,7 +18,7 @@ namespace Guppy.Core.Serialization.Common.Converters
 
             while (reader.ReadPropertyName(out string? propertyName))
             {
-                T instance = _serializer.Deserialize(propertyName, ref reader, options, out Type type);
+                T instance = this._serializer.Deserialize(propertyName, ref reader, options, out Type type);
                 reader.Read();
 
                 result.Add(type, instance);

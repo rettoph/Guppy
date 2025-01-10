@@ -10,15 +10,15 @@ namespace Guppy.Engine.Components.Guppy
     {
         private readonly IBrokerService _brokers = brokers;
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
-            _brokers.AddSubscribers<ISceneComponent>();
+            this._brokers.AddSubscribers<ISceneComponent>();
         }
 
         public void Dispose()
         {
-            _brokers.RemoveSubscribers<ISceneComponent>();
+            this._brokers.RemoveSubscribers<ISceneComponent>();
         }
     }
 }

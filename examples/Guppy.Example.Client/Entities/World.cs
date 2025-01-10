@@ -5,7 +5,6 @@ using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Example.Client.Utilities;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Attributes;
 using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Graphics.Common;
@@ -18,13 +17,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Example.Client.Entities
 {
-    [AutoLoad]
-    [SceneFilter<MainScene>]
     public class World : ISceneComponent<IScene>, IUpdatableComponent, IDrawableComponent,
         IInputSubscriber<PlaceSandInput>,
         IInputSubscriber<SelectCellTypeInput>
     {
-        private const int InputIndicatorVertices = 30;
+        private const int _inputIndicatorVertices = 30;
 
         private RenderTarget2D _renderTarget;
         private int _lastScrollValue;
@@ -64,45 +61,45 @@ namespace Guppy.Example.Client.Entities
             ICellTypeService cellTypes,
             GameWindow window)
         {
-            _imgui = imgui;
-            _grid = null!;
-            _renderTarget = null!;
-            _camera = camera;
-            _gridBatch = gridBatch;
-            _inputBatch = primitiveBatch;
-            _cellTypes = cellTypes;
-            _window = window;
-            _mouse = cursors.Get(Cursors.Mouse);
-            _graphics = graphics;
-            _spriteBatch = spriteBatch;
+            this._imgui = imgui;
+            this._grid = null!;
+            this._renderTarget = null!;
+            this._camera = camera;
+            this._gridBatch = gridBatch;
+            this._inputBatch = primitiveBatch;
+            this._cellTypes = cellTypes;
+            this._window = window;
+            this._mouse = cursors.Get(Cursors.Mouse);
+            this._graphics = graphics;
+            this._spriteBatch = spriteBatch;
 
-            _camera.Center = false;
-            _window.ClientSizeChanged += this.HandleClientSizeChanged;
+            this._camera.Center = false;
+            this._window.ClientSizeChanged += this.HandleClientSizeChanged;
 
-            short[] indices = new short[InputIndicatorVertices * 2];
-            for (short i = 0; i < InputIndicatorVertices; i++)
+            short[] indices = new short[_inputIndicatorVertices * 2];
+            for (short i = 0; i < _inputIndicatorVertices; i++)
             {
                 indices[(i * 2)] = i;
-                indices[(i * 2) + 1] = (short)((i + 1) % InputIndicatorVertices);
+                indices[(i * 2) + 1] = (short)((i + 1) % _inputIndicatorVertices);
             }
-            _inputBatch.Initialize(InputIndicatorVertices, PrimitiveType.LineList, indices);
+            this._inputBatch.Initialize(_inputIndicatorVertices, PrimitiveType.LineList, indices);
             this.SetInput(CellTypeEnum.Sand, 10);
         }
 
         public unsafe void Initialize(int width, int height)
         {
-            _grid?.Dispose();
-            _renderTarget?.Dispose();
+            this._grid?.Dispose();
+            this._renderTarget?.Dispose();
 
-            _grid = new Grid(width, height, _cellTypes);
+            this._grid = new Grid(width, height, this._cellTypes);
 
-            _gridBatch.Initialize(_grid.Length);
+            this._gridBatch.Initialize(this._grid.Length);
 
-            for (int i = 0; i < _grid.Length; i++)
+            for (int i = 0; i < this._grid.Length; i++)
             {
-                Cell cell = _grid.Cells[i];
+                Cell cell = this._grid.Cells[i];
 
-                _gridBatch.Vertices[i].Position = new Vector3(cell.X, cell.Y, 0);
+                this._gridBatch.Vertices[i].Position = new Vector3(cell.X, cell.Y, 0);
             }
             //for (int i = 0; i < 10000; i++)
             //{
@@ -110,88 +107,88 @@ namespace Guppy.Example.Client.Entities
             //    _grid.Cells[index].CurrentType = CellTypeEnum.Sand;
             //}
 
-            _grid.Cells[0].Type = CellTypeEnum.Sand;
-            _grid.Cells[0].Awake = true;
+            this._grid.Cells[0].Type = CellTypeEnum.Sand;
+            this._grid.Cells[0].Awake = true;
 
-            _renderTarget = new RenderTarget2D(_graphics, width, height);
+            this._renderTarget = new RenderTarget2D(this._graphics, width, height);
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroup>(InitializeComponentSequenceGroup.Initialize)]
+        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
-            this.Initialize(_window.ClientBounds.Width, _window.ClientBounds.Height);
+            this.Initialize(this._window.ClientBounds.Width, this._window.ClientBounds.Height);
         }
 
-        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.Draw)]
+        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
         public unsafe void Draw(GameTime gameTime)
         {
-            _graphics.SetRenderTarget(_renderTarget);
-            _camera.Update(gameTime);
-            for (int i = 0; i < _grid.Length; i++)
+            this._graphics.SetRenderTarget(this._renderTarget);
+            this._camera.Update(gameTime);
+            for (int i = 0; i < this._grid.Length; i++)
             {
-                _gridBatch.Vertices[i].Color = World.GetColor(_grid.Cells[i].Type);
+                this._gridBatch.Vertices[i].Color = World.GetColor(this._grid.Cells[i].Type);
             }
 
-            _gridBatch.Draw(_camera);
+            this._gridBatch.Draw(this._camera);
 
-            _inputBatch.Draw(_camera.View, Matrix.CreateTranslation(_mouse.Position.X, _mouse.Position.Y, 0) * _camera.Projection);
+            this._inputBatch.Draw(this._camera.View, Matrix.CreateTranslation(this._mouse.Position.X, this._mouse.Position.Y, 0) * this._camera.Projection);
 
-            _graphics.SetRenderTarget(null);
+            this._graphics.SetRenderTarget(null);
 
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_renderTarget, _graphics.Viewport.Bounds, Color.White);
-            _spriteBatch.End();
+            this._spriteBatch.Begin();
+            this._spriteBatch.Draw(this._renderTarget, this._graphics.Viewport.Bounds, Color.White);
+            this._spriteBatch.End();
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.Update)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
         public unsafe void Update(GameTime gameTime)
         {
-            if (_lastScrollValue != _mouse.Scroll)
+            if (this._lastScrollValue != this._mouse.Scroll)
             {
-                CellTypeEnum inputType = _inputTypes[(_inputTypeIndex++ % _inputTypes.Length)];
+                CellTypeEnum inputType = this._inputTypes[(this._inputTypeIndex++ % this._inputTypes.Length)];
                 this.SetInput(inputType, 10);
             }
 
-            _lastScrollValue = _mouse.Scroll;
+            this._lastScrollValue = this._mouse.Scroll;
 
-            if ((_elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds) < 20)
+            if ((this._elapsedTime += gameTime.ElapsedGameTime.TotalMilliseconds) < 20)
             {
                 return;
             }
-            _elapsedTime -= 20;
+            this._elapsedTime -= 20;
 
-            _grid = _grid.Update(gameTime, out _awake);
+            this._grid = this._grid.Update(gameTime, out this._awake);
 
-            if (_inputActive)
+            if (this._inputActive)
             {
-                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius + 1))
+                foreach (int index in this._grid.GetCellIndices(this._mouse.Position, this._inputRadius + 1))
                 {
-                    _grid.Cells[index].Awake = true;
+                    this._grid.Cells[index].Awake = true;
                 }
 
-                foreach (int index in _grid.GetCellIndices(_mouse.Position, _inputRadius))
+                foreach (int index in this._grid.GetCellIndices(this._mouse.Position, this._inputRadius))
                 {
-                    _grid.Cells[index].Type = _inputCellType;
-                    _grid.Cells[index].InactivityCount = 0;
-                    _grid.Cells[index].Awake = true;
+                    this._grid.Cells[index].Type = this._inputCellType;
+                    this._grid.Cells[index].InactivityCount = 0;
+                    this._grid.Cells[index].Awake = true;
                 }
             }
         }
 
         private void SetInput(CellTypeEnum cellType, int radius)
         {
-            _inputCellType = cellType;
-            _inputRadius = radius;
+            this._inputCellType = cellType;
+            this._inputRadius = radius;
 
-            for (int i = 0; i < InputIndicatorVertices; i++)
+            for (int i = 0; i < _inputIndicatorVertices; i++)
             {
-                float radians = ((MathF.PI * 2) / InputIndicatorVertices) * i;
-                _inputBatch.Vertices[i].Position = new Vector3(
+                float radians = MathF.PI * 2 / _inputIndicatorVertices * i;
+                this._inputBatch.Vertices[i].Position = new Vector3(
                     x: MathF.Cos(radians) * radius,
                     y: MathF.Sin(radians) * radius,
                     z: 0);
 
-                _inputBatch.Vertices[i].Color = World.GetColor(_inputCellType);
+                this._inputBatch.Vertices[i].Color = World.GetColor(this._inputCellType);
             }
         }
 
@@ -213,17 +210,17 @@ namespace Guppy.Example.Client.Entities
 
         public void Process(in Guid messageId, PlaceSandInput message)
         {
-            _inputActive = message.Active;
+            this._inputActive = message.Active;
         }
 
         public void Process(in Guid messageId, SelectCellTypeInput message)
         {
-            this.SetInput(message.CellType, _inputRadius);
+            this.SetInput(message.CellType, this._inputRadius);
         }
 
         private void HandleClientSizeChanged(object? sender, EventArgs e)
         {
-            this.Initialize(_window.ClientBounds.Width / 2, _window.ClientBounds.Height / 2);
+            this.Initialize(this._window.ClientBounds.Width / 2, this._window.ClientBounds.Height / 2);
         }
     }
 }

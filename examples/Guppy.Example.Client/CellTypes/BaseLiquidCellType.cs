@@ -5,19 +5,19 @@ namespace Guppy.Example.Client.CellTypes
 {
     internal abstract class BaseLiquidCellType(CellTypeEnum displaces) : BaseGravityCellType(displaces)
     {
-        protected override CellStepResult Step(ref Cell cell, Grid input, Grid output)
+        protected override CellStepResultEnum Step(ref Cell cell, Grid input, Grid output)
         {
-            if (base.Step(ref cell, input, output) == CellStepResult.Active)
+            if (base.Step(ref cell, input, output) == CellStepResultEnum.Active)
             {
-                return CellStepResult.Active;
+                return CellStepResultEnum.Active;
             }
 
 
             // Try to move X cells left or right
             int side = Random.Shared.Next(0, 2) == 0 ? -1 : 1;
-            if (this.TryFlowSide(ref cell, input, output, side) == CellStepResult.Active)
+            if (this.TryFlowSide(ref cell, input, output, side) == CellStepResultEnum.Active)
             {
-                return CellStepResult.Active;
+                return CellStepResultEnum.Active;
             }
 
             //if (this.TryFlowSide(ref cell, input, output, side * -1) == CellStepResult.Active)
@@ -25,10 +25,12 @@ namespace Guppy.Example.Client.CellTypes
             //    return CellStepResult.Active;
             //}
 
-            return CellStepResult.Inactive;
+            return CellStepResultEnum.Inactive;
         }
 
-        private CellStepResult TryFlowSide(ref Cell cell, Grid input, Grid output, int direction)
+#pragma warning disable IDE0060 // Remove unused parameter
+        private CellStepResultEnum TryFlowSide(ref Cell cell, Grid input, Grid output, int direction)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             for (int i = 1; i < 15; i++)
             {
@@ -47,7 +49,7 @@ namespace Guppy.Example.Client.CellTypes
                 break;
             };
 
-            return CellStepResult.Inactive;
+            return CellStepResultEnum.Inactive;
         }
     }
 }

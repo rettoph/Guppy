@@ -6,15 +6,13 @@ namespace Guppy.Core.Network.Common.Serialization
     public abstract class NetSerializer<T> : INetSerializer<T>, INetSerializer
         where T : notnull
     {
-        private INetId _id = default!;
-
         INetId INetSerializer.Id
         {
-            get => _id;
-            set => _id = value;
+            get => this.Id;
+            set => this.Id = value;
         }
 
-        public INetId Id => _id;
+        public INetId Id { get; private set; } = default!;
 
         public Type Type { get; } = typeof(T);
 
@@ -31,7 +29,7 @@ namespace Guppy.Core.Network.Common.Serialization
         {
             if (instance is T casted)
             {
-                Serialize(writer, in casted);
+                this.Serialize(writer, in casted);
                 return;
             }
 
@@ -40,7 +38,7 @@ namespace Guppy.Core.Network.Common.Serialization
 
         object INetSerializer.Deserialize(NetDataReader reader)
         {
-            return Deserialize(reader);
+            return this.Deserialize(reader);
         }
     }
 }

@@ -18,18 +18,18 @@ namespace Guppy.Core.Network
 
         public NetScope(IBus bus, ILifetimeScope scope, IEnumerable<NetScopeContext<T>> context)
         {
-            _bus = bus;
+            this._bus = bus;
 
             this.Group = context.Single().GetGroup<BaseNetGroup>(scope);
-            this.Group.Add(this, _bus);
+            this.Group.Add(this, this._bus);
 
-            _bus.Subscribe(this);
+            this._bus.Subscribe(this);
         }
 
         public void Dispose()
         {
-            _bus.Unsubscribe(this);
-            this.Group.Remove(this, _bus);
+            this._bus.Unsubscribe(this);
+            this.Group.Remove(this, this._bus);
         }
 
         public INetOutgoingMessage<TBody> CreateMessage<TBody>(in TBody body)
@@ -43,12 +43,12 @@ namespace Guppy.Core.Network
 
         public void Enqueue(INetIncomingMessage message)
         {
-            _bus.Enqueue(message);
+            this._bus.Enqueue(message);
         }
 
         public void Enqueue(INetOutgoingMessage message)
         {
-            _bus.Enqueue(message);
+            this._bus.Enqueue(message);
         }
 
         public void Process(in Guid messageId, INetOutgoingMessage message)

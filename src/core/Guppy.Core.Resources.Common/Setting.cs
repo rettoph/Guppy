@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common.Utilities;
-using Guppy.Core.Resources.Common.Extensions.System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Guppy.Core.Common.Utilities;
+using Guppy.Core.Resources.Common.Extensions.System;
 
 namespace Guppy.Core.Resources.Common
 {
@@ -87,16 +87,16 @@ namespace Guppy.Core.Resources.Common
         private readonly UnmanagedReference<Setting<T>, T> _default;
 
         public readonly Guid Id;
-        public string Name => _name.Value;
+        public string Name => this._name.Value;
         public readonly string Description
         {
-            get => _description.Value;
+            get => this._description.Value;
         }
         public readonly Type Type => typeof(T);
         public readonly T DefaultValue
         {
-            get => _default.Value;
-            set => _default.SetValue(value);
+            get => this._default.Value;
+            set => this._default.SetValue(value);
         }
 
         readonly Guid ISetting.Id => this.Id;
@@ -115,9 +115,9 @@ namespace Guppy.Core.Resources.Common
 
         private unsafe Setting(string name, string description, T defaultValue)
         {
-            _name = new UnmanagedReference<Setting<T>, string>(name);
-            _description = new UnmanagedReference<Setting<T>, string>(description);
-            _default = new UnmanagedReference<Setting<T>, T>(defaultValue);
+            this._name = new UnmanagedReference<Setting<T>, string>(name);
+            this._description = new UnmanagedReference<Setting<T>, string>(description);
+            this._default = new UnmanagedReference<Setting<T>, T>(defaultValue);
 
             this.Id = $"{typeof(T).FullName}.{name}".xxHash128();
         }
@@ -128,9 +128,9 @@ namespace Guppy.Core.Resources.Common
 
             Setting.CacheRemove(this.Name);
 
-            _name.Dispose();
-            _description.Dispose();
-            _default.Dispose();
+            this._name.Dispose();
+            this._description.Dispose();
+            this._default.Dispose();
         }
 
         public override readonly bool Equals(object? obj)

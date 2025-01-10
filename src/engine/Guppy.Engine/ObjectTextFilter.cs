@@ -14,7 +14,7 @@ namespace Guppy.Engine
 
         public abstract bool AppliesTo(object instance);
 
-        public abstract TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree);
+        public abstract TextFilterResultEnum Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 
     public abstract class ObjectTextFilter<T>(int priority = 0) : ObjectTextFilter(priority)
@@ -24,11 +24,11 @@ namespace Guppy.Engine
             return instance is T;
         }
 
-        public override TextFilterResult Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree)
+        public override TextFilterResultEnum Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             return this.Filter((T)instance, input, filter, currentDepth, maxDepth, tree);
         }
 
-        protected abstract TextFilterResult Filter(T instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree);
+        protected abstract TextFilterResultEnum Filter(T instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 }

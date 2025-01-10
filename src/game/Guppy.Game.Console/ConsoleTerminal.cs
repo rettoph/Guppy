@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Common;
+﻿using System.CommandLine;
+using System.CommandLine.IO;
+using Guppy.Core.Common;
 using Guppy.Game.Common;
 using Guppy.Game.Console.Helpers;
 using Microsoft.Xna.Framework;
-using System.CommandLine;
-using System.CommandLine.IO;
 
 namespace Guppy.Game.Console
 {

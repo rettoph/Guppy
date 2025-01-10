@@ -9,7 +9,7 @@
 
         object? ICommandTokenConverter.Deserialize(Type type, string token)
         {
-            return Deserialize(type, token);
+            return this.Deserialize(type, token);
         }
 
         protected abstract T Deserialize(Type type, string token);

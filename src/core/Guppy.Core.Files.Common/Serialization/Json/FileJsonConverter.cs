@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Files.Common.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Files.Common.Services;
 
 namespace Guppy.Core.Files.Common.Serialization.Json
 {
@@ -13,7 +13,7 @@ namespace Guppy.Core.Files.Common.Serialization.Json
         {
             FileLocation location = JsonSerializer.Deserialize<FileLocation>(ref reader, options);
 
-            return _files.Value.Get<T>(location);
+            return this._files.Value.Get<T>(location);
         }
 
         public override void Write(Utf8JsonWriter writer, IFile<T> value, JsonSerializerOptions options)

@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Resources.Common;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.ImGui.Common.Styling.StyleValues;
 using Microsoft.Xna.Framework;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 {
@@ -40,7 +40,7 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new ImStyleColorValue(key, col, _resourceService.Value.Get(resource));
+            return new ImStyleColorValue(key, col, this._resourceService.Value.Get(resource));
         }
 
         public override void Write(Utf8JsonWriter writer, ImStyleColorValue value, JsonSerializerOptions options)

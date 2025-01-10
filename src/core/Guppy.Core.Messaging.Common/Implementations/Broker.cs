@@ -10,8 +10,8 @@ namespace Guppy.Core.Messaging.Common.Implementations
 
         public Broker()
         {
-            _subscribers = [];
-            _publishers = [];
+            this._subscribers = [];
+            this._publishers = [];
         }
 
         public void Publish(in TBase message)
@@ -21,8 +21,8 @@ namespace Guppy.Core.Messaging.Common.Implementations
 
         public void Subscribe(IBaseSubscriber<TBase> subscriber)
         {
-            _subscribers.Add(subscriber);
-            foreach (Publisher<TBase> publisher in _publishers.Values)
+            this._subscribers.Add(subscriber);
+            foreach (Publisher<TBase> publisher in this._publishers.Values)
             {
                 publisher.TrySubscribe(subscriber);
             }
@@ -52,9 +52,9 @@ namespace Guppy.Core.Messaging.Common.Implementations
 
         public void Unsubscribe(IBaseSubscriber<TBase> subscriber)
         {
-            if (_subscribers.Remove(subscriber))
+            if (this._subscribers.Remove(subscriber))
             {
-                foreach (Publisher<TBase> publisher in _publishers.Values)
+                foreach (Publisher<TBase> publisher in this._publishers.Values)
                 {
                     publisher.TryUnsubscribe(subscriber);
                 }
@@ -63,7 +63,7 @@ namespace Guppy.Core.Messaging.Common.Implementations
 
         private Publisher<TBase> GetPublisher(Type type)
         {
-            ref Publisher<TBase>? publisher = ref CollectionsMarshal.GetValueRefOrAddDefault(_publishers, type, out bool exists);
+            ref Publisher<TBase>? publisher = ref CollectionsMarshal.GetValueRefOrAddDefault(this._publishers, type, out bool exists);
 
             if (exists)
             {
@@ -71,7 +71,7 @@ namespace Guppy.Core.Messaging.Common.Implementations
             }
 
             Type publisherType = typeof(Publisher<,>).MakeGenericType(typeof(TBase), type);
-            publisher = (Publisher<TBase>)Activator.CreateInstance(publisherType, _subscribers)!;
+            publisher = (Publisher<TBase>)Activator.CreateInstance(publisherType, this._subscribers)!;
 
             return publisher;
         }

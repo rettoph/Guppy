@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Network.Common.Claims;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Identity.Enums;
 using LiteNetLib;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Network.Common
 {
@@ -9,12 +9,12 @@ namespace Guppy.Core.Network.Common
     {
         int Id { get; }
         NetPeer? NetPeer { get; }
-        UserState State { get; }
+        UserStateEnum State { get; }
 
-        event OnChangedEventDelegate<IUser, UserState> OnStateChanged;
+        event OnChangedEventDelegate<IUser, UserStateEnum> OnStateChanged;
 
 
-        public void Set<T>(string key, T value, ClaimAccessibility accessibility);
+        public void Set<T>(string key, T value, ClaimAccessibilityEnum accessibility);
 
         public void Set(IEnumerable<Claim> claims);
 

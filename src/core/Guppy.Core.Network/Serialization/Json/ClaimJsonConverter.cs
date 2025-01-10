@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Network.Common.Claims;
-using Guppy.Core.Network.Common.Identity.Enums;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Network.Common.Claims;
+using Guppy.Core.Network.Common.Identity.Enums;
 
 namespace Guppy.Core.Network.Serialization.Json
 {
@@ -20,7 +20,7 @@ namespace Guppy.Core.Network.Serialization.Json
         {
             ClaimType? type = default!;
             string key = default!;
-            ClaimAccessibility accessibility = default!;
+            ClaimAccessibilityEnum accessibility = default!;
             DateTime createdAt = default!;
             object? value = default!;
 
@@ -40,7 +40,7 @@ namespace Guppy.Core.Network.Serialization.Json
                         key = reader.ReadString();
                         break;
                     case Properties.Accessibility:
-                        accessibility = JsonSerializer.Deserialize<ClaimAccessibility>(ref reader, options);
+                        accessibility = JsonSerializer.Deserialize<ClaimAccessibilityEnum>(ref reader, options);
                         reader.Read();
                         break;
                     case Properties.CreatedAt:
@@ -75,7 +75,7 @@ namespace Guppy.Core.Network.Serialization.Json
             writer.WritePropertyName(Properties.CreatedAt);
             JsonSerializer.Serialize(writer, claim.CreatedAt, options);
 
-            var value = claim.GetValue();
+            object? value = claim.GetValue();
             if (value is not null)
             {
                 writer.WritePropertyName(Properties.Value);

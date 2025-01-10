@@ -1,10 +1,10 @@
-﻿using Autofac;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Attributes;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game
 {
@@ -16,7 +16,7 @@ namespace Guppy.Game
 
         internal SceneConfiguration()
         {
-            _values = [];
+            this._values = [];
 
             if (this.Type.TryGetAllCustomAttributes<SetSceneConfigurationAttribute>(true, out var attributes))
             {
@@ -38,7 +38,7 @@ namespace Guppy.Game
 
         public ref T Get<T>(string key, out bool exists)
         {
-            ref object? valueObject = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, key, out exists);
+            ref object? valueObject = ref CollectionsMarshal.GetValueRefOrAddDefault(this._values, key, out exists);
             if (exists == false)
             {
                 Ref<T> value = new(default!);
@@ -71,7 +71,7 @@ namespace Guppy.Game
 
         public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
         {
-            if (_values.TryGetValue(key, out object? valueRefObject) == false)
+            if (this._values.TryGetValue(key, out object? valueRefObject) == false)
             {
                 value = default;
                 return false;
@@ -95,7 +95,7 @@ namespace Guppy.Game
 
         public IEnumerable<KeyValuePair<string, object>> GetAllValues()
         {
-            return _values;
+            return this._values;
         }
     }
 

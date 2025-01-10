@@ -1,6 +1,6 @@
-﻿using Guppy.Game.Common;
-using System.CommandLine.IO;
+﻿using System.CommandLine.IO;
 using System.Text;
+using Guppy.Game.Common;
 
 namespace Guppy.Game.MonoGame
 {
@@ -24,11 +24,11 @@ namespace Guppy.Game.MonoGame
             {
                 if (lineStart == newLineIndex)
                 {
-                    _terminal.NewLine();
+                    this._terminal.NewLine();
                 }
                 else
                 {
-                    this.WriteLineToTerminal(_terminal, value[lineStart..newLineIndex]);
+                    this.WriteLineToTerminal(this._terminal, value[lineStart..newLineIndex]);
                 }
 
                 lineStart = newLineIndex + 1;
@@ -36,13 +36,13 @@ namespace Guppy.Game.MonoGame
 
             if (lineStart < value.Length)
             {
-                this.WriteToTerminal(_terminal, value[lineStart..]);
+                this.WriteToTerminal(this._terminal, value[lineStart..]);
             }
         }
 
         public override void Write(char value)
         {
-            this.WriteToTerminal(_terminal, value);
+            this.WriteToTerminal(this._terminal, value);
         }
 
         protected virtual void WriteToTerminal(MonoGameTerminal terminal, char value)

@@ -1,7 +1,7 @@
-﻿using Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers;
 
 namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
@@ -106,7 +106,7 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
             }
 
             MethodInfo baseMethod = baseType.GetMethod(method.Name, method.GetParameters().Select(x => x.ParameterType).ToArray());
-            if (baseMethod is null == false)
+            if ((baseMethod is null) == false)
             {
                 modifiers += baseMethod.IsVirtual ? " override " : " new";
             }

@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Common.Extensions.System.Reflection;
-using System.Reflection;
+﻿using System.Reflection;
+using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Common.Extensions.System
 {

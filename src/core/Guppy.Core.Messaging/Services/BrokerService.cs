@@ -15,44 +15,44 @@ namespace Guppy.Core.Messaging.Services
 
         public void Dispose()
         {
-            foreach (IBaseBroker broker in _brokers)
+            foreach (IBaseBroker broker in this._brokers)
             {
-                broker.TryUnsubscribeMany(_subscribers);
+                broker.TryUnsubscribeMany(this._subscribers);
             }
 
-            _brokers.Clear();
+            this._brokers.Clear();
         }
 
         public void Add(IBaseBroker broker)
         {
-            if (_brokers.Add(broker) == false)
+            if (this._brokers.Add(broker) == false)
             {
                 return;
             }
 
-            broker.TrySubscribeMany(_subscribers);
+            broker.TrySubscribeMany(this._subscribers);
         }
 
         public void Remove(IBaseBroker broker)
         {
-            if (_brokers.Remove(broker) == false)
+            if (this._brokers.Remove(broker) == false)
             {
                 return;
             }
 
-            broker.TryUnsubscribeMany(_subscribers);
+            broker.TryUnsubscribeMany(this._subscribers);
         }
 
         public void AddSubscribers(IEnumerable<IBaseSubscriber> subscribers)
         {
             foreach (IBaseSubscriber subscriber in subscribers)
             {
-                if (_subscribers.Add(subscriber) == false)
+                if (this._subscribers.Add(subscriber) == false)
                 {
                     continue;
                 }
 
-                foreach (IBaseBroker broker in _brokers)
+                foreach (IBaseBroker broker in this._brokers)
                 {
                     broker.TrySubscribe(subscriber);
                 }
@@ -63,12 +63,12 @@ namespace Guppy.Core.Messaging.Services
         {
             foreach (IBaseSubscriber subscriber in subscribers)
             {
-                if (_subscribers.Remove(subscriber) == false)
+                if (this._subscribers.Remove(subscriber) == false)
                 {
                     continue;
                 }
 
-                foreach (IBaseBroker broker in _brokers)
+                foreach (IBaseBroker broker in this._brokers)
                 {
                     broker.TryUnsubscribe(subscriber);
                 }
@@ -77,15 +77,15 @@ namespace Guppy.Core.Messaging.Services
 
         public void AddSubscribers<TSubscribers>() where TSubscribers : class
         {
-            IFiltered<TSubscribers> instances = _scope.Resolve<IFiltered<TSubscribers>>();
+            IFiltered<TSubscribers> instances = this._scope.Resolve<IFiltered<TSubscribers>>();
             IEnumerable<IBaseSubscriber> subscribers = instances.OfType<IBaseSubscriber>();
             this.AddSubscribers(subscribers);
-            _scopeSubscriptions.Add(typeof(TSubscribers), subscribers.ToArray());
+            this._scopeSubscriptions.Add(typeof(TSubscribers), subscribers.ToArray());
         }
 
         public void RemoveSubscribers<TSubscribers>() where TSubscribers : class
         {
-            if (_scopeSubscriptions.TryGetValue(typeof(TSubscribers), out IBaseSubscriber[]? subscribers) == false)
+            if (this._scopeSubscriptions.TryGetValue(typeof(TSubscribers), out IBaseSubscriber[]? subscribers) == false)
             {
                 return;
             }
@@ -95,7 +95,7 @@ namespace Guppy.Core.Messaging.Services
 
         public IEnumerable<IBaseBroker> GetAll()
         {
-            return _brokers;
+            return this._brokers;
         }
     }
 }

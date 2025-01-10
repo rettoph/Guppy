@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using System.Collections;
+using Guppy.Core.Common.Collections;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
-using System.Collections;
 
 namespace Guppy.Core.Network.Services
 {
@@ -12,19 +12,19 @@ namespace Guppy.Core.Network.Services
 
         public NetSerializerService(IEnumerable<INetSerializer> serializers)
         {
-            _serializers = new DoubleDictionary<INetId, Type, INetSerializer>(serializers.Count());
+            this._serializers = new DoubleDictionary<INetId, Type, INetSerializer>(serializers.Count());
 
             byte id = 0;
             foreach (var serializer in serializers)
             {
-                if (_serializers.TryAdd(NetId.Create(id), serializer.Type, serializer))
+                if (this._serializers.TryAdd(NetId.Create(id), serializer.Type, serializer))
                 {
                     serializer.Id = NetId.Create(id);
                     id += 1;
                 }
             }
 
-            foreach (var serializer in _serializers.Values)
+            foreach (var serializer in this._serializers.Values)
             {
                 serializer.Initialize(this);
             }
@@ -34,7 +34,7 @@ namespace Guppy.Core.Network.Services
         {
             try
             {
-                return (INetSerializer<T>)_serializers[typeof(T)];
+                return (INetSerializer<T>)this._serializers[typeof(T)];
             }
             catch (KeyNotFoundException e)
             {
@@ -46,7 +46,7 @@ namespace Guppy.Core.Network.Services
         {
             try
             {
-                return _serializers[type];
+                return this._serializers[type];
             }
             catch (KeyNotFoundException e)
             {
@@ -58,7 +58,7 @@ namespace Guppy.Core.Network.Services
         {
             try
             {
-                return _serializers[id];
+                return this._serializers[id];
             }
             catch (KeyNotFoundException e)
             {
@@ -68,12 +68,12 @@ namespace Guppy.Core.Network.Services
 
         public IEnumerator<INetSerializer> GetEnumerator()
         {
-            return _serializers.Values.GetEnumerator();
+            return this._serializers.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 }

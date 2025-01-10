@@ -35,7 +35,7 @@
 
         public Publisher(IEnumerable<IBaseSubscriber<TBase>> subscribers) : base(typeof(TMessage))
         {
-            _subscribers = [];
+            this._subscribers = [];
 
             this.TrySubscribe(subscribers);
         }
@@ -45,7 +45,7 @@
             Guid messageid = Guid.NewGuid();
             if (message is TMessage casted)
             {
-                foreach (IBaseSubscriber<TBase, TMessage> subscriber in _subscribers)
+                foreach (IBaseSubscriber<TBase, TMessage> subscriber in this._subscribers)
                 {
                     subscriber.Process(in messageid, casted);
                 }
@@ -56,7 +56,7 @@
         {
             if (subscriber is IBaseSubscriber<TBase, TMessage> casted)
             {
-                _subscribers.Add(casted);
+                this._subscribers.Add(casted);
             }
         }
 
@@ -64,7 +64,7 @@
         {
             if (subscriber is IBaseSubscriber<TBase, TMessage> casted)
             {
-                _subscribers.Remove(casted);
+                this._subscribers.Remove(casted);
             }
         }
     }

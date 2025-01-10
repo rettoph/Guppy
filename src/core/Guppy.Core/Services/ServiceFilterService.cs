@@ -1,7 +1,7 @@
-﻿using Autofac;
+﻿using System.Runtime.InteropServices;
+using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Services;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Services
 {
@@ -25,13 +25,13 @@ namespace Guppy.Core.Services
 
         public IServiceFilter[] GetFilters(Type type)
         {
-            ref IServiceFilter[]? filters = ref CollectionsMarshal.GetValueRefOrAddDefault(_typeFilters, type, out bool exists);
+            ref IServiceFilter[]? filters = ref CollectionsMarshal.GetValueRefOrAddDefault(this._typeFilters, type, out bool exists);
             if (exists)
             {
                 return filters!;
             }
 
-            filters = _filters.Where(f => f.AppliesTo(type)).ToArray();
+            filters = this._filters.Where(f => f.AppliesTo(type)).ToArray();
             return filters;
         }
     }

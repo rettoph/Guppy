@@ -9,16 +9,16 @@ namespace Guppy.Example.Client.Utilities
 
         private readonly T* _ptr = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
 
-        public readonly ref T this[int index] => ref _ptr[index];
+        public readonly ref T this[int index] => ref this._ptr[index];
 
         public readonly void Dispose()
         {
-            Marshal.FreeHGlobal((nint)_ptr);
+            Marshal.FreeHGlobal((nint)this._ptr);
         }
 
         public readonly Span<T> AsSpan()
         {
-            return new Span<T>(_ptr, this.Length);
+            return new Span<T>(this._ptr, this.Length);
         }
     }
 }

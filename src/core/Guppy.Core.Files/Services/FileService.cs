@@ -1,8 +1,8 @@
-﻿using Guppy.Core.Files.Common;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Serialization.Common.Services;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Files.Services
 {
@@ -14,8 +14,8 @@ namespace Guppy.Core.Files.Services
 
         public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
         {
-            FileLocation source = _paths.GetSourceLocation(location);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, location.Path, out bool exists);
+            FileLocation source = this._paths.GetSourceLocation(location);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.Path, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
@@ -36,8 +36,8 @@ namespace Guppy.Core.Files.Services
 
         public IFile<T> Get<T>(FileLocation location, bool forceLoadFromDisk = false)
         {
-            FileLocation source = _paths.GetSourceLocation(location);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(_cache, location.Path, out bool exists);
+            FileLocation source = this._paths.GetSourceLocation(location);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.Path, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
@@ -51,11 +51,11 @@ namespace Guppy.Core.Files.Services
                     location: location,
                     source: source,
                     content: content,
-                    json: _json);
+                    json: this._json);
             }
             else if (file is StringFile stringFile)
             {
-                file = new JsonFile<T>(stringFile, _json);
+                file = new JsonFile<T>(stringFile, this._json);
             }
 
             return file as IFile<T> ?? throw new Exception();
@@ -65,7 +65,7 @@ namespace Guppy.Core.Files.Services
         {
             DirectoryHelper.EnsureDirectoryExists(file.Source.Directory.Path);
 
-            string json = _json.Serialize(file.Value);
+            string json = this._json.Serialize(file.Value);
 
             File.WriteAllText(file.Source.Path, json);
         }

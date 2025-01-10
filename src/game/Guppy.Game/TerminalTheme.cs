@@ -19,29 +19,16 @@ namespace Guppy.Game
 
         public IRef<Color> Get(LogEventLevel level)
         {
-            switch (level)
+            return level switch
             {
-                case LogEventLevel.Verbose:
-                    return _verbose;
-
-                case LogEventLevel.Debug:
-                    return _debug;
-
-                case LogEventLevel.Information:
-                    return _information;
-
-                case LogEventLevel.Warning:
-                    return _warning;
-
-                case LogEventLevel.Error:
-                    return _error;
-
-                case LogEventLevel.Fatal:
-                    return _fatal;
-
-                default:
-                    return _default;
-            }
+                LogEventLevel.Verbose => this._verbose,
+                LogEventLevel.Debug => this._debug,
+                LogEventLevel.Information => this._information,
+                LogEventLevel.Warning => this._warning,
+                LogEventLevel.Error => this._error,
+                LogEventLevel.Fatal => this._fatal,
+                _ => (IRef<Color>)this._default,
+            };
         }
     }
 }

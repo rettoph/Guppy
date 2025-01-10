@@ -12,7 +12,7 @@
 
         public override void Push()
         {
-            ImGuiNet.PushStyleVar(Property, Value);
+            ImGuiNet.PushStyleVar(this.Property, this.Value);
         }
     }
 }

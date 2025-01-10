@@ -17,15 +17,15 @@ namespace Guppy.Game.ImGui.MonoGame
 
         public ImGui(IImguiBatch batch, IResourceService resourceService)
         {
-            _batch = batch;
-            _resourceService = resourceService;
-            _styleStack = new Stack<ImStyle>();
-            _idPopper = new ImGuiPoppers.IdPopper(this);
+            this._batch = batch;
+            this._resourceService = resourceService;
+            this._styleStack = new Stack<ImStyle>();
+            this._idPopper = new ImGuiPoppers.IdPopper(this);
         }
 
         public IDisposable Apply(ResourceKey<ImStyle> style)
         {
-            return this.Apply(_resourceService.Get(style));
+            return this.Apply(this._resourceService.Get(style));
         }
 
         public IDisposable Apply(Resource<ImStyle> style)
@@ -36,14 +36,14 @@ namespace Guppy.Game.ImGui.MonoGame
         public IDisposable Apply(ImStyle style)
         {
             style.Push();
-            _styleStack.Push(style);
+            this._styleStack.Push(style);
 
             return this;
         }
 
         public IDisposable Apply(string key)
         {
-            foreach (ImStyle style in _styleStack)
+            foreach (ImStyle style in this._styleStack)
             {
                 if (style.TryGetValue(key, out var value))
                 {
@@ -59,12 +59,12 @@ namespace Guppy.Game.ImGui.MonoGame
         {
             ((IImGui)this).PushID(id);
 
-            return _idPopper;
+            return this._idPopper;
         }
 
         public void Dispose()
         {
-            if (_styleStack.TryPop(out ImStyle? style))
+            if (this._styleStack.TryPop(out ImStyle? style))
             {
                 style.Pop();
             }
@@ -72,12 +72,12 @@ namespace Guppy.Game.ImGui.MonoGame
 
         public Ref<ImFontPtr> GetFont(ResourceKey<TrueTypeFont> ttf, int size)
         {
-            if (_batch.Running)
+            if (this._batch.Running)
             {
                 throw new InvalidOperationException();
             }
 
-            return _batch.GetFont(_resourceService.Get(ttf), size);
+            return this._batch.GetFont(this._resourceService.Get(ttf), size);
         }
     }
 }

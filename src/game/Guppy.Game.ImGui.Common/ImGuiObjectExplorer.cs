@@ -14,7 +14,7 @@ namespace Guppy.Game.ImGui.Common
         }
 
         public abstract bool AppliesTo(Type type);
-        public abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
+        public abstract TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 
     public abstract class ImGuiObjectExplorer<T> : ImGuiObjectExplorer
@@ -24,7 +24,7 @@ namespace Guppy.Game.ImGui.Common
             return type.IsAssignableTo(typeof(T));
         }
 
-        public override TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
+        public override TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {
             return this.DrawObjectExplorer(
                 index: index,
@@ -37,6 +37,6 @@ namespace Guppy.Game.ImGui.Common
                 tree: tree);
         }
 
-        protected abstract TextFilterResult DrawObjectExplorer(int? index, string? name, Type type, T? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
+        protected abstract TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, T? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }
 }

@@ -17,7 +17,7 @@
 
         protected virtual T Build()
         {
-            return _method();
+            return this._method();
         }
     }
 }

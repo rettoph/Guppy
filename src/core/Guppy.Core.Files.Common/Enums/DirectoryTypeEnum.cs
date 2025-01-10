@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Core.Files.Common.Enums
 {
-    public enum DirectoryType
+    public enum DirectoryTypeEnum
     {
         /// <summary>
         /// Defaults the path root to %appdata%/GAME_NAME

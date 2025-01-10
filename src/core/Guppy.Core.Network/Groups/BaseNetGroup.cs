@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using System.Collections.ObjectModel;
+using Guppy.Core.Messaging.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
 using Guppy.Core.Network.Identity.Services;
-using System.Collections.ObjectModel;
 
 namespace Guppy.Core.Network.Groups
 {
@@ -25,14 +25,14 @@ namespace Guppy.Core.Network.Groups
 
         public BaseNetGroup(byte id, IPeer peer)
         {
-            _scopes = [];
-            _relays = [];
+            this._scopes = [];
+            this._relays = [];
 
             this.Id = id;
             this.Peer = peer;
             this.Users = new NetScopeUserService();
-            this.Scopes = new ReadOnlyCollection<INetScope>(_scopes);
-            this.Relays = new ReadOnlyCollection<IBus>(_relays);
+            this.Scopes = new ReadOnlyCollection<INetScope>(this._scopes);
+            this.Relays = new ReadOnlyCollection<IBus>(this._relays);
         }
 
         public virtual void Dispose()
@@ -48,7 +48,7 @@ namespace Guppy.Core.Network.Groups
 
         public void Publish(INetIncomingMessage im)
         {
-            foreach (IBus relay in _relays)
+            foreach (IBus relay in this._relays)
             {
                 relay.Enqueue(im);
             }
@@ -56,24 +56,24 @@ namespace Guppy.Core.Network.Groups
 
         internal void Add(INetScope scope, IBus relay)
         {
-            _scopes.Add(scope);
-            _relays.Add(relay);
+            this._scopes.Add(scope);
+            this._relays.Add(relay);
         }
 
         internal void Remove(INetScope scope, IBus relay)
         {
-            _scopes.Remove(scope);
-            _relays.Remove(relay);
+            this._scopes.Remove(scope);
+            this._relays.Remove(relay);
         }
 
         public void Add(IBus relay)
         {
-            _relays.Add(relay);
+            this._relays.Add(relay);
         }
 
         public void Remove(IBus relay)
         {
-            _relays.Remove(relay);
+            this._relays.Remove(relay);
         }
     }
 }

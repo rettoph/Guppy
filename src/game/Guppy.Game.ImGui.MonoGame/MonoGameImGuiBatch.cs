@@ -30,10 +30,10 @@ namespace Guppy.Game.ImGui.MonoGame
             IGraphicsDevice graphics,
             IResourceService resources) : base(resources)
         {
-            _window = window;
-            _graphics = graphics;
-            _loadedTextures = [];
-            _rasterizerState = new RasterizerState()
+            this._window = window;
+            this._graphics = graphics;
+            this._loadedTextures = [];
+            this._rasterizerState = new RasterizerState()
             {
                 CullMode = CullMode.None,
                 DepthBias = 0,
@@ -44,88 +44,88 @@ namespace Guppy.Game.ImGui.MonoGame
 
             };
 
-            _effect = new BasicEffect(_graphics.Value);
-            _vertexData = [];
-            _vertexBuffer = new DynamicVertexBuffer(_graphics.Value, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.None);
-            _indexData = [];
-            _indexBuffer = new DynamicIndexBuffer(_graphics.Value, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.None);
+            this._effect = new BasicEffect(this._graphics.Value);
+            this._vertexData = [];
+            this._vertexBuffer = new DynamicVertexBuffer(this._graphics.Value, DrawVertDeclaration.Declaration, this._vertexBufferSize, BufferUsage.None);
+            this._indexData = [];
+            this._indexBuffer = new DynamicIndexBuffer(this._graphics.Value, IndexElementSize.SixteenBits, this._indexBufferSize, BufferUsage.None);
 
-            _window.Value.TextInput += this.HandleTextInput;
+            this._window.Value.TextInput += this.HandleTextInput;
         }
 
         public void Dispose()
         {
-            _window.Value.TextInput -= this.HandleTextInput;
+            this._window.Value.TextInput -= this.HandleTextInput;
         }
 
         public override nint BindTexture(byte[] pixels, int width, int height)
         {
             // Create and register the texture as an XNA texture
-            var tex2d = new Texture2D(_graphics.Value, width, height, false, SurfaceFormat.Color);
+            var tex2d = new Texture2D(this._graphics.Value, width, height, false, SurfaceFormat.Color);
             tex2d.SetData(pixels);
 
-            var id = new IntPtr(_textureId++);
+            nint id = new(this._textureId++);
 
-            _loadedTextures.Add(id, tex2d);
+            this._loadedTextures.Add(id, tex2d);
 
             return id;
         }
 
         public override void UnbindTexture(nint textureId)
         {
-            _loadedTextures.Remove(textureId);
+            this._loadedTextures.Remove(textureId);
         }
 
         protected override void RenderDrawData(ImGuiNET.ImDrawDataPtr drawData)
         {
             // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled, vertex/texcoord/color pointers
-            var lastViewport = _graphics.Value.Viewport;
-            var lastScissorBox = _graphics.Value.ScissorRectangle;
+            var lastViewport = this._graphics.Value.Viewport;
+            var lastScissorBox = this._graphics.Value.ScissorRectangle;
 
-            _graphics.Value.BlendFactor = Color.White;
-            _graphics.Value.BlendState = BlendState.NonPremultiplied;
-            _graphics.Value.RasterizerState = _rasterizerState;
-            _graphics.Value.DepthStencilState = DepthStencilState.DepthRead;
+            this._graphics.Value.BlendFactor = Color.White;
+            this._graphics.Value.BlendState = BlendState.NonPremultiplied;
+            this._graphics.Value.RasterizerState = this._rasterizerState;
+            this._graphics.Value.DepthStencilState = DepthStencilState.DepthRead;
 
             // Handle cases of screen coordinates != from framebuffer coordinates (e.g. retina displays)
             drawData.ScaleClipRects(this.IO.DisplayFramebufferScale);
 
             // Setup projection
-            _graphics.Value.Viewport = new Viewport(0, 0, _graphics.Value.PresentationParameters.BackBufferWidth, _graphics.Value.PresentationParameters.BackBufferHeight);
+            this._graphics.Value.Viewport = new Viewport(0, 0, this._graphics.Value.PresentationParameters.BackBufferWidth, this._graphics.Value.PresentationParameters.BackBufferHeight);
 
             if (drawData.TotalVtxCount == 0)
             {
                 return;
             }
 
-            UpdateBuffers(drawData);
+            this.UpdateBuffers(drawData);
 
-            RenderCommandLists(drawData);
+            this.RenderCommandLists(drawData);
 
             // Restore modified state
-            _graphics.Value.Viewport = lastViewport;
-            _graphics.Value.ScissorRectangle = lastScissorBox;
+            this._graphics.Value.Viewport = lastViewport;
+            this._graphics.Value.ScissorRectangle = lastScissorBox;
         }
 
         private unsafe void UpdateBuffers(ImGuiNET.ImDrawDataPtr drawData)
         {
             // Expand buffers if we need more room
-            if (drawData.TotalVtxCount > _vertexBufferSize)
+            if (drawData.TotalVtxCount > this._vertexBufferSize)
             {
-                _vertexBuffer?.Dispose();
+                this._vertexBuffer?.Dispose();
 
-                _vertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
-                _vertexBuffer = new DynamicVertexBuffer(_graphics.Value, DrawVertDeclaration.Declaration, _vertexBufferSize, BufferUsage.WriteOnly);
-                _vertexData = new byte[_vertexBufferSize * DrawVertDeclaration.Size];
+                this._vertexBufferSize = (int)(drawData.TotalVtxCount * 1.5f);
+                this._vertexBuffer = new DynamicVertexBuffer(this._graphics.Value, DrawVertDeclaration.Declaration, this._vertexBufferSize, BufferUsage.WriteOnly);
+                this._vertexData = new byte[this._vertexBufferSize * DrawVertDeclaration.Size];
             }
 
-            if (drawData.TotalIdxCount > _indexBufferSize)
+            if (drawData.TotalIdxCount > this._indexBufferSize)
             {
-                _indexBuffer?.Dispose();
+                this._indexBuffer?.Dispose();
 
-                _indexBufferSize = (int)(drawData.TotalIdxCount * 1.5f);
-                _indexBuffer = new DynamicIndexBuffer(_graphics.Value, IndexElementSize.SixteenBits, _indexBufferSize, BufferUsage.WriteOnly);
-                _indexData = new byte[_indexBufferSize * sizeof(ushort)];
+                this._indexBufferSize = (int)(drawData.TotalIdxCount * 1.5f);
+                this._indexBuffer = new DynamicIndexBuffer(this._graphics.Value, IndexElementSize.SixteenBits, this._indexBufferSize, BufferUsage.WriteOnly);
+                this._indexData = new byte[this._indexBufferSize * sizeof(ushort)];
             }
 
             // Copy ImGui's vertices and indices to a set of managed byte arrays
@@ -136,11 +136,11 @@ namespace Guppy.Game.ImGui.MonoGame
             {
                 ImGuiNET.ImDrawListPtr cmdList = drawData.CmdLists[n];
 
-                fixed (void* vtxDstPtr = &_vertexData[vtxOffset * DrawVertDeclaration.Size])
-                fixed (void* idxDstPtr = &_indexData[idxOffset * sizeof(ushort)])
+                fixed (void* vtxDstPtr = &this._vertexData[vtxOffset * DrawVertDeclaration.Size])
+                fixed (void* idxDstPtr = &this._indexData[idxOffset * sizeof(ushort)])
                 {
-                    Buffer.MemoryCopy((void*)cmdList.VtxBuffer.Data, vtxDstPtr, _vertexData.Length, cmdList.VtxBuffer.Size * DrawVertDeclaration.Size);
-                    Buffer.MemoryCopy((void*)cmdList.IdxBuffer.Data, idxDstPtr, _indexData.Length, cmdList.IdxBuffer.Size * sizeof(ushort));
+                    Buffer.MemoryCopy((void*)cmdList.VtxBuffer.Data, vtxDstPtr, this._vertexData.Length, cmdList.VtxBuffer.Size * DrawVertDeclaration.Size);
+                    Buffer.MemoryCopy((void*)cmdList.IdxBuffer.Data, idxDstPtr, this._indexData.Length, cmdList.IdxBuffer.Size * sizeof(ushort));
                 }
 
                 vtxOffset += cmdList.VtxBuffer.Size;
@@ -148,14 +148,14 @@ namespace Guppy.Game.ImGui.MonoGame
             }
 
             // Copy the managed byte arrays to the gpu vertex- and index buffers
-            _vertexBuffer.SetData(_vertexData, 0, drawData.TotalVtxCount * DrawVertDeclaration.Size);
-            _indexBuffer.SetData(_indexData, 0, drawData.TotalIdxCount * sizeof(ushort));
+            this._vertexBuffer.SetData(this._vertexData, 0, drawData.TotalVtxCount * DrawVertDeclaration.Size);
+            this._indexBuffer.SetData(this._indexData, 0, drawData.TotalIdxCount * sizeof(ushort));
         }
 
         private unsafe void RenderCommandLists(ImGuiNET.ImDrawDataPtr drawData)
         {
-            _graphics.Value.SetVertexBuffer(_vertexBuffer);
-            _graphics.Value.Indices = _indexBuffer;
+            this._graphics.Value.SetVertexBuffer(this._vertexBuffer);
+            this._graphics.Value.Indices = this._indexBuffer;
 
             int vtxOffset = 0;
             int idxOffset = 0;
@@ -173,26 +173,26 @@ namespace Guppy.Game.ImGui.MonoGame
                         continue;
                     }
 
-                    if (!_loadedTextures.ContainsKey(drawCmd.TextureId))
+                    if (!this._loadedTextures.TryGetValue(drawCmd.TextureId, out Texture2D? value))
                     {
                         throw new InvalidOperationException($"Could not find a texture with id '{drawCmd.TextureId}', please check your bindings");
                     }
 
-                    _graphics.Value.ScissorRectangle = new Rectangle(
+                    this._graphics.Value.ScissorRectangle = new Rectangle(
                         (int)drawCmd.ClipRect.X,
                         (int)drawCmd.ClipRect.Y,
                         (int)(drawCmd.ClipRect.Z - drawCmd.ClipRect.X),
                         (int)(drawCmd.ClipRect.W - drawCmd.ClipRect.Y)
                     );
 
-                    var effect = UpdateEffect(_loadedTextures[drawCmd.TextureId]);
+                    var effect = this.UpdateEffect(value);
 
                     foreach (var pass in effect.CurrentTechnique.Passes)
                     {
                         pass.Apply();
 
 #pragma warning disable CS0618 // // FNA does not expose an alternative method.
-                        _graphics.Value.DrawIndexedPrimitives(
+                        this._graphics.Value.DrawIndexedPrimitives(
                             primitiveType: PrimitiveType.TriangleList,
                             baseVertex: (int)drawCmd.VtxOffset + vtxOffset,
                             minVertexIndex: 0,
@@ -214,19 +214,19 @@ namespace Guppy.Game.ImGui.MonoGame
         /// </summary>
         private Effect UpdateEffect(Texture2D texture)
         {
-            _effect.World = Matrix.Identity;
-            _effect.View = Matrix.Identity;
-            _effect.Projection = Matrix.CreateOrthographicOffCenter(0f, this.IO.DisplaySize.X, this.IO.DisplaySize.Y, 0f, -1f, 1f);
-            _effect.TextureEnabled = true;
-            _effect.Texture = texture;
-            _effect.VertexColorEnabled = true;
+            this._effect.World = Matrix.Identity;
+            this._effect.View = Matrix.Identity;
+            this._effect.Projection = Matrix.CreateOrthographicOffCenter(0f, this.IO.DisplaySize.X, this.IO.DisplaySize.Y, 0f, -1f, 1f);
+            this._effect.TextureEnabled = true;
+            this._effect.Texture = texture;
+            this._effect.VertexColorEnabled = true;
 
-            return _effect;
+            return this._effect;
         }
 
         protected override System.Numerics.Vector2 GetDisplaySize()
         {
-            return new System.Numerics.Vector2(_graphics.Value.PresentationParameters.BackBufferWidth, _graphics.Value.PresentationParameters.BackBufferHeight);
+            return new System.Numerics.Vector2(this._graphics.Value.PresentationParameters.BackBufferWidth, this._graphics.Value.PresentationParameters.BackBufferHeight);
         }
 
         private void HandleTextInput(object? sender, TextInputEventArgs e)

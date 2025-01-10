@@ -1,13 +1,13 @@
-﻿using Guppy.Core.Commands.Common;
-using Guppy.Core.Commands.Common.Attributes;
-using Guppy.Core.Commands.Common.Contexts;
-using Guppy.Core.Commands.Common.Services;
-using Guppy.Core.Common.Extensions.System.Reflection;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 using System.Reflection;
+using Guppy.Core.Commands.Common;
+using Guppy.Core.Commands.Common.Attributes;
+using Guppy.Core.Commands.Common.Contexts;
+using Guppy.Core.Commands.Common.Services;
+using Guppy.Core.Common.Extensions.System.Reflection;
 
 namespace Guppy.Core.Commands.Managers
 {
@@ -43,7 +43,7 @@ namespace Guppy.Core.Commands.Managers
                 binders.Add(binder);
             }
 
-            return binders.ToArray();
+            return [.. binders];
         }
     }
 
@@ -54,12 +54,12 @@ namespace Guppy.Core.Commands.Managers
         private readonly ICommandTokenService _tokenService;
 
         public override IOptionContext Context { get; }
-        public override Option Option => _option;
+        public override Option Option => this._option;
 
         public OptionManager(IOptionContext context, ICommandTokenService tokenService)
         {
-            _tokenService = tokenService;
-            _option = new Option<TValue>(context.Names, context.Description)
+            this._tokenService = tokenService;
+            this._option = new Option<TValue>(context.Names, context.Description)
             {
                 IsRequired = context.Required,
             };
@@ -71,7 +71,7 @@ namespace Guppy.Core.Commands.Managers
         {
             try
             {
-                object? value = invocation.ParseResult.GetValueForOption(_option);
+                object? value = invocation.ParseResult.GetValueForOption(this._option);
                 if (value is null)
                 {
                     return true;
@@ -79,7 +79,7 @@ namespace Guppy.Core.Commands.Managers
 
                 if (value is Token token)
                 {
-                    value = _tokenService.Deserialize(typeof(TValue), token.Value);
+                    value = this._tokenService.Deserialize(typeof(TValue), token.Value);
                 }
 
                 if (value is null)

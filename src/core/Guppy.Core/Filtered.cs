@@ -1,7 +1,7 @@
-﻿using Autofac;
+﻿using System.Collections;
+using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Services;
-using System.Collections;
 
 namespace Guppy.Core
 {
@@ -17,14 +17,14 @@ namespace Guppy.Core
 
         private IEnumerable<T>? _instances;
 
-        private IEnumerable<T> GetInstances()
+        private T[] GetInstances()
         {
-            return _unfiltered.Value.Where(x => _filters.Filter(_scope, x)).ToArray();
+            return this._unfiltered.Value.Where(x => this._filters.Filter(this._scope, x)).ToArray();
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return (_instances ??= this.GetInstances()).GetEnumerator();
+            return (this._instances ??= this.GetInstances()).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

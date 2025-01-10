@@ -1,5 +1,5 @@
-﻿using LiteNetLib;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using LiteNetLib;
 
 namespace Guppy.Core.Network.Common.Services
 {

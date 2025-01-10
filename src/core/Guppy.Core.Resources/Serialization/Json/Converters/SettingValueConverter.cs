@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Serialization.Common.Services;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Serialization.Common.Services;
 
 namespace Guppy.Core.Resources.Serialization.Json.Converters
 {
@@ -44,8 +44,8 @@ namespace Guppy.Core.Resources.Serialization.Json.Converters
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            Type settingValueType = _serializer.GetType(type);
-            object settingValueValue = _serializer.Deserialize(type, ref value, options, out _);
+            Type settingValueType = this._serializer.GetType(type);
+            object settingValueValue = this._serializer.Deserialize(type, ref value, options, out _);
             ISetting setting = Setting.Get(name, description, settingValueType, settingValueValue);
 
             ISettingValue settingValue = SettingValue.Create(setting, settingValueValue);

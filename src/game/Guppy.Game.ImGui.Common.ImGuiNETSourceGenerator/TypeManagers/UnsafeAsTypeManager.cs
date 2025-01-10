@@ -15,12 +15,12 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
 
         public override string GetGuppyToImGuiConverter(string parameter)
         {
-            return $"System.Runtime.CompilerServices.Unsafe.As<{GuppyType}, {ImGuiType}>(ref {parameter})";
+            return $"System.Runtime.CompilerServices.Unsafe.As<{this.GuppyType}, {this.ImGuiType}>(ref {parameter})";
         }
 
         public override string GetImGuiToGuppyConverter(string parameter)
         {
-            return $"System.Runtime.CompilerServices.Unsafe.As<{ImGuiType}, {GuppyType}>(ref {parameter})";
+            return $"System.Runtime.CompilerServices.Unsafe.As<{this.ImGuiType}, {this.GuppyType}>(ref {parameter})";
         }
     }
 }

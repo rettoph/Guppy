@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Network.Common.Dtos;
+﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Network.Common.Dtos;
 using LiteNetLib;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Network.Common.Services
 {

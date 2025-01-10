@@ -10,10 +10,10 @@ namespace Guppy.Game.MonoGame.Components.Scene
     {
         private readonly IScreen _screen = screen;
 
-        [SequenceGroup<DrawComponentSequenceGroup>(DrawComponentSequenceGroup.PostDraw)]
+        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.PostDraw)]
         public void Draw(GameTime gameTime)
         {
-            _screen.Camera.Update(gameTime);
+            this._screen.Camera.Update(gameTime);
         }
     }
 }

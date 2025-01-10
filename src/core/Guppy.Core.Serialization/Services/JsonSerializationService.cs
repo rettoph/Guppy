@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common;
+﻿using System.Text.Json;
+using Guppy.Core.Common;
 using Guppy.Core.Serialization.Common.Services;
-using System.Text.Json;
 using STJ = System.Text.Json;
 
 namespace Guppy.Core.Serialization.Services
@@ -15,13 +15,13 @@ namespace Guppy.Core.Serialization.Services
             if (json == string.Empty)
             {
                 success = false;
-                return _defaultInstanceService.Get<T>();
+                return this._defaultInstanceService.Get<T>();
             }
 
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(json, _options) ?? _defaultInstanceService.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(json, this._options) ?? this._defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
@@ -39,7 +39,7 @@ namespace Guppy.Core.Serialization.Services
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(utf8Json, _options) ?? _defaultInstanceService.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(utf8Json, this._options) ?? this._defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
@@ -56,7 +56,7 @@ namespace Guppy.Core.Serialization.Services
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(ref reader, _options) ?? _defaultInstanceService.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(ref reader, this._options) ?? this._defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
@@ -74,7 +74,7 @@ namespace Guppy.Core.Serialization.Services
             try
             {
                 success = true;
-                return STJ.JsonSerializer.Deserialize<T>(json, _options) ?? _defaultInstanceService.Get<T>();
+                return STJ.JsonSerializer.Deserialize<T>(json, this._options) ?? this._defaultInstanceService.Get<T>();
             }
             catch (Exception e)
             {
@@ -89,15 +89,15 @@ namespace Guppy.Core.Serialization.Services
 
         public string Serialize<T>(T obj)
         {
-            return STJ.JsonSerializer.Serialize(obj, _options);
+            return STJ.JsonSerializer.Serialize(obj, this._options);
         }
         public void Serialize<T>(Stream utf8Json, T obj)
         {
-            STJ.JsonSerializer.Serialize(utf8Json, obj, _options);
+            STJ.JsonSerializer.Serialize(utf8Json, obj, this._options);
         }
         public void Serialize<T>(Utf8JsonWriter writer, T obj)
         {
-            STJ.JsonSerializer.Serialize(writer, obj, _options);
+            STJ.JsonSerializer.Serialize(writer, obj, this._options);
         }
     }
 }

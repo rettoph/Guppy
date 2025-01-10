@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common.Collections;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common.Collections;
 using Microsoft.Xna.Framework;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Game.Console.Helpers
 {
@@ -77,12 +77,12 @@ namespace Guppy.Game.Console.Helpers
 
             private RestConsoleForeground()
             {
-                _stack = new Stack<ConsoleColor>();
+                this._stack = new Stack<ConsoleColor>();
             }
 
             public RestConsoleForeground Push(ConsoleColor color)
             {
-                _stack.Push(System.Console.ForegroundColor);
+                this._stack.Push(System.Console.ForegroundColor);
                 System.Console.ForegroundColor = color;
 
                 return this;
@@ -90,7 +90,7 @@ namespace Guppy.Game.Console.Helpers
 
             public void Dispose()
             {
-                System.Console.ForegroundColor = _stack.Pop();
+                System.Console.ForegroundColor = this._stack.Pop();
             }
         }
     }

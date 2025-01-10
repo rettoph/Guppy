@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Extensions.System;
+﻿using System.Runtime.InteropServices;
+using Guppy.Core.Common.Extensions.System;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Utilities;
 using Guppy.Core.Files.Common;
@@ -7,7 +8,6 @@ using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Core.Resources.Constants;
 using Serilog;
-using System.Runtime.InteropServices;
 
 namespace Guppy.Core.Resources.Services
 {
@@ -19,7 +19,7 @@ namespace Guppy.Core.Resources.Services
         private Dictionary<Guid, ISettingValue> _values = null!;
         private readonly ILogger _logger = logger;
 
-        public ISettingValue this[ISetting setting] => _values[setting.Id];
+        public ISettingValue this[ISetting setting] => this._values[setting.Id];
 
         public Task StartAsync(CancellationToken cancellation)
         {
@@ -35,30 +35,30 @@ namespace Guppy.Core.Resources.Services
 
         public void Initialize()
         {
-            if (_initialized)
+            if (this._initialized)
             {
                 return;
             }
 
             FileLocation location = new(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
-            _logger.Debug("Preparing to import setting values from '{SettingFileLocation}'", location);
+            this._logger.Debug("Preparing to import setting values from '{SettingFileLocation}'", location);
 
-            _file = _files.Get<IEnumerable<ISettingValue>>(location, true);
-            _values = _file.Value.ToDictionary(x => x.Setting.Id, x => x);
+            this._file = this._files.Get<IEnumerable<ISettingValue>>(location, true);
+            this._values = this._file.Value.ToDictionary(x => x.Setting.Id, x => x);
 
-            _initialized = true;
+            this._initialized = true;
 
-            _logger.Debug("Done. Imported ({Count}) values", _values.Count);
-            foreach (ISettingValue value in _values.Values)
+            this._logger.Debug("Done. Imported ({Count}) values", this._values.Count);
+            foreach (ISettingValue value in this._values.Values)
             {
-                _logger.Verbose("Setting = {Setting}, Type = {Type}, Value = {Value}", value.Setting.Name, value.Type.GetFormattedName(), value.Value);
+                this._logger.Verbose("Setting = {Setting}, Type = {Type}, Value = {Value}", value.Setting.Name, value.Type.GetFormattedName(), value.Value);
             }
         }
 
         public void Save()
         {
-            _file.Value = _values.Values;
-            _files.Save(_file);
+            this._file.Value = this._values.Values;
+            this._files.Save(this._file);
         }
 
         public void Dispose()
@@ -70,7 +70,7 @@ namespace Guppy.Core.Resources.Services
 
         public SettingValue<T> GetValue<T>(Setting<T> setting) where T : notnull
         {
-            ref ISettingValue? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(_values, setting.Id, out bool exists);
+            ref ISettingValue? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(this._values, setting.Id, out bool exists);
             if (exists == true)
             {
                 return (SettingValue<T>)cache!;
@@ -84,7 +84,7 @@ namespace Guppy.Core.Resources.Services
 
         public ISettingValue GetValue(ISetting setting)
         {
-            return _values[setting.Id];
+            return this._values[setting.Id];
         }
     }
 }

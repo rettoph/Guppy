@@ -1,7 +1,7 @@
-﻿using Guppy.Core.Commands.Common.Attributes;
+﻿using System.Reflection;
+using Guppy.Core.Commands.Common.Attributes;
 using Guppy.Core.Commands.Common.Extensions;
 using Guppy.Core.Common.Extensions.System.Reflection;
-using System.Reflection;
 
 namespace Guppy.Core.Commands.Common.Contexts
 {
@@ -35,7 +35,7 @@ namespace Guppy.Core.Commands.Common.Contexts
                 contexts.Add(context);
             }
 
-            return contexts.ToArray();
+            return [.. contexts];
         }
     }
 }

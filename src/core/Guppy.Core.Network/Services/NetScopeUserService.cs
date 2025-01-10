@@ -1,9 +1,9 @@
-﻿using Guppy.Core.Network.Common;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Identity.Enums;
 using Guppy.Core.Network.Common.Services;
 using LiteNetLib;
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Guppy.Core.Network.Identity.Services
 {
@@ -15,7 +15,7 @@ namespace Guppy.Core.Network.Identity.Services
         {
             get
             {
-                foreach (User user in _users.Values)
+                foreach (User user in this._users.Values.Cast<User>())
                 {
                     if (user.NetPeer is not null)
                     {
@@ -30,24 +30,24 @@ namespace Guppy.Core.Network.Identity.Services
 
         public NetScopeUserService()
         {
-            _users = [];
+            this._users = [];
         }
         public void Dispose()
         {
-            while (_users.Any())
+            while (this._users.Count != 0)
             {
-                this.Remove(_users.Values.First());
+                this.Remove(this._users.Values.First());
             }
         }
 
         public void Add(IUser user)
         {
-            if (user.State != UserState.Connected)
+            if (user.State != UserStateEnum.Connected)
             {
                 return;
             }
 
-            if (_users.TryAdd(user.Id, user))
+            if (this._users.TryAdd(user.Id, user))
             {
                 user.OnStateChanged += this.HandleUserStateChanged;
 
@@ -57,7 +57,7 @@ namespace Guppy.Core.Network.Identity.Services
 
         public void Remove(IUser user)
         {
-            if (_users.Remove(user.Id))
+            if (this._users.Remove(user.Id))
             {
                 user.OnStateChanged -= this.HandleUserStateChanged;
 
@@ -68,17 +68,17 @@ namespace Guppy.Core.Network.Identity.Services
 
         public IUser Get(int id)
         {
-            return _users[id];
+            return this._users[id];
         }
 
         public bool TryGet(int id, [MaybeNullWhen(false)] out IUser user)
         {
-            return _users.TryGetValue(id, out user);
+            return this._users.TryGetValue(id, out user);
         }
 
-        private void HandleUserStateChanged(IUser sender, UserState old, UserState value)
+        private void HandleUserStateChanged(IUser sender, UserStateEnum old, UserStateEnum value)
         {
-            if (value != UserState.Disconnected)
+            if (value != UserStateEnum.Disconnected)
             {
                 return;
             }
@@ -88,7 +88,7 @@ namespace Guppy.Core.Network.Identity.Services
 
         public IEnumerator<IUser> GetEnumerator()
         {
-            return _users.Values.GetEnumerator();
+            return this._users.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

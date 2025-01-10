@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using System.Drawing;
+﻿using System.Drawing;
+using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Graphics.Common
 {

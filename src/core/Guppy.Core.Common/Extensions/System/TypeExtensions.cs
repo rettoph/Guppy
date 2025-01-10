@@ -48,7 +48,7 @@ namespace Guppy.Core.Common.Extensions.System
 
         public static IEnumerable<Type> AssignableFrom(this IEnumerable<Type> types, Type parent)
         {
-            return types.Where(t => parent.IsAssignableFrom(t));
+            return types.Where(parent.IsAssignableFrom);
         }
 
         public static IEnumerable<Type> AssignableFrom<TParent>(this IEnumerable<Type> types)
@@ -62,7 +62,7 @@ namespace Guppy.Core.Common.Extensions.System
 
             return types.Where(t =>
             {
-                var info = t.GetCustomAttributes(attribute, inherit);
+                object[] info = t.GetCustomAttributes(attribute, inherit);
                 return info != null && info.Length > 0;
             });
         }
@@ -139,7 +139,7 @@ namespace Guppy.Core.Common.Extensions.System
                 string genericArguments = type.GetGenericArguments()
                                     .Select(x => x.Name)
                                     .Aggregate((x1, x2) => $"{x1}, {x2}");
-                return $"{name.Substring(0, name.IndexOf("`"))}"
+                return $"{name[..name.IndexOf('`')]}"
                      + $"<{genericArguments}>";
             }
 
@@ -150,11 +150,15 @@ namespace Guppy.Core.Common.Extensions.System
         {
             // primitive, pointer or enum -> true
             if (type.IsPrimitive || type.IsPointer || type.IsEnum)
+            {
                 return true;
+            }
 
             // not a struct -> false
             if (!type.IsValueType)
+            {
                 return false;
+            }
 
             // otherwise check recursively
             return type

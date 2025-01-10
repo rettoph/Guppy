@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Engine.Common.Enums
 {
-    public enum TextFilterResult
+    public enum TextFilterResultEnum
     {
         None = 0,
         NotMatched = 1,
@@ -9,7 +9,7 @@
 
     public static class TextFilterResultExtensions
     {
-        public static TextFilterResult Max(this TextFilterResult item1, TextFilterResult item2)
+        public static TextFilterResultEnum Max(this TextFilterResultEnum item1, TextFilterResultEnum item2)
         {
             if (item1 > item2)
             {

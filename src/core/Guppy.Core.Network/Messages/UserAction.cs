@@ -7,7 +7,7 @@ namespace Guppy.Core.Network.Messages
     {
         public byte GroupId { get; init; }
 
-        public UserActionTypes Type { get; init; }
+        public UserActionTypeEnum Type { get; init; }
 
         public required UserDto UserDto { get; init; }
     }

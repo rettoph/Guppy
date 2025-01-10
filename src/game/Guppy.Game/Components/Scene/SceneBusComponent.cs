@@ -10,10 +10,10 @@ namespace Guppy.Game.Components.Guppy
     {
         private readonly IBus _bus = bus;
 
-        [SequenceGroup<UpdateComponentSequenceGroup>(UpdateComponentSequenceGroup.PostUpdate)]
+        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PostUpdate)]
         public void Update(GameTime gameTime)
         {
-            _bus.Flush();
+            this._bus.Flush();
         }
     }
 }

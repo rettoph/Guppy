@@ -14,9 +14,9 @@ namespace Guppy.Game.MonoGame.ResourceTypes
 
         protected override bool TryResolve(ResourceKey<SpriteFont> resource, DirectoryLocation root, string input, out SpriteFont value)
         {
-            _content.Value.RootDirectory = root.Path;
+            this._content.Value.RootDirectory = root.Path;
 
-            value = _content.Value.Load<SpriteFont>(DirectoryHelper.Normalize(input));
+            value = this._content.Value.Load<SpriteFont>(DirectoryHelper.Normalize(input));
 
             return true;
         }
