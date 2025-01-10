@@ -16,10 +16,10 @@ namespace Guppy.Tests.Game.ImGui.Common.ImGuiNETSourceGenerator
                 .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             GeneratorDriver driver = CSharpGeneratorDriver.Create(generator)
-                .RunGeneratorsAndUpdateCompilation(compilation, out _, out var _);
+                .RunGeneratorsAndUpdateCompilation(compilation, out _, out _);
 
             // Verify the generated code
-            GeneratorDriverRunResult results = driver.GetRunResult();
+            _ = driver.GetRunResult();
         }
     }
 }

@@ -77,7 +77,7 @@ namespace Guppy.Core.Common
 
                 if (delegator.Method.HasSequence<TSequenceGroup>(delegator.Target) == true)
                 {
-                    throw new ArgumentException($"{typeof(DelegateSequenceGroup<TSequenceGroup>).GetFormattedName()}::{nameof(Add)} - Method {delegator.Method.Name} should not be ordered.", nameof(delegator));
+                    throw new ArgumentException($"{typeof(DelegateSequenceGroup<TSequenceGroup>).GetFormattedName()}::{nameof(Add)} - Method {delegator.Method.Name} should not be ordered.", nameof(delegators));
                 }
 
                 ref TDelegate? group = ref CollectionsMarshal.GetValueRefOrAddDefault(this._grouped, sequenceGroup, out bool exists);

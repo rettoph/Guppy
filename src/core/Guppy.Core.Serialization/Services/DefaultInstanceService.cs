@@ -54,17 +54,17 @@ namespace Guppy.Core.Serialization.Services
             {
                 if (type.IsInterface)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException($"Type is interface", nameof(type));
                 }
 
                 if (type.IsAbstract)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException($"Type is abstract", nameof(type));
                 }
 
                 if (type.IsGenericTypeDefinition)
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException($"Type is is generic type definition", nameof(type));
                 }
 
                 return Activator.CreateInstance(type) ?? throw new NotImplementedException();

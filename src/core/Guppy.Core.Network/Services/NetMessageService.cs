@@ -11,8 +11,8 @@ namespace Guppy.Core.Network.Services
     {
         private readonly IPeer _peer;
 
-        private readonly IDictionary<byte, NetMessageType> _messageIds;
-        private readonly IDictionary<Type, NetMessageType> _messageTypes;
+        private readonly Dictionary<byte, NetMessageType> _messageIds;
+        private readonly Dictionary<Type, NetMessageType> _messageTypes;
 
         public NetMessageService(IPeer peer, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> definitions)
         {

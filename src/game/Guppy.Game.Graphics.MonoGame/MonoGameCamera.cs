@@ -13,7 +13,14 @@ namespace Guppy.Game.MonoGame.Common.Utilities.Cameras
         public abstract Matrix WorldViewProjection { get; }
         public abstract BoundingFrustum Frustum { get; }
 
-        public abstract void Dispose();
+        protected abstract void Dispose(bool disposing);
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
 
         public abstract void Update(GameTime gameTime);
 

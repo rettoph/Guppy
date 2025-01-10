@@ -1,6 +1,5 @@
 ﻿using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Graphics.Common;
-using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -212,7 +211,7 @@ namespace Guppy.Game.ImGui.MonoGame
         /// <summary>
         /// Updates the <see cref="Effect" /> to the current matrices and texture
         /// </summary>
-        private Effect UpdateEffect(Texture2D texture)
+        private BasicEffect UpdateEffect(Texture2D texture)
         {
             this._effect.World = Matrix.Identity;
             this._effect.View = Matrix.Identity;

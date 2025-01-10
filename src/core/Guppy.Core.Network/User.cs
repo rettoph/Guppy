@@ -10,7 +10,7 @@ namespace Guppy.Core.Network
     public class User : IUser, IDisposable
     {
         private UserStateEnum _state;
-
+        private bool _disposed;
         private readonly Dictionary<string, Claim> _claims;
 
         public int Id { get; private set; }
@@ -80,9 +80,34 @@ namespace Guppy.Core.Network
             return this.GetEnumerator();
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this._disposed)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    this.State = UserStateEnum.Disconnected;
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                this._disposed = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~User()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
         public void Dispose()
         {
-            this.State = UserStateEnum.Disconnected;
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -8,11 +8,13 @@ namespace Guppy.Tests.Core
     {
         private delegate object TestDelegate_Object_Int32(int param);
 #pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
         private static object TestDelegate_Object_Int32__StaticFunction_Object_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__StaticFunction_Object_Int32));
         private object TestDelegate_Object_Int32__InstanceFunction_Object_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Object_Int32));
         private int TestDelegate_Object_Int32__InstanceFunction_Int32_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Int32_Int32));
         private object TestDelegate_Object_Int32__InstanceFunction_Object_Object(object param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Object_Object));
         private object TestDelegate_Object_Int32__InstanceFunction_Object_String(string param) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32__InstanceFunction_Object_String));
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 #pragma warning restore IDE0060 // Remove unused parameter
 
         [Theory]
@@ -47,10 +49,12 @@ namespace Guppy.Tests.Core
 
         private delegate object TestDelegate_Object_Int32_Int32(int param1, int param2);
 #pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
         private object TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Int32_Int32(int param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Int32_Int32));
         private int TestDelegate_Object_Int32_Int32__InstanceFunction_Int32_Int32_Int32(int param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Int32_Int32_Int32));
         private object TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Object_Int32(object param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_Object_Int32));
         private object TestDelegate_Object_Int32_Int32__InstanceFunction_Object_String_Int32(string param1, int param2) => IncrementInvocationCount(nameof(TestDelegate_Object_Int32_Int32__InstanceFunction_Object_String_Int32));
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 #pragma warning restore IDE0060 // Remove unused parameter
 
         [Theory]
@@ -83,10 +87,12 @@ namespace Guppy.Tests.Core
 
         private delegate void TestDelegate_Void_Int32(int param);
 #pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1859 // Use concrete types when possible for improved performance
         private static void TestDelegate_Void_Int32__StaticFunction_Void_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__StaticFunction_Void_Int32));
         private void TestDelegate_Void_Int32__InstanceFunction_Void_Int32(int param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__InstanceFunction_Void_Int32));
         private void TestDelegate_Void_Int32__InstanceFunction_Void_Object(object param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__InstanceFunction_Void_Object));
         private void TestDelegate_Void_Int32__InstanceFunction_Void_String(string param) => IncrementInvocationCount(nameof(TestDelegate_Void_Int32__InstanceFunction_Void_String));
+#pragma warning restore CA1859 // Use concrete types when possible for improved performance
 #pragma warning restore IDE0060 // Remove unused parameter
 
         [Theory]

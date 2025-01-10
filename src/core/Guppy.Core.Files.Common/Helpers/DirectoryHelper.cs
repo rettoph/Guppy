@@ -14,7 +14,7 @@ namespace Guppy.Core.Files.Common.Helpers
         {
             if (source.Type != DirectoryTypeEnum.Source)
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"Invalid {nameof(DirectoryLocation)} {nameof(DirectoryLocation.Type)}, {source.Type}", nameof(source));
             }
 
             if (!Directory.Exists(source.Path))

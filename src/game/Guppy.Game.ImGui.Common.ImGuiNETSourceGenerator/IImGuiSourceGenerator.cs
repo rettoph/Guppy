@@ -20,10 +20,5 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 
             TypeManager.GenerateAllSourceFiles(source);
         }
-
-        public void Initialize(GeneratorInitializationContext context)
-        {
-            // System.Diagnostics.Debugger.Launch();
-        }
     }
 }
