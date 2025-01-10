@@ -8,9 +8,6 @@ namespace Guppy.Example.Client.Services
     {
         private readonly Dictionary<CellTypeEnum, ICellType> _cellTypes = cellTypes.ToDictionary(x => x.Type, x => x);
 
-        public void Update(ref Cell cell, Grid old, Grid output)
-        {
-            this._cellTypes[cell.Old.Type].Update(ref cell, old, output);
-        }
+        public void Update(ref Cell cell, Grid old, Grid output) => this._cellTypes[cell.Old.Type].Update(ref cell, old, output);
     }
 }

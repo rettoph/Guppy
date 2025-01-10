@@ -16,10 +16,7 @@ namespace Guppy.Engine
             this._typeInfo = [];
         }
 
-        public override bool AppliesTo(object instance)
-        {
-            return true;
-        }
+        public override bool AppliesTo(object instance) => true;
 
         public override TextFilterResultEnum Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {

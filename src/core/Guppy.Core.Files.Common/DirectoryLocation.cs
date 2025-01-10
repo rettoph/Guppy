@@ -7,24 +7,12 @@ namespace Guppy.Core.Files.Common
         public readonly DirectoryTypeEnum Type = type;
         public readonly string Path = path;
 
-        public static DirectoryLocation AppData(string? path = null)
-        {
-            return new DirectoryLocation(DirectoryTypeEnum.AppData, path ?? string.Empty);
-        }
+        public static DirectoryLocation AppData(string? path = null) => new(DirectoryTypeEnum.AppData, path ?? string.Empty);
 
-        public static DirectoryLocation CurrentDirectory(string? path = null)
-        {
-            return new DirectoryLocation(DirectoryTypeEnum.CurrentDirectory, path ?? string.Empty);
-        }
+        public static DirectoryLocation CurrentDirectory(string? path = null) => new(DirectoryTypeEnum.CurrentDirectory, path ?? string.Empty);
 
-        public static DirectoryLocation Source(string? path = null)
-        {
-            return new DirectoryLocation(DirectoryTypeEnum.Source, path ?? string.Empty);
-        }
+        public static DirectoryLocation Source(string? path = null) => new(DirectoryTypeEnum.Source, path ?? string.Empty);
 
-        public override readonly string ToString()
-        {
-            return $"({this.Type}):{this.Path}";
-        }
+        public override readonly string ToString() => $"({this.Type}):{this.Path}";
     }
 }

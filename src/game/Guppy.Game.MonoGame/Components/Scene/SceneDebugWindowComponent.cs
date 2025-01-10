@@ -22,10 +22,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
-        public void Initialize(IScene scene)
-        {
-            this._debugActions.Add(this._scene.Components);
-        }
+        public void Initialize(IScene scene) => this._debugActions.Add(this._scene.Components);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)

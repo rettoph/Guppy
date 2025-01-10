@@ -15,15 +15,9 @@ namespace Guppy.Example.Client.Entities
             this.Output = ref output;
         }
 
-        public bool Either(CellTypeEnum type)
-        {
-            return this.Input.Type == type || this.Output.Type == type;
-        }
+        public bool Either(CellTypeEnum type) => this.Input.Type == type || this.Output.Type == type;
 
-        public bool Both(CellTypeEnum type)
-        {
-            return this.Input.Type == type && this.Output.Type == type;
-        }
+        public bool Both(CellTypeEnum type) => this.Input.Type == type && this.Output.Type == type;
 
         public bool BothIn(CellTypeEnum flags)
         {
@@ -31,9 +25,6 @@ namespace Guppy.Example.Client.Entities
             return result;
         }
 
-        public static void Create(Grid input, Grid output, int index, out CellPair pair)
-        {
-            pair = new CellPair(ref input.GetCell(index), ref output.GetCell(index));
-        }
+        public static void Create(Grid input, Grid output, int index, out CellPair pair) => pair = new CellPair(ref input.GetCell(index), ref output.GetCell(index));
     }
 }

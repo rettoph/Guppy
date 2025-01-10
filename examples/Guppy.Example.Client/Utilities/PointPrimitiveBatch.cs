@@ -40,10 +40,7 @@ namespace Guppy.Example.Client.Utilities
             this.Vertices = new TVertex[vertexCount];
         }
 
-        public void Draw(ICamera camera)
-        {
-            this.Draw(camera.View, camera.Projection);
-        }
+        public void Draw(ICamera camera) => this.Draw(camera.View, camera.Projection);
 
         public void Draw(Matrix view, Matrix projection)
         {

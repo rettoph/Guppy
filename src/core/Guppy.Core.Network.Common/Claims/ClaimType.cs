@@ -35,15 +35,9 @@ namespace Guppy.Core.Network.Common.Claims
             return type;
         }
 
-        public static ClaimType<T> Get<T>()
-        {
-            return (ClaimType<T>)_types[typeof(T)];
-        }
+        public static ClaimType<T> Get<T>() => (ClaimType<T>)_types[typeof(T)];
 
-        public static ClaimType Get(string name)
-        {
-            return _types[name];
-        }
+        public static ClaimType Get(string name) => _types[name];
 
         public readonly string Name;
         public readonly Type Type;
@@ -77,10 +71,7 @@ namespace Guppy.Core.Network.Common.Claims
             throw new ArgumentException(null, nameof(value));
         }
 
-        public override object DeserializeValue(NetDataReader reader)
-        {
-            return this._netDeserializer(reader) ?? throw new NullReferenceException();
-        }
+        public override object DeserializeValue(NetDataReader reader) => this._netDeserializer(reader) ?? throw new NullReferenceException();
 
         public override Claim Create(string key, object value, ClaimAccessibilityEnum accessibility, DateTime? createdAt = null)
         {

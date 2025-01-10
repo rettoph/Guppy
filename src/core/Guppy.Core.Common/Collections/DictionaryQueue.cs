@@ -44,10 +44,7 @@ namespace Guppy.Core.Common.Collections
             return this._dict.Remove(key, out value);
         }
 
-        public bool TryGet(TKey key, [MaybeNullWhen(false)] out TValue value)
-        {
-            return this._dict.TryGetValue(key, out value);
-        }
+        public bool TryGet(TKey key, [MaybeNullWhen(false)] out TValue value) => this._dict.TryGetValue(key, out value);
 
         public bool TryPeek([MaybeNullWhen(false)] out TValue value)
         {

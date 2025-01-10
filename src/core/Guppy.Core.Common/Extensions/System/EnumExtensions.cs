@@ -22,9 +22,6 @@ namespace Guppy.Core.Common.Extensions.System
         }
 
         public static IEnumerable<TAttribute> GetCustomAttributes<TAttribute>(this Enum value)
-            where TAttribute : Attribute
-        {
-            return value.GetMemberInfo().GetAllCustomAttributes<TAttribute>(false);
-        }
+            where TAttribute : Attribute => value.GetMemberInfo().GetAllCustomAttributes<TAttribute>(false);
     }
 }

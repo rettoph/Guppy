@@ -31,27 +31,18 @@ namespace Guppy.Game.Input.Common
             this.MouseButton = mouseButtons;
         }
 
-        public override readonly string ToString()
+        public override readonly string ToString() => this.Type switch
         {
-            return this.Type switch
-            {
-                ButtonTypeEnum.Mouse => this.MouseButton.ToString(),
-                ButtonTypeEnum.Keyboard => this.KeyboardKey.ToString(),
-                _ => throw new NotImplementedException(),
-            };
-        }
+            ButtonTypeEnum.Mouse => this.MouseButton.ToString(),
+            ButtonTypeEnum.Keyboard => this.KeyboardKey.ToString(),
+            _ => throw new NotImplementedException(),
+        };
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Type, this.KeyboardKey);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Type, this.KeyboardKey);
 
-        public override readonly bool Equals(object? obj)
-        {
-            return obj is ButtonSource source &&
+        public override readonly bool Equals(object? obj) => obj is ButtonSource source &&
                    this.Type == source.Type &&
                    this.KeyboardKey == source.KeyboardKey;
-        }
 
         public static implicit operator ButtonSource(CursorButtonsEnum mouseButtons)
         {

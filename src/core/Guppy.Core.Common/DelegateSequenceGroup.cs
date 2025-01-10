@@ -188,10 +188,7 @@ namespace Guppy.Core.Common
         /// <param name="delegates"></param>
         /// <param name="sequenced">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
         /// <param name="args"></param>
-        public static void Invoke(IEnumerable<Delegate> delegates, bool sequenced, object[] args)
-        {
-            DelegateSequenceGroup<TSequenceGroup, Delegate>.Invoke(delegates, sequenced, args);
-        }
+        public static void Invoke(IEnumerable<Delegate> delegates, bool sequenced, object[] args) => DelegateSequenceGroup<TSequenceGroup, Delegate>.Invoke(delegates, sequenced, args);
 
         /// <summary>
         /// Sequence then invoke all matching delegates within a collection of instances.

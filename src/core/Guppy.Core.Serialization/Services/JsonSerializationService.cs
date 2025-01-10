@@ -87,17 +87,8 @@ namespace Guppy.Core.Serialization.Services
             }
         }
 
-        public string Serialize<T>(T obj)
-        {
-            return STJ.JsonSerializer.Serialize(obj, this._options);
-        }
-        public void Serialize<T>(Stream utf8Json, T obj)
-        {
-            STJ.JsonSerializer.Serialize(utf8Json, obj, this._options);
-        }
-        public void Serialize<T>(Utf8JsonWriter writer, T obj)
-        {
-            STJ.JsonSerializer.Serialize(writer, obj, this._options);
-        }
+        public string Serialize<T>(T obj) => STJ.JsonSerializer.Serialize(obj, this._options);
+        public void Serialize<T>(Stream utf8Json, T obj) => STJ.JsonSerializer.Serialize(utf8Json, obj, this._options);
+        public void Serialize<T>(Utf8JsonWriter writer, T obj) => STJ.JsonSerializer.Serialize(writer, obj, this._options);
     }
 }

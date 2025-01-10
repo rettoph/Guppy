@@ -43,47 +43,23 @@ namespace Guppy.Core.StateMachine.Common
             this.Value = key;
         }
 
-        public static StateKey<T> Create()
-        {
-            return new StateKey<T>(StateKey.DefaultValue);
-        }
+        public static StateKey<T> Create() => new(StateKey.DefaultValue);
 
-        public static StateKey<T> Create(string value)
-        {
-            return new StateKey<T>(value);
-        }
+        public static StateKey<T> Create(string value) => new(value);
 
-        public static StateKey<T> Create<TValue>()
-        {
-            return new StateKey<T>(typeof(TValue).Name);
-        }
+        public static StateKey<T> Create<TValue>() => new(typeof(TValue).Name);
 
-        public override bool Equals(object? obj)
-        {
-            return this.Equals(obj as StateKey<T>);
-        }
+        public override bool Equals(object? obj) => this.Equals(obj as StateKey<T>);
 
-        public bool Equals(StateKey<T>? other)
-        {
-            return other is not null &&
+        public bool Equals(StateKey<T>? other) => other is not null &&
                    EqualityComparer<Type>.Default.Equals(this.Type, other.Type) &&
                    this.Value == other.Value;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Type, this.Value);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Type, this.Value);
 
-        public bool Equals(Type type, string value)
-        {
-            return this.Type == type && this.Value == value;
-        }
+        public bool Equals(Type type, string value) => this.Type == type && this.Value == value;
 
-        public bool Equals(IStateKey key)
-        {
-            return this.Equals(key.Type, key.Value);
-        }
+        public bool Equals(IStateKey key) => this.Equals(key.Type, key.Value);
 
         public static bool operator ==(StateKey<T>? left, StateKey<T>? right)
         {

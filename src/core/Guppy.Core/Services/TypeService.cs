@@ -22,14 +22,8 @@ namespace Guppy.Core.Services
             }
         }
 
-        public IEnumerator<Type> GetEnumerator()
-        {
-            return this._types.GetEnumerator();
-        }
+        public IEnumerator<Type> GetEnumerator() => this._types.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

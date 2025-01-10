@@ -66,14 +66,8 @@ namespace Guppy.Core.Network.Services
             }
         }
 
-        public IEnumerator<INetSerializer> GetEnumerator()
-        {
-            return this._serializers.Values.GetEnumerator();
-        }
+        public IEnumerator<INetSerializer> GetEnumerator() => this._serializers.Values.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

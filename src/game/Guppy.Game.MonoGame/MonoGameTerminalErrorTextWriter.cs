@@ -18,14 +18,8 @@ namespace Guppy.Game.MonoGame
             terminal.Color = color;
         }
 
-        protected override void WriteLineToTerminal(ITerminal terminal, string value)
-        {
-            terminal.WriteLine(value, this._errColor);
-        }
+        protected override void WriteLineToTerminal(ITerminal terminal, string value) => terminal.WriteLine(value, this._errColor);
 
-        protected override void WriteToTerminal(ITerminal terminal, string value)
-        {
-            terminal.Write(value, this._errColor);
-        }
+        protected override void WriteToTerminal(ITerminal terminal, string value) => terminal.Write(value, this._errColor);
     }
 }

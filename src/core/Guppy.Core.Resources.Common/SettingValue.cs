@@ -53,31 +53,16 @@ namespace Guppy.Core.Resources.Common
 
         }
 
-        public readonly void Dispose()
-        {
-            this._value.Dispose();
-        }
+        public readonly void Dispose() => this._value.Dispose();
 
-        public override readonly bool Equals(object? obj)
-        {
-            return this.Equals((Setting<T>)obj!);
-        }
+        public override readonly bool Equals(object? obj) => this.Equals((Setting<T>)obj!);
 
-        public readonly bool Equals(SettingValue<T> other)
-        {
-            return this.Value.Equals(other.Value) && this.Setting.Equals(other.Setting);
-        }
+        public readonly bool Equals(SettingValue<T> other) => this.Value.Equals(other.Value) && this.Setting.Equals(other.Setting);
 
-        public readonly bool Equals(ISettingValue? other)
-        {
-            return other is SettingValue<T> casted
+        public readonly bool Equals(ISettingValue? other) => other is SettingValue<T> casted
                 && this.Equals(casted);
-        }
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Value, this.Setting.GetHashCode());
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Value, this.Setting.GetHashCode());
 
         public static implicit operator T(SettingValue<T> setting)
         {

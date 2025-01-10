@@ -25,10 +25,7 @@
             set => this.Value = value;
         }
 
-        protected override object? GetValue()
-        {
-            return this.Value;
-        }
+        protected override object? GetValue() => this.Value;
 
         public static implicit operator T(Ref<T> @ref)
         {

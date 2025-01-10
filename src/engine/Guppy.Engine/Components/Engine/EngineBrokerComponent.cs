@@ -11,14 +11,8 @@ namespace Guppy.Engine.Components.Engine
         private readonly IBrokerService _brokers = brokers;
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
-        public void Initialize(IGuppyEngine engine)
-        {
-            this._brokers.AddSubscribers<IEngineComponent>();
-        }
+        public void Initialize(IGuppyEngine engine) => this._brokers.AddSubscribers<IEngineComponent>();
 
-        public void Dispose()
-        {
-            this._brokers.RemoveSubscribers<IEngineComponent>();
-        }
+        public void Dispose() => this._brokers.RemoveSubscribers<IEngineComponent>();
     }
 }

@@ -12,9 +12,6 @@ namespace Guppy.Game.Extensions.Serilog
         public static LoggerConfiguration Terminal(
             this LoggerSinkConfiguration loggerConfiguration,
             ITerminal terminal,
-            string outputTemplate = _defaultTerminalOutputTemplate)
-        {
-            return loggerConfiguration.Sink(new TerminalSink(terminal, outputTemplate));
-        }
+            string outputTemplate = _defaultTerminalOutputTemplate) => loggerConfiguration.Sink(new TerminalSink(terminal, outputTemplate));
     }
 }

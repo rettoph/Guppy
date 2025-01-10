@@ -17,10 +17,7 @@ namespace Guppy.Core.Services
 
         public event OnEventDelegate<IAssemblyService, Assembly>? OnAssemblyLoaded;
 
-        public void Load(Assembly assembly, bool forced = false)
-        {
-            this.Load(assembly, forced, 0);
-        }
+        public void Load(Assembly assembly, bool forced = false) => this.Load(assembly, forced, 0);
 
         private void Load(Assembly assembly, bool forced, int depth)
         {
@@ -73,15 +70,9 @@ namespace Guppy.Core.Services
             return false;
         }
 
-        public ITypeService<T> GetTypes<T>()
-        {
-            return new TypeService<T>(this._assemblies.SelectMany(x => x.GetTypes()).Where(x => typeof(T).IsAssignableFrom(x)));
-        }
+        public ITypeService<T> GetTypes<T>() => new TypeService<T>(this._assemblies.SelectMany(x => x.GetTypes()).Where(x => typeof(T).IsAssignableFrom(x)));
 
-        public ITypeService<T> GetTypes<T>(Func<Type, bool> predicate)
-        {
-            return new TypeService<T>(this._assemblies.SelectMany(x => x.GetTypes().Where(x => typeof(T).IsAssignableFrom(x)).Where(predicate)));
-        }
+        public ITypeService<T> GetTypes<T>(Func<Type, bool> predicate) => new TypeService<T>(this._assemblies.SelectMany(x => x.GetTypes().Where(x => typeof(T).IsAssignableFrom(x)).Where(predicate)));
 
         public IAttributeService<TType, TAttribute> GetAttributes<TType, TAttribute>(bool inherit)
             where TAttribute : Attribute
@@ -98,26 +89,14 @@ namespace Guppy.Core.Services
         }
 
         public IAttributeService<object, TAttribute> GetAttributes<TAttribute>(bool inherit)
-            where TAttribute : Attribute
-        {
-            return this.GetAttributes<object, TAttribute>(inherit);
-        }
+            where TAttribute : Attribute => this.GetAttributes<object, TAttribute>(inherit);
 
         public IAttributeService<object, TAttribute> GetAttributes<TAttribute>(Func<Type, bool> predicate, bool inherit)
-            where TAttribute : Attribute
-        {
-            return this.GetAttributes<object, TAttribute>(predicate, inherit);
-        }
+            where TAttribute : Attribute => this.GetAttributes<object, TAttribute>(predicate, inherit);
 
-        public IEnumerator<Assembly> GetEnumerator()
-        {
-            return this._assemblies.GetEnumerator();
-        }
+        public IEnumerator<Assembly> GetEnumerator() => this._assemblies.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         internal static AssemblyService Factory(IComponentContext context)
         {

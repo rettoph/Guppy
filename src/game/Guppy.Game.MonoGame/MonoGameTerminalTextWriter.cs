@@ -40,24 +40,12 @@ namespace Guppy.Game.MonoGame
             }
         }
 
-        public override void Write(char value)
-        {
-            this.WriteToTerminal(this._terminal, value);
-        }
+        public override void Write(char value) => this.WriteToTerminal(this._terminal, value);
 
-        protected virtual void WriteToTerminal(MonoGameTerminal terminal, char value)
-        {
-            terminal.Write(value);
-        }
+        protected virtual void WriteToTerminal(MonoGameTerminal terminal, char value) => terminal.Write(value);
 
-        protected virtual void WriteToTerminal(ITerminal terminal, string value)
-        {
-            terminal.Write(value);
-        }
+        protected virtual void WriteToTerminal(ITerminal terminal, string value) => terminal.Write(value);
 
-        protected virtual void WriteLineToTerminal(ITerminal terminal, string value)
-        {
-            terminal.WriteLine(value);
-        }
+        protected virtual void WriteLineToTerminal(ITerminal terminal, string value) => terminal.WriteLine(value);
     }
 }

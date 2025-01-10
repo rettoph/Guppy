@@ -45,27 +45,14 @@ namespace Guppy.Core.Resources.Common
             this._name.Dispose();
         }
 
-        public override readonly bool Equals(object? obj)
-        {
-            return this.Equals((ResourceKey<T>)obj!);
-        }
+        public override readonly bool Equals(object? obj) => this.Equals((ResourceKey<T>)obj!);
 
-        public readonly bool Equals(ResourceKey<T> other)
-        {
-            return this.Id.Equals(other.Id);
+        public readonly bool Equals(ResourceKey<T> other) => this.Id.Equals(other.Id);
 
-        }
-
-        public readonly bool Equals(IResourceKey? other)
-        {
-            return other is ResourceKey<T> casted
+        public readonly bool Equals(IResourceKey? other) => other is ResourceKey<T> casted
                 && this.Equals(casted);
-        }
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Id);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Id);
 
         public static bool operator ==(ResourceKey<T> left, ResourceKey<T> right)
         {
@@ -92,14 +79,8 @@ namespace Guppy.Core.Resources.Common
             return resource;
         }
 
-        public static IEnumerable<ResourceKey<T>> GetAll()
-        {
-            return _cache.Values;
-        }
+        public static IEnumerable<ResourceKey<T>> GetAll() => _cache.Values;
 
-        readonly IResource IResourceKey.CreateResource()
-        {
-            return new Resource<T>(this);
-        }
+        readonly IResource IResourceKey.CreateResource() => new Resource<T>(this);
     }
 }

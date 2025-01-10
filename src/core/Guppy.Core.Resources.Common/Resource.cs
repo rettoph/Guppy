@@ -52,25 +52,13 @@ namespace Guppy.Core.Resources.Common
             this.Key = key;
         }
 
-        public readonly IEnumerable<T> All()
-        {
-            return this._value.Value;
-        }
+        public readonly IEnumerable<T> All() => this._value.Value;
 
-        public readonly void Dispose()
-        {
-            this._value.Dispose();
-        }
+        public readonly void Dispose() => this._value.Dispose();
 
-        readonly IEnumerable<object> IResource.All()
-        {
-            return this.All().OfType<object>();
-        }
+        readonly IEnumerable<object> IResource.All() => this.All().OfType<object>();
 
-        readonly void IResource.Clear()
-        {
-            this._value.Value.Clear();
-        }
+        readonly void IResource.Clear() => this._value.Value.Clear();
 
         void IResource.Refresh(IResourcePackService resourcePackService)
         {

@@ -23,15 +23,9 @@ namespace Guppy.Game.ImGui.MonoGame
             this._idPopper = new ImGuiPoppers.IdPopper(this);
         }
 
-        public IDisposable Apply(ResourceKey<ImStyle> style)
-        {
-            return this.Apply(this._resourceService.Get(style));
-        }
+        public IDisposable Apply(ResourceKey<ImStyle> style) => this.Apply(this._resourceService.Get(style));
 
-        public IDisposable Apply(Resource<ImStyle> style)
-        {
-            return this.Apply(style.Value);
-        }
+        public IDisposable Apply(Resource<ImStyle> style) => this.Apply(style.Value);
 
         public IDisposable Apply(ImStyle style)
         {

@@ -17,10 +17,7 @@ namespace Guppy.Core.Serialization.Common.Extensions
         }
 
         public static ContainerBuilder RegisterPolymorphicJsonType<TInstance, TBase>(this ContainerBuilder builer, string key)
-            where TInstance : TBase
-        {
-            return builer.RegisterPolymorphicJsonType(key, typeof(TInstance), typeof(TBase));
-        }
+            where TInstance : TBase => builer.RegisterPolymorphicJsonType(key, typeof(TInstance), typeof(TBase));
         public static ContainerBuilder RegisterJsonConverter<TConverter>(this ContainerBuilder builder)
             where TConverter : JsonConverter
         {

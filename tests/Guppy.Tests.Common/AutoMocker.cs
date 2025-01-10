@@ -53,10 +53,7 @@ namespace Guppy.Tests.Common
         where TSelf : AutoMocker<TSelf, TService>
         where TService : notnull
     {
-        public virtual TService Build()
-        {
-            return this.autoMock.Container.Resolve<TService>();
-        }
+        public virtual TService Build() => this.autoMock.Container.Resolve<TService>();
 
         public new TSelf Register(Action<ContainerBuilder> builder)
         {

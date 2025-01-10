@@ -19,45 +19,21 @@ namespace Guppy.Core.Network.Common.Claims
 
         public abstract object? GetValue();
 
-        public static Claim Create<T>(string key, T value, ClaimAccessibilityEnum accessibility)
-        {
-            return new Claim<T>(key, value, accessibility);
-        }
+        public static Claim Create<T>(string key, T value, ClaimAccessibilityEnum accessibility) => new Claim<T>(key, value, accessibility);
 
-        public static Claim Create<T>(T value, ClaimAccessibilityEnum accessibility)
-        {
-            return new Claim<T>(typeof(T).AssemblyQualifiedName ?? throw new Exception(), value, accessibility);
-        }
+        public static Claim Create<T>(T value, ClaimAccessibilityEnum accessibility) => new Claim<T>(typeof(T).AssemblyQualifiedName ?? throw new Exception(), value, accessibility);
 
-        public static Claim Public<T>(string key, T value)
-        {
-            return Create(key, value, ClaimAccessibilityEnum.Public);
-        }
+        public static Claim Public<T>(string key, T value) => Create(key, value, ClaimAccessibilityEnum.Public);
 
-        public static Claim Public<T>(T value)
-        {
-            return Create(value, ClaimAccessibilityEnum.Public);
-        }
+        public static Claim Public<T>(T value) => Create(value, ClaimAccessibilityEnum.Public);
 
-        public static Claim Protected<T>(string key, T value)
-        {
-            return Create(key, value, ClaimAccessibilityEnum.Protected);
-        }
+        public static Claim Protected<T>(string key, T value) => Create(key, value, ClaimAccessibilityEnum.Protected);
 
-        public static Claim Protected<T>(T value)
-        {
-            return Create(value, ClaimAccessibilityEnum.Protected);
-        }
+        public static Claim Protected<T>(T value) => Create(value, ClaimAccessibilityEnum.Protected);
 
-        public static Claim Private<T>(string key, T value)
-        {
-            return Create(key, value, ClaimAccessibilityEnum.Private);
-        }
+        public static Claim Private<T>(string key, T value) => Create(key, value, ClaimAccessibilityEnum.Private);
 
-        public static Claim Private<T>(T value)
-        {
-            return Create(value, ClaimAccessibilityEnum.Private);
-        }
+        public static Claim Private<T>(T value) => Create(value, ClaimAccessibilityEnum.Private);
 
         public void Serialize(NetDataWriter writer)
         {
@@ -78,19 +54,13 @@ namespace Guppy.Core.Network.Common.Claims
                 accessibility: reader.GetEnum<ClaimAccessibilityEnum>());
         }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Claim claim &&
+        public override bool Equals(object? obj) => obj is Claim claim &&
                    this.Key == claim.Key &&
                    EqualityComparer<ClaimType>.Default.Equals(this.Type, claim.Type) &&
                    this.Accessibility == claim.Accessibility &&
                    this.CreatedAt == claim.CreatedAt;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Key, this.Type, this.Accessibility, this.CreatedAt);
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Key, this.Type, this.Accessibility, this.CreatedAt);
     }
 
     public class Claim<T>(string key, T value, ClaimAccessibilityEnum accessibility, DateTime? createdAt = null) : Claim(key, accessibility, createdAt)
@@ -99,14 +69,9 @@ namespace Guppy.Core.Network.Common.Claims
 
         public override ClaimType<T> Type { get; } = ClaimType.Get<T>();
 
-        public override object? GetValue()
-        {
-            return this.Value;
-        }
+        public override object? GetValue() => this.Value;
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Claim<T> claim &&
+        public override bool Equals(object? obj) => obj is Claim<T> claim &&
                    base.Equals(obj) &&
                    this.Key == claim.Key &&
                    EqualityComparer<ClaimType>.Default.Equals(this.Type, claim.Type) &&
@@ -114,11 +79,7 @@ namespace Guppy.Core.Network.Common.Claims
                    this.CreatedAt == claim.CreatedAt &&
                    EqualityComparer<T>.Default.Equals(this.Value, claim.Value) &&
                    EqualityComparer<ClaimType<T>>.Default.Equals(this.Type, claim.Type);
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), this.Key, this.Type, this.Accessibility, this.CreatedAt, this.Value, this.Type);
-        }
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), this.Key, this.Type, this.Accessibility, this.CreatedAt, this.Value, this.Type);
     }
 }

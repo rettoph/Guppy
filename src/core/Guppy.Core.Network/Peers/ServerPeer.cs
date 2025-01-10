@@ -40,10 +40,7 @@ namespace Guppy.Core.Network.Peers
             this.Manager.Start(port);
         }
 
-        protected override INetGroup GroupFactory(byte id)
-        {
-            return new ServerNetGroup(id, this);
-        }
+        protected override INetGroup GroupFactory(byte id) => new ServerNetGroup(id, this);
 
         private void HandleConnectionRequestEvent(ConnectionRequest request)
         {
@@ -80,9 +77,6 @@ namespace Guppy.Core.Network.Peers
             request.Reject();
         }
 
-        private void HandlePeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo)
-        {
-            this.Users.Remove(peer.Id);
-        }
+        private void HandlePeerDisconnectedEvent(NetPeer peer, DisconnectInfo disconnectInfo) => this.Users.Remove(peer.Id);
     }
 }

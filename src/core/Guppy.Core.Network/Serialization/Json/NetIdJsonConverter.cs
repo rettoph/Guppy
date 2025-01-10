@@ -19,10 +19,7 @@ namespace Guppy.Core.Network.Serialization.Json
         //            elementSelector: x => x);
         //}
 
-        public override INetId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override INetId? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotImplementedException();
 
         public override void Write(Utf8JsonWriter writer, INetId value, JsonSerializerOptions options)
         {
@@ -36,9 +33,6 @@ namespace Guppy.Core.Network.Serialization.Json
             writer.WriteEndObject();
         }
 
-        private static string GetTypeKey(Type type)
-        {
-            return type.Name ?? throw new MissingMemberException();
-        }
+        private static string GetTypeKey(Type type) => type.Name ?? throw new MissingMemberException();
     }
 }

@@ -27,15 +27,9 @@ namespace Guppy.Game.MonoGame.Collections
             this.dirty = true;
         }
 
-        public bool Contains(T item)
-        {
-            return this.items.Contains(item);
-        }
+        public bool Contains(T item) => this.items.Contains(item);
 
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            this.items.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(T[] array, int arrayIndex) => this.items.CopyTo(array, arrayIndex);
 
         public virtual void EnsureClean()
         {
@@ -75,9 +69,6 @@ namespace Guppy.Game.MonoGame.Collections
 
         protected abstract IEnumerable<T> Clean(IEnumerable<T> items);
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

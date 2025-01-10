@@ -41,15 +41,9 @@
             }
         }
 
-        public readonly void Dispose()
-        {
-            this.Dispose(true);
-        }
+        public readonly void Dispose() => this.Dispose(true);
 
-        public void SetValue(TValue value)
-        {
-            this.Value = value;
-        }
+        public void SetValue(TValue value) => this.Value = value;
 
         public static implicit operator TValue(UnmanagedReference<TValue> value)
         {
@@ -78,16 +72,10 @@
             _indices.Push(index);
         }
 
-        public override readonly bool Equals(object? obj)
-        {
-            return obj is UnmanagedReference<TValue> reference &&
+        public override readonly bool Equals(object? obj) => obj is UnmanagedReference<TValue> reference &&
                    this._index == reference._index;
-        }
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this._index);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this._index);
 
         public static bool operator ==(UnmanagedReference<TValue> left, UnmanagedReference<TValue> right)
         {
@@ -144,15 +132,9 @@
             }
         }
 
-        public readonly void Dispose()
-        {
-            this.Dispose(true);
-        }
+        public readonly void Dispose() => this.Dispose(true);
 
-        public void SetValue(TValue value)
-        {
-            this.Value = value;
-        }
+        public void SetValue(TValue value) => this.Value = value;
 
         public static implicit operator TValue(UnmanagedReference<TNamespace, TValue> value)
         {
@@ -181,16 +163,10 @@
             _indices.Push(index);
         }
 
-        public override readonly bool Equals(object? obj)
-        {
-            return obj is UnmanagedReference<TNamespace, TValue> reference &&
+        public override readonly bool Equals(object? obj) => obj is UnmanagedReference<TNamespace, TValue> reference &&
                    this._index == reference._index;
-        }
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this._index);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this._index);
 
         public static bool operator ==(UnmanagedReference<TNamespace, TValue> left, UnmanagedReference<TNamespace, TValue> right)
         {

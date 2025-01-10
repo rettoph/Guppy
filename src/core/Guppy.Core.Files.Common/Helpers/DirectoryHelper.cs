@@ -5,10 +5,7 @@ namespace Guppy.Core.Files.Common.Helpers
 {
     public static class DirectoryHelper
     {
-        public static void EnsureDirectoryExists(FileLocation source)
-        {
-            DirectoryHelper.EnsureDirectoryExists(source.Directory);
-        }
+        public static void EnsureDirectoryExists(FileLocation source) => DirectoryHelper.EnsureDirectoryExists(source.Directory);
 
         public static void EnsureDirectoryExists(DirectoryLocation source)
         {
@@ -33,19 +30,10 @@ namespace Guppy.Core.Files.Common.Helpers
             }
         }
 
-        public static string Normalize(string path)
-        {
-            return path.Replace("\\", "/");
-        }
+        public static string Normalize(string path) => path.Replace("\\", "/");
 
-        public static string Combine(params string[] paths)
-        {
-            return DirectoryHelper.Normalize(Path.Combine(paths));
-        }
+        public static string Combine(params string[] paths) => DirectoryHelper.Normalize(Path.Combine(paths));
 
-        public static string GetEntryDirectory()
-        {
-            return DirectoryHelper.Normalize(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? Directory.GetCurrentDirectory());
-        }
+        public static string GetEntryDirectory() => DirectoryHelper.Normalize(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? Directory.GetCurrentDirectory());
     }
 }

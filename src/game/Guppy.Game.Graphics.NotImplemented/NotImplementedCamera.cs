@@ -22,41 +22,19 @@ namespace Guppy.Game.Graphics.NotImplemented
 
         public RectangleF ViewportBounds => throw new NotImplementedException();
 
-        public bool Contains(in Matrix transformation)
-        {
-            throw new NotImplementedException();
-        }
+        public bool Contains(in Matrix transformation) => throw new NotImplementedException();
 
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
-        public void Dispose()
-#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
-        {
-            throw new NotImplementedException();
-        }
+        public void Dispose() => throw new NotImplementedException();
 
-        public Vector2 Project(Vector2 source)
-        {
-            throw new NotImplementedException();
-        }
+        public Vector2 Project(Vector2 source) => throw new NotImplementedException();
 
-        public Vector3 Project(Vector3 source)
-        {
-            throw new NotImplementedException();
-        }
+        public Vector3 Project(Vector3 source) => throw new NotImplementedException();
 
-        public Vector2 Unproject(Vector2 source)
-        {
-            throw new NotImplementedException();
-        }
+        public Vector2 Unproject(Vector2 source) => throw new NotImplementedException();
 
-        public Vector3 Unproject(Vector3 source)
-        {
-            throw new NotImplementedException();
-        }
+        public Vector3 Unproject(Vector3 source) => throw new NotImplementedException();
 
-        public void Update(GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
+        public void Update(GameTime gameTime) => throw new NotImplementedException();
     }
 }

@@ -4,10 +4,7 @@ namespace LiteNetLib.Utils
 {
     public static class NetDataReaderExtensions
     {
-        public static bool GetIf(this NetDataReader reader)
-        {
-            return reader.GetBool();
-        }
+        public static bool GetIf(this NetDataReader reader) => reader.GetBool();
 
         public static TEnum GetEnum<TEnum>(this NetDataReader reader)
             where TEnum : struct, Enum

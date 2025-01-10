@@ -60,10 +60,7 @@ namespace Guppy.Game.Common
             this.Enabled = true;
         }
 
-        void IScene.Initialize(ILifetimeScope scope)
-        {
-            this.Initialize(scope);
-        }
+        void IScene.Initialize(ILifetimeScope scope) => this.Initialize(scope);
 
         protected virtual void Initialize(ILifetimeScope scope)
         {
@@ -78,20 +75,11 @@ namespace Guppy.Game.Common
             this._updateComponentsActions.Add(this.Components);
         }
 
-        public virtual void Draw(GameTime gameTime)
-        {
-            this._drawComponentsActions?.Invoke(gameTime);
-        }
+        public virtual void Draw(GameTime gameTime) => this._drawComponentsActions?.Invoke(gameTime);
 
-        public virtual void Update(GameTime gameTime)
-        {
-            this._updateComponentsActions.Invoke(gameTime);
-        }
+        public virtual void Update(GameTime gameTime) => this._updateComponentsActions.Invoke(gameTime);
 
         public T Resolve<T>()
-            where T : notnull
-        {
-            return this._scope.Resolve<T>();
-        }
+            where T : notnull => this._scope.Resolve<T>();
     }
 }

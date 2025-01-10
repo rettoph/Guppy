@@ -16,9 +16,6 @@ namespace Guppy.Core.Files.Common.Serialization.Json
             return this._files.Value.Get<T>(location);
         }
 
-        public override void Write(Utf8JsonWriter writer, IFile<T> value, JsonSerializerOptions options)
-        {
-            JsonSerializer.Serialize(writer, value.Location, options);
-        }
+        public override void Write(Utf8JsonWriter writer, IFile<T> value, JsonSerializerOptions options) => JsonSerializer.Serialize(writer, value.Location, options);
     }
 }

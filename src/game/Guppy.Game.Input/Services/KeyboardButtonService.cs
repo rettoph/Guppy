@@ -9,10 +9,7 @@ namespace Guppy.Game.Input.Services
     {
         private IButton[] _keys = [];
 
-        public void Clean(IEnumerable<IButton> buttons)
-        {
-            this._keys = buttons.Where(x => x.Source.Type == ButtonTypeEnum.Keyboard).ToArray();
-        }
+        public void Clean(IEnumerable<IButton> buttons) => this._keys = buttons.Where(x => x.Source.Type == ButtonTypeEnum.Keyboard).ToArray();
 
         public IEnumerable<IInput> Update()
         {

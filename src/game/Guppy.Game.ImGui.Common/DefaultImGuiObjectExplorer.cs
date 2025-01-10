@@ -21,10 +21,7 @@ namespace Guppy.Game.ImGui.Common
         private Vector4 _redBackground = Color.DarkRed.ToVector4();
         private Vector4 _greenBackground = Color.DarkGreen.ToVector4();
 
-        public override bool AppliesTo(Type type)
-        {
-            return true;
-        }
+        public override bool AppliesTo(Type type) => true;
 
         public override TextFilterResultEnum DrawObjectExplorer(int? index, string? name, Type type, object? instance, string filter, int maxDepth, int currentDepth, HashSet<object> tree)
         {

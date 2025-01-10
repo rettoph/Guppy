@@ -31,10 +31,7 @@ namespace Guppy.Core.Network.Services
             this._messageTypes = messages.ToDictionary(x => x.Body, x => x);
         }
 
-        public INetMessageType GetById(byte id)
-        {
-            return this._messageIds[id];
-        }
+        public INetMessageType GetById(byte id) => this._messageIds[id];
 
         public INetMessageType<T> Get<T>()
             where T : notnull

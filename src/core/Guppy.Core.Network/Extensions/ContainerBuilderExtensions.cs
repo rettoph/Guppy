@@ -19,36 +19,33 @@ namespace Guppy.Core.Network.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterCoreNetworkServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterCoreNetworkServices), builder =>
-            {
-                builder.RegisterType<NetSerializerService>().As<INetSerializerService>().InstancePerLifetimeScope();
-                builder.RegisterGeneric(typeof(NetScope<>)).As(typeof(INetScope<>)).InstancePerLifetimeScope();
-                builder.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();
-                builder.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
-                builder.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();
+        public static ContainerBuilder RegisterCoreNetworkServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterCoreNetworkServices), builder =>
+                                                                                                              {
+                                                                                                                  builder.RegisterType<NetSerializerService>().As<INetSerializerService>().InstancePerLifetimeScope();
+                                                                                                                  builder.RegisterGeneric(typeof(NetScope<>)).As(typeof(INetScope<>)).InstancePerLifetimeScope();
+                                                                                                                  builder.RegisterType<ClientPeer>().As<IClientPeer>().SingleInstance();
+                                                                                                                  builder.RegisterType<ServerPeer>().As<IServerPeer>().SingleInstance();
+                                                                                                                  builder.RegisterType<NetMessageService>().As<INetMessageService>().InstancePerLifetimeScope();
 
-                builder.RegisterJsonConverter<PolymorphicConverter<INetId>>();
-                builder.RegisterJsonConverter<ByteNetIdJsonConverter>();
-                builder.RegisterJsonConverter<UShortNetIdJsonConverter>();
-                builder.RegisterJsonConverter<ClaimJsonConverter>();
-                builder.RegisterJsonConverter<ClaimTypeJsonConverter>();
+                                                                                                                  builder.RegisterJsonConverter<PolymorphicConverter<INetId>>();
+                                                                                                                  builder.RegisterJsonConverter<ByteNetIdJsonConverter>();
+                                                                                                                  builder.RegisterJsonConverter<UShortNetIdJsonConverter>();
+                                                                                                                  builder.RegisterJsonConverter<ClaimJsonConverter>();
+                                                                                                                  builder.RegisterJsonConverter<ClaimTypeJsonConverter>();
 
-                builder.RegisterPolymorphicJsonType<NetId.Byte, INetId>(nameof(NetId.Byte));
-                builder.RegisterPolymorphicJsonType<NetId.UShort, INetId>(nameof(NetId.UShort));
+                                                                                                                  builder.RegisterPolymorphicJsonType<NetId.Byte, INetId>(nameof(NetId.Byte));
+                                                                                                                  builder.RegisterPolymorphicJsonType<NetId.UShort, INetId>(nameof(NetId.UShort));
 
-                builder.RegisterNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
-                builder.RegisterNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
-                builder.RegisterNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+                                                                                                                  builder.RegisterNetMessageType<ConnectionRequestData>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+                                                                                                                  builder.RegisterNetMessageType<ConnectionRequestResponse>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
+                                                                                                                  builder.RegisterNetMessageType<UserAction>(DeliveryMethod.ReliableOrdered, PeerConstants.OutgoingChannel);
 
-                builder.RegisterNetSerializer<ConnectionRequestDataNetSerializer>();
-                builder.RegisterNetSerializer<ConnectionRequestResponseNetSerializer>();
-                builder.RegisterNetSerializer<UserActionNetSerializer>();
-                builder.RegisterNetSerializer<UserDtoNetSerializer>();
+                                                                                                                  builder.RegisterNetSerializer<ConnectionRequestDataNetSerializer>();
+                                                                                                                  builder.RegisterNetSerializer<ConnectionRequestResponseNetSerializer>();
+                                                                                                                  builder.RegisterNetSerializer<UserActionNetSerializer>();
+                                                                                                                  builder.RegisterNetSerializer<UserDtoNetSerializer>();
 
-                builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
-            });
-        }
+                                                                                                                  builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+                                                                                                              });
     }
 }

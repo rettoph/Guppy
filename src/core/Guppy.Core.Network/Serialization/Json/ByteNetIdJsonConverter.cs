@@ -13,9 +13,6 @@ namespace Guppy.Core.Network.Serialization.Json
             return (NetId.Byte)NetId.Byte.Create(value);
         }
 
-        public override void Write(Utf8JsonWriter writer, NetId.Byte value, JsonSerializerOptions options)
-        {
-            writer.WriteNumberValue(value.Value);
-        }
+        public override void Write(Utf8JsonWriter writer, NetId.Byte value, JsonSerializerOptions options) => writer.WriteNumberValue(value.Value);
     }
 }

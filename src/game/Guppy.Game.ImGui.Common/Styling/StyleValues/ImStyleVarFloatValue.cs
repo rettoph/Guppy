@@ -5,14 +5,8 @@
         public readonly ImGuiNET.ImGuiStyleVar Property = ImGuiStyleVarConverter.ConvertToImGui(property);
         public readonly float Value = value;
 
-        public override void Pop()
-        {
-            ImGuiNet.PopStyleVar();
-        }
+        public override void Pop() => ImGuiNet.PopStyleVar();
 
-        public override void Push()
-        {
-            ImGuiNet.PushStyleVar(this.Property, this.Value);
-        }
+        public override void Push() => ImGuiNet.PushStyleVar(this.Property, this.Value);
     }
 }

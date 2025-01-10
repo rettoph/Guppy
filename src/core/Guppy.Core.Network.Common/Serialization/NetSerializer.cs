@@ -36,9 +36,6 @@ namespace Guppy.Core.Network.Common.Serialization
             throw new ArgumentException($"Unable to cast {instance.GetType().Name} to {typeof(T).Name}");
         }
 
-        object INetSerializer.Deserialize(NetDataReader reader)
-        {
-            return this.Deserialize(reader);
-        }
+        object INetSerializer.Deserialize(NetDataReader reader) => this.Deserialize(reader);
     }
 }

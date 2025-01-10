@@ -24,43 +24,40 @@ namespace Guppy.Game.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterCommonGameServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterCommonGameServices), builder =>
-            {
-                builder.RegisterCoreCommandServices();
+        public static ContainerBuilder RegisterCommonGameServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterCommonGameServices), builder =>
+                                                                                                             {
+                                                                                                                 builder.RegisterCoreCommandServices();
 
-                builder.RegisterType<SceneStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<SceneStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
-                builder.RegisterJsonConverter<ColorConverter>();
-                builder.RegisterJsonConverter<Vector2Converter>();
-                builder.RegisterJsonConverter<Vector3Converter>();
+                                                                                                                 builder.RegisterJsonConverter<ColorConverter>();
+                                                                                                                 builder.RegisterJsonConverter<Vector2Converter>();
+                                                                                                                 builder.RegisterJsonConverter<Vector3Converter>();
 
-                builder.RegisterType<SceneService>().As<ISceneService>().SingleInstance();
+                                                                                                                 builder.RegisterType<SceneService>().As<ISceneService>().SingleInstance();
 
-                builder.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();
+                                                                                                                 builder.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();
 
-                builder.RegisterType<SceneFrameComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<EngineLogLevelComponent>().AsImplementedInterfaces().SingleInstance();
+                                                                                                                 builder.RegisterType<SceneFrameComponent>().AsImplementedInterfaces().SingleInstance();
+                                                                                                                 builder.RegisterType<EngineLogLevelComponent>().AsImplementedInterfaces().SingleInstance();
 
-                builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                                                                                                                 builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                builder.RegisterCommand<LogLevelCommand>();
+                                                                                                                 builder.RegisterCommand<LogLevelCommand>();
 
-                builder.RegisterSceneFilter<LogLevelCommand>(null);
+                                                                                                                 builder.RegisterSceneFilter<LogLevelCommand>(null);
 
-                builder.RegisterResourceType<ColorResourceType>();
-                builder.RegisterResourcePack(new ResourcePackConfiguration()
-                {
-                    EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)
-                });
+                                                                                                                 builder.RegisterResourceType<ColorResourceType>();
+                                                                                                                 builder.RegisterResourcePack(new ResourcePackConfiguration()
+                                                                                                                 {
+                                                                                                                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)
+                                                                                                                 });
 
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.MinimumLevel.ControlledBy(LogLevelCommand.LoggingLevelSwitch);
-                });
-            });
-        }
+                                                                                                                 builder.Configure<LoggerConfiguration>((scope, config) =>
+                                                                                                                 {
+                                                                                                                     config.MinimumLevel.ControlledBy(LogLevelCommand.LoggingLevelSwitch);
+                                                                                                                 });
+                                                                                                             });
     }
 }

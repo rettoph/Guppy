@@ -33,15 +33,9 @@ namespace Guppy.Core.Serialization.Common.Converters
             return typeToConvert.GetGenericTypeDefinition() == this.GenericTypeDefinition;
         }
 
-        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            return this.GetJsonConverter(typeToConvert).InternalRead(ref reader, typeToConvert, options);
-        }
+        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => this.GetJsonConverter(typeToConvert).InternalRead(ref reader, typeToConvert, options);
 
-        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
-        {
-            this.GetJsonConverter(value.GetType()).InternalWrite(writer, value, options);
-        }
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options) => this.GetJsonConverter(value.GetType()).InternalWrite(writer, value, options);
 
         private GenericTypeJsonConverter GetJsonConverter(Type type)
         {
@@ -76,15 +70,9 @@ namespace Guppy.Core.Serialization.Common.Converters
 
             }
 
-            internal override object InternalRead(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                return this.Read(ref reader, typeToConvert, options);
-            }
+            internal override object InternalRead(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => this.Read(ref reader, typeToConvert, options);
 
-            internal override void InternalWrite(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
-            {
-                this.Write(writer, (T)value, options);
-            }
+            internal override void InternalWrite(Utf8JsonWriter writer, object value, JsonSerializerOptions options) => this.Write(writer, (T)value, options);
 
             protected abstract T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options);
 

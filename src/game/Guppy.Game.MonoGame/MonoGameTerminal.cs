@@ -63,10 +63,7 @@ namespace Guppy.Game.MonoGame
             this.Color = oldColor;
         }
 
-        public void Write(string value)
-        {
-            this._currentLine.Text.Append(value);
-        }
+        public void Write(string value) => this._currentLine.Text.Append(value);
 
         public void Write(string value, IRef<Color> color)
         {
@@ -77,10 +74,7 @@ namespace Guppy.Game.MonoGame
             this.Color = oldColor;
         }
 
-        public void NewLine()
-        {
-            this.AddLine(this._currentLine.NewLine());
-        }
+        public void NewLine() => this.AddLine(this._currentLine.NewLine());
 
         public void Write(char value)
         {

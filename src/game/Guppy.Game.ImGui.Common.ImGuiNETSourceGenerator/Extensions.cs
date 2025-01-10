@@ -6,10 +6,7 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
 {
     internal static class Extensions
     {
-        public static bool IsVoid(this Type type)
-        {
-            return type == typeof(void) || type.FullName == "System.Void";
-        }
+        public static bool IsVoid(this Type type) => type == typeof(void) || type.FullName == "System.Void";
 
         public static string GetPrefix(this ParameterInfo parameter)
         {

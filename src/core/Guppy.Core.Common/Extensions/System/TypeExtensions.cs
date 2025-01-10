@@ -41,20 +41,11 @@ namespace Guppy.Core.Common.Extensions.System
             }
         }
 
-        public static IEnumerable<Type> GetAncestors<TParent>(this Type child)
-        {
-            return child.GetAncestors(typeof(TParent));
-        }
+        public static IEnumerable<Type> GetAncestors<TParent>(this Type child) => child.GetAncestors(typeof(TParent));
 
-        public static IEnumerable<Type> AssignableFrom(this IEnumerable<Type> types, Type parent)
-        {
-            return types.Where(parent.IsAssignableFrom);
-        }
+        public static IEnumerable<Type> AssignableFrom(this IEnumerable<Type> types, Type parent) => types.Where(parent.IsAssignableFrom);
 
-        public static IEnumerable<Type> AssignableFrom<TParent>(this IEnumerable<Type> types)
-        {
-            return types.AssignableFrom(typeof(TParent));
-        }
+        public static IEnumerable<Type> AssignableFrom<TParent>(this IEnumerable<Type> types) => types.AssignableFrom(typeof(TParent));
 
         public static IEnumerable<Type> WithAttribute(this IEnumerable<Type> types, Type attribute, bool inherit)
         {
@@ -68,10 +59,7 @@ namespace Guppy.Core.Common.Extensions.System
         }
 
         public static IEnumerable<Type> WithAttribute<TAttribute>(this IEnumerable<Type> types, bool inherit)
-            where TAttribute : Attribute
-        {
-            return types.WithAttribute(typeof(TAttribute), inherit);
-        }
+            where TAttribute : Attribute => types.WithAttribute(typeof(TAttribute), inherit);
 
         public static IEnumerable<Type> GetConstructedGenericTypes(this Type type, Type genericTypeDefinition)
         {

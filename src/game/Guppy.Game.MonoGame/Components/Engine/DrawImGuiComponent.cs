@@ -29,10 +29,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
         }
 
         [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
-        public void Initialize(IGuppyEngine engine)
-        {
-            this._imguiActions.Add(this._engine.Components);
-        }
+        public void Initialize(IGuppyEngine engine) => this._imguiActions.Add(this._engine.Components);
 
         public void Dispose()
         {
@@ -41,29 +38,16 @@ namespace Guppy.Game.MonoGame.Components.Engine
         }
 
         [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
-        public void Draw(GameTime gameTime)
-        {
-            this._imguiActions.Invoke(gameTime);
-        }
+        public void Draw(GameTime gameTime) => this._imguiActions.Invoke(gameTime);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Begin)]
-        public void BeginImgui(GameTime gameTime)
-        {
-            this._batch.Begin(gameTime);
-        }
+        public void BeginImgui(GameTime gameTime) => this._batch.Begin(gameTime);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.EndDraw)]
 #pragma warning disable IDE0060 // Remove unused parameter
-        public void EndImGui(GameTime gameTime)
-#pragma warning restore IDE0060 // Remove unused parameter
-        {
-            this._batch.End();
-        }
+        public void EndImGui(GameTime gameTime) => this._batch.End();
 
-        private void HandleSceneCreated(ISceneService sender, IScene scene)
-        {
-            this._imguiActions.Add(scene.Components);
-        }
+        private void HandleSceneCreated(ISceneService sender, IScene scene) => this._imguiActions.Add(scene.Components);
 
         private void HandleSceneDestroyed(ISceneService sender, IScene scene)
         {

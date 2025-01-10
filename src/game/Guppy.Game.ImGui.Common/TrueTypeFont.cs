@@ -12,9 +12,6 @@
             }
         }
 
-        internal int GetDataSize()
-        {
-            return this.Data.Length * sizeof(byte);
-        }
+        internal int GetDataSize() => this.Data.Length * sizeof(byte);
     }
 }

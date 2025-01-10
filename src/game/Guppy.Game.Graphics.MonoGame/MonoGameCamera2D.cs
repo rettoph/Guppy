@@ -81,10 +81,7 @@ namespace Guppy.Game.MonoGame.Common.Utilities.Cameras
             this._window.Value.ClientSizeChanged += this.HandleClientBoundsChanged;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            this._window.Value.ClientSizeChanged -= this.HandleClientBoundsChanged;
-        }
+        protected override void Dispose(bool disposing) => this._window.Value.ClientSizeChanged -= this.HandleClientBoundsChanged;
 
         public override void Update(GameTime gameTime)
         {

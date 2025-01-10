@@ -53,15 +53,9 @@ namespace Guppy.Core.Common.Collections
             return false;
         }
 
-        public bool TryGet(TKey1 key1, [MaybeNullWhen(false)] out TValue value)
-        {
-            return this._dic1.TryGetValue(key1, out value);
-        }
+        public bool TryGet(TKey1 key1, [MaybeNullWhen(false)] out TValue value) => this._dic1.TryGetValue(key1, out value);
 
-        public bool TryGet(TKey2 key2, [MaybeNullWhen(false)] out TValue value)
-        {
-            return this._dic2.TryGetValue(key2, out value);
-        }
+        public bool TryGet(TKey2 key2, [MaybeNullWhen(false)] out TValue value) => this._dic2.TryGetValue(key2, out value);
 
         public ref TValue TryGetRef(TKey1 key, out bool isNullRef)
         {
@@ -77,14 +71,8 @@ namespace Guppy.Core.Common.Collections
             return ref value;
         }
 
-        public bool Remove(TKey1 key1, TKey2 key2)
-        {
-            return this._dic1.Remove(key1) && this._dic2.Remove(key2);
-        }
+        public bool Remove(TKey1 key1, TKey2 key2) => this._dic1.Remove(key1) && this._dic2.Remove(key2);
 
-        public bool Remove(TKey1 key1, TKey2 key2, [MaybeNullWhen(false)] out TValue removed)
-        {
-            return this._dic1.Remove(key1, out removed) && this._dic2.Remove(key2);
-        }
+        public bool Remove(TKey1 key1, TKey2 key2, [MaybeNullWhen(false)] out TValue removed) => this._dic1.Remove(key1, out removed) && this._dic2.Remove(key2);
     }
 }

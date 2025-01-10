@@ -35,9 +35,6 @@ namespace Guppy.Example.Client.Entities
             return this.Old;
         }
 
-        public readonly void Dispose()
-        {
-            this.Neighbors.Dispose();
-        }
+        public readonly void Dispose() => this.Neighbors.Dispose();
     }
 }

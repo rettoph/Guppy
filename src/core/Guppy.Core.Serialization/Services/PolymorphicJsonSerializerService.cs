@@ -33,14 +33,8 @@ namespace Guppy.Core.Serialization.Services
             return instance;
         }
 
-        public string GetKey(Type type)
-        {
-            return this._types[type];
-        }
+        public string GetKey(Type type) => this._types[type];
 
-        public Type GetType(string key)
-        {
-            return this._types[key];
-        }
+        public Type GetType(string key) => this._types[key];
     }
 }

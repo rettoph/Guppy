@@ -93,9 +93,6 @@ namespace Guppy.Core.Messaging.Services
             this.RemoveSubscribers(subscribers);
         }
 
-        public IEnumerable<IBaseBroker> GetAll()
-        {
-            return this._brokers;
-        }
+        public IEnumerable<IBaseBroker> GetAll() => this._brokers;
     }
 }

@@ -15,17 +15,11 @@ namespace Guppy.Core.Common.Utilities
         {
         }
 
-        public override readonly bool Equals(object? obj)
-        {
-            return obj is Delegator<TDelegate> delegator &&
+        public override readonly bool Equals(object? obj) => obj is Delegator<TDelegate> delegator &&
                    EqualityComparer<MethodInfo>.Default.Equals(this.Method, delegator.Method) &&
                    EqualityComparer<object?>.Default.Equals(this.Target, delegator.Target);
-        }
 
-        public override readonly int GetHashCode()
-        {
-            return HashCode.Combine(this.Method, this.Target);
-        }
+        public override readonly int GetHashCode() => HashCode.Combine(this.Method, this.Target);
 
         public static bool IsCompatible(Type? delegateType, MethodInfo method, out DelegatorIsCompatibleResultEnum result)
         {

@@ -15,15 +15,9 @@ namespace Guppy.Game.Console
 
         public ITerminalTheme Theme { get; } = theme;
 
-        public void NewLine()
-        {
-            System.Console.WriteLine();
-        }
+        public void NewLine() => System.Console.WriteLine();
 
-        public void Write(string value)
-        {
-            System.Console.Write(value);
-        }
+        public void Write(string value) => System.Console.Write(value);
 
         public void Write(string value, IRef<Color> color)
         {
@@ -33,10 +27,7 @@ namespace Guppy.Game.Console
             }
         }
 
-        public void WriteLine(string value)
-        {
-            System.Console.WriteLine(value);
-        }
+        public void WriteLine(string value) => System.Console.WriteLine(value);
 
         public void WriteLine(string value, IRef<Color> color)
         {

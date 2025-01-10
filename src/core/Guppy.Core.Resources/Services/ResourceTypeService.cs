@@ -8,9 +8,6 @@ namespace Guppy.Core.Resources.Services
     {
         private readonly Dictionary<string, IResourceType> _types = types.ToDictionary(x => x.Name, x => x);
 
-        public bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType)
-        {
-            return this._types.TryGetValue(name, out resourceType);
-        }
+        public bool TryGet(string name, [MaybeNullWhen(false)] out IResourceType resourceType) => this._types.TryGetValue(name, out resourceType);
     }
 }

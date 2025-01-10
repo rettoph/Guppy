@@ -4,14 +4,8 @@ namespace Guppy.Game.MonoGame.Common.Extensions
 {
     public static class ISceneConfigurationExtensions
     {
-        public static ISceneConfiguration SetSceneHasGraphicEnabled(this ISceneConfiguration configuration, bool value)
-        {
-            return configuration.Set(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, value);
-        }
+        public static ISceneConfiguration SetSceneHasGraphicEnabled(this ISceneConfiguration configuration, bool value) => configuration.Set(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, value);
 
-        public static bool GetSceneHasGraphicsEnabled(this ISceneConfiguration configuration)
-        {
-            return configuration.GetOrDefault(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true);
-        }
+        public static bool GetSceneHasGraphicsEnabled(this ISceneConfiguration configuration) => configuration.GetOrDefault(GraphicsSceneConfigurationKeys.SceneHasGraphicsEnabled, true);
     }
 }

@@ -41,9 +41,6 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
             return new ImStyleFontValue(key, this._imgui.Value.GetFont(ttf, size));
         }
 
-        public override void Write(Utf8JsonWriter writer, ImStyleFontValue value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, ImStyleFontValue value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

@@ -19,15 +19,9 @@ namespace Guppy.Engine
 
     public abstract class ObjectTextFilter<T>(int priority = 0) : ObjectTextFilter(priority)
     {
-        public override bool AppliesTo(object instance)
-        {
-            return instance is T;
-        }
+        public override bool AppliesTo(object instance) => instance is T;
 
-        public override TextFilterResultEnum Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree)
-        {
-            return this.Filter((T)instance, input, filter, currentDepth, maxDepth, tree);
-        }
+        public override TextFilterResultEnum Filter(object instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree) => this.Filter((T)instance, input, filter, currentDepth, maxDepth, tree);
 
         protected abstract TextFilterResultEnum Filter(T instance, string input, IObjectTextFilterService filter, int maxDepth, int currentDepth, HashSet<object> tree);
     }

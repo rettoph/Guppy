@@ -28,10 +28,7 @@ namespace Guppy.Core.Resources.Services
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellation)
-        {
-            return Task.CompletedTask;
-        }
+        public Task StopAsync(CancellationToken cancellation) => Task.CompletedTask;
 
         public void Initialize()
         {
@@ -82,9 +79,6 @@ namespace Guppy.Core.Resources.Services
             return value;
         }
 
-        public ISettingValue GetValue(ISetting setting)
-        {
-            return this._values[setting.Id];
-        }
+        public ISettingValue GetValue(ISetting setting) => this._values[setting.Id];
     }
 }

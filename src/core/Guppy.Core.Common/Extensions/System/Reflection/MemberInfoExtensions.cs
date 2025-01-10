@@ -8,16 +8,10 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
     public static class MemberInfoExtensions
     {
         public static bool HasCustomAttribute<T>(this MemberInfo member)
-            where T : Attribute
-        {
-            return member.GetCustomAttributes<T>().Any();
-        }
+            where T : Attribute => member.GetCustomAttributes<T>().Any();
 
         public static bool HasCustomAttribute<T>(this MemberInfo member, bool inherit)
-             where T : Attribute
-        {
-            return member.GetCustomAttributes(inherit).Any(x => x is T);
-        }
+             where T : Attribute => member.GetCustomAttributes(inherit).Any(x => x is T);
 
         /// <summary>
         /// Attempt to get all an array of all custom attributes mapped to a member.
@@ -143,10 +137,7 @@ namespace Guppy.Core.Common.Extensions.System.Reflection
         }
 
         public static bool HasSequenceGroup<T>(this MemberInfo member, object? instance)
-            where T : unmanaged, Enum
-        {
-            return member.TryGetSequenceGroup<T>(instance, false, out _);
-        }
+            where T : unmanaged, Enum => member.TryGetSequenceGroup<T>(instance, false, out _);
 
         public static int GetSequence<T>(
             this MemberInfo member,

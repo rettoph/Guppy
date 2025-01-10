@@ -9,14 +9,8 @@ namespace Guppy.Core.Network.Common.Serialization.NetSerializers
         private readonly NetSerializeDelegate<T> _serialize = serialize;
         private readonly NetDeserializeDelegate<T> _deserialize = deserialize;
 
-        public override T Deserialize(NetDataReader reader)
-        {
-            return this._deserialize(reader);
-        }
+        public override T Deserialize(NetDataReader reader) => this._deserialize(reader);
 
-        public override void Serialize(NetDataWriter writer, in T instance)
-        {
-            this._serialize(writer, in instance);
-        }
+        public override void Serialize(NetDataWriter writer, in T instance) => this._serialize(writer, in instance);
     }
 }

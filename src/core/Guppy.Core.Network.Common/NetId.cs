@@ -35,23 +35,14 @@ namespace Guppy.Core.Network.Common
 
             int INetId.Value => this.Value;
 
-            public void Write(NetDataWriter writer)
-            {
-                writer.Put(this.Value);
-            }
+            public void Write(NetDataWriter writer) => writer.Put(this.Value);
 
-            public static INetId<byte> Read(NetDataReader reader)
-            {
-                return NetId.Byte.Create(reader.GetByte());
-            }
+            public static INetId<byte> Read(NetDataReader reader) => NetId.Byte.Create(reader.GetByte());
 
-            public static INetId<byte> Create(byte value)
+            public static INetId<byte> Create(byte value) => new NetId.Byte()
             {
-                return new NetId.Byte()
-                {
-                    Value = value
-                };
-            }
+                Value = value
+            };
 
             public bool Equals(INetId? other)
             {
@@ -63,18 +54,12 @@ namespace Guppy.Core.Network.Common
                 return false;
             }
 
-            public INetId<byte> Next()
+            public INetId<byte> Next() => new NetId.Byte()
             {
-                return new NetId.Byte()
-                {
-                    Value = (byte)(this.Value + 1)
-                };
-            }
+                Value = (byte)(this.Value + 1)
+            };
 
-            INetId INetId.Next()
-            {
-                return this.Next();
-            }
+            INetId INetId.Next() => this.Next();
         }
 
         public readonly struct UShort : INetId<ushort>
@@ -87,23 +72,14 @@ namespace Guppy.Core.Network.Common
 
             int INetId.Value => this.Value;
 
-            public void Write(NetDataWriter writer)
-            {
-                writer.Put(this.Value);
-            }
+            public void Write(NetDataWriter writer) => writer.Put(this.Value);
 
-            public static INetId Read(NetDataReader reader)
-            {
-                return NetId.UShort.Create(reader.GetUShort());
-            }
+            public static INetId Read(NetDataReader reader) => NetId.UShort.Create(reader.GetUShort());
 
-            public static INetId<ushort> Create(ushort value)
+            public static INetId<ushort> Create(ushort value) => new NetId.UShort()
             {
-                return new NetId.UShort()
-                {
-                    Value = value
-                };
-            }
+                Value = value
+            };
 
             public bool Equals(INetId? other)
             {
@@ -115,18 +91,12 @@ namespace Guppy.Core.Network.Common
                 return false;
             }
 
-            public INetId<ushort> Next()
+            public INetId<ushort> Next() => new NetId.UShort()
             {
-                return new NetId.UShort()
-                {
-                    Value = (ushort)(this.Value + 1)
-                };
-            }
+                Value = (ushort)(this.Value + 1)
+            };
 
-            INetId INetId.Next()
-            {
-                return this.Next();
-            }
+            INetId INetId.Next() => this.Next();
         }
     }
 }

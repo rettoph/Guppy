@@ -13,10 +13,7 @@ namespace Guppy.Core.Network.Common
 
         INetId Next();
 
-        static virtual INetId Read(NetDataReader reader)
-        {
-            throw new NotImplementedException();
-        }
+        static virtual INetId Read(NetDataReader reader) => throw new NotImplementedException();
     }
 
     public interface INetId<T> : INetId

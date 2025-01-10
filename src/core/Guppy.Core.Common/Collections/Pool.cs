@@ -20,10 +20,7 @@ namespace Guppy.Core.Common.Collections
         }
 
         /// <inheritdoc />
-        public virtual bool Any()
-        {
-            return this._pool.Count != 0;
-        }
+        public virtual bool Any() => this._pool.Count != 0;
 
         /// <inheritdoc />
         public virtual bool TryPull([MaybeNullWhen(false)] out T instance)
@@ -52,9 +49,6 @@ namespace Guppy.Core.Common.Collections
         }
 
         /// <inheritdoc />
-        public virtual int Count()
-        {
-            return this._poolSize;
-        }
+        public virtual int Count() => this._poolSize;
     }
 }

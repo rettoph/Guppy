@@ -28,15 +28,9 @@ namespace Guppy.Core.Common
             this.Add(instances);
         }
 
-        public void Invoke(TParam param)
-        {
-            this.Sequenced?.Invoke(param);
-        }
+        public void Invoke(TParam param) => this.Sequenced?.Invoke(param);
 
-        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam param)
-        {
-            this.Grouped[sequenceGroup]?.Invoke(param);
-        }
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam param) => this.Grouped[sequenceGroup]?.Invoke(param);
 
         /// <summary>
         /// Sequence then invoke all delegators.
@@ -103,15 +97,9 @@ namespace Guppy.Core.Common
             this.Add(instances);
         }
 
-        public void Invoke(TParam1 param1, TParam2 param2)
-        {
-            this.Sequenced?.Invoke(param1, param2);
-        }
+        public void Invoke(TParam1 param1, TParam2 param2) => this.Sequenced?.Invoke(param1, param2);
 
-        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2)
-        {
-            this.Grouped[sequenceGroup]?.Invoke(param1, param2);
-        }
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2) => this.Grouped[sequenceGroup]?.Invoke(param1, param2);
 
         /// <summary>
         /// Sequence then invoke all delegators.
@@ -182,15 +170,9 @@ namespace Guppy.Core.Common
             this.Add(instances);
         }
 
-        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3)
-        {
-            this.Sequenced?.Invoke(param1, param2, param3);
-        }
+        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3) => this.Sequenced?.Invoke(param1, param2, param3);
 
-        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3)
-        {
-            this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3);
-        }
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3) => this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3);
 
         /// <summary>
         /// Sequence then invoke all delegators.
@@ -266,15 +248,9 @@ namespace Guppy.Core.Common
             this.Add(instances);
         }
 
-        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
-        {
-            this.Sequenced?.Invoke(param1, param2, param3, param4);
-        }
+        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4) => this.Sequenced?.Invoke(param1, param2, param3, param4);
 
-        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4)
-        {
-            this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3, param4);
-        }
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4) => this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3, param4);
 
         /// <summary>
         /// Sequence then invoke all delegators.
@@ -353,15 +329,9 @@ namespace Guppy.Core.Common
             this.Add(instances);
         }
 
-        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
-        {
-            this.Sequenced?.Invoke(param1, param2, param3, param4, param5);
-        }
+        public void Invoke(TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5) => this.Sequenced?.Invoke(param1, param2, param3, param4, param5);
 
-        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5)
-        {
-            this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3, param4, param5);
-        }
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup, TParam1 param1, TParam2 param2, TParam3 param3, TParam4 param4, TParam5 param5) => this.Grouped[sequenceGroup]?.Invoke(param1, param2, param3, param4, param5);
 
         /// <summary>
         /// Sequence then invoke all delegators.

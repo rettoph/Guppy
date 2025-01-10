@@ -32,10 +32,7 @@
             OnRemoved?.Invoke(null, item);
         }
 
-        public static IEnumerable<T> GetAll()
-        {
-            return _items;
-        }
+        public static IEnumerable<T> GetAll() => _items;
 
         public static void Clear(bool dispose)
         {

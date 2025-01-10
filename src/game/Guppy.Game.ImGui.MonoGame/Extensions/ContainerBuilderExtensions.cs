@@ -9,18 +9,15 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameMonoGameImGuiServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterGameMonoGameImGuiServices), builder =>
-            {
-                builder.RegisterCommonImGuiServices();
+        public static ContainerBuilder RegisterGameMonoGameImGuiServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterGameMonoGameImGuiServices), builder =>
+                                                                                                                    {
+                                                                                                                        builder.RegisterCommonImGuiServices();
 
-                builder.RegisterType<MonoGameImGuiBatch>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<ImGui>().As<IImGui>().SingleInstance();
+                                                                                                                        builder.RegisterType<MonoGameImGuiBatch>().AsImplementedInterfaces().SingleInstance();
+                                                                                                                        builder.RegisterType<ImGui>().As<IImGui>().SingleInstance();
 
-                builder.RegisterResourceType<ImStyleResourceType>();
-                builder.RegisterResourceType<TrueTypeFontResourceType>();
-            });
-        }
+                                                                                                                        builder.RegisterResourceType<ImStyleResourceType>();
+                                                                                                                        builder.RegisterResourceType<TrueTypeFontResourceType>();
+                                                                                                                    });
     }
 }

@@ -36,10 +36,7 @@ namespace Guppy.Core.Resources
         }
 
         public void Add<T>(ResourceKey<T> key, T value)
-            where T : notnull
-        {
-            this.Add(key, Localization.en_US, value);
-        }
+            where T : notnull => this.Add(key, Localization.en_US, value);
 
         public bool TryGetDefinedValue<T>(ResourceKey<T> key, string localization, [MaybeNullWhen(false)] out T value)
             where T : notnull
@@ -61,14 +58,8 @@ namespace Guppy.Core.Resources
         }
 
         public IEnumerable<ResourceKey<T>> GetAllDefinedResources<T>()
-            where T : notnull
-        {
-            return this._values.Keys.OfType<ResourceKey<T>>();
-        }
+            where T : notnull => this._values.Keys.OfType<ResourceKey<T>>();
 
-        public IEnumerable<IResourceKey> GetAllDefinedResources()
-        {
-            return this._values.Keys;
-        }
+        public IEnumerable<IResourceKey> GetAllDefinedResources() => this._values.Keys;
     }
 }

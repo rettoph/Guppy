@@ -6,14 +6,8 @@ namespace Guppy.Game.ImGui.Common.Styling.StyleValues
     {
         public readonly Ref<ImFontPtr> Font = font;
 
-        public override void Pop()
-        {
-            ImGuiNet.PopFont();
-        }
+        public override void Pop() => ImGuiNet.PopFont();
 
-        public override void Push()
-        {
-            ImGuiNet.PushFont(this.Font.Value.Value);
-        }
+        public override void Push() => ImGuiNet.PushFont(this.Font.Value.Value);
     }
 }

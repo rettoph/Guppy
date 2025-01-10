@@ -52,9 +52,6 @@ namespace Guppy.Game.Common.Extensions
         /// <returns></returns>
         public static ContainerBuilder RegisterSceneFilter<TService, TScene>(this ContainerBuilder builder)
             where TService : class
-            where TScene : IScene
-        {
-            return builder.RegisterStateFilter<TService, Type?>(StateKey<Type?>.Create<IScene>(), typeof(TScene));
-        }
+            where TScene : IScene => builder.RegisterStateFilter<TService, Type?>(StateKey<Type?>.Create<IScene>(), typeof(TScene));
     }
 }

@@ -68,10 +68,7 @@ namespace Guppy.Core.Network.Peers
             base.Send(message);
         }
 
-        protected override INetGroup GroupFactory(byte id)
-        {
-            return new ClientNetGroup(id, this);
-        }
+        protected override INetGroup GroupFactory(byte id) => new ClientNetGroup(id, this);
 
         public void Process(in Guid messageId, INetIncomingMessage<ConnectionRequestResponse> message)
         {

@@ -64,10 +64,7 @@ namespace Guppy.Game
             return defaultValue;
         }
 
-        public T? Get<T>(string key)
-        {
-            return this.GetOrDefault<T>(key, default!);
-        }
+        public T? Get<T>(string key) => this.GetOrDefault<T>(key, default!);
 
         public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
         {
@@ -93,10 +90,7 @@ namespace Guppy.Game
             return false;
         }
 
-        public IEnumerable<KeyValuePair<string, object>> GetAllValues()
-        {
-            return this._values;
-        }
+        public IEnumerable<KeyValuePair<string, object>> GetAllValues() => this._values;
     }
 
     internal sealed class SceneConfiguration<TScene> : SceneConfiguration, ISceneConfiguration<TScene>

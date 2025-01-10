@@ -9,10 +9,6 @@
         public abstract void Pop();
 
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
-        public void Dispose()
-#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
-        {
-            this.Pop();
-        }
+        public void Dispose() => this.Pop();
     }
 }

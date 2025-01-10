@@ -16,9 +16,6 @@ namespace Guppy.Game.ImGui.Common.Serialization.Json.Converters
             return style;
         }
 
-        public override void Write(Utf8JsonWriter writer, ImStyle value, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Write(Utf8JsonWriter writer, ImStyle value, JsonSerializerOptions options) => throw new NotImplementedException();
     }
 }

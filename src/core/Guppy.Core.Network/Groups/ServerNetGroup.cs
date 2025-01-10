@@ -51,11 +51,8 @@ namespace Guppy.Core.Network.Groups
             }
         }
 
-        private void HandleUserLeft(INetScopeUserService sender, IUser user)
-        {
-            this.Peer.Group.CreateMessage(user.CreateAction(this.Id, UserActionTypeEnum.UserLeft, ClaimAccessibilityEnum.Public))
+        private void HandleUserLeft(INetScopeUserService sender, IUser user) => this.Peer.Group.CreateMessage(user.CreateAction(this.Id, UserActionTypeEnum.UserLeft, ClaimAccessibilityEnum.Public))
                 .AddRecipients(this.Users.Peers)
                 .Send();
-        }
     }
 }

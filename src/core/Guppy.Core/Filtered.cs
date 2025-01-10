@@ -17,19 +17,10 @@ namespace Guppy.Core
 
         private IEnumerable<T>? _instances;
 
-        private T[] GetInstances()
-        {
-            return this._unfiltered.Value.Where(x => this._filters.Filter(this._scope, x)).ToArray();
-        }
+        private T[] GetInstances() => this._unfiltered.Value.Where(x => this._filters.Filter(this._scope, x)).ToArray();
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return (this._instances ??= this.GetInstances()).GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() => (this._instances ??= this.GetInstances()).GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

@@ -40,10 +40,7 @@ namespace Guppy.Core.Network
             return this;
         }
 
-        public void Set<T>(string key, T value, ClaimAccessibilityEnum accessibility)
-        {
-            this._claims[key] = new Claim<T>(key, value, accessibility);
-        }
+        public void Set<T>(string key, T value, ClaimAccessibilityEnum accessibility) => this._claims[key] = new Claim<T>(key, value, accessibility);
 
         public void Set(IEnumerable<Claim> claims)
         {
@@ -53,10 +50,7 @@ namespace Guppy.Core.Network
             }
         }
 
-        public T Get<T>(string key)
-        {
-            return ((Claim<T>)this._claims[key]).Value;
-        }
+        public T Get<T>(string key) => ((Claim<T>)this._claims[key]).Value;
 
         public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T? value)
         {
@@ -70,15 +64,9 @@ namespace Guppy.Core.Network
             return false;
         }
 
-        public IEnumerator<Claim> GetEnumerator()
-        {
-            return this._claims.Values.GetEnumerator();
-        }
+        public IEnumerator<Claim> GetEnumerator() => this._claims.Values.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         protected virtual void Dispose(bool disposing)
         {

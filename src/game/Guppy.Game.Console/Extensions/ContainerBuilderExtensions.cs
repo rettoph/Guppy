@@ -7,13 +7,10 @@ namespace Guppy.Game.Console.Extensions
 {
     public static class ContainerBuilderExtensions
     {
-        public static ContainerBuilder RegisterConsoleGameServices(this ContainerBuilder builder)
-        {
-            return builder.EnsureRegisteredOnce(nameof(RegisterConsoleGameServices), builder =>
-            {
-                builder.RegisterCommonGameServices().RegisterNotImplementedGraphicsServices();
-                builder.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
-            });
-        }
+        public static ContainerBuilder RegisterConsoleGameServices(this ContainerBuilder builder) => builder.EnsureRegisteredOnce(nameof(RegisterConsoleGameServices), builder =>
+                                                                                                              {
+                                                                                                                  builder.RegisterCommonGameServices().RegisterNotImplementedGraphicsServices();
+                                                                                                                  builder.RegisterType<ConsoleTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
+                                                                                                              });
     }
 }

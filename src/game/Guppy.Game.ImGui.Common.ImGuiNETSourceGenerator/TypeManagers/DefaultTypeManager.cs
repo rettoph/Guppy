@@ -17,14 +17,8 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
             //throw new NotImplementedException();
         }
 
-        public override string GetGuppyToImGuiConverter(string parameter)
-        {
-            return $"{parameter}";
-        }
+        public override string GetGuppyToImGuiConverter(string parameter) => $"{parameter}";
 
-        public override string GetImGuiToGuppyConverter(string parameter)
-        {
-            return $"{parameter}";
-        }
+        public override string GetImGuiToGuppyConverter(string parameter) => $"{parameter}";
     }
 }

@@ -8,14 +8,11 @@ namespace Guppy.Core.Network.Extensions.Identity
 {
     public static class UserExtensions
     {
-        internal static UserAction CreateAction(this IUser user, byte groupId, UserActionTypeEnum type, ClaimAccessibilityEnum accessibility)
+        internal static UserAction CreateAction(this IUser user, byte groupId, UserActionTypeEnum type, ClaimAccessibilityEnum accessibility) => new()
         {
-            return new UserAction()
-            {
-                GroupId = groupId,
-                Type = type,
-                UserDto = user.ToDto(accessibility)
-            };
-        }
+            GroupId = groupId,
+            Type = type,
+            UserDto = user.ToDto(accessibility)
+        };
     }
 }

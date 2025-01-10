@@ -10,15 +10,9 @@
         }
 
         public static void Put<TEnum>(this NetDataWriter writer, TEnum value)
-            where TEnum : Enum
-        {
-            writer.Put(Convert.ToByte(value));
-        }
+            where TEnum : Enum => writer.Put(Convert.ToByte(value));
 
-        public static void Put(this NetDataWriter writer, Guid value)
-        {
-            writer.Put(value.ToByteArray());
-        }
+        public static void Put(this NetDataWriter writer, Guid value) => writer.Put(value.ToByteArray());
 
         public static unsafe void Put(this NetDataWriter writer, UInt128 value)
         {

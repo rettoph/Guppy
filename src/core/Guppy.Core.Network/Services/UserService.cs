@@ -43,20 +43,11 @@ namespace Guppy.Core.Network.Services
             this.Current = this.Create([]);
         }
 
-        public User GetById(int id)
-        {
-            return this._idsUsers[id];
-        }
+        public User GetById(int id) => this._idsUsers[id];
 
-        IUser IUserService.GetById(int id)
-        {
-            return this.GetById(id);
-        }
+        IUser IUserService.GetById(int id) => this.GetById(id);
 
-        public bool TryGet(int id, [MaybeNullWhen(false)] out User user)
-        {
-            return this._idsUsers.TryGetValue(id, out user);
-        }
+        public bool TryGet(int id, [MaybeNullWhen(false)] out User user) => this._idsUsers.TryGetValue(id, out user);
 
         bool IUserService.TryGet(int id, [MaybeNullWhen(false)] out IUser user)
         {
@@ -70,10 +61,7 @@ namespace Guppy.Core.Network.Services
             return false;
         }
 
-        public IUser GetByNetPeer(NetPeer peer)
-        {
-            return this._peersUsers[peer];
-        }
+        public IUser GetByNetPeer(NetPeer peer) => this._peersUsers[peer];
 
         public User Create(Claim[] claims, params Claim[] additionalClaims)
         {
@@ -113,20 +101,11 @@ namespace Guppy.Core.Network.Services
             }
         }
 
-        IEnumerator<IUser> IEnumerable<IUser>.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        IEnumerator<IUser> IEnumerable<IUser>.GetEnumerator() => throw new NotImplementedException();
 
-        public IEnumerator<User> GetEnumerator()
-        {
-            return this._idsUsers.Values.GetEnumerator();
-        }
+        public IEnumerator<User> GetEnumerator() => this._idsUsers.Values.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         private void HandleUserStateChanged(IUser sender, UserStateEnum old, UserStateEnum value)
         {

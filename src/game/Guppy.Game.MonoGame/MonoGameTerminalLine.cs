@@ -12,9 +12,6 @@ namespace Guppy.Game.MonoGame
 
         public string Text = string.Empty;
 
-        public void CleanText()
-        {
-            this.Text = string.Join("", this.Segments.Select(x => x.Text));
-        }
+        public void CleanText() => this.Text = string.Join("", this.Segments.Select(x => x.Text));
     }
 }
