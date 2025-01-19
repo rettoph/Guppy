@@ -76,11 +76,11 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
             string content)
         {
             context.RegisterSourceOutput(context.CompilationProvider, (productionContext, compilation) =>
-                                        {
-                                            content = content.Replace(_targetNamspaceTag, compilation.AssemblyName);
+            {
+                content = content.Replace(_targetNamspaceTag, compilation.AssemblyName);
 
-                                            productionContext.AddSource(fileName, content);
-                                        });
+                productionContext.AddSource(fileName, content);
+            });
         }
     }
 }

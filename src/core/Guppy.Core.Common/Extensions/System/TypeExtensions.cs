@@ -137,8 +137,8 @@ namespace Guppy.Core.Common.Extensions.System
             if (type.IsGenericType)
             {
                 string genericArguments = type.GetGenericArguments()
-                                    .Select(x => x.Name)
-                                    .Aggregate((x1, x2) => $"{x1}, {x2}");
+                    .Select(x => x.Name)
+                    .Aggregate((x1, x2) => $"{x1}, {x2}");
                 return $"{name[..name.IndexOf('`')]}"
                      + $"<{genericArguments}>";
             }

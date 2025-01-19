@@ -11,18 +11,18 @@ namespace Guppy.Game.Graphics.NotImplemented.Extensions
         public static ContainerBuilder RegisterNotImplementedGraphicsServices(this ContainerBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterNotImplementedGraphicsServices), builder =>
-                                                                                                                         {
-                                                                                                                             builder.RegisterCommonGameServices();
+            {
+                builder.RegisterCommonGameServices();
 
-                                                                                                                             builder.RegisterResourceType<NotImplementedEffectCodeResourceType>();
-                                                                                                                             builder.RegisterResourceType<NotImplementedSpriteFontResourceType>();
+                builder.RegisterResourceType<NotImplementedEffectCodeResourceType>();
+                builder.RegisterResourceType<NotImplementedSpriteFontResourceType>();
 
-                                                                                                                             builder.RegisterType<NotImplementedCamera>().AsImplementedInterfaces().SingleInstance();
-                                                                                                                             builder.RegisterType<NotImplementedContentManager>().AsImplementedInterfaces().SingleInstance();
-                                                                                                                             builder.RegisterType<NotImplementedGameWindow>().AsImplementedInterfaces().SingleInstance();
-                                                                                                                             builder.RegisterType<NotImplementedGraphicsDevice>().AsImplementedInterfaces().SingleInstance();
-                                                                                                                             builder.RegisterType<NotImplementedScreen>().AsImplementedInterfaces().SingleInstance();
-                                                                                                                         });
+                builder.RegisterType<NotImplementedCamera>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedContentManager>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedGameWindow>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedGraphicsDevice>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<NotImplementedScreen>().AsImplementedInterfaces().SingleInstance();
+            });
         }
     }
 }

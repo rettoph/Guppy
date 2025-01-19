@@ -29,41 +29,41 @@ namespace Guppy.Game.MonoGame.Extensions
             GameWindow window)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterMonoGameServices), builder =>
-                                           {
-                                               builder.RegisterCommonGameServices()
-                                                   .RegisterMonoGameGraphicsService(game, graphics, content, window)
-                                                   .RegisterGameMonoGameImGuiServices()
-                                                   .RegisterGameInputServices();
+            {
+                builder.RegisterCommonGameServices()
+                    .RegisterMonoGameGraphicsService(game, graphics, content, window)
+                    .RegisterGameMonoGameImGuiServices()
+                    .RegisterGameInputServices();
 
-                                               builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
+                builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
-                                               builder.RegisterType<DrawImGuiComponent>().AsImplementedInterfaces().SingleInstance();
-                                               builder.RegisterType<EngineDebugWindowComponent>().AsImplementedInterfaces().SingleInstance();
-                                               builder.RegisterType<EngineTerminalWindowComponent>().AsImplementedInterfaces().SingleInstance();
-                                               builder.RegisterType<FpsDebugComponent>().AsImplementedInterfaces().SingleInstance();
-                                               builder.RegisterType<ToggleWindowComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<DrawImGuiComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<EngineDebugWindowComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<EngineTerminalWindowComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<FpsDebugComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<ToggleWindowComponent>().AsImplementedInterfaces().SingleInstance();
 
-                                               builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                               builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                                               builder.RegisterStateFilter<SceneDebugWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasDebugWindow), true);
-                                               builder.RegisterStateFilter<SceneTerminalWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasTerminalWindow), true);
+                builder.RegisterStateFilter<SceneDebugWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasDebugWindow), true);
+                builder.RegisterStateFilter<SceneTerminalWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasTerminalWindow), true);
 
-                                               builder.RegisterResourcePack(new ResourcePackConfiguration()
-                                               {
-                                                   EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyMonoGamePack.Directory)
-                                               });
+                builder.RegisterResourcePack(new ResourcePackConfiguration()
+                {
+                    EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyMonoGamePack.Directory)
+                });
 
-                                               builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1,
-                                               [
-                                                   (ButtonState.Pressed, Toggle<SceneDebugWindowComponent>.Instance)
-                                               ]);
+                builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1,
+                [
+                    (ButtonState.Pressed, Toggle<SceneDebugWindowComponent>.Instance)
+                ]);
 
-                                               builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde,
-                                               [
-                                                   (ButtonState.Pressed, Toggle<EngineTerminalWindowComponent>.Instance)
-                                               ]);
-                                           });
+                builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde,
+                [
+                    (ButtonState.Pressed, Toggle<EngineTerminalWindowComponent>.Instance)
+                ]);
+            });
         }
     }
 }

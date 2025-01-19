@@ -26,32 +26,32 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
             GameWindow window)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterMonoGameGraphicsService), builder =>
-                                           {
-                                               builder.RegisterCommonGameServices().RegisterGameMonoGameImGuiServices().RegisterGameInputServices();
+            {
+                builder.RegisterCommonGameServices().RegisterGameMonoGameImGuiServices().RegisterGameInputServices();
 
-                                               builder.RegisterInstance(game).SingleInstance();
-                                               builder.RegisterInstance<GraphicsDeviceManager>(graphics).SingleInstance();
-                                               builder.RegisterInstance<GraphicsDevice>(graphics.GraphicsDevice).SingleInstance();
-                                               builder.RegisterInstance<ContentManager>(content).SingleInstance();
-                                               builder.RegisterInstance<GameWindow>(window).SingleInstance();
+                builder.RegisterInstance(game).SingleInstance();
+                builder.RegisterInstance<GraphicsDeviceManager>(graphics).SingleInstance();
+                builder.RegisterInstance<GraphicsDevice>(graphics.GraphicsDevice).SingleInstance();
+                builder.RegisterInstance<ContentManager>(content).SingleInstance();
+                builder.RegisterInstance<GameWindow>(window).SingleInstance();
 
-                                               builder.RegisterType<MonoGameGraphicsDevice>().As<IGraphicsDevice>().SingleInstance();
-                                               builder.RegisterType<MonoGameGameWindow>().As<IGameWindow>().SingleInstance();
-                                               builder.RegisterType<MonoGameContentManager>().As<IContentManager>().SingleInstance();
+                builder.RegisterType<MonoGameGraphicsDevice>().As<IGraphicsDevice>().SingleInstance();
+                builder.RegisterType<MonoGameGameWindow>().As<IGameWindow>().SingleInstance();
+                builder.RegisterType<MonoGameContentManager>().As<IContentManager>().SingleInstance();
 
-                                               builder.RegisterType<MonoGameCamera2D>().As<ICamera2D>().SingleInstance();
+                builder.RegisterType<MonoGameCamera2D>().As<ICamera2D>().SingleInstance();
 
-                                               builder.RegisterType<MonoGameScreen>().As<IScreen>().InstancePerLifetimeScope();
-                                               builder.RegisterType<SpriteBatch>().SingleInstance();
+                builder.RegisterType<MonoGameScreen>().As<IScreen>().InstancePerLifetimeScope();
+                builder.RegisterType<SpriteBatch>().SingleInstance();
 
-                                               builder.RegisterResourceType<MonoGameEffectCodeResourceType>();
-                                               builder.RegisterResourceType<MonoGameSpriteFontResourceType>();
+                builder.RegisterResourceType<MonoGameEffectCodeResourceType>();
+                builder.RegisterResourceType<MonoGameSpriteFontResourceType>();
 
-                                               builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
+                builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
-                                               builder.RegisterType<MonoGameWorldViewProjectionEffectComponent>().AsImplementedInterfaces().SingleInstance();
-                                               builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                                           });
+                builder.RegisterType<MonoGameWorldViewProjectionEffectComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            });
         }
     }
 }
