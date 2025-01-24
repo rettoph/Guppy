@@ -1,4 +1,5 @@
-﻿using Guppy.Engine;
+﻿using Guppy.Core.Logging.Serilog.Extensions;
+using Guppy.Engine;
 using Guppy.Game;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
@@ -53,7 +54,8 @@ namespace Guppy.Example.Client
             {
                 GameEngine engine = new GameEngine(new GuppyContext("rettoph", "example"), builder =>
                 {
-                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window);
+                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
+                        .RegisterSerilogLoggingServices();
                 }).Start();
 
                 engine.Scenes.Create<MainScene>();

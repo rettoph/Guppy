@@ -1,16 +1,16 @@
-﻿using Guppy.Core.Resources.Common;
-using Serilog.Events;
+﻿using Guppy.Core.Logging.Common.Enums;
+using Guppy.Core.Resources.Common;
 
 namespace Guppy.Game.Common
 {
     public static class Settings
     {
 #if DEBUG
-        private const LogEventLevel _defaultLogLevel = LogEventLevel.Debug;
+        private const LogLevelEnum _defaultLogLevel = LogLevelEnum.Debug;
 #else
-        private const LogEventLevel _defaultLogLevel = LogEventLevel.Information;
+        private const LogLevelEnum _defaultLogLevel = LogLevelEnum.Information;
 #endif
 
-        public static readonly Setting<LogEventLevel> LogLevel = Setting<LogEventLevel>.Get(nameof(LogLevel), "Serilog LogEventLevel. Valid Values: Verbose, Debug, Information, Warning, Fatal.", _defaultLogLevel);
+        public static readonly Setting<LogLevelEnum> LogLevel = Setting<LogLevelEnum>.Get(nameof(LogLevel), "Log level. Valid Values: Verbose, Debug, Information, Warning, Fatal.", _defaultLogLevel);
     }
 }

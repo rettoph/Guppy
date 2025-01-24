@@ -2,7 +2,6 @@
 using Autofac;
 using Autofac.Builder;
 using Guppy.Core.Common.Configurations;
-using Guppy.Core.Common.Contexts;
 
 namespace Guppy.Core.Common.Extensions.Autofac
 {
@@ -15,27 +14,18 @@ namespace Guppy.Core.Common.Extensions.Autofac
             return builder;
         }
 
-        public static void Configure<T>(this ContainerBuilder services, Action<ILifetimeScope, T> builder)
+        public static ContainerBuilder Configure<T>(this ContainerBuilder builder, Action<ILifetimeScope, T> configurator)
         {
-            services.RegisterInstance(new ServiceConfiguration<T>(builder)).As<ServiceConfiguration>();
+            builder.RegisterInstance(new Configurator<T>(configurator)).As<Configurator>();
+
+            return builder;
         }
 
-        public static void RegisterLoggerContext(this ContainerBuilder services, Type serviceType, string loggerContext)
+        public static ContainerBuilder Configure<T>(this ContainerBuilder builder, Action<T> configurator)
         {
-            services.RegisterInstance(new LoggerContext()
-            {
-                ServiceType = serviceType,
-                Context = loggerContext
-            });
-        }
+            builder.RegisterInstance(new Configurator<T>((_, instance) => configurator(instance))).As<Configurator>();
 
-        public static void RegisterLoggerContext<TService>(this ContainerBuilder services, string loggerContext)
-        {
-            services.RegisterInstance(new LoggerContext()
-            {
-                ServiceType = typeof(TService),
-                Context = loggerContext
-            });
+            return builder;
         }
 
         private static readonly ConditionalWeakTable<ContainerBuilder, HashSet<string>> _tags = [];

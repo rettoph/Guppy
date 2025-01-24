@@ -7,7 +7,6 @@ using Guppy.Core.Serialization.Common.Factories;
 using Guppy.Core.Serialization.Common.Services;
 using Guppy.Core.Serialization.Factories;
 using Guppy.Core.Serialization.Services;
-using Serilog.Events;
 
 namespace Guppy.Core.Serialization.Extensions
 {
@@ -29,7 +28,6 @@ namespace Guppy.Core.Serialization.Extensions
             builder.RegisterPolymorphicJsonType<bool, object>(nameof(Boolean));
             builder.RegisterPolymorphicJsonType<int, object>(nameof(Int32));
             builder.RegisterPolymorphicJsonType<string, object>(nameof(String));
-            builder.RegisterPolymorphicJsonType<LogEventLevel, object>(nameof(LogEventLevel));
 
             builder.Configure<JsonSerializerOptions>((p, options) =>
             {

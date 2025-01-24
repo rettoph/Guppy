@@ -3,6 +3,7 @@ using Guppy.Core.Commands.Common.Extensions;
 using Guppy.Core.Commands.Extensions;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
+using Guppy.Core.Logging.Common.Sinks;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
@@ -14,11 +15,10 @@ using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Guppy.Game.Components.Engine;
 using Guppy.Game.Components.Guppy;
-using Guppy.Game.Components.Scene;
 using Guppy.Game.ResourceTypes;
 using Guppy.Game.Serialization.Json.Converters;
+using Guppy.Game.Serilog.Sinks;
 using Guppy.Game.Services;
-using Serilog;
 
 namespace Guppy.Game.Extensions
 {
@@ -39,9 +39,9 @@ namespace Guppy.Game.Extensions
                 builder.RegisterType<SceneService>().As<ISceneService>().SingleInstance();
 
                 builder.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();
+                builder.RegisterType<TerminalLogMessageSink>().As<ILogMessageSink>().InstancePerLifetimeScope();
 
                 builder.RegisterType<SceneFrameComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<EngineLogLevelComponent>().AsImplementedInterfaces().SingleInstance();
 
                 builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
@@ -54,11 +54,6 @@ namespace Guppy.Game.Extensions
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)
-                });
-
-                builder.Configure<LoggerConfiguration>((scope, config) =>
-                {
-                    config.MinimumLevel.ControlledBy(LogLevelCommand.LoggingLevelSwitch);
                 });
             });
         }

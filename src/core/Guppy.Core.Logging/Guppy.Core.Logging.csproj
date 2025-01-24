@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Guppy.Core.Files.Common\Guppy.Core.Files.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Logging.Common\Guppy.Core.Logging.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Serialization.Common\Guppy.Core.Serialization.Common.csproj" />
+  </ItemGroup>
+
+</Project>

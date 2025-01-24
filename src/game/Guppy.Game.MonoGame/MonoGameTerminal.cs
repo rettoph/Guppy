@@ -2,9 +2,9 @@
 using System.CommandLine.IO;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Collections;
+using Guppy.Core.Logging.Common.Enums;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
-using Serilog.Events;
 
 namespace Guppy.Game.MonoGame
 {
@@ -38,7 +38,7 @@ namespace Guppy.Game.MonoGame
         {
             this._out = new MonoGameTerminalTextWriter(this);
             this._currentLine = new MonoGameTerminalLineBuilder(theme.Get(default!));
-            this.Error = new MonoGameTerminalErrorTextWriter(this, theme.Get(LogEventLevel.Error));
+            this.Error = new MonoGameTerminalErrorTextWriter(this, theme.Get(LogLevelEnum.Error));
             this.Theme = theme;
 
             this.IsOutputRedirected = true;

@@ -2,13 +2,13 @@
 
 namespace Guppy.Core.Common.Configurations
 {
-    public abstract class ServiceConfiguration
+    public abstract class Configurator
     {
         public abstract bool CanBuild(Type type);
         public abstract void Configure(ILifetimeScope scope, object instance);
     }
 
-    public class ServiceConfiguration<T>(Action<ILifetimeScope, T> builder) : ServiceConfiguration
+    public class Configurator<T>(Action<ILifetimeScope, T> builder) : Configurator
     {
         private readonly Action<ILifetimeScope, T> _builder = builder;
 

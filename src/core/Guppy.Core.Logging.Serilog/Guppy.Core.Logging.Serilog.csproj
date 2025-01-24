@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Serilog.ILogger">
+      <Alias>ISerilogLogger</Alias>
+    </Using>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Logging.Common\Guppy.Core.Logging.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Logging\Guppy.Core.Logging.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,8 +1,7 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Engine.Components.Engine;
 using Guppy.Engine.Modules;
-using Serilog;
 
 namespace Guppy.Engine.Extensions.Autofac
 {
@@ -10,10 +9,7 @@ namespace Guppy.Engine.Extensions.Autofac
     {
         public static ContainerBuilder RegisterBootServices(this ContainerBuilder builder)
         {
-            builder.Configure<LoggerConfiguration>((scope, config) =>
-            {
-                config.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
-            });
+            builder.RegisterSerilogLoggingServices();
 
             return builder;
         }

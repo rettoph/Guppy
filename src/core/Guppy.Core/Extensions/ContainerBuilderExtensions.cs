@@ -5,7 +5,6 @@ using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Extensions;
 using Guppy.Core.Messaging.Extensions;
-using Guppy.Core.Modules;
 using Guppy.Core.Resources.Extensions;
 using Guppy.Core.Serialization.Extensions;
 using Guppy.Core.Services;
@@ -41,8 +40,6 @@ namespace Guppy.Core.Extensions
 
             builder.RegisterType<ServiceFilterService>().As<IServiceFilterService>().InstancePerLifetimeScope();
             builder.RegisterType<ConfigurationService>().As<IConfigurationService>().InstancePerLifetimeScope();
-
-            builder.RegisterModule<LoggerModule>();
 
             builder.RegisterCoreSerializationServices()
                 .RegisterCoreFileServices()

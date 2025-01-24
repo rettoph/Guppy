@@ -4,7 +4,8 @@ using Autofac;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Services;
-using Serilog;
+using Guppy.Core.Logging.Common;
+using Guppy.Core.Logging.Common.Extensions;
 
 namespace Guppy.Core.Services
 {
@@ -122,7 +123,7 @@ namespace Guppy.Core.Services
         internal static AssemblyService Factory(IComponentContext context)
         {
             IGuppyContext guppy = context.Resolve<IGuppyContext>();
-            return new AssemblyService(guppy.Libraries, context.Resolve<ILogger>());
+            return new AssemblyService(guppy.Libraries, context.ResolveLogger<AssemblyService>());
         }
     }
 }

@@ -4,7 +4,7 @@ using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Game.Graphics.Common.Resources;
 using Guppy.Game.Graphics.MonoGame.Resources;
-using Serilog;
+using Guppy.Core.Logging.Common;
 
 namespace Guppy.Game.MonoGame.ResourceTypes
 {

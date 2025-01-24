@@ -14,12 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="4.0.2" />
-	<PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" PrivateAssets="compile" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\core\Guppy.Core.Files\Guppy.Core.Files.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Logging.Serilog\Guppy.Core.Logging.Serilog.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core.StateMachine.Common\Guppy.Core.StateMachine.Common.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core\Guppy.Core.csproj" />
     <ProjectReference Include="..\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />

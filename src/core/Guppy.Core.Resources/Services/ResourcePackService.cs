@@ -2,6 +2,7 @@
 using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
+using Guppy.Core.Logging.Common;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Constants;
@@ -9,7 +10,6 @@ using Guppy.Core.Resources.Common.Interfaces;
 using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Core.Resources.Constants;
-using Serilog;
 
 namespace Guppy.Core.Resources.Services
 {

@@ -2,7 +2,7 @@
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.ResourceTypes;
 using Guppy.Game.ImGui.Common;
-using Serilog;
+using Guppy.Core.Logging.Common;
 
 namespace Guppy.Game.ImGui.MonoGame.ResourceTypes
 {
