@@ -5,31 +5,31 @@ using Guppy.Core.Common.Configurations;
 
 namespace Guppy.Core.Common.Extensions.Autofac
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterFilter(this ContainerBuilder builder, IServiceFilter filter)
+        public static IGuppyScopeBuilder RegisterFilter(this IGuppyScopeBuilder builder, IServiceFilter filter)
         {
             builder.RegisterInstance(filter).As<IServiceFilter>().SingleInstance();
 
             return builder;
         }
 
-        public static ContainerBuilder Configure<T>(this ContainerBuilder builder, Action<ILifetimeScope, T> configurator)
+        public static IGuppyScopeBuilder Configure<T>(this IGuppyScopeBuilder builder, Action<ILifetimeScope, T> configurator)
         {
             builder.RegisterInstance(new Configurator<T>(configurator)).As<Configurator>();
 
             return builder;
         }
 
-        public static ContainerBuilder Configure<T>(this ContainerBuilder builder, Action<T> configurator)
+        public static IGuppyScopeBuilder Configure<T>(this IGuppyScopeBuilder builder, Action<T> configurator)
         {
             builder.RegisterInstance(new Configurator<T>((_, instance) => configurator(instance))).As<Configurator>();
 
             return builder;
         }
 
-        private static readonly ConditionalWeakTable<ContainerBuilder, HashSet<string>> _tags = [];
-        private static HashSet<string> GetTags(ContainerBuilder builder)
+        private static readonly ConditionalWeakTable<IGuppyScopeBuilder, HashSet<string>> _tags = [];
+        private static HashSet<string> GetTags(IGuppyScopeBuilder builder)
         {
             if (_tags.TryGetValue(builder, out var tags))
             {
@@ -42,19 +42,19 @@ namespace Guppy.Core.Common.Extensions.Autofac
             return tags;
         }
 
-        public static ContainerBuilder AddTag(this ContainerBuilder builder, string tag)
+        public static IGuppyScopeBuilder AddTag(this IGuppyScopeBuilder builder, string tag)
         {
             GetTags(builder).Add(tag);
 
             return builder;
         }
 
-        public static bool HasTag(this ContainerBuilder builder, string tag)
+        public static bool HasTag(this IGuppyScopeBuilder builder, string tag)
         {
             return GetTags(builder).Contains(tag);
         }
 
-        public static ContainerBuilder EnsureRegisteredOnce(this ContainerBuilder builder, string tag, Action<ContainerBuilder> build)
+        public static IGuppyScopeBuilder EnsureRegisteredOnce(this IGuppyScopeBuilder builder, string tag, Action<IGuppyScopeBuilder> build)
         {
             if (builder.HasTag(tag))
             {

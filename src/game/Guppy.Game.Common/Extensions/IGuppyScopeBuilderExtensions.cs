@@ -1,11 +1,10 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Extensions;
 
 namespace Guppy.Game.Common.Extensions
 {
-    public static class ContainreBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
         /// <summary>
         /// Register a scene service filter
@@ -14,7 +13,7 @@ namespace Guppy.Game.Common.Extensions
         /// <param name="builder"></param>
         /// <param name="sceneType">The Scene type required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterSceneFilter<TService>(this ContainerBuilder builder, Type? sceneType)
+        public static IGuppyScopeBuilder RegisterSceneFilter<TService>(this IGuppyScopeBuilder builder, Type? sceneType)
             where TService : class
         {
             if (sceneType is not null)
@@ -33,7 +32,7 @@ namespace Guppy.Game.Common.Extensions
         /// <param name="serviceType">he service type to be filtered</param>
         /// <param name="sceneType">The Scene type required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterSceneFilter(this ContainerBuilder builder, Type serviceType, Type? sceneType)
+        public static IGuppyScopeBuilder RegisterSceneFilter(this IGuppyScopeBuilder builder, Type serviceType, Type? sceneType)
         {
             if (sceneType is not null)
             {
@@ -50,7 +49,7 @@ namespace Guppy.Game.Common.Extensions
         /// <typeparam name="TScene">The Scene type required for the service to be valid</typeparam>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterSceneFilter<TService, TScene>(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterSceneFilter<TService, TScene>(this IGuppyScopeBuilder builder)
             where TService : class
             where TScene : IScene
         {

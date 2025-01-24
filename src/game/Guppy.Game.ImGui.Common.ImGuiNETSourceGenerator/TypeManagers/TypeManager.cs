@@ -33,8 +33,17 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator.TypeManagers
             return manager;
         }
 
-        public static void GenerateAllSourceFiles(CodeBuilder source)
+        public static void GenerateAllSourceFiles(CodeBuilder source, bool reset = false)
         {
+            if (reset == true)
+            {
+                _sourceGenerators.Clear();
+                foreach (TypeManager typeManager in _instances.Values)
+                {
+                    typeManager._generated = false;
+                }
+            }
+
             if (_sourceGenerators.Any() == false)
             {
                 foreach (TypeManager manager in _instances.Values)

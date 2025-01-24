@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Filters;
@@ -6,9 +6,9 @@ using Guppy.Game.Graphics.Common.Constants;
 
 namespace Guppy.Game.Graphics.Common.Extensions
 {
-    public static class ConfigurationBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterGraphicsEnabledFilter(this ContainerBuilder builder, Type serviceType, bool value)
+        public static IGuppyScopeBuilder RegisterGraphicsEnabledFilter(this IGuppyScopeBuilder builder, Type serviceType, bool value)
         {
             return builder.RegisterFilter(new StateServiceFilter<bool>(
                 serviceType: serviceType,
@@ -16,7 +16,7 @@ namespace Guppy.Game.Graphics.Common.Extensions
                 value: value));
         }
 
-        public static ContainerBuilder RegisterGraphicsEnabledFilter<TService>(this ContainerBuilder builder, bool value)
+        public static IGuppyScopeBuilder RegisterGraphicsEnabledFilter<TService>(this IGuppyScopeBuilder builder, bool value)
         {
             return builder.RegisterFilter(new StateServiceFilter<bool>(
                 serviceType: typeof(TService),

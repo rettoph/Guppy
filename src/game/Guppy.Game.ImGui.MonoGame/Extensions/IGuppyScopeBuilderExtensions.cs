@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Resources.Common.Extensions.Autofac;
 using Guppy.Game.ImGui.Common;
@@ -7,9 +8,9 @@ using Guppy.Game.ImGui.MonoGame.ResourceTypes;
 
 namespace Guppy.Game.ImGui.MonoGame.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameMonoGameImGuiServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterGameMonoGameImGuiServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameMonoGameImGuiServices), builder =>
             {

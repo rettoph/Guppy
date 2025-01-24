@@ -1,13 +1,14 @@
 ﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Game.Input.Components;
 using Guppy.Game.Input.Services;
 
 namespace Guppy.Game.Input.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterGameInputServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterGameInputServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterGameInputServices), builder =>
             {

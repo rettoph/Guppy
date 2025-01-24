@@ -1,22 +1,20 @@
 ﻿using Autofac;
-using Autofac.Core;
 using Autofac.Features.ResolveAnything;
+using Guppy.Core;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Services;
-using Guppy.Core.Common.Utilities;
 using Guppy.Core.Extensions;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Components;
 using Guppy.Engine.Common.Enums;
-using Guppy.Engine.Common.Extensions.Autofac;
 using Guppy.Engine.Extensions.Autofac;
 
 namespace Guppy.Engine
 {
     public class GuppyEngine : IGuppyEngine, IDisposable
     {
-        private readonly ILifetimeScope _container;
+        private readonly IGuppyScope _rootScope;
 
         private readonly IFiltered<IHostedService> _hostedServices;
         private readonly IFiltered<IEngineComponent> _components;
@@ -24,11 +22,11 @@ namespace Guppy.Engine
         public IGuppyContext Context { get; }
         public IEnumerable<IEngineComponent> Components => this._components;
 
-        public GuppyEngine(GuppyContext context, Action<ContainerBuilder>? builder = null)
+        public GuppyEngine(GuppyContext context, Action<IGuppyScopeBuilder>? builder = null)
         {
-            this._container = GuppyEngine.Build(this, context, builder);
-            this._hostedServices = this._container.Resolve<IFiltered<IHostedService>>();
-            this._components = this._container.Resolve<IFiltered<IEngineComponent>>();
+            this._rootScope = GuppyEngine.BuildRootScope(this, context, builder);
+            this._hostedServices = this._rootScope.Resolve<IFiltered<IHostedService>>();
+            this._components = this._rootScope.Resolve<IFiltered<IEngineComponent>>();
 
             this.Context = context;
 
@@ -59,7 +57,7 @@ namespace Guppy.Engine
         public T Resolve<T>()
             where T : notnull
         {
-            return this._container.Resolve<T>();
+            return this._rootScope.Resolve<T>();
         }
 
         #region Static
@@ -71,46 +69,46 @@ namespace Guppy.Engine
             _lock = new object();
         }
 
-        private static IContainer Build(GuppyEngine engine, GuppyContext context, Action<ContainerBuilder>? builder = null)
+        private static IGuppyScope BuildRootScope(GuppyEngine engine, GuppyContext context, Action<IGuppyScopeBuilder>? builder = null)
         {
             lock (_lock)
             {
+
                 // Construct a service container to store factory related services
                 // Used for boot loaders, engine loaders, and related services
-                ContainerBuilder bootBuilder = new();
-                bootBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-                bootBuilder.RegisterCoreServices(context).RegisterBootServices();
+                IGuppyScopeBuilder bootScopeBuilder = new GuppyScopeBuilder(null);
+                bootScopeBuilder.ContainerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+                bootScopeBuilder.RegisterCoreServices(context).RegisterBootServices();
+                bootScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(null, scope));
 
                 // Construct the factory service and prepare for assembly loading.
-                IContainer boot = bootBuilder.Build();
+                IGuppyScope bootScope = bootScopeBuilder.ContainerBuilder.Build().Resolve<IGuppyScope>();
 
                 // Load assemblies
-                IAssemblyService assemblies = boot.Resolve<IAssemblyService>();
-                assemblies.Load(boot.Resolve<IGuppyContext>().Entry);
+                IAssemblyService assemblies = bootScope.Resolve<IAssemblyService>();
+                assemblies.Load(bootScope.Resolve<IGuppyContext>().Entry);
 
                 // Begin boot phase 2 - call all boot attributes
 
                 // Construct the engine container
-                ContainerBuilder engineBuilder = new();
+                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(bootScope);
+                engineRootScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(null, scope));
 
                 // Run any custom builder actions
-                builder?.Invoke(engineBuilder);
+                builder?.Invoke(engineRootScopeBuilder);
 
-                engineBuilder.RegisterEngineServices()
+                engineRootScopeBuilder.RegisterEngineServices()
                     .RegisterCoreServices(context, assemblies);
 
-                engineBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
+                engineRootScopeBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
 
-                // Automatically load all modules found within every defined assembly
-                foreach (Type moduleType in assemblies.GetTypes<IModule>())
-                {
-                    engineBuilder.RegisterModule(moduleType, boot);
-                }
+                IGuppyScope engineRootScope = engineRootScopeBuilder.ContainerBuilder.Build().Resolve<IGuppyScope>();
 
-                IContainer container = engineBuilder.Build();
-                StaticInstance<IContainer>.Initialize(container, true);
+                // Ensure this gets resolved once
+                // TODO: Fix the need for this line
+                engineRootScope.Resolve<ITags>();
 
-                return container;
+                return engineRootScope;
             }
         }
 
@@ -127,7 +125,7 @@ namespace Guppy.Engine
                         hostedService.StopAsync(stopToken.Token);
                     }
 
-                    this._container.Dispose();
+                    this._rootScope.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

@@ -247,6 +247,8 @@ namespace Guppy.Example.Client.Entities
         {
             if (!this._disposed)
             {
+                this._disposed = true;
+
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
@@ -256,14 +258,11 @@ namespace Guppy.Example.Client.Entities
                     {
                         this.Cells[i].Dispose();
                     }
-
-
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
                 Marshal.FreeHGlobal((nint)this.Cells);
-                this._disposed = true;
             }
         }
 

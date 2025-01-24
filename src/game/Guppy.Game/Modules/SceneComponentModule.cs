@@ -1,8 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Services;
-using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
-using Guppy.Game.Common.Extensions;
 
 namespace Guppy.Game.Modules
 {
@@ -14,12 +11,7 @@ namespace Guppy.Game.Modules
         {
             base.Load(builder);
 
-            foreach (Type sceneType in this._assemblyService.GetTypes<IScene>())
-            {
-                Type sceneComponentType = typeof(ISceneComponent<>).MakeGenericType(sceneType);
 
-                builder.RegisterSceneFilter(sceneComponentType, sceneType);
-            }
         }
     }
 }

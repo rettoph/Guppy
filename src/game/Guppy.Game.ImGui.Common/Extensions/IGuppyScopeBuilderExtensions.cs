@@ -1,5 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using Autofac;
+﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Common.Helpers;
 using Guppy.Core.Files.Common.Helpers;
@@ -16,9 +16,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Game.ImGui.Common.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterCommonImGuiServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterCommonImGuiServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCommonImGuiServices), builder =>
             {
@@ -75,9 +75,9 @@ namespace Guppy.Game.ImGui.Common.Extensions
             });
         }
 
-        private static void AddImGuiKeyEvent(ContainerBuilder services, string key, Keys defaultKey, ImGuiKey mapping)
+        private static void AddImGuiKeyEvent(IGuppyScopeBuilder builder, string key, Keys defaultKey, ImGuiKey mapping)
         {
-            services.RegisterInput(
+            builder.RegisterInput(
                 key,
                 defaultKey,
                 [
@@ -86,9 +86,9 @@ namespace Guppy.Game.ImGui.Common.Extensions
                 ]);
         }
 
-        private static void AddImGuiMouseButtonEvent(ContainerBuilder services, string key, CursorButtonsEnum defaultButton, int mapping)
+        private static void AddImGuiMouseButtonEvent(IGuppyScopeBuilder builder, string key, CursorButtonsEnum defaultButton, int mapping)
         {
-            services.RegisterInput(
+            builder.RegisterInput(
                 key,
                 defaultButton,
                 [

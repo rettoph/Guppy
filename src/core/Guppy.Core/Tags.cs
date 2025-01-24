@@ -4,7 +4,7 @@ using Guppy.Core.Common;
 
 namespace Guppy.Core
 {
-    internal class Tags : ITags
+    public class Tags : ITags
     {
         private Tags? _parent;
 

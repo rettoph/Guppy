@@ -1,14 +1,14 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Logging.Common.Configurations;
 using Guppy.Core.Logging.Common.Constants;
 
 namespace Guppy.Core.Logging.Common.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder ConfigureConsoleLoggerSink(
-            this ContainerBuilder builder,
+        public static IGuppyScopeBuilder ConfigureConsoleLoggerSink(
+            this IGuppyScopeBuilder builder,
             string outputTemplate = LoggingConstants.DefaultOutputTemplate,
             bool enabled = true)
         {
@@ -19,8 +19,8 @@ namespace Guppy.Core.Logging.Common.Extensions
             });
         }
 
-        public static ContainerBuilder ConfigureFileLoggerSink(
-            this ContainerBuilder builder,
+        public static IGuppyScopeBuilder ConfigureFileLoggerSink(
+            this IGuppyScopeBuilder builder,
             string path,
             string outputTemplate = LoggingConstants.DefaultOutputTemplate,
             bool enabled = true)

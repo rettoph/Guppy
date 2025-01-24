@@ -11,9 +11,9 @@ using Serilog;
 
 namespace Guppy.Core.Logging.Serilog.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterSerilogLoggingServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterSerilogLoggingServices(this IGuppyScopeBuilder builder)
         {
             builder.EnsureRegisteredOnce(nameof(RegisterSerilogLoggingServices), builder =>
             {

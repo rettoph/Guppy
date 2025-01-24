@@ -18,7 +18,7 @@ namespace Guppy.Game.ImGui.Common.ImGuiNETSourceGenerator
                 }
             }
 
-            TypeManager.GenerateAllSourceFiles(source);
+            TypeManager.GenerateAllSourceFiles(source, true);
         }
     }
 }

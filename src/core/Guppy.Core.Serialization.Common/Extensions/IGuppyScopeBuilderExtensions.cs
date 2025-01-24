@@ -1,14 +1,12 @@
 ﻿using System.Text.Json.Serialization;
-using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Resources.Serialization.Json;
 
 namespace Guppy.Core.Serialization.Common.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        [Obsolete]
-        public static ContainerBuilder RegisterPolymorphicJsonType(this ContainerBuilder builder, string key, Type instanceType, Type baseType)
+        public static IGuppyScopeBuilder RegisterPolymorphicJsonType(this IGuppyScopeBuilder builder, string key, Type instanceType, Type baseType)
         {
             ThrowIf.Type.IsNotAssignableFrom(baseType, instanceType);
 
@@ -17,15 +15,13 @@ namespace Guppy.Core.Serialization.Common.Extensions
             return builder;
         }
 
-        [Obsolete]
-        public static ContainerBuilder RegisterPolymorphicJsonType<TInstance, TBase>(this ContainerBuilder builer, string key)
+        public static IGuppyScopeBuilder RegisterPolymorphicJsonType<TInstance, TBase>(this IGuppyScopeBuilder builer, string key)
             where TInstance : TBase
         {
             return builer.RegisterPolymorphicJsonType(key, typeof(TInstance), typeof(TBase));
         }
 
-        [Obsolete]
-        public static ContainerBuilder RegisterJsonConverter<TConverter>(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterJsonConverter<TConverter>(this IGuppyScopeBuilder builder)
             where TConverter : JsonConverter
         {
             builder.RegisterType<TConverter>().As<JsonConverter>().SingleInstance();

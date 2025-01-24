@@ -4,7 +4,12 @@ using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Guppy.Core.Logging.Common;
+using Guppy.Core.Logging.Common.Enums;
+using Guppy.Core.Logging.Common.Extensions;
+using Guppy.Core.Logging.Common.Services;
 using Guppy.Core.Logging.Middleware;
+using Guppy.Core.Logging.Services;
+using Guppy.Core.Serialization.Common.Extensions;
 
 namespace Guppy.Core.Logging.Modules
 {
@@ -19,6 +24,13 @@ namespace Guppy.Core.Logging.Modules
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
+
+            builder.RegisterType<LogLevelService>().As<ILogLevelService>().SingleInstance();
+
+            builder.RegisterPolymorphicJsonType<LogLevelEnum, object>(nameof(LogLevelEnum));
+
+            builder.RegisterGeneric((context, types) => context.ResolveLogger(types[0])).As(typeof(ILogger<>));
+            builder.Register(context => context.ResolveLogger<ILogger>()).As<ILogger>();
         }
 
         protected override void AttachToComponentRegistration(

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Common.Factories;
@@ -10,9 +11,9 @@ using Guppy.Core.Serialization.Services;
 
 namespace Guppy.Core.Serialization.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterCoreSerializationServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterCoreSerializationServices(this IGuppyScopeBuilder builder)
         {
             if (builder.HasTag(nameof(RegisterCoreSerializationServices)))
             {

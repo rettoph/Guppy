@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using Autofac;
 using Guppy.Core.Common;
 using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common.Components;
@@ -22,7 +21,7 @@ namespace Guppy.Game.Common
 
         private bool _enabled;
         private bool _visible;
-        private ILifetimeScope _scope;
+        private IGuppyScope _scope;
         private readonly ActionSequenceGroup<DrawComponentSequenceGroupEnum, GameTime> _drawComponentsActions;
         private readonly ActionSequenceGroup<UpdateComponentSequenceGroupEnum, GameTime> _updateComponentsActions;
 
@@ -60,12 +59,12 @@ namespace Guppy.Game.Common
             this.Enabled = true;
         }
 
-        void IScene.Initialize(ILifetimeScope scope)
+        void IScene.Initialize(IGuppyScope scope)
         {
             this.Initialize(scope);
         }
 
-        protected virtual void Initialize(ILifetimeScope scope)
+        protected virtual void Initialize(IGuppyScope scope)
         {
             this._scope = scope;
 

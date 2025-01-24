@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
@@ -19,10 +20,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Game.MonoGame.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterMonoGameServices(
-            this ContainerBuilder builder,
+        public static IGuppyScopeBuilder RegisterMonoGameServices(
+            this IGuppyScopeBuilder builder,
             Microsoft.Xna.Framework.Game game,
             GraphicsDeviceManager graphics,
             ContentManager content,

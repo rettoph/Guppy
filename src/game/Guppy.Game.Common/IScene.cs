@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 using Guppy.Game.Common.Components;
 using Microsoft.Xna.Framework;
 
@@ -26,7 +26,7 @@ namespace Guppy.Game.Common
 
         ISceneComponent[] Components { get; }
 
-        void Initialize(ILifetimeScope scope);
+        void Initialize(IGuppyScope scope);
 
         T Resolve<T>() where T : notnull;
 

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Engine;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -15,7 +14,7 @@ namespace Guppy.Game
 
         public ISceneService Scenes { get; private set; }
 
-        public GameEngine(GuppyContext context, Action<ContainerBuilder>? builder = null) : base(context, builder)
+        public GameEngine(GuppyContext context, Action<IGuppyScopeBuilder>? builder = null) : base(context, builder)
         {
             this._drawComponentsActions = new(true);
             this._updateComponentsActions = new(false);
