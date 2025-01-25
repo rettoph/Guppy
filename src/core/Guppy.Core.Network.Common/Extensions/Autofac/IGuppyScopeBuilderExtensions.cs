@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Network.Common;
+﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Network.Common.Contexts;
 using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Delegates;
@@ -9,51 +9,63 @@ using Guppy.Core.Network.Common.Serialization.NetSerializers;
 using Guppy.Core.StateMachine.Common.Extensions;
 using LiteNetLib;
 
-namespace Autofac
+namespace Guppy.Core.Network.Common.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static void RegisterNetSerializer(this ContainerBuilder builder, Type netSerializerType)
+        public static IGuppyScopeBuilder RegisterNetSerializer(this IGuppyScopeBuilder builder, Type netSerializerType)
         {
             ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), netSerializerType);
 
             builder.RegisterType(netSerializerType).As<INetSerializer>().SingleInstance();
+
+            return builder;
         }
 
-        public static void RegisterNetSerializer<T>(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterNetSerializer<T>(this IGuppyScopeBuilder builder)
             where T : class, INetSerializer
         {
             ThrowIf.Type.IsNotGenericTypeImplementation(typeof(INetSerializer<>), typeof(T));
 
             builder.RegisterType<T>().As<INetSerializer>().SingleInstance();
+
+            return builder;
         }
 
-        public static void RegisterNetSerializer<T>(this ContainerBuilder builder, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
+        public static IGuppyScopeBuilder RegisterNetSerializer<T>(this IGuppyScopeBuilder builder, NetSerializeDelegate<T> serialize, NetDeserializeDelegate<T> deserialize)
             where T : notnull
         {
             builder.RegisterInstance(new RuntimeNetSerializer<T>(serialize, deserialize)).As<INetSerializer>().SingleInstance();
+
+            return builder;
         }
 
-        public static void RegisterNetMessageType(this ContainerBuilder builder, Type netMessengerDefinitionType)
+        public static IGuppyScopeBuilder RegisterNetMessageType(this IGuppyScopeBuilder builder, Type netMessengerDefinitionType)
         {
             builder.RegisterType(netMessengerDefinitionType).As<NetMessageTypeDefinition>().SingleInstance();
+
+            return builder;
         }
 
-        public static void RegisterNetMessageType<TDefinition>(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterNetMessageType<TDefinition>(this IGuppyScopeBuilder builder)
             where TDefinition : NetMessageTypeDefinition
         {
             builder.RegisterType<TDefinition>().As<NetMessageTypeDefinition>().SingleInstance();
+
+            return builder;
         }
 
-        public static void RegisterNetMessageType(this ContainerBuilder builder, NetMessageTypeDefinition definition)
+        public static IGuppyScopeBuilder RegisterNetMessageType(this IGuppyScopeBuilder builder, NetMessageTypeDefinition definition)
         {
             builder.RegisterInstance(definition).As<NetMessageTypeDefinition>().SingleInstance();
+
+            return builder;
         }
 
-        public static void RegisterNetMessageType<T>(this ContainerBuilder builder, DeliveryMethod deliveryMethod, byte outgoingChannel)
+        public static IGuppyScopeBuilder RegisterNetMessageType<T>(this IGuppyScopeBuilder builder, DeliveryMethod deliveryMethod, byte outgoingChannel)
             where T : notnull
         {
-            builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
+            return builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
         }
 
         /// <summary>
@@ -64,10 +76,12 @@ namespace Autofac
         /// <param name="builder"></param>
         /// <param name="peerType"></param>
         /// <param name="groupId"></param>
-        public static void RegisterNetScope<T>(this ContainerBuilder builder, PeerTypeEnum peerType, byte groupId)
+        public static IGuppyScopeBuilder RegisterNetScope<T>(this IGuppyScopeBuilder builder, PeerTypeEnum peerType, byte groupId)
         {
             builder.RegisterInstance<NetScopeContext<T>>(new NetScopeContext<T>(peerType, groupId)).SingleInstance();
             builder.Register<INetScope>(ctc => ctc.Resolve<INetScope<T>>()).InstancePerLifetimeScope();
+
+            return builder;
         }
 
         /// <summary>
@@ -77,7 +91,7 @@ namespace Autofac
         /// <param name="builder"></param>
         /// <param name="value">The PeerType required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterPeerTypeFilter<TService>(this ContainerBuilder builder, PeerTypeEnum value)
+        public static IGuppyScopeBuilder RegisterPeerTypeFilter<TService>(this IGuppyScopeBuilder builder, PeerTypeEnum value)
             where TService : class
         {
             return builder.RegisterStateFilter<TService, PeerTypeEnum>(value);
@@ -91,7 +105,7 @@ namespace Autofac
         /// <param name="serviceType">he service type to be filtered</param>
         /// <param name="value">The PeerType required for the service to be valid</param>
         /// <returns></returns>
-        public static ContainerBuilder RegisterPeerTypeFilter(this ContainerBuilder builder, Type serviceType, PeerTypeEnum value)
+        public static IGuppyScopeBuilder RegisterPeerTypeFilter(this IGuppyScopeBuilder builder, Type serviceType, PeerTypeEnum value)
         {
             return builder.RegisterStateFilter<PeerTypeEnum>(serviceType, value);
         }

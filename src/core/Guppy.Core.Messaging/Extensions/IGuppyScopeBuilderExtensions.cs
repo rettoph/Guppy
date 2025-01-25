@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Implementations;
 using Guppy.Core.Messaging.Common.Services;

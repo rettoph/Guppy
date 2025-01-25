@@ -2,7 +2,7 @@
 using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework.Input;
 
-namespace Autofac
+namespace Guppy.Core.Commands.Common
 {
     public static partial class IGuppyScopeBuilderExtensions
     {

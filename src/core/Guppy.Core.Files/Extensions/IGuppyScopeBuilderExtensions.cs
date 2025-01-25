@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Serialization.Json;
 using Guppy.Core.Files.Services;
 using Guppy.Core.Serialization.Common.Extensions;

@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Logging.Modules;
 
 namespace Guppy.Core.Logging.Extensions

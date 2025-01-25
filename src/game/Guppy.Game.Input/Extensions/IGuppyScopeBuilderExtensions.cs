@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Game.Input.Components;
 using Guppy.Game.Input.Services;
 

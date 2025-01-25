@@ -1,14 +1,15 @@
 ﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Game.Extensions;
 using Guppy.Game.MonoGame.ResourceTypes;
 
 namespace Guppy.Game.Graphics.NotImplemented.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterNotImplementedGraphicsServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterNotImplementedGraphicsServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterNotImplementedGraphicsServices), builder =>
             {

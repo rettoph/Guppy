@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.Common;

@@ -1,10 +1,10 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 
 namespace Guppy.Core.Commands.Common.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterCommand<T>(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterCommand<T>(this IGuppyScopeBuilder builder)
             where T : ICommand
         {
             builder.RegisterType<T>().As<ICommand>().SingleInstance();

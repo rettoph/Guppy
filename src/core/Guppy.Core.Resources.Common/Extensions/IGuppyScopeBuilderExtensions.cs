@@ -5,13 +5,13 @@ using Guppy.Core.Resources.Common.Interfaces;
 using Guppy.Core.Resources.Common.Internals;
 using Guppy.Core.Resources.Common.ResourceTypes;
 
-namespace Guppy.Core.Resources.Common.Extensions.Autofac
+namespace Guppy.Core.Resources.Common.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
         public static IGuppyScopeBuilder RegisterResourcePack(this IGuppyScopeBuilder builder, ResourcePackConfiguration configuration)
         {
-            builder.RegisterInstance<ResourcePackConfiguration>(configuration);
+            builder.RegisterInstance(configuration);
             return builder;
         }
 

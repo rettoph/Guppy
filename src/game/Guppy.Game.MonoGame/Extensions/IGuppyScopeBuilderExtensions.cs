@@ -1,9 +1,10 @@
 ﻿using Autofac;
+using Guppy.Core.Commands.Common;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
-using Guppy.Core.Resources.Common.Extensions.Autofac;
+using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Extensions;
 using Guppy.Game.Extensions;

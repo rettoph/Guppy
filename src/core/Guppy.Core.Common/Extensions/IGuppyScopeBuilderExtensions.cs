@@ -3,7 +3,7 @@ using Autofac;
 using Autofac.Builder;
 using Guppy.Core.Common.Configurations;
 
-namespace Guppy.Core.Common.Extensions.Autofac
+namespace Guppy.Core.Common.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
@@ -71,7 +71,7 @@ namespace Guppy.Core.Common.Extensions.Autofac
         public static IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterInstanceFrom<T>(this ContainerBuilder builder, ILifetimeScope scope)
             where T : class
         {
-            return builder.RegisterInstance<T>(scope.Resolve<T>());
+            return builder.RegisterInstance(scope.Resolve<T>());
         }
     }
 }

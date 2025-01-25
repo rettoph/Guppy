@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Contexts;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Extensions;
 using Guppy.Core.Messaging.Extensions;

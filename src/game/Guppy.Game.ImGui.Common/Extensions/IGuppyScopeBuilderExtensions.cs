@@ -1,6 +1,7 @@
 ﻿using Autofac;
+using Guppy.Core.Commands.Common;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Helpers;
 using Guppy.Core.Files.Common.Helpers;
 using Guppy.Core.Serialization.Common.Extensions;

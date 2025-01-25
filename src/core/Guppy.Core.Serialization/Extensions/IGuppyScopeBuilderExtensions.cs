@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Extensions.Autofac;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Common.Factories;

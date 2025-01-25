@@ -1,8 +1,8 @@
-﻿using System.Text.Json.Serialization;
-using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Constants;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
 using Guppy.Core.Network.Messages;
@@ -17,9 +17,9 @@ using LiteNetLib;
 
 namespace Guppy.Core.Network.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
-        public static ContainerBuilder RegisterCoreNetworkServices(this ContainerBuilder builder)
+        public static IGuppyScopeBuilder RegisterCoreNetworkServices(this IGuppyScopeBuilder builder)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreNetworkServices), builder =>
             {

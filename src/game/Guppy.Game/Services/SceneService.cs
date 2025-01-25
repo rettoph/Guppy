@@ -16,24 +16,15 @@ namespace Guppy.Game.Services
         public event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         public event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
 
-        public T Create<T>(Action<ISceneConfiguration>? configurator, Func<ILifetimeScope, T>? factory)
+        public T Create<T>(Action<IGuppyScopeBuilder>? builder)
             where T : class, IScene
         {
             ISceneConfiguration configuration = this.GetConfiguration(typeof(T));
-            configurator?.Invoke(configuration);
-
             IGuppyScope scope = this._scope.CreateChildScope(builder =>
             {
                 builder.RegisterInstance(configuration);
 
-                if (factory is null)
-                {
-                    builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
-                }
-                else
-                {
-                    builder.Register(factory).AsSelf().AsImplementedInterfaces().SingleInstance();
-                }
+                builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
             });
 
             T scene = scope.Resolve<T>();
@@ -43,26 +34,16 @@ namespace Guppy.Game.Services
             return scene;
         }
 
-        public IScene Create(Type sceneType, Action<ISceneConfiguration>? configurator, Func<ILifetimeScope, object>? factory)
+        public IScene Create(Type sceneType, Action<IGuppyScopeBuilder>? builder)
         {
             ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
             ISceneConfiguration configuration = this.GetConfiguration(sceneType);
-            configurator?.Invoke(configuration);
-
-
             IGuppyScope scope = this._scope.CreateChildScope(builder =>
             {
                 builder.RegisterInstance(configuration);
 
-                if (factory is null)
-                {
-                    builder.RegisterType(sceneType).AsSelf().AsImplementedInterfaces().SingleInstance();
-                }
-                else
-                {
-                    builder.Register(factory).As(sceneType).As(sceneType.GetInterfaces()).SingleInstance();
-                }
+                builder.RegisterType(sceneType).AsSelf().AsImplementedInterfaces().SingleInstance();
             });
             IScene scene = scope.Resolve(sceneType) as IScene ?? throw new NotImplementedException();
 

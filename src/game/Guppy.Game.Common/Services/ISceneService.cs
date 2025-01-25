@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Guppy.Core.Common;
 
 namespace Guppy.Game.Common.Services
 {
@@ -7,9 +7,9 @@ namespace Guppy.Game.Common.Services
         event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
 
-        IScene Create(Type guppyType, Action<ISceneConfiguration>? configuration = null, Func<ILifetimeScope, object>? factory = null);
+        IScene Create(Type guppyType, Action<IGuppyScopeBuilder>? builder = null);
 
-        T Create<T>(Action<ISceneConfiguration>? configuration = null, Func<ILifetimeScope, T>? factory = null)
+        T Create<T>(Action<IGuppyScopeBuilder>? builder = null)
             where T : class, IScene;
 
         /// <summary>

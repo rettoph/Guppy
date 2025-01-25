@@ -2,7 +2,7 @@
 using Guppy.Core.Commands.Serialization.Commands;
 using Guppy.Core.Commands.Services;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions.Autofac;
+using Guppy.Core.Common.Extensions;
 
 namespace Guppy.Core.Commands.Extensions
 {
