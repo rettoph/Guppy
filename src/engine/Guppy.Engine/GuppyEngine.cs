@@ -24,6 +24,8 @@ namespace Guppy.Engine
 
         public GuppyEngine(GuppyContext context, Action<IGuppyScopeBuilder>? builder = null)
         {
+            context.AddLibrary(typeof(GuppyEngine).Assembly);
+
             this._rootScope = GuppyEngine.BuildRootScope(this, context, builder);
             this._hostedServices = this._rootScope.Resolve<IFiltered<IHostedService>>();
             this._components = this._rootScope.Resolve<IFiltered<IEngineComponent>>();

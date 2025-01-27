@@ -8,5 +8,7 @@ namespace Guppy.Core.Common.Contexts
         string Name { get; }
         Assembly Entry { get; }
         IEnumerable<Assembly> Libraries { get; }
+
+        IGuppyContext AddLibrary(Assembly assembly);
     }
 }

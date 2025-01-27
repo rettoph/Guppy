@@ -1,6 +1,9 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
+using Guppy.Core.Logging.Common.Constants;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Extensions;
+using Guppy.Game.Common.Configurations;
 
 namespace Guppy.Game.Common.Extensions
 {
@@ -54,6 +57,18 @@ namespace Guppy.Game.Common.Extensions
             where TScene : IScene
         {
             return builder.RegisterStateFilter<TService, Type?>(StateKey<Type?>.Create<IScene>(), typeof(TScene));
+        }
+
+        public static IGuppyScopeBuilder ConfigureTerminalLogMessageSink(
+            this IGuppyScopeBuilder builder,
+            string outputTemplate = LoggingConstants.DefaultOutputTemplate,
+            bool enabled = true)
+        {
+            return builder.Configure<TerminalLogMessageSinkConfiguration>(conf =>
+            {
+                conf.OutputTemplate = outputTemplate;
+                conf.Enabled = enabled;
+            });
         }
     }
 }

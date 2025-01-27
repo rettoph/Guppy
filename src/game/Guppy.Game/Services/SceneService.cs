@@ -16,7 +16,7 @@ namespace Guppy.Game.Services
         public event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
         public event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
 
-        public T Create<T>(Action<IGuppyScopeBuilder>? builder)
+        public T Create<T>(Action<IGuppyScopeBuilder>? buildDelegate)
             where T : class, IScene
         {
             ISceneConfiguration configuration = this.GetConfiguration(typeof(T));
@@ -25,6 +25,8 @@ namespace Guppy.Game.Services
                 builder.RegisterInstance(configuration);
 
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
+
+                buildDelegate?.Invoke(builder);
             });
 
             T scene = scope.Resolve<T>();
@@ -34,7 +36,7 @@ namespace Guppy.Game.Services
             return scene;
         }
 
-        public IScene Create(Type sceneType, Action<IGuppyScopeBuilder>? builder)
+        public IScene Create(Type sceneType, Action<IGuppyScopeBuilder>? buildDelegate)
         {
             ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
@@ -44,6 +46,8 @@ namespace Guppy.Game.Services
                 builder.RegisterInstance(configuration);
 
                 builder.RegisterType(sceneType).AsSelf().AsImplementedInterfaces().SingleInstance();
+
+                buildDelegate?.Invoke(builder);
             });
             IScene scene = scope.Resolve(sceneType) as IScene ?? throw new NotImplementedException();
 
