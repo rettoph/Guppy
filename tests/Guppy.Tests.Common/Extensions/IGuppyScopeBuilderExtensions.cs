@@ -1,11 +1,11 @@
-﻿using Autofac;
-using Autofac.Builder;
+﻿using Autofac.Builder;
 using Autofac.Extras.Moq;
+using Guppy.Core.Common;
 using Moq;
 
 namespace Guppy.Tests.Common.Extensions
 {
-    public static class ContainerBuilderExtensions
+    public static class IGuppyScopeBuilderExtensions
     {
         /// <summary>
         /// Register a mock by explicitly providing a Mock instance for the service being mocked.
@@ -14,7 +14,7 @@ namespace Guppy.Tests.Common.Extensions
         /// <param name="builder">The container builder.</param>
         /// <param name="mocker">The mock.</param>
         /// <returns>The registration builder.</returns>
-        public static IRegistrationBuilder<TMocked, SimpleActivatorData, SingleRegistrationStyle> RegisterMocker<TMocked>(this ContainerBuilder builder, Mocker<TMocked> mocker)
+        public static IRegistrationBuilder<TMocked, SimpleActivatorData, SingleRegistrationStyle> RegisterMocker<TMocked>(this IGuppyScopeBuilder builder, Mocker<TMocked> mocker)
             where TMocked : class
         {
             ArgumentNullException.ThrowIfNull(mocker);
@@ -29,10 +29,10 @@ namespace Guppy.Tests.Common.Extensions
         /// <param name="builder">The container builder.</param>
         /// <param name="mocker">The mock.</param>
         /// <returns>The registration builder.</returns>
-        public static IRegistrationBuilder<TMocked, SimpleActivatorData, SingleRegistrationStyle> RegisterMock<TMocked>(this ContainerBuilder builder)
+        public static IRegistrationBuilder<TMocked, SimpleActivatorData, SingleRegistrationStyle> RegisterMock<TMocked>(this IGuppyScopeBuilder builder)
             where TMocked : class
         {
-            return builder.RegisterMock(new Mock<TMocked>());
+            return builder.ContainerBuilder.RegisterMock(new Mock<TMocked>());
         }
     }
 }

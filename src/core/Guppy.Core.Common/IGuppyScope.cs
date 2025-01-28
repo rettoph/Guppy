@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Enums;
 
 namespace Guppy.Core.Common
 {
@@ -6,11 +7,12 @@ namespace Guppy.Core.Common
     {
         IGuppyScope? Parent { get; }
         IEnumerable<IGuppyScope> Children { get; }
+        GuppyScopeTypeEnum Type { get; }
 
         bool IsRoot { get; }
         IGuppyScope Root { get; }
 
-        IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder> builder);
+        IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder);
 
         T Resolve<T>()
             where T : notnull;

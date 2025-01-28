@@ -1,7 +1,8 @@
 ﻿using Autofac;
+using Guppy.Core.Commands.Common;
+using Guppy.Core.Common;
 using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Logging.Serilog.Extensions;
-using Guppy.Engine;
 using Guppy.Example.Client.CellTypes;
 using Guppy.Example.Client.Entities;
 using Guppy.Example.Client.Messages;
@@ -67,7 +68,7 @@ namespace Guppy.Example.Client
                     builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
                         .RegisterSerilogLoggingServices();
 
-                    builder.ConfigureConsoleLoggerSink(enabled: true);
+                    builder.ConfigureConsoleLogMessageSink(enabled: true);
 
                     builder.RegisterType<CellTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
                     builder.RegisterType<AirCellType>().As<ICellType>().InstancePerLifetimeScope();

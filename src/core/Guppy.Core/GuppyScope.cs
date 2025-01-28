@@ -1,30 +1,38 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Enums;
 
 namespace Guppy.Core
 {
-    public class GuppyScope(IGuppyScope? parentScope, ILifetimeScope autofac) : IGuppyScope
+    public class GuppyScope(IGuppyScope? parentScope, GuppyScopeTypeEnum type, ILifetimeScope autofac) : IGuppyScope
     {
         private readonly ILifetimeScope _autofac = autofac;
         private readonly List<IGuppyScope> _children = [];
         private bool _disposedValue;
 
-        public IGuppyScope? Parent { get; private set; } = parentScope;
+        public IGuppyScope? Parent { get; } = parentScope;
 
         public IEnumerable<IGuppyScope> Children => this._children;
+
+        public GuppyScopeTypeEnum Type { get; } = type;
 
         public bool IsRoot => this.Parent is null;
 
         public IGuppyScope Root => this.IsRoot ? this : this.Parent!;
 
-        public IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder> builder)
+        public IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder)
         {
             ILifetimeScope autofac = this._autofac.BeginLifetimeScope(containerBuilder =>
             {
                 IGuppyScopeBuilder guppyScopeBuilder = new GuppyScopeBuilder(this, containerBuilder);
-                guppyScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(this, scope));
+                GuppyScopeTypeEnum childScopeType = this.Type switch
+                {
+                    GuppyScopeTypeEnum.Global => GuppyScopeTypeEnum.Child,
+                    _ => throw new NotImplementedException()
+                };
+                guppyScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(this, childScopeType, scope));
 
-                builder(guppyScopeBuilder);
+                builder?.Invoke(guppyScopeBuilder);
             });
 
             IGuppyScope child = autofac.Resolve<IGuppyScope>();

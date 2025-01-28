@@ -3,6 +3,7 @@ using Autofac.Features.ResolveAnything;
 using Guppy.Core;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Contexts;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Extensions;
 using Guppy.Engine.Common;
@@ -81,7 +82,7 @@ namespace Guppy.Engine
                 IGuppyScopeBuilder bootScopeBuilder = new GuppyScopeBuilder(null);
                 bootScopeBuilder.ContainerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
                 bootScopeBuilder.RegisterCoreServices(context).RegisterBootServices();
-                bootScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(null, scope));
+                bootScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(null, GuppyScopeTypeEnum.Boot, scope));
 
                 // Construct the factory service and prepare for assembly loading.
                 IGuppyScope bootScope = bootScopeBuilder.ContainerBuilder.Build().Resolve<IGuppyScope>();
@@ -94,7 +95,7 @@ namespace Guppy.Engine
 
                 // Construct the engine container
                 IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(bootScope);
-                engineRootScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(null, scope));
+                engineRootScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(null, GuppyScopeTypeEnum.Global, scope));
 
                 // Run any custom builder actions
                 builder?.Invoke(engineRootScopeBuilder);

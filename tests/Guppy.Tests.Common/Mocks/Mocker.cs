@@ -6,13 +6,31 @@ namespace Guppy.Tests.Common
     public abstract class Mocker
     {
         public abstract object GetInstance();
+
+        public static object GetGenericInstance(Type type, params Type[] genericTypeArguments)
+        {
+            if (genericTypeArguments.Length > 0)
+            {
+                type = type.MakeGenericType(genericTypeArguments);
+            }
+
+            Type mockerType = typeof(Mocker<>).MakeGenericType(type);
+            Mocker mocker = (Mocker)(Activator.CreateInstance(mockerType) ?? throw new NotImplementedException());
+
+            return mocker.GetInstance();
+        }
     }
 
-    public class Mocker<T>(Mock<T>? instance = null) : Mocker
+    public class Mocker<T>(Mock<T>? instance) : Mocker
         where T : class
     {
         private T? _override;
         private readonly Mock<T> _instance = instance ?? new();
+
+        public Mocker() : this(null)
+        {
+
+        }
 
         public static Mocker<T> Create()
         {
@@ -22,6 +40,13 @@ namespace Guppy.Tests.Common
         }
 
         public Mocker<T> Setup<TResult>(Expression<Func<T, TResult>> expression, TResult result)
+        {
+            this._instance.Setup(expression).Returns(result);
+
+            return this;
+        }
+
+        public Mocker<T> Setup<TResult>(Expression<Func<T, TResult>> expression, InvocationFunc result)
         {
             this._instance.Setup(expression).Returns(result);
 
