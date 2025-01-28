@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Logging.Common.Constants;
 using Guppy.Core.StateMachine.Common;
@@ -74,7 +73,7 @@ namespace Guppy.Game.Common.Extensions
 
         public static IGuppyScopeBuilder ConfigureTerminalLogMessageSink(
             this IGuppyScopeBuilder builder,
-            Action<ILifetimeScope, TerminalLogMessageSinkConfiguration> configurator)
+            Action<IGuppyScope, TerminalLogMessageSinkConfiguration> configurator)
         {
             return builder.Configure<TerminalLogMessageSinkConfiguration>(configurator);
         }

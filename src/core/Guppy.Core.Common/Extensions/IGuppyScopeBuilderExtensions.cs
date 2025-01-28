@@ -14,7 +14,7 @@ namespace Guppy.Core.Common.Extensions
             return builder;
         }
 
-        public static IGuppyScopeBuilder Configure<T>(this IGuppyScopeBuilder builder, Action<ILifetimeScope, T> configurator)
+        public static IGuppyScopeBuilder Configure<T>(this IGuppyScopeBuilder builder, Action<IGuppyScope, T> configurator)
         {
             builder.RegisterInstance(new Configurator<T>(configurator)).As<Configurator>();
 

@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common;
@@ -11,11 +10,11 @@ namespace Guppy.Core.Network
     {
         private readonly IEnumerable<INetScope> _scopes;
 
-        public PeerTypeStateProvider(ILifetimeScope scope)
+        public PeerTypeStateProvider(IGuppyScope scope)
         {
             IEnumerable<INetScope>? scopes = null;
 
-            if (scope.IsRoot() == false)
+            if (scope.IsRoot == false)
             {
                 scope.TryResolve(out scopes);
             }

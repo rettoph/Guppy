@@ -1,4 +1,6 @@
-﻿namespace Guppy.Core.Common
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Guppy.Core.Common
 {
     public interface IGuppyScope : IDisposable
     {
@@ -14,5 +16,8 @@
             where T : notnull;
 
         object Resolve(Type type);
+
+        bool TryResolve<T>([MaybeNullWhen(false)] out T? instance)
+            where T : class;
     }
 }

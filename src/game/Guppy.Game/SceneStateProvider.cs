@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common.Extensions.Autofac;
+﻿using Guppy.Core.Common;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game;
@@ -12,9 +11,9 @@ namespace Guppy.Engine.Providers
         private readonly IScene? _scene;
         private readonly ISceneConfiguration? _configuration;
 
-        public SceneStateProvider(ILifetimeScope scope)
+        public SceneStateProvider(IGuppyScope scope)
         {
-            if (scope.IsRoot() == false)
+            if (scope.IsRoot == false)
             {
                 scope.TryResolve(out this._scene);
                 scope.TryResolve(out this._configuration);

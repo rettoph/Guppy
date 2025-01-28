@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Logging.Common.Configurations;
@@ -23,7 +22,7 @@ namespace Guppy.Core.Logging.Common.Extensions
 
         public static IGuppyScopeBuilder ConfigureConsoleLogMessageSink(
             this IGuppyScopeBuilder builder,
-            Action<ILifetimeScope, ConsoleLogMessageSinkConfiguration> configurator)
+            Action<IGuppyScope, ConsoleLogMessageSinkConfiguration> configurator)
         {
             return builder.Configure<ConsoleLogMessageSinkConfiguration>(configurator);
         }
@@ -44,14 +43,14 @@ namespace Guppy.Core.Logging.Common.Extensions
 
         public static IGuppyScopeBuilder ConfigureFileLogMessageSink(
             this IGuppyScopeBuilder builder,
-            Action<ILifetimeScope, FileLogMessageSinkConfiguration> configurator)
+            Action<IGuppyScope, FileLogMessageSinkConfiguration> configurator)
         {
             return builder.Configure<FileLogMessageSinkConfiguration>(configurator);
         }
 
         public static IGuppyScopeBuilder ConfigureLogger(
             this IGuppyScopeBuilder builder,
-            Action<ILifetimeScope, LoggerConfiguration> configurator)
+            Action<IGuppyScope, LoggerConfiguration> configurator)
         {
             return builder.Configure<LoggerConfiguration>(configurator);
         }

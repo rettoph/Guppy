@@ -66,5 +66,11 @@ namespace Guppy.Core
         {
             return this._autofac.Resolve(type);
         }
+
+        public bool TryResolve<T>(out T? instance)
+            where T : class
+        {
+            return this._autofac.TryResolve<T>(out instance);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Features.OpenGenerics;
 
 namespace Guppy.Core.Common
 {
@@ -42,6 +43,11 @@ namespace Guppy.Core.Common
         IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> RegisterGeneric(Type implementor)
         {
             return this.ContainerBuilder.RegisterGeneric(implementor);
+        }
+
+        IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle> RegisterGeneric(Func<IComponentContext, Type[], object> factory)
+        {
+            return this.ContainerBuilder.RegisterGeneric(factory);
         }
 
         IModuleRegistrar RegisterModule<T>()
