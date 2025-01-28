@@ -2,7 +2,7 @@
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalLine
+    public class MonoGameTerminalLine
     {
         private const int _poolSize = 100;
 

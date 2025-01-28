@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminal : ITerminal, IConsole
+    public class MonoGameTerminal : ITerminal, IConsole
     {
         private readonly MonoGameTerminalTextWriter _out;
         private readonly MonoGameTerminalLineBuilder _currentLine;

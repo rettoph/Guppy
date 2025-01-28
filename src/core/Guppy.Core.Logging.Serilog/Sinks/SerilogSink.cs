@@ -2,14 +2,14 @@
 using Guppy.Core.Logging.Serilog.Extensions;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Templates;
+using Serilog.Formatting.Display;
 
 namespace Guppy.Core.Logging.Serilog.Sinks
 {
     public class SerilogSink(ILogMessageSink sink) : ILogEventSink
     {
         private readonly ILogMessageSink _sink = sink;
-        private readonly ExpressionTemplate _template = new(sink.OutputTemplate);
+        private readonly MessageTemplateTextFormatter _template = new(sink.OutputTemplate);
 
         public void Emit(LogEvent logEvent)
         {

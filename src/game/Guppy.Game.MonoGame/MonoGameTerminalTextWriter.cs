@@ -4,7 +4,7 @@ using Guppy.Game.Common;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalTextWriter(MonoGameTerminal terminal) : TextWriter, IStandardStreamWriter
+    public class MonoGameTerminalTextWriter(MonoGameTerminal terminal) : TextWriter, IStandardStreamWriter
     {
         private readonly MonoGameTerminal _terminal = terminal;
 
