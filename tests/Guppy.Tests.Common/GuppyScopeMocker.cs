@@ -4,6 +4,7 @@ using Guppy.Core;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Extensions;
+using Guppy.Core.Services;
 
 namespace Guppy.Tests.Common
 {
@@ -12,12 +13,16 @@ namespace Guppy.Tests.Common
         private Action<IGuppyScopeBuilder>? _builders;
         private Action<AutoMock>? _mockers;
         private IGuppyScope? _scope;
+        private readonly EnvironmentVariableService _environmentVariableService;
+        private readonly GuppyScopeTypeEnum _type;
 
         protected IGuppyScope scope => this._scope ??= this.BuildGuppyScope();
 
-        internal GuppyScopeMocker()
+        public GuppyScopeMocker(GuppyScopeTypeEnum type = GuppyScopeTypeEnum.Child, IEnumerable<IEnvironmentVariable>? environment = null)
         {
-            this.Register(x => x.RegisterCoreServices());
+            this._environmentVariableService = new EnvironmentVariableService(environment ?? []);
+            this._type = type;
+            this.Register(x => x.RegisterCoreServices(this._environmentVariableService));
         }
 
         protected internal void Register(Action<IGuppyScopeBuilder> builder)
@@ -44,7 +49,7 @@ namespace Guppy.Tests.Common
         {
             AutoMock mock = AutoMock.GetLoose(containerBuilder =>
             {
-                GuppyScopeBuilder guppyScopeBuilder = new(GuppyScopeTypeEnum.Child, null, containerBuilder);
+                GuppyScopeBuilder guppyScopeBuilder = new(this._type, this._environmentVariableService, null, containerBuilder);
                 this._builders?.Invoke(guppyScopeBuilder);
             });
 
@@ -54,7 +59,7 @@ namespace Guppy.Tests.Common
         }
     }
 
-    public class GuppyScopeMocker<TSelf, TService>() : GuppyScopeMocker()
+    public class GuppyScopeMocker<TSelf, TService>(GuppyScopeTypeEnum type = GuppyScopeTypeEnum.Child, IEnumerable<IEnvironmentVariable>? environment = null) : GuppyScopeMocker(type, environment)
         where TSelf : GuppyScopeMocker<TSelf, TService>
         where TService : notnull
     {

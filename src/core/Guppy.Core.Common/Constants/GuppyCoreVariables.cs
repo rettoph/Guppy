@@ -4,7 +4,7 @@ using Guppy.Core.Common.Implementations;
 
 namespace Guppy.Core.Common.Constants
 {
-    public static class GuppyVariables
+    public static class GuppyCoreVariables
     {
         public static class Global
         {

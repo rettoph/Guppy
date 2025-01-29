@@ -1,12 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 using Autofac;
 using Autofac.Builder;
-using Guppy.Core.Common.Configurations;
+using Guppy.Core.Common.Implementations;
 
 namespace Guppy.Core.Common.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
+        [Obsolete]
         public static IGuppyScopeBuilder RegisterFilter(this IGuppyScopeBuilder builder, IServiceFilter filter)
         {
             builder.RegisterInstance(filter).As<IServiceFilter>().SingleInstance();

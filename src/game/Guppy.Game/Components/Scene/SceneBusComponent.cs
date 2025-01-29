@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Components.Guppy
 {
-    internal class SceneBusComponent(IBus bus) : ISceneComponent, IUpdatableComponent
+    public class SceneBusComponent(IBus bus) : ISceneComponent, IUpdatableComponent
     {
         private readonly IBus _bus = bus;
 

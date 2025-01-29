@@ -3,6 +3,8 @@ using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.Graphics.MonoGame.Components;
@@ -51,7 +53,11 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
                 builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
                 builder.RegisterType<MonoGameWorldViewProjectionEffectComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+
+                builder.RegisterSceneFilter<IScene>(builder =>
+                {
+                    builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
             });
         }
     }

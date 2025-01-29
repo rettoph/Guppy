@@ -1,10 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
-    public abstract class GuppyVariableService<TVariable>(IEnumerable<TVariable> variables) : IGuppyVariableService<TVariable>
+    public abstract class GuppyVariableService<TVariable>(IEnumerable<TVariable> variables) : IGuppyVariableService<TVariable>, IEnumerable<TVariable>
         where TVariable : IGuppyVariable
     {
         private readonly Dictionary<Type, TVariable> _variables = variables.GroupBy(x => x.GetType())
@@ -96,6 +98,22 @@ namespace Guppy.Core.Services
         public Dictionary<Type, TVariable> ToDictionary()
         {
             return this._variables.ToDictionary();
+        }
+
+        public IEnumerator<TVariable> GetEnumerator()
+        {
+            return this._variables.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        T? IGuppyVariableProvider<TVariable>.GetVariable<T>() where T : default
+        {
+            this.TryGet<T>(out T? value);
+            return value;
         }
     }
 }

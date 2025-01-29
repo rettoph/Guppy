@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Common
 {
-    public interface IGuppyScope : IDisposable
+    public interface IGuppyScope : IDisposable, IGuppyVariableProvider<IScopeVariable>
     {
         IGuppyScope? Parent { get; }
         IEnumerable<IGuppyScope> Children { get; }
@@ -14,6 +15,9 @@ namespace Guppy.Core.Common
 
         T ResolveService<T>()
             where T : notnull;
+
+        T? ResolveOptionalService<T>()
+            where T : class;
 
         object ResolveService(Type type);
 

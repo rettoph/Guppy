@@ -81,7 +81,7 @@ namespace Guppy.Engine
 
                 // Construct a service container to store factory related services
                 // Used for boot loaders, engine loaders, and related services
-                IGuppyScopeBuilder bootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Boot, null);
+                IGuppyScopeBuilder bootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Boot, environmentVariableService, null);
                 bootScopeBuilder.ContainerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
                 bootScopeBuilder.RegisterCoreServices(environmentVariableService).RegisterBootServices();
 
@@ -90,12 +90,12 @@ namespace Guppy.Engine
 
                 // Load assemblies
                 IAssemblyService assemblies = bootScope.ResolveService<IAssemblyService>();
-                assemblies.Load(environmentVariableService.Get<GuppyVariables.Global.EntryAssembly>().Value);
+                assemblies.Load(environmentVariableService.Get<GuppyCoreVariables.Global.EntryAssembly>().Value);
 
                 // Begin boot phase 2 - call all boot attributes
 
                 // Construct the engine container
-                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Root, bootScope);
+                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Root, environmentVariableService, bootScope);
 
                 // Run any custom builder actions
                 builder?.Invoke(engineRootScopeBuilder);

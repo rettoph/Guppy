@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Providers;
 using Guppy.Core.Common.Services;
 
 namespace Guppy.Core
@@ -25,7 +26,7 @@ namespace Guppy.Core
         {
             ILifetimeScope autofac = this._autofac.BeginLifetimeScope(containerBuilder =>
             {
-                IGuppyScopeBuilder guppyScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Child, this, containerBuilder);
+                IGuppyScopeBuilder guppyScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Child, this.EnvironmentVariables, this, containerBuilder);
 
                 // Run custom builder
                 builder?.Invoke(guppyScopeBuilder);
@@ -66,6 +67,12 @@ namespace Guppy.Core
             return this._autofac.Resolve<T>();
         }
 
+        public T? ResolveOptionalService<T>()
+            where T : class
+        {
+            return this._autofac.ResolveOptional<T>();
+        }
+
         public object ResolveService(Type type)
         {
             return this._autofac.Resolve(type);
@@ -75,6 +82,12 @@ namespace Guppy.Core
             where T : class
         {
             return this._autofac.TryResolve<T>(out instance);
+        }
+
+        T? IGuppyVariableProvider<IScopeVariable>.GetVariable<T>() where T : default
+        {
+            this.Variables.TryGet<T>(out T? value);
+            return value;
         }
     }
 }

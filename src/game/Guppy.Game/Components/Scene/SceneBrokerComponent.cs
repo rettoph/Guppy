@@ -6,7 +6,7 @@ using Guppy.Game.Common.Components;
 
 namespace Guppy.Engine.Components.Guppy
 {
-    internal class SceneBrokerComponent(IBrokerService brokers) : ISceneComponent<IScene>
+    public class SceneBrokerComponent(IBrokerService brokers) : ISceneComponent<IScene>
     {
         private readonly IBrokerService _brokers = brokers;
 

@@ -21,6 +21,12 @@ namespace Guppy.Core.Common.Builders
             return (TSelf)this;
         }
 
+        public T? Get<T>()
+            where T : TVariable
+        {
+            return this._variables.OfType<T>().LastOrDefault();
+        }
+
         public virtual IEnumerable<TVariable> Build()
         {
             return this._variables;

@@ -2,6 +2,7 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Services;
 using Guppy.Game.Common;
+using Guppy.Game.Common.Constants;
 using Guppy.Game.Common.Services;
 
 namespace Guppy.Game.Services
@@ -22,6 +23,8 @@ namespace Guppy.Game.Services
             ISceneConfiguration configuration = this.GetConfiguration(typeof(T));
             IGuppyScope scope = this._scope.CreateChildScope(builder =>
             {
+                builder.AddScopeVariable(GuppyGameVariables.Scope.SceneType.Create(typeof(T)));
+
                 builder.RegisterInstance(configuration);
 
                 builder.RegisterType<T>().AsSelf().AsImplementedInterfaces().SingleInstance();
@@ -43,6 +46,8 @@ namespace Guppy.Game.Services
             ISceneConfiguration configuration = this.GetConfiguration(sceneType);
             IGuppyScope scope = this._scope.CreateChildScope(builder =>
             {
+                builder.AddScopeVariable(GuppyGameVariables.Scope.SceneType.Create(sceneType));
+
                 builder.RegisterInstance(configuration);
 
                 builder.RegisterType(sceneType).AsSelf().AsImplementedInterfaces().SingleInstance();

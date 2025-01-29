@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace Guppy.Core.Common.Configurations
+namespace Guppy.Core.Common.Implementations
 {
     public abstract class Configurator
     {

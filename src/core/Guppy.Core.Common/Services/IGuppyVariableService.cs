@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using Guppy.Core.Common.Providers;
 
 namespace Guppy.Core.Common.Services
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public interface IGuppyVariableService<TVariable>
+    public interface IGuppyVariableService<TVariable> : IGuppyVariableProvider<TVariable>
         where TVariable : IGuppyVariable
     {
         object Get(Type variableType);

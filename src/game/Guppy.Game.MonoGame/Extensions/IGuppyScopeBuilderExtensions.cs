@@ -5,14 +5,15 @@ using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions;
-using Guppy.Core.StateMachine.Common;
-using Guppy.Core.StateMachine.Common.Extensions;
+using Guppy.Game.Common;
+using Guppy.Game.Common.Extensions;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.MonoGame.Extensions;
 using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Common.Messages;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Constants;
+using Guppy.Game.MonoGame.Common.Extensions;
 using Guppy.Game.MonoGame.Components.Engine;
 using Guppy.Game.MonoGame.Components.Scene;
 using Microsoft.Xna.Framework;
@@ -45,11 +46,19 @@ namespace Guppy.Game.MonoGame.Extensions
                 builder.RegisterType<FpsDebugComponent>().AsImplementedInterfaces().SingleInstance();
                 builder.RegisterType<ToggleWindowComponent>().AsImplementedInterfaces().SingleInstance();
 
-                builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.Filter(
+                    filter => filter.RequireScene<IScene>().RequireSceneHasDebugWindow(true),
+                    builder =>
+                    {
+                        builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    });
 
-                builder.RegisterStateFilter<SceneDebugWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasDebugWindow), true);
-                builder.RegisterStateFilter<SceneTerminalWindowComponent, bool>(StateKey<bool>.Create(SceneConfigurationKeys.SceneHasTerminalWindow), true);
+                builder.Filter(
+                    filter => filter.RequireScene<IScene>().RequireSceneHasTerminalWindow(true),
+                    builder =>
+                    {
+                        builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    });
 
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {

@@ -2,7 +2,6 @@
 using Guppy.Core.Commands.Extensions;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Logging.Common.Sinks;
 using Guppy.Core.Resources.Common.Configuration;
@@ -12,7 +11,6 @@ using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Engine.Components.Guppy;
 using Guppy.Engine.Providers;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
 using Guppy.Game.Components.Engine;
@@ -45,25 +43,17 @@ namespace Guppy.Game.Extensions
 
                 builder.RegisterType<SceneFrameComponent>().AsImplementedInterfaces().SingleInstance();
 
-                builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-
-                //builder.RegisterCommand<LogLevelCommand>();
-
-                builder.RegisterSceneFilter<LogLevelCommand>(null);
+                builder.RegisterSceneFilter<IScene>(builder =>
+                {
+                    builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                });
 
                 builder.RegisterResourceType<ColorResourceType>();
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)
                 });
-
-                foreach (Type sceneType in builder.ParentScope!.ResolveService<IAssemblyService>().GetTypes<IScene>())
-                {
-                    Type sceneComponentType = typeof(ISceneComponent<>).MakeGenericType(sceneType);
-
-                    builder.RegisterSceneFilter(sceneComponentType, sceneType);
-                }
             });
         }
     }

@@ -5,13 +5,22 @@ namespace Guppy.Core.Common.Implementations
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class GuppyVariable<TKey, TValue>(TValue value) : IGuppyVariable<TKey, TValue>
         where TKey : GuppyVariable<TKey, TValue>
-        where TValue : notnull
     {
         public readonly TValue Value = value;
 
         public virtual bool Matches(TKey value)
         {
-            return this.Value.Equals(value);
+            if (value is GuppyVariable<TKey, TValue> casted)
+            {
+                if (this.Value is null)
+                {
+                    return casted.Value is null;
+                }
+
+                return this.Value.Equals(casted.Value);
+            }
+
+            return false;
         }
 
         public bool Matches(object value)

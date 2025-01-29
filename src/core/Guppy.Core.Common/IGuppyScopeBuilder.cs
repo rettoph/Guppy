@@ -4,32 +4,29 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Features.OpenGenerics;
 using Guppy.Core.Common.Builders;
+using Guppy.Core.Common.Providers;
+using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Common
 {
-    public interface IGuppyScopeBuilder
+    public interface IGuppyScopeBuilder : IGuppyVariableProvider<IScopeVariable>
     {
+        IEnvironmentVariableService EnvironmentVariables { get; }
         IGuppyScope? ParentScope { get; }
         ContainerBuilder ContainerBuilder { get; }
-        ScopeVariablesBuilder Variables { get; }
+
+        IGuppyScopeBuilder AddScopeVariable(IScopeVariable variable);
+
+        IGuppyScopeBuilder AddScopeVariable<TKey, TValue>(TValue value)
+            where TKey : IScopeVariable<TKey, TValue>
+            where TValue : notnull;
+
+        TVariable? GetScopeVariable<TVariable>()
+            where TVariable : IScopeVariable;
+
+        IGuppyScopeBuilder Filter(Action<GuppyScopeFilterBuilder> filterBuilder, Action<IGuppyScopeBuilder> scopeBuilder);
 
         IGuppyScope Build();
-
-        IGuppyScopeBuilder SetScopeVariable(IScopeVariable variable)
-        {
-            this.Variables.Add(variable);
-
-            return this;
-        }
-
-        IGuppyScopeBuilder SetScopeVariable<TKey, TValue>(TValue value)
-            where TKey : IScopeVariable<TKey, TValue>
-            where TValue : notnull
-        {
-            this.Variables.Add(TKey.Create(value));
-
-            return this;
-        }
 
         IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterInstance<T>(T instance)
             where T : class

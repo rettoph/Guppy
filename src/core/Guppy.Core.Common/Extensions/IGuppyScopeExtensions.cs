@@ -7,7 +7,7 @@ namespace Guppy.Core.Common.Extensions
     {
         public static GuppyScopeTypeEnum GetScopeType(this IGuppyScope scope)
         {
-            return scope.Variables.Get<GuppyVariables.Scope.ScopeType>().Value;
+            return scope.Variables.Get<GuppyCoreVariables.Scope.ScopeType>().Value;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Guppy.Core.Files.Services
         {
             string path = directory.Type switch
             {
-                DirectoryTypeEnum.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this._environmentVariableService.Get<GuppyVariables.Global.Company>().Value, this._environmentVariableService.Get<GuppyVariables.Global.Project>().Value, directory.Path),
+                DirectoryTypeEnum.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this._environmentVariableService.Get<GuppyCoreVariables.Global.Company>().Value, this._environmentVariableService.Get<GuppyCoreVariables.Global.Project>().Value, directory.Path),
                 DirectoryTypeEnum.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), directory.Path),
                 _ => directory.Path
             };
