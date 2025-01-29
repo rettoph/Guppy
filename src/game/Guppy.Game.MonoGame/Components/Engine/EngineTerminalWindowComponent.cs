@@ -87,7 +87,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
                                 foreach (MonoGameTerminalSegment segment in line.Segments)
                                 {
                                     this._imgui.SameLine();
-                                    this._imgui.TextColored(segment.Color, segment.Text);
+                                    this._imgui.TextColored(segment.Color, segment.Text.ToString());
                                 }
                             }
                         }

@@ -68,22 +68,22 @@ namespace Guppy.Core.Network
 
         public override INetIncomingMessage<T> CreateIncoming()
         {
-            return this._incomingFactory.BuildInstance();
+            return this._incomingFactory.GetOrCreate();
         }
 
         public INetOutgoingMessage<T> CreateOutgoing()
         {
-            return this._outgoingFactory.BuildInstance();
+            return this._outgoingFactory.GetOrCreate();
         }
 
         public void Recycle(INetIncomingMessage<T> message)
         {
-            this._incomingFactory.TryReturn(ref message);
+            this._incomingFactory.TryReturn(message);
         }
 
         public void Recycle(INetOutgoingMessage<T> message)
         {
-            this._outgoingFactory.TryReturn(ref message);
+            this._outgoingFactory.TryReturn(message);
         }
     }
 }

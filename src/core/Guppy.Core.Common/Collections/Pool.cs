@@ -39,7 +39,7 @@ namespace Guppy.Core.Common.Collections
         }
 
         /// <inheritdoc />
-        public virtual bool TryReturn(ref T instance)
+        public virtual bool TryReturn(T instance)
         {
             if (this._poolSize < this._maxPoolSize)
             {

@@ -1,11 +1,10 @@
-﻿using Guppy.Core.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame
 {
-    public class MonoGameTerminalSegment(IRef<Color> color, string text)
+    public readonly struct MonoGameTerminalSegment
     {
-        public readonly Vector4 Color = color.Value.ToVector4();
-        public readonly string Text = text;
+        public readonly Vector4 Color { get; init; }
+        public readonly string Text { get; init; }
     }
 }

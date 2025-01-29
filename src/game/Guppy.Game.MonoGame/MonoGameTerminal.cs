@@ -11,7 +11,7 @@ namespace Guppy.Game.MonoGame
     public class MonoGameTerminal : ITerminal, IConsole
     {
         private readonly MonoGameTerminalTextWriter _out;
-        private readonly MonoGameTerminalLineBuilder _currentLine;
+        private readonly MonoGameTerminalLineBuilder _lineBuilder;
 
         public const int BufferSize = 1 << 11;
 
@@ -28,8 +28,8 @@ namespace Guppy.Game.MonoGame
 
         public IRef<Color> Color
         {
-            get => this._currentLine.Color;
-            set => this._currentLine.SetColor(value);
+            get => this._lineBuilder.Color;
+            set => this._lineBuilder.SetColor(value);
         }
 
         public ITerminalTheme Theme { get; private set; }
@@ -37,7 +37,7 @@ namespace Guppy.Game.MonoGame
         public MonoGameTerminal(ITerminalTheme theme)
         {
             this._out = new MonoGameTerminalTextWriter(this);
-            this._currentLine = new MonoGameTerminalLineBuilder(theme.Get(default!));
+            this._lineBuilder = new MonoGameTerminalLineBuilder(theme.Get(default!));
             this.Error = new MonoGameTerminalErrorTextWriter(this, theme.Get(LogLevelEnum.Error));
             this.Theme = theme;
 
@@ -51,13 +51,13 @@ namespace Guppy.Game.MonoGame
         public void WriteLine(string value)
         {
             this.Write(value);
-            this.AddLine(this._currentLine.NewLine());
+            this.AddLine(this._lineBuilder.Flush());
         }
 
         public void WriteLine(string value, IRef<Color> color)
         {
             var oldColor = this.Color;
-            this._currentLine.SetColor(color);
+            this._lineBuilder.SetColor(color);
             this.WriteLine(value);
 
             this.Color = oldColor;
@@ -65,13 +65,13 @@ namespace Guppy.Game.MonoGame
 
         public void Write(string value)
         {
-            this._currentLine.Text.Append(value);
+            this._lineBuilder.Append(value);
         }
 
         public void Write(string value, IRef<Color> color)
         {
             var oldColor = this.Color;
-            this._currentLine.SetColor(color);
+            this._lineBuilder.SetColor(color);
             this.Write(value);
 
             this.Color = oldColor;
@@ -79,12 +79,12 @@ namespace Guppy.Game.MonoGame
 
         public void NewLine()
         {
-            this.AddLine(this._currentLine.NewLine());
+            this.AddLine(this._lineBuilder.Flush());
         }
 
         public void Write(char value)
         {
-            if (this._currentLine.TryAppend(value, out MonoGameTerminalLine? line) == false)
+            if (this._lineBuilder.TryAppend(value, out MonoGameTerminalLine? line) == false)
             {
                 this.AddLine(line);
             }
@@ -96,8 +96,7 @@ namespace Guppy.Game.MonoGame
 
             if (oldLine is not null)
             {
-                MonoGameTerminalLine.Factory.TryReturn(ref oldLine);
-                this.FirstLineNumber++;
+                oldLine.Reset();
             }
         }
     }

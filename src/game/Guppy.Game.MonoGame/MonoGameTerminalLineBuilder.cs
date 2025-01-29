@@ -1,79 +1,79 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Extensions;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame
 {
-    internal class MonoGameTerminalLineBuilder(IRef<Color> color)
+    public class MonoGameTerminalLineBuilder
     {
-        private int _lineNumber = 1;
-        private bool _appendLineNumber = true;
+        private int _lineNumber;
+        private MonoGameTerminalLine _line;
+        private readonly StringBuilder _text;
 
-        private MonoGameTerminalLine _line = MonoGameTerminalLine.Factory.BuildInstance();
+        public IRef<Color> Color;
 
-        public IRef<Color> Color = color;
+        public MonoGameTerminalLineBuilder(IRef<Color> color)
+        {
+            this._lineNumber = 1;
+            this._line = MonoGameTerminalLine.Factory.GetOrCreate();
+            this._text = new StringBuilder();
+            this._text.Append($"{this._lineNumber++}: ");
 
-        public StringBuilder Text = new();
+            this.Color = color;
+        }
 
         public bool TryAppend(char value, [MaybeNullWhen(true)] out MonoGameTerminalLine previousLine)
         {
             if (value == '\n')
             {
-                previousLine = this.NewLine();
+                previousLine = this.Flush();
                 return false;
             }
 
             previousLine = null;
-            this.Text.Append(value);
+            this._text.Append(value);
 
             return true;
         }
 
         public void SetColor(IRef<Color> color)
         {
-            this.AddSegment();
-            this.Color = color;
-        }
-
-        private void AddSegment()
-        {
-            if (this.Text.Length == 0)
+            if (this.Color.Value == color.Value)
             {
                 return;
             }
 
-            if (this._appendLineNumber)
+            this._line.Segments.Add(new MonoGameTerminalSegment()
             {
-                this.AppendLineNumber();
-                this._appendLineNumber = false;
-            }
+                Text = this._text.Flush(),
+                Color = this.Color.Value.ToVector4()
+            });
 
-            MonoGameTerminalSegment segment = new(this.Color, this.Text.ToString());
-            this._line.Segments.Add(segment);
-
-            this.Text.Clear();
+            this.Color = color;
         }
 
-        public MonoGameTerminalLine NewLine()
+        public MonoGameTerminalLine Flush()
         {
-            this.AddSegment();
+            this._line.Segments.Add(new MonoGameTerminalSegment()
+            {
+                Text = this._text.Flush(),
+                Color = this.Color.Value.ToVector4()
+            });
 
-            var result = this._line;
-            this._line.CleanText();
+            MonoGameTerminalLine result = this._line;
+            result.Clean();
 
-            this._line = MonoGameTerminalLine.Factory.BuildInstance();
-            this._line.Segments.Clear();
-
-            this._appendLineNumber = true;
+            this._line = MonoGameTerminalLine.Factory.GetOrCreate();
+            this._text.Append($"{this._lineNumber++}: ");
 
             return result;
         }
 
-        private void AppendLineNumber()
+        public void Append(string text)
         {
-            MonoGameTerminalSegment segment = new(this.Color, $"{this._lineNumber++}: ");
-            this._line.Segments.Add(segment);
+            this._text.Append(text);
         }
     }
 }

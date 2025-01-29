@@ -5,17 +5,17 @@
     {
         private readonly Func<T> _method = method;
 
-        public virtual T BuildInstance()
+        public virtual T GetOrCreate()
         {
             if (!this.TryPull(out T? instance))
             {
-                instance = this.Build();
+                instance = this.Create();
             }
 
             return instance;
         }
 
-        protected virtual T Build()
+        protected virtual T Create()
         {
             return this._method();
         }
