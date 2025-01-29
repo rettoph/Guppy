@@ -1,9 +1,9 @@
-﻿using Autofac.Extras.Moq;
+﻿using Autofac;
+using Autofac.Extras.Moq;
 using Guppy.Core;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Contexts;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.Extensions;
-using Moq;
 
 namespace Guppy.Tests.Common
 {
@@ -17,8 +17,7 @@ namespace Guppy.Tests.Common
 
         internal GuppyScopeMocker()
         {
-            this.Register(x => x.RegisterCoreServices(
-                context: new Mock<IGuppyContext>().Object));
+            this.Register(x => x.RegisterCoreServices());
         }
 
         protected internal void Register(Action<IGuppyScopeBuilder> builder)
@@ -45,14 +44,13 @@ namespace Guppy.Tests.Common
         {
             AutoMock mock = AutoMock.GetLoose(containerBuilder =>
             {
-                GuppyScopeBuilder guppyScopeBuilder = new(null, containerBuilder);
+                GuppyScopeBuilder guppyScopeBuilder = new([], GuppyScopeTypeEnum.Child, null, containerBuilder);
                 this._builders?.Invoke(guppyScopeBuilder);
             });
 
             this._mockers?.Invoke(mock);
 
-            IGuppyScope scope = new GuppyScope(null, mock.Container);
-            return scope;
+            return mock.Container.Resolve<IGuppyScope>();
         }
     }
 
