@@ -58,7 +58,7 @@ namespace Guppy.Game.Extensions
                     EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)
                 });
 
-                foreach (Type sceneType in builder.ParentScope!.Resolve<IAssemblyService>().GetTypes<IScene>())
+                foreach (Type sceneType in builder.ParentScope!.ResolveService<IAssemblyService>().GetTypes<IScene>())
                 {
                     Type sceneComponentType = typeof(ISceneComponent<>).MakeGenericType(sceneType);
 

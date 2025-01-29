@@ -60,7 +60,7 @@ namespace Guppy.Tests.Common
     {
         public virtual TService Build()
         {
-            return this.scope.Resolve<TService>();
+            return this.scope.ResolveService<TService>();
         }
 
         public new TSelf Register(Action<IGuppyScopeBuilder> builder)

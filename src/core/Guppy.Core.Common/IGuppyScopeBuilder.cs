@@ -3,6 +3,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Features.OpenGenerics;
+using Guppy.Core.Common.Builders;
 
 namespace Guppy.Core.Common
 {
@@ -10,22 +11,24 @@ namespace Guppy.Core.Common
     {
         IGuppyScope? ParentScope { get; }
         ContainerBuilder ContainerBuilder { get; }
-
-        Dictionary<Type, IEnvironmentVariable> EnvironmentVariables { get; }
+        ScopeVariablesBuilder Variables { get; }
 
         IGuppyScope Build();
 
-
-        IGuppyScopeBuilder SetEnvironmentVariable(IEnvironmentVariable variable)
+        IGuppyScopeBuilder SetScopeVariable(IScopeVariable variable)
         {
-            this.EnvironmentVariables[variable.GetType()] = variable;
+            this.Variables.Add(variable);
 
             return this;
         }
-        IGuppyScopeBuilder SetEnvironmentVariable<TKey, TValue>(TValue value)
-            where TKey : IEnvironmentVariable<TKey, TValue>
+
+        IGuppyScopeBuilder SetScopeVariable<TKey, TValue>(TValue value)
+            where TKey : IScopeVariable<TKey, TValue>
+            where TValue : notnull
         {
-            return this.SetEnvironmentVariable(TKey.Create(value));
+            this.Variables.Add(TKey.Create(value));
+
+            return this;
         }
 
         IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterInstance<T>(T instance)

@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.StateMachine.Common;
@@ -15,9 +16,9 @@ namespace Guppy.Core.Network
         {
             IEnumerable<INetScope>? scopes = null;
 
-            if (scope.Type == GuppyScopeTypeEnum.Child)
+            if (scope.GetScopeType() == GuppyScopeTypeEnum.Child)
             {
-                scope.TryResolve(out scopes);
+                scope.TryResolveService(out scopes);
             }
 
             this._scopes = scopes ?? [];

@@ -13,10 +13,12 @@ namespace Guppy.Core.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterCoreServices(this IGuppyScopeBuilder builder, IAssemblyService? assemblies = null)
+        public static IGuppyScopeBuilder RegisterCoreServices(this IGuppyScopeBuilder builder, IEnvironmentVariableService environmentVariableService, IAssemblyService? assemblies = null)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreServices), builder =>
             {
+                builder.RegisterInstance(environmentVariableService).As<IEnvironmentVariableService>().SingleInstance();
+
                 if (assemblies is null)
                 {
                     builder.Register<AssemblyService>(AssemblyService.Factory).As<IAssemblyService>().SingleInstance();

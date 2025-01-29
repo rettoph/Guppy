@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using System.Reflection;
 using Autofac;
-using Guppy.Core.Common.Constants;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Services;
-using Guppy.Core.Common.Utilities;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Extensions;
 
@@ -123,8 +121,7 @@ namespace Guppy.Core.Services
 
         internal static AssemblyService Factory(IComponentContext context)
         {
-            GuppyEnvironment env = context.Resolve<GuppyEnvironment>();
-            return new AssemblyService(env.Get<GuppyEnvironmentVariables.LibraryAssemblies>().Value, context.ResolveLogger<AssemblyService>());
+            return new AssemblyService(Enumerable.Empty<Assembly>(), context.ResolveLogger<AssemblyService>());
         }
     }
 }

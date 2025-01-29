@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Utilities;
 using Guppy.Engine;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -16,7 +15,7 @@ namespace Guppy.Game
         public ISceneService Scenes { get; private set; }
 
         public GameEngine(
-            GuppyEnvironment environment,
+            IEnumerable<IEnvironmentVariable> environment,
             Action<IGuppyScopeBuilder>? builder = null) : base(environment, builder)
         {
             this._drawComponentsActions = new(true);

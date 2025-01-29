@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Common
 {
@@ -7,16 +7,17 @@ namespace Guppy.Core.Common
     {
         IGuppyScope? Parent { get; }
         IEnumerable<IGuppyScope> Children { get; }
-        GuppyScopeTypeEnum Type { get; }
+        IEnvironmentVariableService EnvironmentVariables { get; }
+        IScopeVariableService Variables { get; }
 
         IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder);
 
-        T Resolve<T>()
+        T ResolveService<T>()
             where T : notnull;
 
-        object Resolve(Type type);
+        object ResolveService(Type type);
 
-        bool TryResolve<T>([MaybeNullWhen(false)] out T? instance)
+        bool TryResolveService<T>([MaybeNullWhen(false)] out T? instance)
             where T : class;
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
+using Guppy.Core.Common.Constants;
 using Guppy.Core.Common.Enums;
-using Guppy.Core.Common.Utilities;
+using Guppy.Core.Common.Services;
+using Guppy.Core.Services;
 
 namespace Guppy.Core
 {
@@ -11,21 +14,21 @@ namespace Guppy.Core
 
         public ContainerBuilder ContainerBuilder { get; }
 
-        public Dictionary<Type, IEnvironmentVariable> EnvironmentVariables { get; }
+        public ScopeVariablesBuilder Variables { get; }
 
         public GuppyScopeBuilder(
-            Dictionary<Type, IEnvironmentVariable> environmentVariables,
             GuppyScopeTypeEnum type,
             IGuppyScope? parentScope,
             ContainerBuilder? builder = null)
         {
-            this.EnvironmentVariables = new Dictionary<Type, IEnvironmentVariable>(environmentVariables);
             this.ParentScope = parentScope;
             this.ContainerBuilder = builder ?? new ContainerBuilder();
+            this.Variables = new([
+                GuppyVariables.Scope.ScopeType.Create(type)
+            ]);
 
-            this.ContainerBuilder.Register<IGuppyScope>((IComponentContext context) => new GuppyScope(this.ParentScope, type, context.Resolve<ILifetimeScope>()));
-            this.ContainerBuilder.Register<GuppyEnvironment>((IComponentContext context) => new GuppyEnvironment(this.EnvironmentVariables));
-
+            this.ContainerBuilder.Register<IGuppyScope>((IComponentContext context) => new GuppyScope(this.ParentScope, context.Resolve<ILifetimeScope>(), context.Resolve<IScopeVariableService>(), context.Resolve<IEnvironmentVariableService>()));
+            this.ContainerBuilder.Register<IScopeVariableService>((IComponentContext context) => new ScopeVariableService(this.Variables.Build()));
         }
 
         public IGuppyScope Build()

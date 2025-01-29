@@ -1,19 +1,16 @@
 ﻿namespace Guppy.Core.Common
 {
-    public interface IEnvironmentVariable
+    public interface IEnvironmentVariable : IGuppyVariable
     {
-        bool Matches(object value);
     }
 
-    public interface IEnvironmentVariable<TKey> : IEnvironmentVariable
-        where TKey : IEnvironmentVariable<TKey>
+    public interface IEnvironmentVariable<TKey> : IEnvironmentVariable, IGuppyVariable<TKey>
+        where TKey : IGuppyVariable<TKey>
     {
-        bool Matches(TKey value);
     }
 
-    public interface IEnvironmentVariable<TKey, TValue> : IEnvironmentVariable<TKey>
-        where TKey : IEnvironmentVariable<TKey, TValue>
+    public interface IEnvironmentVariable<TKey, TValue> : IEnvironmentVariable<TKey>, IGuppyVariable<TKey, TValue>
+        where TKey : IGuppyVariable<TKey, TValue>
     {
-        static abstract TKey Create(TValue value);
     }
 }

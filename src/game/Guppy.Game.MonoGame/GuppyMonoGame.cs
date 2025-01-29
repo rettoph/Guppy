@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common.Utilities;
+﻿using Guppy.Core.Common;
 using Guppy.Game.Common;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
@@ -8,7 +8,7 @@ namespace Guppy.Game.MonoGame
 {
     public class GuppyMonoGame : Microsoft.Xna.Framework.Game
     {
-        private readonly GuppyEnvironment _environment;
+        private readonly IEnumerable<IEnvironmentVariable> _environment;
         private readonly GraphicsDeviceManager _graphics;
         private GameEngine? _engine;
 
@@ -17,7 +17,7 @@ namespace Guppy.Game.MonoGame
         // [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         // public static extern void SDL_MaximizeWindow(IntPtr window);
 
-        public GuppyMonoGame(GuppyEnvironment environment)
+        public GuppyMonoGame(IEnumerable<IEnvironmentVariable> environment)
         {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";

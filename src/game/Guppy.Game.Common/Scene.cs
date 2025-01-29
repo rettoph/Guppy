@@ -68,7 +68,7 @@ namespace Guppy.Game.Common
         {
             this._scope = scope;
 
-            this.Components = [.. scope.Resolve<IFiltered<ISceneComponent>>()];
+            this.Components = [.. scope.ResolveService<IFiltered<ISceneComponent>>()];
 
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
             DelegateSequenceGroup<InitializeComponentSequenceGroupEnum>.Invoke(this.Components, initializeDelegate, false, [this]);
@@ -90,7 +90,7 @@ namespace Guppy.Game.Common
         public T Resolve<T>()
             where T : notnull
         {
-            return this._scope.Resolve<T>();
+            return this._scope.ResolveService<T>();
         }
     }
 }
