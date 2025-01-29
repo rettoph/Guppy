@@ -13,11 +13,19 @@ namespace Guppy.Core.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterCoreServices(this IGuppyScopeBuilder builder, IEnvironmentVariableService environmentVariableService, IAssemblyService? assemblies = null)
+        public static IGuppyScopeBuilder RegisterCoreServices(this IGuppyScopeBuilder builder, IEnvironmentVariableService? environmentVariableService = null, IAssemblyService? assemblies = null)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreServices), builder =>
             {
-                builder.RegisterInstance(environmentVariableService).As<IEnvironmentVariableService>().SingleInstance();
+                if (environmentVariableService is null)
+                {
+                    builder.RegisterType<EnvironmentVariableService>().As<IEnvironmentVariableService>().SingleInstance();
+                }
+                else
+                {
+                    builder.RegisterInstance(environmentVariableService).As<IEnvironmentVariableService>().SingleInstance();
+                }
+
 
                 if (assemblies is null)
                 {

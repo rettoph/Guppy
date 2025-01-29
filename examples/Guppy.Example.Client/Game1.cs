@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Guppy.Core.Commands.Common;
-using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Example.Client.CellTypes;
@@ -63,7 +63,7 @@ namespace Guppy.Example.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                GameEngine engine = new GameEngine(new GuppyContext("rettoph", "example"), builder =>
+                GameEngine engine = new GameEngine(EnvironmentVariablesBuilder.Build("rettoph", "example"), builder =>
                 {
                     builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
                         .RegisterSerilogLoggingServices();

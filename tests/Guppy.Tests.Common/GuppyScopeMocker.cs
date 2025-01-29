@@ -44,7 +44,7 @@ namespace Guppy.Tests.Common
         {
             AutoMock mock = AutoMock.GetLoose(containerBuilder =>
             {
-                GuppyScopeBuilder guppyScopeBuilder = new([], GuppyScopeTypeEnum.Child, null, containerBuilder);
+                GuppyScopeBuilder guppyScopeBuilder = new(GuppyScopeTypeEnum.Child, null, containerBuilder);
                 this._builders?.Invoke(guppyScopeBuilder);
             });
 
