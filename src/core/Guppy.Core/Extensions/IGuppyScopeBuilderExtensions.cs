@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Contexts;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Extensions;
@@ -14,7 +13,7 @@ namespace Guppy.Core.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterCoreServices(this IGuppyScopeBuilder builder, IGuppyContext context, IAssemblyService? assemblies = null)
+        public static IGuppyScopeBuilder RegisterCoreServices(this IGuppyScopeBuilder builder, IAssemblyService? assemblies = null)
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreServices), builder =>
             {
@@ -26,8 +25,6 @@ namespace Guppy.Core.Extensions
                 {
                     builder.RegisterInstance(assemblies).As<IAssemblyService>().SingleInstance();
                 }
-
-                builder.RegisterInstance(context).As<IGuppyContext>().SingleInstance();
 
                 builder.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();

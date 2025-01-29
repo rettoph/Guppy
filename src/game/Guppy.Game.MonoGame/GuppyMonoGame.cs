@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Utilities;
 using Guppy.Game.Common;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
@@ -8,7 +8,7 @@ namespace Guppy.Game.MonoGame
 {
     public class GuppyMonoGame : Microsoft.Xna.Framework.Game
     {
-        private readonly GuppyContext _context;
+        private readonly GuppyEnvironment _environment;
         private readonly GraphicsDeviceManager _graphics;
         private GameEngine? _engine;
 
@@ -17,7 +17,7 @@ namespace Guppy.Game.MonoGame
         // [DllImport("SDL2.dll", CallingConvention = CallingConvention.Cdecl)]
         // public static extern void SDL_MaximizeWindow(IntPtr window);
 
-        public GuppyMonoGame(GuppyContext context)
+        public GuppyMonoGame(GuppyEnvironment environment)
         {
             this._graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
@@ -36,7 +36,7 @@ namespace Guppy.Game.MonoGame
             this._graphics.ApplyChanges();
 
 
-            this._context = context;
+            this._environment = environment;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Guppy.Game.MonoGame
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                var engine = new GameEngine(this._context, builder =>
+                var engine = new GameEngine(this._environment, builder =>
                 {
                     builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window);
                 });
@@ -130,17 +130,6 @@ namespace Guppy.Game.MonoGame
 
             throw new NotImplementedException();
             // _engine?.Draw(gameTime);
-        }
-    }
-
-    public class GuppyMonoGame<TGuppy>(GuppyContext context) : GuppyMonoGame(context)
-        where TGuppy : class, IScene
-    {
-        protected override void Initialize(IGameEngine engine)
-        {
-            base.Initialize(engine);
-
-            engine.Scenes.Create<TGuppy>();
         }
     }
 }

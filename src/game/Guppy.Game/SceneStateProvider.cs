@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Common;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.StateMachine.Common;
 using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game;
@@ -13,7 +14,7 @@ namespace Guppy.Engine.Providers
 
         public SceneStateProvider(IGuppyScope scope)
         {
-            if (scope.IsRoot == false)
+            if (scope.Type == GuppyScopeTypeEnum.Child)
             {
                 scope.TryResolve(out this._scene);
                 scope.TryResolve(out this._configuration);

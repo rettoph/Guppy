@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\" />
+  </ItemGroup>
+
 </Project>

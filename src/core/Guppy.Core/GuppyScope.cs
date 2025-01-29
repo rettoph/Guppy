@@ -16,22 +16,13 @@ namespace Guppy.Core
 
         public GuppyScopeTypeEnum Type { get; } = type;
 
-        public bool IsRoot => this.Parent is null;
-
-        public IGuppyScope Root => this.IsRoot ? this : this.Parent!;
-
         public IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder)
         {
             ILifetimeScope autofac = this._autofac.BeginLifetimeScope(containerBuilder =>
             {
-                IGuppyScopeBuilder guppyScopeBuilder = new GuppyScopeBuilder(this, containerBuilder);
-                GuppyScopeTypeEnum childScopeType = this.Type switch
-                {
-                    GuppyScopeTypeEnum.Global => GuppyScopeTypeEnum.Child,
-                    _ => throw new NotImplementedException()
-                };
-                guppyScopeBuilder.Register<IGuppyScope>((ILifetimeScope scope) => new GuppyScope(this, childScopeType, scope));
+                IGuppyScopeBuilder guppyScopeBuilder = new GuppyScopeBuilder([], GuppyScopeTypeEnum.Child, this, containerBuilder);
 
+                // Run custom builder
                 builder?.Invoke(guppyScopeBuilder);
             });
 

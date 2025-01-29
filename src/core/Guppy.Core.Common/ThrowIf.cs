@@ -62,6 +62,19 @@ namespace Guppy.Core.Common
                     throw new ArgumentException($"'{type.FullName}' is not a class.");
                 }
             }
+
+            public static void IsAbstract(System.Type type)
+            {
+                if (type.IsAbstract)
+                {
+                    throw new ArgumentException($"'{type.FullName}' is abstract.");
+                }
+            }
+
+            public static void IsAbstract<T>()
+            {
+                ThrowIf.Type.IsAbstract(typeof(T));
+            }
         }
     }
 }

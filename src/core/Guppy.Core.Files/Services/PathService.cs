@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common.Contexts;
+﻿using Guppy.Core.Common.Constants;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Enums;
 using Guppy.Core.Files.Common.Helpers;
@@ -6,15 +7,15 @@ using Guppy.Core.Files.Common.Services;
 
 namespace Guppy.Core.Files.Services
 {
-    internal class PathService(IGuppyContext context) : IPathService
+    internal class PathService(GuppyEnvironment environment) : IPathService
     {
-        private readonly IGuppyContext _context = context;
+        private readonly GuppyEnvironment _environment = environment;
 
         public DirectoryLocation GetSourceLocation(DirectoryLocation directory)
         {
             string path = directory.Type switch
             {
-                DirectoryTypeEnum.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this._context.Company, this._context.Name, directory.Path),
+                DirectoryTypeEnum.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this._environment.Get<GuppyEnvironmentVariables.Company>().Value, this._environment.Get<GuppyEnvironmentVariables.Project>().Value, directory.Path),
                 DirectoryTypeEnum.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), directory.Path),
                 _ => directory.Path
             };

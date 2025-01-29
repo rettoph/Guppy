@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Reflection;
 using Autofac;
-using Guppy.Core.Common.Contexts;
+using Guppy.Core.Common.Constants;
 using Guppy.Core.Common.Extensions.System.Reflection;
 using Guppy.Core.Common.Services;
+using Guppy.Core.Common.Utilities;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Logging.Common.Extensions;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class AssemblyService(IEnumerable<Assembly> libraries, ILogger logger) : IAssemblyService
+    public sealed class AssemblyService(IEnumerable<Assembly> libraries, ILogger logger) : IAssemblyService
     {
         private readonly ILogger _logger = logger;
         private readonly HashSet<Assembly> _assemblies = [];
@@ -122,8 +123,8 @@ namespace Guppy.Core.Services
 
         internal static AssemblyService Factory(IComponentContext context)
         {
-            IGuppyContext guppy = context.Resolve<IGuppyContext>();
-            return new AssemblyService(guppy.Libraries, context.ResolveLogger<AssemblyService>());
+            GuppyEnvironment env = context.Resolve<GuppyEnvironment>();
+            return new AssemblyService(env.Get<GuppyEnvironmentVariables.LibraryAssemblies>().Value, context.ResolveLogger<AssemblyService>());
         }
     }
 }

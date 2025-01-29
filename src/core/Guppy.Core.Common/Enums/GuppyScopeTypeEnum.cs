@@ -3,7 +3,7 @@
     public enum GuppyScopeTypeEnum
     {
         Boot,
-        Global,
+        Root,
         Child
     }
 }

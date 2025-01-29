@@ -9,9 +9,6 @@ namespace Guppy.Core.Common
         IEnumerable<IGuppyScope> Children { get; }
         GuppyScopeTypeEnum Type { get; }
 
-        bool IsRoot { get; }
-        IGuppyScope Root { get; }
-
         IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder);
 
         T Resolve<T>()

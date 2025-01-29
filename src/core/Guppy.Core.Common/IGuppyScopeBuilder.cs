@@ -11,6 +11,23 @@ namespace Guppy.Core.Common
         IGuppyScope? ParentScope { get; }
         ContainerBuilder ContainerBuilder { get; }
 
+        Dictionary<Type, IEnvironmentVariable> EnvironmentVariables { get; }
+
+        IGuppyScope Build();
+
+
+        IGuppyScopeBuilder SetEnvironmentVariable(IEnvironmentVariable variable)
+        {
+            this.EnvironmentVariables[variable.GetType()] = variable;
+
+            return this;
+        }
+        IGuppyScopeBuilder SetEnvironmentVariable<TKey, TValue>(TValue value)
+            where TKey : IEnvironmentVariable<TKey, TValue>
+        {
+            return this.SetEnvironmentVariable(TKey.Create(value));
+        }
+
         IRegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle> RegisterInstance<T>(T instance)
             where T : class
         {
