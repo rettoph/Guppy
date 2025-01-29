@@ -12,7 +12,7 @@ namespace Guppy.Core.Files.Services
         private readonly IPathService _paths = paths;
         private readonly Dictionary<string, IFile> _cache = [];
 
-        public IFile Get(FileLocation location, bool forceLoadFromDisk = false)
+        public IFile Get(FileLocation location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
         {
             FileLocation source = this._paths.GetSourceLocation(location);
             ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.Path, out bool exists);
@@ -21,7 +21,7 @@ namespace Guppy.Core.Files.Services
             {
                 DirectoryHelper.EnsureDirectoryExists(source.Path);
 
-                using FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate);
+                using FileStream stream = File.Open(source.Path, createIfDoesNotExist ? FileMode.OpenOrCreate : FileMode.Open);
                 using StreamReader reader = new(stream);
                 string content = reader.ReadToEnd();
 
@@ -34,7 +34,7 @@ namespace Guppy.Core.Files.Services
             return file ?? throw new Exception();
         }
 
-        public IFile<T> Get<T>(FileLocation location, bool forceLoadFromDisk = false)
+        public IFile<T> Get<T>(FileLocation location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
         {
             FileLocation source = this._paths.GetSourceLocation(location);
             ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.Path, out bool exists);
@@ -43,7 +43,7 @@ namespace Guppy.Core.Files.Services
             {
                 DirectoryHelper.EnsureDirectoryExists(source.Path);
 
-                using FileStream stream = File.Open(source.Path, FileMode.OpenOrCreate);
+                using FileStream stream = File.Open(source.Path, createIfDoesNotExist ? FileMode.OpenOrCreate : FileMode.Open);
                 using StreamReader reader = new(stream);
                 string content = reader.ReadToEnd();
 

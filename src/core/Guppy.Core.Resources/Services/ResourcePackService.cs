@@ -75,9 +75,20 @@ namespace Guppy.Core.Resources.Services
 
             this._logger.Debug("Preparing to import resource packs");
 
+            bool saveConfigurationChanges = false;
             foreach (ResourcePackConfiguration packConfiguration in this._configuration.Value.Packs)
             {
-                this.Load(packConfiguration);
+                if (packConfiguration.Enabled == true && this.TryLoad(packConfiguration) == false)
+                {
+                    this._logger.Warning("Failed loading {ResourcePack} at '{Directory}', disabling in configuration.", nameof(ResourcePack), packConfiguration.EntryDirectory);
+                    packConfiguration.Enabled = false;
+                    saveConfigurationChanges = true;
+                }
+            }
+
+            if (saveConfigurationChanges == true)
+            {
+                this._files.Save(this._configuration);
             }
 
             // Add the runtime resource pack last
@@ -138,24 +149,33 @@ namespace Guppy.Core.Resources.Services
             return pack;
         }
 
-        private void Load(ResourcePackConfiguration configuration)
+        private bool TryLoad(ResourcePackConfiguration configuration)
         {
-            FileLocation entryLocation = new(configuration.EntryDirectory, "pack.json");
-            IFile<ResourcePackEntryConfiguration> entry = this._files.Get<ResourcePackEntryConfiguration>(entryLocation);
-            DirectoryLocation directory = entry.Source.Directory;
-
-            ResourcePack pack = this.GetOrCreatePack(entry);
-            this._logger.Debug("Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", pack.Name, pack.Id);
-
-            foreach ((string localization, string[] resourceFileNames) in entry.Value.Import)
+            try
             {
-                foreach (string resourceFileName in resourceFileNames)
-                {
-                    this.ImportResourceFile(resourceFileName, pack, directory, localization);
-                }
-            }
+                FileLocation entryLocation = new(configuration.EntryDirectory, "pack.json");
+                IFile<ResourcePackEntryConfiguration> entry = this._files.Get<ResourcePackEntryConfiguration>(entryLocation);
+                DirectoryLocation directory = entry.Source.Directory;
 
-            this._logger.Debug("Done. Loaded ({Count}) resources", pack.GetAllDefinedResources().Count());
+                ResourcePack pack = this.GetOrCreatePack(entry);
+                this._logger.Debug("Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", pack.Name, pack.Id);
+
+                foreach ((string localization, string[] resourceFileNames) in entry.Value.Import)
+                {
+                    foreach (string resourceFileName in resourceFileNames)
+                    {
+                        this.ImportResourceFile(resourceFileName, pack, directory, localization);
+                    }
+                }
+
+                this._logger.Debug("Done. Loaded ({Count}) resources", pack.GetAllDefinedResources().Count());
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this._logger.Error(ex, "Unable to load {ResourcePack} at '{Directory}'", nameof(ResourcePack), configuration.EntryDirectory);
+                return false;
+            }
         }
 
         private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
