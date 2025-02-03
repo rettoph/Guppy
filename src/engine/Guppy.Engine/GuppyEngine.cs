@@ -8,34 +8,23 @@ using Guppy.Core.Common.Services;
 using Guppy.Core.Extensions;
 using Guppy.Core.Services;
 using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
-using Guppy.Engine.Common.Enums;
-using Guppy.Engine.Extensions.Autofac;
+using Guppy.Engine.Extensions;
 
 namespace Guppy.Engine
 {
     public class GuppyEngine : IGuppyEngine, IDisposable
     {
-        private readonly IGuppyScope _rootScope;
+        private readonly IGuppyScope _globalScope;
 
-        private readonly IFiltered<IHostedService> _hostedServices;
-        private readonly IFiltered<IEngineComponent> _components;
-
-        public IEnumerable<IEngineComponent> Components => this._components;
+        public IGlobalSystemService Systems { get; }
 
         public GuppyEngine(
             IEnumerable<IEnvironmentVariable> environment,
             Action<IGuppyScopeBuilder>? builder = null)
         {
-            this._rootScope = GuppyEngine.BuildRootScope(this, environment, builder);
-            this._hostedServices = this._rootScope.ResolveService<IFiltered<IHostedService>>();
-            this._components = this._rootScope.ResolveService<IFiltered<IEngineComponent>>();
+            this._globalScope = GuppyEngine.BuildRootScope(this, environment, builder);
 
-            CancellationTokenSource startToken = new(5000);
-            foreach (IHostedService hostedService in this._hostedServices)
-            {
-                hostedService.StartAsync(startToken.Token);
-            }
+            this.Systems = this._globalScope.ResolveService<IGlobalSystemService>();
         }
 
         IGuppyEngine IGuppyEngine.Start()
@@ -45,7 +34,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            ActionSequenceGroup<InitializeComponentSequenceGroupEnum, IGuppyEngine>.Invoke(this._components, false, this);
+            ActionSequenceGroup<InitializeSystemSequenceGroupEnum, IGuppyEngine>.Invoke(this.Systems, false, this);
         }
 
         public GuppyEngine Start()
@@ -58,7 +47,7 @@ namespace Guppy.Engine
         public T Resolve<T>()
             where T : notnull
         {
-            return this._rootScope.ResolveService<T>();
+            return this._globalScope.ResolveService<T>();
         }
 
         #region Static
@@ -95,7 +84,7 @@ namespace Guppy.Engine
                 // Begin boot phase 2 - call all boot attributes
 
                 // Construct the engine container
-                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Root, environmentVariableService, bootScope);
+                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Global, environmentVariableService, bootScope);
 
                 // Run any custom builder actions
                 builder?.Invoke(engineRootScopeBuilder);
@@ -121,14 +110,7 @@ namespace Guppy.Engine
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
-                    CancellationTokenSource stopToken = new(5000);
-                    foreach (IHostedService hostedService in this._hostedServices)
-                    {
-                        hostedService.StopAsync(stopToken.Token);
-                    }
-
-                    this._rootScope.Dispose();
+                    this._globalScope.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

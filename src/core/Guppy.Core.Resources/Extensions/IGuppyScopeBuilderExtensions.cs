@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common.Serialization.Json;
 using Guppy.Core.Resources.Common.Configuration;
@@ -8,6 +7,7 @@ using Guppy.Core.Resources.Common.Services;
 using Guppy.Core.Resources.ResourceTypes;
 using Guppy.Core.Resources.Serialization.Json.Converters;
 using Guppy.Core.Resources.Services;
+using Guppy.Core.Resources.Systems;
 using Guppy.Core.Serialization.Common.Extensions;
 
 namespace Guppy.Core.Resources.Extensions
@@ -18,9 +18,11 @@ namespace Guppy.Core.Resources.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreResourcesServices), builder =>
             {
-                builder.RegisterType<SettingService>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<ResourcePackService>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<ResourceService>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterGlobalSystem<ResourceServicesInitializationSystem>();
+
+                builder.RegisterType<SettingService>().As<ISettingService>().SingleInstance();
+                builder.RegisterType<ResourcePackService>().As<IResourcePackService>().SingleInstance();
+                builder.RegisterType<ResourceService>().As<IResourceService>().SingleInstance();
                 builder.RegisterType<ResourceTypeService>().As<IResourceTypeService>().SingleInstance();
 
                 builder.RegisterJsonConverter<ResourcePacksConfigurationConverter>();

@@ -6,6 +6,8 @@ namespace Guppy.Core.Resources.Common
     public interface ISettingValue : IEquatable<ISettingValue>, IRef, IDisposable
     {
         ISetting Setting { get; }
+
+        void SetValue(ISettingValue value);
     }
 
     public static class SettingValue
@@ -77,6 +79,16 @@ namespace Guppy.Core.Resources.Common
         public override readonly int GetHashCode()
         {
             return HashCode.Combine(this.Value, this.Setting.GetHashCode());
+        }
+
+        public void SetValue(ISettingValue value)
+        {
+            if (value is not SettingValue<T> casted)
+            {
+                throw new ArgumentException(nameof(value));
+            }
+
+            this.Value = casted.Value;
         }
 
         public static implicit operator T(SettingValue<T> setting)

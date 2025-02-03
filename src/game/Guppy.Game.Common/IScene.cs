@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Game.Common.Components;
+using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common
@@ -24,7 +24,7 @@ namespace Guppy.Game.Common
         event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         event OnEventDelegate<IScene, bool>? OnVisibleChanged;
 
-        ISceneComponent[] Components { get; }
+        ISceneSystem[] Components { get; }
 
         void Initialize(IGuppyScope scope);
 

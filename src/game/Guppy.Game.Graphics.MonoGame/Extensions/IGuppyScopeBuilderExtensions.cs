@@ -7,7 +7,7 @@ using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Extensions;
 using Guppy.Game.Graphics.Common;
-using Guppy.Game.Graphics.MonoGame.Components;
+using Guppy.Game.Graphics.MonoGame.Systems;
 using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
@@ -52,7 +52,7 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
 
                 builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
-                builder.RegisterType<MonoGameWorldViewProjectionEffectComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterGlobalSystem<MonoGameWorldViewProjectionEffectSystem>();
 
                 builder.RegisterSceneFilter<IScene>(builder =>
                 {

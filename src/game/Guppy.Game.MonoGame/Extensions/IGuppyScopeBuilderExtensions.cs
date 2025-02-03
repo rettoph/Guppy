@@ -40,11 +40,11 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
 
-                builder.RegisterType<DrawImGuiComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<EngineDebugWindowComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<EngineTerminalWindowComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<FpsDebugComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<ToggleWindowComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterGlobalSystem<DrawImGuiSystem>();
+                builder.RegisterGlobalSystem<EngineDebugWindowSystem>();
+                builder.RegisterGlobalSystem<EngineTerminalWindowSystem>();
+                builder.RegisterGlobalSystem<FpsDebugSystem>();
+                builder.RegisterGlobalSystem<ToggleWindowSystem>();
 
                 builder.Filter(
                     filter => filter.RequireScene<IScene>().RequireSceneHasDebugWindow(true),
@@ -72,7 +72,7 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde,
                 [
-                    (ButtonState.Pressed, Toggle<EngineTerminalWindowComponent>.Instance)
+                    (ButtonState.Pressed, Toggle<EngineTerminalWindowSystem>.Instance)
                 ]);
             });
         }

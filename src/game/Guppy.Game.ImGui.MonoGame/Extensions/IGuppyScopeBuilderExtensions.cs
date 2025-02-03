@@ -1,10 +1,10 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Extensions;
 using Guppy.Game.ImGui.MonoGame.ResourceTypes;
+using Guppy.Game.ImGui.MonoGame.Systems.Engine;
 
 namespace Guppy.Game.ImGui.MonoGame.Extensions
 {
@@ -16,7 +16,9 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
             {
                 builder.RegisterCommonImGuiServices();
 
-                builder.RegisterType<MonoGameImGuiBatch>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterGlobalSystem<ImGuiEventSystem>();
+
+                builder.RegisterType<MonoGameImGuiBatch>().As<IImguiBatch>().SingleInstance();
                 builder.RegisterType<ImGui>().As<IImGui>().SingleInstance();
 
                 builder.RegisterResourceType<ImStyleResourceType>();

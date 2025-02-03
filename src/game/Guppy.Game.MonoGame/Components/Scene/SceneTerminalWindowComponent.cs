@@ -3,7 +3,7 @@ using Guppy.Core.Common.Attributes;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Styling;
@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Components.Scene
 {
-    public class SceneTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent, IImGuiComponent
+    public class SceneTerminalWindowComponent(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem, IImGuiComponent
     {
         private readonly ICommandService _commands = commands;
         private readonly IImGui _imgui = imgui;

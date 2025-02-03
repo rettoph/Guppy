@@ -36,6 +36,9 @@ namespace Guppy.Core.Extensions
                     builder.RegisterInstance(assemblies).As<IAssemblyService>().SingleInstance();
                 }
 
+                builder.RegisterType<GlobalSystemService>().As<IGlobalSystemService>().SingleInstance();
+                builder.RegisterType<ScopedSystemService>().As<IScopedSystemService>().InstancePerLifetimeScope();
+
                 builder.RegisterType<Tags>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterGeneric(typeof(Filtered<>)).As(typeof(IFiltered<>)).InstancePerDependency();
                 builder.RegisterGeneric(typeof(Configuration<>)).As(typeof(IConfiguration<>)).InstancePerDependency();

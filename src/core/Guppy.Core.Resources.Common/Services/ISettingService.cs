@@ -3,6 +3,7 @@
     public interface ISettingService
     {
         void Initialize();
+
         void Save();
 
         ISettingValue this[ISetting setting] { get; }

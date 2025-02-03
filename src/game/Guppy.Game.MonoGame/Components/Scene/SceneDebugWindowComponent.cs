@@ -1,10 +1,10 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common.Enums;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
@@ -21,7 +21,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
-        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
             this._debugActions.Add(this._scene.Components);
@@ -39,7 +39,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
             {
                 ImGuiWindowClassPtr windowClass = new()
                 {
-                    ClassId = this._imgui.GetID(nameof(IDebugComponent)),
+                    ClassId = this._imgui.GetID(nameof(IDebugSystem)),
                     DockingAllowUnclassed = false
                 };
 

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Guppy.Core.Common;
-using Guppy.Engine.Common.Enums;
-using Guppy.Game.Common.Components;
+using Guppy.Core.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
@@ -28,7 +28,7 @@ namespace Guppy.Game.Common
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
 
-        public ISceneComponent[] Components { get; private set; }
+        public ISceneSystem[] Components { get; private set; }
 
         public virtual string Name => this.GetType().Name;
 
@@ -68,10 +68,10 @@ namespace Guppy.Game.Common
         {
             this._scope = scope;
 
-            this.Components = [.. scope.ResolveService<IFiltered<ISceneComponent>>()];
+            this.Components = [.. scope.ResolveService<IFiltered<ISceneSystem>>()];
 
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeComponentSequenceGroupEnum>.Invoke(this.Components, initializeDelegate, false, [this]);
+            DelegateSequenceGroup<InitializeSystemSequenceGroupEnum>.Invoke(this.Components, initializeDelegate, false, [this]);
 
             this._drawComponentsActions.Add(this.Components);
             this._updateComponentsActions.Add(this.Components);

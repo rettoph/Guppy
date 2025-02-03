@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Utilities\**" />
+    <EmbeddedResource Remove="Utilities\**" />
+    <None Remove="Utilities\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
     <ProjectReference Include="..\Guppy.Core.Files\Guppy.Core.Files.csproj" />
     <ProjectReference Include="..\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />
@@ -14,10 +20,6 @@
     <ProjectReference Include="..\Guppy.Core.Resources\Guppy.Core.Resources.csproj" />
     <ProjectReference Include="..\Guppy.Core.Serialization\Guppy.Core.Serialization.csproj" />
     <ProjectReference Include="..\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Utilities\" />
   </ItemGroup>
 
 </Project>

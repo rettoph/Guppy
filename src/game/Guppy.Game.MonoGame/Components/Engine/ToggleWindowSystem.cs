@@ -1,0 +1,34 @@
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Resources.Common;
+using Guppy.Core.Resources.Common.Services;
+using Guppy.Engine.Common;
+using Guppy.Engine.Common.Systems;
+using Guppy.Game.Input.Common;
+using Guppy.Game.Input.Common.Messages;
+using Guppy.Game.MonoGame.Components.Scene;
+
+namespace Guppy.Game.MonoGame.Components.Engine
+{
+    public sealed class ToggleWindowSystem(ISettingService settings) : IEngineSystem, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowSystem>>
+    {
+        private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
+        private readonly SettingValue<bool> _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
+
+        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        public void Initialize(IGuppyEngine engine)
+        {
+            //
+        }
+
+        public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)
+        {
+            this._isDebugWindowEnabled.Value = !this._isDebugWindowEnabled.Value;
+        }
+
+        public void Process(in Guid messageId, Toggle<EngineTerminalWindowSystem> message)
+        {
+            this._isTerminalWindowEnabled.Value = !this._isTerminalWindowEnabled.Value;
+        }
+    }
+}

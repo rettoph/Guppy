@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
-using Guppy.Game.Input.Components;
 using Guppy.Game.Input.Services;
+using Guppy.Game.Input.Systems;
 
 namespace Guppy.Game.Input.Extensions
 {
@@ -18,8 +18,8 @@ namespace Guppy.Game.Input.Extensions
 
                 builder.RegisterType<InputService>().AsImplementedInterfaces().SingleInstance();
 
-                builder.RegisterType<ButtonPublishComponent>().AsImplementedInterfaces().SingleInstance();
-                builder.RegisterType<MouseCursorPublishComponent>().AsImplementedInterfaces().SingleInstance();
+                builder.RegisterGlobalSystem<ButtonPublishSystem>();
+                builder.RegisterGlobalSystem<MouseCursorPublishSystem>();
             });
         }
     }

@@ -10,6 +10,7 @@ namespace Guppy.Core.Common
         IEnumerable<IGuppyScope> Children { get; }
         IEnvironmentVariableService EnvironmentVariables { get; }
         IScopeVariableService Variables { get; }
+        IScopedSystemService Systems { get; }
 
         IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder);
 

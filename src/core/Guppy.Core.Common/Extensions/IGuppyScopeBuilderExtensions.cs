@@ -15,6 +15,22 @@ namespace Guppy.Core.Common.Extensions
             return builder;
         }
 
+        public static IGuppyScopeBuilder RegisterGlobalSystem<TSystem>(this IGuppyScopeBuilder builder)
+            where TSystem : IGlobalSystem
+        {
+            builder.RegisterType<TSystem>().As<IGlobalSystem>().SingleInstance();
+
+            return builder;
+        }
+
+        public static IGuppyScopeBuilder RegisterScopedSystem<TSystem>(this IGuppyScopeBuilder builder)
+            where TSystem : IScopedSystem
+        {
+            builder.RegisterType<TSystem>().As<IGlobalSystem>().InstancePerLifetimeScope();
+
+            return builder;
+        }
+
         public static IGuppyScopeBuilder Configure<T>(this IGuppyScopeBuilder builder, Action<IGuppyScope, T> configurator)
         {
             builder.RegisterInstance(new Configurator<T>(configurator)).As<Configurator>();

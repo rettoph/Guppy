@@ -5,6 +5,7 @@ using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Implementations;
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Messaging.Services;
+using Guppy.Core.Messaging.Systems.Global;
 
 namespace Guppy.Core.Messaging.Extensions
 {
@@ -14,6 +15,8 @@ namespace Guppy.Core.Messaging.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreMessagingServices), builder =>
             {
+                builder.RegisterGlobalSystem<AutoSubscribeGlobalSystemsToBrokerServiceSystem>();
+
                 builder.RegisterType<BrokerService>().As<IBrokerService>().InstancePerLifetimeScope();
 
                 builder.RegisterType<Bus>().AsImplementedInterfaces().InstancePerLifetimeScope();

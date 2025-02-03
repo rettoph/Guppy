@@ -1,20 +1,18 @@
 ﻿using System.Runtime.InteropServices;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
+using Guppy.Core.Common.Enums;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common;
-using Guppy.Engine.Common.Components;
-using Guppy.Engine.Common.Enums;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Messages;
-using Guppy.Game.Input.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Game.ImGui.MonoGame
 {
-    internal abstract class BaseImGuiBatch : IEngineComponent, IInputSubscriber<ImGuiKeyEvent>, IInputSubscriber<ImGuiMouseButtonEvent>, IImguiBatch
+    public abstract class BaseImGuiBatch : IImguiBatch
     {
         public readonly TimeSpan StaleTime = TimeSpan.FromSeconds(1);
 
@@ -72,7 +70,7 @@ namespace Guppy.Game.ImGui.MonoGame
             this._initialized = false;
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.PostInitialize)]
+        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PostInitialize)]
         public void Initialize(IGuppyEngine engine)
         {
             this._resources.Initialize();
@@ -232,7 +230,7 @@ namespace Guppy.Game.ImGui.MonoGame
         protected abstract void RenderDrawData(ImGuiNET.ImDrawDataPtr drawData);
         #endregion Internals
 
-        public void Process(in Guid messageId, ImGuiKeyEvent message)
+        public void SetKeyState(ImGuiKeyEvent message)
         {
             if (this.Stale)
             {
@@ -242,7 +240,7 @@ namespace Guppy.Game.ImGui.MonoGame
             this._keyEvents.Enqueue(message);
         }
 
-        public void Process(in Guid messageId, ImGuiMouseButtonEvent message)
+        public void SetMouseButtonState(ImGuiMouseButtonEvent message)
         {
             if (this.Stale)
             {

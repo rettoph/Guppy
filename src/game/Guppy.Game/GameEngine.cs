@@ -28,8 +28,8 @@ namespace Guppy.Game
         {
             base.Initialize();
 
-            this._drawComponentsActions.Add(this.Components);
-            this._updateComponentsActions.Add(this.Components);
+            this._drawComponentsActions.Add(this.Systems);
+            this._updateComponentsActions.Add(this.Systems);
         }
 
         public void Draw(GameTime gameTime)

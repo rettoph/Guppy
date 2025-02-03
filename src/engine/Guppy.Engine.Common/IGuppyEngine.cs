@@ -1,10 +1,10 @@
-﻿using Guppy.Engine.Common.Components;
+﻿using Guppy.Core.Common.Services;
 
 namespace Guppy.Engine.Common
 {
     public interface IGuppyEngine : IDisposable
     {
-        IEnumerable<IEngineComponent> Components { get; }
+        IGlobalSystemService Systems { get; }
 
         IGuppyEngine Start();
 

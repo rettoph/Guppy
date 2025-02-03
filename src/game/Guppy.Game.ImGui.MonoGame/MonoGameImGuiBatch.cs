@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Game.ImGui.MonoGame
 {
-    internal class MonoGameImGuiBatch : BaseImGuiBatch, IDisposable
+    public class MonoGameImGuiBatch : BaseImGuiBatch, IDisposable
     {
         // Graphics
         private readonly IGraphicsDevice _graphics;

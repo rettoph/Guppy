@@ -1,13 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using Guppy.Core.Common.Extensions.System;
-using Guppy.Core.Common.Services;
 using Guppy.Core.Logging.Common;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal class ResourceService(Lazy<IResourcePackService> packs, Lazy<ILogger<ResourceService>> logger) : IHostedService, IResourceService, IDisposable
+    public class ResourceService(Lazy<IResourcePackService> packs, Lazy<ILogger<ResourceService>> logger) : IResourceService, IDisposable
     {
         private bool _initialized;
         private readonly Lazy<IResourcePackService> _resourcePackService = packs;
@@ -25,18 +24,6 @@ namespace Guppy.Core.Resources.Services
             this._values.Clear();
         }
 
-        public Task StartAsync(CancellationToken cancellation)
-        {
-            this.Initialize();
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellation)
-        {
-            return Task.CompletedTask;
-        }
-
         public void Initialize()
         {
             if (this._initialized)
@@ -44,7 +31,7 @@ namespace Guppy.Core.Resources.Services
                 return;
             }
 
-            this._resourcePackService.Value.Initialize();
+            this._initialized = true;
 
             this._logger.Value.Debug("Preparing to build resource value dictionary");
 
@@ -58,8 +45,6 @@ namespace Guppy.Core.Resources.Services
             {
                 this._logger.Value.Verbose("Resource = {Resource}, Type = {Type}, Value = {Value}, Count = {Count}", value.Key.Name, value.Key.Type.GetFormattedName(), value.Value, value.All().Count());
             }
-
-            this._initialized = true;
         }
 
         public Resource<T> Get<T>(ResourceKey<T> resource)
@@ -75,7 +60,6 @@ namespace Guppy.Core.Resources.Services
 
         private IResource CacheGetOrAddValues(IResourceKey key)
         {
-
             ref IResource? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(this._values, key.Id, out bool exists);
             if (exists == true)
             {

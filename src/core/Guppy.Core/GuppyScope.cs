@@ -22,6 +22,8 @@ namespace Guppy.Core
 
         public IEnumerable<IGuppyScope> Children => this._children;
 
+        public IScopedSystemService Systems { get; } = autofac.Resolve<IScopedSystemService>();
+
         public IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder)
         {
             ILifetimeScope autofac = this._autofac.BeginLifetimeScope(containerBuilder =>

@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Services;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Files.Common.Services;
 using Guppy.Core.Logging.Common;
@@ -13,15 +12,15 @@ using Guppy.Core.Resources.Constants;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal sealed class ResourcePackService : IHostedService, IResourcePackService
+    internal sealed class ResourcePackService : IResourcePackService
     {
         private bool _initialized;
         private readonly IFileService _files;
         private readonly IDictionary<Guid, ResourcePack> _packs;
         private readonly IFile<ResourcePackCollectionConfiguration> _configuration;
-        private readonly IResourceTypeService _resourceTypes;
-        private readonly ILogger _logger;
-        private readonly Lazy<ISettingService> _settings;
+        private readonly Lazy<IResourceTypeService> _resourceTypes;
+        private readonly Lazy<ILogger> _logger;
+        private readonly Lazy<ISettingService> _settingService;
         private readonly ResourcePack _runtimeResourcePack;
 
         private SettingValue<string> _localization;
@@ -30,16 +29,16 @@ namespace Guppy.Core.Resources.Services
             IFileService files,
             IFiltered<ResourcePackConfiguration> packs,
             IFiltered<IRuntimeResource> runtimeResourceValues,
-            IResourceTypeService resourceTypes,
+            Lazy<IResourceTypeService> resourceTypes,
             Lazy<ISettingService> settings,
-            ILogger logger)
+            Lazy<ILogger> logger)
         {
             this._files = files;
             this._configuration = this._files.Get<ResourcePackCollectionConfiguration>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration));
             this._resourceTypes = resourceTypes;
             this._logger = logger;
             this._packs = new Dictionary<Guid, ResourcePack>();
-            this._settings = settings;
+            this._settingService = settings;
             this._runtimeResourcePack = new ResourcePack(Guid.Empty, "Runtime Resources", DirectoryLocation.CurrentDirectory());
 
             this._configuration.Value = this._configuration.Value.AddRange(packs);
@@ -51,36 +50,24 @@ namespace Guppy.Core.Resources.Services
             }
         }
 
-        public Task StartAsync(CancellationToken cancellation)
-        {
-            this.Initialize();
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellation)
-        {
-            return Task.CompletedTask;
-        }
-
         public void Initialize()
         {
-            if (this._initialized)
+            if (this._initialized == true)
             {
                 return;
             }
 
-            this._settings.Value.Initialize();
-            this._localization = this._settings.Value.GetValue(Settings.Localization);
+            this._initialized = true;
+            this._localization = this._settingService.Value.GetValue(Settings.Localization);
 
-            this._logger.Debug("Preparing to import resource packs");
+            this._logger.Value.Debug("Preparing to import resource packs");
 
             bool saveConfigurationChanges = false;
             foreach (ResourcePackConfiguration packConfiguration in this._configuration.Value.Packs)
             {
                 if (packConfiguration.Enabled == true && this.TryLoad(packConfiguration) == false)
                 {
-                    this._logger.Warning("Failed loading {ResourcePack} at '{Directory}', disabling in configuration.", nameof(ResourcePack), packConfiguration.EntryDirectory);
+                    this._logger.Value.Warning("Failed loading {ResourcePack} at '{Directory}', disabling in configuration.", nameof(ResourcePack), packConfiguration.EntryDirectory);
                     packConfiguration.Enabled = false;
                     saveConfigurationChanges = true;
                 }
@@ -93,9 +80,8 @@ namespace Guppy.Core.Resources.Services
 
             // Add the runtime resource pack last
             this._packs.Add(this._runtimeResourcePack.Id, this._runtimeResourcePack);
-            this._initialized = true;
 
-            this._logger.Debug("Done. Imported ({Count}) resource packs", this._packs.Count);
+            this._logger.Value.Debug("Done. Imported ({Count}) resource packs", this._packs.Count);
         }
 
         public IEnumerable<IResourcePack> GetAll()
@@ -158,7 +144,7 @@ namespace Guppy.Core.Resources.Services
                 DirectoryLocation directory = entry.Source.Directory;
 
                 ResourcePack pack = this.GetOrCreatePack(entry);
-                this._logger.Debug("Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", pack.Name, pack.Id);
+                this._logger.Value.Debug("Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", pack.Name, pack.Id);
 
                 foreach ((string localization, string[] resourceFileNames) in entry.Value.Import)
                 {
@@ -168,12 +154,12 @@ namespace Guppy.Core.Resources.Services
                     }
                 }
 
-                this._logger.Debug("Done. Loaded ({Count}) resources", pack.GetAllDefinedResources().Count());
+                this._logger.Value.Debug("Done. Loaded ({Count}) resources", pack.GetAllDefinedResources().Count());
                 return true;
             }
             catch (Exception ex)
             {
-                this._logger.Error(ex, "Unable to load {ResourcePack} at '{Directory}'", nameof(ResourcePack), configuration.EntryDirectory);
+                this._logger.Value.Error(ex, "Unable to load {ResourcePack} at '{Directory}'", nameof(ResourcePack), configuration.EntryDirectory);
                 return false;
             }
         }
@@ -181,7 +167,7 @@ namespace Guppy.Core.Resources.Services
         private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
         {
             FileLocation resourceFileLocation = new(directory, resourceFileName);
-            this._logger.Verbose("Loading resource file {ResourceFile}, {Localization}", resourceFileLocation, localization);
+            this._logger.Value.Verbose("Loading resource file {ResourceFile}, {Localization}", resourceFileLocation, localization);
 
             IFile<ResourceTypeValues[]> resourceTypeValuesFile = this._files.Get<ResourceTypeValues[]>(resourceFileLocation);
             foreach (ResourceTypeValues resourceTypeValues in resourceTypeValuesFile.Value)
@@ -192,9 +178,9 @@ namespace Guppy.Core.Resources.Services
 
         private void ResolveResourceTypeValues(ResourceTypeValues resourceTypeValues, ResourcePack pack, string localization)
         {
-            if (this._resourceTypes.TryGet(resourceTypeValues.Type, out IResourceType? resourceType) == false)
+            if (this._resourceTypes.Value.TryGet(resourceTypeValues.Type, out IResourceType? resourceType) == false)
             {
-                this._logger.Error("Unable to resolve resource type defined by {ResourceName}, unknown.", resourceTypeValues.Type);
+                this._logger.Value.Error("Unable to resolve resource type defined by {ResourceName}, unknown.", resourceTypeValues.Type);
                 return;
             }
 
@@ -202,7 +188,7 @@ namespace Guppy.Core.Resources.Services
             {
                 if (resourceType.TryResolve(pack, name, localization, json) == false)
                 {
-                    this._logger.Error("Unable to resolve resource {ResourceName}", name);
+                    this._logger.Value.Error("Unable to resolve resource {ResourceName}", name);
                     continue;
                 }
             }

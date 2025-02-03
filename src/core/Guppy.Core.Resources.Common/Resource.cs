@@ -8,7 +8,7 @@ namespace Guppy.Core.Resources.Common
     {
         IResourceKey Key { get; }
 
-        new object Value { get; }
+        new object? Value { get; }
 
         IEnumerable<object> All();
 
@@ -17,7 +17,7 @@ namespace Guppy.Core.Resources.Common
         void Refresh(IResourcePackService resourcePackService);
     }
 
-    public readonly struct Resource<T> : IResource, IRef<T>
+    public readonly struct Resource<T> : IResource, IRef<T?>
         where T : notnull
     {
         private readonly UnmanagedReference<Resource<T>, List<T>> _value;
@@ -25,17 +25,17 @@ namespace Guppy.Core.Resources.Common
         public readonly ResourceKey<T> Key;
 
         public readonly bool HasValue => this._value.Value is not null && this._value.Value.Count > 0;
-        public readonly T Value
+        public readonly T? Value
         {
-            get => this._value.Value.First();
-            set => this._value.Value.Insert(0, value);
+            get => this._value.Value.FirstOrDefault();
+            set => this._value.Value.Insert(0, value ?? throw new NotImplementedException());
         }
 
         readonly Type IRef.Type => this.Key.Type;
 
         readonly IResourceKey IResource.Key => this.Key;
 
-        readonly object IResource.Value => this.Value;
+        readonly object? IResource.Value => this.Value;
 
         readonly object? IRef.Value => this.Value;
 
