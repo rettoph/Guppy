@@ -8,7 +8,7 @@ using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Engine
+namespace Guppy.Game.MonoGame.Systems.Engine
 {
     public class FpsDebugSystem(IImGui imgui) : IEngineSystem, IDebugSystem
     {

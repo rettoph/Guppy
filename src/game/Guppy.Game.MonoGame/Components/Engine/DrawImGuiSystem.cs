@@ -11,7 +11,7 @@ using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Engine
+namespace Guppy.Game.MonoGame.Systems.Engine
 {
     public class DrawImGuiSystem : IEngineSystem, IDrawableSystem, IDisposable
     {
@@ -61,12 +61,12 @@ namespace Guppy.Game.MonoGame.Components.Engine
 
         private void HandleSceneCreated(ISceneService sender, IScene scene)
         {
-            this._imguiActions.Add(scene.Components);
+            this._imguiActions.Add(scene.Systems);
         }
 
         private void HandleSceneDestroyed(ISceneService sender, IScene scene)
         {
-            this._imguiActions.Remove(scene.Components);
+            this._imguiActions.Remove(scene.Systems);
 
             // I dont think ActionSequenceGroup.Remove works as expected. 
             // TODO: Test

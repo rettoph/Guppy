@@ -14,8 +14,8 @@ using Guppy.Game.Input.Common.Messages;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Constants;
 using Guppy.Game.MonoGame.Common.Extensions;
-using Guppy.Game.MonoGame.Components.Engine;
-using Guppy.Game.MonoGame.Components.Scene;
+using Guppy.Game.MonoGame.Systems.Engine;
+using Guppy.Game.MonoGame.Systems.Scene;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
@@ -50,14 +50,14 @@ namespace Guppy.Game.MonoGame.Extensions
                     filter => filter.RequireScene<IScene>().RequireSceneHasDebugWindow(true),
                     builder =>
                     {
-                        builder.RegisterType<SceneDebugWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                        builder.RegisterSceneSystem<SceneDebugWindowSystem>();
                     });
 
                 builder.Filter(
                     filter => filter.RequireScene<IScene>().RequireSceneHasTerminalWindow(true),
                     builder =>
                     {
-                        builder.RegisterType<SceneTerminalWindowComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                        builder.RegisterSceneSystem<SceneTerminalWindowSystem>();
                     });
 
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
@@ -67,7 +67,7 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1,
                 [
-                    (ButtonState.Pressed, Toggle<SceneDebugWindowComponent>.Instance)
+                    (ButtonState.Pressed, Toggle<SceneDebugWindowSystem>.Instance)
                 ]);
 
                 builder.RegisterInput(Inputs.ToggleTerminal, Keys.OemTilde,

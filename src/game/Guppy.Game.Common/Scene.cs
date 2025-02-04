@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
-using Guppy.Game.Common.Systems;
+using Guppy.Core.Common.Services;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
@@ -28,7 +28,7 @@ namespace Guppy.Game.Common
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
 
-        public ISceneSystem[] Components { get; private set; }
+        public IScopedSystemService Systems { get; private set; }
 
         public virtual string Name => this.GetType().Name;
 
@@ -50,7 +50,7 @@ namespace Guppy.Game.Common
             this._drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroupEnum, GameTime>(true);
             this._updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroupEnum, GameTime>(false);
 
-            this.Components = [];
+            this.Systems = null!;
 
 
             this.Id = CalculateId(this);
@@ -68,13 +68,13 @@ namespace Guppy.Game.Common
         {
             this._scope = scope;
 
-            this.Components = [.. scope.ResolveService<IFiltered<ISceneSystem>>()];
+            this.Systems = scope.ResolveService<IScopedSystemService>();
 
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeSystemSequenceGroupEnum>.Invoke(this.Components, initializeDelegate, false, [this]);
+            DelegateSequenceGroup<InitializeSystemSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
 
-            this._drawComponentsActions.Add(this.Components);
-            this._updateComponentsActions.Add(this.Components);
+            this._drawComponentsActions.Add(this.Systems);
+            this._updateComponentsActions.Add(this.Systems);
         }
 
         public virtual void Draw(GameTime gameTime)

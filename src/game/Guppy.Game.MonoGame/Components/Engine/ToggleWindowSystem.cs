@@ -6,11 +6,11 @@ using Guppy.Engine.Common;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
-using Guppy.Game.MonoGame.Components.Scene;
+using Guppy.Game.MonoGame.Systems.Scene;
 
-namespace Guppy.Game.MonoGame.Components.Engine
+namespace Guppy.Game.MonoGame.Systems.Engine
 {
-    public sealed class ToggleWindowSystem(ISettingService settings) : IEngineSystem, IInputSubscriber<Toggle<SceneDebugWindowComponent>>, IInputSubscriber<Toggle<EngineTerminalWindowSystem>>
+    public sealed class ToggleWindowSystem(ISettingService settings) : IEngineSystem, IInputSubscriber<Toggle<SceneDebugWindowSystem>>, IInputSubscriber<Toggle<EngineTerminalWindowSystem>>
     {
         private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
@@ -21,7 +21,7 @@ namespace Guppy.Game.MonoGame.Components.Engine
             //
         }
 
-        public void Process(in Guid messageId, Toggle<SceneDebugWindowComponent> message)
+        public void Process(in Guid messageId, Toggle<SceneDebugWindowSystem> message)
         {
             this._isDebugWindowEnabled.Value = !this._isDebugWindowEnabled.Value;
         }

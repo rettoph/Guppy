@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Commands.Extensions;
+﻿using Guppy.Core.Commands.Extensions;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
@@ -45,8 +44,8 @@ namespace Guppy.Game.Extensions
 
                 builder.RegisterSceneFilter<IScene>(builder =>
                 {
-                    builder.RegisterType<SceneBrokerComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<SceneBusComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<SceneBrokerSystem>();
+                    builder.RegisterSceneSystem<SceneBusSystem>();
                 });
 
                 builder.RegisterResourceType<ColorResourceType>();

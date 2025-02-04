@@ -14,6 +14,7 @@ namespace Guppy.Core
     {
         private readonly ILifetimeScope _autofac = autofac;
         private readonly List<IGuppyScope> _children = [];
+        private readonly Lazy<IScopedSystemService> _systemService = autofac.Resolve<Lazy<IScopedSystemService>>();
         public IScopeVariableService Variables { get; } = scopeVariableService;
         public IEnvironmentVariableService EnvironmentVariables { get; } = environmentVariableService;
         private bool _disposedValue;
@@ -22,7 +23,7 @@ namespace Guppy.Core
 
         public IEnumerable<IGuppyScope> Children => this._children;
 
-        public IScopedSystemService Systems { get; } = autofac.Resolve<IScopedSystemService>();
+        public IScopedSystemService Systems => this._systemService.Value;
 
         public IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder)
         {

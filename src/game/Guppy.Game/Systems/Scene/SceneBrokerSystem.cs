@@ -7,7 +7,7 @@ using Guppy.Game.Common.Systems;
 
 namespace Guppy.Engine.Systems.Guppy
 {
-    public class SceneBrokerComponent(IBrokerService brokers) : ISceneComponent<IScene>
+    public class SceneBrokerSystem(IBrokerService brokers) : ISceneSystem<IScene>
     {
         private readonly IBrokerService _brokers = brokers;
         private IScene _scene = null!;
@@ -17,8 +17,6 @@ namespace Guppy.Engine.Systems.Guppy
         {
             this._scene = scene;
 
-            this._brokers.AddSubscribers<ISceneSystem>();
-
             if (this._scene is IBaseSubscriber subscriber)
             {
                 this._brokers.AddSubscribers([subscriber]);
@@ -27,8 +25,6 @@ namespace Guppy.Engine.Systems.Guppy
 
         public void Dispose()
         {
-            this._brokers.RemoveSubscribers<ISceneSystem>();
-
             if (this._scene is IBaseSubscriber subscriber)
             {
                 this._brokers.RemoveSubscribers([subscriber]);

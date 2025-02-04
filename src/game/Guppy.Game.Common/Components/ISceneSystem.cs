@@ -1,17 +1,14 @@
-﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
+﻿using Guppy.Core.Common.Systems;
 
 namespace Guppy.Game.Common.Systems
 {
-    public interface ISceneSystem
+    public interface ISceneSystem : IScopedSystem
     {
 
     }
 
-    public interface ISceneComponent<TScene> : ISceneSystem
+    public interface ISceneSystem<TScene> : ISceneSystem, IInitializableSystem<TScene>
         where TScene : IScene
     {
-        [RequireSequenceGroup<InitializeSystemSequenceGroupEnum>]
-        void Initialize(TScene scene);
     }
 }

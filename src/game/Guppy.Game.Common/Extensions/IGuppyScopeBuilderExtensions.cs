@@ -2,11 +2,18 @@
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Logging.Common.Constants;
 using Guppy.Game.Common.Configurations;
+using Guppy.Game.Common.Systems;
 
 namespace Guppy.Game.Common.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
+        public static IGuppyScopeBuilder RegisterSceneSystem<TSystem>(this IGuppyScopeBuilder builder)
+            where TSystem : ISceneSystem
+        {
+            return builder.RegisterScopedSystem<TSystem>();
+        }
+
         public static IGuppyScopeBuilder RegisterSceneFilter(this IGuppyScopeBuilder builder, Type? sceneType, Action<IGuppyScopeBuilder> build)
         {
             return builder.Filter(filter => filter.RequireScene(sceneType), build);

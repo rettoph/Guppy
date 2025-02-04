@@ -4,16 +4,16 @@ using Guppy.Core.Common.Enums;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
-using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Scene
+namespace Guppy.Game.MonoGame.Systems.Scene
 {
-    public class SceneDebugWindowComponent(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneComponent<IScene>, IImGuiComponent
+    public class SceneDebugWindowSystem(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem<IScene>, IImGuiComponent
     {
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
@@ -24,7 +24,7 @@ namespace Guppy.Game.MonoGame.Components.Scene
         [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
-            this._debugActions.Add(this._scene.Components);
+            this._debugActions.Add(this._scene.Systems);
         }
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]

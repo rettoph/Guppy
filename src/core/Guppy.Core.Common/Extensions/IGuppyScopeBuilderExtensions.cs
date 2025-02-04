@@ -2,6 +2,7 @@
 using Autofac;
 using Autofac.Builder;
 using Guppy.Core.Common.Implementations;
+using Guppy.Core.Common.Systems;
 
 namespace Guppy.Core.Common.Extensions
 {
@@ -26,7 +27,7 @@ namespace Guppy.Core.Common.Extensions
         public static IGuppyScopeBuilder RegisterScopedSystem<TSystem>(this IGuppyScopeBuilder builder)
             where TSystem : IScopedSystem
         {
-            builder.RegisterType<TSystem>().As<IGlobalSystem>().InstancePerLifetimeScope();
+            builder.RegisterType<TSystem>().As<IScopedSystem>().InstancePerLifetimeScope();
 
             return builder;
         }

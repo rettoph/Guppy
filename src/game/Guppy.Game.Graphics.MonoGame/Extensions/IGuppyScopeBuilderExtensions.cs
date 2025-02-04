@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Guppy.Core.Common;
+﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.StateMachine.Common.Providers;
@@ -11,8 +10,8 @@ using Guppy.Game.Graphics.MonoGame.Systems;
 using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
-using Guppy.Game.MonoGame.Components.Scene;
 using Guppy.Game.MonoGame.ResourceTypes;
+using Guppy.Game.MonoGame.Systems.Scene;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -56,7 +55,7 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
 
                 builder.RegisterSceneFilter<IScene>(builder =>
                 {
-                    builder.RegisterType<MonoGameScreenComponent>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                    builder.RegisterSceneSystem<MonoGameScreenSystem>();
                 });
             });
         }

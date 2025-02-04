@@ -16,6 +16,7 @@ namespace Guppy.Core.Messaging.Extensions
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreMessagingServices), builder =>
             {
                 builder.RegisterGlobalSystem<AutoSubscribeGlobalSystemsToBrokerServiceSystem>();
+                builder.RegisterScopedSystem<AutoSubscribeScopedSystemsToBrokerServiceSystem>();
 
                 builder.RegisterType<BrokerService>().As<IBrokerService>().InstancePerLifetimeScope();
 

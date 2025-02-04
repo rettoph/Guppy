@@ -11,7 +11,7 @@ using Guppy.Game.ImGui.Common.Enums;
 using Guppy.Game.ImGui.Common.Styling;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Engine
+namespace Guppy.Game.MonoGame.Systems.Engine
 {
     public class EngineTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService) : IEngineSystem, IImGuiComponent
     {

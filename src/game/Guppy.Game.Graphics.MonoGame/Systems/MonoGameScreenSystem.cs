@@ -1,12 +1,12 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.MonoGame.Components.Scene
+namespace Guppy.Game.MonoGame.Systems.Scene
 {
-    public class MonoGameScreenComponent(IScreen screen) : ISceneSystem, IDrawableSystem
+    public class MonoGameScreenSystem(IScreen screen) : ISceneSystem, IDrawableSystem
     {
         private readonly IScreen _screen = screen;
 
