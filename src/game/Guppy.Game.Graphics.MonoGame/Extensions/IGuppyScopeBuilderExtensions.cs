@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Resources.Common.Extensions;
-using Guppy.Core.StateMachine.Common.Providers;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Extensions;
@@ -48,8 +47,6 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
 
                 builder.RegisterResourceType<MonoGameEffectCodeResourceType>();
                 builder.RegisterResourceType<MonoGameSpriteFontResourceType>();
-
-                builder.RegisterType<GraphicsEnabledStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
                 builder.RegisterGlobalSystem<MonoGameWorldViewProjectionEffectSystem>();
 

@@ -1,27 +1,19 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Extensions;
-using Guppy.Core.StateMachine.Common;
-using Guppy.Core.StateMachine.Common.Filters;
+using Guppy.Core.Network.Common.Extensions;
 using Guppy.Game.Graphics.Common.Constants;
 
 namespace Guppy.Game.Graphics.Common.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
-        public static IGuppyScopeBuilder RegisterGraphicsEnabledFilter(this IGuppyScopeBuilder builder, Type serviceType, bool value)
+        public static IGuppyScopeBuilder AddGraphicsEnabled(this IGuppyScopeBuilder builder, bool value)
         {
-            return builder.RegisterFilter(new StateServiceFilter<bool>(
-                serviceType: serviceType,
-                key: StateKey<bool>.Create(GraphicsStateKeys.GraphicsEnabled),
-                value: value));
+            return builder.AddScopeVariable(GuppyGraphicsVariables.Scope.GraphicsEnabled.Create(value));
         }
 
-        public static IGuppyScopeBuilder RegisterGraphicsEnabledFilter<TService>(this IGuppyScopeBuilder builder, bool value)
+        public static IGuppyScopeBuilder RegisterGraphicsEnabledFilter(this IGuppyScopeBuilder builder, bool graphicsEnabled, Action<IGuppyScopeBuilder> build)
         {
-            return builder.RegisterFilter(new StateServiceFilter<bool>(
-                serviceType: typeof(TService),
-                key: StateKey<bool>.Create(GraphicsStateKeys.GraphicsEnabled),
-                value: value));
+            return builder.Filter(filter => filter.RequireGraphicsEnabled(graphicsEnabled), build);
         }
     }
 }
