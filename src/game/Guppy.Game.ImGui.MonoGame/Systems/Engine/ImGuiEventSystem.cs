@@ -12,7 +12,7 @@ namespace Guppy.Game.ImGui.MonoGame.Systems.Engine
     {
         private readonly IImguiBatch _imGuiBatch = imGuiBatch;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine obj)
         {
             // throw new NotImplementedException();

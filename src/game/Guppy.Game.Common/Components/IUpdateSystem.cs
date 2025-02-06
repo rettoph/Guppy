@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common.Systems
 {
-    public interface IDrawableSystem
+    public interface IUpdateSystem
     {
-        [RequireSequenceGroup<DrawComponentSequenceGroupEnum>()]
-        void Draw(GameTime gameTime);
+        [RequireSequenceGroup<UpdateSequenceGroupEnum>()]
+        void Update(GameTime gameTime);
     }
 }

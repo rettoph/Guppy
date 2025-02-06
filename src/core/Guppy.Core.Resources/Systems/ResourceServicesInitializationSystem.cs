@@ -9,13 +9,13 @@ namespace Guppy.Core.Resources.Systems
     public class ResourceServicesInitializationSystem(
         IResourceService resourceService,
         IResourcePackService resourcePackService,
-        ISettingService settingService) : IGlobalSystem, IInitializableSystem<object>
+        ISettingService settingService) : IGlobalSystem, IInitializeSystem<object>
     {
         private readonly IResourceService _resourceService = resourceService;
         private readonly IResourcePackService _resourcePackService = resourcePackService;
         private readonly ISettingService _settingService = settingService;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PreInitialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize(object obj)
         {
             this._settingService.Initialize();

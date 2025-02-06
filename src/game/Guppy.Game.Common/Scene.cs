@@ -2,6 +2,8 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Services;
+using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Services;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
@@ -22,8 +24,8 @@ namespace Guppy.Game.Common
         private bool _enabled;
         private bool _visible;
         private IGuppyScope _scope;
-        private readonly ActionSequenceGroup<DrawComponentSequenceGroupEnum, GameTime> _drawComponentsActions;
-        private readonly ActionSequenceGroup<UpdateComponentSequenceGroupEnum, GameTime> _updateComponentsActions;
+        private readonly ActionSequenceGroup<DrawSequenceGroupEnum, GameTime> _drawActions;
+        private readonly ActionSequenceGroup<UpdateSequenceGroupEnum, GameTime> _updateActions;
 
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
@@ -47,8 +49,8 @@ namespace Guppy.Game.Common
         public Scene()
         {
             this._scope = null!;
-            this._drawComponentsActions = new ActionSequenceGroup<DrawComponentSequenceGroupEnum, GameTime>(true);
-            this._updateComponentsActions = new ActionSequenceGroup<UpdateComponentSequenceGroupEnum, GameTime>(false);
+            this._drawActions = new ActionSequenceGroup<DrawSequenceGroupEnum, GameTime>(true);
+            this._updateActions = new ActionSequenceGroup<UpdateSequenceGroupEnum, GameTime>(false);
 
             this.Systems = null!;
 
@@ -68,29 +70,33 @@ namespace Guppy.Game.Common
         {
             this._scope = scope;
 
-            this.Systems = scope.ResolveService<IScopedSystemService>();
+            this.Systems = scope.Resolve<IScopedSystemService>();
+
+            // Automatically register all scoped systems as subscribers
+            IBrokerService brokerService = scope.Resolve<IBrokerService>();
+            brokerService.AddSubscribers(this.Systems.OfType<IBaseSubscriber>());
 
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeSystemSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
+            DelegateSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
 
-            this._drawComponentsActions.Add(this.Systems);
-            this._updateComponentsActions.Add(this.Systems);
+            this._drawActions.Add(this.Systems);
+            this._updateActions.Add(this.Systems);
         }
 
         public virtual void Draw(GameTime gameTime)
         {
-            this._drawComponentsActions?.Invoke(gameTime);
+            this._drawActions?.Invoke(gameTime);
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            this._updateComponentsActions.Invoke(gameTime);
+            this._updateActions.Invoke(gameTime);
         }
 
         public T Resolve<T>()
             where T : notnull
         {
-            return this._scope.ResolveService<T>();
+            return this._scope.Resolve<T>();
         }
     }
 }

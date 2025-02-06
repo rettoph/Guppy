@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Scene
 {
-    public class SceneTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem, IImGuiComponent
+    public class SceneTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem, IImGuiSystem
     {
         private readonly ICommandService _commands = commands;
         private readonly IImGui _imgui = imgui;

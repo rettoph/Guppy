@@ -17,8 +17,8 @@ namespace Guppy.Engine.Providers
         {
             if (scope.GetScopeType() == GuppyScopeTypeEnum.Child)
             {
-                scope.TryResolveService(out this._scene);
-                scope.TryResolveService(out this._configuration);
+                scope.TryResolve(out this._scene);
+                scope.TryResolve(out this._configuration);
             }
         }
 

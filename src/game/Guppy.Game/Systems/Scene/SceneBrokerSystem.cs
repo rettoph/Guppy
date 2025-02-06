@@ -12,7 +12,7 @@ namespace Guppy.Engine.Systems.Guppy
         private readonly IBrokerService _brokers = brokers;
         private IScene _scene = null!;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
             this._scene = scene;

@@ -64,24 +64,24 @@ namespace Guppy.Core
             GC.SuppressFinalize(this);
         }
 
-        public T ResolveService<T>()
+        public T Resolve<T>()
             where T : notnull
         {
             return this._autofac.Resolve<T>();
         }
 
-        public T? ResolveOptionalService<T>()
+        public T? ResolveOptional<T>()
             where T : class
         {
             return this._autofac.ResolveOptional<T>();
         }
 
-        public object ResolveService(Type type)
+        public object Resolve(Type type)
         {
             return this._autofac.Resolve(type);
         }
 
-        public bool TryResolveService<T>(out T? instance)
+        public bool TryResolve<T>(out T? instance)
             where T : class
         {
             return this._autofac.TryResolve<T>(out instance);

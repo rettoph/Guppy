@@ -26,7 +26,7 @@ namespace Guppy.Core.Logging.Serilog.Extensions
                 builder.Configure<SerilogLoggerConfiguration>((scope, serilogLoggerConfiguration) =>
                 {
                     // Configure logger
-                    IConfiguration<GuppyLoggerConfiguration> guppyloggerConfiguration = scope.ResolveService<IConfiguration<GuppyLoggerConfiguration>>();
+                    IConfiguration<GuppyLoggerConfiguration> guppyloggerConfiguration = scope.Resolve<IConfiguration<GuppyLoggerConfiguration>>();
                     foreach ((string name, object value) in guppyloggerConfiguration.Value.GetEnrichments())
                     {
                         serilogLoggerConfiguration.Enrich.WithProperty(name, value);
@@ -45,14 +45,14 @@ namespace Guppy.Core.Logging.Serilog.Extensions
                     }
 
                     // Register console sink
-                    IConfiguration<ConsoleLogMessageSinkConfiguration> consoleSinkConfiguration = scope.ResolveService<IConfiguration<ConsoleLogMessageSinkConfiguration>>();
+                    IConfiguration<ConsoleLogMessageSinkConfiguration> consoleSinkConfiguration = scope.Resolve<IConfiguration<ConsoleLogMessageSinkConfiguration>>();
                     if (consoleSinkConfiguration.Value.Enabled == true)
                     {
                         serilogLoggerConfiguration.WriteTo.Console(outputTemplate: consoleSinkConfiguration.Value.OutputTemplate);
                     }
 
                     // Register file sink
-                    IConfiguration<FileLogMessageSinkConfiguration> fileSinkConfiguration = scope.ResolveService<IConfiguration<FileLogMessageSinkConfiguration>>();
+                    IConfiguration<FileLogMessageSinkConfiguration> fileSinkConfiguration = scope.Resolve<IConfiguration<FileLogMessageSinkConfiguration>>();
                     if (fileSinkConfiguration.Value.Enabled == true)
                     {
                         serilogLoggerConfiguration.WriteTo.File(
@@ -64,7 +64,7 @@ namespace Guppy.Core.Logging.Serilog.Extensions
                     }
 
                     // Register ILogMessageSink instances
-                    foreach (ILogMessageSink sink in scope.ResolveService<IEnumerable<ILogMessageSink>>())
+                    foreach (ILogMessageSink sink in scope.Resolve<IEnumerable<ILogMessageSink>>())
                     {
                         if (sink.Enabled == true)
                         {

@@ -13,18 +13,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Guppy.Game.Input.Systems
 {
-    public sealed class MouseCursorPublishSystem(ICursorService cursors, IInputService inputs) : IEngineSystem, IUpdatableSystem
+    public sealed class MouseCursorPublishSystem(ICursorService cursors, IInputService inputs) : IEngineSystem, IUpdateSystem
     {
         private readonly IInputService _inputs = inputs;
         private readonly ICursor _cursor = cursors.Get(Cursors.Mouse);
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PreUpdate)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.PreUpdate)]
         public void Update(GameTime gameTime)
         {
             MouseState state = Mouse.GetState();

@@ -10,17 +10,17 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Systems.Engine
 {
-    public class SceneFrameSystem(ISceneService scenes) : IEngineSystem, IUpdatableSystem, IDrawableSystem
+    public class SceneFrameSystem(ISceneService scenes) : IEngineSystem, IUpdateSystem, IDrawSystem
     {
         private readonly ISceneService _scenes = scenes;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]
         public void Draw(GameTime gameTime)
         {
             foreach (IScene scene in this._scenes.GetAll())
@@ -34,7 +34,7 @@ namespace Guppy.Game.Systems.Engine
             }
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.Update)]
         public void Update(GameTime gameTime)
         {
             foreach (IScene scene in this._scenes.GetAll())

@@ -70,7 +70,7 @@ namespace Guppy.Game.ImGui.MonoGame
             this._initialized = false;
         }
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PostInitialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PostInitialize)]
         public void Initialize(IGuppyEngine engine)
         {
             this._resources.Initialize();

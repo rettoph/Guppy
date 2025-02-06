@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Engine
 {
-    public class EngineDebugWindowSystem(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService) : IEngineSystem, IImGuiComponent
+    public class EngineDebugWindowSystem(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService) : IEngineSystem, IImGuiSystem
     {
         private readonly IGameEngine _engine = engine;
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
@@ -24,7 +24,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
 
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             this._renderDebugInfoActions.Add(this._engine.Systems);

@@ -3,9 +3,9 @@ using Guppy.Core.Common.Enums;
 
 namespace Guppy.Core.Common.Systems
 {
-    public interface IInitializableSystem<T> : ISystem
+    public interface IInitializeSystem<T> : ISystem
     {
-        [RequireSequenceGroup<InitializeSystemSequenceGroupEnum>]
+        [RequireSequenceGroup<InitializeSequenceGroupEnum>]
         void Initialize(T obj);
     }
 }

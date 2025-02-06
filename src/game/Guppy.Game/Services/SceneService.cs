@@ -32,7 +32,7 @@ namespace Guppy.Game.Services
                 buildDelegate?.Invoke(builder);
             });
 
-            T scene = scope.ResolveService<T>();
+            T scene = scope.Resolve<T>();
 
             this.Configure(scene, scope);
 
@@ -54,7 +54,7 @@ namespace Guppy.Game.Services
 
                 buildDelegate?.Invoke(builder);
             });
-            IScene scene = scope.ResolveService(sceneType) as IScene ?? throw new NotImplementedException();
+            IScene scene = scope.Resolve(sceneType) as IScene ?? throw new NotImplementedException();
 
             this.Configure(scene, scope);
 

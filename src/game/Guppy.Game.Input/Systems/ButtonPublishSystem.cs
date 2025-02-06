@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Input.Systems
 {
-    public sealed class ButtonPublishSystem : IEngineSystem, IUpdatableSystem
+    public sealed class ButtonPublishSystem : IEngineSystem, IUpdateSystem
     {
         private readonly IInputService _inputs;
         private readonly Dictionary<string, IButton> _buttons;
@@ -31,13 +31,13 @@ namespace Guppy.Game.Input.Systems
             }
         }
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.PreUpdate)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.PreUpdate)]
         public void Update(GameTime gameTime)
         {
             foreach (var provider in this._providers)

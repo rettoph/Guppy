@@ -7,12 +7,12 @@ using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Core.Messaging.Systems.Global
 {
-    public class AutoSubscribeGlobalSystemsToBrokerServiceSystem(IBrokerService brokerService, Lazy<IGlobalSystemService> globalSystemService) : IGlobalSystem, IInitializableSystem<object>, IDisposable
+    public class AutoSubscribeGlobalSystemsToBrokerServiceSystem(IBrokerService brokerService, Lazy<IGlobalSystemService> globalSystemService) : IGlobalSystem, IInitializeSystem<object>, IDisposable
     {
         private readonly IBrokerService _brokerService = brokerService;
         private readonly Lazy<IGlobalSystemService> _globalSystemService = globalSystemService;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PreInitialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize(object obj)
         {
             this._brokerService.AddSubscribers<IGlobalSystem>();

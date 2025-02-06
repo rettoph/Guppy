@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Scene
 {
-    public class SceneDebugWindowSystem(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem<IScene>, IImGuiComponent
+    public class SceneDebugWindowSystem(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem<IScene>, IImGuiSystem
     {
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
@@ -21,7 +21,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IScene scene)
         {
             this._debugActions.Add(this._scene.Systems);

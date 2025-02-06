@@ -24,7 +24,7 @@ namespace Guppy.Engine
         {
             this._globalScope = GuppyEngine.BuildRootScope(this, environment, builder);
 
-            this.Systems = this._globalScope.ResolveService<IGlobalSystemService>();
+            this.Systems = this._globalScope.Resolve<IGlobalSystemService>();
         }
 
         IGuppyEngine IGuppyEngine.Start()
@@ -34,7 +34,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            ActionSequenceGroup<InitializeSystemSequenceGroupEnum, IGuppyEngine>.Invoke(this.Systems, false, this);
+            ActionSequenceGroup<InitializeSequenceGroupEnum, IGuppyEngine>.Invoke(this.Systems, false, this);
         }
 
         public GuppyEngine Start()
@@ -47,7 +47,7 @@ namespace Guppy.Engine
         public T Resolve<T>()
             where T : notnull
         {
-            return this._globalScope.ResolveService<T>();
+            return this._globalScope.Resolve<T>();
         }
 
         #region Static
@@ -78,7 +78,7 @@ namespace Guppy.Engine
                 IGuppyScope bootScope = bootScopeBuilder.Build();
 
                 // Load assemblies
-                IAssemblyService assemblies = bootScope.ResolveService<IAssemblyService>();
+                IAssemblyService assemblies = bootScope.Resolve<IAssemblyService>();
                 assemblies.Load(environmentVariableService.Get<GuppyCoreVariables.Global.EntryAssembly>().Value);
 
                 // Begin boot phase 2 - call all boot attributes
@@ -98,7 +98,7 @@ namespace Guppy.Engine
 
                 // Ensure this gets resolved once
                 // TODO: Fix the need for this line
-                engineRootScope.ResolveService<ITags>();
+                engineRootScope.Resolve<ITags>();
 
                 return engineRootScope;
             }

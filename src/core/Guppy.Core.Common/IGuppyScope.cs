@@ -14,15 +14,15 @@ namespace Guppy.Core.Common
 
         IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder);
 
-        T ResolveService<T>()
+        T Resolve<T>()
             where T : notnull;
 
-        T? ResolveOptionalService<T>()
+        T? ResolveOptional<T>()
             where T : class;
 
-        object ResolveService(Type type);
+        object Resolve(Type type);
 
-        bool TryResolveService<T>([MaybeNullWhen(false)] out T? instance)
+        bool TryResolve<T>([MaybeNullWhen(false)] out T? instance)
             where T : class;
     }
 }

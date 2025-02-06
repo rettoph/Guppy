@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.ImGui.Common
 {
-    public interface IImGuiComponent
+    public interface IImGuiSystem
     {
         [RequireSequenceGroup<ImGuiSequenceGroupEnum>]
         void DrawImGui(GameTime gameTime);

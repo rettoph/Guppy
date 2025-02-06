@@ -10,7 +10,7 @@ namespace Guppy.Core.Messaging.Systems.Global
     {
         private readonly IBrokerService _brokerService = brokerService;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.PreInitialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize(IGuppyScope scope)
         {
             this._brokerService.AddSubscribers<IScopedSystem>();

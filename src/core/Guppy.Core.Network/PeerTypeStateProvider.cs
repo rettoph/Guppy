@@ -18,7 +18,7 @@ namespace Guppy.Core.Network
 
             if (scope.GetScopeType() == GuppyScopeTypeEnum.Child)
             {
-                scope.TryResolveService(out scopes);
+                scope.TryResolve(out scopes);
             }
 
             this._scopes = scopes ?? [];

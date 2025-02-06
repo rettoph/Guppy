@@ -41,7 +41,7 @@ namespace Guppy.Core
 
             if (this.ParentScope is not null)
             {
-                foreach (IGuppyScopeFilter builder in this.ParentScope.ResolveService<IEnumerable<IGuppyScopeFilter>>())
+                foreach (IGuppyScopeFilter builder in this.ParentScope.Resolve<IEnumerable<IGuppyScopeFilter>>())
                 {
                     this.Filter(builder, true);
                 }

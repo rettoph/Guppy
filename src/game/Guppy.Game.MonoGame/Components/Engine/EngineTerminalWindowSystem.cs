@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Engine
 {
-    public class EngineTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService) : IEngineSystem, IImGuiComponent
+    public class EngineTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, ISettingService settingService, IResourceService resourceService) : IEngineSystem, IImGuiSystem
     {
         private readonly ICommandService _commands = commands;
         private readonly IImGui _imgui = imgui;
@@ -29,7 +29,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //

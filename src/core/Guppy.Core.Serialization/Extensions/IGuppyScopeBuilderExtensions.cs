@@ -35,7 +35,7 @@ namespace Guppy.Core.Serialization.Extensions
                 options.WriteIndented = true;
                 options.Converters.Add(new JsonStringEnumConverter());
 
-                foreach (JsonConverter converter in p.ResolveService<IEnumerable<JsonConverter>>())
+                foreach (JsonConverter converter in p.Resolve<IEnumerable<JsonConverter>>())
                 {
                     options.Converters.Add(converter);
                 }

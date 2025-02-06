@@ -14,14 +14,16 @@
         /// Automatically add any filtered subscribers within the current service scope
         /// implementing the given type
         /// </summary>
-        /// <typeparam name="TBrokers"></typeparam>
+        /// <typeparam name="TSubscribers"></typeparam>
+        [Obsolete]
         void AddSubscribers<TSubscribers>() where TSubscribers : class;
 
         /// <summary>
         /// Automatically remove any filtered subscribers within the current service scope
         /// implementing the given type
         /// </summary>
-        /// <typeparam name="TBrokers"></typeparam>
+        /// <typeparam name="TSubscribers"></typeparam>
+        [Obsolete]
         void RemoveSubscribers<TSubscribers>() where TSubscribers : class;
     }
 }

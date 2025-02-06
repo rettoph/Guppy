@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Engine
 {
-    public class DrawImGuiSystem : IEngineSystem, IDrawableSystem, IDisposable
+    public class DrawImGuiSystem : IEngineSystem, IDrawSystem, IDisposable
     {
         private readonly IGameEngine _engine;
         private readonly IImguiBatch _batch;
@@ -26,7 +26,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
             this._imguiActions = new ActionSequenceGroup<ImGuiSequenceGroupEnum, GameTime>(true);
         }
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             this._imguiActions.Add(this._engine.Systems);
@@ -40,7 +40,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
             this._engine.Scenes.OnSceneDestroyed -= this.HandleSceneDestroyed;
         }
 
-        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]
         public void Draw(GameTime gameTime)
         {
             this._imguiActions.Invoke(gameTime);

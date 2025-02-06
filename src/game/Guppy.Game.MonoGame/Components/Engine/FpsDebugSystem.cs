@@ -18,7 +18,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
 
         private readonly IImGui _imgui = imgui;
 
-        [SequenceGroup<InitializeSystemSequenceGroupEnum>(InitializeSystemSequenceGroupEnum.Initialize)]
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize(IGuppyEngine engine)
         {
             //
