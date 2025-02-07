@@ -1,5 +1,6 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Engine.Common;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Common.Enums;
@@ -10,7 +11,10 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Graphics.MonoGame.Systems
 {
-    public class MonoGameWorldViewProjectionEffectSystem(ICamera2D camera) : IEngineSystem, IDrawSystem
+    public class MonoGameWorldViewProjectionEffectSystem(ICamera2D camera) :
+        IEngineSystem,
+        IInitializeSystem<IGuppyEngine>,
+        IDrawSystem
     {
         private readonly ICamera2D _camera = camera;
         private IWorldViewProjectionEffect[] _effects = null!;

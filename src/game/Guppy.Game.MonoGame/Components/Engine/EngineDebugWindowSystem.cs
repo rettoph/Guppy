@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common;
@@ -15,7 +16,15 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Engine
 {
-    public class EngineDebugWindowSystem(IImGui imgui, IGameEngine engine, ISettingService settingService, IResourceService resourceService) : IEngineSystem, IImGuiSystem
+    public class EngineDebugWindowSystem(
+        IImGui imgui,
+        IGameEngine engine,
+        ISettingService settingService,
+        IResourceService resourceService
+    ) : IEngineSystem,
+        IInitializeSystem<IGuppyEngine>,
+        IDeinitializeSystem<IGuppyEngine>,
+        IImGuiSystem
     {
         private readonly IGameEngine _engine = engine;
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
@@ -28,6 +37,12 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         public void Initialize(IGuppyEngine engine)
         {
             this._renderDebugInfoActions.Add(this._engine.Systems);
+        }
+
+        [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
+        public void Deinitialize(IGuppyEngine obj)
+        {
+            this._renderDebugInfoActions.Remove(this._engine.Systems);
         }
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]

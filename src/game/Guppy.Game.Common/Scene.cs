@@ -10,7 +10,7 @@ using Standart.Hash.xxHash;
 
 namespace Guppy.Game.Common
 {
-    public abstract class Scene : IScene
+    public abstract class Scene : IScene, IDisposable
     {
         private static readonly Dictionary<Type, ushort> _count = [];
         private static ulong CalculateId(Scene instance)
@@ -23,9 +23,11 @@ namespace Guppy.Game.Common
 
         private bool _enabled;
         private bool _visible;
-        private IGuppyScope _scope;
+        private bool _initialized;
+        private bool _disposedValue;
         private readonly ActionSequenceGroup<DrawSequenceGroupEnum, GameTime> _drawActions;
         private readonly ActionSequenceGroup<UpdateSequenceGroupEnum, GameTime> _updateActions;
+        private readonly IGuppyScope _scope;
 
         public event OnEventDelegate<IScene, bool>? OnEnabledChanged;
         public event OnEventDelegate<IScene, bool>? OnVisibleChanged;
@@ -46,41 +48,67 @@ namespace Guppy.Game.Common
             set => this.OnVisibleChanged!.InvokeIf(this._visible != value, this, ref this._visible, value);
         }
 
-        public Scene()
+        public Scene(IGuppyScope scope)
         {
-            this._scope = null!;
             this._drawActions = new ActionSequenceGroup<DrawSequenceGroupEnum, GameTime>(true);
             this._updateActions = new ActionSequenceGroup<UpdateSequenceGroupEnum, GameTime>(false);
+            this._initialized = false;
+
+            this._scope = scope;
 
             this.Systems = null!;
-
-
-            this.Id = CalculateId(this);
-
+            this.Id = Scene.CalculateId(this);
             this.Visible = true;
             this.Enabled = true;
         }
 
-        void IScene.Initialize(IGuppyScope scope)
+        void IScene.Initialize()
         {
-            this.Initialize(scope);
+            if (this._initialized == true)
+            {
+                return;
+            }
+
+            this._initialized = true;
+            this.Initialize();
         }
 
-        protected virtual void Initialize(IGuppyScope scope)
+        protected virtual void Initialize()
         {
-            this._scope = scope;
-
-            this.Systems = scope.Resolve<IScopedSystemService>();
-
-            // Automatically register all scoped systems as subscribers
-            IBrokerService brokerService = scope.Resolve<IBrokerService>();
-            brokerService.AddSubscribers(this.Systems.OfType<IBaseSubscriber>());
-
-            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
+            this.Systems = this._scope.Resolve<IScopedSystemService>();
+            this.InitializeSystems(this.Systems);
 
             this._drawActions.Add(this.Systems);
             this._updateActions.Add(this.Systems);
+        }
+
+        protected virtual void InitializeSystems(IScopedSystemService systemService)
+        {
+            // Automatically register all scoped systems as subscribers
+            IBrokerService brokerService = this._scope.Resolve<IBrokerService>();
+            brokerService.AddSubscribers(this.Systems.OfType<IBaseSubscriber>());
+
+            // Call all system initializeation methods
+            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
+            DelegateSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
+        }
+
+        void IScene.Deinitialize()
+        {
+            if (this._initialized == false)
+            {
+                return;
+            }
+
+            this._initialized = false;
+            this.Deinitialize();
+        }
+
+        protected virtual void Deinitialize()
+        {
+            // Call all system deinitializeation methods
+            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
+            DelegateSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
         }
 
         public virtual void Draw(GameTime gameTime)
@@ -97,6 +125,39 @@ namespace Guppy.Game.Common
             where T : notnull
         {
             return this._scope.Resolve<T>();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this._disposedValue)
+            {
+                if (disposing)
+                {
+                    if (this._initialized == true)
+                    {
+                        this._initialized = false;
+                        this.Deinitialize();
+                    }
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                this._disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Scene()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

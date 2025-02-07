@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Common.Services;
+﻿using Guppy.Core.Common.Services;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Common
@@ -26,7 +25,8 @@ namespace Guppy.Game.Common
 
         IScopedSystemService Systems { get; }
 
-        void Initialize(IGuppyScope scope);
+        void Initialize();
+        void Deinitialize();
 
         T Resolve<T>() where T : notnull;
 

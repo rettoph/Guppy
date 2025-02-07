@@ -6,7 +6,7 @@ namespace Guppy.Game.Common
 {
     public interface IGameEngine : IGuppyEngine
     {
-        ISceneService Scenes { get; }
+        ISceneService SceneService { get; }
 
         new IGameEngine Start();
 

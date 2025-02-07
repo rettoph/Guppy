@@ -23,7 +23,8 @@ namespace Guppy.Engine.Systems.Guppy
             }
         }
 
-        public void Dispose()
+        [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
+        public void Deinitialize(IScene obj)
         {
             if (this._scene is IBaseSubscriber subscriber)
             {

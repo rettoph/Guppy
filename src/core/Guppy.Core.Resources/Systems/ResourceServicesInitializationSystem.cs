@@ -9,7 +9,9 @@ namespace Guppy.Core.Resources.Systems
     public class ResourceServicesInitializationSystem(
         IResourceService resourceService,
         IResourcePackService resourcePackService,
-        ISettingService settingService) : IGlobalSystem, IInitializeSystem<object>
+        ISettingService settingService
+    ) : IGlobalSystem,
+        IInitializeSystem<object>
     {
         private readonly IResourceService _resourceService = resourceService;
         private readonly IResourcePackService _resourcePackService = resourcePackService;

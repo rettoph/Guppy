@@ -1,7 +1,5 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Collections;
-using Guppy.Core.Common.Enums;
-using Guppy.Engine.Common;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
@@ -17,12 +15,6 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         private double _sampleSum = 0;
 
         private readonly IImGui _imgui = imgui;
-
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(IGuppyEngine engine)
-        {
-            //
-        }
 
         [SequenceGroup<DebugSequenceGroupEnum>(DebugSequenceGroupEnum.Debug)]
         public void DrawDebug(GameTime gameTime)

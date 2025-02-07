@@ -14,9 +14,6 @@ namespace Guppy.Game.Services
         private readonly Dictionary<IScene, IGuppyScope> _scopes = [];
         private readonly IConfigurationService _configurations = configurations;
 
-        public event OnEventDelegate<ISceneService, IScene>? OnSceneCreated;
-        public event OnEventDelegate<ISceneService, IScene>? OnSceneDestroyed;
-
         public T Create<T>(Action<IGuppyScopeBuilder>? buildDelegate)
             where T : class, IScene
         {
@@ -69,16 +66,12 @@ namespace Guppy.Game.Services
             }
 
             this._scenes.Remove(guppy);
-            this.OnSceneDestroyed?.Invoke(this, guppy);
         }
 
-        private void Configure(IScene scenes, IGuppyScope scope)
+        private void Configure(IScene scene, IGuppyScope scope)
         {
-            scenes.Initialize(scope);
-            this._scopes.Add(scenes, scope);
-            this._scenes.Add(scenes);
-
-            this.OnSceneCreated?.Invoke(this, scenes);
+            this._scopes.Add(scene, scope);
+            this._scenes.Add(scene);
         }
 
         public void Dispose()

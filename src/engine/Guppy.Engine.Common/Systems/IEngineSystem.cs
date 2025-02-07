@@ -2,7 +2,7 @@
 
 namespace Guppy.Engine.Common.Systems
 {
-    public interface IEngineSystem : IGlobalSystem, IInitializeSystem<IGuppyEngine>
+    public interface IEngineSystem : IGlobalSystem
     {
     }
 }

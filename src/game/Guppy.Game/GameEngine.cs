@@ -12,7 +12,7 @@ namespace Guppy.Game
         private readonly ActionSequenceGroup<DrawSequenceGroupEnum, GameTime> _drawComponentsActions;
         private readonly ActionSequenceGroup<UpdateSequenceGroupEnum, GameTime> _updateComponentsActions;
 
-        public ISceneService Scenes { get; private set; }
+        public ISceneService SceneService { get; private set; }
 
         public GameEngine(
             IEnumerable<IEnvironmentVariable> environment,
@@ -21,7 +21,7 @@ namespace Guppy.Game
             this._drawComponentsActions = new(true);
             this._updateComponentsActions = new(false);
 
-            this.Scenes = this.Resolve<ISceneService>();
+            this.SceneService = this.Resolve<ISceneService>();
         }
 
         protected override void Initialize()

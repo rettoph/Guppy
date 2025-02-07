@@ -13,7 +13,12 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Scene
 {
-    public class SceneDebugWindowSystem(IImGui imgui, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem<IScene>, IImGuiSystem
+    public class SceneDebugWindowSystem(
+        IImGui imgui,
+        IScene scene,
+        ISettingService settingService,
+        IResourceService resourceService
+    ) : ISceneSystem<IScene>, IImGuiSystem
     {
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
@@ -25,6 +30,12 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         public void Initialize(IScene scene)
         {
             this._debugActions.Add(this._scene.Systems);
+        }
+
+        [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
+        public void Deinitialize(IScene scene)
+        {
+            this._debugActions.Remove(this._scene.Systems);
         }
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]

@@ -14,6 +14,8 @@ using Guppy.Game.Input.Common.Messages;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Constants;
 using Guppy.Game.MonoGame.Common.Extensions;
+using Guppy.Game.MonoGame.Components.Scene;
+using Guppy.Game.MonoGame.Services;
 using Guppy.Game.MonoGame.Systems.Engine;
 using Guppy.Game.MonoGame.Systems.Scene;
 using Microsoft.Xna.Framework;
@@ -39,12 +41,18 @@ namespace Guppy.Game.MonoGame.Extensions
                     .RegisterGameInputServices();
 
                 builder.RegisterType<MonoGameTerminal>().AsImplementedInterfaces().AsSelf().InstancePerLifetimeScope();
+                builder.RegisterType<GlobalImGuiActionService>().AsSelf().SingleInstance();
 
                 builder.RegisterGlobalSystem<DrawImGuiSystem>();
                 builder.RegisterGlobalSystem<EngineDebugWindowSystem>();
                 builder.RegisterGlobalSystem<EngineTerminalWindowSystem>();
                 builder.RegisterGlobalSystem<FpsDebugSystem>();
                 builder.RegisterGlobalSystem<ToggleWindowSystem>();
+
+                builder.RegisterSceneFilter<IScene>(builder =>
+                {
+                    builder.RegisterSceneSystem<AddGlobalImGuiActionsSystem>();
+                });
 
                 builder.Filter(
                     filter => filter.RequireScene<IScene>().RequireSceneHasDebugWindow(true),
