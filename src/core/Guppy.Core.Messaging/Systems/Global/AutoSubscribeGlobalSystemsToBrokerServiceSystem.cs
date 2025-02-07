@@ -11,20 +11,20 @@ namespace Guppy.Core.Messaging.Systems.Global
         IBrokerService brokerService,
         Lazy<IGlobalSystemService> globalSystemService
     ) : IGlobalSystem,
-        IInitializeSystem<object>,
-        IDeinitializeSystem<object>
+        IInitializeSystem,
+        IDeinitializeSystem
     {
         private readonly IBrokerService _brokerService = brokerService;
         private readonly Lazy<IGlobalSystemService> _globalSystemService = globalSystemService;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
-        public void Initialize(object obj)
+        public void Initialize()
         {
             this._brokerService.AddSubscribers<IGlobalSystem>();
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.PreInitialize)]
-        public void Deinitialize(object obj)
+        public void Deinitialize()
         {
             this._brokerService.RemoveSubscribers<IGlobalSystem>();
         }

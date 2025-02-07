@@ -4,7 +4,6 @@ using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -22,8 +21,8 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         ISettingService settingService,
         IResourceService resourceService
     ) : IEngineSystem,
-        IInitializeSystem<IGuppyEngine>,
-        IDeinitializeSystem<IGuppyEngine>,
+        IInitializeSystem,
+        IDeinitializeSystem,
         IImGuiSystem
     {
         private readonly IGameEngine _engine = engine;
@@ -34,13 +33,13 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(IGuppyEngine engine)
+        public void Initialize()
         {
             this._renderDebugInfoActions.Add(this._engine.Systems);
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
-        public void Deinitialize(IGuppyEngine obj)
+        public void Deinitialize()
         {
             this._renderDebugInfoActions.Remove(this._engine.Systems);
         }

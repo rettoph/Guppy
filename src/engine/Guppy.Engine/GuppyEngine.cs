@@ -33,7 +33,7 @@ namespace Guppy.Engine
             {
                 if (disposing)
                 {
-                    ActionSequenceGroup<DeinitializeSequenceGroupEnum, IGuppyEngine>.Invoke(this.Systems, false, this);
+                    ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems, false);
                     this._globalScope.Dispose();
                 }
 
@@ -64,7 +64,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            ActionSequenceGroup<InitializeSequenceGroupEnum, IGuppyEngine>.Invoke(this.Systems, false, this);
+            ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, false);
         }
 
         public GuppyEngine Start()

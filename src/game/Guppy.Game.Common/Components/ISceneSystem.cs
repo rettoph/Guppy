@@ -6,9 +6,4 @@ namespace Guppy.Game.Common.Systems
     {
 
     }
-
-    public interface ISceneSystem<TScene> : ISceneSystem, IInitializeSystem<TScene>
-        where TScene : IScene
-    {
-    }
 }

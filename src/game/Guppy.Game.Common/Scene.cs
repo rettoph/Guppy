@@ -94,8 +94,7 @@ namespace Guppy.Game.Common
             brokerService.AddSubscribers(this.Systems.OfType<IBaseSubscriber>());
 
             // Call all system initializeation methods
-            Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
+            ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, false);
         }
 
         void IScene.Deinitialize()
@@ -113,7 +112,7 @@ namespace Guppy.Game.Common
         {
             // Call all system deinitializeation methods
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            DelegateSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems, initializeDelegate, false, [this]);
+            ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems, false);
         }
 
         public virtual void Draw(GameTime gameTime)

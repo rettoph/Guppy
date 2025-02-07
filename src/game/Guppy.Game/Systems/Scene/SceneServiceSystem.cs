@@ -8,23 +8,25 @@ using Guppy.Game.Services;
 namespace Guppy.Game.Systems.Scene
 {
     public class SceneServiceSystem(
+        IScene scene,
         SceneService sceneService
     ) : ISceneSystem,
-        IInitializeSystem<IScene>,
-        IDeinitializeSystem<IScene>
+        IInitializeSystem,
+        IDeinitializeSystem
     {
+        private readonly IScene _scene = scene;
         private readonly SceneService _sceneService = sceneService;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Cleanup)]
-        public void Initialize(IScene scene)
+        public void Initialize()
         {
-            this._sceneService.Add(scene);
+            this._sceneService.Add(this._scene);
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Cleanup)]
-        public void Deinitialize(IScene scene)
+        public void Deinitialize()
         {
-            this._sceneService.Remove(scene);
+            this._sceneService.Remove(this._scene);
         }
     }
 }

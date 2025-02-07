@@ -2,7 +2,6 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
-using Guppy.Engine.Common;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -19,8 +18,8 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         IImguiBatch batch,
         GlobalImGuiActionService globalImGuiActionService
     ) : IEngineSystem,
-        IInitializeSystem<IGuppyEngine>,
-        IDeinitializeSystem<IGuppyEngine>,
+        IInitializeSystem,
+        IDeinitializeSystem,
         IDrawSystem
     {
         private readonly IGameEngine _engine = engine;
@@ -29,13 +28,13 @@ namespace Guppy.Game.MonoGame.Systems.Engine
 
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(IGuppyEngine engine)
+        public void Initialize()
         {
             this._globalImGuiActionService.Add(this._engine.Systems);
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
-        public void Deinitialize(IGuppyEngine obj)
+        public void Deinitialize()
         {
             this._globalImGuiActionService.Remove(this._engine.Systems);
         }

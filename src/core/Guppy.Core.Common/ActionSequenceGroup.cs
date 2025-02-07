@@ -12,6 +12,76 @@ namespace Guppy.Core.Common
     /// the required attribute will be added,
     /// </summary>
     /// <typeparam name="TSequenceGroup"></typeparam>
+    public sealed class ActionSequenceGroup<TSequenceGroup> : DelegateSequenceGroup<TSequenceGroup, Action>
+        where TSequenceGroup : unmanaged, Enum
+    {
+        public ActionSequenceGroup(bool sequence) : base(typeof(Action), sequence)
+        {
+        }
+        public ActionSequenceGroup(bool sequence, IEnumerable<Action> actions) : base(typeof(Action), sequence)
+        {
+            this.Add(actions);
+        }
+        public ActionSequenceGroup(bool sequence, IEnumerable<object> instances) : base(typeof(Action), sequence)
+        {
+            this.Add(instances);
+        }
+
+        public void Invoke()
+        {
+            this.Sequenced?.Invoke();
+        }
+
+        public void Invoke(SequenceGroup<TSequenceGroup> sequenceGroup)
+        {
+            this.Grouped[sequenceGroup]?.Invoke();
+        }
+
+        /// <summary>
+        /// Sequence then invoke all delegators.
+        /// </summary>
+        /// <param name="delegators">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        public static void Invoke(IEnumerable<Delegator<Action>> delegators, bool sequence)
+        {
+            foreach (Delegator<Action> delegator in delegators.OrderBySequenceGroup<Action, TSequenceGroup>(sequence))
+            {
+                delegator.Delegate();
+            }
+        }
+
+        /// <summary>
+        /// Sequence then invoke all actions.
+        /// </summary>
+        /// <param name="actions">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        public static void Invoke(IEnumerable<Action> actions, bool sequence)
+        {
+            IEnumerable<Delegator<Action>> delegators = actions.Select(x => new Delegator<Action>(x));
+            ActionSequenceGroup<TSequenceGroup>.Invoke(delegators, sequence);
+        }
+
+        /// <summary>
+        /// Sequence then invoke all matching delegates within a collection of instances.
+        /// </summary>
+        /// <param name="instances">Items to be invoked</param>
+        /// <param name="sequence">When true, items within each sequence group will be ordered via <see cref="Attributes.RequireSequenceGroupAttribute{TSequenceGroup}"/></param>
+        public static void Invoke(IEnumerable<object> instances, bool sequence)
+        {
+            IEnumerable<Delegator<Action>> delegators = instances.SelectMany(x => x.GetMatchingDelegators<Action>());
+            ActionSequenceGroup<TSequenceGroup>.Invoke(delegators, sequence);
+        }
+    }
+
+    /// <summary>
+    /// Manages a collection of sequenced and grouped actions.
+    /// 
+    /// These are methods with an attached <see cref="Attributes.SequenceGroupAttribute{TSequenceGroup}"/> attributes.
+    /// 
+    /// When adding an <see cref="object"/> instance, ALL public methods matching the action signature and having
+    /// the required attribute will be added,
+    /// </summary>
+    /// <typeparam name="TSequenceGroup"></typeparam>
     /// <typeparam name="TParam"></typeparam>
     public sealed class ActionSequenceGroup<TSequenceGroup, TParam> : DelegateSequenceGroup<TSequenceGroup, Action<TParam>>
         where TSequenceGroup : unmanaged, Enum

@@ -8,23 +8,25 @@ using Guppy.Game.MonoGame.Services;
 namespace Guppy.Game.MonoGame.Components.Scene
 {
     public class AddGlobalImGuiActionsSystem(
+        IScene scene,
         GlobalImGuiActionService globalImGuiActionService
     ) : ISceneSystem,
-        IInitializeSystem<IScene>,
-        IDeinitializeSystem<IScene>
+        IInitializeSystem,
+        IDeinitializeSystem
     {
+        private readonly IScene _scene = scene;
         private readonly GlobalImGuiActionService _globalImGuiActionService = globalImGuiActionService;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
-        public void Initialize(IScene scene)
+        public void Initialize()
         {
-            this._globalImGuiActionService.Add(scene.Systems);
+            this._globalImGuiActionService.Add(this._scene.Systems);
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Setup)]
-        public void Deinitialize(IScene scene)
+        public void Deinitialize()
         {
-            this._globalImGuiActionService.Remove(scene.Systems);
+            this._globalImGuiActionService.Remove(this._scene.Systems);
         }
     }
 }

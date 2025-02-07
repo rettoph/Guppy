@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Game.Common;
@@ -18,7 +19,10 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         IScene scene,
         ISettingService settingService,
         IResourceService resourceService
-    ) : ISceneSystem<IScene>, IImGuiSystem
+    ) : ISceneSystem,
+        IInitializeSystem,
+        IDeinitializeSystem,
+        IImGuiSystem
     {
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
@@ -27,13 +31,13 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(IScene scene)
+        public void Initialize()
         {
             this._debugActions.Add(this._scene.Systems);
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
-        public void Deinitialize(IScene scene)
+        public void Deinitialize()
         {
             this._debugActions.Remove(this._scene.Systems);
         }

@@ -11,18 +11,19 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.Graphics.MonoGame.Systems
 {
-    public class MonoGameWorldViewProjectionEffectSystem(ICamera2D camera) :
+    public class MonoGameWorldViewProjectionEffectSystem(IGuppyEngine engine, ICamera2D camera) :
         IEngineSystem,
-        IInitializeSystem<IGuppyEngine>,
+        IInitializeSystem,
         IDrawSystem
     {
+        private readonly IGuppyEngine _engine = engine;
         private readonly ICamera2D _camera = camera;
         private IWorldViewProjectionEffect[] _effects = null!;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
-        public void Initialize(IGuppyEngine engine)
+        public void Initialize()
         {
-            this._effects = engine.Resolve<IEnumerable<IWorldViewProjectionEffect>>().ToArray();
+            this._effects = this._engine.Resolve<IEnumerable<IWorldViewProjectionEffect>>().ToArray();
         }
 
         [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.PreDraw)]
