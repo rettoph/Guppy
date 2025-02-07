@@ -2,8 +2,6 @@
 {
     public interface IResourceService
     {
-        void Initialize();
-
         IEnumerable<ResourceKey<T>> GetKeys<T>()
             where T : notnull;
 

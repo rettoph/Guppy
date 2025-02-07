@@ -2,20 +2,20 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Resources.Services;
 
 namespace Guppy.Core.Resources.Systems
 {
     public class ResourceServicesInitializationSystem(
-        IResourceService resourceService,
-        IResourcePackService resourcePackService,
-        ISettingService settingService
+        ResourceService resourceService,
+        ResourcePackService resourcePackService,
+        SettingService settingService
     ) : IGlobalSystem,
         IInitializeSystem
     {
-        private readonly IResourceService _resourceService = resourceService;
-        private readonly IResourcePackService _resourcePackService = resourcePackService;
-        private readonly ISettingService _settingService = settingService;
+        private readonly ResourceService _resourceService = resourceService;
+        private readonly ResourcePackService _resourcePackService = resourcePackService;
+        private readonly SettingService _settingService = settingService;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize()

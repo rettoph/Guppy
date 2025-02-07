@@ -12,7 +12,7 @@ using Guppy.Core.Resources.Constants;
 
 namespace Guppy.Core.Resources.Services
 {
-    internal sealed class ResourcePackService : IResourcePackService
+    public sealed class ResourcePackService : IResourcePackService
     {
         private bool _initialized;
         private readonly IFileService _files;

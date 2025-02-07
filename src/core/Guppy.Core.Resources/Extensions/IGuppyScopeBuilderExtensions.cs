@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Common;
+﻿using Autofac;
+using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common.Serialization.Json;
 using Guppy.Core.Resources.Common.Configuration;
@@ -20,9 +21,9 @@ namespace Guppy.Core.Resources.Extensions
             {
                 builder.RegisterGlobalSystem<ResourceServicesInitializationSystem>();
 
-                builder.RegisterType<SettingService>().As<ISettingService>().SingleInstance();
-                builder.RegisterType<ResourcePackService>().As<IResourcePackService>().SingleInstance();
-                builder.RegisterType<ResourceService>().As<IResourceService>().SingleInstance();
+                builder.RegisterType<SettingService>().AsSelf().As<ISettingService>().SingleInstance();
+                builder.RegisterType<ResourcePackService>().AsSelf().As<IResourcePackService>().SingleInstance();
+                builder.RegisterType<ResourceService>().AsSelf().As<IResourceService>().SingleInstance();
                 builder.RegisterType<ResourceTypeService>().As<IResourceTypeService>().SingleInstance();
 
                 builder.RegisterJsonConverter<ResourcePacksConfigurationConverter>();

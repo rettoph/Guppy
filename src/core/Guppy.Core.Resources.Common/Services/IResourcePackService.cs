@@ -2,7 +2,6 @@
 {
     public interface IResourcePackService
     {
-        void Initialize();
         IEnumerable<IResourcePack> GetAll();
         IResourcePack GetById(Guid id);
 

@@ -1,10 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Attributes;
-using Guppy.Core.Common.Enums;
 using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
-using Guppy.Engine.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Messages;
 using Microsoft.Xna.Framework;
@@ -70,11 +67,8 @@ namespace Guppy.Game.ImGui.MonoGame
             this._initialized = false;
         }
 
-        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PostInitialize)]
-        public void Initialize(IGuppyEngine engine)
+        public void Initialize()
         {
-            this._resources.Initialize();
-
             if (this._fonts.Count > 0)
             {
                 foreach (Ref<ImFontPtr> font in this._fonts.Values)
@@ -264,10 +258,11 @@ namespace Guppy.Game.ImGui.MonoGame
                 Value = new ImFontPtr(ttf, size)
             };
 
-            if (this._initialized)
+            if (this._initialized == true)
             {
                 font.Value.SetImFontPtr(this.IO.Fonts);
             }
+
 
             this._dirtyFonts = true;
 
