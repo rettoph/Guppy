@@ -1,4 +1,5 @@
-﻿using Guppy.Core.Commands.Extensions;
+﻿using Autofac;
+using Guppy.Core.Commands.Extensions;
 using Guppy.Core.Common;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
@@ -18,6 +19,7 @@ using Guppy.Game.Serilog.Sinks;
 using Guppy.Game.Services;
 using Guppy.Game.Systems.Engine;
 using Guppy.Game.Systems.Guppy;
+using Guppy.Game.Systems.Scene;
 
 namespace Guppy.Game.Extensions
 {
@@ -35,7 +37,7 @@ namespace Guppy.Game.Extensions
                 builder.RegisterJsonConverter<Vector2Converter>();
                 builder.RegisterJsonConverter<Vector3Converter>();
 
-                builder.RegisterType<SceneService>().As<ISceneService>().SingleInstance();
+                builder.RegisterType<SceneService>().AsSelf().As<ISceneService>().SingleInstance();
 
                 builder.RegisterType<TerminalTheme>().As<ITerminalTheme>().SingleInstance();
                 builder.RegisterType<TerminalLogMessageSink>().As<ILogMessageSink>().InstancePerLifetimeScope();
@@ -46,6 +48,7 @@ namespace Guppy.Game.Extensions
                 {
                     builder.RegisterSceneSystem<SceneBrokerSystem>();
                     builder.RegisterSceneSystem<SceneBusSystem>();
+                    builder.RegisterSceneSystem<SceneServiceSystem>();
                 });
 
                 builder.RegisterResourceType<ColorResourceType>();

@@ -24,7 +24,7 @@ namespace Guppy.Game.Common
         private bool _enabled;
         private bool _visible;
         private bool _initialized;
-        private bool _disposedValue;
+        private bool _disposed;
         private readonly ActionSequenceGroup<DrawSequenceGroupEnum, GameTime> _drawActions;
         private readonly ActionSequenceGroup<UpdateSequenceGroupEnum, GameTime> _updateActions;
         private readonly IGuppyScope _scope;
@@ -65,6 +65,11 @@ namespace Guppy.Game.Common
         void IScene.Initialize()
         {
             if (this._initialized == true)
+            {
+                return;
+            }
+
+            if (this._disposed == true)
             {
                 return;
             }
@@ -129,7 +134,7 @@ namespace Guppy.Game.Common
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this._disposedValue)
+            if (!this._disposed)
             {
                 if (disposing)
                 {
@@ -142,7 +147,7 @@ namespace Guppy.Game.Common
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                this._disposedValue = true;
+                this._disposed = true;
             }
         }
 

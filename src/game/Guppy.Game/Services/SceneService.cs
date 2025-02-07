@@ -7,11 +7,10 @@ using Guppy.Game.Common.Services;
 
 namespace Guppy.Game.Services
 {
-    internal sealed class SceneService(IGuppyScope scope, IConfigurationService configurations) : ISceneService
+    public class SceneService(IGuppyScope scope, IConfigurationService configurations) : ISceneService
     {
         private readonly IGuppyScope _scope = scope;
         private readonly List<IScene> _scenes = [];
-        private readonly Dictionary<IScene, IGuppyScope> _scopes = [];
         private readonly IConfigurationService _configurations = configurations;
 
         public T Create<T>(Action<IGuppyScopeBuilder>? buildDelegate)
@@ -30,8 +29,6 @@ namespace Guppy.Game.Services
             });
 
             T scene = scope.Resolve<T>();
-
-            this.Configure(scene, scope);
 
             return scene;
         }
@@ -53,25 +50,25 @@ namespace Guppy.Game.Services
             });
             IScene scene = scope.Resolve(sceneType) as IScene ?? throw new NotImplementedException();
 
-            this.Configure(scene, scope);
-
             return scene;
         }
 
-        public void Destroy(IScene guppy)
+        public void Destroy(IScene scene)
         {
-            if (this._scopes.Remove(guppy, out var scope))
+            if (this.Remove(scene))
             {
-                scope.Dispose();
+                scene.Resolve<IGuppyScope>().Dispose();
             }
-
-            this._scenes.Remove(guppy);
         }
 
-        private void Configure(IScene scene, IGuppyScope scope)
+        public void Add(IScene scene)
         {
-            this._scopes.Add(scene, scope);
             this._scenes.Add(scene);
+        }
+
+        public bool Remove(IScene scene)
+        {
+            return this._scenes.Remove(scene);
         }
 
         public void Dispose()
