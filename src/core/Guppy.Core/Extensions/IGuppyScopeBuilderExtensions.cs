@@ -7,7 +7,6 @@ using Guppy.Core.Messaging.Extensions;
 using Guppy.Core.Resources.Extensions;
 using Guppy.Core.Serialization.Extensions;
 using Guppy.Core.Services;
-using Guppy.Core.StateMachine.Extensions;
 
 namespace Guppy.Core.Extensions
 {
@@ -50,7 +49,6 @@ namespace Guppy.Core.Extensions
 
                 builder.RegisterCoreSerializationServices()
                     .RegisterCoreFileServices()
-                    .RegisterCoreStateMachineServices()
                     .RegisterCoreMessagingServices()
                     .RegisterCoreResourcesServices();
             });

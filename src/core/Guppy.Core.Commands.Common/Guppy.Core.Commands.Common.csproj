@@ -8,6 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.StateMachine.Common\Guppy.Core.StateMachine.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
   </ItemGroup>
 </Project>

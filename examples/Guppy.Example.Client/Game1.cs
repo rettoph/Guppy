@@ -9,7 +9,6 @@ using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Example.Client.Utilities;
 using Guppy.Game;
-using Guppy.Game.Common.Extensions;
 using Guppy.Game.Input.Common.Enums;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
@@ -81,7 +80,6 @@ namespace Guppy.Example.Client
                     builder.RegisterType<WaterCellType>().As<ICellType>().InstancePerLifetimeScope();
 
                     builder.RegisterType<World>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterSceneFilter<World, MainScene>();
 
                     builder.RegisterGeneric(typeof(StaticPrimitiveBatch<,>));
                     builder.RegisterGeneric(typeof(StaticPrimitiveBatch<>));
@@ -126,7 +124,7 @@ namespace Guppy.Example.Client
                     ]);
                 }).Start();
 
-                engine.Scenes.Create<MainScene>();
+                engine.SceneService.CreateAndInitialize<MainScene>();
 
                 this._engine = engine;
             });

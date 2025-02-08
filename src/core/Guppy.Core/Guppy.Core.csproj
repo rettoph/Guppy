@@ -19,7 +19,6 @@
     <ProjectReference Include="..\Guppy.Core.Messaging\Guppy.Core.Messaging.csproj" />
     <ProjectReference Include="..\Guppy.Core.Resources\Guppy.Core.Resources.csproj" />
     <ProjectReference Include="..\Guppy.Core.Serialization\Guppy.Core.Serialization.csproj" />
-    <ProjectReference Include="..\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,6 @@ using Guppy.Core.Network.Serialization.NetSerializers;
 using Guppy.Core.Network.Services;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Core.Serialization.Json.Converters;
-using Guppy.Core.StateMachine.Common.Providers;
 using LiteNetLib;
 
 namespace Guppy.Core.Network.Extensions
@@ -46,8 +45,6 @@ namespace Guppy.Core.Network.Extensions
                 builder.RegisterNetSerializer<ConnectionRequestResponseNetSerializer>();
                 builder.RegisterNetSerializer<UserActionNetSerializer>();
                 builder.RegisterNetSerializer<UserDtoNetSerializer>();
-
-                builder.RegisterType<PeerTypeStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
             });
         }
     }

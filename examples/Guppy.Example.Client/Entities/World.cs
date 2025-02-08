@@ -1,12 +1,12 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Engine.Common.Enums;
+using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Systems;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
 using Guppy.Example.Client.Utilities;
-using Guppy.Game.Common;
-using Guppy.Game.Common.Components;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Guppy.Game.Graphics.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.Input.Common;
@@ -17,7 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Guppy.Example.Client.Entities
 {
-    public class World : ISceneComponent<IScene>, IUpdatableComponent, IDrawableComponent,
+    public class World : ISceneSystem, IInitializeSystem, IUpdateSystem, IDrawSystem,
         IInputSubscriber<PlaceSandInput>,
         IInputSubscriber<SelectCellTypeInput>
     {
@@ -113,13 +113,13 @@ namespace Guppy.Example.Client.Entities
             this._renderTarget = new RenderTarget2D(this._graphics, width, height);
         }
 
-        [SequenceGroup<InitializeComponentSequenceGroupEnum>(InitializeComponentSequenceGroupEnum.Initialize)]
-        public void Initialize(IScene scene)
+        [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
+        public void Initialize()
         {
             this.Initialize(this._window.ClientBounds.Width, this._window.ClientBounds.Height);
         }
 
-        [SequenceGroup<DrawComponentSequenceGroupEnum>(DrawComponentSequenceGroupEnum.Draw)]
+        [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]
         public unsafe void Draw(GameTime gameTime)
         {
             this._graphics.SetRenderTarget(this._renderTarget);
@@ -140,7 +140,7 @@ namespace Guppy.Example.Client.Entities
             this._spriteBatch.End();
         }
 
-        [SequenceGroup<UpdateComponentSequenceGroupEnum>(UpdateComponentSequenceGroupEnum.Update)]
+        [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.Update)]
         public unsafe void Update(GameTime gameTime)
         {
             if (this._lastScrollValue != this._mouse.Scroll)

@@ -7,8 +7,6 @@ using Guppy.Core.Logging.Common.Sinks;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
-using Guppy.Core.StateMachine.Common.Providers;
-using Guppy.Engine.Providers;
 using Guppy.Engine.Systems.Guppy;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
@@ -30,8 +28,6 @@ namespace Guppy.Game.Extensions
             return builder.EnsureRegisteredOnce(nameof(RegisterCommonGameServices), builder =>
             {
                 builder.RegisterCoreCommandServices();
-
-                builder.RegisterType<SceneStateProvider>().As<IStateProvider>().InstancePerLifetimeScope();
 
                 builder.RegisterJsonConverter<ColorConverter>();
                 builder.RegisterJsonConverter<Vector2Converter>();

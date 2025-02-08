@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\Guppy.Core.Common\Guppy.Core.Common.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.StateMachine\Guppy.Core.StateMachine.csproj" />
   </ItemGroup>
 
 </Project>

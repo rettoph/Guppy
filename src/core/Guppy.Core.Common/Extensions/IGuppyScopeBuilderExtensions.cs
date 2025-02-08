@@ -8,14 +8,6 @@ namespace Guppy.Core.Common.Extensions
 {
     public static class IGuppyScopeBuilderExtensions
     {
-        [Obsolete]
-        public static IGuppyScopeBuilder RegisterFilter(this IGuppyScopeBuilder builder, IServiceFilter filter)
-        {
-            builder.RegisterInstance(filter).As<IServiceFilter>().SingleInstance();
-
-            return builder;
-        }
-
         public static IGuppyScopeBuilder RegisterGlobalSystem<TSystem>(this IGuppyScopeBuilder builder)
             where TSystem : IGlobalSystem
         {
