@@ -2,8 +2,8 @@
 
 namespace Guppy.Core.Commands.Common
 {
-    public interface ICommandSubscriber<T> : IBaseSubscriber<ICommand, T>
-        where T : ICommand
+    public interface ICommandSubscriber<TCommand> : ISubscriber<TCommand>
+        where TCommand : ICommand
     {
     }
 }

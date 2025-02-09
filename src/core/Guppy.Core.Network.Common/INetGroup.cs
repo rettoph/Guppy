@@ -10,14 +10,15 @@ namespace Guppy.Core.Network.Common
         IPeer Peer { get; }
         INetScopeUserService Users { get; }
         IReadOnlyList<INetScope> Scopes { get; }
-        IReadOnlyList<IBus> Relays { get; }
+        IReadOnlyList<IMessageBus> Relays { get; }
 
         INetOutgoingMessage<T> CreateMessage<T>(in T body)
             where T : notnull;
 
-        void Publish(INetIncomingMessage im);
+        void Publish<T>(T im)
+            where T : INetIncomingMessage;
 
-        void Add(IBus relay);
-        void Remove(IBus relay);
+        void Add(IMessageBus relay);
+        void Remove(IMessageBus relay);
     }
 }

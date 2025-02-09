@@ -12,27 +12,27 @@ namespace Guppy.Core.Network.Groups
         IDisposable
     {
         private readonly List<INetScope> _scopes;
-        private readonly List<IBus> _relays;
+        private readonly List<IMessageBus> _messageBusses;
 
         public byte Id { get; private set; }
         public IPeer Peer { get; private set; }
         public INetScopeUserService Users { get; }
         public IReadOnlyList<INetScope> Scopes { get; private set; }
-        public IReadOnlyList<IBus> Relays { get; private set; }
+        public IReadOnlyList<IMessageBus> Relays { get; private set; }
 
         IReadOnlyList<INetScope> INetGroup.Scopes => this.Scopes;
-        IReadOnlyList<IBus> INetGroup.Relays => this.Relays;
+        IReadOnlyList<IMessageBus> INetGroup.Relays => this.Relays;
 
         public BaseNetGroup(byte id, IPeer peer)
         {
             this._scopes = [];
-            this._relays = [];
+            this._messageBusses = [];
 
             this.Id = id;
             this.Peer = peer;
             this.Users = new NetScopeUserService();
             this.Scopes = new ReadOnlyCollection<INetScope>(this._scopes);
-            this.Relays = new ReadOnlyCollection<IBus>(this._relays);
+            this.Relays = new ReadOnlyCollection<IMessageBus>(this._messageBusses);
         }
 
         public virtual void Dispose()
@@ -46,34 +46,35 @@ namespace Guppy.Core.Network.Groups
             return this.Peer.Messages.Create(this, body);
         }
 
-        public void Publish(INetIncomingMessage im)
+        public void Publish<T>(T im)
+            where T : INetIncomingMessage
         {
-            foreach (IBus relay in this._relays)
+            foreach (IMessageBus messageBus in this._messageBusses)
             {
-                relay.Enqueue(im);
+                messageBus.Enqueue(im);
             }
         }
 
-        internal void Add(INetScope scope, IBus relay)
+        internal void Add(INetScope scope, IMessageBus relay)
         {
             this._scopes.Add(scope);
-            this._relays.Add(relay);
+            this._messageBusses.Add(relay);
         }
 
-        internal void Remove(INetScope scope, IBus relay)
+        internal void Remove(INetScope scope, IMessageBus relay)
         {
             this._scopes.Remove(scope);
-            this._relays.Remove(relay);
+            this._messageBusses.Remove(relay);
         }
 
-        public void Add(IBus relay)
+        public void Add(IMessageBus relay)
         {
-            this._relays.Add(relay);
+            this._messageBusses.Add(relay);
         }
 
-        public void Remove(IBus relay)
+        public void Remove(IMessageBus relay)
         {
-            this._relays.Remove(relay);
+            this._messageBusses.Remove(relay);
         }
     }
 }

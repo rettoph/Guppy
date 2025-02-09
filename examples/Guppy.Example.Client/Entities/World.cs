@@ -1,6 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Example.Client.Enums;
 using Guppy.Example.Client.Messages;
 using Guppy.Example.Client.Services;
@@ -208,12 +209,14 @@ namespace Guppy.Example.Client.Entities
             };
         }
 
-        public void Process(in Guid messageId, PlaceSandInput message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, PlaceSandInput message)
         {
             this._inputActive = message.Active;
         }
 
-        public void Process(in Guid messageId, SelectCellTypeInput message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, SelectCellTypeInput message)
         {
             this.SetInput(message.CellType, this._inputRadius);
         }

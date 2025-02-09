@@ -12,7 +12,7 @@ namespace Guppy.Core.Commands.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreCommandServices), builder =>
             {
-                builder.RegisterType<CommandService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<CommandService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
                 builder.RegisterType<CommandTokenService>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
                 builder.RegisterType<NullableEnumTokenConverter>().AsImplementedInterfaces().InstancePerLifetimeScope();

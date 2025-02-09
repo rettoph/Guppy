@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Serialization;
 using Guppy.Core.Network.Common.Services;
@@ -26,8 +27,6 @@ namespace Guppy.Core.Network
         public INetGroup Group { get; private set; }
         public INetMessageType<T> Type { get; }
         public NetDataWriter Writer { get; }
-
-        Type IMessage.Type { get; } = typeof(INetOutgoingMessage<T>);
 
         public IReadOnlyList<NetPeer> Recipients { get; }
 
@@ -138,6 +137,11 @@ namespace Guppy.Core.Network
         INetOutgoingMessage INetOutgoingMessage.Send()
         {
             return this.Send();
+        }
+
+        void IMessage.Publish(IMessageBus messageBus)
+        {
+            messageBus.Publish<SubscriberSequenceGroupEnum, int, INetOutgoingMessage<T>>(this.Body.GetHashCode(), this);
         }
     }
 }

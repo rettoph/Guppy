@@ -1,5 +1,7 @@
 ﻿using Autofac;
+using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Contexts;
 using Guppy.Core.Network.Groups;
@@ -10,13 +12,13 @@ namespace Guppy.Core.Network
         IDisposable,
         ISubscriber<INetOutgoingMessage>
     {
-        private readonly IBus _bus;
+        private readonly IMessageBus _bus;
 
         private BaseNetGroup Group { get; }
 
         INetGroup INetScope.Group => this.Group;
 
-        public NetScope(IBus bus, ILifetimeScope scope, IEnumerable<NetScopeContext<T>> context)
+        public NetScope(IMessageBus bus, ILifetimeScope scope, IEnumerable<NetScopeContext<T>> context)
         {
             this._bus = bus;
 
@@ -51,7 +53,8 @@ namespace Guppy.Core.Network
             this._bus.Enqueue(message);
         }
 
-        public void Process(in Guid messageId, INetOutgoingMessage message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, INetOutgoingMessage message)
         {
             message.Send();
         }

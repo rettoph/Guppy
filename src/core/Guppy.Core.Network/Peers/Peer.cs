@@ -6,15 +6,14 @@ using Guppy.Core.Network.Common.Definitions;
 using Guppy.Core.Network.Common.Enums;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Services;
-using Guppy.Core.Network.Identity.Services;
 using Guppy.Core.Network.Services;
 using LiteNetLib;
 
 namespace Guppy.Core.Network.Peers
 {
-    internal abstract class Peer : IDisposable, IPeer, IBaseSubscriber<IMessage>
+    internal abstract class Peer : IPeer, IDisposable
     {
-        private readonly IBus _bus;
+        private readonly IMessageBus _bus;
 
         public readonly EventBasedNetListener Listener;
         public readonly NetManager Manager;
@@ -31,7 +30,7 @@ namespace Guppy.Core.Network.Peers
         public Peer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages)
         {
             ILifetimeScope innerScope = scope.BeginLifetimeScope();
-            this._bus = innerScope.Resolve<IBus>();
+            this._bus = innerScope.Resolve<IMessageBus>();
 
             this.Listener = new EventBasedNetListener();
             this.Manager = new NetManager(this.Listener);

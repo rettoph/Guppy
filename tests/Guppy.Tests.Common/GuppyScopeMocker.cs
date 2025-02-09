@@ -8,8 +8,9 @@ using Guppy.Core.Services;
 
 namespace Guppy.Tests.Common
 {
-    public class GuppyScopeMocker
+    public class GuppyScopeMocker : IDisposable
     {
+        private AutoMock? _mock;
         private Action<IGuppyScopeBuilder>? _builders;
         private Action<AutoMock>? _mockers;
         private IGuppyScope? _scope;
@@ -47,15 +48,20 @@ namespace Guppy.Tests.Common
 
         private IGuppyScope BuildGuppyScope()
         {
-            AutoMock mock = AutoMock.GetLoose(containerBuilder =>
+            this._mock = AutoMock.GetLoose(containerBuilder =>
             {
                 GuppyScopeBuilder guppyScopeBuilder = new(this._type, this._environmentVariableService, null, containerBuilder);
                 this._builders?.Invoke(guppyScopeBuilder);
             });
 
-            this._mockers?.Invoke(mock);
+            this._mockers?.Invoke(this._mock);
 
-            return mock.Container.Resolve<IGuppyScope>();
+            return this._mock.Container.Resolve<IGuppyScope>();
+        }
+
+        public void Dispose()
+        {
+            this._mock?.Dispose();
         }
     }
 
@@ -81,5 +87,11 @@ namespace Guppy.Tests.Common
 
             return (TSelf)this;
         }
+    }
+
+    public class GuppyScopeMocker<TService>(GuppyScopeTypeEnum type = GuppyScopeTypeEnum.Child, IEnumerable<IEnvironmentVariable>? environment = null) : GuppyScopeMocker<GuppyScopeMocker<TService>, TService>(type, environment)
+        where TService : notnull
+    {
+
     }
 }

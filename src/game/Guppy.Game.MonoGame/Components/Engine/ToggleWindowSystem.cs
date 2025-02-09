@@ -1,4 +1,6 @@
-﻿using Guppy.Core.Resources.Common;
+﻿using Guppy.Core.Common.Attributes;
+using Guppy.Core.Messaging.Common.Enums;
+using Guppy.Core.Resources.Common;
 using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Input.Common;
@@ -16,12 +18,14 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
 
-        public void Process(in Guid messageId, Toggle<SceneDebugWindowSystem> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.PreProcess)]
+        public void Process(in int messageId, Toggle<SceneDebugWindowSystem> message)
         {
             this._isDebugWindowEnabled.Value = !this._isDebugWindowEnabled.Value;
         }
 
-        public void Process(in Guid messageId, Toggle<EngineTerminalWindowSystem> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.PreProcess)]
+        public void Process(in int messageId, Toggle<EngineTerminalWindowSystem> message)
         {
             this._isTerminalWindowEnabled.Value = !this._isTerminalWindowEnabled.Value;
         }

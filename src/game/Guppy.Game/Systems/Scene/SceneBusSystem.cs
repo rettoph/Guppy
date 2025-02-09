@@ -1,14 +1,14 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common;
-using Guppy.Game.Common.Systems;
 using Guppy.Game.Common.Enums;
+using Guppy.Game.Common.Systems;
 using Microsoft.Xna.Framework;
 
-namespace Guppy.Game.Systems.Guppy
+namespace Guppy.Game.Systems.Scene
 {
-    public class SceneBusSystem(IBus bus) : ISceneSystem, IUpdateSystem
+    public class SceneBusSystem(IMessageBus bus) : ISceneSystem, IUpdateSystem
     {
-        private readonly IBus _bus = bus;
+        private readonly IMessageBus _bus = bus;
 
         [SequenceGroup<UpdateSequenceGroupEnum>(UpdateSequenceGroupEnum.PostUpdate)]
         public void Update(GameTime gameTime)

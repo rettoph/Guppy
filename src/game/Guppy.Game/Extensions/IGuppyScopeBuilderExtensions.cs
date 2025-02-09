@@ -7,7 +7,6 @@ using Guppy.Core.Logging.Common.Sinks;
 using Guppy.Core.Resources.Common.Configuration;
 using Guppy.Core.Resources.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
-using Guppy.Engine.Systems.Guppy;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
@@ -16,7 +15,6 @@ using Guppy.Game.Serialization.Json.Converters;
 using Guppy.Game.Serilog.Sinks;
 using Guppy.Game.Services;
 using Guppy.Game.Systems.Engine;
-using Guppy.Game.Systems.Guppy;
 using Guppy.Game.Systems.Scene;
 
 namespace Guppy.Game.Extensions
@@ -42,7 +40,6 @@ namespace Guppy.Game.Extensions
 
                 builder.RegisterSceneFilter<IScene>(builder =>
                 {
-                    builder.RegisterSceneSystem<SceneBrokerSystem>();
                     builder.RegisterSceneSystem<SceneBusSystem>();
                     builder.RegisterSceneSystem<SceneServiceSystem>();
                 });

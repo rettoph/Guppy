@@ -2,6 +2,6 @@
 {
     public interface IMessage
     {
-        public Type Type { get; }
+        void Publish(IMessageBus messageBus);
     }
 }

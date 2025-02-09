@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <!-- Guppy packages are added to a local nuget feed via the 'Guppy/nuget.config' file -->
-    <PackageReference Include="Guppy.Analyzer.Core.Common" Version="1.1.2" />
+    <PackageReference Include="Guppy.Analyzer.Core.Common" Version="1.1.3" />
   </ItemGroup>
 
 </Project>

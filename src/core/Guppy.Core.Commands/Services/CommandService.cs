@@ -4,21 +4,24 @@ using Guppy.Core.Commands.Common.Contexts;
 using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Managers;
 using Guppy.Core.Common;
-using Guppy.Core.Messaging.Common.Implementations;
+using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Core.Commands.Services
 {
-    public sealed class CommandService : Broker<ICommand>, ICommandService
+    public sealed class CommandService : ICommandService
     {
         private readonly RootCommand _root;
         private readonly Dictionary<Type, CommandManager> _managers;
         private readonly IConsole _console;
+        private readonly IMessageBusService _messageBusService;
 
         public CommandService(
+            IMessageBusService messageBusService,
             IFiltered<ICommand> commands,
             ICommandTokenService tokenService,
             IConsole console)
         {
+            this._messageBusService = messageBusService;
             this._console = console;
             this._managers = commands
                 .Select(CommandContext.Create)
@@ -49,6 +52,12 @@ namespace Guppy.Core.Commands.Services
         public void Invoke(string input)
         {
             this._root.Invoke(input, this._console);
+        }
+
+        public void Invoke<TCommand>(TCommand command)
+            where TCommand : ICommand
+        {
+            this._messageBusService.EnqueueAll(command);
         }
     }
 }

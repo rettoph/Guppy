@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Example.Client
 {
-    internal sealed class MainScene(IGuppyScope scope) : Scene(scope)
+    public sealed class MainScene(IGuppyScope scope) : Scene(scope)
     {
         public override void Draw(GameTime gameTime)
         {

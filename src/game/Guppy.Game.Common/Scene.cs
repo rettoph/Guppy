@@ -3,7 +3,6 @@ using Guppy.Core.Common;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Messaging.Common;
-using Guppy.Core.Messaging.Common.Services;
 using Guppy.Game.Common.Enums;
 using Microsoft.Xna.Framework;
 using Standart.Hash.xxHash;
@@ -90,8 +89,8 @@ namespace Guppy.Game.Common
         protected virtual void InitializeSystems(IScopedSystemService systemService)
         {
             // Automatically register all scoped systems as subscribers
-            IBrokerService brokerService = this._scope.Resolve<IBrokerService>();
-            brokerService.AddSubscribers(this.Systems.OfType<IBaseSubscriber>());
+            IMessageBus messageBus = this._scope.Resolve<IMessageBus>();
+            messageBus.Subscribe(this.Systems);
 
             // Call all system initializeation methods
             ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, false);

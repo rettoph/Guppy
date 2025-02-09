@@ -30,28 +30,28 @@ namespace Guppy.Core.Commands.Managers
         }
     }
 
-    public class CommandBinder<T> : CommandManager
-        where T : ICommand, new()
+    public class CommandBinder<TCommand> : CommandManager
+        where TCommand : ICommand, new()
     {
         public override ICommandContext Context { get; }
         public override Command Command { get; }
-        public OptionManager<T>[] Options { get; }
-        public ArgumentManager<T>[] Arguments { get; }
+        public OptionManager<TCommand>[] Options { get; }
+        public ArgumentManager<TCommand>[] Arguments { get; }
 
-        public CommandBinder(ICommandContext<T> context, ICommandTokenService tokenService)
+        public CommandBinder(ICommandContext<TCommand> context, ICommandTokenService tokenService)
         {
             this.Context = context;
-            this.Options = OptionManager<T>.CreateAll(context, tokenService);
-            this.Arguments = ArgumentManager<T>.CreateAll(context, tokenService);
+            this.Options = OptionManager<TCommand>.CreateAll(context, tokenService);
+            this.Arguments = ArgumentManager<TCommand>.CreateAll(context, tokenService);
 
             this.Command = new Command(context.Name, context.Description);
 
-            foreach (OptionManager<T> optionManager in this.Options)
+            foreach (OptionManager<TCommand> optionManager in this.Options)
             {
                 this.Command.Add(optionManager.Option);
             }
 
-            foreach (ArgumentManager<T> argumentManager in this.Arguments)
+            foreach (ArgumentManager<TCommand> argumentManager in this.Arguments)
             {
                 this.Command.Add(argumentManager.Argument);
             }
@@ -59,7 +59,7 @@ namespace Guppy.Core.Commands.Managers
 
         public override bool TryParse(InvocationContext context, [MaybeNullWhen(false)] out ICommand command)
         {
-            if (this.TryParse(context, out T instance) == true)
+            if (this.TryParse(context, out TCommand instance) == true)
             {
                 command = instance;
                 return true;
@@ -73,26 +73,26 @@ namespace Guppy.Core.Commands.Managers
         {
             this.Command.SetHandler(context =>
             {
-                if (this.TryParse(context, out T command) == true)
+                if (this.TryParse(context, out TCommand command) == true)
                 {
-                    commandService.Publish(command);
+                    commandService.Invoke(command);
                 }
             });
 
             commandService.AddCommand(this.Context.Parent, this.Command);
         }
 
-        private bool TryParse(InvocationContext context, out T command)
+        private bool TryParse(InvocationContext context, out TCommand command)
         {
             command = new();
             bool result = true;
 
-            foreach (OptionManager<T> option in this.Options)
+            foreach (OptionManager<TCommand> option in this.Options)
             {
                 result &= option.TryBind(ref command, context);
             }
 
-            foreach (ArgumentManager<T> argument in this.Arguments)
+            foreach (ArgumentManager<TCommand> argument in this.Arguments)
             {
                 result &= argument.TryBind(ref command, context);
             }

@@ -1,10 +1,9 @@
-﻿using Guppy.Core.Messaging.Common;
-using LiteNetLib;
+﻿using LiteNetLib;
 using LiteNetLib.Utils;
 
 namespace Guppy.Core.Network.Common
 {
-    public interface INetIncomingMessage : IMessage, INetMessage, IRecyclable
+    public interface INetIncomingMessage : INetMessage, IRecyclable
     {
         ISender Sender { get; }
         INetGroup Group { get; }

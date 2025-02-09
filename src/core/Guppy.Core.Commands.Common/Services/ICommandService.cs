@@ -1,9 +1,10 @@
-﻿using Guppy.Core.Messaging.Common;
-
-namespace Guppy.Core.Commands.Common.Services
+﻿namespace Guppy.Core.Commands.Common.Services
 {
-    public interface ICommandService : IBroker<ICommand>
+    public interface ICommandService
     {
         void Invoke(string input);
+
+        void Invoke<TCommand>(TCommand command)
+            where TCommand : ICommand;
     }
 }

@@ -92,5 +92,15 @@ namespace Guppy.Core
             this.Variables.TryGet<T>(out T? value);
             return value;
         }
+
+        public IGuppyScope GetRoot()
+        {
+            if (this.Parent is null)
+            {
+                return this;
+            }
+
+            return this.Parent.GetRoot();
+        }
     }
 }

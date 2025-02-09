@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using Guppy.Core.Messaging.Common;
+using Guppy.Core.Common.Attributes;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Claims;
 using Guppy.Core.Network.Common.Definitions;
@@ -13,8 +14,8 @@ using Guppy.Core.Network.Messages;
 namespace Guppy.Core.Network.Peers
 {
     internal class ClientPeer(ILifetimeScope scope, INetSerializerService serializers, IEnumerable<NetMessageTypeDefinition> messages) : Peer(scope, serializers, messages), IClientPeer,
-        ISubscriber<INetIncomingMessage<UserAction>>,
-        ISubscriber<INetIncomingMessage<ConnectionRequestResponse>>
+        INetIncomingMessageSubscriber<UserAction>,
+        INetIncomingMessageSubscriber<ConnectionRequestResponse>
     {
         public override PeerTypeEnum Type => PeerTypeEnum.Client;
 
@@ -43,21 +44,6 @@ namespace Guppy.Core.Network.Peers
             this.Manager.Connect(address, port, request.Writer);
         }
 
-        public void Process(in Guid messsageId, INetIncomingMessage<UserAction> message)
-        {
-            IUser user = this.Users.UpdateOrCreate(message.Body.UserDto);
-
-            switch (message.Body.Type)
-            {
-                case UserActionTypeEnum.UserJoined:
-                    this.Groups.GetById(message.Body.GroupId).Users.Add(user);
-                    break;
-                case UserActionTypeEnum.UserLeft:
-                    this.Groups.GetById(message.Body.GroupId).Users.Remove(user);
-                    break;
-            }
-        }
-
         public override void Send(INetOutgoingMessage message)
         {
             if (message.Recipients.Count == 0)
@@ -73,7 +59,24 @@ namespace Guppy.Core.Network.Peers
             return new ClientNetGroup(id, this);
         }
 
-        public void Process(in Guid messageId, INetIncomingMessage<ConnectionRequestResponse> message)
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messsageId, INetIncomingMessage<UserAction> message)
+        {
+            IUser user = this.Users.UpdateOrCreate(message.Body.UserDto);
+
+            switch (message.Body.Type)
+            {
+                case UserActionTypeEnum.UserJoined:
+                    this.Groups.GetById(message.Body.GroupId).Users.Add(user);
+                    break;
+                case UserActionTypeEnum.UserLeft:
+                    this.Groups.GetById(message.Body.GroupId).Users.Remove(user);
+                    break;
+            }
+        }
+
+        [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
+        public void Process(in int messageId, INetIncomingMessage<ConnectionRequestResponse> message)
         {
             if (message.Body.Type != ConnectionRequestResponseType.Accepted)
             {

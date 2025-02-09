@@ -24,5 +24,7 @@ namespace Guppy.Core.Common
 
         bool TryResolve<T>([MaybeNullWhen(false)] out T? instance)
             where T : class;
+
+        IGuppyScope GetRoot();
     }
 }

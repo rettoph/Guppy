@@ -1,4 +1,5 @@
 ﻿using Guppy.Core.Messaging.Common;
+using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Core.Network.Common;
 using Guppy.Core.Network.Common.Peers;
 using Guppy.Core.Network.Common.Serialization;
@@ -30,8 +31,6 @@ namespace Guppy.Core.Network
         object INetIncomingMessage.Body => this.Body;
         ISender INetIncomingMessage.Sender => this.Sender;
         INetMessageType INetIncomingMessage.Type => this.Type;
-
-        Type IMessage.Type { get; } = typeof(INetIncomingMessage<T>);
 
         internal NetIncomingMessage(
             IPeer peer,
@@ -78,6 +77,11 @@ namespace Guppy.Core.Network
         void IDisposable.Dispose()
         {
             this.Recycle();
+        }
+
+        void IMessage.Publish(IMessageBus messageBus)
+        {
+            messageBus.Publish<SubscriberSequenceGroupEnum, int, INetIncomingMessage<T>>(this.Body.GetHashCode(), this);
         }
     }
 }

@@ -37,6 +37,7 @@ namespace Guppy.Analyzer.Core.Common
 
         private const string _sequenceGroupAttribute = "Guppy.Core.Common.Attributes.SequenceGroupAttribute";
         private const string _requireSequenceGroupAttribute = "Guppy.Core.Common.Attributes.RequireSequenceGroupAttribute";
+        private const string _requireGenericSequenceGroupAttribute = "Guppy.Core.Common.Attributes.RequireGenericSequenceGroupAttribute";
 
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
@@ -65,7 +66,7 @@ namespace Guppy.Analyzer.Core.Common
             IMethodSymbol methodImplementationSymbol = methodSymbol;
             while (methodImplementationSymbol != null)
             {
-                AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, methodImplementationSymbol.GetAttributes(), _sequenceGroupAttribute);
+                AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, methodImplementationSymbol, methodImplementationSymbol.GetAttributes(), _sequenceGroupAttribute);
                 methodImplementationSymbol = methodImplementationSymbol.OverriddenMethod;
             }
 
@@ -100,8 +101,9 @@ namespace Guppy.Analyzer.Core.Common
                     }
 
                     ImmutableArray<AttributeData> interfaceMemberAttributes = interfaceMemberSymbol.GetAttributes();
-                    AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, interfaceMemberAttributes, _sequenceGroupAttribute);
-                    AddMatchingAttributeTypeArgumentNames(requiredSequenceGroups, interfaceMemberAttributes, _requireSequenceGroupAttribute);
+                    AddMatchingAttributeTypeArgumentNames(namedSequenceGroups, (IMethodSymbol)interfaceMemberSymbol, interfaceMemberAttributes, _sequenceGroupAttribute);
+                    AddMatchingAttributeTypeArgumentNames(requiredSequenceGroups, (IMethodSymbol)interfaceMemberSymbol, interfaceMemberAttributes, _requireSequenceGroupAttribute);
+                    AddMatchingAttributeTypeArgumentNames(requiredSequenceGroups, (IMethodSymbol)interfaceMemberSymbol, interfaceMemberAttributes, _requireGenericSequenceGroupAttribute);
                 }
             }
 
@@ -116,22 +118,45 @@ namespace Guppy.Analyzer.Core.Common
 
         private static void AddMatchingAttributeTypeArgumentNames(
             List<string> names,
+            IMethodSymbol containingMethodSymbol,
             ImmutableArray<AttributeData> attributes,
             string attributeTypeName)
         {
             foreach (AttributeData attributeData in attributes)
             {
-                if (attributeData.AttributeClass.IsGenericType == false)
-                {
-                    continue;
-                }
-
                 if ($"{attributeData.AttributeClass.ContainingNamespace}.{attributeData.AttributeClass.Name}" != attributeTypeName)
                 {
                     continue;
                 }
 
-                ITypeSymbol genericType = attributeData.AttributeClass.TypeArguments[0];
+
+                ITypeSymbol genericType = null;
+                if (attributeData.AttributeClass.IsGenericType == true)
+                {
+                    genericType = attributeData.AttributeClass.TypeArguments[0];
+                }
+
+                if (attributeData.AttributeClass.IsGenericType == false
+                    && attributeData.ConstructorArguments.Length == 1
+                    && attributeData.ConstructorArguments[0].Type.Name == "String"
+                    && containingMethodSymbol.ContainingType.IsGenericType)
+                {
+                    string genericTypeName = (string)attributeData.ConstructorArguments[0].Value;
+                    for (int i = 0; i < containingMethodSymbol.ContainingType.TypeParameters.Length; i++)
+                    {
+                        if (containingMethodSymbol.ContainingType.TypeParameters[i].Name == genericTypeName)
+                        {
+                            genericType = containingMethodSymbol.ContainingType.TypeArguments[i];
+                        }
+                    }
+                }
+
+
+                if (genericType is null)
+                {
+                    continue;
+                }
+
                 names.Add($"{genericType.ContainingNamespace}.{genericType.Name}");
             }
         }
