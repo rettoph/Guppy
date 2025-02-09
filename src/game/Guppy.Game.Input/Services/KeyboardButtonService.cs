@@ -14,7 +14,7 @@ namespace Guppy.Game.Input.Services
             this._keys = buttons.Where(x => x.Source.Type == ButtonTypeEnum.Keyboard).ToArray();
         }
 
-        public IEnumerable<IInput> Update()
+        public IEnumerable<IInputMessage> Update()
         {
             var state = Keyboard.GetState();
 

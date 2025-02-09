@@ -1,6 +1,4 @@
-﻿using Guppy.Core.Messaging.Common.Enums;
-
-namespace Guppy.Core.Messaging.Common
+﻿namespace Guppy.Core.Messaging.Common
 {
     public abstract class Message<TSequenceGroup, TId, TSelf> : IMessage
         where TSequenceGroup : unmanaged, Enum
@@ -14,12 +12,13 @@ namespace Guppy.Core.Messaging.Common
         }
     }
 
-    public abstract class Message<TSelf> : Message<SubscriberSequenceGroupEnum, int, TSelf>
-        where TSelf : Message<TSelf>
+    public abstract class Message<TSequenceGroup, TSelf> : IMessage
+        where TSequenceGroup : unmanaged, Enum
+        where TSelf : Message<TSequenceGroup, TSelf>
     {
-        protected override int GetId()
+        public void Publish(IMessageBus messageBus)
         {
-            return this.GetHashCode();
+            messageBus.Publish<TSequenceGroup, TSelf>((TSelf)this);
         }
     }
 }

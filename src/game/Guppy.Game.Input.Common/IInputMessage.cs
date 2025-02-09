@@ -2,7 +2,7 @@
 
 namespace Guppy.Game.Input.Common
 {
-    public interface IInput : IMessage
+    public interface IInputMessage : IMessage
     {
     }
 }

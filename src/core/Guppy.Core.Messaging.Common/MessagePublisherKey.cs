@@ -10,6 +10,13 @@
             public static readonly MessagePublisherKey Value = MessagePublisherKey.Create<TSequenceGroup, TId, TMessage>();
         }
 
+        public static class Instance<TSequenceGroup, TMessage>
+            where TSequenceGroup : unmanaged, Enum
+        {
+            private class IdPlaceholder { }
+            public static readonly MessagePublisherKey Value = MessagePublisherKey.Create<TSequenceGroup, IdPlaceholder, TMessage>();
+        }
+
         public static MessagePublisherKey Create<TSequenceGroup, TId, TMessage>()
             where TSequenceGroup : unmanaged, Enum
         {

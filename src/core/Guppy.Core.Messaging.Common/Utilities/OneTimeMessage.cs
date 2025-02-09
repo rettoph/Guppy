@@ -32,4 +32,33 @@ namespace Guppy.Core.Messaging.Common.Utilities
             return instance;
         }
     }
+
+    /// <summary>
+    /// Simple message that can be published once then
+    /// will automatically be recycled
+    /// </summary>
+    /// <typeparam name="TSequenceGroup"></typeparam>
+    /// <typeparam name="TId"></typeparam>
+    /// <typeparam name="TMessage"></typeparam>
+    public class OneTimeMessage<TSequenceGroup, TMessage>() : IMessage
+        where TSequenceGroup : unmanaged, Enum
+    {
+        private static readonly Factory<OneTimeMessage<TSequenceGroup, TMessage>> _factory = new(() => new(), 250);
+
+        private TMessage _message = default!;
+
+        public void Publish(IMessageBus messageBus)
+        {
+            messageBus.Publish<TSequenceGroup, TMessage>(this._message);
+            _factory.TryReturn(this);
+        }
+
+        public static OneTimeMessage<TSequenceGroup, TMessage> Create(in TMessage message)
+        {
+            OneTimeMessage<TSequenceGroup, TMessage> instance = _factory.GetOrCreate();
+            instance._message = message;
+
+            return instance;
+        }
+    }
 }

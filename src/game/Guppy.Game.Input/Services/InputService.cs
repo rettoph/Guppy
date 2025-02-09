@@ -9,7 +9,7 @@ namespace Guppy.Game.Input.Services
         private readonly IMessageBusService _messageBusService = messageBusService;
 
         public void Publish<TInput>(TInput input)
-            where TInput : IInput
+            where TInput : IInputMessage
         {
             this._messageBusService.EnqueueAll(input);
         }

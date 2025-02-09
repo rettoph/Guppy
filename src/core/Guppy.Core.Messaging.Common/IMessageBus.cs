@@ -7,6 +7,9 @@ namespace Guppy.Core.Messaging.Common
         void Publish<TSequenceGroup, TId, TMessage>(in TId messageId, in TMessage message)
             where TSequenceGroup : unmanaged, Enum;
 
+        void Publish<TSequenceGroup, TMessage>(in TMessage message)
+            where TSequenceGroup : unmanaged, Enum;
+
         void Publish<TMessage>(in TMessage message)
             where TMessage : IMessage
         {
@@ -19,7 +22,13 @@ namespace Guppy.Core.Messaging.Common
         void Enqueue<TSequenceGroup, TId, TMessage>(in TId messageId, in TMessage message)
             where TSequenceGroup : unmanaged, Enum
         {
-            this.Enqueue(OneTimeMessage<TSequenceGroup, TId, TMessage>.Create(messageId, message));
+            this.Enqueue(OneTimeMessage<TSequenceGroup, TId, TMessage>.Create(in messageId, in message));
+        }
+
+        void Enqueue<TSequenceGroup, TMessage>(in TMessage message)
+            where TSequenceGroup : unmanaged, Enum
+        {
+            this.Enqueue(OneTimeMessage<TSequenceGroup, TMessage>.Create(in message));
         }
 
         void Flush();

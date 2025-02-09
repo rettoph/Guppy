@@ -3,6 +3,6 @@
     public interface IInputService
     {
         void Publish<TInput>(TInput input)
-            where TInput : IInput;
+            where TInput : IInputMessage;
     }
 }

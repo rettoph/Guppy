@@ -60,7 +60,7 @@ namespace Guppy.Core.Network.Peers
         }
 
         [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
-        public void Process(in int messsageId, INetIncomingMessage<UserAction> message)
+        public void Process(INetIncomingMessage<UserAction> message)
         {
             IUser user = this.Users.UpdateOrCreate(message.Body.UserDto);
 
@@ -76,7 +76,7 @@ namespace Guppy.Core.Network.Peers
         }
 
         [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
-        public void Process(in int messageId, INetIncomingMessage<ConnectionRequestResponse> message)
+        public void Process(INetIncomingMessage<ConnectionRequestResponse> message)
         {
             if (message.Body.Type != ConnectionRequestResponseType.Accepted)
             {

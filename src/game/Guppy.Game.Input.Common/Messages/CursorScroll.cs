@@ -1,8 +1,6 @@
-﻿using Guppy.Core.Messaging.Common;
-
-namespace Guppy.Game.Input.Common.Messages
+﻿namespace Guppy.Game.Input.Common.Messages
 {
-    public sealed class CursorScroll(ICursor cursor, int delta) : Message<CursorScroll>, IInput
+    public sealed class CursorScroll(ICursor cursor, int delta) : InputMessage<CursorScroll>, IInputMessage
     {
         public readonly ICursor Cursor = cursor;
         public readonly int Delta = delta;

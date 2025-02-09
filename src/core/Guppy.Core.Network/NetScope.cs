@@ -10,7 +10,7 @@ namespace Guppy.Core.Network
 {
     internal sealed class NetScope<T> : INetScope<T>,
         IDisposable,
-        ISubscriber<INetOutgoingMessage>
+        ISubscriber<SubscriberSequenceGroupEnum, INetOutgoingMessage>
     {
         private readonly IMessageBus _bus;
 
@@ -54,7 +54,7 @@ namespace Guppy.Core.Network
         }
 
         [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
-        public void Process(in int messageId, INetOutgoingMessage message)
+        public void Process(INetOutgoingMessage message)
         {
             message.Send();
         }

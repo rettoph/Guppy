@@ -24,6 +24,11 @@ namespace Guppy.Core.Messaging
             this.GetPublisher<TSequenceGroup, TId, TMessage>().Publish(in messageId, in message);
         }
 
+        public void Publish<TSequenceGroup, TMessage>(in TMessage message) where TSequenceGroup : unmanaged, Enum
+        {
+            this.GetPublisher<TSequenceGroup, TMessage>().Publish(in message);
+        }
+
         public void Flush()
         {
             while (this.TryGetEnqueuedMessage(out IMessage? message) == true)
@@ -104,6 +109,24 @@ namespace Guppy.Core.Messaging
             Type publisherType = typeof(MessagePublisher<,,>).MakeGenericType(typeof(TSequenceGroup), typeof(TId), typeof(TMessage));
 
             MessagePublisher<TSequenceGroup, TId, TMessage> instance = (MessagePublisher<TSequenceGroup, TId, TMessage>)(Activator.CreateInstance(publisherType) ?? throw new NotImplementedException());
+            instance.Subscribe(this._subscribers);
+
+            publisher = instance;
+            return instance!;
+        }
+
+        private MessagePublisher<TSequenceGroup, TMessage> GetPublisher<TSequenceGroup, TMessage>()
+            where TSequenceGroup : unmanaged, Enum
+        {
+            ref IMessagePublisher? publisher = ref CollectionsMarshal.GetValueRefOrAddDefault(this._publishers, MessagePublisherKey.Instance<TSequenceGroup, TMessage>.Value, out bool exists);
+            if (exists == true)
+            {
+                return (MessagePublisher<TSequenceGroup, TMessage>)publisher!;
+            }
+
+            Type publisherType = typeof(MessagePublisher<,>).MakeGenericType(typeof(TSequenceGroup), typeof(TMessage));
+
+            MessagePublisher<TSequenceGroup, TMessage> instance = (MessagePublisher<TSequenceGroup, TMessage>)(Activator.CreateInstance(publisherType) ?? throw new NotImplementedException());
             instance.Subscribe(this._subscribers);
 
             publisher = instance;

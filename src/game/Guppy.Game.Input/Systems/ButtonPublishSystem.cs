@@ -34,7 +34,7 @@ namespace Guppy.Game.Input.Systems
         {
             foreach (var provider in this._providers)
             {
-                foreach (IInput data in provider.Update())
+                foreach (IInputMessage data in provider.Update())
                 {
                     this._inputs.Publish(data);
                 }

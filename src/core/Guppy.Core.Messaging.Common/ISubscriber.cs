@@ -1,5 +1,4 @@
 ﻿using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging.Common.Enums;
 
 namespace Guppy.Core.Messaging.Common
 {
@@ -10,8 +9,10 @@ namespace Guppy.Core.Messaging.Common
         void Process(in TId id, TMessage message);
     }
 
-    public interface ISubscriber<TMessage> : ISubscriber<SubscriberSequenceGroupEnum, int, TMessage>
+    public interface ISubscriber<TSequenceGroup, TMessage>
+        where TSequenceGroup : unmanaged, Enum
     {
-
+        [RequireGenericSequenceGroup(nameof(TSequenceGroup))]
+        void Process(TMessage message);
     }
 }

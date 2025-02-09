@@ -14,7 +14,7 @@ namespace Guppy.Game.Input.Services
             this._buttons = buttons.Where(x => x.Source.Type == ButtonTypeEnum.Mouse).ToArray();
         }
 
-        public IEnumerable<IInput> Update()
+        public IEnumerable<IInputMessage> Update()
         {
             var state = Mouse.GetState();
 

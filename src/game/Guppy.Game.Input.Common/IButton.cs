@@ -9,6 +9,6 @@ namespace Guppy.Game.Input.Common
         ButtonSource Source { get; set; }
         bool Pressed { get; }
 
-        bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IInput message);
+        bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IInputMessage message);
     }
 }

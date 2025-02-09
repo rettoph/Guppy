@@ -1,8 +1,6 @@
-﻿using Guppy.Core.Messaging.Common;
-
-namespace Guppy.Game.Input.Common.Messages
+﻿namespace Guppy.Game.Input.Common.Messages
 {
-    public class Toggle<T>(T? item) : Message<Toggle<T>>, IInput
+    public class Toggle<T>(T? item) : InputMessage<Toggle<T>>, IInputMessage
     {
         public static readonly Toggle<T> Instance = new(default);
 

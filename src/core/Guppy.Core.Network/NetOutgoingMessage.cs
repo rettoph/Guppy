@@ -141,7 +141,7 @@ namespace Guppy.Core.Network
 
         void IMessage.Publish(IMessageBus messageBus)
         {
-            messageBus.Publish<SubscriberSequenceGroupEnum, int, INetOutgoingMessage<T>>(this.Body.GetHashCode(), this);
+            messageBus.Publish<SubscriberSequenceGroupEnum, INetOutgoingMessage<T>>(this);
         }
     }
 }

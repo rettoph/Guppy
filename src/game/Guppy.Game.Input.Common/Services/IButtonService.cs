@@ -2,7 +2,7 @@
 {
     public interface IButtonService
     {
-        IEnumerable<IInput> Update();
+        IEnumerable<IInputMessage> Update();
         void Clean(IEnumerable<IButton> buttons);
     }
 }

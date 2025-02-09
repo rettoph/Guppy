@@ -6,7 +6,7 @@ namespace Guppy.Game.Input.Common
         string key,
         ButtonSource defaultSource,
         (bool pressed, T data)[] data) : IButton
-        where T : IInput
+        where T : IInputMessage
     {
         public string Key { get; } = key;
 
@@ -18,7 +18,7 @@ namespace Guppy.Game.Input.Common
 
         public readonly IReadOnlyDictionary<bool, T> Data = data.ToDictionary(x => x.pressed, x => x.data);
 
-        public bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IInput message)
+        public bool SetPressed(bool pressed, [MaybeNullWhen(false)] out IInputMessage message)
         {
             this.Pressed = pressed;
 
