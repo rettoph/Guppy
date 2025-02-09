@@ -3,7 +3,6 @@ using Guppy.Core.Commands.Common;
 using Guppy.Core.Commands.Common.Attributes;
 using Guppy.Core.Commands.Common.Extensions;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Enums;
 using Guppy.Tests.Core.Commands.Common;
 using Moq;
@@ -20,25 +19,25 @@ namespace Guppy.Tests.Core.Commands
             TestValueD = 3,
         }
 
-        public class EnumArgumentTestCommand : Message<EnumArgumentTestCommand>, ICommand
+        public class EnumArgumentTestCommand : Command<EnumArgumentTestCommand>, ICommand
         {
             [Argument]
             public ValueEnum Value { get; set; }
         }
 
-        public class NullableEnumArgumentTestCommand : Message<NullableEnumArgumentTestCommand>, ICommand
+        public class NullableEnumArgumentTestCommand : Command<NullableEnumArgumentTestCommand>, ICommand
         {
             [Argument]
             public ValueEnum? Value { get; set; }
         }
 
-        public class EnumOptionTestCommand : Message<EnumOptionTestCommand>, ICommand
+        public class EnumOptionTestCommand : Command<EnumOptionTestCommand>, ICommand
         {
             [Option]
             public ValueEnum Value { get; set; }
         }
 
-        public class NullableEnumOptionTestCommand : Message<NullableEnumOptionTestCommand>, ICommand
+        public class NullableEnumOptionTestCommand : Command<NullableEnumOptionTestCommand>, ICommand
         {
             [Option(required: false)]
             public ValueEnum? Value { get; set; }
@@ -48,7 +47,7 @@ namespace Guppy.Tests.Core.Commands
             where TCommand : ICommand
         {
             [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.Process)]
-            public virtual void Process(in int id, TCommand message) { }
+            public virtual void Process(TCommand message) { }
         }
 
         [Fact]
@@ -68,7 +67,6 @@ namespace Guppy.Tests.Core.Commands
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
-                    in It.Ref<int>.IsAny,
                     It.Is<EnumArgumentTestCommand>(
                         (instance, type) => ((EnumArgumentTestCommand)instance).Value == ValueEnum.TestValueC
                     )
@@ -93,7 +91,6 @@ namespace Guppy.Tests.Core.Commands
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
-                    in It.Ref<int>.IsAny,
                     It.Is<NullableEnumArgumentTestCommand>(
                         (instance, type) => ((NullableEnumArgumentTestCommand)instance).Value == ValueEnum.TestValueC
                     )
@@ -109,7 +106,6 @@ namespace Guppy.Tests.Core.Commands
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
-                    in It.Ref<int>.IsAny,
                     It.Is<NullableEnumArgumentTestCommand>(
                         (instance, type) => ((NullableEnumArgumentTestCommand)instance).Value == null
                     )
@@ -134,7 +130,6 @@ namespace Guppy.Tests.Core.Commands
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
-                    in It.Ref<int>.IsAny,
                     It.Is<EnumOptionTestCommand>(
                         (instance, type) => ((EnumOptionTestCommand)instance).Value == ValueEnum.TestValueC
                     )
@@ -159,7 +154,6 @@ namespace Guppy.Tests.Core.Commands
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
-                    in It.Ref<int>.IsAny,
                     It.Is<NullableEnumOptionTestCommand>(
                         (instance, type) => ((NullableEnumOptionTestCommand)instance).Value == ValueEnum.TestValueC
                     )
@@ -175,7 +169,6 @@ namespace Guppy.Tests.Core.Commands
             // Ensure subscriber ran as expected
             subscriber.Verify(
                 x => x.Process(
-                    in It.Ref<int>.IsAny,
                     It.Is<NullableEnumOptionTestCommand>(
                         (instance, type) => ((NullableEnumOptionTestCommand)instance).Value == null
                     )
