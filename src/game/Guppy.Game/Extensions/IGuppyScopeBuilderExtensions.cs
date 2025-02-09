@@ -27,6 +27,8 @@ namespace Guppy.Game.Extensions
             {
                 builder.RegisterCoreCommandServices();
 
+                builder.RegisterGlobalSystem<EngineBusSystem>();
+
                 builder.RegisterJsonConverter<ColorConverter>();
                 builder.RegisterJsonConverter<Vector2Converter>();
                 builder.RegisterJsonConverter<Vector3Converter>();

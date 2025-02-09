@@ -5,6 +5,7 @@ using Guppy.Core.Resources.Common.Services;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;
+using Guppy.Game.MonoGame.Common;
 using Guppy.Game.MonoGame.Systems.Scene;
 
 namespace Guppy.Game.MonoGame.Systems.Engine
@@ -15,8 +16,8 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         IInputSubscriber<Toggle<SceneDebugWindowSystem>>,
         IInputSubscriber<Toggle<EngineTerminalWindowSystem>>
     {
-        private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(Common.Settings.IsDebugWindowEnabled);
-        private readonly SettingValue<bool> _isTerminalWindowEnabled = settings.GetValue(Common.Settings.IsTerminalWindowEnabled);
+        private readonly SettingValue<bool> _isDebugWindowEnabled = settings.GetValue(GuppyMonoGameSettings.IsDebugWindowEnabled);
+        private readonly SettingValue<bool> _isTerminalWindowEnabled = settings.GetValue(GuppyMonoGameSettings.IsTerminalWindowEnabled);
 
         [SequenceGroup<SubscriberSequenceGroupEnum>(SubscriberSequenceGroupEnum.PreProcess)]
         public void Process(in int messageId, Toggle<SceneDebugWindowSystem> message)

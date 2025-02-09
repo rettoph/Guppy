@@ -26,7 +26,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
 
         private readonly IScene _scene = scene;
 
-        private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.Settings.IsTerminalWindowEnabled);
+        private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.GuppyMonoGameSettings.IsTerminalWindowEnabled);
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]

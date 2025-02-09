@@ -28,7 +28,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
         private readonly IScene _scene = scene;
         private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
-        private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
+        private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.GuppyMonoGameSettings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize()

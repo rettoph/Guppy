@@ -30,7 +30,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _renderDebugInfoActions = new(true);
 
-        private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.Settings.IsDebugWindowEnabled);
+        private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.GuppyMonoGameSettings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize()
