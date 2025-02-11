@@ -73,6 +73,17 @@ namespace Guppy.Core.Network.Common.Extensions
             return builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
         }
 
+        public static IGuppyScopeBuilder RegisterNetMessageType<T, TNetSerializer>(this IGuppyScopeBuilder builder, DeliveryMethod deliveryMethod, byte outgoingChannel)
+            where T : notnull
+            where TNetSerializer : class, INetSerializer<T>
+        {
+            builder.RegisterNetMessageType(new NetMessageTypeDefinition<T>(deliveryMethod, outgoingChannel));
+            builder.RegisterNetSerializer<TNetSerializer>();
+
+            return builder;
+        }
+
+
         /// <summary>
         /// Configure scoped <see cref="Guppy.Core.Network.Common.INetScope{T}"/> instance.
         /// Traditionally this is done on scope creation with a custom builder action.

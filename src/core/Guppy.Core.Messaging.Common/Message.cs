@@ -1,14 +1,17 @@
 ﻿namespace Guppy.Core.Messaging.Common
 {
-    public abstract class Message<TSequenceGroup, TId, TSelf> : IMessage
+    public abstract class Message<TSequenceGroup, TId, TSelf> : IMessage<TId>
         where TSequenceGroup : unmanaged, Enum
         where TSelf : Message<TSequenceGroup, TId, TSelf>
     {
-        protected abstract TId GetId();
+        private TId? _id;
+        public TId Id => this._id ??= this.CalculateId();
+
+        protected abstract TId CalculateId();
 
         public void Publish(IMessageBus messageBus)
         {
-            messageBus.Publish<TSequenceGroup, TId, TSelf>(this.GetId(), (TSelf)this);
+            messageBus.Publish<TSequenceGroup, TId, TSelf>(this.Id, (TSelf)this);
         }
     }
 

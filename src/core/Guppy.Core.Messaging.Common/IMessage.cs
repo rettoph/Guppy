@@ -4,4 +4,9 @@
     {
         void Publish(IMessageBus messageBus);
     }
+
+    public interface IMessage<TId> : IMessage
+    {
+        TId Id { get; }
+    }
 }

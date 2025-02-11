@@ -6,7 +6,7 @@ namespace Guppy.Game.Input.Common
     public abstract class InputMessage<T> : Message<SubscriberSequenceGroupEnum, int, T>, IInputMessage
         where T : InputMessage<T>
     {
-        protected override int GetId()
+        protected override int CalculateId()
         {
             return this.GetHashCode();
         }
