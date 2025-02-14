@@ -79,7 +79,7 @@ namespace Guppy.Game.Common
 
         protected virtual void Initialize()
         {
-            this.Systems = this._scope.Resolve<IScopedSystemService>();
+            this.Systems = this._scope.Systems;
             this.InitializeSystems(this.Systems);
 
             this._drawActions.Add(this.Systems);

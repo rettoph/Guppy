@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Commands.Serialization.Commands;
 using Guppy.Core.Commands.Services;
 using Guppy.Core.Common;
@@ -12,8 +13,8 @@ namespace Guppy.Core.Commands.Extensions
         {
             return builder.EnsureRegisteredOnce(nameof(RegisterCoreCommandServices), builder =>
             {
-                builder.RegisterType<CommandService>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-                builder.RegisterType<CommandTokenService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                builder.RegisterType<CommandService>().AsSelf().As<ICommandService>().InstancePerLifetimeScope();
+                builder.RegisterType<CommandTokenService>().As<ICommandTokenService>().InstancePerLifetimeScope();
 
                 builder.RegisterType<NullableEnumTokenConverter>().AsImplementedInterfaces().InstancePerLifetimeScope();
             });

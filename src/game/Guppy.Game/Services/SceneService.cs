@@ -27,7 +27,6 @@ namespace Guppy.Game.Services
 
                 buildDelegate?.Invoke(builder);
             });
-
             T scene = scope.Resolve<T>();
 
             return scene;

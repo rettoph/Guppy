@@ -4,7 +4,11 @@ using Guppy.Core.Common.Systems;
 
 namespace Guppy.Core.Services
 {
-    public class ScopedSystemService(IEnumerable<IScopedSystem> systems, IEnumerable<IScopedSystemProvider> providers) : BaseSystemService<IScopedSystem>(systems, providers), IScopedSystemService
+    public class ScopedSystemService(
+        IEnumerable<IScopedSystem> systems,
+        IEnumerable<IScopedSystemProvider> providers
+    ) : BaseSystemService<IScopedSystem>(systems, providers),
+        IScopedSystemService
     {
     }
 }

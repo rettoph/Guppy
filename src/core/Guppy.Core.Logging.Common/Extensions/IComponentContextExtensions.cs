@@ -10,7 +10,7 @@ namespace Guppy.Core.Logging.Common.Extensions
             return context.Resolve<ILoggerService>().GetLogger(loggerContext);
         }
 
-        public static ILogger ResolveLogger<TContext>(this IComponentContext context)
+        public static ILogger<TContext> ResolveLogger<TContext>(this IComponentContext context)
         {
             return context.Resolve<ILoggerService>().GetLogger<TContext>();
         }
