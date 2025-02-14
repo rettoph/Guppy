@@ -82,18 +82,18 @@ namespace Guppy.Game.Common
             this.Systems = this._scope.Systems;
             this.InitializeSystems(this.Systems);
 
-            this._drawActions.Add(this.Systems);
-            this._updateActions.Add(this.Systems);
+            this._drawActions.Add(this.Systems.GetAll());
+            this._updateActions.Add(this.Systems.GetAll());
         }
 
         protected virtual void InitializeSystems(IScopedSystemService systemService)
         {
             // Automatically register all scoped systems as subscribers
             IMessageBus messageBus = this._scope.Resolve<IMessageBus>();
-            messageBus.Subscribe(this.Systems);
+            messageBus.Subscribe(this.Systems.GetAll());
 
             // Call all system initializeation methods
-            ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, false);
+            ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems.GetAll(), false);
         }
 
         void IScene.Deinitialize()
@@ -111,7 +111,7 @@ namespace Guppy.Game.Common
         {
             // Call all system deinitializeation methods
             Type initializeDelegate = typeof(Action<>).MakeGenericType(this.GetType());
-            ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems, false);
+            ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems.GetAll(), false);
         }
 
         public virtual void Draw(GameTime gameTime)

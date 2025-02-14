@@ -20,13 +20,13 @@ namespace Guppy.Game.MonoGame.Components.Scene
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Setup)]
         public void Initialize()
         {
-            this._globalImGuiActionService.Add(this._scene.Systems);
+            this._globalImGuiActionService.Add(this._scene.Systems.GetAll());
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Setup)]
         public void Deinitialize()
         {
-            this._globalImGuiActionService.Remove(this._scene.Systems);
+            this._globalImGuiActionService.Remove(this._scene.Systems.GetAll());
         }
     }
 }

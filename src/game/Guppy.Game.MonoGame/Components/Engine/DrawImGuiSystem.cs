@@ -30,13 +30,13 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize()
         {
-            this._globalImGuiActionService.Add(this._engine.Systems);
+            this._globalImGuiActionService.Add(this._engine.Systems.GetAll());
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
         public void Deinitialize()
         {
-            this._globalImGuiActionService.Remove(this._engine.Systems);
+            this._globalImGuiActionService.Remove(this._engine.Systems.GetAll());
         }
 
         [SequenceGroup<DrawSequenceGroupEnum>(DrawSequenceGroupEnum.Draw)]

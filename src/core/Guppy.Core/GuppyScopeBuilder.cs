@@ -36,7 +36,7 @@ namespace Guppy.Core
             this.ContainerBuilder = containerBuilder ?? new ContainerBuilder();
             this.EnvironmentVariables = environmentVariableService;
 
-            this.ContainerBuilder.Register<IGuppyScope>((IComponentContext context) => new GuppyScope(this.ParentScope, context.Resolve<ILifetimeScope>(), context.Resolve<IScopeVariableService>(), context.Resolve<IEnvironmentVariableService>()));
+            this.ContainerBuilder.Register<GuppyScope>((IComponentContext context) => new GuppyScope(this.ParentScope, context.Resolve<ILifetimeScope>(), context.Resolve<IScopeVariableService>(), context.Resolve<IEnvironmentVariableService>())).As<IGuppyScope>();
             this.ContainerBuilder.Register<IScopeVariableService>((IComponentContext context) => new ScopeVariableService(this._variables.Build()));
 
             if (this.ParentScope is not null)

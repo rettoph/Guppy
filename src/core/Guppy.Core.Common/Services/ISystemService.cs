@@ -2,9 +2,13 @@
 
 namespace Guppy.Core.Common.Services
 {
-    public interface ISystemService<TSystem> : IEnumerable<TSystem>
+    public interface ISystemService<TSystem>
         where TSystem : ISystem
     {
-        IEnumerable<T> GetAll<T>();
+        IEnumerable<TSystem> GetAll();
+        IEnumerable<T> GetAll<T>()
+        {
+            return this.GetAll().OfType<T>();
+        }
     }
 }

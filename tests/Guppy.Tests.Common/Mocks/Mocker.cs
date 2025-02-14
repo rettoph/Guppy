@@ -110,6 +110,12 @@ namespace Guppy.Tests.Common
             return this;
         }
 
+        public Mocker<T> Verify(Expression<Action<T>> expression, Func<Times> times)
+        {
+            this._instance.Verify(expression, times);
+
+            return this;
+        }
 
         public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression)
         {

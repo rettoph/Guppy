@@ -33,7 +33,7 @@ namespace Guppy.Engine
             {
                 if (disposing)
                 {
-                    ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems, false);
+                    ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems.GetAll(), false);
                     this._globalScope.Dispose();
                 }
 
@@ -64,7 +64,7 @@ namespace Guppy.Engine
 
         protected virtual void Initialize()
         {
-            ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems, false);
+            ActionSequenceGroup<InitializeSequenceGroupEnum>.Invoke(this.Systems.GetAll(), false);
         }
 
         public GuppyEngine Start()
@@ -114,7 +114,7 @@ namespace Guppy.Engine
                 // Begin boot phase 2 - call all boot attributes
 
                 // Construct the engine container
-                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Global, environmentVariableService, bootScope);
+                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Root, environmentVariableService, bootScope);
 
                 // Run any custom builder actions
                 builder?.Invoke(engineRootScopeBuilder);

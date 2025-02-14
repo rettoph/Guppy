@@ -33,13 +33,13 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]
         public void Initialize()
         {
-            this._debugActions.Add(this._scene.Systems);
+            this._debugActions.Add(this._scene.Systems.GetAll());
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.Initialize)]
         public void Deinitialize()
         {
-            this._debugActions.Remove(this._scene.Systems);
+            this._debugActions.Remove(this._scene.Systems.GetAll());
         }
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
