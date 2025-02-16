@@ -20,13 +20,13 @@ namespace Guppy.Core.Messaging.Systems.Global
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
         public void Initialize()
         {
-            this._messageBus.Subscribe(this._globalSystemService.Value);
+            this._messageBus.SubscribeAll(this._globalSystemService.Value.GetAll());
         }
 
         [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.PreInitialize)]
         public void Deinitialize()
         {
-            this._messageBus.Unsubscribe(this._globalSystemService.Value);
+            this._messageBus.UnsubscribeAll(this._globalSystemService.Value.GetAll());
         }
     }
 }

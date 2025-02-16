@@ -50,7 +50,7 @@ namespace Guppy.Core.Messaging
             }
         }
 
-        public void Subscribe(IEnumerable<object> subscribers)
+        public void SubscribeAll(IEnumerable<object> subscribers)
         {
             List<object> incoming = [];
             foreach (object subscriber in subscribers)
@@ -80,7 +80,7 @@ namespace Guppy.Core.Messaging
             }
         }
 
-        public void Unsubscribe(IEnumerable<object> subscribers)
+        public void UnsubscribeAll(IEnumerable<object> subscribers)
         {
             List<object> outgoing = [];
             foreach (object subscriber in subscribers)

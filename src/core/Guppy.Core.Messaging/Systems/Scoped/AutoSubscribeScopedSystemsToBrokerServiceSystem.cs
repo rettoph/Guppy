@@ -7,20 +7,24 @@ using Guppy.Core.Messaging.Common;
 
 namespace Guppy.Core.Messaging.Systems.Global
 {
-    public class AutoSubscribeScopedSystemsToBrokerServiceSystem(IMessageBus messageBus, Lazy<IScopedSystemService> scopedSystemService) : IScopedSystem, IDisposable
+    public class AutoSubscribeScopedSystemsToBrokerServiceSystem(
+        IMessageBus messageBus,
+        Lazy<IScopedSystemService> scopedSystemService
+    ) : IScopedSystem, IInitializeSystem, IDeinitializeSystem
     {
         private readonly IMessageBus _messageBus = messageBus;
         private readonly Lazy<IScopedSystemService> _scopedSystemService = scopedSystemService;
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.PreInitialize)]
-        public void Initialize(IGuppyScope scope)
+        public void Initialize()
         {
-            this._messageBus.Subscribe(this._scopedSystemService.Value);
+            this._messageBus.SubscribeAll(this._scopedSystemService.Value.GetAll());
         }
 
-        public void Dispose()
+        [SequenceGroup<DeinitializeSequenceGroupEnum>(DeinitializeSequenceGroupEnum.PreInitialize)]
+        public void Deinitialize()
         {
-            this._messageBus.Unsubscribe(this._scopedSystemService.Value);
+            this._messageBus.UnsubscribeAll(this._scopedSystemService.Value.GetAll());
         }
     }
 }

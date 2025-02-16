@@ -34,8 +34,8 @@ namespace Guppy.Core.Messaging.Common
         void Flush();
 
         void Subscribe(object subscriber);
-        void Subscribe(IEnumerable<object> subscribers);
+        void SubscribeAll(IEnumerable<object> subscribers);
         void Unsubscribe(object subscriber);
-        void Unsubscribe(IEnumerable<object> subscribers);
+        void UnsubscribeAll(IEnumerable<object> subscribers);
     }
 }
