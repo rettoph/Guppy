@@ -24,8 +24,8 @@ namespace Guppy.Tests.Common
     public class Mocker<T>(Mock<T>? instance) : Mocker
         where T : class
     {
-        private T? _override;
-        private readonly Mock<T> _instance = instance ?? new();
+        private T? _instance;
+        private readonly Mock<T> _mock = instance ?? new();
 
         public Mocker() : this(null)
         {
@@ -41,63 +41,63 @@ namespace Guppy.Tests.Common
 
         public Mocker<T> Setup<TResult>(Expression<Func<T, TResult>> expression, TResult result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Setup<TResult>(Expression<Func<T, TResult>> expression, InvocationFunc result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Setup<TResult>(Expression<Func<T, TResult>> expression, Func<TResult> result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Setup<TResult, T1>(Expression<Func<T, TResult>> expression, Func<T1, TResult> result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Setup<TResult, T1, T2>(Expression<Func<T, TResult>> expression, Func<T1, T2, TResult> result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Setup<TResult, T1, T2, T3>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, TResult> result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Setup<TResult, T1, T2, T3, T4>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, T4, TResult> result)
         {
-            this._instance.Setup(expression).Returns(result);
+            this._mock.Setup(expression).Returns(result);
 
             return this;
         }
 
         public Mocker<T> Verify(Expression<Action<T>> expression)
         {
-            this._instance.Verify(expression);
+            this._mock.Verify(expression);
 
             return this;
         }
 
         public Mocker<T> Verify(Expression<Action<T>> expression, string failMessage)
         {
-            this._instance.Verify(expression, failMessage);
+            this._mock.Verify(expression, failMessage);
 
             return this;
         }
@@ -105,53 +105,52 @@ namespace Guppy.Tests.Common
 
         public Mocker<T> Verify(Expression<Action<T>> expression, Times times, string failMessage)
         {
-            this._instance.Verify(expression, times, failMessage);
+            this._mock.Verify(expression, times, failMessage);
 
             return this;
         }
 
         public Mocker<T> Verify(Expression<Action<T>> expression, Func<Times> times)
         {
-            this._instance.Verify(expression, times);
+            this._mock.Verify(expression, times);
 
             return this;
         }
 
         public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression)
         {
-            this._instance.Verify(expression);
+            this._mock.Verify(expression);
 
             return this;
         }
 
         public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression, string failMessage)
         {
-            this._instance.Verify(expression, failMessage);
+            this._mock.Verify(expression, failMessage);
 
             return this;
         }
 
-
         public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string failMessage)
         {
-            this._instance.Verify(expression, times, failMessage);
+            this._mock.Verify(expression, times, failMessage);
 
             return this;
         }
 
         public void SetInstance(T instance)
         {
-            this._override = instance;
+            this._instance = instance;
         }
 
         public Mock<T> AsMock()
         {
-            return this._instance;
+            return this._mock;
         }
 
         public override T GetInstance()
         {
-            return this._override ?? this._instance.Object;
+            return this._instance ?? this._mock.Object;
         }
 
         public Lazy<T> GetLazy()
