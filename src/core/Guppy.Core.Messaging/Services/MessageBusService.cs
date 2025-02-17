@@ -3,9 +3,9 @@ using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Core.Messaging.Services
 {
-    public class MessageBusService(Func<MessageBusService, IMessageBus> factory) : IMessageBusService
+    public class MessageBusService(Func<IMessageBusService, IMessageBus> factory) : IMessageBusService
     {
-        private readonly Func<MessageBusService, IMessageBus> _factory = factory;
+        private readonly Func<IMessageBusService, IMessageBus> _factory = factory;
         private readonly List<IMessageBus> _items = [];
 
         public IMessageBus Create()

@@ -21,13 +21,21 @@ namespace Guppy.Tests.Common
         }
     }
 
-    public class Mocker<T>(Mock<T>? instance) : Mocker
+    public class Mocker<T>(Mock<T> mock) : Mocker
         where T : class
     {
-        private T? _instance;
-        private readonly Mock<T> _mock = instance ?? new();
+        public static readonly Mocker<T> SharedMocker = new();
+        public static T SharedInstance => SharedMocker.GetInstance();
 
-        public Mocker() : this(null)
+        private T? _instance;
+        private readonly Mock<T> _mock = mock;
+
+        public Mocker() : this(new Mock<T>())
+        {
+
+        }
+
+        public Mocker(object[] args) : this(new Mock<T>(args) { CallBase = true })
         {
 
         }
@@ -84,6 +92,48 @@ namespace Guppy.Tests.Common
         public Mocker<T> Setup<TResult, T1, T2, T3, T4>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, T4, TResult> result)
         {
             this._mock.Setup(expression).Returns(result);
+
+            return this;
+        }
+
+        public Mocker<T> Setup(Expression<Action<T>> expression, Action callback)
+        {
+            this._mock.Setup(expression).Callback(callback);
+
+            return this;
+        }
+
+        public Mocker<T> Setup(Expression<Action<T>> expression, Delegate callback)
+        {
+            this._mock.Setup(expression).Callback(callback);
+
+            return this;
+        }
+
+        public Mocker<T> Setup<T1>(Expression<Action<T>> expression, Action<T1> callback)
+        {
+            this._mock.Setup(expression).Callback(callback);
+
+            return this;
+        }
+
+        public Mocker<T> Setup<T1, T2>(Expression<Action<T>> expression, Action<T1, T2> callback)
+        {
+            this._mock.Setup(expression).Callback(callback);
+
+            return this;
+        }
+
+        public Mocker<T> Setup<T1, T2, T3>(Expression<Action<T>> expression, Action<T1, T2, T3> callback)
+        {
+            this._mock.Setup(expression).Callback(callback);
+
+            return this;
+        }
+
+        public Mocker<T> Setup<T1, T2, T3, T4>(Expression<Action<T>> expression, Action<T1, T2, T3, T4> callback)
+        {
+            this._mock.Setup(expression).Callback(callback);
 
             return this;
         }

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Messaging.Common;
-using Guppy.Core.Messaging.Services;
+using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Core.Messaging
 {
-    public class ConcurrentQueueMessageBus(MessageBusService messageBusService) : MessageBus(messageBusService)
+    public class ConcurrentQueueMessageBus(IMessageBusService messageBusService) : MessageBus(messageBusService)
     {
         private readonly ConcurrentQueue<IMessage> _queue = [];
 

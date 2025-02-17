@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Channels;
 using Guppy.Core.Messaging.Common;
-using Guppy.Core.Messaging.Services;
+using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Core.Messaging
 {
-    public class ChannelMessageBus(MessageBusService messageBusService) : MessageBus(messageBusService)
+    public class ChannelMessageBus(IMessageBusService messageBusService) : MessageBus(messageBusService)
     {
         private readonly Channel<IMessage> _channel = Channel.CreateUnbounded<IMessage>();
 

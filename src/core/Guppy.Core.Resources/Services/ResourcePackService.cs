@@ -58,7 +58,7 @@ namespace Guppy.Core.Resources.Services
             }
 
             this._initialized = true;
-            this._localization = this._settingService.Value.GetValue(Settings.Localization);
+            this._localization = this._settingService.Value.GetValue(GuppyResourceSettings.Localization);
 
             this._logger.Value.Debug("Preparing to import resource packs");
 
@@ -104,13 +104,13 @@ namespace Guppy.Core.Resources.Services
         {
             foreach (ResourcePack pack in this.GetAll().Cast<ResourcePack>())
             {
-                if (pack.TryGetDefinedValue(key, Settings.Localization.DefaultValue, out T? packValue))
+                if (pack.TryGetDefinedValue(key, GuppyResourceSettings.Localization.DefaultValue, out T? packValue))
                 {
                     yield return packValue;
                 }
             }
 
-            if (this._localization != Settings.Localization.DefaultValue)
+            if (this._localization != GuppyResourceSettings.Localization.DefaultValue)
             {
                 foreach (ResourcePack pack in this.GetAll().Cast<ResourcePack>())
                 {

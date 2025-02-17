@@ -14,7 +14,7 @@ namespace Guppy.Tests.Core.Commands.Common
         public IMessageBus MessageBus => this.scope.Resolve<IMessageBus>();
         public CommandService CommandService => this.scope.Resolve<CommandService>();
 
-        public CommandServiceMocker() : base(GuppyScopeTypeEnum.Global)
+        public CommandServiceMocker() : base(GuppyScopeTypeEnum.Root)
         {
             this.Register(builder =>
             {

@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Guppy.Core.Messaging.Common;
-using Guppy.Core.Messaging.Services;
+using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Messaging.Utilities;
 
 namespace Guppy.Core.Messaging
 {
-    public abstract class MessageBus(MessageBusService messageBusService) : IMessageBus, IDisposable
+    public abstract class MessageBus(IMessageBusService messageBusService) : IMessageBus, IDisposable
     {
-        private readonly MessageBusService _messageBusService = messageBusService;
+        private readonly IMessageBusService _messageBusService = messageBusService;
         private readonly HashSet<object> _subscribers = [];
         private readonly Dictionary<MessagePublisherKey, IMessagePublisher> _publishers = [];
         private bool _disposed;
@@ -133,7 +133,7 @@ namespace Guppy.Core.Messaging
             return instance!;
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (!this._disposed)
             {

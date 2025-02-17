@@ -3,7 +3,7 @@ using Guppy.Core.Resources.Common;
 
 namespace Guppy.Game.Common
 {
-    public static class Settings
+    public static class GuppyGameSettings
     {
 #if DEBUG
         private const LogLevelEnum _defaultLogLevel = LogLevelEnum.Debug;

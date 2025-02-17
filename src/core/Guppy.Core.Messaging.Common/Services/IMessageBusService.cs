@@ -3,6 +3,7 @@
     public interface IMessageBusService
     {
         IMessageBus Create();
+        void Remove(IMessageBus messageBus);
 
         IEnumerable<IMessageBus> GetAll();
 
