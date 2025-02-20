@@ -1,9 +1,11 @@
 ﻿using Autofac;
 using Autofac.Features.ResolveAnything;
-using Guppy.Core;
+using Guppy.Core.Builders;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Constants;
 using Guppy.Core.Common.Enums;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Services;
 using Guppy.Core.Extensions;
 using Guppy.Core.Services;
@@ -14,17 +16,17 @@ namespace Guppy.Engine
 {
     public class GuppyEngine : IGuppyEngine, IDisposable
     {
-        private readonly IGuppyScope _globalScope;
+        private readonly IGuppyRoot _root;
 
         public IGlobalSystemService Systems { get; }
 
         public GuppyEngine(
             IEnumerable<IEnvironmentVariable> environment,
-            Action<IGuppyScopeBuilder>? builder = null)
+            Action<IGuppyRootBuilder>? build = null)
         {
-            this._globalScope = GuppyEngine.BuildRootScope(this, environment, builder);
+            this._root = GuppyEngine.BuildRoot(this, environment, build);
 
-            this.Systems = this._globalScope.Resolve<IGlobalSystemService>();
+            this.Systems = this._root.Resolve<IGlobalSystemService>();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -34,7 +36,7 @@ namespace Guppy.Engine
                 if (disposing)
                 {
                     ActionSequenceGroup<DeinitializeSequenceGroupEnum>.Invoke(this.Systems.GetAll(), false);
-                    this._globalScope.Dispose();
+                    this._root.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
@@ -75,9 +77,9 @@ namespace Guppy.Engine
         }
 
         public T Resolve<T>()
-            where T : notnull
+            where T : class
         {
-            return this._globalScope.Resolve<T>();
+            return this._root.Resolve<T>();
         }
 
         #region Static
@@ -89,10 +91,10 @@ namespace Guppy.Engine
             _lock = new object();
         }
 
-        private static IGuppyScope BuildRootScope(
+        private static IGuppyRoot BuildRoot(
             GuppyEngine engine,
             IEnumerable<IEnvironmentVariable> environment,
-            Action<IGuppyScopeBuilder>? builder = null)
+            Action<IGuppyRootBuilder>? build = null)
         {
             lock (_lock)
             {
@@ -100,31 +102,30 @@ namespace Guppy.Engine
 
                 // Construct a service container to store factory related services
                 // Used for boot loaders, engine loaders, and related services
-                IGuppyScopeBuilder bootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Boot, environmentVariableService, null);
-                bootScopeBuilder.ContainerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-                bootScopeBuilder.RegisterCoreServices(environmentVariableService).RegisterBootServices();
+                GuppyRootBuilder bootContainerBuilder = new(environment);
+                bootContainerBuilder.ContainerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+                bootContainerBuilder.RegisterCoreServices().RegisterBootServices();
 
                 // Construct the factory service and prepare for assembly loading.
-                IGuppyScope bootScope = bootScopeBuilder.Build();
+                IGuppyRoot bootContainer = bootContainerBuilder.Build();
 
                 // Load assemblies
-                IAssemblyService assemblies = bootScope.Resolve<IAssemblyService>();
-                assemblies.Load(environmentVariableService.Get<GuppyCoreVariables.Global.EntryAssembly>().Value);
+                IAssemblyService assemblies = bootContainer.Resolve<IAssemblyService>();
+                assemblies.Load(environmentVariableService.Get<GuppyCoreVariables.Environment.EntryAssembly>().Value);
 
                 // Begin boot phase 2 - call all boot attributes
 
                 // Construct the engine container
-                IGuppyScopeBuilder engineRootScopeBuilder = new GuppyScopeBuilder(GuppyScopeTypeEnum.Root, environmentVariableService, bootScope);
+                GuppyRootBuilder engineRootBuilder = new(environment);
 
                 // Run any custom builder actions
-                builder?.Invoke(engineRootScopeBuilder);
+                build?.Invoke(engineRootBuilder);
 
-                engineRootScopeBuilder.RegisterEngineServices()
-                    .RegisterCoreServices(environmentVariableService, assemblies);
+                engineRootBuilder.RegisterCoreServices(assemblies).RegisterEngineServices();
 
-                engineRootScopeBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
+                engineRootBuilder.RegisterInstance(engine).AsImplementedInterfaces().SingleInstance();
 
-                IGuppyScope engineRootScope = engineRootScopeBuilder.Build();
+                IGuppyRoot engineRootScope = engineRootBuilder.Build();
 
                 // Ensure this gets resolved once
                 // TODO: Fix the need for this line

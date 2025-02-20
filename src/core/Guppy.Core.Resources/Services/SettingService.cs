@@ -32,7 +32,10 @@ namespace Guppy.Core.Resources.Services
             FileLocation location = new(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
             this._logger.Debug("Preparing to import setting values from '{SettingFileLocation}'", location);
 
-            this._file = this._files.Get<IEnumerable<ISettingValue>>(location, true);
+            this._file = this._files.Get<IEnumerable<ISettingValue>>(
+                location: location,
+                forceLoadFromDisk: true,
+                createIfDoesNotExist: true);
             foreach (ISettingValue value in this._file.Value)
             {
                 ref ISettingValue? cache = ref CollectionsMarshal.GetValueRefOrAddDefault(this._values, value.Setting.Id, out bool exists);

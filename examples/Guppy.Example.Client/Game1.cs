@@ -1,6 +1,7 @@
-﻿using Autofac;
-using Guppy.Core.Commands.Common;
-using Guppy.Core.Common.Builders;
+﻿using System.Reflection;
+using Autofac;
+using Guppy.Core.Common.Constants;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Logging.Common.Extensions;
 using Guppy.Core.Logging.Serilog.Extensions;
 using Guppy.Example.Client.CellTypes;
@@ -10,6 +11,7 @@ using Guppy.Example.Client.Services;
 using Guppy.Example.Client.Utilities;
 using Guppy.Game;
 using Guppy.Game.Input.Common.Enums;
+using Guppy.Game.Input.Common.Extensions;
 using Guppy.Game.MonoGame.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -62,67 +64,73 @@ namespace Guppy.Example.Client
             // SDL_MaximizeWindow(this.Window.Handle);
             Task.Run(() =>
             {
-                GameEngine engine = new GameEngine(EnvironmentVariablesBuilder.Build("rettoph", "example"), builder =>
-                {
-                    builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
-                        .RegisterSerilogLoggingServices();
+                GameEngine engine = new GameEngine(
+                    environment: [
+                        GuppyCoreVariables.Environment.Project.Create("Example1"),
+                        GuppyCoreVariables.Environment.Company.Create("rettoph"),
+                        GuppyCoreVariables.Environment.EntryAssembly.Create(Assembly.GetEntryAssembly()!),
+                    ],
+                    builder =>
+                    {
+                        builder.RegisterMonoGameServices(this, this._graphics, this.Content, this.Window)
+                            .RegisterSerilogLoggingServices();
 
-                    builder.ConfigureConsoleLogMessageSink(enabled: true);
+                        builder.ConfigureConsoleLogMessageSink(enabled: true);
 
-                    builder.RegisterType<CellTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
-                    builder.RegisterType<AirCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<AshCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<ConcreteCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<FireCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<PlantCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<SandCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<SmolderCellType>().As<ICellType>().InstancePerLifetimeScope();
-                    builder.RegisterType<WaterCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<CellTypeService>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                        builder.RegisterType<AirCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<AshCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<ConcreteCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<FireCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<PlantCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<SandCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<SmolderCellType>().As<ICellType>().InstancePerLifetimeScope();
+                        builder.RegisterType<WaterCellType>().As<ICellType>().InstancePerLifetimeScope();
 
-                    builder.RegisterType<World>().AsImplementedInterfaces().InstancePerLifetimeScope();
+                        builder.RegisterType<World>().AsImplementedInterfaces().InstancePerLifetimeScope();
 
-                    builder.RegisterGeneric(typeof(StaticPrimitiveBatch<,>));
-                    builder.RegisterGeneric(typeof(StaticPrimitiveBatch<>));
+                        builder.RegisterGeneric(typeof(StaticPrimitiveBatch<,>));
+                        builder.RegisterGeneric(typeof(StaticPrimitiveBatch<>));
 
-                    builder.RegisterGeneric(typeof(PointPrimitiveBatch<,>));
-                    builder.RegisterGeneric(typeof(PointPrimitiveBatch<>));
+                        builder.RegisterGeneric(typeof(PointPrimitiveBatch<,>));
+                        builder.RegisterGeneric(typeof(PointPrimitiveBatch<>));
 
-                    builder.RegisterInput("MouseDown", CursorButtonsEnum.Right,
-                    [
-                        (true, new PlaceSandInput(true)),
-                        (false, new PlaceSandInput(false)),
-                    ]);
+                        builder.RegisterInput("MouseDown", CursorButtonsEnum.Right,
+                        [
+                            (true, new PlaceSandInput(true)),
+                            (false, new PlaceSandInput(false)),
+                        ]);
 
-                    builder.RegisterInput("SelectCellType_01", Keys.D1,
-                    [
-                        (true, new SelectCellTypeInput(Enums.CellTypeEnum.Sand)),
-                    ]);
+                        builder.RegisterInput("SelectCellType_01", Keys.D1,
+                        [
+                            (true, new SelectCellTypeInput(Enums.CellTypeEnum.Sand)),
+                        ]);
 
-                    builder.RegisterInput("SelectCellType_02", Keys.D2,
-                    [
-                        (true, new SelectCellTypeInput(Enums.CellTypeEnum.Water)),
-                    ]);
+                        builder.RegisterInput("SelectCellType_02", Keys.D2,
+                        [
+                            (true, new SelectCellTypeInput(Enums.CellTypeEnum.Water)),
+                        ]);
 
-                    builder.RegisterInput("SelectCellType_03", Keys.D3,
-                    [
-                        (true, new SelectCellTypeInput(Enums.CellTypeEnum.Plant)),
-                    ]);
+                        builder.RegisterInput("SelectCellType_03", Keys.D3,
+                        [
+                            (true, new SelectCellTypeInput(Enums.CellTypeEnum.Plant)),
+                        ]);
 
-                    builder.RegisterInput("SelectCellType_04", Keys.D4,
-                    [
-                        (true, new SelectCellTypeInput(Enums.CellTypeEnum.Concrete)),
-                    ]);
+                        builder.RegisterInput("SelectCellType_04", Keys.D4,
+                        [
+                            (true, new SelectCellTypeInput(Enums.CellTypeEnum.Concrete)),
+                        ]);
 
-                    builder.RegisterInput("SelectCellType_05", Keys.D5,
-        [
-                        (true, new SelectCellTypeInput(Enums.CellTypeEnum.Fire)),
-                    ]);
+                        builder.RegisterInput("SelectCellType_05", Keys.D5,
+                        [
+                            (true, new SelectCellTypeInput(Enums.CellTypeEnum.Fire)),
+                        ]);
 
-                    builder.RegisterInput("SelectCellType_00", Keys.D0,
-                    [
-                        (true, new SelectCellTypeInput(Enums.CellTypeEnum.Water)),
-                    ]);
-                }).Start();
+                        builder.RegisterInput("SelectCellType_00", Keys.D0,
+                        [
+                            (true, new SelectCellTypeInput(Enums.CellTypeEnum.Water)),
+                        ]);
+                    }).Start();
 
                 engine.SceneService.CreateAndInitialize<MainScene>();
 

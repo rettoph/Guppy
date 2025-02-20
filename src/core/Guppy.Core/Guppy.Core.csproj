@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Utilities\**" />
-    <EmbeddedResource Remove="Utilities\**" />
-    <None Remove="Utilities\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
     <ProjectReference Include="..\Guppy.Core.Files\Guppy.Core.Files.csproj" />
     <ProjectReference Include="..\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />

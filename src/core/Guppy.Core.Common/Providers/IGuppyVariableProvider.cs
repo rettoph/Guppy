@@ -3,7 +3,7 @@
     public interface IGuppyVariableProvider<TVariable>
         where TVariable : IGuppyVariable
     {
-        T? GetVariable<T>()
+        T? Get<T>()
             where T : TVariable;
     }
 }

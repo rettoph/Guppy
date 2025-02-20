@@ -120,7 +120,7 @@ namespace Guppy.Game.Common
         }
 
         public T Resolve<T>()
-            where T : notnull
+            where T : class
         {
             return this._scope.Resolve<T>();
         }

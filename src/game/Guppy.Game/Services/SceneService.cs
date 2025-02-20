@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Guppy.Core.Common;
+using Guppy.Core.Common.Builders;
+using Guppy.Core.Common.Extensions;
 using Guppy.Core.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Constants;
@@ -7,9 +9,9 @@ using Guppy.Game.Common.Services;
 
 namespace Guppy.Game.Services
 {
-    public class SceneService(IGuppyScope scope, IConfigurationService configurations) : ISceneService
+    public class SceneService(IGuppyRoot root, IConfigurationService configurations) : ISceneService
     {
-        private readonly IGuppyScope _scope = scope;
+        private readonly IGuppyRoot _root = root;
         private readonly List<IScene> _scenes = [];
         private readonly IConfigurationService _configurations = configurations;
 
@@ -17,9 +19,9 @@ namespace Guppy.Game.Services
             where T : class, IScene
         {
             ISceneConfiguration configuration = this.GetConfiguration(typeof(T));
-            IGuppyScope scope = this._scope.CreateChildScope(builder =>
+            IGuppyScope scope = this._root.CreateScope(builder =>
             {
-                builder.AddScopeVariable(GuppyGameVariables.Scope.SceneType.Create(typeof(T)));
+                builder.Variables.Add(GuppyGameVariables.Scope.SceneType.Create(typeof(T)));
 
                 builder.RegisterInstance(configuration);
 
@@ -37,9 +39,9 @@ namespace Guppy.Game.Services
             ThrowIf.Type.IsNotAssignableFrom<IScene>(sceneType);
 
             ISceneConfiguration configuration = this.GetConfiguration(sceneType);
-            IGuppyScope scope = this._scope.CreateChildScope(builder =>
+            IGuppyScope scope = this._root.CreateScope(builder =>
             {
-                builder.AddScopeVariable(GuppyGameVariables.Scope.SceneType.Create(sceneType));
+                builder.Variables.Add(GuppyGameVariables.Scope.SceneType.Create(sceneType));
 
                 builder.RegisterInstance(configuration);
 
@@ -72,7 +74,7 @@ namespace Guppy.Game.Services
 
         public void Dispose()
         {
-            this._scope.Dispose();
+            this._root.Dispose();
 
             while (this._scenes.Count != 0)
             {

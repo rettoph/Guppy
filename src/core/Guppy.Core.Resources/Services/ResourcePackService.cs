@@ -34,7 +34,10 @@ namespace Guppy.Core.Resources.Services
             Lazy<ILogger> logger)
         {
             this._files = files;
-            this._configuration = this._files.Get<ResourcePackCollectionConfiguration>(new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration));
+            this._configuration = this._files.Get<ResourcePackCollectionConfiguration>(
+                location: new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration),
+                createIfDoesNotExist: true);
+
             this._resourceTypes = resourceTypes;
             this._logger = logger;
             this._packs = new Dictionary<Guid, ResourcePack>();

@@ -9,6 +9,6 @@ namespace Guppy.Engine.Common
         IGuppyEngine Start();
 
         T Resolve<T>()
-            where T : notnull;
+            where T : class;
     }
 }

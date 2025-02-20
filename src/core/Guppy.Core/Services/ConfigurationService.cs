@@ -4,7 +4,7 @@ using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
-    internal sealed class ConfigurationService(IGuppyScope scope, IEnumerable<Configurator> configurators) : IConfigurationService
+    public class ConfigurationService(IGuppyScope scope, IEnumerable<Configurator> configurators) : IConfigurationService
     {
         private readonly IGuppyScope _scope = scope;
         private readonly Configurator[] _configurators = configurators.ToArray();

@@ -110,7 +110,7 @@ namespace Guppy.Core.Services
             return this.GetEnumerator();
         }
 
-        T? IGuppyVariableProvider<TVariable>.GetVariable<T>() where T : default
+        T? IGuppyVariableProvider<TVariable>.Get<T>() where T : default
         {
             this.TryGet<T>(out T? value);
             return value;

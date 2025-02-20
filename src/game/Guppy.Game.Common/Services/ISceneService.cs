@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Common;
+﻿using Guppy.Core.Common.Builders;
 
 namespace Guppy.Game.Common.Services
 {

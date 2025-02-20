@@ -28,7 +28,7 @@ namespace Guppy.Game.Common
         void Initialize();
         void Deinitialize();
 
-        T Resolve<T>() where T : notnull;
+        T Resolve<T>() where T : class;
 
         void Draw(GameTime gameTime);
 

@@ -13,7 +13,7 @@ namespace Guppy.Core.Logging.Services
         private static readonly FileLocation _logLevelConfigurationFileLocation = FileLocation.AppData("logger.config.json");
 
         private readonly IFileService _fileService = fileService;
-        private readonly IFile<LogLevelConfiguration> _configuration = fileService.Get<LogLevelConfiguration>(_logLevelConfigurationFileLocation);
+        private readonly IFile<LogLevelConfiguration> _configuration = fileService.Get<LogLevelConfiguration>(location: _logLevelConfigurationFileLocation, createIfDoesNotExist: true);
 
         public LogLevelEnum? TryGetLogLevel(Type? context)
         {

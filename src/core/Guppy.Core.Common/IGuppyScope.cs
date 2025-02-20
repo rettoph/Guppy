@@ -1,30 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Guppy.Core.Common.Providers;
-using Guppy.Core.Common.Services;
+﻿using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Common
 {
-    public interface IGuppyScope : IDisposable, IGuppyVariableProvider<IScopeVariable>
+    public interface IGuppyScope : IGuppyContainer, IDisposable
     {
-        IGuppyScope? Parent { get; }
-        IEnumerable<IGuppyScope> Children { get; }
-        IEnvironmentVariableService EnvironmentVariables { get; }
+        IGuppyRoot Root { get; }
         IScopeVariableService Variables { get; }
         IScopedSystemService Systems { get; }
-
-        IGuppyScope CreateChildScope(Action<IGuppyScopeBuilder>? builder);
-
-        T Resolve<T>()
-            where T : notnull;
-
-        T? ResolveOptional<T>()
-            where T : class;
-
-        object Resolve(Type type);
-
-        bool TryResolve<T>([MaybeNullWhen(false)] out T? instance)
-            where T : class;
-
-        IGuppyScope GetRoot();
     }
 }

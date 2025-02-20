@@ -13,8 +13,6 @@ namespace Guppy.Core.Common.Services
         bool Has(Type variableType);
         bool Matches(TVariable value);
 
-        T Get<T>()
-            where T : TVariable;
         bool TryGet<T>([MaybeNullWhen(false)] out T? value)
             where T : TVariable;
         bool Has<T>()
