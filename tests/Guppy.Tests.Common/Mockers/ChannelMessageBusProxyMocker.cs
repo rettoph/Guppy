@@ -7,33 +7,33 @@ namespace Guppy.Tests.Common.Mockers
 {
     public class ChannelMessageBusProxyMocker
     {
-        public Mocker<IMessageBusService> MessageBusServiceMocker { get; set; }
-        public ChannelMessageBus ChannelMessageBusProxy { get; set; }
-        public Mocker<IMessageBus> MessageBusMocker { get; set; }
+        public Mocker<IMessageBusService> MessageBusServiceMocker { get; }
+        public ChannelMessageBus ChannelMessageBusProxy { get; }
+        public Mocker<IMessageBus> MessageBusMocker { get; }
 
         public ChannelMessageBusProxyMocker()
         {
             this.MessageBusServiceMocker = new Mocker<IMessageBusService>();
-            this.ChannelMessageBusProxy = new ChannelMessageBus(this.MessageBusServiceMocker.GetInstance());
+            this.ChannelMessageBusProxy = new ChannelMessageBus(this.MessageBusServiceMocker.Object);
             this.MessageBusMocker = new Mocker<IMessageBus>();
 
-            this.MessageBusMocker.Setup(
+            this.MessageBusMocker.SetupCallback(
                 expression: x => x.Flush(),
                 callback: () => this.ChannelMessageBusProxy.Flush());
 
-            this.MessageBusMocker.Setup<object>(
+            this.MessageBusMocker.SetupCallback<object>(
                 expression: x => x.Subscribe(It.IsAny<object>()),
                 callback: x => this.ChannelMessageBusProxy.Subscribe(x));
 
-            this.MessageBusMocker.Setup<IEnumerable<object>>(
+            this.MessageBusMocker.SetupCallback<IEnumerable<object>>(
                 expression: x => x.SubscribeAll(It.IsAny<IEnumerable<object>>()),
                 callback: x => this.ChannelMessageBusProxy.SubscribeAll(x));
 
-            this.MessageBusMocker.Setup<object>(
+            this.MessageBusMocker.SetupCallback<object>(
                 expression: x => x.Unsubscribe(It.IsAny<object>()),
                 callback: x => this.ChannelMessageBusProxy.Unsubscribe(x));
 
-            this.MessageBusMocker.Setup<IEnumerable<object>>(
+            this.MessageBusMocker.SetupCallback<IEnumerable<object>>(
                 expression: x => x.UnsubscribeAll(It.IsAny<IEnumerable<object>>()),
                 callback: x => this.ChannelMessageBusProxy.UnsubscribeAll(x));
         }
@@ -41,7 +41,7 @@ namespace Guppy.Tests.Common.Mockers
         public ChannelMessageBusProxyMocker ProxyPublish<TSequenceGroup, TId, TMessage>()
             where TSequenceGroup : unmanaged, Enum
         {
-            this.MessageBusMocker.Setup<TId, TMessage>(
+            this.MessageBusMocker.SetupCallback<TId, TMessage>(
                 expression: x => x.Publish<TSequenceGroup, TId, TMessage>(It.Ref<TId>.IsAny, It.Ref<TMessage>.IsAny),
                 callback: (id, message) => this.ChannelMessageBusProxy.Publish<TSequenceGroup, TId, TMessage>(id, message));
 
@@ -51,7 +51,7 @@ namespace Guppy.Tests.Common.Mockers
         public ChannelMessageBusProxyMocker ProxyPublish<TSequenceGroup, TMessage>()
             where TSequenceGroup : unmanaged, Enum
         {
-            this.MessageBusMocker.Setup(
+            this.MessageBusMocker.SetupCallback(
                 expression: x => x.Publish<TSequenceGroup, TMessage>(It.Ref<TMessage>.IsAny),
                 callback: (in TMessage message) => this.ChannelMessageBusProxy.Publish<TSequenceGroup, TMessage>(message));
 
@@ -61,7 +61,7 @@ namespace Guppy.Tests.Common.Mockers
         public ChannelMessageBusProxyMocker ProxyEnqueue<TMessage>()
             where TMessage : IMessage
         {
-            this.MessageBusMocker.Setup<TMessage>(
+            this.MessageBusMocker.SetupCallback<TMessage>(
                 expression: x => x.Enqueue<TMessage>(It.Ref<TMessage>.IsAny),
                 callback: (message) => this.ChannelMessageBusProxy.Enqueue<TMessage>(message));
 

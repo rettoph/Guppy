@@ -20,7 +20,7 @@ namespace Guppy.Tests.Common.Extensions
         {
             ArgumentNullException.ThrowIfNull(mocker);
 
-            return builder.RegisterInstance(mocker.AsMock().Object).As<TMocked>().ExternallyOwned();
+            return builder.RegisterInstance(mocker.Object).As<TMocked>().ExternallyOwned();
         }
 
         /// <summary>
