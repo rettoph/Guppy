@@ -1,8 +1,12 @@
-﻿namespace Guppy.Tests.Common.Mocks
+﻿namespace Guppy.Tests.Common
 {
-    public abstract class MockBuilder<T>
+    public abstract class Builder<T>
+        where T : notnull
     {
         private T? _instance;
+
+        public T Object => this.GetInstance();
+
         protected T GetInstance()
         {
             if (this._instance is null)
