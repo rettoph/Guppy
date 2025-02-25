@@ -1,6 +1,6 @@
 ﻿namespace Guppy.Tests.Common
 {
-    public abstract class Builder<T>
+    public abstract class Builder<T> : IBuilder<T>
         where T : notnull
     {
         private T? _instance;
