@@ -9,7 +9,6 @@ namespace Guppy.Core
 {
     public class GuppyRoot : IGuppyRoot
     {
-        private readonly Lazy<IScopedSystemService> _systemService;
         private readonly ILifetimeScope _autofac;
         private readonly List<IGuppyScope> _scopes;
         private bool _disposed;
@@ -22,20 +21,21 @@ namespace Guppy.Core
 
         public IScopeVariableService Variables { get; }
 
-        public IScopedSystemService Systems => this._systemService.Value;
+        public IScopedSystemService Systems { get; }
 
         public GuppyRoot(
             ILifetimeScope autofac,
             IEnvironmentVariableService environmentVariables,
-            IScopeVariableService variables)
+            IScopeVariableService variables,
+            IScopedSystemService systems)
         {
             this._disposed = false;
             this._autofac = autofac;
             this._scopes = [this];
-            this._systemService = autofac.Resolve<Lazy<IScopedSystemService>>();
 
             this.EnvironmentVariables = environmentVariables;
             this.Variables = variables;
+            this.Systems = systems;
             this.Scopes = new ReadOnlyCollection<IGuppyScope>(this._scopes);
         }
 

@@ -7,17 +7,16 @@ namespace Guppy.Core
     public class GuppyScope(
         GuppyRoot root,
         ILifetimeScope autofac,
-        IScopeVariableService scopeVariableService) : IGuppyScope
+        IScopeVariableService scopeVariableService,
+        IScopedSystemService scopesSystemService) : IGuppyScope
     {
         private readonly GuppyRoot _root = root;
         private readonly ILifetimeScope _autofac = autofac;
-
-        public IScopeVariableService Variables { get; } = scopeVariableService;
         private bool _disposedValue;
 
         public IGuppyRoot Root => this._root;
-
-        public IScopedSystemService Systems { get; } = autofac.Resolve<IScopedSystemService>();
+        public IScopeVariableService Variables { get; } = scopeVariableService;
+        public IScopedSystemService Systems { get; } = scopesSystemService;
 
         protected virtual void Dispose(bool disposing)
         {
