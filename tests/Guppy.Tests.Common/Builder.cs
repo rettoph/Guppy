@@ -7,6 +7,8 @@
 
         public T Object => this.GetInstance();
 
+        object IBuilder.Object => this.Object;
+
         protected T GetInstance()
         {
             if (this._instance is null)

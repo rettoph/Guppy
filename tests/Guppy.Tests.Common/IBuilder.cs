@@ -1,7 +1,12 @@
 ﻿namespace Guppy.Tests.Common
 {
-    public interface IBuilder<out T>
+    public interface IBuilder
     {
-        public T Object { get; }
+        public object Object { get; }
+    }
+
+    public interface IBuilder<out T> : IBuilder
+    {
+        public new T Object { get; }
     }
 }

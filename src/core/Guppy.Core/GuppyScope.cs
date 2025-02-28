@@ -11,13 +11,13 @@ namespace Guppy.Core
     {
         private readonly GuppyRoot _root = root;
         private readonly ILifetimeScope _autofac = autofac;
-        private readonly Lazy<IScopedSystemService> _systemService = autofac.Resolve<Lazy<IScopedSystemService>>();
+
         public IScopeVariableService Variables { get; } = scopeVariableService;
         private bool _disposedValue;
 
         public IGuppyRoot Root => this._root;
 
-        public IScopedSystemService Systems => this._systemService.Value;
+        public IScopedSystemService Systems { get; } = autofac.Resolve<IScopedSystemService>();
 
         protected virtual void Dispose(bool disposing)
         {

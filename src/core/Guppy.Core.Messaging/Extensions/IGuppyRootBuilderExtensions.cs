@@ -5,6 +5,7 @@ using Guppy.Core.Messaging.Common;
 using Guppy.Core.Messaging.Common.Services;
 using Guppy.Core.Messaging.Services;
 using Guppy.Core.Messaging.Systems.Global;
+using Guppy.Core.Messaging.Systems.Scoped;
 
 namespace Guppy.Core.Messaging.Extensions
 {

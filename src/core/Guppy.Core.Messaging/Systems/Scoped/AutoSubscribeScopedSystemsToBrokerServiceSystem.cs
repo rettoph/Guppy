@@ -5,7 +5,7 @@ using Guppy.Core.Common.Services;
 using Guppy.Core.Common.Systems;
 using Guppy.Core.Messaging.Common;
 
-namespace Guppy.Core.Messaging.Systems.Global
+namespace Guppy.Core.Messaging.Systems.Scoped
 {
     public class AutoSubscribeScopedSystemsToBrokerServiceSystem(
         IMessageBus messageBus,

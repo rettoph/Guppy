@@ -5,9 +5,9 @@ using Guppy.Core.Common.Systems;
 namespace Guppy.Core.Services
 {
     public class ScopedSystemService(
-        IEnumerable<IScopedSystem> systems,
-        IEnumerable<IScopedSystemProvider> providers
-    ) : BaseSystemService<IScopedSystem>(systems, providers),
+        Lazy<IEnumerable<IScopedSystem>> systems,
+        Lazy<IEnumerable<IScopedSystemProvider>> providers
+    ) : BaseSystemService<IScopedSystem, IScopedSystemProvider>(systems, providers),
         IScopedSystemService
     {
     }
