@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libraries\MoqProxy\src\MoqProxy\MoqProxy.csproj" />
     <ProjectReference Include="..\..\src\core\Guppy.Core.Common\Guppy.Core.Common.csproj" />
     <ProjectReference Include="..\..\src\core\Guppy.Core\Guppy.Core.csproj" />
   </ItemGroup>
