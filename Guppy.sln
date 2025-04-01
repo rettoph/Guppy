@@ -128,10 +128,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Core.Logging", "src\c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guppy.Core.Logging.Serilog", "src\core\Guppy.Core.Logging.Serilog\Guppy.Core.Logging.Serilog.csproj", "{78333AFC-F17B-48E3-8EA5-1B3D2B50F6D4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MoqProxy", "MoqProxy", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoqProxy", "libraries\MoqProxy\src\MoqProxy\MoqProxy.csproj", "{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Verbose|Any CPU = Debug_Verbose|Any CPU
@@ -694,18 +690,6 @@ Global
 		{78333AFC-F17B-48E3-8EA5-1B3D2B50F6D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78333AFC-F17B-48E3-8EA5-1B3D2B50F6D4}.Release|x64.ActiveCfg = Release|Any CPU
 		{78333AFC-F17B-48E3-8EA5-1B3D2B50F6D4}.Release|x64.Build.0 = Release|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug_Verbose|Any CPU.ActiveCfg = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug_Verbose|Any CPU.Build.0 = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug_Verbose|x64.ActiveCfg = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug_Verbose|x64.Build.0 = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Debug|x64.Build.0 = Debug|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Release|x64.ActiveCfg = Release|Any CPU
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -766,8 +750,6 @@ Global
 		{D567EAB7-B62C-4455-B9D0-2FEB14FBE4A3} = {99725158-DEEC-4FC3-88BF-F7EB99008013}
 		{DEE61D6E-19E8-4215-A4F3-34008CAC7FDB} = {99725158-DEEC-4FC3-88BF-F7EB99008013}
 		{78333AFC-F17B-48E3-8EA5-1B3D2B50F6D4} = {99725158-DEEC-4FC3-88BF-F7EB99008013}
-		{02EA681E-C7D8-13C7-8484-4AC65E1B71E8} = {61F9813E-5013-4F18-B71C-CC5CB79DF497}
-		{4CDDF1A2-91A5-D368-F5F0-27E1823F5584} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A30AE1FC-F9DE-4836-98BD-ADC9A1E5EE29}
