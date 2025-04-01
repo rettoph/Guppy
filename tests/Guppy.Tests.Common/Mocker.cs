@@ -25,13 +25,13 @@ namespace Guppy.Tests.Common
         where T : class
     {
         private Mock<T>? _mock;
-        private readonly T? _object;
+        private T? _object;
 
         public Mock<T> Mock
         {
             get
             {
-                return this._mock ??= new Mock<T>();
+                return this._mock ??= this.BuildMock();
             }
             set
             {
@@ -49,6 +49,12 @@ namespace Guppy.Tests.Common
 
                 return this.Mock.Object;
             }
+            set => this._object = value;
+        }
+
+        protected virtual Mock<T> BuildMock()
+        {
+            return new Mock<T>();
         }
 
         protected override object GetInstance()

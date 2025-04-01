@@ -7,6 +7,3 @@
 [submodule "libraries/MonoGame"]
 	path = libraries/MonoGame
 	url = https://github.com/cpt-max/MonoGame
-[submodule "libraries/MoqProxy"]
-	path = libraries/MoqProxy
-	url = https://github.com/rettoph/MoqProxy/

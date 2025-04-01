@@ -1,28 +1,23 @@
-﻿using MoqProxy;
-
-namespace Guppy.Tests.Common
+﻿namespace Guppy.Tests.Common
 {
     public abstract class Builder<T> : IBuilder<T>
         where T : class
     {
-        private MockProxy<T>? _proxy;
-
-        public T Object => this.Proxy.Object;
+        private T? _instance;
+        public T Object => this._instance ??= this.GetInstance();
 
         object IBuilder.Object => this.Object;
 
-        public MockProxy<T> Proxy => this._proxy ??= this.GetProxy();
-
-        private MockProxy<T> GetProxy()
+        private T GetInstance()
         {
-            if (this._proxy is null)
+            if (this._instance is null)
             {
                 this.PreBuild();
-                this._proxy = new MockProxy<T>(this.Build());
+                this._instance = this.Build();
                 this.PostBuild();
             }
 
-            return this._proxy;
+            return this._instance;
         }
 
         protected virtual void PreBuild()
