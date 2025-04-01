@@ -21,8 +21,9 @@ namespace Guppy.Tests.Common
         }
     }
 
-    public class Mocker<T> : Mocker
+    public class Mocker<TSelf, T> : Mocker
         where T : class
+        where TSelf : Mocker<TSelf, T>
     {
         private Mock<T>? _mock;
         private T? _object;
@@ -62,145 +63,151 @@ namespace Guppy.Tests.Common
             return this.Object;
         }
 
-        public Mocker<T> SetupReturn<TResult>(Expression<Func<T, TResult>> expression, TResult result)
+        public TSelf SetupReturn<TResult>(Expression<Func<T, TResult>> expression, TResult result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupReturn<TResult>(Expression<Func<T, TResult>> expression, InvocationFunc result)
+        public TSelf SetupReturn<TResult>(Expression<Func<T, TResult>> expression, InvocationFunc result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupReturn<TResult>(Expression<Func<T, TResult>> expression, Func<TResult> result)
+        public TSelf SetupReturn<TResult>(Expression<Func<T, TResult>> expression, Func<TResult> result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupReturn<TResult, T1>(Expression<Func<T, TResult>> expression, Func<T1, TResult> result)
+        public TSelf SetupReturn<TResult, T1>(Expression<Func<T, TResult>> expression, Func<T1, TResult> result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupReturn<TResult, T1, T2>(Expression<Func<T, TResult>> expression, Func<T1, T2, TResult> result)
+        public TSelf SetupReturn<TResult, T1, T2>(Expression<Func<T, TResult>> expression, Func<T1, T2, TResult> result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupReturn<TResult, T1, T2, T3>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, TResult> result)
+        public TSelf SetupReturn<TResult, T1, T2, T3>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, TResult> result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupReturn<TResult, T1, T2, T3, T4>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, T4, TResult> result)
+        public TSelf SetupReturn<TResult, T1, T2, T3, T4>(Expression<Func<T, TResult>> expression, Func<T1, T2, T3, T4, TResult> result)
         {
             this.Mock.Setup(expression).Returns(result);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupCallback(Expression<Action<T>> expression, Action callback)
+        public TSelf SetupCallback(Expression<Action<T>> expression, Action callback)
         {
             this.Mock.Setup(expression).Callback(callback);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupCallback(Expression<Action<T>> expression, Delegate callback)
+        public TSelf SetupCallback(Expression<Action<T>> expression, Delegate callback)
         {
             this.Mock.Setup(expression).Callback(callback);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupCallback<T1>(Expression<Action<T>> expression, Action<T1> callback)
+        public TSelf SetupCallback<T1>(Expression<Action<T>> expression, Action<T1> callback)
         {
             this.Mock.Setup(expression).Callback(callback);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupCallback<T1, T2>(Expression<Action<T>> expression, Action<T1, T2> callback)
+        public TSelf SetupCallback<T1, T2>(Expression<Action<T>> expression, Action<T1, T2> callback)
         {
             this.Mock.Setup(expression).Callback(callback);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupCallback<T1, T2, T3>(Expression<Action<T>> expression, Action<T1, T2, T3> callback)
+        public TSelf SetupCallback<T1, T2, T3>(Expression<Action<T>> expression, Action<T1, T2, T3> callback)
         {
             this.Mock.Setup(expression).Callback(callback);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> SetupCallback<T1, T2, T3, T4>(Expression<Action<T>> expression, Action<T1, T2, T3, T4> callback)
+        public TSelf SetupCallback<T1, T2, T3, T4>(Expression<Action<T>> expression, Action<T1, T2, T3, T4> callback)
         {
             this.Mock.Setup(expression).Callback(callback);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> Verify(Expression<Action<T>> expression)
+        public TSelf Verify(Expression<Action<T>> expression)
         {
             this.Mock.Verify(expression);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> Verify(Expression<Action<T>> expression, string failMessage)
+        public TSelf Verify(Expression<Action<T>> expression, string failMessage)
         {
             this.Mock.Verify(expression, failMessage);
 
-            return this;
+            return (TSelf)this;
         }
 
 
-        public Mocker<T> Verify(Expression<Action<T>> expression, Times times, string failMessage)
+        public TSelf Verify(Expression<Action<T>> expression, Times times, string failMessage)
         {
             this.Mock.Verify(expression, times, failMessage);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> Verify(Expression<Action<T>> expression, Func<Times> times)
+        public TSelf Verify(Expression<Action<T>> expression, Func<Times> times)
         {
             this.Mock.Verify(expression, times);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression)
+        public TSelf Verify<TResult>(Expression<Func<T, TResult>> expression)
         {
             this.Mock.Verify(expression);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression, string failMessage)
+        public TSelf Verify<TResult>(Expression<Func<T, TResult>> expression, string failMessage)
         {
             this.Mock.Verify(expression, failMessage);
 
-            return this;
+            return (TSelf)this;
         }
 
-        public Mocker<T> Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string failMessage)
+        public TSelf Verify<TResult>(Expression<Func<T, TResult>> expression, Times times, string failMessage)
         {
             this.Mock.Verify(expression, times, failMessage);
 
-            return this;
+            return (TSelf)this;
         }
+    }
+
+    public class Mocker<T> : Mocker<Mocker<T>, T>
+        where T : class
+    {
+
     }
 }

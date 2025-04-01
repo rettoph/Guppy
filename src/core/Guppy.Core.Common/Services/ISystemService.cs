@@ -6,9 +6,5 @@ namespace Guppy.Core.Common.Services
         where TSystem : ISystem
     {
         IEnumerable<TSystem> GetAll();
-        IEnumerable<T> GetAll<T>()
-        {
-            return this.GetAll().OfType<T>();
-        }
     }
 }

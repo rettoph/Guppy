@@ -12,5 +12,10 @@
         {
             return new(() => instance);
         }
+
+        public static Lazy<TOut> ToLazy<TIn, TOut>(this TIn item, Func<TIn, TOut> factory)
+        {
+            return new Lazy<TOut>(() => factory(item));
+        }
     }
 }
