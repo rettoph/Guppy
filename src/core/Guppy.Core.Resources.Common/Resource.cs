@@ -78,13 +78,18 @@ namespace Guppy.Core.Resources.Common
 
             foreach (T value in resourcePackService.GetDefinedValues(this.Key))
             {
+                if (value is null)
+                {
+                    continue;
+                }
+
                 this.Value = value;
             }
         }
 
         public static implicit operator T(Resource<T> resource)
         {
-            return resource.Value;
+            return resource.Value ?? throw new NotImplementedException();
         }
     }
 }
