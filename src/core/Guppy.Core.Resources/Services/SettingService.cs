@@ -33,7 +33,7 @@ namespace Guppy.Core.Resources.Services
             this._logger.Debug("Preparing to import setting values from '{SettingFileLocation}'", location);
 
             this._file = this._files.Get<IEnumerable<ISettingValue>>(
-                location: location,
+                path: location,
                 forceLoadFromDisk: true,
                 createIfDoesNotExist: true);
             foreach (ISettingValue value in this._file.Value)

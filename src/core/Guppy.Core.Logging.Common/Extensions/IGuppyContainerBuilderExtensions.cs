@@ -1,7 +1,6 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Files.Common;
 using Guppy.Core.Logging.Common.Configurations;
 using Guppy.Core.Logging.Common.Constants;
 
@@ -28,21 +27,6 @@ namespace Guppy.Core.Logging.Common.Extensions
                 where TBuilder : IGuppyContainerBuilder
         {
             return builder.Configure<TBuilder, ConsoleLogMessageSinkConfiguration>(configurator);
-        }
-
-        public static TBuilder ConfigureFileLogMessageSink<TBuilder>(
-            this TBuilder builder,
-            FilePath path,
-            string outputTemplate = LoggingConstants.DefaultOutputTemplate,
-            bool enabled = true)
-                where TBuilder : IGuppyContainerBuilder
-        {
-            return builder.Configure<TBuilder, FileLogMessageSinkConfiguration>(conf =>
-            {
-                conf.Path = path;
-                conf.OutputTemplate = outputTemplate;
-                conf.Enabled = enabled;
-            });
         }
 
         public static TBuilder ConfigureFileLogMessageSink<TBuilder>(

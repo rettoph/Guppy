@@ -2,8 +2,8 @@
 {
     public interface IFileService
     {
-        IFile Get(FilePath location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false);
-        IFile<T> Get<T>(FilePath location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false);
+        IFile Get(FilePath path, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false);
+        IFile<T> Get<T>(FilePath path, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false);
 
         void Save<T>(IFile<T> file);
     }

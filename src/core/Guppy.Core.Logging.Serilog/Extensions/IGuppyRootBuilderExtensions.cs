@@ -57,7 +57,7 @@ namespace Guppy.Core.Logging.Serilog.Extensions
                     if (fileSinkConfiguration.Value.Enabled == true)
                     {
                         serilogLoggerConfiguration.WriteTo.File(
-                            path: fileSinkConfiguration.Value.Path?.FullPath ?? throw new Exception(nameof(FileLogMessageSinkConfiguration.Path)),
+                            path: fileSinkConfiguration.Value.OutputPath ?? throw new Exception(nameof(FileLogMessageSinkConfiguration.OutputPath)),
                             outputTemplate: fileSinkConfiguration.Value.OutputTemplate,
                             retainedFileCountLimit: 8,
                             shared: true

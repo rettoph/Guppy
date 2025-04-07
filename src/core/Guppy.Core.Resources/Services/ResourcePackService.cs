@@ -35,7 +35,7 @@ namespace Guppy.Core.Resources.Services
         {
             this._files = files;
             this._configuration = this._files.Get<ResourcePackCollectionConfiguration>(
-                location: new FilePath(DirectoryPath.AppData(string.Empty), FilePaths.ResourcePacksConfiguration),
+                path: new FilePath(DirectoryPath.AppData(string.Empty), FilePaths.ResourcePacksConfiguration),
                 createIfDoesNotExist: true);
 
             this._resourceTypes = resourceTypes;
@@ -132,7 +132,7 @@ namespace Guppy.Core.Resources.Services
                 this._packs[entry.Value.Id] = pack = new ResourcePack(
                     id: entry.Value.Id,
                     name: entry.Value.Name,
-                    rootDirectory: entry.Source.Directory);
+                    rootDirectory: entry.Path.Directory);
             }
 
             return pack;
@@ -144,7 +144,7 @@ namespace Guppy.Core.Resources.Services
             {
                 FilePath entryLocation = new(configuration.EntryDirectory, "pack.json");
                 IFile<ResourcePackEntryConfiguration> entry = this._files.Get<ResourcePackEntryConfiguration>(entryLocation);
-                DirectoryPath directory = entry.Source.Directory;
+                DirectoryPath directory = entry.Path.Directory;
 
                 ResourcePack pack = this.GetOrCreatePack(entry);
                 this._logger.Value.Debug("Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", pack.Name, pack.Id);

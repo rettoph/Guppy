@@ -1,5 +1,4 @@
-﻿using Guppy.Core.Files.Common;
-using Guppy.Core.Logging.Common.Constants;
+﻿using Guppy.Core.Logging.Common.Constants;
 
 namespace Guppy.Core.Logging.Common.Configurations
 {
@@ -7,6 +6,6 @@ namespace Guppy.Core.Logging.Common.Configurations
     {
         public bool Enabled { get; set; } = false;
         public string OutputTemplate { get; set; } = LoggingConstants.DefaultOutputTemplate;
-        public FilePath? Path { get; set; } = null;
+        public string? OutputPath { get; set; } = null;
     }
 }

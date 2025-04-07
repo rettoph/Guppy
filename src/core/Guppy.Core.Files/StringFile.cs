@@ -2,10 +2,9 @@
 
 namespace Guppy.Core.Files
 {
-    internal class StringFile(FilePath location, FilePath source, string content) : IFile
+    internal class StringFile(FilePath path, string content) : IFile
     {
-        public FilePath Location { get; } = location;
-        public FilePath Source { get; } = source;
+        public FilePath Path { get; } = path;
 
         public string Content { get; set; } = content;
 

@@ -8,8 +8,7 @@ namespace Guppy.Core.Files
         private readonly IJsonSerializationService _json;
         private T _value;
 
-        public FilePath Location { get; }
-        public FilePath Source { get; }
+        public FilePath Path { get; }
 
         public string Content
         {
@@ -31,17 +30,16 @@ namespace Guppy.Core.Files
 
         public bool Success { get; private set; }
 
-        public JsonFile(FilePath location, FilePath source, string content, IJsonSerializationService json)
+        public JsonFile(FilePath path, string content, IJsonSerializationService json)
         {
             this._value = default!;
             this._json = json;
 
-            this.Location = location;
-            this.Source = source;
+            this.Path = path;
             this.Content = content;
         }
 
-        public JsonFile(StringFile source, IJsonSerializationService json) : this(source.Location, source.Source, source.Content, json)
+        public JsonFile(StringFile source, IJsonSerializationService json) : this(source.Path, source.Content, json)
         {
 
         }

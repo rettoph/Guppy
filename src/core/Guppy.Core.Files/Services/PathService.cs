@@ -11,31 +11,42 @@ namespace Guppy.Core.Files.Services
     {
         private readonly IEnvironmentVariableService _environmentVariableService = environmentVariableService;
 
-        public DirectoryPath GetSourceLocation(DirectoryPath directory)
+        public string GetFileSystemPath(DirectoryPath directory)
         {
-            string path = directory.Type switch
+            string fileSystemPath = directory.Type switch
             {
-                DirectoryTypeEnum.AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), this._environmentVariableService.Get<GuppyCoreVariables.Environment.Company>().Value, this._environmentVariableService.Get<GuppyCoreVariables.Environment.Project>().Value, directory.Path),
-                DirectoryTypeEnum.CurrentDirectory => Path.Combine(DirectoryHelper.GetEntryDirectory(), directory.Path),
+                DirectoryTypeEnum.AppData => Path.Combine([
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    this._environmentVariableService.Get<GuppyCoreVariables.Environment.Company>().Value,
+                    this._environmentVariableService.Get<GuppyCoreVariables.Environment.Project>().Value,
+                    directory.Path
+                ]),
+                DirectoryTypeEnum.CurrentDirectory => Path.Combine([
+                    DirectoryHelper.GetEntryDirectory(),
+                    directory.Path
+                ]),
                 _ => directory.Path
             };
 
-            return new DirectoryPath(DirectoryTypeEnum.Source, path);
+            return fileSystemPath;
         }
 
-        public DirectoryPath GetSourceLocation(DirectoryTypeEnum type, string path)
+        public string GetFileSystemPath(DirectoryTypeEnum type, string path)
         {
-            return this.GetSourceLocation(new DirectoryPath(type, path));
+            return this.GetFileSystemPath(new DirectoryPath(type, path));
         }
 
-        public FilePath GetSourceLocation(FilePath file)
+        public string GetFileSystemPath(FilePath file)
         {
-            return new(this.GetSourceLocation(file.Directory), file.FileName);
+            return Path.Combine([
+                this.GetFileSystemPath(file.Directory),
+                file.FileName
+            ]);
         }
 
-        public FilePath GetSourceLocation(DirectoryTypeEnum type, string path, string name)
+        public string GetFileSystemPath(DirectoryTypeEnum type, string path, string name)
         {
-            return this.GetSourceLocation(new FilePath(new DirectoryPath(type, path), name));
+            return this.GetFileSystemPath(new FilePath(new DirectoryPath(type, path), name));
         }
     }
 }

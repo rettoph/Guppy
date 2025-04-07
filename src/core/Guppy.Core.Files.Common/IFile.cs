@@ -2,8 +2,7 @@
 {
     public interface IFile
     {
-        FilePath Location { get; }
-        FilePath Source { get; }
+        FilePath Path { get; }
         string Content { get; set; }
     }
 
