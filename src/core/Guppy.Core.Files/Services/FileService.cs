@@ -12,16 +12,16 @@ namespace Guppy.Core.Files.Services
         private readonly IPathService _paths = paths;
         private readonly Dictionary<string, IFile> _cache = [];
 
-        public IFile Get(FileLocation location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
+        public IFile Get(FilePath location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
         {
-            FileLocation source = this._paths.GetSourceLocation(location);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.Path, out bool exists);
+            FilePath source = this._paths.GetSourceLocation(location);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.FullPath, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
-                DirectoryHelper.EnsureDirectoryExists(source.Path);
+                DirectoryHelper.EnsureDirectoryExists(source.FullPath);
 
-                using FileStream stream = File.Open(source.Path, createIfDoesNotExist ? FileMode.OpenOrCreate : FileMode.Open);
+                using FileStream stream = File.Open(source.FullPath, createIfDoesNotExist ? FileMode.OpenOrCreate : FileMode.Open);
                 using StreamReader reader = new(stream);
                 string content = reader.ReadToEnd();
 
@@ -34,16 +34,16 @@ namespace Guppy.Core.Files.Services
             return file ?? throw new Exception();
         }
 
-        public IFile<T> Get<T>(FileLocation location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
+        public IFile<T> Get<T>(FilePath location, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
         {
-            FileLocation source = this._paths.GetSourceLocation(location);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.Path, out bool exists);
+            FilePath source = this._paths.GetSourceLocation(location);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, location.FullPath, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
-                DirectoryHelper.EnsureDirectoryExists(source.Path);
+                DirectoryHelper.EnsureDirectoryExists(source.FullPath);
 
-                using FileStream stream = File.Open(source.Path, createIfDoesNotExist ? FileMode.OpenOrCreate : FileMode.Open);
+                using FileStream stream = File.Open(source.FullPath, createIfDoesNotExist ? FileMode.OpenOrCreate : FileMode.Open);
                 using StreamReader reader = new(stream);
                 string content = reader.ReadToEnd();
 
@@ -67,7 +67,7 @@ namespace Guppy.Core.Files.Services
 
             string json = this._json.Serialize(file.Value);
 
-            File.WriteAllText(file.Source.Path, json);
+            File.WriteAllText(file.Source.FullPath, json);
         }
     }
 }

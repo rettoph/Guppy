@@ -14,7 +14,7 @@ namespace Guppy.Game.MonoGame.ResourceTypes
 
         public override string Name => "EffectCode";
 
-        protected override bool TryResolve(ResourceKey<IEffectCode> resource, DirectoryLocation root, string input, out IEffectCode value)
+        protected override bool TryResolve(ResourceKey<IEffectCode> resource, DirectoryPath root, string input, out IEffectCode value)
         {
             string path = DirectoryHelper.Combine(root.Path, input);
 

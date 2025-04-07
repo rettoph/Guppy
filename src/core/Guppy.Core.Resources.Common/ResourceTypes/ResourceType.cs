@@ -25,19 +25,19 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
             return false;
         }
 
-        protected abstract bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T resolver);
+        protected abstract bool TryResolve(ResourceKey<T> resource, DirectoryPath root, ref JsonElement json, [MaybeNullWhen(false)] out T resolver);
     }
 
     public abstract class SimpleResourceType<T> : ResourceType<T>
         where T : notnull
     {
-        protected override bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        protected override bool TryResolve(ResourceKey<T> resource, DirectoryPath root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
         {
             string input = json.GetString() ?? string.Empty;
             return this.TryResolve(resource, root, input, out value);
         }
 
-        protected abstract bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, string input, out T value);
+        protected abstract bool TryResolve(ResourceKey<T> resource, DirectoryPath root, string input, out T value);
     }
 
     public class DefaultResourceType<T> : ResourceType<T>
@@ -50,7 +50,7 @@ namespace Guppy.Core.Resources.Common.ResourceTypes
             this._json = json;
         }
 
-        protected override bool TryResolve(ResourceKey<T> resource, DirectoryLocation root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
+        protected override bool TryResolve(ResourceKey<T> resource, DirectoryPath root, ref JsonElement json, [MaybeNullWhen(false)] out T value)
         {
             value = this._json.Deserialize<T>(ref json, out bool success);
 

@@ -5,16 +5,16 @@ namespace Guppy.Core.Files.Common.Helpers
 {
     public static class DirectoryHelper
     {
-        public static void EnsureDirectoryExists(FileLocation source)
+        public static void EnsureDirectoryExists(FilePath source)
         {
             DirectoryHelper.EnsureDirectoryExists(source.Directory);
         }
 
-        public static void EnsureDirectoryExists(DirectoryLocation source)
+        public static void EnsureDirectoryExists(DirectoryPath source)
         {
             if (source.Type != DirectoryTypeEnum.Source)
             {
-                throw new ArgumentException($"Invalid {nameof(DirectoryLocation)} {nameof(DirectoryLocation.Type)}, {source.Type}", nameof(source));
+                throw new ArgumentException($"Invalid {nameof(DirectoryPath)} {nameof(DirectoryPath.Type)}, {source.Type}", nameof(source));
             }
 
             if (!Directory.Exists(source.Path))

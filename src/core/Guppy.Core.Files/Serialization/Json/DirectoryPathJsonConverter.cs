@@ -5,13 +5,13 @@ using Guppy.Core.Files.Common.Enums;
 
 namespace Guppy.Core.Files.Serialization.Json
 {
-    internal sealed class DirectoryLocationJsonConverter : JsonConverter<DirectoryLocation>
+    internal sealed class DirectoryPathJsonConverter : JsonConverter<DirectoryPath>
     {
-        public DirectoryLocationJsonConverter()
+        public DirectoryPathJsonConverter()
         {
         }
 
-        public override DirectoryLocation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override DirectoryPath Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             DirectoryTypeEnum type = DirectoryTypeEnum.AppData;
             string path = string.Empty;
@@ -23,11 +23,11 @@ namespace Guppy.Core.Files.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(DirectoryLocation.Type):
+                    case nameof(DirectoryPath.Type):
                         type = JsonSerializer.Deserialize<DirectoryTypeEnum>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(DirectoryLocation.Path):
+                    case nameof(DirectoryPath.Path):
                         path = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
@@ -36,17 +36,17 @@ namespace Guppy.Core.Files.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new DirectoryLocation(type, path);
+            return new DirectoryPath(type, path);
         }
 
-        public override void Write(Utf8JsonWriter writer, DirectoryLocation value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, DirectoryPath value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
-            writer.WritePropertyName(nameof(DirectoryLocation.Type));
+            writer.WritePropertyName(nameof(DirectoryPath.Type));
             JsonSerializer.Serialize(writer, value.Type, options);
 
-            writer.WriteString(nameof(DirectoryLocation.Path), value.Path);
+            writer.WriteString(nameof(DirectoryPath.Path), value.Path);
 
             writer.WriteEndObject();
         }

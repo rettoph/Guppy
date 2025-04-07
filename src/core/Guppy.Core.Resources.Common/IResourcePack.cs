@@ -7,7 +7,7 @@ namespace Guppy.Core.Resources.Common
     {
         Guid Id { get; }
         string Name { get; }
-        DirectoryLocation RootDirectory { get; }
+        DirectoryPath RootDirectory { get; }
 
         public void Add<T>(ResourceKey<T> key, string localization, T value)
             where T : notnull;

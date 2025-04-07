@@ -4,15 +4,15 @@ using Guppy.Core.Files.Common;
 
 namespace Guppy.Core.Files.Serialization.Json
 {
-    internal class FileLocationJsonConverter : JsonConverter<FileLocation>
+    internal class FilePathJsonConverter : JsonConverter<FilePath>
     {
-        public FileLocationJsonConverter()
+        public FilePathJsonConverter()
         {
         }
 
-        public override FileLocation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override FilePath Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            DirectoryLocation directory = default;
+            DirectoryPath directory = default;
             string name = string.Empty;
 
             reader.CheckToken(JsonTokenType.StartObject, true);
@@ -22,11 +22,11 @@ namespace Guppy.Core.Files.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(FileLocation.Directory):
-                        directory = JsonSerializer.Deserialize<DirectoryLocation>(ref reader, options);
+                    case nameof(FilePath.Directory):
+                        directory = JsonSerializer.Deserialize<DirectoryPath>(ref reader, options);
                         reader.Read();
                         break;
-                    case nameof(FileLocation.Name):
+                    case nameof(FilePath.FileName):
                         name = JsonSerializer.Deserialize<string>(ref reader, options) ?? throw new NotImplementedException();
                         reader.Read();
                         break;
@@ -35,16 +35,16 @@ namespace Guppy.Core.Files.Serialization.Json
 
             reader.CheckToken(JsonTokenType.EndObject, true);
 
-            return new FileLocation(directory, name);
+            return new FilePath(directory, name);
         }
 
-        public override void Write(Utf8JsonWriter writer, FileLocation value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, FilePath value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
-            writer.WriteString(nameof(FileLocation.Name), value.Name);
+            writer.WriteString(nameof(FilePath.FileName), value.FileName);
 
-            writer.WritePropertyName(nameof(FileLocation.Directory));
+            writer.WritePropertyName(nameof(FilePath.Directory));
             JsonSerializer.Serialize(writer, value.Directory, options);
 
             writer.WriteEndObject();

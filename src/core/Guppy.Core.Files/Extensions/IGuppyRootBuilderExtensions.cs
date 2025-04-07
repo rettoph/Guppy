@@ -16,8 +16,8 @@ namespace Guppy.Core.Files.Extensions
             {
                 builder.RegisterCoreSerializationServices();
 
-                builder.RegisterJsonConverter<DirectoryLocationJsonConverter>();
-                builder.RegisterJsonConverter<FileLocationJsonConverter>();
+                builder.RegisterJsonConverter<DirectoryPathJsonConverter>();
+                builder.RegisterJsonConverter<FilePathJsonConverter>();
                 builder.RegisterType<PathService>().AsImplementedInterfaces().SingleInstance();
                 builder.RegisterType<FileService>().AsImplementedInterfaces().SingleInstance();
             });

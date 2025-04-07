@@ -49,7 +49,7 @@ namespace Guppy.Game.Extensions
                 builder.RegisterResourceType<ColorResourceType>();
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
-                    EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyGamePack.Directory)
+                    EntryDirectory = DirectoryPath.CurrentDirectory(GuppyGamePack.Directory)
                 });
             });
         }

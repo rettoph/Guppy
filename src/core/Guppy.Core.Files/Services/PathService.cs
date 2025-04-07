@@ -11,7 +11,7 @@ namespace Guppy.Core.Files.Services
     {
         private readonly IEnvironmentVariableService _environmentVariableService = environmentVariableService;
 
-        public DirectoryLocation GetSourceLocation(DirectoryLocation directory)
+        public DirectoryPath GetSourceLocation(DirectoryPath directory)
         {
             string path = directory.Type switch
             {
@@ -20,22 +20,22 @@ namespace Guppy.Core.Files.Services
                 _ => directory.Path
             };
 
-            return new DirectoryLocation(DirectoryTypeEnum.Source, path);
+            return new DirectoryPath(DirectoryTypeEnum.Source, path);
         }
 
-        public DirectoryLocation GetSourceLocation(DirectoryTypeEnum type, string path)
+        public DirectoryPath GetSourceLocation(DirectoryTypeEnum type, string path)
         {
-            return this.GetSourceLocation(new DirectoryLocation(type, path));
+            return this.GetSourceLocation(new DirectoryPath(type, path));
         }
 
-        public FileLocation GetSourceLocation(FileLocation file)
+        public FilePath GetSourceLocation(FilePath file)
         {
-            return new(this.GetSourceLocation(file.Directory), file.Name);
+            return new(this.GetSourceLocation(file.Directory), file.FileName);
         }
 
-        public FileLocation GetSourceLocation(DirectoryTypeEnum type, string path, string name)
+        public FilePath GetSourceLocation(DirectoryTypeEnum type, string path, string name)
         {
-            return this.GetSourceLocation(new FileLocation(new DirectoryLocation(type, path), name));
+            return this.GetSourceLocation(new FilePath(new DirectoryPath(type, path), name));
         }
     }
 }

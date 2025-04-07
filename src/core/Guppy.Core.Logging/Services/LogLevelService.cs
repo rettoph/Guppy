@@ -10,7 +10,7 @@ namespace Guppy.Core.Logging.Services
 {
     internal sealed class LogLevelService(IFileService fileService) : ILogLevelService
     {
-        private static readonly FileLocation _logLevelConfigurationFileLocation = FileLocation.AppData("logger.config.json");
+        private static readonly FilePath _logLevelConfigurationFileLocation = FilePath.AppData("logger.config.json");
 
         private readonly IFileService _fileService = fileService;
         private readonly IFile<LogLevelConfiguration> _configuration = fileService.Get<LogLevelConfiguration>(location: _logLevelConfigurationFileLocation, createIfDoesNotExist: true);

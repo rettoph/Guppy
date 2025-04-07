@@ -1,21 +1,19 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common;
-using Guppy.Core.Common.Providers;
 using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Services
 {
-    public abstract class GuppyVariableService<TVariable>(IEnumerable<TVariable> variables) : IGuppyVariableService<TVariable>, IEnumerable<TVariable>
+    public abstract class GuppyVariableService<TVariable>(IEnumerable<TVariable> variables) : IGuppyVariableService<TVariable>
         where TVariable : IGuppyVariable
     {
-        private readonly Dictionary<Type, TVariable> _variables = variables.GroupBy(x => x.GetType())
-            .ToDictionary(x => x.Key, x => x.Last());
+        private readonly Dictionary<Type, TVariable[]> _variables = variables.GroupBy(x => x.GetType())
+            .ToDictionary(x => x.Key, x => x.ToArray());
 
         public T Get<T>()
             where T : TVariable
         {
-            return (T)this._variables[typeof(T)];
+            return (T)this._variables[typeof(T)].Last();
         }
 
         public object Get(Type variableType)
@@ -24,35 +22,51 @@ namespace Guppy.Core.Services
             return this._variables[variableType];
         }
 
-        public bool TryGet<T>([MaybeNullWhen(false)] out T? value)
+        public bool TryGet<T>([MaybeNullWhen(false)] out T variable)
             where T : TVariable
         {
-            if (this._variables.TryGetValue(typeof(T), out TVariable? uncasted) == false)
+            if (this._variables.TryGetValue(typeof(T), out TVariable[]? variables) == false)
             {
-                value = default;
+                variable = default;
                 return false;
             }
 
-            if (uncasted is not T casted)
+            if (variables.Length == 0)
             {
-                value = default;
+                variable = default;
                 return false;
             }
 
-            value = casted;
+            variable = (T)variables.Last();
             return true;
         }
 
-        public bool TryGet(Type variableType, [MaybeNullWhen(false)] out TVariable? value)
+        public IEnumerable<T> GetAll<T>() where T : TVariable
+        {
+            if (this._variables.TryGetValue(typeof(T), out TVariable[]? variables) == false)
+            {
+                return Enumerable.Empty<T>();
+            }
+
+            return variables.Select(x => (T)x);
+        }
+
+        public bool TryGet(Type variableType, [MaybeNullWhen(false)] out TVariable? variable)
         {
             ThrowIf.Type.IsNotAssignableFrom<IGuppyVariable>(variableType);
-            if (this._variables.TryGetValue(variableType, out TVariable? variable) == false)
+            if (this._variables.TryGetValue(variableType, out TVariable[]? variables) == false)
             {
-                value = default;
+                variable = default;
                 return false;
             }
 
-            value = variable;
+            if (variables.Length == 0)
+            {
+                variable = default;
+                return false;
+            }
+
+            variable = variables.Last();
             return true;
         }
 
@@ -68,52 +82,9 @@ namespace Guppy.Core.Services
             return this._variables.ContainsKey(variableType);
         }
 
-        public bool Matches<T>(T value)
-            where T : TVariable
-        {
-            foreach (T variable in this._variables.Values.OfType<T>())
-            {
-                if (variable.Matches(value))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public bool Matches(TVariable value)
-        {
-            foreach ((_, TVariable variable) in this._variables)
-            {
-                if (variable.Matches(value))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public Dictionary<Type, TVariable> ToDictionary()
+        public Dictionary<Type, TVariable[]> ToDictionary()
         {
             return this._variables.ToDictionary();
-        }
-
-        public IEnumerator<TVariable> GetEnumerator()
-        {
-            return this._variables.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
-
-        T? IGuppyVariableProvider<TVariable>.Get<T>() where T : default
-        {
-            this.TryGet<T>(out T? value);
-            return value;
         }
     }
 }

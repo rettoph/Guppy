@@ -8,7 +8,7 @@ namespace Guppy.Game.Common.Extensions
     {
         public static Type? GetSceneType(this IGuppyVariableProvider<IScopeVariable> provider)
         {
-            return provider.Get<GuppyGameVariables.Scope.SceneType>()?.Value;
+            return provider.TryGet<GuppyGameVariables.Scope.SceneType>(out var variable) ? variable.Value : default;
         }
     }
 }

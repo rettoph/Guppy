@@ -29,7 +29,7 @@ namespace Guppy.Core.Resources.Services
             }
 
             this._initialized = true;
-            FileLocation location = new(DirectoryLocation.AppData(string.Empty), FilePaths.Settings);
+            FilePath location = new(DirectoryPath.AppData(string.Empty), FilePaths.Settings);
             this._logger.Debug("Preparing to import setting values from '{SettingFileLocation}'", location);
 
             this._file = this._files.Get<IEnumerable<ISettingValue>>(

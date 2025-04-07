@@ -8,7 +8,7 @@ namespace Guppy.Core.Network.Common.Extensions
     {
         public static bool GetGraphicsEnabled(this IGuppyVariableProvider<IScopeVariable> provider)
         {
-            return provider.Get<GuppyGraphicsVariables.Scope.GraphicsEnabled>()?.Value ?? false;
+            return provider.TryGet<GuppyGraphicsVariables.Scope.GraphicsEnabled>(out var variable) ? variable.Value : throw new NotImplementedException();
         }
     }
 }

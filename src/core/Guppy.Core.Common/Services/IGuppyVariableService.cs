@@ -11,15 +11,12 @@ namespace Guppy.Core.Common.Services
         object Get(Type variableType);
         bool TryGet(Type variableType, [MaybeNullWhen(false)] out TVariable? value);
         bool Has(Type variableType);
-        bool Matches(TVariable value);
 
-        bool TryGet<T>([MaybeNullWhen(false)] out T? value)
+        T Get<T>()
             where T : TVariable;
         bool Has<T>()
             where T : TVariable;
-        bool Matches<T>(T value)
-            where T : TVariable;
 
-        Dictionary<Type, TVariable> ToDictionary();
+        Dictionary<Type, TVariable[]> ToDictionary();
     }
 }

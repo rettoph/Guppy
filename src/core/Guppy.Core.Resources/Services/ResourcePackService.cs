@@ -35,14 +35,14 @@ namespace Guppy.Core.Resources.Services
         {
             this._files = files;
             this._configuration = this._files.Get<ResourcePackCollectionConfiguration>(
-                location: new FileLocation(DirectoryLocation.AppData(string.Empty), FilePaths.ResourcePacksConfiguration),
+                location: new FilePath(DirectoryPath.AppData(string.Empty), FilePaths.ResourcePacksConfiguration),
                 createIfDoesNotExist: true);
 
             this._resourceTypes = resourceTypes;
             this._logger = logger;
             this._packs = new Dictionary<Guid, ResourcePack>();
             this._settingService = settings;
-            this._runtimeResourcePack = new ResourcePack(Guid.Empty, "Runtime Resources", DirectoryLocation.CurrentDirectory());
+            this._runtimeResourcePack = new ResourcePack(Guid.Empty, "Runtime Resources", DirectoryPath.CurrentDirectory());
 
             this._configuration.Value = this._configuration.Value.AddRange(packs);
             this._files.Save(this._configuration);
@@ -142,9 +142,9 @@ namespace Guppy.Core.Resources.Services
         {
             try
             {
-                FileLocation entryLocation = new(configuration.EntryDirectory, "pack.json");
+                FilePath entryLocation = new(configuration.EntryDirectory, "pack.json");
                 IFile<ResourcePackEntryConfiguration> entry = this._files.Get<ResourcePackEntryConfiguration>(entryLocation);
-                DirectoryLocation directory = entry.Source.Directory;
+                DirectoryPath directory = entry.Source.Directory;
 
                 ResourcePack pack = this.GetOrCreatePack(entry);
                 this._logger.Value.Debug("Preparing to load resource pack {ResourcePackName}, {ResourcePackId} resources", pack.Name, pack.Id);
@@ -167,9 +167,9 @@ namespace Guppy.Core.Resources.Services
             }
         }
 
-        private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryLocation directory, string localization)
+        private void ImportResourceFile(string resourceFileName, ResourcePack pack, DirectoryPath directory, string localization)
         {
-            FileLocation resourceFileLocation = new(directory, resourceFileName);
+            FilePath resourceFileLocation = new(directory, resourceFileName);
             this._logger.Value.Verbose("Loading resource file {ResourceFile}, {Localization}", resourceFileLocation, localization);
 
             IFile<ResourceTypeValues[]> resourceTypeValuesFile = this._files.Get<ResourceTypeValues[]>(resourceFileLocation);

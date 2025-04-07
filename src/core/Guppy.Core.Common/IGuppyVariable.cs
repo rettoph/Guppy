@@ -16,9 +16,9 @@ namespace Guppy.Core.Common
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public interface IGuppyVariable<TKey, TValue> : IGuppyVariable<TKey>
-        where TKey : IGuppyVariable<TKey, TValue>
+    public interface IGuppyVariable<TSelf, TValue> : IGuppyVariable<TSelf>
+        where TSelf : IGuppyVariable<TSelf, TValue>
     {
-        static abstract TKey Create(TValue value);
+        static abstract TSelf Create(TValue value);
     }
 }

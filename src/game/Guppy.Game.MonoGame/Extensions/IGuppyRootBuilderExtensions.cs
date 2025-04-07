@@ -70,7 +70,7 @@ namespace Guppy.Game.MonoGame.Extensions
 
                 builder.RegisterResourcePack(new ResourcePackConfiguration()
                 {
-                    EntryDirectory = DirectoryLocation.CurrentDirectory(GuppyMonoGamePack.Directory)
+                    EntryDirectory = DirectoryPath.CurrentDirectory(GuppyMonoGamePack.Directory)
                 });
 
                 builder.RegisterInput(Inputs.ToggleDebugger, Keys.F1,

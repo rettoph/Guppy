@@ -4,10 +4,10 @@ namespace Guppy.Core.Files.Common.Services
 {
     public interface IPathService
     {
-        DirectoryLocation GetSourceLocation(DirectoryLocation directory);
-        DirectoryLocation GetSourceLocation(DirectoryTypeEnum type, string path);
+        DirectoryPath GetSourceLocation(DirectoryPath directory);
+        DirectoryPath GetSourceLocation(DirectoryTypeEnum type, string path);
 
-        FileLocation GetSourceLocation(FileLocation file);
-        FileLocation GetSourceLocation(DirectoryTypeEnum type, string path, string name);
+        FilePath GetSourceLocation(FilePath file);
+        FilePath GetSourceLocation(DirectoryTypeEnum type, string path, string name);
     }
 }

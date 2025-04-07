@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Guppy.Core.Common.Services;
 
 namespace Guppy.Core.Common.Builders
@@ -28,10 +29,16 @@ namespace Guppy.Core.Common.Builders
             return casted;
         }
 
-        public T? Get<T>()
+        public bool TryGet<T>([MaybeNullWhen(false)] out T variable)
             where T : TVariable
         {
-            return this._variables.OfType<T>().LastOrDefault();
+            variable = (T?)this._variables.LastOrDefault(x => x is T);
+            return variable is not null;
+        }
+
+        public IEnumerable<T> GetAll<T>() where T : TVariable
+        {
+            return this._variables.Where(x => x is T).Select(x => (T)x);
         }
 
         public virtual IEnumerable<TVariable> GetAll()

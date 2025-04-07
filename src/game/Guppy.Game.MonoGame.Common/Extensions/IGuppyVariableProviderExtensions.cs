@@ -8,12 +8,12 @@ namespace Guppy.Game.MonoGame.Common.Extensions
     {
         public static bool GetSceneHasDebugWindow(this IGuppyVariableProvider<IScopeVariable> provider)
         {
-            return provider.Get<MonoGameVariables.Scope.SceneHasDebugWindow>()?.Value ?? false;
+            return provider.TryGet<MonoGameVariables.Scope.SceneHasDebugWindow>(out var variable) && variable.Value;
         }
 
         public static bool GetSceneHasTerminalWindow(this IGuppyVariableProvider<IScopeVariable> provider)
         {
-            return provider.Get<MonoGameVariables.Scope.SceneHasTerminalWindow>()?.Value ?? false;
+            return provider.TryGet<MonoGameVariables.Scope.SceneHasTerminalWindow>(out var variable) && variable.Value;
         }
     }
 }

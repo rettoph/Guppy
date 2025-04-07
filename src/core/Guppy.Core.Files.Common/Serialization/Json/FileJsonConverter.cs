@@ -11,7 +11,7 @@ namespace Guppy.Core.Files.Common.Serialization.Json
 
         public override IFile<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            FileLocation location = JsonSerializer.Deserialize<FileLocation>(ref reader, options);
+            FilePath location = JsonSerializer.Deserialize<FilePath>(ref reader, options);
 
             return this._files.Value.Get<T>(location);
         }

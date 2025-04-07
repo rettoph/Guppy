@@ -9,7 +9,7 @@ namespace Guppy.Core.Network.Common.Extensions
     {
         public static PeerTypeEnum GetPeerType(this IGuppyVariableProvider<IScopeVariable> provider)
         {
-            return provider.Get<GuppyNetworkVariables.Scope.PeerType>()?.Value ?? throw new KeyNotFoundException();
+            return provider.TryGet<GuppyNetworkVariables.Scope.PeerType>(out var variable) ? variable.Value : PeerTypeEnum.None;
         }
     }
 }

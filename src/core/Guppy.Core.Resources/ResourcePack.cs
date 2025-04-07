@@ -10,11 +10,11 @@ namespace Guppy.Core.Resources
     {
         public Guid Id { get; }
         public string Name { get; }
-        public DirectoryLocation RootDirectory { get; }
+        public DirectoryPath RootDirectory { get; }
 
         private readonly Dictionary<IResourceKey, Dictionary<string, object>> _values;
 
-        internal ResourcePack(Guid id, string name, DirectoryLocation rootDirectory)
+        internal ResourcePack(Guid id, string name, DirectoryPath rootDirectory)
         {
             this.Id = id;
             this.Name = name;

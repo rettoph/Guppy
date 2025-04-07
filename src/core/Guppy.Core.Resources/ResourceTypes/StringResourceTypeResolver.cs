@@ -6,7 +6,7 @@ namespace Guppy.Core.Resources.ResourceTypes
 {
     internal class StringResourceType : SimpleResourceType<string>
     {
-        protected override bool TryResolve(ResourceKey<string> resource, DirectoryLocation root, string input, out string value)
+        protected override bool TryResolve(ResourceKey<string> resource, DirectoryPath root, string input, out string value)
         {
             value = input;
             return true;

@@ -4,7 +4,7 @@ namespace Guppy.Core.Resources.Common.Configuration
 {
     public sealed class ResourcePackCollectionConfiguration(List<ResourcePackConfiguration> packs)
     {
-        private readonly Dictionary<DirectoryLocation, ResourcePackConfiguration> _packs = packs.ToDictionary(x => x.EntryDirectory, x => x);
+        private readonly Dictionary<DirectoryPath, ResourcePackConfiguration> _packs = packs.ToDictionary(x => x.EntryDirectory, x => x);
 
         public IEnumerable<ResourcePackConfiguration> Packs => this._packs.Values;
 

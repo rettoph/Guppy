@@ -32,7 +32,7 @@ namespace Guppy.Core.Logging.Common.Extensions
 
         public static TBuilder ConfigureFileLogMessageSink<TBuilder>(
             this TBuilder builder,
-            FileLocation path,
+            FilePath path,
             string outputTemplate = LoggingConstants.DefaultOutputTemplate,
             bool enabled = true)
                 where TBuilder : IGuppyContainerBuilder
