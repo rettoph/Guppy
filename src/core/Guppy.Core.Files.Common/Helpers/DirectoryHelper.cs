@@ -7,7 +7,7 @@ namespace Guppy.Core.Files.Common.Helpers
     {
         public static void EnsureDirectoryExists(FilePath source)
         {
-            DirectoryHelper.EnsureDirectoryExists(source.Directory);
+            DirectoryHelper.EnsureDirectoryExists(source.DirectoryPath);
         }
 
         public static void EnsureDirectoryExists(DirectoryPath source)

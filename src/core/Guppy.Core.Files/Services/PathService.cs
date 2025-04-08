@@ -39,7 +39,7 @@ namespace Guppy.Core.Files.Services
         public string GetFileSystemPath(FilePath file)
         {
             return Path.Combine([
-                this.GetFileSystemPath(file.Directory),
+                this.GetFileSystemPath(file.DirectoryPath),
                 file.FileName
             ]);
         }

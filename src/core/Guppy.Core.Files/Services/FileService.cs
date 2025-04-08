@@ -15,7 +15,7 @@ namespace Guppy.Core.Files.Services
         public IFile Get(FilePath path, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
         {
             string fileSystemPath = this._paths.GetFileSystemPath(path);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, path.FullPath, out bool exists);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, fileSystemPath, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {
@@ -36,7 +36,7 @@ namespace Guppy.Core.Files.Services
         public IFile<T> Get<T>(FilePath path, bool forceLoadFromDisk = false, bool createIfDoesNotExist = false)
         {
             string fileSystemPath = this._paths.GetFileSystemPath(path);
-            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, path.FullPath, out bool exists);
+            ref IFile? file = ref CollectionsMarshal.GetValueRefOrAddDefault(this._cache, fileSystemPath, out bool exists);
 
             if (!exists || forceLoadFromDisk)
             {

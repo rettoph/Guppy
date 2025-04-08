@@ -22,7 +22,7 @@ namespace Guppy.Core.Files.Serialization.Json
             {
                 switch (propertyName)
                 {
-                    case nameof(FilePath.Directory):
+                    case nameof(FilePath.DirectoryPath):
                         directory = JsonSerializer.Deserialize<DirectoryPath>(ref reader, options);
                         reader.Read();
                         break;
@@ -44,8 +44,8 @@ namespace Guppy.Core.Files.Serialization.Json
 
             writer.WriteString(nameof(FilePath.FileName), value.FileName);
 
-            writer.WritePropertyName(nameof(FilePath.Directory));
-            JsonSerializer.Serialize(writer, value.Directory, options);
+            writer.WritePropertyName(nameof(FilePath.DirectoryPath));
+            JsonSerializer.Serialize(writer, value.DirectoryPath, options);
 
             writer.WriteEndObject();
         }

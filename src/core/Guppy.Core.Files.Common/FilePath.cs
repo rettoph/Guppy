@@ -1,10 +1,9 @@
 ﻿namespace Guppy.Core.Files.Common
 {
-    public readonly struct FilePath(DirectoryPath directory, string fileName)
+    public readonly struct FilePath(DirectoryPath directoryPath, string fileName)
     {
-        public readonly DirectoryPath Directory = directory;
+        public readonly DirectoryPath DirectoryPath = directoryPath;
         public readonly string FileName = fileName;
-        public readonly string FullPath => Path.Combine(this.Directory.Path, this.FileName);
 
         public static FilePath AppData(string path, string name)
         {
@@ -38,7 +37,7 @@
 
         public override readonly string ToString()
         {
-            return $"{this.Directory}/{this.FileName}";
+            return $"{this.DirectoryPath}/{this.FileName}";
         }
     }
 }
