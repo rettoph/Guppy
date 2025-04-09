@@ -1,14 +1,21 @@
-﻿using Guppy.Core.Messaging.Common;
-using Guppy.Core.Messaging.Common.Enums;
+﻿using Guppy.Core.Messaging.Common.Enums;
+using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Game.Input.Common
 {
-    public abstract class InputMessage<T> : Message<SubscriberSequenceGroupEnum, int, T>, IInputMessage
-        where T : InputMessage<T>
+    public abstract class InputMessage<TSelf> : IInputMessage
+        where TSelf : InputMessage<TSelf>
     {
-        protected override int CalculateId()
+        private readonly TSelf _casted;
+
+        public InputMessage()
         {
-            return this.GetHashCode();
+            this._casted = (TSelf)this;
+        }
+
+        public void Publish(int inputId, IMessageBusService messageBusService)
+        {
+            messageBusService.EnqueueAll<SubscriberSequenceGroupEnum, int, TSelf>(inputId, this._casted);
         }
     }
 }

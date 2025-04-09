@@ -1,8 +1,9 @@
-﻿using Guppy.Core.Messaging.Common;
+﻿using Guppy.Core.Messaging.Common.Services;
 
 namespace Guppy.Game.Input.Common
 {
-    public interface IInputMessage : IMessage
+    public interface IInputMessage
     {
+        void Publish(int inputId, IMessageBusService messageBusService);
     }
 }

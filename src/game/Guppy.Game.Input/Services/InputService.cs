@@ -6,12 +6,12 @@ namespace Guppy.Game.Input.Services
 {
     public class InputService(IMessageBusService messageBusService) : IInputService
     {
+        private int _inputId = int.MinValue;
         private readonly IMessageBusService _messageBusService = messageBusService;
 
-        public void Publish<TInput>(TInput input)
-            where TInput : IInputMessage
+        public void Publish(IInputMessage input)
         {
-            this._messageBusService.EnqueueAll(input);
+            input.Publish(this._inputId++, this._messageBusService);
         }
     }
 }
