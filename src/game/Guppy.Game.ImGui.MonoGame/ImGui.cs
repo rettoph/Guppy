@@ -1,6 +1,6 @@
-﻿using Guppy.Core.Common;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
+using Guppy.Core.Common;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Helpers;
 using Guppy.Game.ImGui.Common.Styling;
@@ -11,24 +11,24 @@ namespace Guppy.Game.ImGui.MonoGame
     {
         private readonly IImguiBatch _batch;
         private readonly Stack<ImStyle> _styleStack;
-        private readonly IResourceService _resourceService;
+        private readonly IAssetService _assetService;
 
         private readonly IDisposable _idPopper;
 
-        public ImGui(IImguiBatch batch, IResourceService resourceService)
+        public ImGui(IImguiBatch batch, IAssetService assetService)
         {
             this._batch = batch;
-            this._resourceService = resourceService;
+            this._assetService = assetService;
             this._styleStack = new Stack<ImStyle>();
             this._idPopper = new ImGuiPoppers.IdPopper(this);
         }
 
-        public IDisposable Apply(ResourceKey<ImStyle> style)
+        public IDisposable Apply(AssetKey<ImStyle> style)
         {
-            return this.Apply(this._resourceService.Get(style));
+            return this.Apply(this._assetService.Get(style));
         }
 
-        public IDisposable Apply(Resource<ImStyle> style)
+        public IDisposable Apply(Asset<ImStyle> style)
         {
             return this.Apply(style.Value);
         }
@@ -70,14 +70,14 @@ namespace Guppy.Game.ImGui.MonoGame
             }
         }
 
-        public Ref<ImFontPtr> GetFont(ResourceKey<TrueTypeFont> ttf, int size)
+        public Ref<ImFontPtr> GetFont(AssetKey<TrueTypeFont> ttf, int size)
         {
             if (this._batch.Running)
             {
                 throw new InvalidOperationException();
             }
 
-            return this._batch.GetFont(this._resourceService.Get(ttf), size);
+            return this._batch.GetFont(this._assetService.Get(ttf), size);
         }
     }
 }

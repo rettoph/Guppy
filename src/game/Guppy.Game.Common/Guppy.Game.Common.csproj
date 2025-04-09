@@ -14,7 +14,7 @@
     <ProjectReference Include="..\..\..\libraries\MonoGame\MonoGame.Framework\MonoGame.Framework.DesktopGL.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core.Commands.Common\Guppy.Core.Commands.Common.csproj" />
     <ProjectReference Include="..\..\core\Guppy.Core.Logging.Common\Guppy.Core.Logging.Common.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Assets.Common\Guppy.Core.Assets.Common.csproj" />
     <ProjectReference Include="..\..\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
   </ItemGroup>
 

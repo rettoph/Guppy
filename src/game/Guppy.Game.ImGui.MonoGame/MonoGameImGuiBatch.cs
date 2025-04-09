@@ -1,4 +1,4 @@
-﻿using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common.Services;
 using Guppy.Game.Graphics.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,7 +27,7 @@ namespace Guppy.Game.ImGui.MonoGame
         public MonoGameImGuiBatch(
             IGameWindow window,
             IGraphicsDevice graphics,
-            IResourceService resources) : base(resources)
+            IAssetService resources) : base(resources)
         {
             this._window = window;
             this._graphics = graphics;

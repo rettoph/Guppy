@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using Autofac;
 using Guppy.Core.Common.Collections;
-using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Assets.Serialization.Json;
 using Guppy.Core.Serialization.Common.Services;
 
 namespace Guppy.Core.Serialization.Services

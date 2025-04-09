@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Compile Remove="Enums\**" />
-    <EmbeddedResource Remove="Enums\**" />
+    <EmbeddedAsset Remove="Enums\**" />
     <None Remove="Enums\**" />
   </ItemGroup>
   

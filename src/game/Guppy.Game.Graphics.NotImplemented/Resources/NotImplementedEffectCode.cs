@@ -1,6 +1,6 @@
-﻿using Guppy.Game.Graphics.Common.Resources;
+﻿using Guppy.Game.Graphics.Common.Assets;
 
-namespace Guppy.Game.Graphics.NotImplemented.Resources
+namespace Guppy.Game.Graphics.NotImplemented.Assets
 {
     public class NotImplementedEffectCode : IEffectCode
     {

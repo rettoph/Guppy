@@ -2,8 +2,8 @@
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
-using Guppy.Core.Resources.Common.Configuration;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Configuration;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Extensions;
@@ -68,7 +68,7 @@ namespace Guppy.Game.MonoGame.Extensions
                         builder.RegisterSceneSystem<SceneTerminalWindowSystem>();
                     });
 
-                builder.RegisterResourcePack(new ResourcePackConfiguration()
+                builder.RegisterAssetPack(new AssetPackConfiguration()
                 {
                     EntryDirectory = DirectoryPath.CurrentDirectory(GuppyMonoGamePack.Directory)
                 });

@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Extensions;
-using Guppy.Game.ImGui.MonoGame.ResourceTypes;
+using Guppy.Game.ImGui.MonoGame.AssetTypes;
 using Guppy.Game.ImGui.MonoGame.Systems.Engine;
 
 namespace Guppy.Game.ImGui.MonoGame.Extensions
@@ -23,8 +23,8 @@ namespace Guppy.Game.ImGui.MonoGame.Extensions
                 builder.RegisterType<MonoGameImGuiBatch>().AsSelf().As<IImguiBatch>().SingleInstance();
                 builder.RegisterType<ImGui>().As<IImGui>().SingleInstance();
 
-                builder.RegisterResourceType<ImStyleResourceType>();
-                builder.RegisterResourceType<TrueTypeFontResourceType>();
+                builder.RegisterAssetType<ImStyleAssetType>();
+                builder.RegisterAssetType<TrueTypeFontAssetType>();
             });
         }
     }

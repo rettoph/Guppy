@@ -2,7 +2,7 @@
 using Guppy.Core.Common;
 using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Resources.Serialization.Json;
+using Guppy.Core.Assets.Serialization.Json;
 
 namespace Guppy.Core.Serialization.Common.Extensions
 {

@@ -1,15 +1,15 @@
 ﻿using System.Runtime.InteropServices;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Assets.Common;
 
 namespace Guppy.Game.ImGui.Common
 {
     [StructLayout(LayoutKind.Auto)]
     public partial struct ImFontPtr
     {
-        public readonly Resource<TrueTypeFont> TTF;
+        public readonly Asset<TrueTypeFont> TTF;
         public readonly int Size;
 
-        public ImFontPtr(Resource<TrueTypeFont> ttf, int size) : this(default!)
+        public ImFontPtr(Asset<TrueTypeFont> ttf, int size) : this(default!)
         {
             this.TTF = ttf;
             this.Size = size;

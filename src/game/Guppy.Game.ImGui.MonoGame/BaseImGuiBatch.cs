@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Guppy.Core.Common;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Game.ImGui.Common;
 using Guppy.Game.ImGui.Common.Messages;
 using Microsoft.Xna.Framework;
@@ -15,9 +15,9 @@ namespace Guppy.Game.ImGui.MonoGame
 
         private bool _initialized;
         private bool _dirtyFonts;
-        private readonly Dictionary<(Resource<TrueTypeFont>, int), Ref<ImFontPtr>> _fonts;
+        private readonly Dictionary<(Asset<TrueTypeFont>, int), Ref<ImFontPtr>> _fonts;
 
-        private readonly IResourceService _resources;
+        private readonly IAssetService _resources;
         private DateTime _begin;
 
         // Textures
@@ -50,7 +50,7 @@ namespace Guppy.Game.ImGui.MonoGame
             }
         }
 
-        public BaseImGuiBatch(IResourceService resources)
+        public BaseImGuiBatch(IAssetService resources)
         {
             this.Context = ImGuiNet.CreateContext();
             ImGuiNet.SetCurrentContext(this.Context);
@@ -244,7 +244,7 @@ namespace Guppy.Game.ImGui.MonoGame
             this._mouseButtonEvents.Enqueue(message);
         }
 
-        public Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size)
+        public Ref<ImFontPtr> GetFont(Asset<TrueTypeFont> ttf, int size)
         {
             ref Ref<ImFontPtr>? font = ref CollectionsMarshal.GetValueRefOrAddDefault(this._fonts, (ttf, size), out bool exists);
 

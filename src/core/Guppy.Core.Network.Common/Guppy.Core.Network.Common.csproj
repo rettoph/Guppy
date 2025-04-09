@@ -9,16 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Messages\**" />
-    <EmbeddedResource Remove="Messages\**" />
-    <None Remove="Messages\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\LiteNetLib\LiteNetLib\LiteNetLib.csproj" />
     <ProjectReference Include="..\Guppy.Core.Common\Guppy.Core.Common.csproj" />
     <ProjectReference Include="..\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />
-    <ProjectReference Include="..\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Assets.Common\Guppy.Core.Assets.Common.csproj" />
   </ItemGroup>
 
 </Project>

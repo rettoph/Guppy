@@ -11,7 +11,7 @@
     <ProjectReference Include="..\Guppy.Core.Files\Guppy.Core.Files.csproj" />
     <ProjectReference Include="..\Guppy.Core.Messaging.Common\Guppy.Core.Messaging.Common.csproj" />
     <ProjectReference Include="..\Guppy.Core.Messaging\Guppy.Core.Messaging.csproj" />
-    <ProjectReference Include="..\Guppy.Core.Resources\Guppy.Core.Resources.csproj" />
+    <ProjectReference Include="..\Guppy.Core.Assets\Guppy.Core.Assets.csproj" />
     <ProjectReference Include="..\Guppy.Core.Serialization\Guppy.Core.Serialization.csproj" />
   </ItemGroup>
 

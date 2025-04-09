@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Logging.Common.Enums;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Assets.Common;
 
 namespace Guppy.Game.Common
 {

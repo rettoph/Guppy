@@ -2,8 +2,8 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
@@ -19,14 +19,14 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         IImGui imgui,
         IGameEngine engine,
         ISettingService settingService,
-        IResourceService resourceService
+        IAssetService assetService
     ) : IEngineSystem,
         IInitializeSystem,
         IDeinitializeSystem,
         IImGuiSystem
     {
         private readonly IGameEngine _engine = engine;
-        private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly Asset<ImStyle> _debugWindowStyle = assetService.Get(Common.Assets.ImGuiStyles.DebugWindow);
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _renderDebugInfoActions = new(true);
 

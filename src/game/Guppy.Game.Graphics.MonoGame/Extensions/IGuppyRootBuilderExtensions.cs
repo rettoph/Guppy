@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Extensions;
@@ -9,7 +9,7 @@ using Guppy.Game.Graphics.MonoGame.Systems;
 using Guppy.Game.ImGui.MonoGame.Extensions;
 using Guppy.Game.Input.Extensions;
 using Guppy.Game.MonoGame.Common.Utilities.Cameras;
-using Guppy.Game.MonoGame.ResourceTypes;
+using Guppy.Game.MonoGame.AssetTypes;
 using Guppy.Game.MonoGame.Systems.Scene;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -45,8 +45,8 @@ namespace Guppy.Game.Graphics.MonoGame.Extensions
                 builder.RegisterType<MonoGameScreen>().As<IScreen>().InstancePerLifetimeScope();
                 builder.RegisterType<SpriteBatch>().SingleInstance();
 
-                builder.RegisterResourceType<MonoGameEffectCodeResourceType>();
-                builder.RegisterResourceType<MonoGameSpriteFontResourceType>();
+                builder.RegisterAssetType<MonoGameEffectCodeAssetType>();
+                builder.RegisterAssetType<MonoGameSpriteFontAssetType>();
 
                 builder.RegisterGlobalSystem<MonoGameWorldViewProjectionEffectSystem>();
 

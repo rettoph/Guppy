@@ -2,8 +2,8 @@
 using Guppy.Core.Common.Attributes;
 using Guppy.Core.Common.Enums;
 using Guppy.Core.Common.Systems;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Enums;
 using Guppy.Game.Common.Systems;
@@ -18,7 +18,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         IImGui imgui,
         IScene scene,
         ISettingService settingService,
-        IResourceService resourceService
+        IAssetService assetService
     ) : ISceneSystem,
         IInitializeSystem,
         IDeinitializeSystem,
@@ -27,7 +27,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         private readonly IImGui _imgui = imgui;
         private readonly ActionSequenceGroup<DebugSequenceGroupEnum, GameTime> _debugActions = new(true);
         private readonly IScene _scene = scene;
-        private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly Asset<ImStyle> _debugWindowStyle = assetService.Get(Common.Assets.ImGuiStyles.DebugWindow);
         private readonly SettingValue<bool> _isDebugWindowEnabled = settingService.GetValue(Common.GuppyMonoGameSettings.IsDebugWindowEnabled);
 
         [SequenceGroup<InitializeSequenceGroupEnum>(InitializeSequenceGroupEnum.Initialize)]

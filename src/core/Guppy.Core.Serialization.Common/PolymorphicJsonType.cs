@@ -1,6 +1,6 @@
 ﻿using Guppy.Core.Common;
 
-namespace Guppy.Core.Resources.Serialization.Json
+namespace Guppy.Core.Assets.Serialization.Json
 {
     public class PolymorphicJsonType
     {

@@ -1,21 +1,21 @@
 ﻿using Guppy.Core.Common;
 using Guppy.Core.Logging.Common.Enums;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Game.Common;
 using Microsoft.Xna.Framework;
 
 namespace Guppy.Game
 {
-    public class TerminalTheme(IResourceService resourceService) : ITerminalTheme
+    public class TerminalTheme(IAssetService assetService) : ITerminalTheme
     {
-        private readonly Resource<Color> _verbose = resourceService.Get(GuppyResources.Colors.TerminalVerbose);
-        private readonly Resource<Color> _debug = resourceService.Get(GuppyResources.Colors.TerminalDebug);
-        private readonly Resource<Color> _information = resourceService.Get(GuppyResources.Colors.TerminalInformation);
-        private readonly Resource<Color> _warning = resourceService.Get(GuppyResources.Colors.TerminalWarning);
-        private readonly Resource<Color> _error = resourceService.Get(GuppyResources.Colors.TerminalError);
-        private readonly Resource<Color> _fatal = resourceService.Get(GuppyResources.Colors.TerminalFatal);
-        private readonly Resource<Color> _default = resourceService.Get(GuppyResources.Colors.TerminalDefault);
+        private readonly Asset<Color> _verbose = assetService.Get(GuppyAssets.Colors.TerminalVerbose);
+        private readonly Asset<Color> _debug = assetService.Get(GuppyAssets.Colors.TerminalDebug);
+        private readonly Asset<Color> _information = assetService.Get(GuppyAssets.Colors.TerminalInformation);
+        private readonly Asset<Color> _warning = assetService.Get(GuppyAssets.Colors.TerminalWarning);
+        private readonly Asset<Color> _error = assetService.Get(GuppyAssets.Colors.TerminalError);
+        private readonly Asset<Color> _fatal = assetService.Get(GuppyAssets.Colors.TerminalFatal);
+        private readonly Asset<Color> _default = assetService.Get(GuppyAssets.Colors.TerminalDefault);
 
         public IRef<Color> Get(LogLevelEnum level)
         {

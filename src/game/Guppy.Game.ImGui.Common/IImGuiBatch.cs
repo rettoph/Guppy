@@ -1,5 +1,5 @@
 ﻿using Guppy.Core.Common;
-using Guppy.Core.Resources.Common;
+using Guppy.Core.Assets.Common;
 using Guppy.Game.ImGui.Common.Messages;
 using Microsoft.Xna.Framework;
 
@@ -19,7 +19,7 @@ namespace Guppy.Game.ImGui.Common
         /// </summary>
         void End();
 
-        Ref<ImFontPtr> GetFont(Resource<TrueTypeFont> ttf, int size);
+        Ref<ImFontPtr> GetFont(Asset<TrueTypeFont> ttf, int size);
 
         void SetKeyState(ImGuiKeyEvent data);
         void SetMouseButtonState(ImGuiMouseButtonEvent data);

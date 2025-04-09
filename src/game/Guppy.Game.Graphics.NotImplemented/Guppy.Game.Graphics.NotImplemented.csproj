@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Assets.Common\Guppy.Core.Assets.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game.Graphics.Common\Guppy.Game.Graphics.Common.csproj" />
     <ProjectReference Include="..\Guppy.Game\Guppy.Game.csproj" />
   </ItemGroup>

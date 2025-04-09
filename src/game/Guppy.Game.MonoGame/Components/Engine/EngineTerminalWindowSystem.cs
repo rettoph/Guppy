@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Common;
 using Guppy.Game.ImGui.Common;
@@ -16,7 +16,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         MonoGameTerminal terminal,
         ICommandService commands,
         ISettingService settingService,
-        IResourceService resourceService
+        IAssetService assetService
     ) : IEngineSystem,
         IImGuiSystem
     {
@@ -32,7 +32,7 @@ namespace Guppy.Game.MonoGame.Systems.Engine
         private bool _scrolledToBottom = true;
 
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.GuppyMonoGameSettings.IsTerminalWindowEnabled);
-        private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly Asset<ImStyle> _debugWindowStyle = assetService.Get(Common.Assets.ImGuiStyles.DebugWindow);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)

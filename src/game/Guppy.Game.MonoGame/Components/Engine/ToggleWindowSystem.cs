@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Common.Attributes;
 using Guppy.Core.Messaging.Common.Enums;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Engine.Common.Systems;
 using Guppy.Game.Input.Common;
 using Guppy.Game.Input.Common.Messages;

@@ -31,8 +31,8 @@
   </ItemGroup>
 	
   <ItemGroup>
-	  <ProjectReference Include="..\Guppy.Game.Input.Common\Guppy.Game.Input.Common.csproj" />
-    <ProjectReference Include="..\..\core\Guppy.Core.Resources.Common\Guppy.Core.Resources.Common.csproj" />
+	<ProjectReference Include="..\Guppy.Game.Input.Common\Guppy.Game.Input.Common.csproj" />
+    <ProjectReference Include="..\..\core\Guppy.Core.Assets.Common\Guppy.Core.Assets.Common.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition=" '$(CurrentRuntime)' != '' AND '$(CurrentRuntime)' != null ">

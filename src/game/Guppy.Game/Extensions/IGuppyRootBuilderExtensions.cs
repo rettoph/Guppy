@@ -4,13 +4,13 @@ using Guppy.Core.Common.Builders;
 using Guppy.Core.Common.Extensions;
 using Guppy.Core.Files.Common;
 using Guppy.Core.Logging.Common.Sinks;
-using Guppy.Core.Resources.Common.Configuration;
-using Guppy.Core.Resources.Common.Extensions;
+using Guppy.Core.Assets.Common.Configuration;
+using Guppy.Core.Assets.Common.Extensions;
 using Guppy.Core.Serialization.Common.Extensions;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Extensions;
 using Guppy.Game.Common.Services;
-using Guppy.Game.ResourceTypes;
+using Guppy.Game.AssetTypes;
 using Guppy.Game.Serialization.Json.Converters;
 using Guppy.Game.Serilog.Sinks;
 using Guppy.Game.Services;
@@ -46,8 +46,8 @@ namespace Guppy.Game.Extensions
                     builder.RegisterSceneSystem<SceneServiceSystem>();
                 });
 
-                builder.RegisterResourceType<ColorResourceType>();
-                builder.RegisterResourcePack(new ResourcePackConfiguration()
+                builder.RegisterAssetType<ColorAssetType>();
+                builder.RegisterAssetPack(new AssetPackConfiguration()
                 {
                     EntryDirectory = DirectoryPath.CurrentDirectory(GuppyGamePack.Directory)
                 });

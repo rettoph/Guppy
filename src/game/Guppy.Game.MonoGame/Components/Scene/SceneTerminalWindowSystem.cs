@@ -1,7 +1,7 @@
 ﻿using Guppy.Core.Commands.Common.Services;
 using Guppy.Core.Common.Attributes;
-using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 using Guppy.Game.Common;
 using Guppy.Game.Common.Systems;
 using Guppy.Game.ImGui.Common;
@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace Guppy.Game.MonoGame.Systems.Scene
 {
-    public class SceneTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IResourceService resourceService) : ISceneSystem, IImGuiSystem
+    public class SceneTerminalWindowSystem(IImGui imgui, MonoGameTerminal terminal, ICommandService commands, IScene scene, ISettingService settingService, IAssetService assetService) : ISceneSystem, IImGuiSystem
     {
         private readonly ICommandService _commands = commands;
         private readonly IImGui _imgui = imgui;
@@ -27,7 +27,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
         private readonly IScene _scene = scene;
 
         private readonly SettingValue<bool> _isTerminalWindowEnabled = settingService.GetValue(Common.GuppyMonoGameSettings.IsTerminalWindowEnabled);
-        private readonly Resource<ImStyle> _debugWindowStyle = resourceService.Get(Common.Resources.ImGuiStyles.DebugWindow);
+        private readonly Asset<ImStyle> _debugWindowStyle = assetService.Get(Common.Assets.ImGuiStyles.DebugWindow);
 
         [SequenceGroup<ImGuiSequenceGroupEnum>(ImGuiSequenceGroupEnum.Draw)]
         public void DrawImGui(GameTime gameTime)

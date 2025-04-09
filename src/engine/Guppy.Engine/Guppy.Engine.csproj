@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Compile Remove="Serialization\Implementations\**" />
-    <EmbeddedResource Remove="Serialization\Implementations\**" />
+    <EmbeddedAsset Remove="Serialization\Implementations\**" />
     <None Remove="Serialization\Implementations\**" />
   </ItemGroup>
 

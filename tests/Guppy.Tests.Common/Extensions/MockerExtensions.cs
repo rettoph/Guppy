@@ -1,5 +1,5 @@
-﻿using Guppy.Core.Resources.Common;
-using Guppy.Core.Resources.Common.Services;
+﻿using Guppy.Core.Assets.Common;
+using Guppy.Core.Assets.Common.Services;
 
 namespace Guppy.Tests.Common.Extensions
 {
