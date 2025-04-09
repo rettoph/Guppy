@@ -1,18 +1,9 @@
 ﻿using System.Runtime.InteropServices;
-using Guppy.Core.Common.Utilities;
 using Guppy.Core.Assets.Common.Extensions.System;
+using Guppy.Core.Common.Utilities;
 
 namespace Guppy.Core.Assets.Common
 {
-    public interface IAssetKey : IEquatable<IAssetKey>, IDisposable
-    {
-        Guid Id { get; }
-        string Name { get; }
-        Type Type { get; }
-
-        IAsset CreateAsset();
-    }
-
     public readonly struct AssetKey<T> : IAssetKey, IEquatable<AssetKey<T>>
         where T : notnull
     {
