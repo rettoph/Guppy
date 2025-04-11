@@ -53,7 +53,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
                 this._imgui.SetNextWindowSize(new Vector2(800, 600), ImGuiCond.FirstUseEver);
                 if (this._imgui.Begin($"Terminal:{this._scene.Name} - {this._scene.Id}", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoSavedSettings))
                 {
-                    if (this._imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
+                    if (this._imgui.BeginChild("#filter-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Borders))
                     {
                         this._imgui.PushItemWidth(-1);
                         if (this._imgui.InputText("#filter", ref this._filter, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue))
@@ -96,7 +96,7 @@ namespace Guppy.Game.MonoGame.Systems.Scene
 
                     this._imgui.PopStyleVar();
 
-                    if (this._imgui.BeginChild("#input-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Border))
+                    if (this._imgui.BeginChild("#input-container", Vector2.Zero, ImGuiChildFlags.AutoResizeY | ImGuiChildFlags.AlwaysAutoResize | ImGuiChildFlags.AlwaysUseWindowPadding | ImGuiChildFlags.Borders))
                     {
                         this._imgui.PushItemWidth(-1);
                         if (this._imgui.InputText("#input", ref this._input, 1 << 11, ImGuiInputTextFlags.EnterReturnsTrue) && this._input != string.Empty)

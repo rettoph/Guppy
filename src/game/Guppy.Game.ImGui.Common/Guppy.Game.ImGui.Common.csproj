@@ -20,10 +20,6 @@
     <CurrentRuntime>linux-x64</CurrentRuntime>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" ( '$(RuntimeIdentifier)' == '' OR '$(RuntimeIdentifier)' == null ) AND ( '$(OS)' == 'UNIX' AND '$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)' == 'Arm64' ) ">
-    <CurrentRuntime>linux-arm64</CurrentRuntime>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\libraries\ImGui.NET\src\ImGui.NET\ImGui.NET.csproj" ExcludeAssets="All" />
     <ProjectReference Include="..\..\engine\Guppy.Engine.Common\Guppy.Engine.Common.csproj" />
